@@ -928,9 +928,11 @@ export type Fix_State_Enum_Comparison_Exp = {
 export type Github_Repositories = {
   __typename?: 'github_repositories';
   authenticated_clone_url?: Maybe<AuthenticatedRepoCloneUrlOutput>;
+  default_branch?: Maybe<Scalars['String']>;
   git_url: Scalars['String'];
   github_id?: Maybe<Scalars['Int']>;
   github_node_id?: Maybe<Scalars['String']>;
+  id: Scalars['uuid'];
   /** An object relationship */
   project: Projects;
   project_id: Scalars['uuid'];
@@ -980,9 +982,11 @@ export type Github_Repositories_Bool_Exp = {
   _and?: InputMaybe<Array<Github_Repositories_Bool_Exp>>;
   _not?: InputMaybe<Github_Repositories_Bool_Exp>;
   _or?: InputMaybe<Array<Github_Repositories_Bool_Exp>>;
+  default_branch?: InputMaybe<String_Comparison_Exp>;
   git_url?: InputMaybe<String_Comparison_Exp>;
   github_id?: InputMaybe<Int_Comparison_Exp>;
   github_node_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_id?: InputMaybe<Uuid_Comparison_Exp>;
   traits?: InputMaybe<Jsonb_Comparison_Exp>;
@@ -1031,17 +1035,21 @@ export type Github_Repositories_Insert_Input = {
 
 /** order by max() on columns of table "github_repositories" */
 export type Github_Repositories_Max_Order_By = {
+  default_branch?: InputMaybe<Order_By>;
   git_url?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
 };
 
 /** order by min() on columns of table "github_repositories" */
 export type Github_Repositories_Min_Order_By = {
+  default_branch?: InputMaybe<Order_By>;
   git_url?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
 };
 
@@ -1070,12 +1078,19 @@ export type Github_Repositories_On_Conflict = {
 
 /** Ordering options when selecting data from "github_repositories". */
 export type Github_Repositories_Order_By = {
+  default_branch?: InputMaybe<Order_By>;
   git_url?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
   project_id?: InputMaybe<Order_By>;
   traits?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: github_repositories */
+export type Github_Repositories_Pk_Columns_Input = {
+  id: Scalars['uuid'];
 };
 
 /** prepend existing jsonb value of filtered columns with new jsonb value */
@@ -1086,11 +1101,15 @@ export type Github_Repositories_Prepend_Input = {
 /** select columns of table "github_repositories" */
 export enum Github_Repositories_Select_Column {
   /** column name */
+  DefaultBranch = 'default_branch',
+  /** column name */
   GitUrl = 'git_url',
   /** column name */
   GithubId = 'github_id',
   /** column name */
   GithubNodeId = 'github_node_id',
+  /** column name */
+  Id = 'id',
   /** column name */
   ProjectId = 'project_id',
   /** column name */
@@ -2140,6 +2159,8 @@ export type Mutation_Root = {
   update_findings_by_pk?: Maybe<Findings>;
   /** update data of the table: "github_repositories" */
   update_github_repositories?: Maybe<Github_Repositories_Mutation_Response>;
+  /** update single row of the table: "github_repositories" */
+  update_github_repositories_by_pk?: Maybe<Github_Repositories>;
   /** update data of the table: "guide_related_guides" */
   update_guide_related_guides?: Maybe<Guide_Related_Guides_Mutation_Response>;
   /** update single row of the table: "guide_related_guides" */
@@ -2492,6 +2513,19 @@ export type Mutation_RootUpdate_Github_RepositoriesArgs = {
   _prepend?: InputMaybe<Github_Repositories_Prepend_Input>;
   _set?: InputMaybe<Github_Repositories_Set_Input>;
   where: Github_Repositories_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Github_Repositories_By_PkArgs = {
+  _append?: InputMaybe<Github_Repositories_Append_Input>;
+  _delete_at_path?: InputMaybe<Github_Repositories_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Github_Repositories_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Github_Repositories_Delete_Key_Input>;
+  _inc?: InputMaybe<Github_Repositories_Inc_Input>;
+  _prepend?: InputMaybe<Github_Repositories_Prepend_Input>;
+  _set?: InputMaybe<Github_Repositories_Set_Input>;
+  pk_columns: Github_Repositories_Pk_Columns_Input;
 };
 
 
@@ -3752,6 +3786,8 @@ export type Query_Root = {
   findings_by_pk?: Maybe<Findings>;
   /** An array relationship */
   github_repositories: Array<Github_Repositories>;
+  /** fetch data from the table: "github_repositories" using primary key columns */
+  github_repositories_by_pk?: Maybe<Github_Repositories>;
   /** fetch data from the table: "guide_related_guides" */
   guide_related_guides: Array<Guide_Related_Guides>;
   /** fetch data from the table: "guide_related_guides" using primary key columns */
@@ -3884,6 +3920,11 @@ export type Query_RootGithub_RepositoriesArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Github_Repositories_Order_By>>;
   where?: InputMaybe<Github_Repositories_Bool_Exp>;
+};
+
+
+export type Query_RootGithub_Repositories_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -4587,6 +4628,8 @@ export type Subscription_Root = {
   findings_by_pk?: Maybe<Findings>;
   /** An array relationship */
   github_repositories: Array<Github_Repositories>;
+  /** fetch data from the table: "github_repositories" using primary key columns */
+  github_repositories_by_pk?: Maybe<Github_Repositories>;
   /** fetch data from the table: "guide_related_guides" */
   guide_related_guides: Array<Guide_Related_Guides>;
   /** fetch data from the table: "guide_related_guides" using primary key columns */
@@ -4711,6 +4754,11 @@ export type Subscription_RootGithub_RepositoriesArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Github_Repositories_Order_By>>;
   where?: InputMaybe<Github_Repositories_Bool_Exp>;
+};
+
+
+export type Subscription_RootGithub_Repositories_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
