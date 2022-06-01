@@ -7,10 +7,9 @@ lunatrace/bsl/common @factoidforrest
 lunatrace/bsl/logger @factoidforrest
 
 # Chris
-lunatrace/bsl/backend-cdk
-
-# Gabe
-docs/ @G00b
+lunatrace/bsl/backend-cdk @breadchris
+lunatrace/cli @breadchris
+docs/blog @breadchris
 
 
 # CODEOWNERS DOCUMENTATION AND EXAMPLES BELOW ---------------------------------------------------------------------

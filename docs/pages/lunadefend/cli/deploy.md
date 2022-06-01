@@ -23,7 +23,7 @@ sidebar_position: 3
 LunaDefend can be deployed to AWS using the LunaDefend CLI, available in the `@lunasec/cli` npm package.  More information on installing and using the CLI can be 
 found in the [Getting Started Guide](/pages/lunadefend/getting-started/dedicated-tokenizer/introduction)
 
-The deploy command configures a deployment by reading the closest `lunasec.js` file to the current directory. The CLI tool will
+The deploy command configures a deployment by reading the closest `lunadefend.js` file to the current directory. The CLI tool will
 recursively search in parent directories for this file until it gets to the root of the file system.
 
 For a standard deployment of LunaDefend, you will only need to specify:

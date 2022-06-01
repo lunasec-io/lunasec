@@ -13707,9 +13707,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lunasec/browser-common@^1.0.7, @lunasec/browser-common@workspace:js/sdks/packages/browser-common":
+"@lunasec/browser-common@^1.0.7, @lunasec/browser-common@workspace:lunadefend/js/sdks/packages/browser-common":
   version: 0.0.0-use.local
-  resolution: "@lunasec/browser-common@workspace:js/sdks/packages/browser-common"
+  resolution: "@lunasec/browser-common@workspace:lunadefend/js/sdks/packages/browser-common"
   dependencies:
     "@lunasec/isomorphic-common": ^1.0.7
     "@types/jest": ^27.0.3
@@ -13722,9 +13722,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@lunasec/cli@workspace:js/sdks/packages/cli":
+"@lunasec/cli@workspace:lunadefend/js/sdks/packages/cli":
   version: 0.0.0-use.local
-  resolution: "@lunasec/cli@workspace:js/sdks/packages/cli"
+  resolution: "@lunasec/cli@workspace:lunadefend/js/sdks/packages/cli"
   dependencies:
     "@aws-cdk/aws-apigateway": 1.145.0
     "@aws-cdk/aws-cloudfront": 1.145.0
@@ -13767,6 +13767,7 @@ __metadata:
     source-map-support: ^0.5.20
     ts-node: ^10.3.0
     typescript: ~4.5.2
+    yargs: ~17.5.1
   bin:
     lunasec: ./build/cli.js
   languageName: unknown
@@ -13831,18 +13832,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@lunasec/isomorphic-common@^1.0.7, @lunasec/isomorphic-common@workspace:js/sdks/packages/isomorphic-common":
+"@lunasec/isomorphic-common@^1.0.7, @lunasec/isomorphic-common@workspace:lunadefend/js/sdks/packages/isomorphic-common":
   version: 0.0.0-use.local
-  resolution: "@lunasec/isomorphic-common@workspace:js/sdks/packages/isomorphic-common"
+  resolution: "@lunasec/isomorphic-common@workspace:lunadefend/js/sdks/packages/isomorphic-common"
   dependencies:
     "@types/node": ^14.0.0
     typescript: ~4.5.0
   languageName: unknown
   linkType: soft
 
-"@lunasec/node-sdk@^1.0.7, @lunasec/node-sdk@workspace:js/sdks/packages/node-sdk":
+"@lunasec/node-sdk@^1.0.7, @lunasec/node-sdk@workspace:lunadefend/js/sdks/packages/node-sdk":
   version: 0.0.0-use.local
-  resolution: "@lunasec/node-sdk@workspace:js/sdks/packages/node-sdk"
+  resolution: "@lunasec/node-sdk@workspace:lunadefend/js/sdks/packages/node-sdk"
   dependencies:
     "@aws-sdk/client-secrets-manager": ^3.22.0
     "@aws-sdk/hash-node": ^3.22.0
@@ -13938,9 +13939,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@lunasec/react-sdk@^1.0.7, @lunasec/react-sdk@workspace:js/sdks/packages/react-sdk":
+"@lunasec/react-sdk@^1.0.7, @lunasec/react-sdk@workspace:lunadefend/js/sdks/packages/react-sdk":
   version: 0.0.0-use.local
-  resolution: "@lunasec/react-sdk@workspace:js/sdks/packages/react-sdk"
+  resolution: "@lunasec/react-sdk@workspace:lunadefend/js/sdks/packages/react-sdk"
   dependencies:
     "@lunasec/browser-common": ^1.0.7
     "@lunasec/isomorphic-common": ^1.0.7
@@ -13972,9 +13973,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@lunasec/s3-redirect-generator@^1.0.7, @lunasec/s3-redirect-generator@workspace:js/internal-infrastructure/s3-redirect-generator":
+"@lunasec/s3-redirect-generator@^1.0.7, @lunasec/s3-redirect-generator@workspace:lunadefend/js/internal-infrastructure/s3-redirect-generator":
   version: 0.0.0-use.local
-  resolution: "@lunasec/s3-redirect-generator@workspace:js/internal-infrastructure/s3-redirect-generator"
+  resolution: "@lunasec/s3-redirect-generator@workspace:lunadefend/js/internal-infrastructure/s3-redirect-generator"
   dependencies:
     "@types/node": ^14.0.0
     "@types/ramda": ^0.27.56
@@ -13985,9 +13986,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@lunasec/secure-frame-front-end@^1.0.7, @lunasec/secure-frame-front-end@workspace:js/sdks/packages/secure-frame-iframe":
+"@lunasec/secure-frame-front-end@^1.0.7, @lunasec/secure-frame-front-end@workspace:lunadefend/js/sdks/packages/secure-frame-iframe":
   version: 0.0.0-use.local
-  resolution: "@lunasec/secure-frame-front-end@workspace:js/sdks/packages/secure-frame-iframe"
+  resolution: "@lunasec/secure-frame-front-end@workspace:lunadefend/js/sdks/packages/secure-frame-iframe"
   dependencies:
     "@lunasec/browser-common": ^1.0.7
     "@lunasec/isomorphic-common": ^1.0.7
@@ -14022,9 +14023,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@lunasec/server-common@^1.0.7, @lunasec/server-common@workspace:js/sdks/packages/server-common":
+"@lunasec/server-common@^1.0.7, @lunasec/server-common@workspace:lunadefend/js/sdks/packages/server-common":
   version: 0.0.0-use.local
-  resolution: "@lunasec/server-common@workspace:js/sdks/packages/server-common"
+  resolution: "@lunasec/server-common@workspace:lunadefend/js/sdks/packages/server-common"
   dependencies:
     "@types/node": ^14.0.0
     react: ^17.0.2
@@ -14033,9 +14034,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@lunasec/tokenizer-sdk@^1.0.7, @lunasec/tokenizer-sdk@workspace:js/sdks/packages/tokenizer-sdk":
+"@lunasec/tokenizer-sdk@^1.0.7, @lunasec/tokenizer-sdk@workspace:lunadefend/js/sdks/packages/tokenizer-sdk":
   version: 0.0.0-use.local
-  resolution: "@lunasec/tokenizer-sdk@workspace:js/sdks/packages/tokenizer-sdk"
+  resolution: "@lunasec/tokenizer-sdk@workspace:lunadefend/js/sdks/packages/tokenizer-sdk"
   dependencies:
     "@lunasec/browser-common": ^1.0.7
     "@lunasec/isomorphic-common": ^1.0.7
@@ -26202,9 +26203,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deploy-cdk@workspace:js/internal-infrastructure/metrics-server-backend":
+"deploy-cdk@workspace:lunadefend/js/internal-infrastructure/metrics-server-backend":
   version: 0.0.0-use.local
-  resolution: "deploy-cdk@workspace:js/internal-infrastructure/metrics-server-backend"
+  resolution: "deploy-cdk@workspace:lunadefend/js/internal-infrastructure/metrics-server-backend"
   dependencies:
     "@aws-cdk/assert": 1.147.0
     "@aws-cdk/aws-apigateway": 1.147.0
@@ -37380,15 +37381,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lunasec-go-monorepo@workspace:go":
+"lunasec-sdks@workspace:lunadefend/js/sdks":
   version: 0.0.0-use.local
-  resolution: "lunasec-go-monorepo@workspace:go"
-  languageName: unknown
-  linkType: soft
-
-"lunasec-sdks@workspace:js/sdks":
-  version: 0.0.0-use.local
-  resolution: "lunasec-sdks@workspace:js/sdks"
+  resolution: "lunasec-sdks@workspace:lunadefend/js/sdks"
   dependencies:
     "@types/node": ^14.0.0
     typescript: ~4.5.4
@@ -52830,9 +52825,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-sdk@workspace:js/sdks/packages/vue-sdk":
+"vue-sdk@workspace:lunadefend/js/sdks/packages/vue-sdk":
   version: 0.0.0-use.local
-  resolution: "vue-sdk@workspace:js/sdks/packages/vue-sdk"
+  resolution: "vue-sdk@workspace:lunadefend/js/sdks/packages/vue-sdk"
   dependencies:
     "@lunasec/browser-common": ^1.0.7
     "@lunasec/isomorphic-common": ^1.0.7
@@ -54823,6 +54818,21 @@ __metadata:
     y18n: ^5.0.5
     yargs-parser: ^21.0.0
   checksum: 64fc2e32c56739f1d14d2d24acd17a6944c3c8e3e3558f09fc1953ac112e868cc16013d282886b9d5be22187f8b9ed4f60741a6b1011f595ce2718805a656852
+  languageName: node
+  linkType: hard
+
+"yargs@npm:~17.5.1":
+  version: 17.5.1
+  resolution: "yargs@npm:17.5.1"
+  dependencies:
+    cliui: ^7.0.2
+    escalade: ^3.1.1
+    get-caller-file: ^2.0.5
+    require-directory: ^2.1.1
+    string-width: ^4.2.3
+    y18n: ^5.0.5
+    yargs-parser: ^21.0.0
+  checksum: 00d58a2c052937fa044834313f07910fd0a115dec5ee35919e857eeee3736b21a4eafa8264535800ba8bac312991ce785ecb8a51f4d2cc8c4676d865af1cfbde
   languageName: node
   linkType: hard
 
