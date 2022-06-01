@@ -12,9 +12,12 @@
  *
  */
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { LAYOUT } from '../constants';
+import useAppDispatch from '../hooks/useAppDispatch';
 import useSettingsState from '../hooks/useSettingsState';
+import { add } from '../store/slices/alerts';
 
 const initialState = {
   layout: LAYOUT.FLUID,
@@ -27,6 +30,16 @@ const LayoutContext = React.createContext(initialState);
 
 function LayoutProvider({ children }: { children: React.ReactNode }) {
   const [layout, setLayout] = useSettingsState('layout', LAYOUT.FLUID);
+
+  const dispatch = useAppDispatch();
+  const { search } = useLocation();
+
+  const queryParams = React.useMemo(() => new URLSearchParams(search), [search]);
+  const error = queryParams.get('error');
+
+  if (error) {
+    dispatch(add({ message: error }));
+  }
 
   return (
     <LayoutContext.Provider

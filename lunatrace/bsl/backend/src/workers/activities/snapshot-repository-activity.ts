@@ -54,6 +54,9 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
           project_id: repoClone.projectId,
           pull_request_id: req.pullRequestId,
           source_type: req.sourceType,
+          git_hash: req.gitCommit,
+          git_branch: req.gitBranch,
+          git_remote: req.cloneUrl,
         },
       })
   );
