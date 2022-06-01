@@ -94,7 +94,7 @@ jobs:
             echo "run yarn generate" >> $GITHUB_STEP_SUMMARY
             echo '```diff' >> $GITHUB_STEP_SUMMARY
             echo "$DIFF" | tee -a $GITHUB_STEP_SUMMARY
-            echo "::error Generated files do not match"
+            echo "::error Generated files do not match. See job summary for diff."
             echo '```' >> $GITHUB_STEP_SUMMARY
             exit 1 
           fi
