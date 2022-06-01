@@ -9,17 +9,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package npm2
+package npm
 
 import (
 	"encoding/json"
 	"time"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/fetcher"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/fetcher/npm"
 )
 
-func adapt(n *npm.NpmPackageMetadataWithRawVersion, raw []byte) (*fetcher.PackageMetadata, error) {
+func adapt(n *NpmPackageMetadataWithRawVersion, raw []byte) (*fetcher.PackageMetadata, error) {
 	releases, err := mapReleases(n.VersionsRaw)
 	if err != nil {
 		return nil, err
@@ -27,7 +26,7 @@ func adapt(n *npm.NpmPackageMetadataWithRawVersion, raw []byte) (*fetcher.Packag
 	r := &fetcher.PackageMetadata{
 		Name:         n.Name,
 		Description:  n.Description,
-		Registry:     npm.NpmRegistry,
+		Registry:     NpmRegistry,
 		Maintainers:  mapMaintainers(n.Maintainers),
 		Releases:     releases,
 		UpstreamData: raw,
@@ -36,7 +35,7 @@ func adapt(n *npm.NpmPackageMetadataWithRawVersion, raw []byte) (*fetcher.Packag
 	return r, nil
 }
 
-func mapMaintainers(a []npm.Author) []fetcher.Maintainer {
+func mapMaintainers(a []Author) []fetcher.Maintainer {
 	m := make([]fetcher.Maintainer, len(a))
 	for i, mt := range a {
 		m[i] = fetcher.Maintainer{
@@ -52,7 +51,7 @@ func mapReleases(r map[string]json.RawMessage) ([]fetcher.Release, error) {
 	m := make([]fetcher.Release, 0, len(r))
 	for rv, rrl := range r {
 
-		var rl npm.Version
+		var rl Version
 
 		err := json.Unmarshal(rrl, &rl)
 		if err != nil {

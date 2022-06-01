@@ -9,7 +9,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package npm2
+package npm
 
 import (
 	"context"
@@ -21,7 +21,6 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/fetcher"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/fetcher/npm"
 )
 
 type npmFetcherDeps struct {
@@ -34,7 +33,7 @@ type npmFetcher struct {
 }
 
 func (n *npmFetcher) Fetch(ctx context.Context, pkgName string) (*fetcher.PackageMetadata, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, npm.NpmRegistry+"/"+pkgName, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, NpmRegistry+"/"+pkgName, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +50,7 @@ func (n *npmFetcher) Fetch(ctx context.Context, pkgName string) (*fetcher.Packag
 		return nil, err
 	}
 
-	var pkgMeta npm.NpmPackageMetadataWithRawVersion
+	var pkgMeta NpmPackageMetadataWithRawVersion
 	err = json.Unmarshal(pkgMetaRaw, &pkgMeta)
 	if err != nil {
 		return nil, err
