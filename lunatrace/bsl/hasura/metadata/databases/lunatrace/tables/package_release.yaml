@@ -12,14 +12,14 @@ array_relationships:
   - name: release_dependencies
     using:
       foreign_key_constraint_on:
-        column: dependency_release_id
+        column: release_id
         table:
           schema: package
           name: release_dependency
   - name: release_dependents
     using:
       foreign_key_constraint_on:
-        column: release_id
+        column: dependency_release_id
         table:
           schema: package
           name: release_dependency
