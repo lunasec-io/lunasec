@@ -30,6 +30,7 @@ services:
       - "host.docker.internal:host-gateway"
 
   kratos-migrate:
+    build: ./ory/kratos
     image: lunatrace-kratos:lunatrace-dev
     depends_on:
       - postgres
