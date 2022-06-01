@@ -109,6 +109,7 @@ select_permissions:
         - organization_id
         - settings_id
       filter: {}
+      allow_aggregations: true
   - role: user
     permission:
       columns:

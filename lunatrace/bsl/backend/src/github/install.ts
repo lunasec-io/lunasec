@@ -11,16 +11,55 @@
  * limitations under the License.
  *
  */
+import * as querystring from 'querystring';
+
 import { Request, Response } from 'express';
 
 import { getServerConfig } from '../config';
-import { errorResponse } from '../utils/errors';
+import { hasura } from '../hasura-api';
+import { MaybeErrorVoid } from '../types/util';
+import { errorResponse, newError, newResult } from '../utils/errors';
 import { log } from '../utils/log';
 import { tryParseInt } from '../utils/parse';
+import { sleep } from '../utils/sleep';
 
 import { getInstallationAccessToken } from './auth';
 
 const serverConfig = getServerConfig();
+
+async function waitForGithubInstall(installationId: number): Promise<MaybeErrorVoid> {
+  // Check to see if user has any projects installed
+  // TODO (cthompson) this is a simple check at the moment for the scenario where someone
+  // is performing their first install. For any updates to an install, we want to be smart with this check
+  // and make sure that the newly added repos have been installed correctly before moving on.
+  let attempts = 0;
+  const maxAttempts = 10;
+
+  while (attempts < maxAttempts) {
+    const projectCountQuery = await hasura.GetProjectCountForInstallation({
+      installation_id: installationId,
+    });
+
+    const count = projectCountQuery.projects_aggregate.aggregate?.count;
+
+    if (count === undefined) {
+      return newError(
+        'Unable to verify Github App was installed successfully. Contact support if this problem persists.'
+      );
+    }
+    if (count > 0) {
+      break;
+    }
+    await sleep(1000);
+    attempts += 1;
+  }
+  if (attempts === maxAttempts) {
+    return newError(
+      'Unable to verify Github App was installed successfully. Contact support if this problem persists.'
+    );
+  }
+  return newResult(undefined);
+}
 
 // All of this code just checks that we are properly authed, it's just a sanity check.
 // We handle all the installation tasks such as populating repos in the github webhook queue handler for `installation.created`
@@ -73,7 +112,20 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
     return;
   }
 
-  log.info('Github App was installed correctly', {
+  const installError = await waitForGithubInstall(installationId);
+
+  if (installError.error) {
+    log.error('unable to verify that Github App was installed successfully', {
+      installationId,
+    });
+    const errorMsg = querystring.stringify({
+      error: installError.msg,
+    });
+    res.status(302).redirect(serverConfig.sitePublicUrl + '?' + errorMsg);
+    return;
+  }
+
+  log.info('Github App was installed successfully', {
     installationId,
   });
 
