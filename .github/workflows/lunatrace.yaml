@@ -83,11 +83,14 @@ jobs:
           (cd lunatrace/bsl/frontend && yarn generate)
           go generate ./... || true
           git status
-          if [[ -n $(git status --porcelain) ]]; then
+          
+          DIFF=`git diff -p -- . ':(exclude)lunatrace/schema.graphql'`
+          
+          if [[ ! -z "$DIFF" ]]; then
             echo "# Generated files don't match" >> $GITHUB_STEP_SUMMARY
             echo "run yarn generate" >> $GITHUB_STEP_SUMMARY
             echo '```diff' >> $GITHUB_STEP_SUMMARY
-            git diff -p >> $GITHUB_STEP_SUMMARY
+            echo "$DIFF" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
             exit 1 
           fi

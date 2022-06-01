@@ -20,6 +20,7 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go }}
+          cache: true
       - name: Setup Golang caches
         uses: actions/cache@v3
         with:
