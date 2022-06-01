@@ -36,13 +36,18 @@ async function waitForGithubInstall(installationId: number): Promise<MaybeErrorV
   const maxAttempts = 10;
 
   while (attempts < maxAttempts) {
-    const installedProjects = await hasura.GetProjectsForInstallationId({
+    const projectCountQuery = await hasura.GetProjectCountForInstallation({
       installation_id: installationId,
     });
 
-    const projects = installedProjects.organizations.flatMap((o) => o.projects);
+    const count = projectCountQuery.projects_aggregate.aggregate?.count;
 
-    if (projects.length > 0) {
+    if (count === undefined) {
+      return newError(
+        'Unable to verify Github App was installed successfully. Contact support if this problem persists.'
+      );
+    }
+    if (count > 0) {
       break;
     }
     await sleep(1000);
