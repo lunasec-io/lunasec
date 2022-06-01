@@ -15,21 +15,26 @@ drop type public.license_source;
 
 drop type public.package_manager;
 
-ALTER TABLE package.release_dependency DROP CONSTRAINT release_dependency_release_id_package_name_package_version__idx;
-ALTER TABLE package.release DROP CONSTRAINT release_package_id_version_idx;
-ALTER TABLE package.package_maintainer DROP CONSTRAINT package_maintainer_package_id_maintainer_id_idx;
-ALTER TABLE package.package DROP CONSTRAINT package_package_manager_custom_registry_name_idx;
-ALTER TABLE package.maintainer DROP CONSTRAINT maintainer_package_manager_email_idx;
-ALTER TABLE package.license DROP CONSTRAINT license_name_idx;
-
 CREATE UNIQUE INDEX ON "package"."maintainer" ("package_manager", "email");
+ALTER TABLE package.maintainer
+    DROP CONSTRAINT maintainer_package_manager_email_idx;
 
 CREATE UNIQUE INDEX ON "package"."package_maintainer" ("package_id", "maintainer_id");
+ALTER TABLE package.package_maintainer
+    DROP CONSTRAINT package_maintainer_package_id_maintainer_id_idx;
 
 CREATE UNIQUE INDEX ON "package"."package" ("package_manager", "custom_registry", "name");
+ALTER TABLE package.package
+    DROP CONSTRAINT package_package_manager_custom_registry_name_idx;
 
 CREATE UNIQUE INDEX ON "package"."release" ("package_id", "version");
+ALTER TABLE package.release
+    DROP CONSTRAINT release_package_id_version_idx;
 
 CREATE UNIQUE INDEX ON "package"."release_dependency" ("release_id", "package_name", "package_version_query");
+ALTER TABLE package.release_dependency
+    DROP CONSTRAINT release_dependency_release_id_package_name_package_version__idx;
 
 CREATE UNIQUE INDEX ON "package"."license" ("name");
+ALTER TABLE package.license
+    DROP CONSTRAINT license_name_idx;
