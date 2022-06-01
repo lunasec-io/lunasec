@@ -65,17 +65,23 @@ jobs:
             }
             set -x
             hasura md ic list >> /tmp/hasura_ic
-            hasura md ic status || (cat /tmp/hasura_ic >> $GITHUB_STEP_SUMMARY)
+            hasura md ic status || (
+              echo "Hasura metadata inconsistency" >> $GITHUB_STEP_SUMMARY
+              cat /tmp/hasura_ic >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            )
           ) || true)
           
       - run: docker-compose logs
         working-directory: lunatrace/bsl
       - run: |-
-          (
-            git status
-            (cd lunatrace/bsl/backend && yarn generate)
-            (cd lunatrace/bsl/frontend && yarn generate)
-            go generate ./... || true
-            git status
-            git diff
-          ) || true
+          git status
+          (cd lunatrace/bsl/backend && yarn generate)
+          (cd lunatrace/bsl/frontend && yarn generate)
+          go generate ./... || true
+          git status
+          if [[ $(git diff --stat) != '' ]]; then
+            echo "# Generated files don't match"
+            git diff >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
