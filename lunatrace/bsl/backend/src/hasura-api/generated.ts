@@ -567,6 +567,245 @@ export type Date_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['date']>>;
 };
 
+/** columns and relationships of "default_branch_builds" */
+export type Default_Branch_Builds = {
+  __typename?: 'default_branch_builds';
+  agent_access_token?: Maybe<Scalars['uuid']>;
+  build_number?: Maybe<Scalars['Int']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  existing_github_review_id?: Maybe<Scalars['String']>;
+  /** An array relationship */
+  findings: Array<Findings>;
+  git_branch?: Maybe<Scalars['String']>;
+  git_hash?: Maybe<Scalars['String']>;
+  git_remote?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  /** An object relationship */
+  project?: Maybe<Projects>;
+  project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['String']>;
+  s3_url?: Maybe<Scalars['String']>;
+  source_type?: Maybe<Scalars['builds_source_type']>;
+};
+
+
+/** columns and relationships of "default_branch_builds" */
+export type Default_Branch_BuildsFindingsArgs = {
+  distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Findings_Order_By>>;
+  where?: InputMaybe<Findings_Bool_Exp>;
+};
+
+/** order by aggregate values of table "default_branch_builds" */
+export type Default_Branch_Builds_Aggregate_Order_By = {
+  avg?: InputMaybe<Default_Branch_Builds_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Default_Branch_Builds_Max_Order_By>;
+  min?: InputMaybe<Default_Branch_Builds_Min_Order_By>;
+  stddev?: InputMaybe<Default_Branch_Builds_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Default_Branch_Builds_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Default_Branch_Builds_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Default_Branch_Builds_Sum_Order_By>;
+  var_pop?: InputMaybe<Default_Branch_Builds_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Default_Branch_Builds_Var_Samp_Order_By>;
+  variance?: InputMaybe<Default_Branch_Builds_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "default_branch_builds" */
+export type Default_Branch_Builds_Arr_Rel_Insert_Input = {
+  data: Array<Default_Branch_Builds_Insert_Input>;
+};
+
+/** order by avg() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Avg_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "default_branch_builds". All fields are combined with a logical 'AND'. */
+export type Default_Branch_Builds_Bool_Exp = {
+  _and?: InputMaybe<Array<Default_Branch_Builds_Bool_Exp>>;
+  _not?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
+  _or?: InputMaybe<Array<Default_Branch_Builds_Bool_Exp>>;
+  agent_access_token?: InputMaybe<Uuid_Comparison_Exp>;
+  build_number?: InputMaybe<Int_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
+  findings?: InputMaybe<Findings_Bool_Exp>;
+  git_branch?: InputMaybe<String_Comparison_Exp>;
+  git_hash?: InputMaybe<String_Comparison_Exp>;
+  git_remote?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  project?: InputMaybe<Projects_Bool_Exp>;
+  project_id?: InputMaybe<Uuid_Comparison_Exp>;
+  pull_request_id?: InputMaybe<String_Comparison_Exp>;
+  s3_url?: InputMaybe<String_Comparison_Exp>;
+  source_type?: InputMaybe<Builds_Source_Type_Comparison_Exp>;
+};
+
+/** input type for incrementing numeric columns in table "default_branch_builds" */
+export type Default_Branch_Builds_Inc_Input = {
+  build_number?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "default_branch_builds" */
+export type Default_Branch_Builds_Insert_Input = {
+  agent_access_token?: InputMaybe<Scalars['uuid']>;
+  build_number?: InputMaybe<Scalars['Int']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  existing_github_review_id?: InputMaybe<Scalars['String']>;
+  findings?: InputMaybe<Findings_Arr_Rel_Insert_Input>;
+  git_branch?: InputMaybe<Scalars['String']>;
+  git_hash?: InputMaybe<Scalars['String']>;
+  git_remote?: InputMaybe<Scalars['String']>;
+  project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
+  project_id?: InputMaybe<Scalars['uuid']>;
+  pull_request_id?: InputMaybe<Scalars['String']>;
+  s3_url?: InputMaybe<Scalars['String']>;
+  source_type?: InputMaybe<Scalars['builds_source_type']>;
+};
+
+/** order by max() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Max_Order_By = {
+  agent_access_token?: InputMaybe<Order_By>;
+  build_number?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  existing_github_review_id?: InputMaybe<Order_By>;
+  git_branch?: InputMaybe<Order_By>;
+  git_hash?: InputMaybe<Order_By>;
+  git_remote?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
+  s3_url?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Min_Order_By = {
+  agent_access_token?: InputMaybe<Order_By>;
+  build_number?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  existing_github_review_id?: InputMaybe<Order_By>;
+  git_branch?: InputMaybe<Order_By>;
+  git_hash?: InputMaybe<Order_By>;
+  git_remote?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
+  s3_url?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "default_branch_builds" */
+export type Default_Branch_Builds_Mutation_Response = {
+  __typename?: 'default_branch_builds_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Default_Branch_Builds>;
+};
+
+/** input type for inserting object relation for remote table "default_branch_builds" */
+export type Default_Branch_Builds_Obj_Rel_Insert_Input = {
+  data: Default_Branch_Builds_Insert_Input;
+};
+
+/** Ordering options when selecting data from "default_branch_builds". */
+export type Default_Branch_Builds_Order_By = {
+  agent_access_token?: InputMaybe<Order_By>;
+  build_number?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  existing_github_review_id?: InputMaybe<Order_By>;
+  findings_aggregate?: InputMaybe<Findings_Aggregate_Order_By>;
+  git_branch?: InputMaybe<Order_By>;
+  git_hash?: InputMaybe<Order_By>;
+  git_remote?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project?: InputMaybe<Projects_Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
+  s3_url?: InputMaybe<Order_By>;
+  source_type?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "default_branch_builds" */
+export enum Default_Branch_Builds_Select_Column {
+  /** column name */
+  AgentAccessToken = 'agent_access_token',
+  /** column name */
+  BuildNumber = 'build_number',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExistingGithubReviewId = 'existing_github_review_id',
+  /** column name */
+  GitBranch = 'git_branch',
+  /** column name */
+  GitHash = 'git_hash',
+  /** column name */
+  GitRemote = 'git_remote',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ProjectId = 'project_id',
+  /** column name */
+  PullRequestId = 'pull_request_id',
+  /** column name */
+  S3Url = 's3_url',
+  /** column name */
+  SourceType = 'source_type'
+}
+
+/** input type for updating data in table "default_branch_builds" */
+export type Default_Branch_Builds_Set_Input = {
+  agent_access_token?: InputMaybe<Scalars['uuid']>;
+  build_number?: InputMaybe<Scalars['Int']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  existing_github_review_id?: InputMaybe<Scalars['String']>;
+  git_branch?: InputMaybe<Scalars['String']>;
+  git_hash?: InputMaybe<Scalars['String']>;
+  git_remote?: InputMaybe<Scalars['String']>;
+  project_id?: InputMaybe<Scalars['uuid']>;
+  pull_request_id?: InputMaybe<Scalars['String']>;
+  s3_url?: InputMaybe<Scalars['String']>;
+  source_type?: InputMaybe<Scalars['builds_source_type']>;
+};
+
+/** order by stddev() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Stddev_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_pop() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Stddev_Pop_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_samp() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Stddev_Samp_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** order by sum() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Sum_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** order by var_pop() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Var_Pop_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** order by var_samp() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Var_Samp_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** order by variance() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Variance_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
 /** columns and relationships of "findings" */
 export type Findings = {
   __typename?: 'findings';
@@ -575,6 +814,8 @@ export type Findings = {
   build_id: Scalars['uuid'];
   created_at: Scalars['timestamp'];
   dedupe_slug: Scalars['String'];
+  /** An object relationship */
+  default_branch_build?: Maybe<Default_Branch_Builds>;
   fix_state: Scalars['fix_state_enum'];
   fix_versions?: Maybe<Scalars['_text']>;
   id: Scalars['uuid'];
@@ -626,6 +867,7 @@ export type Findings_Bool_Exp = {
   build_id?: InputMaybe<Uuid_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   dedupe_slug?: InputMaybe<String_Comparison_Exp>;
+  default_branch_build?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
   fix_state?: InputMaybe<Fix_State_Enum_Comparison_Exp>;
   fix_versions?: InputMaybe<_Text_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -664,6 +906,7 @@ export type Findings_Insert_Input = {
   build_id?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   dedupe_slug?: InputMaybe<Scalars['String']>;
+  default_branch_build?: InputMaybe<Default_Branch_Builds_Obj_Rel_Insert_Input>;
   fix_state?: InputMaybe<Scalars['fix_state_enum']>;
   fix_versions?: InputMaybe<Scalars['_text']>;
   id?: InputMaybe<Scalars['uuid']>;
@@ -752,6 +995,7 @@ export type Findings_Order_By = {
   build_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   dedupe_slug?: InputMaybe<Order_By>;
+  default_branch_build?: InputMaybe<Default_Branch_Builds_Order_By>;
   fix_state?: InputMaybe<Order_By>;
   fix_versions?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -914,9 +1158,11 @@ export type Fix_State_Enum_Comparison_Exp = {
 /** Metadata about a github repository and where to find it. */
 export type Github_Repositories = {
   __typename?: 'github_repositories';
+  default_branch: Scalars['String'];
   git_url: Scalars['String'];
   github_id?: Maybe<Scalars['Int']>;
   github_node_id?: Maybe<Scalars['String']>;
+  id: Scalars['uuid'];
   /** An object relationship */
   project: Projects;
   project_id: Scalars['uuid'];
@@ -966,9 +1212,11 @@ export type Github_Repositories_Bool_Exp = {
   _and?: InputMaybe<Array<Github_Repositories_Bool_Exp>>;
   _not?: InputMaybe<Github_Repositories_Bool_Exp>;
   _or?: InputMaybe<Array<Github_Repositories_Bool_Exp>>;
+  default_branch?: InputMaybe<String_Comparison_Exp>;
   git_url?: InputMaybe<String_Comparison_Exp>;
   github_id?: InputMaybe<Int_Comparison_Exp>;
   github_node_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_id?: InputMaybe<Uuid_Comparison_Exp>;
   traits?: InputMaybe<Jsonb_Comparison_Exp>;
@@ -1017,17 +1265,21 @@ export type Github_Repositories_Insert_Input = {
 
 /** order by max() on columns of table "github_repositories" */
 export type Github_Repositories_Max_Order_By = {
+  default_branch?: InputMaybe<Order_By>;
   git_url?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
 };
 
 /** order by min() on columns of table "github_repositories" */
 export type Github_Repositories_Min_Order_By = {
+  default_branch?: InputMaybe<Order_By>;
   git_url?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   project_id?: InputMaybe<Order_By>;
 };
 
@@ -1056,12 +1308,19 @@ export type Github_Repositories_On_Conflict = {
 
 /** Ordering options when selecting data from "github_repositories". */
 export type Github_Repositories_Order_By = {
+  default_branch?: InputMaybe<Order_By>;
   git_url?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
   project_id?: InputMaybe<Order_By>;
   traits?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: github_repositories */
+export type Github_Repositories_Pk_Columns_Input = {
+  id: Scalars['uuid'];
 };
 
 /** prepend existing jsonb value of filtered columns with new jsonb value */
@@ -1072,11 +1331,15 @@ export type Github_Repositories_Prepend_Input = {
 /** select columns of table "github_repositories" */
 export enum Github_Repositories_Select_Column {
   /** column name */
+  DefaultBranch = 'default_branch',
+  /** column name */
   GitUrl = 'git_url',
   /** column name */
   GithubId = 'github_id',
   /** column name */
   GithubNodeId = 'github_node_id',
+  /** column name */
+  Id = 'id',
   /** column name */
   ProjectId = 'project_id',
   /** column name */
@@ -2056,6 +2319,10 @@ export type Mutation_Root = {
   insert_builds?: Maybe<Builds_Mutation_Response>;
   /** insert a single row into the table: "builds" */
   insert_builds_one?: Maybe<Builds>;
+  /** insert data into the table: "default_branch_builds" */
+  insert_default_branch_builds?: Maybe<Default_Branch_Builds_Mutation_Response>;
+  /** insert a single row into the table: "default_branch_builds" */
+  insert_default_branch_builds_one?: Maybe<Default_Branch_Builds>;
   /** insert data into the table: "findings" */
   insert_findings?: Maybe<Findings_Mutation_Response>;
   /** insert a single row into the table: "findings" */
@@ -2118,12 +2385,16 @@ export type Mutation_Root = {
   update_builds?: Maybe<Builds_Mutation_Response>;
   /** update single row of the table: "builds" */
   update_builds_by_pk?: Maybe<Builds>;
+  /** update data of the table: "default_branch_builds" */
+  update_default_branch_builds?: Maybe<Default_Branch_Builds_Mutation_Response>;
   /** update data of the table: "findings" */
   update_findings?: Maybe<Findings_Mutation_Response>;
   /** update single row of the table: "findings" */
   update_findings_by_pk?: Maybe<Findings>;
   /** update data of the table: "github_repositories" */
   update_github_repositories?: Maybe<Github_Repositories_Mutation_Response>;
+  /** update single row of the table: "github_repositories" */
+  update_github_repositories_by_pk?: Maybe<Github_Repositories>;
   /** update data of the table: "guide_related_guides" */
   update_guide_related_guides?: Maybe<Guide_Related_Guides_Mutation_Response>;
   /** update single row of the table: "guide_related_guides" */
@@ -2224,6 +2495,18 @@ export type Mutation_RootInsert_BuildsArgs = {
 export type Mutation_RootInsert_Builds_OneArgs = {
   object: Builds_Insert_Input;
   on_conflict?: InputMaybe<Builds_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Default_Branch_BuildsArgs = {
+  objects: Array<Default_Branch_Builds_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Default_Branch_Builds_OneArgs = {
+  object: Default_Branch_Builds_Insert_Input;
 };
 
 
@@ -2447,6 +2730,14 @@ export type Mutation_RootUpdate_Builds_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Default_Branch_BuildsArgs = {
+  _inc?: InputMaybe<Default_Branch_Builds_Inc_Input>;
+  _set?: InputMaybe<Default_Branch_Builds_Set_Input>;
+  where: Default_Branch_Builds_Bool_Exp;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_FindingsArgs = {
   _set?: InputMaybe<Findings_Set_Input>;
   where: Findings_Bool_Exp;
@@ -2470,6 +2761,19 @@ export type Mutation_RootUpdate_Github_RepositoriesArgs = {
   _prepend?: InputMaybe<Github_Repositories_Prepend_Input>;
   _set?: InputMaybe<Github_Repositories_Set_Input>;
   where: Github_Repositories_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Github_Repositories_By_PkArgs = {
+  _append?: InputMaybe<Github_Repositories_Append_Input>;
+  _delete_at_path?: InputMaybe<Github_Repositories_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Github_Repositories_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Github_Repositories_Delete_Key_Input>;
+  _inc?: InputMaybe<Github_Repositories_Inc_Input>;
+  _prepend?: InputMaybe<Github_Repositories_Prepend_Input>;
+  _set?: InputMaybe<Github_Repositories_Set_Input>;
+  pk_columns: Github_Repositories_Pk_Columns_Input;
 };
 
 
@@ -3398,6 +3702,8 @@ export type Projects = {
   builds_aggregate: Builds_Aggregate;
   created_at: Scalars['timestamp'];
   /** An array relationship */
+  default_branch_builds: Array<Default_Branch_Builds>;
+  /** An array relationship */
   github_repositories: Array<Github_Repositories>;
   /** An object relationship */
   github_repository?: Maybe<Github_Repositories>;
@@ -3438,6 +3744,16 @@ export type ProjectsBuilds_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Builds_Order_By>>;
   where?: InputMaybe<Builds_Bool_Exp>;
+};
+
+
+/** columns and relationships of "projects" */
+export type ProjectsDefault_Branch_BuildsArgs = {
+  distinct_on?: InputMaybe<Array<Default_Branch_Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Default_Branch_Builds_Order_By>>;
+  where?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
 };
 
 
@@ -3511,6 +3827,7 @@ export type Projects_Bool_Exp = {
   _or?: InputMaybe<Array<Projects_Bool_Exp>>;
   builds?: InputMaybe<Builds_Bool_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  default_branch_builds?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
   github_repositories?: InputMaybe<Github_Repositories_Bool_Exp>;
   github_repository?: InputMaybe<Github_Repositories_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -3538,6 +3855,7 @@ export enum Projects_Constraint {
 export type Projects_Insert_Input = {
   builds?: InputMaybe<Builds_Arr_Rel_Insert_Input>;
   created_at?: InputMaybe<Scalars['timestamp']>;
+  default_branch_builds?: InputMaybe<Default_Branch_Builds_Arr_Rel_Insert_Input>;
   github_repositories?: InputMaybe<Github_Repositories_Arr_Rel_Insert_Input>;
   github_repository?: InputMaybe<Github_Repositories_Obj_Rel_Insert_Input>;
   id?: InputMaybe<Scalars['uuid']>;
@@ -3596,6 +3914,7 @@ export type Projects_On_Conflict = {
 export type Projects_Order_By = {
   builds_aggregate?: InputMaybe<Builds_Aggregate_Order_By>;
   created_at?: InputMaybe<Order_By>;
+  default_branch_builds_aggregate?: InputMaybe<Default_Branch_Builds_Aggregate_Order_By>;
   github_repositories_aggregate?: InputMaybe<Github_Repositories_Aggregate_Order_By>;
   github_repository?: InputMaybe<Github_Repositories_Order_By>;
   id?: InputMaybe<Order_By>;
@@ -3667,11 +3986,15 @@ export type Query_Root = {
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
   /** An array relationship */
+  default_branch_builds: Array<Default_Branch_Builds>;
+  /** An array relationship */
   findings: Array<Findings>;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
   /** An array relationship */
   github_repositories: Array<Github_Repositories>;
+  /** fetch data from the table: "github_repositories" using primary key columns */
+  github_repositories_by_pk?: Maybe<Github_Repositories>;
   /** fetch data from the table: "guide_related_guides" */
   guide_related_guides: Array<Guide_Related_Guides>;
   /** fetch data from the table: "guide_related_guides" using primary key columns */
@@ -3774,6 +4097,15 @@ export type Query_RootBuilds_By_PkArgs = {
 };
 
 
+export type Query_RootDefault_Branch_BuildsArgs = {
+  distinct_on?: InputMaybe<Array<Default_Branch_Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Default_Branch_Builds_Order_By>>;
+  where?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
+};
+
+
 export type Query_RootFindingsArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -3794,6 +4126,11 @@ export type Query_RootGithub_RepositoriesArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Github_Repositories_Order_By>>;
   where?: InputMaybe<Github_Repositories_Bool_Exp>;
+};
+
+
+export type Query_RootGithub_Repositories_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -4472,11 +4809,15 @@ export type Subscription_Root = {
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
   /** An array relationship */
+  default_branch_builds: Array<Default_Branch_Builds>;
+  /** An array relationship */
   findings: Array<Findings>;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
   /** An array relationship */
   github_repositories: Array<Github_Repositories>;
+  /** fetch data from the table: "github_repositories" using primary key columns */
+  github_repositories_by_pk?: Maybe<Github_Repositories>;
   /** fetch data from the table: "guide_related_guides" */
   guide_related_guides: Array<Guide_Related_Guides>;
   /** fetch data from the table: "guide_related_guides" using primary key columns */
@@ -4579,6 +4920,15 @@ export type Subscription_RootBuilds_By_PkArgs = {
 };
 
 
+export type Subscription_RootDefault_Branch_BuildsArgs = {
+  distinct_on?: InputMaybe<Array<Default_Branch_Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Default_Branch_Builds_Order_By>>;
+  where?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
+};
+
+
 export type Subscription_RootFindingsArgs = {
   distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -4599,6 +4949,11 @@ export type Subscription_RootGithub_RepositoriesArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Github_Repositories_Order_By>>;
   where?: InputMaybe<Github_Repositories_Bool_Exp>;
+};
+
+
+export type Subscription_RootGithub_Repositories_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
