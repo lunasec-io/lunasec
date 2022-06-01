@@ -77,13 +77,16 @@ jobs:
       - run: docker-compose logs
         working-directory: lunatrace/bsl
 
-      - run: |-
+      - name: Generate Files
+        run: |-
           git status
           (cd lunatrace/bsl/backend && yarn generate)
           (cd lunatrace/bsl/frontend && yarn generate)
           go generate ./... || true
           git status
-          
+
+      - name: Check Generated Files
+        run: |-          
           DIFF=`git diff -p -- . ':(exclude)lunatrace/schema.graphql'`
           
           if [[ ! -z "$DIFF" ]]; then
@@ -91,6 +94,7 @@ jobs:
             echo "run yarn generate" >> $GITHUB_STEP_SUMMARY
             echo '```diff' >> $GITHUB_STEP_SUMMARY
             echo "$DIFF" | tee -a $GITHUB_STEP_SUMMARY
+            echo "::error Generated files do not match"
             echo '```' >> $GITHUB_STEP_SUMMARY
             exit 1 
           fi
