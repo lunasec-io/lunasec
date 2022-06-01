@@ -68,7 +68,7 @@
     "test:unit:tokenizer": "cd lunadefend/js/sdks/packages/tokenizer-sdk && yarn run test",
     "test:unit:auth": "cd lunadefend/js/sdks/packages/browser-common && yarn run test",
     "test:unit:js": "yarn test:unit:auth && yarn test:unit:tokenizer",
-    "test:unit:go": "cd go && go test -cover ./...",
+    "test:unit:go": "cd lunadefend/go && go test -cover ./...",
     "test:unit": "yarn test:unit:js && yarn test:unit:go",
     "test:all": "yarn test:unit && yarn run test:e2e:local",
     "lint:fix": "yarn run lint --fix",
