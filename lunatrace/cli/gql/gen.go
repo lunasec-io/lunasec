@@ -23,6 +23,7 @@ import (
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/google/uuid"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 )
 
 // DeleteBuildDelete_builds_by_pkBuilds includes the requested fields of the GraphQL type builds.
@@ -195,43 +196,43 @@ func (v *Jsonb_comparison_exp) GetNin() []json.RawMessage { return v.Nin }
 
 // Boolean expression to compare columns of type "license_source". All fields are combined with logical 'AND'.
 type License_source_comparison_exp struct {
-	Eq      string   `json:"_eq"`
-	Gt      string   `json:"_gt"`
-	Gte     string   `json:"_gte"`
-	In      []string `json:"_in"`
-	Is_null bool     `json:"_is_null"`
-	Lt      string   `json:"_lt"`
-	Lte     string   `json:"_lte"`
-	Neq     string   `json:"_neq"`
-	Nin     []string `json:"_nin"`
+	Eq      types.LicenseSource   `json:"_eq"`
+	Gt      types.LicenseSource   `json:"_gt"`
+	Gte     types.LicenseSource   `json:"_gte"`
+	In      []types.LicenseSource `json:"_in"`
+	Is_null bool                  `json:"_is_null"`
+	Lt      types.LicenseSource   `json:"_lt"`
+	Lte     types.LicenseSource   `json:"_lte"`
+	Neq     types.LicenseSource   `json:"_neq"`
+	Nin     []types.LicenseSource `json:"_nin"`
 }
 
 // GetEq returns License_source_comparison_exp.Eq, and is useful for accessing the field via an interface.
-func (v *License_source_comparison_exp) GetEq() string { return v.Eq }
+func (v *License_source_comparison_exp) GetEq() types.LicenseSource { return v.Eq }
 
 // GetGt returns License_source_comparison_exp.Gt, and is useful for accessing the field via an interface.
-func (v *License_source_comparison_exp) GetGt() string { return v.Gt }
+func (v *License_source_comparison_exp) GetGt() types.LicenseSource { return v.Gt }
 
 // GetGte returns License_source_comparison_exp.Gte, and is useful for accessing the field via an interface.
-func (v *License_source_comparison_exp) GetGte() string { return v.Gte }
+func (v *License_source_comparison_exp) GetGte() types.LicenseSource { return v.Gte }
 
 // GetIn returns License_source_comparison_exp.In, and is useful for accessing the field via an interface.
-func (v *License_source_comparison_exp) GetIn() []string { return v.In }
+func (v *License_source_comparison_exp) GetIn() []types.LicenseSource { return v.In }
 
 // GetIs_null returns License_source_comparison_exp.Is_null, and is useful for accessing the field via an interface.
 func (v *License_source_comparison_exp) GetIs_null() bool { return v.Is_null }
 
 // GetLt returns License_source_comparison_exp.Lt, and is useful for accessing the field via an interface.
-func (v *License_source_comparison_exp) GetLt() string { return v.Lt }
+func (v *License_source_comparison_exp) GetLt() types.LicenseSource { return v.Lt }
 
 // GetLte returns License_source_comparison_exp.Lte, and is useful for accessing the field via an interface.
-func (v *License_source_comparison_exp) GetLte() string { return v.Lte }
+func (v *License_source_comparison_exp) GetLte() types.LicenseSource { return v.Lte }
 
 // GetNeq returns License_source_comparison_exp.Neq, and is useful for accessing the field via an interface.
-func (v *License_source_comparison_exp) GetNeq() string { return v.Neq }
+func (v *License_source_comparison_exp) GetNeq() types.LicenseSource { return v.Neq }
 
 // GetNin returns License_source_comparison_exp.Nin, and is useful for accessing the field via an interface.
-func (v *License_source_comparison_exp) GetNin() []string { return v.Nin }
+func (v *License_source_comparison_exp) GetNin() []types.LicenseSource { return v.Nin }
 
 // Boolean expression to filter rows from the table "package.package". All fields are combined with a logical 'AND'.
 type Package_bool_exp struct {
@@ -298,7 +299,7 @@ type Package_insert_input struct {
 	Id                  uuid.UUID                                        `json:"id"`
 	Name                string                                           `json:"name"`
 	Package_maintainers *Package_package_maintainer_arr_rel_insert_input `json:"package_maintainers,omitempty"`
-	Package_manager     string                                           `json:"package_manager"`
+	Package_manager     types.PackageManager                             `json:"package_manager"`
 	Releases            *Package_release_arr_rel_insert_input            `json:"releases,omitempty"`
 }
 
@@ -320,7 +321,7 @@ func (v *Package_insert_input) GetPackage_maintainers() *Package_package_maintai
 }
 
 // GetPackage_manager returns Package_insert_input.Package_manager, and is useful for accessing the field via an interface.
-func (v *Package_insert_input) GetPackage_manager() string { return v.Package_manager }
+func (v *Package_insert_input) GetPackage_manager() types.PackageManager { return v.Package_manager }
 
 // GetReleases returns Package_insert_input.Releases, and is useful for accessing the field via an interface.
 func (v *Package_insert_input) GetReleases() *Package_release_arr_rel_insert_input { return v.Releases }
@@ -488,7 +489,7 @@ type Package_maintainer_insert_input struct {
 	Id                  uuid.UUID                                        `json:"id"`
 	Name                string                                           `json:"name"`
 	Package_maintainers *Package_package_maintainer_arr_rel_insert_input `json:"package_maintainers,omitempty"`
-	Package_manager     string                                           `json:"package_manager"`
+	Package_manager     types.PackageManager                             `json:"package_manager"`
 	Published_releases  *Package_release_arr_rel_insert_input            `json:"published_releases,omitempty"`
 }
 
@@ -507,7 +508,9 @@ func (v *Package_maintainer_insert_input) GetPackage_maintainers() *Package_pack
 }
 
 // GetPackage_manager returns Package_maintainer_insert_input.Package_manager, and is useful for accessing the field via an interface.
-func (v *Package_maintainer_insert_input) GetPackage_manager() string { return v.Package_manager }
+func (v *Package_maintainer_insert_input) GetPackage_manager() types.PackageManager {
+	return v.Package_manager
+}
 
 // GetPublished_releases returns Package_maintainer_insert_input.Published_releases, and is useful for accessing the field via an interface.
 func (v *Package_maintainer_insert_input) GetPublished_releases() *Package_release_arr_rel_insert_input {
@@ -567,43 +570,43 @@ const (
 
 // Boolean expression to compare columns of type "package_manager". All fields are combined with logical 'AND'.
 type Package_manager_comparison_exp struct {
-	Eq      string   `json:"_eq"`
-	Gt      string   `json:"_gt"`
-	Gte     string   `json:"_gte"`
-	In      []string `json:"_in"`
-	Is_null bool     `json:"_is_null"`
-	Lt      string   `json:"_lt"`
-	Lte     string   `json:"_lte"`
-	Neq     string   `json:"_neq"`
-	Nin     []string `json:"_nin"`
+	Eq      types.PackageManager   `json:"_eq"`
+	Gt      types.PackageManager   `json:"_gt"`
+	Gte     types.PackageManager   `json:"_gte"`
+	In      []types.PackageManager `json:"_in"`
+	Is_null bool                   `json:"_is_null"`
+	Lt      types.PackageManager   `json:"_lt"`
+	Lte     types.PackageManager   `json:"_lte"`
+	Neq     types.PackageManager   `json:"_neq"`
+	Nin     []types.PackageManager `json:"_nin"`
 }
 
 // GetEq returns Package_manager_comparison_exp.Eq, and is useful for accessing the field via an interface.
-func (v *Package_manager_comparison_exp) GetEq() string { return v.Eq }
+func (v *Package_manager_comparison_exp) GetEq() types.PackageManager { return v.Eq }
 
 // GetGt returns Package_manager_comparison_exp.Gt, and is useful for accessing the field via an interface.
-func (v *Package_manager_comparison_exp) GetGt() string { return v.Gt }
+func (v *Package_manager_comparison_exp) GetGt() types.PackageManager { return v.Gt }
 
 // GetGte returns Package_manager_comparison_exp.Gte, and is useful for accessing the field via an interface.
-func (v *Package_manager_comparison_exp) GetGte() string { return v.Gte }
+func (v *Package_manager_comparison_exp) GetGte() types.PackageManager { return v.Gte }
 
 // GetIn returns Package_manager_comparison_exp.In, and is useful for accessing the field via an interface.
-func (v *Package_manager_comparison_exp) GetIn() []string { return v.In }
+func (v *Package_manager_comparison_exp) GetIn() []types.PackageManager { return v.In }
 
 // GetIs_null returns Package_manager_comparison_exp.Is_null, and is useful for accessing the field via an interface.
 func (v *Package_manager_comparison_exp) GetIs_null() bool { return v.Is_null }
 
 // GetLt returns Package_manager_comparison_exp.Lt, and is useful for accessing the field via an interface.
-func (v *Package_manager_comparison_exp) GetLt() string { return v.Lt }
+func (v *Package_manager_comparison_exp) GetLt() types.PackageManager { return v.Lt }
 
 // GetLte returns Package_manager_comparison_exp.Lte, and is useful for accessing the field via an interface.
-func (v *Package_manager_comparison_exp) GetLte() string { return v.Lte }
+func (v *Package_manager_comparison_exp) GetLte() types.PackageManager { return v.Lte }
 
 // GetNeq returns Package_manager_comparison_exp.Neq, and is useful for accessing the field via an interface.
-func (v *Package_manager_comparison_exp) GetNeq() string { return v.Neq }
+func (v *Package_manager_comparison_exp) GetNeq() types.PackageManager { return v.Neq }
 
 // GetNin returns Package_manager_comparison_exp.Nin, and is useful for accessing the field via an interface.
-func (v *Package_manager_comparison_exp) GetNin() []string { return v.Nin }
+func (v *Package_manager_comparison_exp) GetNin() []types.PackageManager { return v.Nin }
 
 // input type for inserting object relation for remote table "package.package"
 type Package_obj_rel_insert_input struct {
@@ -1232,7 +1235,7 @@ type Package_release_license_insert_input struct {
 	Release_id    uuid.UUID                             `json:"release_id"`
 	Scan_metadata json.RawMessage                       `json:"scan_metadata"`
 	Scan_time     time.Time                             `json:"scan_time"`
-	Source        string                                `json:"source"`
+	Source        types.LicenseSource                   `json:"source"`
 }
 
 // GetId returns Package_release_license_insert_input.Id, and is useful for accessing the field via an interface.
@@ -1258,7 +1261,7 @@ func (v *Package_release_license_insert_input) GetScan_metadata() json.RawMessag
 func (v *Package_release_license_insert_input) GetScan_time() time.Time { return v.Scan_time }
 
 // GetSource returns Package_release_license_insert_input.Source, and is useful for accessing the field via an interface.
-func (v *Package_release_license_insert_input) GetSource() string { return v.Source }
+func (v *Package_release_license_insert_input) GetSource() types.LicenseSource { return v.Source }
 
 // on_conflict condition type for table "package.release_license"
 type Package_release_license_on_conflict struct {
@@ -1374,44 +1377,6 @@ const (
 	// column name
 	Package_update_columnPackageManager Package_update_column = "package_manager"
 )
-
-// PresignSbomPresignSbomUploadSbomUploadUrlOutput includes the requested fields of the GraphQL type SbomUploadUrlOutput.
-type PresignSbomPresignSbomUploadSbomUploadUrlOutput struct {
-	UploadUrl *PresignSbomPresignSbomUploadSbomUploadUrlOutputUploadUrl `json:"uploadUrl"`
-	Error     bool                                                      `json:"error"`
-}
-
-// GetUploadUrl returns PresignSbomPresignSbomUploadSbomUploadUrlOutput.UploadUrl, and is useful for accessing the field via an interface.
-func (v *PresignSbomPresignSbomUploadSbomUploadUrlOutput) GetUploadUrl() *PresignSbomPresignSbomUploadSbomUploadUrlOutputUploadUrl {
-	return v.UploadUrl
-}
-
-// GetError returns PresignSbomPresignSbomUploadSbomUploadUrlOutput.Error, and is useful for accessing the field via an interface.
-func (v *PresignSbomPresignSbomUploadSbomUploadUrlOutput) GetError() bool { return v.Error }
-
-// PresignSbomPresignSbomUploadSbomUploadUrlOutputUploadUrl includes the requested fields of the GraphQL type UploadUrl.
-type PresignSbomPresignSbomUploadSbomUploadUrlOutputUploadUrl struct {
-	Url     string          `json:"url"`
-	Headers json.RawMessage `json:"headers"`
-}
-
-// GetUrl returns PresignSbomPresignSbomUploadSbomUploadUrlOutputUploadUrl.Url, and is useful for accessing the field via an interface.
-func (v *PresignSbomPresignSbomUploadSbomUploadUrlOutputUploadUrl) GetUrl() string { return v.Url }
-
-// GetHeaders returns PresignSbomPresignSbomUploadSbomUploadUrlOutputUploadUrl.Headers, and is useful for accessing the field via an interface.
-func (v *PresignSbomPresignSbomUploadSbomUploadUrlOutputUploadUrl) GetHeaders() json.RawMessage {
-	return v.Headers
-}
-
-// PresignSbomResponse is returned by PresignSbom on success.
-type PresignSbomResponse struct {
-	PresignSbomUpload *PresignSbomPresignSbomUploadSbomUploadUrlOutput `json:"presignSbomUpload"`
-}
-
-// GetPresignSbomUpload returns PresignSbomResponse.PresignSbomUpload, and is useful for accessing the field via an interface.
-func (v *PresignSbomResponse) GetPresignSbomUpload() *PresignSbomPresignSbomUploadSbomUploadUrlOutput {
-	return v.PresignSbomUpload
-}
 
 // SetBuildS3UrlResponse is returned by SetBuildS3Url on success.
 type SetBuildS3UrlResponse struct {
@@ -1739,18 +1704,6 @@ func (v *__InsertNewBuildQueryInput) GetGit_branch() string { return v.Git_branc
 // GetGit_hash returns __InsertNewBuildQueryInput.Git_hash, and is useful for accessing the field via an interface.
 func (v *__InsertNewBuildQueryInput) GetGit_hash() string { return v.Git_hash }
 
-// __PresignSbomInput is used internally by genqlient
-type __PresignSbomInput struct {
-	OrgId   uuid.UUID `json:"orgId"`
-	BuildId uuid.UUID `json:"buildId"`
-}
-
-// GetOrgId returns __PresignSbomInput.OrgId, and is useful for accessing the field via an interface.
-func (v *__PresignSbomInput) GetOrgId() uuid.UUID { return v.OrgId }
-
-// GetBuildId returns __PresignSbomInput.BuildId, and is useful for accessing the field via an interface.
-func (v *__PresignSbomInput) GetBuildId() uuid.UUID { return v.BuildId }
-
 // __SetBuildS3UrlInput is used internally by genqlient
 type __SetBuildS3UrlInput struct {
 	Id     uuid.UUID `json:"id"`
@@ -1855,39 +1808,6 @@ mutation InsertNewBuildQuery ($project_id: uuid, $s3_url: String, $git_remote: S
 	insert_builds_one(object: {project_id:$project_id,s3_url:$s3_url,git_remote:$git_remote,git_branch:$git_branch,git_hash:$git_hash}) {
 		id
 		agent_access_token
-	}
-}
-`,
-		&retval,
-		&__input,
-	)
-	return &retval, err
-}
-
-func PresignSbom(
-	ctx context.Context,
-	client graphql.Client,
-	orgId uuid.UUID,
-	buildId uuid.UUID,
-) (*PresignSbomResponse, error) {
-	__input := __PresignSbomInput{
-		OrgId:   orgId,
-		BuildId: buildId,
-	}
-	var err error
-
-	var retval PresignSbomResponse
-	err = client.MakeRequest(
-		ctx,
-		"PresignSbom",
-		`
-query PresignSbom ($orgId: uuid!, $buildId: uuid!) {
-	presignSbomUpload(orgId: $orgId, buildId: $buildId) {
-		uploadUrl {
-			url
-			headers
-		}
-		error
 	}
 }
 `,
