@@ -90,7 +90,7 @@ jobs:
             echo "# Generated files don't match" >> $GITHUB_STEP_SUMMARY
             echo "run yarn generate" >> $GITHUB_STEP_SUMMARY
             echo '```diff' >> $GITHUB_STEP_SUMMARY
-            echo "$DIFF" >> $GITHUB_STEP_SUMMARY
+            echo "$DIFF" | tee -a $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
             exit 1 
           fi
