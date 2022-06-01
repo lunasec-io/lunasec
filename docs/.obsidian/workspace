@@ -1,0 +1,96 @@
+{
+  "main": {
+    "id": "73f71a85348a767f",
+    "type": "split",
+    "children": [
+      {
+        "id": "c7382cc2fd234e07",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "blog/2021-12-01-csp.md",
+            "mode": "source",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "0209ec752beccc1f",
+    "type": "split",
+    "children": [
+      {
+        "id": "f874e5b3a226d8d3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "32161cf9bcc9809a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "8b79ba4738ce10a3",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "66c380ad4ce573f6",
+    "type": "split",
+    "children": [
+      {
+        "id": "0711b3a42c41e548",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6fe38e1f716077fa",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "blog/2021-12-01-csp.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "c7382cc2fd234e07",
+  "lastOpenFiles": [
+    "blog/2021-12-01-csp.md",
+    "blog/2021-10-18-announcing-lunasec.md",
+    "blog/2022-05-12-the-issue-with-vuln-scanners.md"
+  ]
+}
