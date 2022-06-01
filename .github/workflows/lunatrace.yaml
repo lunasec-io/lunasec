@@ -81,7 +81,7 @@ jobs:
           git status
           (cd lunatrace/bsl/backend && yarn generate)
           (cd lunatrace/bsl/frontend && yarn generate)
-          go generate ./... || true
+          go generate ./...
           git status
           
           DIFFOUT=`git diff  -p -- . ':(exclude)lunatrace/schema.graphql'`
