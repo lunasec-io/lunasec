@@ -17,7 +17,7 @@ package types
 type PackageManager string
 
 const (
-	NPM = "NPM"
+	NPM = "npm"
 )
 
 type LicenseSource int
