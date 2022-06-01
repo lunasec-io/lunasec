@@ -2,6 +2,8 @@ module github.com/lunasec-io/lunasec
 
 go 1.17
 
+replace github.com/Khan/genqlient => github.com/ajvpot/genqlient v0.4.1-0.20220515192018-d4ec64fef183
+
 require (
 	github.com/Joker/jade v1.1.3
 	github.com/Khan/genqlient v0.4.0
@@ -68,7 +70,7 @@ require (
 	github.com/ThalesIgnite/crypto11 v1.2.5 // indirect
 	github.com/acobaugh/osrelease v0.1.0 // indirect
 	github.com/acomagu/bufpipe v1.0.3 // indirect
-	github.com/agnivade/levenshtein v1.1.0 // indirect
+	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/alexflint/go-arg v1.4.2 // indirect
 	github.com/alexflint/go-scalar v1.0.0 // indirect
 	github.com/anchore/go-macholibre v0.0.0-20220308212642-53e6d0aaf6fb // indirect
@@ -233,7 +235,7 @@ require (
 	github.com/titanous/rocacheck v0.0.0-20171023193734-afe73141d399 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/vbatts/tar-split v0.11.2 // indirect
-	github.com/vektah/gqlparser/v2 v2.3.1 // indirect
+	github.com/vektah/gqlparser/v2 v2.4.1 // indirect
 	github.com/vifraa/gopom v0.1.0 // indirect
 	github.com/wagoodman/go-partybus v0.0.0-20210627031916-db1f5573bbc5 // indirect
 	github.com/wagoodman/go-progress v0.0.0-20200807221327-51d465df1451 // indirect

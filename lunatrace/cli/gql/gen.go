@@ -114,24 +114,24 @@ func (v *Jsonb_cast_exp) GetString() *String_comparison_exp { return v.String }
 type Jsonb_comparison_exp struct {
 	Cast *Jsonb_cast_exp `json:"_cast,omitempty"`
 	// is the column contained in the given json value
-	Contained_in json.RawMessage `json:"_contained_in"`
+	Contained_in json.RawMessage `json:"_contained_in,omitempty"`
 	// does the column contain the given json value at the top level
-	Contains json.RawMessage `json:"_contains"`
-	Eq       json.RawMessage `json:"_eq"`
-	Gt       json.RawMessage `json:"_gt"`
-	Gte      json.RawMessage `json:"_gte"`
+	Contains json.RawMessage `json:"_contains,omitempty"`
+	Eq       json.RawMessage `json:"_eq,omitempty"`
+	Gt       json.RawMessage `json:"_gt,omitempty"`
+	Gte      json.RawMessage `json:"_gte,omitempty"`
 	// does the string exist as a top-level key in the column
-	Has_key string `json:"_has_key"`
+	Has_key string `json:"_has_key,omitempty"`
 	// do all of these strings exist as top-level keys in the column
-	Has_keys_all []string `json:"_has_keys_all"`
+	Has_keys_all []string `json:"_has_keys_all,omitempty"`
 	// do any of these strings exist as top-level keys in the column
-	Has_keys_any []string          `json:"_has_keys_any"`
-	In           []json.RawMessage `json:"_in"`
-	Is_null      bool              `json:"_is_null"`
-	Lt           json.RawMessage   `json:"_lt"`
-	Lte          json.RawMessage   `json:"_lte"`
-	Neq          json.RawMessage   `json:"_neq"`
-	Nin          []json.RawMessage `json:"_nin"`
+	Has_keys_any []string          `json:"_has_keys_any,omitempty"`
+	In           []json.RawMessage `json:"_in,omitempty"`
+	Is_null      bool              `json:"_is_null,omitempty"`
+	Lt           json.RawMessage   `json:"_lt,omitempty"`
+	Lte          json.RawMessage   `json:"_lte,omitempty"`
+	Neq          json.RawMessage   `json:"_neq,omitempty"`
+	Nin          []json.RawMessage `json:"_nin,omitempty"`
 }
 
 // GetCast returns Jsonb_comparison_exp.Cast, and is useful for accessing the field via an interface.
@@ -181,15 +181,15 @@ func (v *Jsonb_comparison_exp) GetNin() []json.RawMessage { return v.Nin }
 
 // Boolean expression to compare columns of type "license_source". All fields are combined with logical 'AND'.
 type License_source_comparison_exp struct {
-	Eq      types.LicenseSource   `json:"_eq"`
-	Gt      types.LicenseSource   `json:"_gt"`
-	Gte     types.LicenseSource   `json:"_gte"`
-	In      []types.LicenseSource `json:"_in"`
-	Is_null bool                  `json:"_is_null"`
-	Lt      types.LicenseSource   `json:"_lt"`
-	Lte     types.LicenseSource   `json:"_lte"`
-	Neq     types.LicenseSource   `json:"_neq"`
-	Nin     []types.LicenseSource `json:"_nin"`
+	Eq      types.LicenseSource   `json:"_eq,omitempty"`
+	Gt      types.LicenseSource   `json:"_gt,omitempty"`
+	Gte     types.LicenseSource   `json:"_gte,omitempty"`
+	In      []types.LicenseSource `json:"_in,omitempty"`
+	Is_null bool                  `json:"_is_null,omitempty"`
+	Lt      types.LicenseSource   `json:"_lt,omitempty"`
+	Lte     types.LicenseSource   `json:"_lte,omitempty"`
+	Neq     types.LicenseSource   `json:"_neq,omitempty"`
+	Nin     []types.LicenseSource `json:"_nin,omitempty"`
 }
 
 // GetEq returns License_source_comparison_exp.Eq, and is useful for accessing the field via an interface.
@@ -279,12 +279,12 @@ const (
 
 // input type for inserting data into table "package.package"
 type Package_insert_input struct {
-	Custom_registry     string                                           `json:"custom_registry"`
-	Description         string                                           `json:"description"`
-	Id                  types.UUID                                       `json:"id"`
-	Name                string                                           `json:"name"`
+	Custom_registry     string                                           `json:"custom_registry,omitempty"`
+	Description         string                                           `json:"description,omitempty"`
+	Id                  types.UUID                                       `json:"id,omitempty"`
+	Name                string                                           `json:"name,omitempty"`
 	Package_maintainers *Package_package_maintainer_arr_rel_insert_input `json:"package_maintainers,omitempty"`
-	Package_manager     types.PackageManager                             `json:"package_manager"`
+	Package_manager     types.PackageManager                             `json:"package_manager,omitempty"`
 	Releases            *Package_release_arr_rel_insert_input            `json:"releases,omitempty"`
 }
 
@@ -353,8 +353,8 @@ const (
 
 // input type for inserting data into table "package.license"
 type Package_license_insert_input struct {
-	Id               types.UUID                                    `json:"id"`
-	Name             string                                        `json:"name"`
+	Id               types.UUID                                    `json:"id,omitempty"`
+	Name             string                                        `json:"name,omitempty"`
 	Release_licenses *Package_release_license_arr_rel_insert_input `json:"release_licenses,omitempty"`
 }
 
@@ -386,8 +386,8 @@ func (v *Package_license_obj_rel_insert_input) GetOn_conflict() *Package_license
 
 // on_conflict condition type for table "package.license"
 type Package_license_on_conflict struct {
-	Constraint     Package_license_constraint      `json:"constraint"`
-	Update_columns []Package_license_update_column `json:"update_columns"`
+	Constraint     Package_license_constraint      `json:"constraint,omitempty"`
+	Update_columns []Package_license_update_column `json:"update_columns,omitempty"`
 	Where          *Package_license_bool_exp       `json:"where,omitempty"`
 }
 
@@ -470,11 +470,11 @@ const (
 
 // input type for inserting data into table "package.maintainer"
 type Package_maintainer_insert_input struct {
-	Email               string                                           `json:"email"`
-	Id                  types.UUID                                       `json:"id"`
-	Name                string                                           `json:"name"`
+	Email               string                                           `json:"email,omitempty"`
+	Id                  types.UUID                                       `json:"id,omitempty"`
+	Name                string                                           `json:"name,omitempty"`
 	Package_maintainers *Package_package_maintainer_arr_rel_insert_input `json:"package_maintainers,omitempty"`
-	Package_manager     types.PackageManager                             `json:"package_manager"`
+	Package_manager     types.PackageManager                             `json:"package_manager,omitempty"`
 	Published_releases  *Package_release_arr_rel_insert_input            `json:"published_releases,omitempty"`
 }
 
@@ -521,8 +521,8 @@ func (v *Package_maintainer_obj_rel_insert_input) GetOn_conflict() *Package_main
 
 // on_conflict condition type for table "package.maintainer"
 type Package_maintainer_on_conflict struct {
-	Constraint     Package_maintainer_constraint      `json:"constraint"`
-	Update_columns []Package_maintainer_update_column `json:"update_columns"`
+	Constraint     Package_maintainer_constraint      `json:"constraint,omitempty"`
+	Update_columns []Package_maintainer_update_column `json:"update_columns,omitempty"`
 	Where          *Package_maintainer_bool_exp       `json:"where,omitempty"`
 }
 
@@ -555,15 +555,15 @@ const (
 
 // Boolean expression to compare columns of type "package_manager". All fields are combined with logical 'AND'.
 type Package_manager_comparison_exp struct {
-	Eq      types.PackageManager   `json:"_eq"`
-	Gt      types.PackageManager   `json:"_gt"`
-	Gte     types.PackageManager   `json:"_gte"`
-	In      []types.PackageManager `json:"_in"`
-	Is_null bool                   `json:"_is_null"`
-	Lt      types.PackageManager   `json:"_lt"`
-	Lte     types.PackageManager   `json:"_lte"`
-	Neq     types.PackageManager   `json:"_neq"`
-	Nin     []types.PackageManager `json:"_nin"`
+	Eq      types.PackageManager   `json:"_eq,omitempty"`
+	Gt      types.PackageManager   `json:"_gt,omitempty"`
+	Gte     types.PackageManager   `json:"_gte,omitempty"`
+	In      []types.PackageManager `json:"_in,omitempty"`
+	Is_null bool                   `json:"_is_null,omitempty"`
+	Lt      types.PackageManager   `json:"_lt,omitempty"`
+	Lte     types.PackageManager   `json:"_lte,omitempty"`
+	Neq     types.PackageManager   `json:"_neq,omitempty"`
+	Nin     []types.PackageManager `json:"_nin,omitempty"`
 }
 
 // GetEq returns Package_manager_comparison_exp.Eq, and is useful for accessing the field via an interface.
@@ -608,8 +608,8 @@ func (v *Package_obj_rel_insert_input) GetOn_conflict() *Package_on_conflict { r
 
 // on_conflict condition type for table "package.package"
 type Package_on_conflict struct {
-	Constraint     Package_constraint      `json:"constraint"`
-	Update_columns []Package_update_column `json:"update_columns"`
+	Constraint     Package_constraint      `json:"constraint,omitempty"`
+	Update_columns []Package_update_column `json:"update_columns,omitempty"`
 	Where          *Package_bool_exp       `json:"where,omitempty"`
 }
 
@@ -694,9 +694,9 @@ const (
 // input type for inserting data into table "package.package_maintainer"
 type Package_package_maintainer_insert_input struct {
 	Maintainer    *Package_maintainer_obj_rel_insert_input `json:"maintainer,omitempty"`
-	Maintainer_id types.UUID                               `json:"maintainer_id"`
+	Maintainer_id types.UUID                               `json:"maintainer_id,omitempty"`
 	Package       *Package_obj_rel_insert_input            `json:"package,omitempty"`
-	Package_id    types.UUID                               `json:"package_id"`
+	Package_id    types.UUID                               `json:"package_id,omitempty"`
 }
 
 // GetMaintainer returns Package_package_maintainer_insert_input.Maintainer, and is useful for accessing the field via an interface.
@@ -719,8 +719,8 @@ func (v *Package_package_maintainer_insert_input) GetPackage_id() types.UUID { r
 
 // on_conflict condition type for table "package.package_maintainer"
 type Package_package_maintainer_on_conflict struct {
-	Constraint     Package_package_maintainer_constraint      `json:"constraint"`
-	Update_columns []Package_package_maintainer_update_column `json:"update_columns"`
+	Constraint     Package_package_maintainer_constraint      `json:"constraint,omitempty"`
+	Update_columns []Package_package_maintainer_update_column `json:"update_columns,omitempty"`
 	Where          *Package_package_maintainer_bool_exp       `json:"where,omitempty"`
 }
 
@@ -974,14 +974,14 @@ const (
 // input type for inserting data into table "package.release_dependency"
 type Package_release_dependency_insert_input struct {
 	Dependency_package    *Package_obj_rel_insert_input         `json:"dependency_package,omitempty"`
-	Dependency_package_id types.UUID                            `json:"dependency_package_id"`
+	Dependency_package_id types.UUID                            `json:"dependency_package_id,omitempty"`
 	Dependency_release    *Package_release_obj_rel_insert_input `json:"dependency_release,omitempty"`
-	Dependency_release_id types.UUID                            `json:"dependency_release_id"`
-	Id                    types.UUID                            `json:"id"`
-	Package_name          string                                `json:"package_name"`
-	Package_version_query string                                `json:"package_version_query"`
+	Dependency_release_id types.UUID                            `json:"dependency_release_id,omitempty"`
+	Id                    types.UUID                            `json:"id,omitempty"`
+	Package_name          string                                `json:"package_name,omitempty"`
+	Package_version_query string                                `json:"package_version_query,omitempty"`
 	Release               *Package_release_obj_rel_insert_input `json:"release,omitempty"`
-	Release_id            types.UUID                            `json:"release_id"`
+	Release_id            types.UUID                            `json:"release_id,omitempty"`
 }
 
 // GetDependency_package returns Package_release_dependency_insert_input.Dependency_package, and is useful for accessing the field via an interface.
@@ -1025,8 +1025,8 @@ func (v *Package_release_dependency_insert_input) GetRelease_id() types.UUID { r
 
 // on_conflict condition type for table "package.release_dependency"
 type Package_release_dependency_on_conflict struct {
-	Constraint     Package_release_dependency_constraint      `json:"constraint"`
-	Update_columns []Package_release_dependency_update_column `json:"update_columns"`
+	Constraint     Package_release_dependency_constraint      `json:"constraint,omitempty"`
+	Update_columns []Package_release_dependency_update_column `json:"update_columns,omitempty"`
 	Where          *Package_release_dependency_bool_exp       `json:"where,omitempty"`
 }
 
@@ -1065,21 +1065,21 @@ const (
 
 // input type for inserting data into table "package.release"
 type Package_release_insert_input struct {
-	Blob_hash                string                                           `json:"blob_hash"`
-	Id                       types.UUID                                       `json:"id"`
-	Mirrored_blob_url        string                                           `json:"mirrored_blob_url"`
-	Observed_time            time.Time                                        `json:"observed_time"`
+	Blob_hash                string                                           `json:"blob_hash,omitempty"`
+	Id                       types.UUID                                       `json:"id,omitempty"`
+	Mirrored_blob_url        string                                           `json:"mirrored_blob_url,omitempty"`
+	Observed_time            time.Time                                        `json:"observed_time,omitempty"`
 	Package                  *Package_obj_rel_insert_input                    `json:"package,omitempty"`
-	Package_id               types.UUID                                       `json:"package_id"`
+	Package_id               types.UUID                                       `json:"package_id,omitempty"`
 	Publishing_maintainer    *Package_maintainer_obj_rel_insert_input         `json:"publishing_maintainer,omitempty"`
-	Publishing_maintainer_id types.UUID                                       `json:"publishing_maintainer_id"`
+	Publishing_maintainer_id types.UUID                                       `json:"publishing_maintainer_id,omitempty"`
 	Release_dependencies     *Package_release_dependency_arr_rel_insert_input `json:"release_dependencies,omitempty"`
 	Release_dependents       *Package_release_dependency_arr_rel_insert_input `json:"release_dependents,omitempty"`
 	Release_licenses         *Package_release_license_arr_rel_insert_input    `json:"release_licenses,omitempty"`
-	Release_time             time.Time                                        `json:"release_time"`
-	Upstream_blob_url        string                                           `json:"upstream_blob_url"`
-	Upstream_data            json.RawMessage                                  `json:"upstream_data"`
-	Version                  string                                           `json:"version"`
+	Release_time             time.Time                                        `json:"release_time,omitempty"`
+	Upstream_blob_url        string                                           `json:"upstream_blob_url,omitempty"`
+	Upstream_data            json.RawMessage                                  `json:"upstream_data,omitempty"`
+	Version                  string                                           `json:"version,omitempty"`
 }
 
 // GetBlob_hash returns Package_release_insert_input.Blob_hash, and is useful for accessing the field via an interface.
@@ -1214,13 +1214,13 @@ const (
 
 // input type for inserting data into table "package.release_license"
 type Package_release_license_insert_input struct {
-	Id            types.UUID                            `json:"id"`
+	Id            types.UUID                            `json:"id,omitempty"`
 	License       *Package_license_obj_rel_insert_input `json:"license,omitempty"`
-	License_id    types.UUID                            `json:"license_id"`
-	Release_id    types.UUID                            `json:"release_id"`
-	Scan_metadata json.RawMessage                       `json:"scan_metadata"`
-	Scan_time     time.Time                             `json:"scan_time"`
-	Source        types.LicenseSource                   `json:"source"`
+	License_id    types.UUID                            `json:"license_id,omitempty"`
+	Release_id    types.UUID                            `json:"release_id,omitempty"`
+	Scan_metadata json.RawMessage                       `json:"scan_metadata,omitempty"`
+	Scan_time     time.Time                             `json:"scan_time,omitempty"`
+	Source        types.LicenseSource                   `json:"source,omitempty"`
 }
 
 // GetId returns Package_release_license_insert_input.Id, and is useful for accessing the field via an interface.
@@ -1250,8 +1250,8 @@ func (v *Package_release_license_insert_input) GetSource() types.LicenseSource {
 
 // on_conflict condition type for table "package.release_license"
 type Package_release_license_on_conflict struct {
-	Constraint     Package_release_license_constraint      `json:"constraint"`
-	Update_columns []Package_release_license_update_column `json:"update_columns"`
+	Constraint     Package_release_license_constraint      `json:"constraint,omitempty"`
+	Update_columns []Package_release_license_update_column `json:"update_columns,omitempty"`
 	Where          *Package_release_license_bool_exp       `json:"where,omitempty"`
 }
 
@@ -1305,8 +1305,8 @@ func (v *Package_release_obj_rel_insert_input) GetOn_conflict() *Package_release
 
 // on_conflict condition type for table "package.release"
 type Package_release_on_conflict struct {
-	Constraint     Package_release_constraint      `json:"constraint"`
-	Update_columns []Package_release_update_column `json:"update_columns"`
+	Constraint     Package_release_constraint      `json:"constraint,omitempty"`
+	Update_columns []Package_release_update_column `json:"update_columns,omitempty"`
 	Where          *Package_release_bool_exp       `json:"where,omitempty"`
 }
 
@@ -1387,35 +1387,35 @@ func (v *SetBuildS3UrlUpdate_builds_by_pkBuilds) GetId() types.UUID { return v.I
 
 // Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
 type String_comparison_exp struct {
-	Eq  string `json:"_eq"`
-	Gt  string `json:"_gt"`
-	Gte string `json:"_gte"`
+	Eq  string `json:"_eq,omitempty"`
+	Gt  string `json:"_gt,omitempty"`
+	Gte string `json:"_gte,omitempty"`
 	// does the column match the given case-insensitive pattern
-	Ilike string   `json:"_ilike"`
-	In    []string `json:"_in"`
+	Ilike string   `json:"_ilike,omitempty"`
+	In    []string `json:"_in,omitempty"`
 	// does the column match the given POSIX regular expression, case insensitive
-	Iregex  string `json:"_iregex"`
-	Is_null bool   `json:"_is_null"`
+	Iregex  string `json:"_iregex,omitempty"`
+	Is_null bool   `json:"_is_null,omitempty"`
 	// does the column match the given pattern
-	Like string `json:"_like"`
-	Lt   string `json:"_lt"`
-	Lte  string `json:"_lte"`
-	Neq  string `json:"_neq"`
+	Like string `json:"_like,omitempty"`
+	Lt   string `json:"_lt,omitempty"`
+	Lte  string `json:"_lte,omitempty"`
+	Neq  string `json:"_neq,omitempty"`
 	// does the column NOT match the given case-insensitive pattern
-	Nilike string   `json:"_nilike"`
-	Nin    []string `json:"_nin"`
+	Nilike string   `json:"_nilike,omitempty"`
+	Nin    []string `json:"_nin,omitempty"`
 	// does the column NOT match the given POSIX regular expression, case insensitive
-	Niregex string `json:"_niregex"`
+	Niregex string `json:"_niregex,omitempty"`
 	// does the column NOT match the given pattern
-	Nlike string `json:"_nlike"`
+	Nlike string `json:"_nlike,omitempty"`
 	// does the column NOT match the given POSIX regular expression, case sensitive
-	Nregex string `json:"_nregex"`
+	Nregex string `json:"_nregex,omitempty"`
 	// does the column NOT match the given SQL regular expression
-	Nsimilar string `json:"_nsimilar"`
+	Nsimilar string `json:"_nsimilar,omitempty"`
 	// does the column match the given POSIX regular expression, case sensitive
-	Regex string `json:"_regex"`
+	Regex string `json:"_regex,omitempty"`
 	// does the column match the given SQL regular expression
-	Similar string `json:"_similar"`
+	Similar string `json:"_similar,omitempty"`
 }
 
 // GetEq returns String_comparison_exp.Eq, and is useful for accessing the field via an interface.
@@ -1477,15 +1477,15 @@ func (v *String_comparison_exp) GetSimilar() string { return v.Similar }
 
 // Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'.
 type Timestamptz_comparison_exp struct {
-	Eq      time.Time   `json:"_eq"`
-	Gt      time.Time   `json:"_gt"`
-	Gte     time.Time   `json:"_gte"`
-	In      []time.Time `json:"_in"`
-	Is_null bool        `json:"_is_null"`
-	Lt      time.Time   `json:"_lt"`
-	Lte     time.Time   `json:"_lte"`
-	Neq     time.Time   `json:"_neq"`
-	Nin     []time.Time `json:"_nin"`
+	Eq      time.Time   `json:"_eq,omitempty"`
+	Gt      time.Time   `json:"_gt,omitempty"`
+	Gte     time.Time   `json:"_gte,omitempty"`
+	In      []time.Time `json:"_in,omitempty"`
+	Is_null bool        `json:"_is_null,omitempty"`
+	Lt      time.Time   `json:"_lt,omitempty"`
+	Lte     time.Time   `json:"_lte,omitempty"`
+	Neq     time.Time   `json:"_neq,omitempty"`
+	Nin     []time.Time `json:"_nin,omitempty"`
 }
 
 // GetEq returns Timestamptz_comparison_exp.Eq, and is useful for accessing the field via an interface.
@@ -1619,15 +1619,15 @@ func (v *UpsertPackageResponse) GetInsert_package_one() *UpsertPackageInsert_pac
 
 // Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
 type Uuid_comparison_exp struct {
-	Eq      types.UUID   `json:"_eq"`
-	Gt      types.UUID   `json:"_gt"`
-	Gte     types.UUID   `json:"_gte"`
-	In      []types.UUID `json:"_in"`
-	Is_null bool         `json:"_is_null"`
-	Lt      types.UUID   `json:"_lt"`
-	Lte     types.UUID   `json:"_lte"`
-	Neq     types.UUID   `json:"_neq"`
-	Nin     []types.UUID `json:"_nin"`
+	Eq      types.UUID   `json:"_eq,omitempty"`
+	Gt      types.UUID   `json:"_gt,omitempty"`
+	Gte     types.UUID   `json:"_gte,omitempty"`
+	In      []types.UUID `json:"_in,omitempty"`
+	Is_null bool         `json:"_is_null,omitempty"`
+	Lt      types.UUID   `json:"_lt,omitempty"`
+	Lte     types.UUID   `json:"_lte,omitempty"`
+	Neq     types.UUID   `json:"_neq,omitempty"`
+	Nin     []types.UUID `json:"_nin,omitempty"`
 }
 
 // GetEq returns Uuid_comparison_exp.Eq, and is useful for accessing the field via an interface.
@@ -1659,7 +1659,7 @@ func (v *Uuid_comparison_exp) GetNin() []types.UUID { return v.Nin }
 
 // __DeleteBuildInput is used internally by genqlient
 type __DeleteBuildInput struct {
-	Id types.UUID `json:"id"`
+	Id types.UUID `json:"id,omitempty"`
 }
 
 // GetId returns __DeleteBuildInput.Id, and is useful for accessing the field via an interface.
@@ -1667,11 +1667,11 @@ func (v *__DeleteBuildInput) GetId() types.UUID { return v.Id }
 
 // __InsertNewBuildQueryInput is used internally by genqlient
 type __InsertNewBuildQueryInput struct {
-	Project_id types.UUID `json:"project_id"`
-	S3_url     string     `json:"s3_url"`
-	Git_remote string     `json:"git_remote"`
-	Git_branch string     `json:"git_branch"`
-	Git_hash   string     `json:"git_hash"`
+	Project_id types.UUID `json:"project_id,omitempty"`
+	S3_url     string     `json:"s3_url,omitempty"`
+	Git_remote string     `json:"git_remote,omitempty"`
+	Git_branch string     `json:"git_branch,omitempty"`
+	Git_hash   string     `json:"git_hash,omitempty"`
 }
 
 // GetProject_id returns __InsertNewBuildQueryInput.Project_id, and is useful for accessing the field via an interface.
@@ -1691,8 +1691,8 @@ func (v *__InsertNewBuildQueryInput) GetGit_hash() string { return v.Git_hash }
 
 // __SetBuildS3UrlInput is used internally by genqlient
 type __SetBuildS3UrlInput struct {
-	Id     types.UUID `json:"id"`
-	S3_url string     `json:"s3_url"`
+	Id     types.UUID `json:"id,omitempty"`
+	S3_url string     `json:"s3_url,omitempty"`
 }
 
 // GetId returns __SetBuildS3UrlInput.Id, and is useful for accessing the field via an interface.
@@ -1718,39 +1718,40 @@ func DeleteBuild(
 	client graphql.Client,
 	id types.UUID,
 ) (*DeleteBuildResponse, error) {
-	__input := __DeleteBuildInput{
-		Id: id,
-	}
-	var err error
-
-	var retval DeleteBuildResponse
-	err = client.MakeRequest(
-		ctx,
-		"DeleteBuild",
-		`
+	req := &graphql.Request{
+		OpName: "DeleteBuild",
+		Query: `
 mutation DeleteBuild ($id: uuid!) {
 	delete_builds_by_pk(id: $id) {
 		id
 	}
 }
 `,
-		&retval,
-		&__input,
+		Variables: &__DeleteBuildInput{
+			Id: id,
+		},
+	}
+	var err error
+
+	var data DeleteBuildResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
 	)
-	return &retval, err
+
+	return &data, err
 }
 
 func GetProjectInfoQuery(
 	ctx context.Context,
 	client graphql.Client,
 ) (*GetProjectInfoQueryResponse, error) {
-	var err error
-
-	var retval GetProjectInfoQueryResponse
-	err = client.MakeRequest(
-		ctx,
-		"GetProjectInfoQuery",
-		`
+	req := &graphql.Request{
+		OpName: "GetProjectInfoQuery",
+		Query: `
 query GetProjectInfoQuery {
 	project_access_tokens {
 		project {
@@ -1760,10 +1761,19 @@ query GetProjectInfoQuery {
 	}
 }
 `,
-		&retval,
-		nil,
+	}
+	var err error
+
+	var data GetProjectInfoQueryResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
 	)
-	return &retval, err
+
+	return &data, err
 }
 
 func InsertNewBuildQuery(
@@ -1775,20 +1785,9 @@ func InsertNewBuildQuery(
 	git_branch string,
 	git_hash string,
 ) (*InsertNewBuildQueryResponse, error) {
-	__input := __InsertNewBuildQueryInput{
-		Project_id: project_id,
-		S3_url:     s3_url,
-		Git_remote: git_remote,
-		Git_branch: git_branch,
-		Git_hash:   git_hash,
-	}
-	var err error
-
-	var retval InsertNewBuildQueryResponse
-	err = client.MakeRequest(
-		ctx,
-		"InsertNewBuildQuery",
-		`
+	req := &graphql.Request{
+		OpName: "InsertNewBuildQuery",
+		Query: `
 mutation InsertNewBuildQuery ($project_id: uuid, $s3_url: String, $git_remote: String, $git_branch: String, $git_hash: String) {
 	insert_builds_one(object: {project_id:$project_id,s3_url:$s3_url,git_remote:$git_remote,git_branch:$git_branch,git_hash:$git_hash}) {
 		id
@@ -1796,10 +1795,26 @@ mutation InsertNewBuildQuery ($project_id: uuid, $s3_url: String, $git_remote: S
 	}
 }
 `,
-		&retval,
-		&__input,
+		Variables: &__InsertNewBuildQueryInput{
+			Project_id: project_id,
+			S3_url:     s3_url,
+			Git_remote: git_remote,
+			Git_branch: git_branch,
+			Git_hash:   git_hash,
+		},
+	}
+	var err error
+
+	var data InsertNewBuildQueryResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
 	)
-	return &retval, err
+
+	return &data, err
 }
 
 func SetBuildS3Url(
@@ -1808,27 +1823,32 @@ func SetBuildS3Url(
 	id types.UUID,
 	s3_url string,
 ) (*SetBuildS3UrlResponse, error) {
-	__input := __SetBuildS3UrlInput{
-		Id:     id,
-		S3_url: s3_url,
-	}
-	var err error
-
-	var retval SetBuildS3UrlResponse
-	err = client.MakeRequest(
-		ctx,
-		"SetBuildS3Url",
-		`
+	req := &graphql.Request{
+		OpName: "SetBuildS3Url",
+		Query: `
 mutation SetBuildS3Url ($id: uuid!, $s3_url: String!) {
 	update_builds_by_pk(pk_columns: {id:$id}, _set: {s3_url:$s3_url}) {
 		id
 	}
 }
 `,
-		&retval,
-		&__input,
+		Variables: &__SetBuildS3UrlInput{
+			Id:     id,
+			S3_url: s3_url,
+		},
+	}
+	var err error
+
+	var data SetBuildS3UrlResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
 	)
-	return &retval, err
+
+	return &data, err
 }
 
 func UpsertPackage(
@@ -1837,17 +1857,9 @@ func UpsertPackage(
 	object *Package_insert_input,
 	on_conflict *Package_on_conflict,
 ) (*UpsertPackageResponse, error) {
-	__input := __UpsertPackageInput{
-		Object:      object,
-		On_conflict: on_conflict,
-	}
-	var err error
-
-	var retval UpsertPackageResponse
-	err = client.MakeRequest(
-		ctx,
-		"UpsertPackage",
-		`
+	req := &graphql.Request{
+		OpName: "UpsertPackage",
+		Query: `
 mutation UpsertPackage ($object: package_insert_input!, $on_conflict: package_on_conflict!) {
 	insert_package_one(object: $object, on_conflict: $on_conflict) {
 		id
@@ -1866,8 +1878,21 @@ mutation UpsertPackage ($object: package_insert_input!, $on_conflict: package_on
 	}
 }
 `,
-		&retval,
-		&__input,
+		Variables: &__UpsertPackageInput{
+			Object:      object,
+			On_conflict: on_conflict,
+		},
+	}
+	var err error
+
+	var data UpsertPackageResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
 	)
-	return &retval, err
+
+	return &data, err
 }
