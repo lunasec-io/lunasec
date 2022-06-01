@@ -24019,7 +24019,7 @@ export type GetMembersForOrganizationQueryVariables = Exact<{
 }>;
 
 
-export type GetMembersForOrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', id: string, login: string, teams: { __typename?: 'TeamConnection', nodes?: Array<{ __typename?: 'Team', members: { __typename?: 'TeamMemberConnection', nodes?: Array<{ __typename?: 'User', name?: string | null, id: string } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, startCursor?: string | null } } } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, startCursor?: string | null } }, membersWithRole: { __typename?: 'OrganizationMemberConnection', nodes?: Array<{ __typename?: 'User', name?: string | null, id: string } | null> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null, startCursor?: string | null } } } | null };
+export type GetMembersForOrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', id: string, login: string, teams: { __typename?: 'TeamConnection', nodes?: Array<{ __typename?: 'Team', members: { __typename?: 'TeamMemberConnection', nodes?: Array<{ __typename?: 'User', name?: string | null, databaseId?: number | null, id: string } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, startCursor?: string | null } } } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, startCursor?: string | null } }, membersWithRole: { __typename?: 'OrganizationMemberConnection', nodes?: Array<{ __typename?: 'User', name?: string | null, databaseId?: number | null, id: string } | null> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null, startCursor?: string | null } } } | null };
 
 export type GetRepositoryQueryVariables = Exact<{
   name: Scalars['String'];
@@ -24039,7 +24039,7 @@ export type GetUserOrganizationsQuery = { __typename?: 'Query', viewer: { __type
 export type GetViewerIdQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetViewerIdQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string } };
+export type GetViewerIdQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, databaseId?: number | null } };
 
 export type SubmitPrReviewMutationVariables = Exact<{
   pull_request_id: Scalars['ID'];
@@ -24085,6 +24085,7 @@ export const GetMembersForOrganizationDocument = gql`
         members(first: 100, after: $after) {
           nodes {
             name
+            databaseId
             id
           }
           pageInfo {
@@ -24103,6 +24104,7 @@ export const GetMembersForOrganizationDocument = gql`
     membersWithRole(first: 100, after: $after) {
       nodes {
         name
+        databaseId
         id
       }
       pageInfo {
@@ -24147,6 +24149,7 @@ export const GetViewerIdDocument = gql`
     query GetViewerId {
   viewer {
     id
+    databaseId
   }
 }
     `;
