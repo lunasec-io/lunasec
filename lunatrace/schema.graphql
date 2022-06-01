@@ -1093,9 +1093,11 @@ input fix_state_enum_comparison_exp {
 """Metadata about a github repository and where to find it."""
 type github_repositories {
   authenticated_clone_url: AuthenticatedRepoCloneUrlOutput
+  default_branch: String
   git_url: String!
   github_id: Int
   github_node_id: String
+  id: uuid!
 
   """An object relationship"""
   project: projects!
@@ -1152,9 +1154,11 @@ input github_repositories_bool_exp {
   _and: [github_repositories_bool_exp!]
   _not: github_repositories_bool_exp
   _or: [github_repositories_bool_exp!]
+  default_branch: String_comparison_exp
   git_url: String_comparison_exp
   github_id: Int_comparison_exp
   github_node_id: String_comparison_exp
+  id: uuid_comparison_exp
   project: projects_bool_exp
   project_id: uuid_comparison_exp
   traits: jsonb_comparison_exp
@@ -1219,9 +1223,11 @@ input github_repositories_insert_input {
 order by max() on columns of table "github_repositories"
 """
 input github_repositories_max_order_by {
+  default_branch: order_by
   git_url: order_by
   github_id: order_by
   github_node_id: order_by
+  id: order_by
   project_id: order_by
 }
 
@@ -1229,9 +1235,11 @@ input github_repositories_max_order_by {
 order by min() on columns of table "github_repositories"
 """
 input github_repositories_min_order_by {
+  default_branch: order_by
   git_url: order_by
   github_id: order_by
   github_node_id: order_by
+  id: order_by
   project_id: order_by
 }
 
@@ -1267,12 +1275,19 @@ input github_repositories_on_conflict {
 
 """Ordering options when selecting data from "github_repositories"."""
 input github_repositories_order_by {
+  default_branch: order_by
   git_url: order_by
   github_id: order_by
   github_node_id: order_by
+  id: order_by
   project: projects_order_by
   project_id: order_by
   traits: order_by
+}
+
+"""primary key columns input for table: github_repositories"""
+input github_repositories_pk_columns_input {
+  id: uuid!
 }
 
 """prepend existing jsonb value of filtered columns with new jsonb value"""
@@ -1285,6 +1300,9 @@ select columns of table "github_repositories"
 """
 enum github_repositories_select_column {
   """column name"""
+  default_branch
+
+  """column name"""
   git_url
 
   """column name"""
@@ -1292,6 +1310,9 @@ enum github_repositories_select_column {
 
   """column name"""
   github_node_id
+
+  """column name"""
+  id
 
   """column name"""
   project_id
@@ -3122,6 +3143,39 @@ type mutation_root {
     """filter the rows which have to be updated"""
     where: github_repositories_bool_exp!
   ): github_repositories_mutation_response
+
+  """
+  update single row of the table: "github_repositories"
+  """
+  update_github_repositories_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: github_repositories_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: github_repositories_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: github_repositories_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: github_repositories_delete_key_input
+
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: github_repositories_inc_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: github_repositories_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: github_repositories_set_input
+    pk_columns: github_repositories_pk_columns_input!
+  ): github_repositories
 
   """
   update data of the table: "guide_related_guides"
@@ -6418,6 +6472,11 @@ type query_root {
   ): [github_repositories!]!
 
   """
+  fetch data from the table: "github_repositories" using primary key columns
+  """
+  github_repositories_by_pk(id: uuid!): github_repositories
+
+  """
   fetch data from the table: "guide_related_guides"
   """
   guide_related_guides(
@@ -7628,6 +7687,11 @@ type subscription_root {
     """filter the rows returned"""
     where: github_repositories_bool_exp
   ): [github_repositories!]!
+
+  """
+  fetch data from the table: "github_repositories" using primary key columns
+  """
+  github_repositories_by_pk(id: uuid!): github_repositories
 
   """
   fetch data from the table: "guide_related_guides"
