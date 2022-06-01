@@ -14,6 +14,8 @@
 //
 package types
 
+type UUID string
+
 type PackageManager string
 
 const (

@@ -21,7 +21,6 @@ require (
 	github.com/google/go-containerregistry v0.8.1-0.20220209165246-a44adc326839
 	github.com/google/licensecheck v0.3.1
 	github.com/google/uuid v1.3.0
-	github.com/ipfans/fxlogger v0.1.0
 	github.com/jpillora/backoff v1.0.0
 	github.com/likexian/whois-parser v1.22.0
 	github.com/lor00x/goldap v0.0.0-20180618054307-a546dffdd1a3
