@@ -2907,6 +2907,8 @@ export type Organizations = {
   organization_users: Array<Organization_User>;
   /** An array relationship */
   projects: Array<Projects>;
+  /** An aggregate relationship */
+  projects_aggregate: Projects_Aggregate;
   /** An object relationship */
   settings: Settings;
   settings_id: Scalars['uuid'];
@@ -2925,6 +2927,16 @@ export type OrganizationsOrganization_UsersArgs = {
 
 /** columns and relationships of "organizations" */
 export type OrganizationsProjectsArgs = {
+  distinct_on?: InputMaybe<Array<Projects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Projects_Order_By>>;
+  where?: InputMaybe<Projects_Bool_Exp>;
+};
+
+
+/** columns and relationships of "organizations" */
+export type OrganizationsProjects_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Projects_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3525,6 +3537,28 @@ export type ProjectsReportsArgs = {
   where?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
 };
 
+/** aggregated selection of "projects" */
+export type Projects_Aggregate = {
+  __typename?: 'projects_aggregate';
+  aggregate?: Maybe<Projects_Aggregate_Fields>;
+  nodes: Array<Projects>;
+};
+
+/** aggregate fields of "projects" */
+export type Projects_Aggregate_Fields = {
+  __typename?: 'projects_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Projects_Max_Fields>;
+  min?: Maybe<Projects_Min_Fields>;
+};
+
+
+/** aggregate fields of "projects" */
+export type Projects_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Projects_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
 /** order by aggregate values of table "projects" */
 export type Projects_Aggregate_Order_By = {
   count?: InputMaybe<Order_By>;
@@ -3584,6 +3618,17 @@ export type Projects_Insert_Input = {
   settings_id?: InputMaybe<Scalars['uuid']>;
 };
 
+/** aggregate max on columns */
+export type Projects_Max_Fields = {
+  __typename?: 'projects_max_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+  organization_id?: Maybe<Scalars['uuid']>;
+  repo?: Maybe<Scalars['String']>;
+  settings_id?: Maybe<Scalars['uuid']>;
+};
+
 /** order by max() on columns of table "projects" */
 export type Projects_Max_Order_By = {
   created_at?: InputMaybe<Order_By>;
@@ -3592,6 +3637,17 @@ export type Projects_Max_Order_By = {
   organization_id?: InputMaybe<Order_By>;
   repo?: InputMaybe<Order_By>;
   settings_id?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Projects_Min_Fields = {
+  __typename?: 'projects_min_fields';
+  created_at?: Maybe<Scalars['timestamp']>;
+  id?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+  organization_id?: Maybe<Scalars['uuid']>;
+  repo?: Maybe<Scalars['String']>;
+  settings_id?: Maybe<Scalars['uuid']>;
 };
 
 /** order by min() on columns of table "projects" */
@@ -3755,6 +3811,8 @@ export type Query_Root = {
   project_access_tokens_by_pk?: Maybe<Project_Access_Tokens>;
   /** An array relationship */
   projects: Array<Projects>;
+  /** An aggregate relationship */
+  projects_aggregate: Projects_Aggregate;
   /** fetch data from the table: "projects" using primary key columns */
   projects_by_pk?: Maybe<Projects>;
   /** An array relationship */
@@ -3998,6 +4056,15 @@ export type Query_RootProject_Access_Tokens_By_PkArgs = {
 
 
 export type Query_RootProjectsArgs = {
+  distinct_on?: InputMaybe<Array<Projects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Projects_Order_By>>;
+  where?: InputMaybe<Projects_Bool_Exp>;
+};
+
+
+export type Query_RootProjects_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Projects_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -4577,6 +4644,8 @@ export type Subscription_Root = {
   project_access_tokens_by_pk?: Maybe<Project_Access_Tokens>;
   /** An array relationship */
   projects: Array<Projects>;
+  /** An aggregate relationship */
+  projects_aggregate: Projects_Aggregate;
   /** fetch data from the table: "projects" using primary key columns */
   projects_by_pk?: Maybe<Projects>;
   /** An array relationship */
@@ -4808,6 +4877,15 @@ export type Subscription_RootProject_Access_Tokens_By_PkArgs = {
 
 
 export type Subscription_RootProjectsArgs = {
+  distinct_on?: InputMaybe<Array<Projects_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Projects_Order_By>>;
+  where?: InputMaybe<Projects_Bool_Exp>;
+};
+
+
+export type Subscription_RootProjects_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Projects_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -5804,12 +5882,12 @@ export type GetPreviousBuildForPrQueryVariables = Exact<{
 
 export type GetPreviousBuildForPrQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', existing_github_review_id?: string | null }> };
 
-export type GetProjectsForInstallationIdQueryVariables = Exact<{
-  installation_id?: InputMaybe<Scalars['Int']>;
+export type GetProjectCountForInstallationQueryVariables = Exact<{
+  installation_id: Scalars['Int'];
 }>;
 
 
-export type GetProjectsForInstallationIdQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', projects: Array<{ __typename?: 'projects', github_repository?: { __typename?: 'github_repositories', github_id?: number | null } | null }> }> };
+export type GetProjectCountForInstallationQuery = { __typename?: 'query_root', projects_aggregate: { __typename?: 'projects_aggregate', aggregate?: { __typename?: 'projects_aggregate_fields', count: number } | null } };
 
 export type GetUserRoleQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
@@ -6065,13 +6143,13 @@ export const GetPreviousBuildForPrDocument = gql`
   }
 }
     `;
-export const GetProjectsForInstallationIdDocument = gql`
-    query GetProjectsForInstallationId($installation_id: Int) {
-  organizations(where: {installation_id: {_eq: $installation_id}}) {
-    projects {
-      github_repository {
-        github_id
-      }
+export const GetProjectCountForInstallationDocument = gql`
+    query GetProjectCountForInstallation($installation_id: Int!) {
+  projects_aggregate(
+    where: {organization: {installation_id: {_eq: $installation_id}}}
+  ) {
+    aggregate {
+      count
     }
   }
 }
@@ -6340,8 +6418,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetPreviousBuildForPr(variables: GetPreviousBuildForPrQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPreviousBuildForPrQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPreviousBuildForPrQuery>(GetPreviousBuildForPrDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPreviousBuildForPr', 'query');
     },
-    GetProjectsForInstallationId(variables?: GetProjectsForInstallationIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectsForInstallationIdQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectsForInstallationIdQuery>(GetProjectsForInstallationIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectsForInstallationId', 'query');
+    GetProjectCountForInstallation(variables: GetProjectCountForInstallationQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectCountForInstallationQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectCountForInstallationQuery>(GetProjectCountForInstallationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectCountForInstallation', 'query');
     },
     GetUserRole(variables?: GetUserRoleQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserRoleQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserRoleQuery>(GetUserRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserRole', 'query');
