@@ -31,22 +31,24 @@ select_permissions:
   - role: service
     permission:
       columns:
-        - git_url
         - github_id
-        - github_id
-        - github_node_id
-        - project_id
         - traits
+        - default_branch
+        - github_node_id
+        - git_url
+        - id
+        - project_id
       filter: {}
   - role: user
     permission:
       columns:
-        - git_url
         - github_id
+        - traits
+        - default_branch
         - github_node_id
+        - git_url
         - id
         - project_id
-        - traits
       filter:
         project:
           organization:
