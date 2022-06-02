@@ -55,7 +55,6 @@ var PackageMaintainerOnConflict = &Package_package_maintainer_on_conflict{
 var PackageReleaseDependencyOnConflict = &Package_release_dependency_on_conflict{
 	Constraint: Package_release_dependency_constraintReleaseDependencyReleaseIdPackageNamePackageVersionIdx,
 	Update_columns: []Package_release_dependency_update_column{
-		//todo is this right?
 		Package_release_dependency_update_columnDependencyPackageId,
 		Package_release_dependency_update_columnPackageName,
 		Package_release_dependency_update_columnPackageVersionQuery,
