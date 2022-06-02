@@ -15,15 +15,15 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/fetcher"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata"
 )
 
-func adapt(n *NpmPackageMetadataWithRawVersion, raw []byte) (*fetcher.PackageMetadata, error) {
+func adapt(n *NpmPackageMetadataWithRawVersion, raw []byte) (*metadata.PackageMetadata, error) {
 	releases, err := mapReleases(n.VersionsRaw)
 	if err != nil {
 		return nil, err
 	}
-	r := &fetcher.PackageMetadata{
+	r := &metadata.PackageMetadata{
 		Name:         n.Name,
 		Description:  n.Description,
 		Registry:     NpmRegistry,
@@ -35,10 +35,10 @@ func adapt(n *NpmPackageMetadataWithRawVersion, raw []byte) (*fetcher.PackageMet
 	return r, nil
 }
 
-func mapMaintainers(a []Author) []fetcher.Maintainer {
-	m := make([]fetcher.Maintainer, len(a))
+func mapMaintainers(a []Author) []metadata.Maintainer {
+	m := make([]metadata.Maintainer, len(a))
 	for i, mt := range a {
-		m[i] = fetcher.Maintainer{
+		m[i] = metadata.Maintainer{
 			Name:  mt.Name,
 			Email: mt.Email,
 		}
@@ -47,8 +47,8 @@ func mapMaintainers(a []Author) []fetcher.Maintainer {
 	return m
 }
 
-func mapReleases(r map[string]json.RawMessage) ([]fetcher.Release, error) {
-	m := make([]fetcher.Release, 0, len(r))
+func mapReleases(r map[string]json.RawMessage) ([]metadata.Release, error) {
+	m := make([]metadata.Release, 0, len(r))
 	for rv, rrl := range r {
 
 		var rl Version
@@ -58,10 +58,10 @@ func mapReleases(r map[string]json.RawMessage) ([]fetcher.Release, error) {
 			return nil, err
 		}
 
-		m = append(m, fetcher.Release{
+		m = append(m, metadata.Release{
 			Version: rv,
 
-			PublishingMaintainer: fetcher.Maintainer{
+			PublishingMaintainer: metadata.Maintainer{
 				Name:  rl.NpmUser.Name,
 				Email: rl.NpmUser.Email,
 			},
@@ -81,17 +81,17 @@ func mapReleases(r map[string]json.RawMessage) ([]fetcher.Release, error) {
 	return m, nil
 }
 
-func mapDependencies(deps, devdeps map[string]string) []fetcher.Dependency {
-	m := make([]fetcher.Dependency, 0, len(deps)+len(devdeps))
+func mapDependencies(deps, devdeps map[string]string) []metadata.Dependency {
+	m := make([]metadata.Dependency, 0, len(deps)+len(devdeps))
 	for dep, ver := range deps {
-		m = append(m, fetcher.Dependency{
+		m = append(m, metadata.Dependency{
 			Name:    dep,
 			Version: ver,
 			IsDev:   false,
 		})
 	}
 	for dep, ver := range devdeps {
-		m = append(m, fetcher.Dependency{
+		m = append(m, metadata.Dependency{
 			Name:    dep,
 			Version: ver,
 			IsDev:   true,

@@ -1601,7 +1601,19 @@ func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_de
 //
 // columns and relationships of "package.package"
 type UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage struct {
+	Id           uuid.UUID  `json:"id"`
+	Name         string     `json:"name"`
 	Fetched_time *time.Time `json:"fetched_time"`
+}
+
+// GetId returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage.Id, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage) GetId() uuid.UUID {
+	return v.Id
+}
+
+// GetName returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage.Name, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage) GetName() string {
+	return v.Name
 }
 
 // GetFetched_time returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage.Fetched_time, and is useful for accessing the field via an interface.
@@ -1871,6 +1883,8 @@ mutation UpsertPackage ($object: package_insert_input!, $on_conflict: package_on
 			release_dependencies {
 				id
 				dependency_package {
+					id
+					name
 					fetched_time
 				}
 			}

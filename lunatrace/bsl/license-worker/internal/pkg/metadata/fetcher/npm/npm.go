@@ -20,7 +20,7 @@ import (
 
 	"go.uber.org/fx"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/fetcher"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata"
 )
 
 type npmFetcherDeps struct {
@@ -32,7 +32,7 @@ type npmFetcher struct {
 	deps npmFetcherDeps
 }
 
-func (n *npmFetcher) Fetch(ctx context.Context, pkgName string) (*fetcher.PackageMetadata, error) {
+func (n *npmFetcher) Fetch(ctx context.Context, pkgName string) (*metadata.PackageMetadata, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, NpmRegistry+"/"+pkgName, nil)
 	if err != nil {
 		return nil, err
@@ -59,6 +59,6 @@ func (n *npmFetcher) Fetch(ctx context.Context, pkgName string) (*fetcher.Packag
 	return adapt(&pkgMeta, pkgMetaRaw)
 }
 
-func NewNPMFetcher(d npmFetcherDeps) fetcher.Fetcher {
+func NewNPMFetcher(d npmFetcherDeps) metadata.Fetcher {
 	return &npmFetcher{deps: d}
 }

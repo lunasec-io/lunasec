@@ -12,25 +12,19 @@
 package ingest
 
 import (
-	"encoding/json"
-	"os"
+	"fmt"
 
-	"github.com/Khan/genqlient/graphql"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/fetcher"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/mapper"
-
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/clifx"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata"
 )
 
 type Params struct {
 	fx.In
 
-	Fetcher   fetcher.Fetcher
-	GQLClient graphql.Client
+	Ingester metadata.Ingester
 }
 
 func NewCommand(p Params) clifx.CommandResult {
@@ -41,22 +35,27 @@ func NewCommand(p Params) clifx.CommandResult {
 			Action: func(ctx *cli.Context) error {
 				packageName := ctx.Args().First()
 
-				pkg, err := p.Fetcher.Fetch(ctx.Context, packageName)
-				if err != nil {
-					return err
+				pkgs := []string{packageName}
+				for fetchedPkgs := 0; len(pkgs) > fetchedPkgs; fetchedPkgs++ {
+					fmt.Println(pkgs[fetchedPkgs])
+					newPkgs, err := p.Ingester.Ingest(ctx.Context, pkgs[fetchedPkgs])
+					fmt.Println(newPkgs)
+					if err != nil {
+						fmt.Println(err)
+					}
+				out:
+					for _, newPkg := range newPkgs {
+						for _, oldPkg := range pkgs {
+							if newPkg == oldPkg {
+								continue out
+							}
+						}
+						pkgs = append(pkgs, newPkg)
+					}
+
 				}
 
-				gqlPkg, err := mapper.Map(pkg)
-				if err != nil {
-					return err
-				}
-
-				res, err := gql.UpsertPackage(ctx.Context, p.GQLClient, gqlPkg, gql.PackageOnConflict)
-				if err != nil {
-					return err
-				}
-
-				return json.NewEncoder(os.Stdout).Encode(&res)
+				return nil
 			},
 		},
 	}

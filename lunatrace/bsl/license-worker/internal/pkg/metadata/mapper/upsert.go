@@ -14,7 +14,7 @@ package mapper
 import (
 	"time"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/fetcher"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 )
@@ -26,7 +26,7 @@ func ptr[T any](t T) *T {
 var npmV types.PackageManager = types.NPM
 
 // Map converts a fetcher.PackageMetadata into the struct required by GraphQL codegen.
-func Map(p *fetcher.PackageMetadata) (*gql.Package_insert_input, error) {
+func Map(p *metadata.PackageMetadata) (*gql.Package_insert_input, error) {
 	r := &gql.Package_insert_input{
 		Custom_registry: ptr(""),
 		Description:     ptr(p.Description),
@@ -45,7 +45,7 @@ func Map(p *fetcher.PackageMetadata) (*gql.Package_insert_input, error) {
 	return r, nil
 }
 
-func mapReleases(r []fetcher.Release) []*gql.Package_release_insert_input {
+func mapReleases(r []metadata.Release) []*gql.Package_release_insert_input {
 	m := make([]*gql.Package_release_insert_input, len(r))
 	for i, rl := range r {
 		m[i] = &gql.Package_release_insert_input{
@@ -70,7 +70,7 @@ func mapReleases(r []fetcher.Release) []*gql.Package_release_insert_input {
 	return m
 }
 
-func mapDependencies(ds []fetcher.Dependency) []*gql.Package_release_dependency_insert_input {
+func mapDependencies(ds []metadata.Dependency) []*gql.Package_release_dependency_insert_input {
 	m := make([]*gql.Package_release_dependency_insert_input, len(ds))
 	for i, dep := range ds {
 		m[i] = &gql.Package_release_dependency_insert_input{
@@ -89,7 +89,7 @@ func mapDependencies(ds []fetcher.Dependency) []*gql.Package_release_dependency_
 	return m
 }
 
-func mapMaintainers(p []fetcher.Maintainer) []*gql.Package_package_maintainer_insert_input {
+func mapMaintainers(p []metadata.Maintainer) []*gql.Package_package_maintainer_insert_input {
 	m := make([]*gql.Package_package_maintainer_insert_input, len(p))
 	for i, pm := range p {
 		m[i] = &gql.Package_package_maintainer_insert_input{
@@ -100,7 +100,7 @@ func mapMaintainers(p []fetcher.Maintainer) []*gql.Package_package_maintainer_in
 	return m
 }
 
-func mapMaintainer(pm fetcher.Maintainer) *gql.Package_maintainer_obj_rel_insert_input {
+func mapMaintainer(pm metadata.Maintainer) *gql.Package_maintainer_obj_rel_insert_input {
 	return &gql.Package_maintainer_obj_rel_insert_input{
 		Data: &gql.Package_maintainer_insert_input{
 			Email:           ptr(pm.Email),

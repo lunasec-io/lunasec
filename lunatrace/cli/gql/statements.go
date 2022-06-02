@@ -21,6 +21,7 @@ var PackageOnConflict = &Package_on_conflict{
 		Package_update_columnDescription,
 		Package_update_columnName,
 		Package_update_columnPackageManager,
+		Package_update_columnFetchedTime,
 	},
 }
 
@@ -35,6 +36,7 @@ var ReleaseOnConflict = &Package_release_on_conflict{
 		Package_release_update_columnUpstreamBlobUrl,
 		Package_release_update_columnUpstreamData,
 		Package_release_update_columnVersion,
+		Package_release_update_columnFetchedTime,
 	},
 }
 
