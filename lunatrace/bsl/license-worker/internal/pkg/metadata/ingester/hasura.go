@@ -27,7 +27,7 @@ import (
 )
 
 // todo tune date
-const refetchDays = 7
+const refetchDays = 0
 
 type Params struct {
 	fx.In
