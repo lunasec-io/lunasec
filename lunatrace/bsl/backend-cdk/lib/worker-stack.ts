@@ -19,7 +19,7 @@ import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
-import { Construct } from '@aws-cdk/core';
+import { Construct, Duration } from '@aws-cdk/core';
 
 import { getContainerTarballPath } from './util';
 import { WorkerStorageStackState } from './worker-storage-stack';
@@ -79,8 +79,6 @@ export class WorkerStack extends cdk.Stack {
       throw new Error(`expected non-null storage stack queues: ${inspect(storageStack)}`);
     }
 
-    repositoryQueue.grantSendMessages(props.fargateService.service.taskDefinition.taskRole);
-
     const workerContainerImage = ContainerImage.fromTarball(
       getContainerTarballPath('lunatrace-backend-queue-processor.tar')
     );
@@ -109,13 +107,28 @@ export class WorkerStack extends cdk.Stack {
       {
         name: 'ProcessRepositoryQueue',
         queue: repositoryQueue,
+        visibility: 600,
+      },
+      {
+        name: 'ProcessWebhookQueue',
+        queue: webhookQueue,
+      },
+      {
+        name: 'ProcessManifestQueue',
+        queue: manifestQueue,
+        visibility: 300,
+      },
+      {
+        name: 'ProcessSbomQueue',
+        queue: sbomQueue,
+        visibility: 300,
       },
     ];
 
     queueServices.forEach((queueService) => {
       const queueFargateService = new ecsPatterns.QueueProcessingFargateService(
         context,
-        'ProcessRepositoryQueueService',
+        queueService.name + 'Service',
         {
           cluster: fargateCluster,
           image: workerContainerImage,
@@ -129,10 +142,15 @@ export class WorkerStack extends cdk.Stack {
             ...(queueService.visibility ? { QUEUE_VISIBILITY: queueService.visibility.toString() } : {}),
           },
           secrets: processQueueCommonSecrets,
-          containerName: 'ProcessRepositoryQueueContainer',
+          containerName: queueService.name + 'Container',
           circuitBreaker: {
             rollback: true,
           },
+          // healthCheck: {
+          //   // stub command to just see if the container is actually running
+          //   command: ['CMD-SHELL', 'ls || exit 1'],
+          //   startPeriod: Duration.seconds(5),
+          // },
           minScalingCapacity: 2,
           deploymentController: {
             type: DeploymentControllerType.ECS,
@@ -143,6 +161,8 @@ export class WorkerStack extends cdk.Stack {
       storageStack.manifestBucket.grantReadWrite(queueFargateService.taskDefinition.taskRole);
       webhookQueue.grantSendMessages(queueFargateService.taskDefinition.taskRole);
       webhookQueue.grantConsumeMessages(queueFargateService.taskDefinition.taskRole);
+      repositoryQueue.grantConsumeMessages(queueFargateService.taskDefinition.taskRole);
+      repositoryQueue.grantSendMessages(queueFargateService.taskDefinition.taskRole);
     });
 
     // Update vulnerabilities job
