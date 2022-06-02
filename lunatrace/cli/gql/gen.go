@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
+	"github.com/google/uuid"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 )
 
@@ -16,11 +17,11 @@ import (
 //
 // columns and relationships of "builds"
 type DeleteBuildDelete_builds_by_pkBuilds struct {
-	Id types.UUID `json:"id"`
+	Id uuid.UUID `json:"id"`
 }
 
 // GetId returns DeleteBuildDelete_builds_by_pkBuilds.Id, and is useful for accessing the field via an interface.
-func (v *DeleteBuildDelete_builds_by_pkBuilds) GetId() types.UUID { return v.Id }
+func (v *DeleteBuildDelete_builds_by_pkBuilds) GetId() uuid.UUID { return v.Id }
 
 // DeleteBuildResponse is returned by DeleteBuild on success.
 type DeleteBuildResponse struct {
@@ -52,17 +53,17 @@ func (v *GetProjectInfoQueryProject_access_tokens) GetProject() *GetProjectInfoQ
 //
 // columns and relationships of "projects"
 type GetProjectInfoQueryProject_access_tokensProjectProjects struct {
-	Organization_id *types.UUID `json:"organization_id"`
-	Id              types.UUID  `json:"id"`
+	Organization_id *uuid.UUID `json:"organization_id"`
+	Id              uuid.UUID  `json:"id"`
 }
 
 // GetOrganization_id returns GetProjectInfoQueryProject_access_tokensProjectProjects.Organization_id, and is useful for accessing the field via an interface.
-func (v *GetProjectInfoQueryProject_access_tokensProjectProjects) GetOrganization_id() *types.UUID {
+func (v *GetProjectInfoQueryProject_access_tokensProjectProjects) GetOrganization_id() *uuid.UUID {
 	return v.Organization_id
 }
 
 // GetId returns GetProjectInfoQueryProject_access_tokensProjectProjects.Id, and is useful for accessing the field via an interface.
-func (v *GetProjectInfoQueryProject_access_tokensProjectProjects) GetId() types.UUID { return v.Id }
+func (v *GetProjectInfoQueryProject_access_tokensProjectProjects) GetId() uuid.UUID { return v.Id }
 
 // GetProjectInfoQueryResponse is returned by GetProjectInfoQuery on success.
 type GetProjectInfoQueryResponse struct {
@@ -80,15 +81,15 @@ func (v *GetProjectInfoQueryResponse) GetProject_access_tokens() []*GetProjectIn
 //
 // columns and relationships of "builds"
 type InsertNewBuildQueryInsert_builds_oneBuilds struct {
-	Id                 types.UUID `json:"id"`
-	Agent_access_token types.UUID `json:"agent_access_token"`
+	Id                 uuid.UUID `json:"id"`
+	Agent_access_token uuid.UUID `json:"agent_access_token"`
 }
 
 // GetId returns InsertNewBuildQueryInsert_builds_oneBuilds.Id, and is useful for accessing the field via an interface.
-func (v *InsertNewBuildQueryInsert_builds_oneBuilds) GetId() types.UUID { return v.Id }
+func (v *InsertNewBuildQueryInsert_builds_oneBuilds) GetId() uuid.UUID { return v.Id }
 
 // GetAgent_access_token returns InsertNewBuildQueryInsert_builds_oneBuilds.Agent_access_token, and is useful for accessing the field via an interface.
-func (v *InsertNewBuildQueryInsert_builds_oneBuilds) GetAgent_access_token() types.UUID {
+func (v *InsertNewBuildQueryInsert_builds_oneBuilds) GetAgent_access_token() uuid.UUID {
 	return v.Agent_access_token
 }
 
@@ -286,7 +287,7 @@ type Package_insert_input struct {
 	Custom_registry     *string                                          `json:"custom_registry,omitempty"`
 	Description         *string                                          `json:"description,omitempty"`
 	Fetched_time        *time.Time                                       `json:"fetched_time,omitempty"`
-	Id                  *types.UUID                                      `json:"id,omitempty"`
+	Id                  *uuid.UUID                                       `json:"id,omitempty"`
 	Name                *string                                          `json:"name,omitempty"`
 	Package_maintainers *Package_package_maintainer_arr_rel_insert_input `json:"package_maintainers,omitempty"`
 	Package_manager     *types.PackageManager                            `json:"package_manager,omitempty"`
@@ -303,7 +304,7 @@ func (v *Package_insert_input) GetDescription() *string { return v.Description }
 func (v *Package_insert_input) GetFetched_time() *time.Time { return v.Fetched_time }
 
 // GetId returns Package_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Package_insert_input) GetId() *types.UUID { return v.Id }
+func (v *Package_insert_input) GetId() *uuid.UUID { return v.Id }
 
 // GetName returns Package_insert_input.Name, and is useful for accessing the field via an interface.
 func (v *Package_insert_input) GetName() *string { return v.Name }
@@ -361,13 +362,13 @@ const (
 
 // input type for inserting data into table "package.license"
 type Package_license_insert_input struct {
-	Id               *types.UUID                                   `json:"id,omitempty"`
+	Id               *uuid.UUID                                    `json:"id,omitempty"`
 	Name             *string                                       `json:"name,omitempty"`
 	Release_licenses *Package_release_license_arr_rel_insert_input `json:"release_licenses,omitempty"`
 }
 
 // GetId returns Package_license_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Package_license_insert_input) GetId() *types.UUID { return v.Id }
+func (v *Package_license_insert_input) GetId() *uuid.UUID { return v.Id }
 
 // GetName returns Package_license_insert_input.Name, and is useful for accessing the field via an interface.
 func (v *Package_license_insert_input) GetName() *string { return v.Name }
@@ -479,7 +480,7 @@ const (
 // input type for inserting data into table "package.maintainer"
 type Package_maintainer_insert_input struct {
 	Email               *string                                          `json:"email,omitempty"`
-	Id                  *types.UUID                                      `json:"id,omitempty"`
+	Id                  *uuid.UUID                                       `json:"id,omitempty"`
 	Name                *string                                          `json:"name,omitempty"`
 	Package_maintainers *Package_package_maintainer_arr_rel_insert_input `json:"package_maintainers,omitempty"`
 	Package_manager     *types.PackageManager                            `json:"package_manager,omitempty"`
@@ -490,7 +491,7 @@ type Package_maintainer_insert_input struct {
 func (v *Package_maintainer_insert_input) GetEmail() *string { return v.Email }
 
 // GetId returns Package_maintainer_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Package_maintainer_insert_input) GetId() *types.UUID { return v.Id }
+func (v *Package_maintainer_insert_input) GetId() *uuid.UUID { return v.Id }
 
 // GetName returns Package_maintainer_insert_input.Name, and is useful for accessing the field via an interface.
 func (v *Package_maintainer_insert_input) GetName() *string { return v.Name }
@@ -702,9 +703,9 @@ const (
 // input type for inserting data into table "package.package_maintainer"
 type Package_package_maintainer_insert_input struct {
 	Maintainer    *Package_maintainer_obj_rel_insert_input `json:"maintainer,omitempty"`
-	Maintainer_id *types.UUID                              `json:"maintainer_id,omitempty"`
+	Maintainer_id *uuid.UUID                               `json:"maintainer_id,omitempty"`
 	Package       *Package_obj_rel_insert_input            `json:"package,omitempty"`
-	Package_id    *types.UUID                              `json:"package_id,omitempty"`
+	Package_id    *uuid.UUID                               `json:"package_id,omitempty"`
 }
 
 // GetMaintainer returns Package_package_maintainer_insert_input.Maintainer, and is useful for accessing the field via an interface.
@@ -713,7 +714,7 @@ func (v *Package_package_maintainer_insert_input) GetMaintainer() *Package_maint
 }
 
 // GetMaintainer_id returns Package_package_maintainer_insert_input.Maintainer_id, and is useful for accessing the field via an interface.
-func (v *Package_package_maintainer_insert_input) GetMaintainer_id() *types.UUID {
+func (v *Package_package_maintainer_insert_input) GetMaintainer_id() *uuid.UUID {
 	return v.Maintainer_id
 }
 
@@ -723,7 +724,7 @@ func (v *Package_package_maintainer_insert_input) GetPackage() *Package_obj_rel_
 }
 
 // GetPackage_id returns Package_package_maintainer_insert_input.Package_id, and is useful for accessing the field via an interface.
-func (v *Package_package_maintainer_insert_input) GetPackage_id() *types.UUID { return v.Package_id }
+func (v *Package_package_maintainer_insert_input) GetPackage_id() *uuid.UUID { return v.Package_id }
 
 // on_conflict condition type for table "package.package_maintainer"
 type Package_package_maintainer_on_conflict struct {
@@ -988,14 +989,14 @@ const (
 // input type for inserting data into table "package.release_dependency"
 type Package_release_dependency_insert_input struct {
 	Dependency_package    *Package_obj_rel_insert_input         `json:"dependency_package,omitempty"`
-	Dependency_package_id *types.UUID                           `json:"dependency_package_id,omitempty"`
+	Dependency_package_id *uuid.UUID                            `json:"dependency_package_id,omitempty"`
 	Dependency_release    *Package_release_obj_rel_insert_input `json:"dependency_release,omitempty"`
-	Dependency_release_id *types.UUID                           `json:"dependency_release_id,omitempty"`
-	Id                    *types.UUID                           `json:"id,omitempty"`
+	Dependency_release_id *uuid.UUID                            `json:"dependency_release_id,omitempty"`
+	Id                    *uuid.UUID                            `json:"id,omitempty"`
 	Package_name          *string                               `json:"package_name,omitempty"`
 	Package_version_query *string                               `json:"package_version_query,omitempty"`
 	Release               *Package_release_obj_rel_insert_input `json:"release,omitempty"`
-	Release_id            *types.UUID                           `json:"release_id,omitempty"`
+	Release_id            *uuid.UUID                            `json:"release_id,omitempty"`
 }
 
 // GetDependency_package returns Package_release_dependency_insert_input.Dependency_package, and is useful for accessing the field via an interface.
@@ -1004,7 +1005,7 @@ func (v *Package_release_dependency_insert_input) GetDependency_package() *Packa
 }
 
 // GetDependency_package_id returns Package_release_dependency_insert_input.Dependency_package_id, and is useful for accessing the field via an interface.
-func (v *Package_release_dependency_insert_input) GetDependency_package_id() *types.UUID {
+func (v *Package_release_dependency_insert_input) GetDependency_package_id() *uuid.UUID {
 	return v.Dependency_package_id
 }
 
@@ -1014,12 +1015,12 @@ func (v *Package_release_dependency_insert_input) GetDependency_release() *Packa
 }
 
 // GetDependency_release_id returns Package_release_dependency_insert_input.Dependency_release_id, and is useful for accessing the field via an interface.
-func (v *Package_release_dependency_insert_input) GetDependency_release_id() *types.UUID {
+func (v *Package_release_dependency_insert_input) GetDependency_release_id() *uuid.UUID {
 	return v.Dependency_release_id
 }
 
 // GetId returns Package_release_dependency_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Package_release_dependency_insert_input) GetId() *types.UUID { return v.Id }
+func (v *Package_release_dependency_insert_input) GetId() *uuid.UUID { return v.Id }
 
 // GetPackage_name returns Package_release_dependency_insert_input.Package_name, and is useful for accessing the field via an interface.
 func (v *Package_release_dependency_insert_input) GetPackage_name() *string { return v.Package_name }
@@ -1035,7 +1036,7 @@ func (v *Package_release_dependency_insert_input) GetRelease() *Package_release_
 }
 
 // GetRelease_id returns Package_release_dependency_insert_input.Release_id, and is useful for accessing the field via an interface.
-func (v *Package_release_dependency_insert_input) GetRelease_id() *types.UUID { return v.Release_id }
+func (v *Package_release_dependency_insert_input) GetRelease_id() *uuid.UUID { return v.Release_id }
 
 // on_conflict condition type for table "package.release_dependency"
 type Package_release_dependency_on_conflict struct {
@@ -1081,13 +1082,13 @@ const (
 type Package_release_insert_input struct {
 	Blob_hash                *string                                          `json:"blob_hash,omitempty"`
 	Fetched_time             *time.Time                                       `json:"fetched_time,omitempty"`
-	Id                       *types.UUID                                      `json:"id,omitempty"`
+	Id                       *uuid.UUID                                       `json:"id,omitempty"`
 	Mirrored_blob_url        *string                                          `json:"mirrored_blob_url,omitempty"`
 	Observed_time            *time.Time                                       `json:"observed_time,omitempty"`
 	Package                  *Package_obj_rel_insert_input                    `json:"package,omitempty"`
-	Package_id               *types.UUID                                      `json:"package_id,omitempty"`
+	Package_id               *uuid.UUID                                       `json:"package_id,omitempty"`
 	Publishing_maintainer    *Package_maintainer_obj_rel_insert_input         `json:"publishing_maintainer,omitempty"`
-	Publishing_maintainer_id *types.UUID                                      `json:"publishing_maintainer_id,omitempty"`
+	Publishing_maintainer_id *uuid.UUID                                       `json:"publishing_maintainer_id,omitempty"`
 	Release_dependencies     *Package_release_dependency_arr_rel_insert_input `json:"release_dependencies,omitempty"`
 	Release_dependents       *Package_release_dependency_arr_rel_insert_input `json:"release_dependents,omitempty"`
 	Release_licenses         *Package_release_license_arr_rel_insert_input    `json:"release_licenses,omitempty"`
@@ -1104,7 +1105,7 @@ func (v *Package_release_insert_input) GetBlob_hash() *string { return v.Blob_ha
 func (v *Package_release_insert_input) GetFetched_time() *time.Time { return v.Fetched_time }
 
 // GetId returns Package_release_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Package_release_insert_input) GetId() *types.UUID { return v.Id }
+func (v *Package_release_insert_input) GetId() *uuid.UUID { return v.Id }
 
 // GetMirrored_blob_url returns Package_release_insert_input.Mirrored_blob_url, and is useful for accessing the field via an interface.
 func (v *Package_release_insert_input) GetMirrored_blob_url() *string { return v.Mirrored_blob_url }
@@ -1116,7 +1117,7 @@ func (v *Package_release_insert_input) GetObserved_time() *time.Time { return v.
 func (v *Package_release_insert_input) GetPackage() *Package_obj_rel_insert_input { return v.Package }
 
 // GetPackage_id returns Package_release_insert_input.Package_id, and is useful for accessing the field via an interface.
-func (v *Package_release_insert_input) GetPackage_id() *types.UUID { return v.Package_id }
+func (v *Package_release_insert_input) GetPackage_id() *uuid.UUID { return v.Package_id }
 
 // GetPublishing_maintainer returns Package_release_insert_input.Publishing_maintainer, and is useful for accessing the field via an interface.
 func (v *Package_release_insert_input) GetPublishing_maintainer() *Package_maintainer_obj_rel_insert_input {
@@ -1124,7 +1125,7 @@ func (v *Package_release_insert_input) GetPublishing_maintainer() *Package_maint
 }
 
 // GetPublishing_maintainer_id returns Package_release_insert_input.Publishing_maintainer_id, and is useful for accessing the field via an interface.
-func (v *Package_release_insert_input) GetPublishing_maintainer_id() *types.UUID {
+func (v *Package_release_insert_input) GetPublishing_maintainer_id() *uuid.UUID {
 	return v.Publishing_maintainer_id
 }
 
@@ -1232,17 +1233,17 @@ const (
 
 // input type for inserting data into table "package.release_license"
 type Package_release_license_insert_input struct {
-	Id            *types.UUID                           `json:"id,omitempty"`
+	Id            *uuid.UUID                            `json:"id,omitempty"`
 	License       *Package_license_obj_rel_insert_input `json:"license,omitempty"`
-	License_id    *types.UUID                           `json:"license_id,omitempty"`
-	Release_id    *types.UUID                           `json:"release_id,omitempty"`
+	License_id    *uuid.UUID                            `json:"license_id,omitempty"`
+	Release_id    *uuid.UUID                            `json:"release_id,omitempty"`
 	Scan_metadata *json.RawMessage                      `json:"scan_metadata,omitempty"`
 	Scan_time     *time.Time                            `json:"scan_time,omitempty"`
 	Source        *types.LicenseSource                  `json:"source,omitempty"`
 }
 
 // GetId returns Package_release_license_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Package_release_license_insert_input) GetId() *types.UUID { return v.Id }
+func (v *Package_release_license_insert_input) GetId() *uuid.UUID { return v.Id }
 
 // GetLicense returns Package_release_license_insert_input.License, and is useful for accessing the field via an interface.
 func (v *Package_release_license_insert_input) GetLicense() *Package_license_obj_rel_insert_input {
@@ -1250,10 +1251,10 @@ func (v *Package_release_license_insert_input) GetLicense() *Package_license_obj
 }
 
 // GetLicense_id returns Package_release_license_insert_input.License_id, and is useful for accessing the field via an interface.
-func (v *Package_release_license_insert_input) GetLicense_id() *types.UUID { return v.License_id }
+func (v *Package_release_license_insert_input) GetLicense_id() *uuid.UUID { return v.License_id }
 
 // GetRelease_id returns Package_release_license_insert_input.Release_id, and is useful for accessing the field via an interface.
-func (v *Package_release_license_insert_input) GetRelease_id() *types.UUID { return v.Release_id }
+func (v *Package_release_license_insert_input) GetRelease_id() *uuid.UUID { return v.Release_id }
 
 // GetScan_metadata returns Package_release_license_insert_input.Scan_metadata, and is useful for accessing the field via an interface.
 func (v *Package_release_license_insert_input) GetScan_metadata() *json.RawMessage {
@@ -1401,11 +1402,11 @@ func (v *SetBuildS3UrlResponse) GetUpdate_builds_by_pk() *SetBuildS3UrlUpdate_bu
 //
 // columns and relationships of "builds"
 type SetBuildS3UrlUpdate_builds_by_pkBuilds struct {
-	Id types.UUID `json:"id"`
+	Id uuid.UUID `json:"id"`
 }
 
 // GetId returns SetBuildS3UrlUpdate_builds_by_pkBuilds.Id, and is useful for accessing the field via an interface.
-func (v *SetBuildS3UrlUpdate_builds_by_pkBuilds) GetId() types.UUID { return v.Id }
+func (v *SetBuildS3UrlUpdate_builds_by_pkBuilds) GetId() uuid.UUID { return v.Id }
 
 // Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
 type String_comparison_exp struct {
@@ -1542,13 +1543,13 @@ func (v *Timestamptz_comparison_exp) GetNin() []time.Time { return v.Nin }
 //
 // columns and relationships of "package.package"
 type UpsertPackageInsert_package_onePackage struct {
-	Id types.UUID `json:"id"`
+	Id uuid.UUID `json:"id"`
 	// An array relationship
 	Releases []*UpsertPackageInsert_package_onePackageReleasesPackage_release `json:"releases"`
 }
 
 // GetId returns UpsertPackageInsert_package_onePackage.Id, and is useful for accessing the field via an interface.
-func (v *UpsertPackageInsert_package_onePackage) GetId() types.UUID { return v.Id }
+func (v *UpsertPackageInsert_package_onePackage) GetId() uuid.UUID { return v.Id }
 
 // GetReleases returns UpsertPackageInsert_package_onePackage.Releases, and is useful for accessing the field via an interface.
 func (v *UpsertPackageInsert_package_onePackage) GetReleases() []*UpsertPackageInsert_package_onePackageReleasesPackage_release {
@@ -1560,13 +1561,13 @@ func (v *UpsertPackageInsert_package_onePackage) GetReleases() []*UpsertPackageI
 //
 // columns and relationships of "package.release"
 type UpsertPackageInsert_package_onePackageReleasesPackage_release struct {
-	Id types.UUID `json:"id"`
+	Id uuid.UUID `json:"id"`
 	// An array relationship
 	Release_dependencies []*UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency `json:"release_dependencies"`
 }
 
 // GetId returns UpsertPackageInsert_package_onePackageReleasesPackage_release.Id, and is useful for accessing the field via an interface.
-func (v *UpsertPackageInsert_package_onePackageReleasesPackage_release) GetId() types.UUID {
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_release) GetId() uuid.UUID {
 	return v.Id
 }
 
@@ -1580,13 +1581,13 @@ func (v *UpsertPackageInsert_package_onePackageReleasesPackage_release) GetRelea
 //
 // columns and relationships of "package.release_dependency"
 type UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency struct {
-	Id types.UUID `json:"id"`
+	Id uuid.UUID `json:"id"`
 	// An object relationship
 	Dependency_package *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage `json:"dependency_package"`
 }
 
 // GetId returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency.Id, and is useful for accessing the field via an interface.
-func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency) GetId() types.UUID {
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency) GetId() uuid.UUID {
 	return v.Id
 }
 
@@ -1621,63 +1622,63 @@ func (v *UpsertPackageResponse) GetInsert_package_one() *UpsertPackageInsert_pac
 
 // Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
 type Uuid_comparison_exp struct {
-	Eq      *types.UUID  `json:"_eq,omitempty"`
-	Gt      *types.UUID  `json:"_gt,omitempty"`
-	Gte     *types.UUID  `json:"_gte,omitempty"`
-	In      []types.UUID `json:"_in,omitempty"`
-	Is_null *bool        `json:"_is_null,omitempty"`
-	Lt      *types.UUID  `json:"_lt,omitempty"`
-	Lte     *types.UUID  `json:"_lte,omitempty"`
-	Neq     *types.UUID  `json:"_neq,omitempty"`
-	Nin     []types.UUID `json:"_nin,omitempty"`
+	Eq      *uuid.UUID  `json:"_eq,omitempty"`
+	Gt      *uuid.UUID  `json:"_gt,omitempty"`
+	Gte     *uuid.UUID  `json:"_gte,omitempty"`
+	In      []uuid.UUID `json:"_in,omitempty"`
+	Is_null *bool       `json:"_is_null,omitempty"`
+	Lt      *uuid.UUID  `json:"_lt,omitempty"`
+	Lte     *uuid.UUID  `json:"_lte,omitempty"`
+	Neq     *uuid.UUID  `json:"_neq,omitempty"`
+	Nin     []uuid.UUID `json:"_nin,omitempty"`
 }
 
 // GetEq returns Uuid_comparison_exp.Eq, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetEq() *types.UUID { return v.Eq }
+func (v *Uuid_comparison_exp) GetEq() *uuid.UUID { return v.Eq }
 
 // GetGt returns Uuid_comparison_exp.Gt, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetGt() *types.UUID { return v.Gt }
+func (v *Uuid_comparison_exp) GetGt() *uuid.UUID { return v.Gt }
 
 // GetGte returns Uuid_comparison_exp.Gte, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetGte() *types.UUID { return v.Gte }
+func (v *Uuid_comparison_exp) GetGte() *uuid.UUID { return v.Gte }
 
 // GetIn returns Uuid_comparison_exp.In, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetIn() []types.UUID { return v.In }
+func (v *Uuid_comparison_exp) GetIn() []uuid.UUID { return v.In }
 
 // GetIs_null returns Uuid_comparison_exp.Is_null, and is useful for accessing the field via an interface.
 func (v *Uuid_comparison_exp) GetIs_null() *bool { return v.Is_null }
 
 // GetLt returns Uuid_comparison_exp.Lt, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetLt() *types.UUID { return v.Lt }
+func (v *Uuid_comparison_exp) GetLt() *uuid.UUID { return v.Lt }
 
 // GetLte returns Uuid_comparison_exp.Lte, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetLte() *types.UUID { return v.Lte }
+func (v *Uuid_comparison_exp) GetLte() *uuid.UUID { return v.Lte }
 
 // GetNeq returns Uuid_comparison_exp.Neq, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetNeq() *types.UUID { return v.Neq }
+func (v *Uuid_comparison_exp) GetNeq() *uuid.UUID { return v.Neq }
 
 // GetNin returns Uuid_comparison_exp.Nin, and is useful for accessing the field via an interface.
-func (v *Uuid_comparison_exp) GetNin() []types.UUID { return v.Nin }
+func (v *Uuid_comparison_exp) GetNin() []uuid.UUID { return v.Nin }
 
 // __DeleteBuildInput is used internally by genqlient
 type __DeleteBuildInput struct {
-	Id types.UUID `json:"id,omitempty"`
+	Id uuid.UUID `json:"id,omitempty"`
 }
 
 // GetId returns __DeleteBuildInput.Id, and is useful for accessing the field via an interface.
-func (v *__DeleteBuildInput) GetId() types.UUID { return v.Id }
+func (v *__DeleteBuildInput) GetId() uuid.UUID { return v.Id }
 
 // __InsertNewBuildQueryInput is used internally by genqlient
 type __InsertNewBuildQueryInput struct {
-	Project_id *types.UUID `json:"project_id,omitempty"`
-	S3_url     *string     `json:"s3_url,omitempty"`
-	Git_remote *string     `json:"git_remote,omitempty"`
-	Git_branch *string     `json:"git_branch,omitempty"`
-	Git_hash   *string     `json:"git_hash,omitempty"`
+	Project_id *uuid.UUID `json:"project_id,omitempty"`
+	S3_url     *string    `json:"s3_url,omitempty"`
+	Git_remote *string    `json:"git_remote,omitempty"`
+	Git_branch *string    `json:"git_branch,omitempty"`
+	Git_hash   *string    `json:"git_hash,omitempty"`
 }
 
 // GetProject_id returns __InsertNewBuildQueryInput.Project_id, and is useful for accessing the field via an interface.
-func (v *__InsertNewBuildQueryInput) GetProject_id() *types.UUID { return v.Project_id }
+func (v *__InsertNewBuildQueryInput) GetProject_id() *uuid.UUID { return v.Project_id }
 
 // GetS3_url returns __InsertNewBuildQueryInput.S3_url, and is useful for accessing the field via an interface.
 func (v *__InsertNewBuildQueryInput) GetS3_url() *string { return v.S3_url }
@@ -1693,12 +1694,12 @@ func (v *__InsertNewBuildQueryInput) GetGit_hash() *string { return v.Git_hash }
 
 // __SetBuildS3UrlInput is used internally by genqlient
 type __SetBuildS3UrlInput struct {
-	Id     types.UUID `json:"id,omitempty"`
-	S3_url string     `json:"s3_url,omitempty"`
+	Id     uuid.UUID `json:"id,omitempty"`
+	S3_url string    `json:"s3_url,omitempty"`
 }
 
 // GetId returns __SetBuildS3UrlInput.Id, and is useful for accessing the field via an interface.
-func (v *__SetBuildS3UrlInput) GetId() types.UUID { return v.Id }
+func (v *__SetBuildS3UrlInput) GetId() uuid.UUID { return v.Id }
 
 // GetS3_url returns __SetBuildS3UrlInput.S3_url, and is useful for accessing the field via an interface.
 func (v *__SetBuildS3UrlInput) GetS3_url() string { return v.S3_url }
@@ -1718,7 +1719,7 @@ func (v *__UpsertPackageInput) GetOn_conflict() *Package_on_conflict { return v.
 func DeleteBuild(
 	ctx context.Context,
 	client graphql.Client,
-	id types.UUID,
+	id uuid.UUID,
 ) (*DeleteBuildResponse, error) {
 	req := &graphql.Request{
 		OpName: "DeleteBuild",
@@ -1781,7 +1782,7 @@ query GetProjectInfoQuery {
 func InsertNewBuildQuery(
 	ctx context.Context,
 	client graphql.Client,
-	project_id *types.UUID,
+	project_id *uuid.UUID,
 	s3_url *string,
 	git_remote *string,
 	git_branch *string,
@@ -1822,7 +1823,7 @@ mutation InsertNewBuildQuery ($project_id: uuid, $s3_url: String, $git_remote: S
 func SetBuildS3Url(
 	ctx context.Context,
 	client graphql.Client,
-	id types.UUID,
+	id uuid.UUID,
 	s3_url string,
 ) (*SetBuildS3UrlResponse, error) {
 	req := &graphql.Request{

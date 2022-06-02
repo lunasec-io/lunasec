@@ -20,9 +20,9 @@ bindings:
   date:
     type: time.Time
   UUID:
-    type: github.com/lunasec-io/lunasec/lunatrace/cli/gql/types.UUID
+    type: github.com/google/uuid.UUID
   uuid:
-    type: github.com/lunasec-io/lunasec/lunatrace/cli/gql/types.UUID
+    type: github.com/google/uuid.UUID
   _text:
     type: string
   user_role:
