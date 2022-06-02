@@ -107,6 +107,7 @@ export class WorkerStack extends cdk.Stack {
       {
         name: 'ProcessRepositoryQueue',
         queue: repositoryQueue,
+        visibility: 600,
       },
       {
         name: 'ProcessWebhookQueue',
@@ -115,10 +116,12 @@ export class WorkerStack extends cdk.Stack {
       {
         name: 'ProcessManifestQueue',
         queue: manifestQueue,
+        visibility: 300,
       },
       {
         name: 'ProcessSbomQueue',
         queue: sbomQueue,
+        visibility: 300,
       },
     ];
 
@@ -143,11 +146,11 @@ export class WorkerStack extends cdk.Stack {
           circuitBreaker: {
             rollback: true,
           },
-          healthCheck: {
-            // stub command to just see if the container is actually running
-            command: ['CMD-SHELL', 'ls || exit 1'],
-            startPeriod: Duration.seconds(5),
-          },
+          // healthCheck: {
+          //   // stub command to just see if the container is actually running
+          //   command: ['CMD-SHELL', 'ls || exit 1'],
+          //   startPeriod: Duration.seconds(5),
+          // },
           minScalingCapacity: 2,
           deploymentController: {
             type: DeploymentControllerType.ECS,
