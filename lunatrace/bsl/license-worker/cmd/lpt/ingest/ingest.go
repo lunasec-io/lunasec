@@ -12,6 +12,9 @@
 package ingest
 
 import (
+	"encoding/json"
+	"os"
+
 	"github.com/Khan/genqlient/graphql"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
@@ -48,11 +51,12 @@ func NewCommand(p Params) clifx.CommandResult {
 					return err
 				}
 
-				_, err = gql.UpsertPackage(ctx.Context, p.GQLClient, gqlPkg, gql.PackageOnConflict)
+				res, err := gql.UpsertPackage(ctx.Context, p.GQLClient, gqlPkg, gql.PackageOnConflict)
 				if err != nil {
 					return err
 				}
-				return nil
+
+				return json.NewEncoder(os.Stdout).Encode(&res)
 			},
 		},
 	}

@@ -30,6 +30,7 @@ ALTER TABLE package.package_maintainer
 drop index package.package_package_manager_custom_registry_name_idx;
 ALTER TABLE package.package
     ADD CONSTRAINT package_package_manager_custom_registry_name_idx UNIQUE (package_manager, custom_registry, name);
+CREATE UNIQUE INDEX ON "package"."package" ("package_manager", (custom_registry IS NULL), "name");
 
 drop index package.maintainer_package_manager_email_idx;
 ALTER TABLE package.maintainer

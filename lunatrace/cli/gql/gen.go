@@ -1563,8 +1563,6 @@ type UpsertPackageInsert_package_onePackageReleasesPackage_release struct {
 	Id types.UUID `json:"id"`
 	// An array relationship
 	Release_dependencies []*UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency `json:"release_dependencies"`
-	// An array relationship
-	Release_licenses []*UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license `json:"release_licenses"`
 }
 
 // GetId returns UpsertPackageInsert_package_onePackageReleasesPackage_release.Id, and is useful for accessing the field via an interface.
@@ -1577,17 +1575,14 @@ func (v *UpsertPackageInsert_package_onePackageReleasesPackage_release) GetRelea
 	return v.Release_dependencies
 }
 
-// GetRelease_licenses returns UpsertPackageInsert_package_onePackageReleasesPackage_release.Release_licenses, and is useful for accessing the field via an interface.
-func (v *UpsertPackageInsert_package_onePackageReleasesPackage_release) GetRelease_licenses() []*UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license {
-	return v.Release_licenses
-}
-
 // UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency includes the requested fields of the GraphQL type package_release_dependency.
 // The GraphQL type's documentation follows.
 //
 // columns and relationships of "package.release_dependency"
 type UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency struct {
 	Id types.UUID `json:"id"`
+	// An object relationship
+	Dependency_package *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage `json:"dependency_package"`
 }
 
 // GetId returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency.Id, and is useful for accessing the field via an interface.
@@ -1595,37 +1590,22 @@ func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_de
 	return v.Id
 }
 
-// UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license includes the requested fields of the GraphQL type package_release_license.
+// GetDependency_package returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency.Dependency_package, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency) GetDependency_package() *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage {
+	return v.Dependency_package
+}
+
+// UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage includes the requested fields of the GraphQL type package.
 // The GraphQL type's documentation follows.
 //
-// columns and relationships of "package.release_license"
-type UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license struct {
-	Id types.UUID `json:"id"`
-	// An object relationship
-	License *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_licenseLicensePackage_license `json:"license"`
+// columns and relationships of "package.package"
+type UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage struct {
+	Fetched_time time.Time `json:"fetched_time"`
 }
 
-// GetId returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license.Id, and is useful for accessing the field via an interface.
-func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license) GetId() types.UUID {
-	return v.Id
-}
-
-// GetLicense returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license.License, and is useful for accessing the field via an interface.
-func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_license) GetLicense() *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_licenseLicensePackage_license {
-	return v.License
-}
-
-// UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_licenseLicensePackage_license includes the requested fields of the GraphQL type package_license.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "package.license"
-type UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_licenseLicensePackage_license struct {
-	Id types.UUID `json:"id"`
-}
-
-// GetId returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_licenseLicensePackage_license.Id, and is useful for accessing the field via an interface.
-func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_licensesPackage_release_licenseLicensePackage_license) GetId() types.UUID {
-	return v.Id
+// GetFetched_time returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage.Fetched_time, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage) GetFetched_time() time.Time {
+	return v.Fetched_time
 }
 
 // UpsertPackageResponse is returned by UpsertPackage on success.
@@ -1889,11 +1869,8 @@ mutation UpsertPackage ($object: package_insert_input!, $on_conflict: package_on
 			id
 			release_dependencies {
 				id
-			}
-			release_licenses {
-				id
-				license {
-					id
+				dependency_package {
+					fetched_time
 				}
 			}
 		}
