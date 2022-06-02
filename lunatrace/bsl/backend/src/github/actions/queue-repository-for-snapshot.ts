@@ -57,8 +57,13 @@ export async function queueRepositoryForSnapshot(installationId: number, repo: S
     })
   );
   if (!result || !result.$metadata.httpStatusCode || result.$metadata.httpStatusCode >= 300) {
+    log.error('unable to queue repository for snapshot', {
+      repo,
+    });
     return newError('sending message to queue failed, responded: ' + JSON.stringify(result));
   }
-  log.info(repo, 'queued repo for snapshot');
+  log.info('queued repo for snapshot', {
+    repo,
+  });
   return newResult(undefined);
 }
