@@ -43,8 +43,9 @@ var Module = fx.Options(
 	fx.Provide(
 		types.NewLunaTraceGlobalFlags,
 		config.LoadLunaTraceConfig,
-		NewGraphQLClient,
 	),
+	// todo instrument me
+	fx.Supply(http.DefaultClient),
 	// todo remove all global stuff
 	fx.Invoke(command.EnableGlobalFlags),
 	fx.Invoke(func(lc fx.Lifecycle) {
