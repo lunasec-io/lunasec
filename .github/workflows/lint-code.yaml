@@ -18,8 +18,12 @@ name: Lint Code plus JS Unit Tests
 on:
   pull_request:
     branches: ['**', '**']
+    paths:
+      - .disabled
   push:
     branches: [master]
+    paths:
+      - .disabled
 
 jobs:
   lint-code:
