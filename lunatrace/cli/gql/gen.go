@@ -220,6 +220,26 @@ func (v *License_source_comparison_exp) GetNeq() *types.LicenseSource { return v
 // GetNin returns License_source_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *License_source_comparison_exp) GetNin() []types.LicenseSource { return v.Nin }
 
+// PackageFetchTimePackage includes the requested fields of the GraphQL type package.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "package.package"
+type PackageFetchTimePackage struct {
+	Fetched_time *time.Time `json:"fetched_time"`
+}
+
+// GetFetched_time returns PackageFetchTimePackage.Fetched_time, and is useful for accessing the field via an interface.
+func (v *PackageFetchTimePackage) GetFetched_time() *time.Time { return v.Fetched_time }
+
+// PackageFetchTimeResponse is returned by PackageFetchTime on success.
+type PackageFetchTimeResponse struct {
+	// fetch data from the table: "package.package"
+	Package []*PackageFetchTimePackage `json:"package"`
+}
+
+// GetPackage returns PackageFetchTimeResponse.Package, and is useful for accessing the field via an interface.
+func (v *PackageFetchTimeResponse) GetPackage() []*PackageFetchTimePackage { return v.Package }
+
 // Boolean expression to filter rows from the table "package.package". All fields are combined with a logical 'AND'.
 type Package_bool_exp struct {
 	And                 []*Package_bool_exp                  `json:"_and,omitempty"`
@@ -1704,6 +1724,24 @@ func (v *__InsertNewBuildQueryInput) GetGit_branch() *string { return v.Git_bran
 // GetGit_hash returns __InsertNewBuildQueryInput.Git_hash, and is useful for accessing the field via an interface.
 func (v *__InsertNewBuildQueryInput) GetGit_hash() *string { return v.Git_hash }
 
+// __PackageFetchTimeInput is used internally by genqlient
+type __PackageFetchTimeInput struct {
+	Package_manager *types.PackageManager `json:"package_manager,omitempty"`
+	Custom_registry *string               `json:"custom_registry,omitempty"`
+	Name            *string               `json:"name,omitempty"`
+}
+
+// GetPackage_manager returns __PackageFetchTimeInput.Package_manager, and is useful for accessing the field via an interface.
+func (v *__PackageFetchTimeInput) GetPackage_manager() *types.PackageManager {
+	return v.Package_manager
+}
+
+// GetCustom_registry returns __PackageFetchTimeInput.Custom_registry, and is useful for accessing the field via an interface.
+func (v *__PackageFetchTimeInput) GetCustom_registry() *string { return v.Custom_registry }
+
+// GetName returns __PackageFetchTimeInput.Name, and is useful for accessing the field via an interface.
+func (v *__PackageFetchTimeInput) GetName() *string { return v.Name }
+
 // __SetBuildS3UrlInput is used internally by genqlient
 type __SetBuildS3UrlInput struct {
 	Id     uuid.UUID `json:"id,omitempty"`
@@ -1821,6 +1859,42 @@ mutation InsertNewBuildQuery ($project_id: uuid, $s3_url: String, $git_remote: S
 	var err error
 
 	var data InsertNewBuildQueryResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
+
+func PackageFetchTime(
+	ctx context.Context,
+	client graphql.Client,
+	package_manager *types.PackageManager,
+	custom_registry *string,
+	name *string,
+) (*PackageFetchTimeResponse, error) {
+	req := &graphql.Request{
+		OpName: "PackageFetchTime",
+		Query: `
+query PackageFetchTime ($package_manager: package_manager, $custom_registry: String, $name: String) {
+	package(where: {custom_registry:{_eq:$custom_registry},name:{_eq:$name},package_manager:{_eq:$package_manager}}, limit: 1) {
+		fetched_time
+	}
+}
+`,
+		Variables: &__PackageFetchTimeInput{
+			Package_manager: package_manager,
+			Custom_registry: custom_registry,
+			Name:            name,
+		},
+	}
+	var err error
+
+	var data PackageFetchTimeResponse
 	resp := &graphql.Response{Data: &data}
 
 	err = client.MakeRequest(

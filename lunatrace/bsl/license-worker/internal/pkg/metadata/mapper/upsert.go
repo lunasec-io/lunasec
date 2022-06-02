@@ -17,21 +17,18 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
-
-func ptr[T any](t T) *T {
-	return &t
-}
 
 var npmV types.PackageManager = types.NPM
 
 // Map converts a fetcher.PackageMetadata into the struct required by GraphQL codegen.
 func Map(p *metadata.PackageMetadata) (*gql.Package_insert_input, error) {
 	r := &gql.Package_insert_input{
-		Custom_registry: ptr(""),
-		Description:     ptr(p.Description),
-		Name:            ptr(p.Name),
-		Fetched_time:    ptr(time.Now()),
+		Custom_registry: util.Ptr(""),
+		Description:     util.Ptr(p.Description),
+		Name:            util.Ptr(p.Name),
+		Fetched_time:    util.Ptr(time.Now()),
 		Package_maintainers: &gql.Package_package_maintainer_arr_rel_insert_input{
 			Data:        mapMaintainers(p.Maintainers),
 			On_conflict: gql.PackageMaintainerOnConflict,
@@ -51,13 +48,13 @@ func mapReleases(r []metadata.Release) []*gql.Package_release_insert_input {
 		m[i] = &gql.Package_release_insert_input{
 			Publishing_maintainer: mapMaintainer(rl.PublishingMaintainer),
 
-			Release_time:      ptr(rl.ReleaseTime),
-			Blob_hash:         ptr(rl.BlobHash),
-			Upstream_blob_url: ptr(rl.UpstreamBlobUrl),
-			Upstream_data:     ptr(rl.UpstreamData),
-			Version:           ptr(rl.Version),
+			Release_time:      util.Ptr(rl.ReleaseTime),
+			Blob_hash:         util.Ptr(rl.BlobHash),
+			Upstream_blob_url: util.Ptr(rl.UpstreamBlobUrl),
+			Upstream_data:     util.Ptr(rl.UpstreamData),
+			Version:           util.Ptr(rl.Version),
 
-			Fetched_time: ptr(time.Now()),
+			Fetched_time: util.Ptr(time.Now()),
 
 			Release_dependencies: &gql.Package_release_dependency_arr_rel_insert_input{
 				Data:        mapDependencies(rl.Dependencies),
@@ -77,13 +74,13 @@ func mapDependencies(ds []metadata.Dependency) []*gql.Package_release_dependency
 			// create a stub entry for packages which are not yet analyzed.
 			Dependency_package: &gql.Package_obj_rel_insert_input{
 				Data: &gql.Package_insert_input{
-					Name:            ptr(dep.Name),
+					Name:            util.Ptr(dep.Name),
 					Package_manager: &npmV,
 				},
 				On_conflict: gql.PackageOnConflict,
 			},
-			Package_name:          ptr(dep.Name),
-			Package_version_query: ptr(dep.Version),
+			Package_name:          util.Ptr(dep.Name),
+			Package_version_query: util.Ptr(dep.Version),
 		}
 	}
 	return m
@@ -103,8 +100,8 @@ func mapMaintainers(p []metadata.Maintainer) []*gql.Package_package_maintainer_i
 func mapMaintainer(pm metadata.Maintainer) *gql.Package_maintainer_obj_rel_insert_input {
 	return &gql.Package_maintainer_obj_rel_insert_input{
 		Data: &gql.Package_maintainer_insert_input{
-			Email:           ptr(pm.Email),
-			Name:            ptr(pm.Name),
+			Email:           util.Ptr(pm.Email),
+			Name:            util.Ptr(pm.Name),
 			Package_manager: &npmV,
 		},
 		On_conflict: gql.MaintainerOnConflict,
