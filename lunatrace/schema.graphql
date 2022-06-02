@@ -3322,6 +3322,27 @@ type mutation_root {
   update data of the table: "package.package"
   """
   update_package(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: package_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: package_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: package_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: package_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: package_prepend_input
+
     """sets the columns of the filtered rows to the given values"""
     _set: package_set_input
 
@@ -3333,6 +3354,27 @@ type mutation_root {
   update single row of the table: "package.package"
   """
   update_package_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: package_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: package_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: package_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: package_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: package_prepend_input
+
     """sets the columns of the filtered rows to the given values"""
     _set: package_set_input
     pk_columns: package_pk_columns_input!
@@ -4334,6 +4376,15 @@ type package {
     """filter the rows returned"""
     where: package_release_bool_exp
   ): [package_release!]!
+  upstream_data(
+    """JSON select path"""
+    path: String
+  ): jsonb
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input package_append_input {
+  upstream_data: jsonb
 }
 
 """
@@ -4351,6 +4402,7 @@ input package_bool_exp {
   package_maintainers: package_package_maintainer_bool_exp
   package_manager: package_manager_comparison_exp
   releases: package_release_bool_exp
+  upstream_data: jsonb_comparison_exp
 }
 
 """
@@ -4365,6 +4417,27 @@ enum package_constraint {
 }
 
 """
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input package_delete_at_path_input {
+  upstream_data: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input package_delete_elem_input {
+  upstream_data: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input package_delete_key_input {
+  upstream_data: String
+}
+
+"""
 input type for inserting data into table "package.package"
 """
 input package_insert_input {
@@ -4376,6 +4449,7 @@ input package_insert_input {
   package_maintainers: package_package_maintainer_arr_rel_insert_input
   package_manager: package_manager
   releases: package_release_arr_rel_insert_input
+  upstream_data: jsonb
 }
 
 """
@@ -4738,6 +4812,7 @@ input package_order_by {
   package_maintainers_aggregate: package_package_maintainer_aggregate_order_by
   package_manager: order_by
   releases_aggregate: package_release_aggregate_order_by
+  upstream_data: order_by
 }
 
 """
@@ -4882,6 +4957,11 @@ enum package_package_maintainer_update_column {
 """primary key columns input for table: package"""
 input package_pk_columns_input {
   id: uuid!
+}
+
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input package_prepend_input {
+  upstream_data: jsonb
 }
 
 """
@@ -5697,6 +5777,9 @@ enum package_select_column {
 
   """column name"""
   package_manager
+
+  """column name"""
+  upstream_data
 }
 
 """
@@ -5709,6 +5792,7 @@ input package_set_input {
   id: uuid
   name: String
   package_manager: package_manager
+  upstream_data: jsonb
 }
 
 """
@@ -5732,6 +5816,9 @@ enum package_update_column {
 
   """column name"""
   package_manager
+
+  """column name"""
+  upstream_data
 }
 
 """
