@@ -158,6 +158,7 @@ export class WorkerStack extends cdk.Stack {
       storageStack.manifestBucket.grantReadWrite(queueFargateService.taskDefinition.taskRole);
       webhookQueue.grantSendMessages(queueFargateService.taskDefinition.taskRole);
       webhookQueue.grantConsumeMessages(queueFargateService.taskDefinition.taskRole);
+      repositoryQueue.grantConsumeMessages(queueFargateService.taskDefinition.taskRole);
       repositoryQueue.grantSendMessages(queueFargateService.taskDefinition.taskRole);
     });
 
