@@ -91,3 +91,4 @@ sudo docker save -o $OUT_DIR/lunatrace-backend.tar lunatrace-backend
 sudo docker save -o $OUT_DIR/lunatrace-backend-queue-processor.tar lunatrace-backend-queue-processor
 
 sudo chown -R "$USER:$USER" build
+
