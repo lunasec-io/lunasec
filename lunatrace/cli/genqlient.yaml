@@ -8,6 +8,8 @@ package: gql
 
 use_struct_references: true
 
+optional: pointer
+
 bindings:
   DateTime:
     type: time.Time
