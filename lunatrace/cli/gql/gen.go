@@ -1881,7 +1881,7 @@ func PackageFetchTime(
 		OpName: "PackageFetchTime",
 		Query: `
 query PackageFetchTime ($package_manager: package_manager, $custom_registry: String, $name: String) {
-	package(where: {custom_registry:{_eq:$custom_registry},name:{_eq:$name},package_manager:{_eq:$package_manager}}, limit: 1) {
+	package(where: {custom_registry:{_eq:$custom_registry},name:{_eq:$name},package_manager:{_eq:$package_manager},fetched_time:{_is_null:false}}, limit: 1) {
 		fetched_time
 	}
 }
