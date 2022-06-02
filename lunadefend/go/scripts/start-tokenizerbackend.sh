@@ -16,4 +16,4 @@ done
 mkdir -p config/tokenizerbackend/outputs
 cp ../outputs/aws_resources.json config/tokenizerbackend/outputs
 
-env $(cat < ../../.env.docker | xargs -0) ./build/tokenizerbackend_dev
+env $(cat < .env.host | xargs -0) ./build/tokenizerbackend_dev
