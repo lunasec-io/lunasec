@@ -781,6 +781,7 @@ export type Fix_State_Enum_Comparison_Exp = {
 export type Github_Repositories = {
   __typename?: 'github_repositories';
   authenticated_clone_url?: Maybe<AuthenticatedRepoCloneUrlOutput>;
+  default_branch?: Maybe<Scalars['String']>;
   git_url: Scalars['String'];
   github_id?: Maybe<Scalars['Int']>;
   github_node_id?: Maybe<Scalars['String']>;
@@ -822,6 +823,7 @@ export type Github_Repositories_Bool_Exp = {
   _and?: InputMaybe<Array<Github_Repositories_Bool_Exp>>;
   _not?: InputMaybe<Github_Repositories_Bool_Exp>;
   _or?: InputMaybe<Array<Github_Repositories_Bool_Exp>>;
+  default_branch?: InputMaybe<String_Comparison_Exp>;
   git_url?: InputMaybe<String_Comparison_Exp>;
   github_id?: InputMaybe<Int_Comparison_Exp>;
   github_node_id?: InputMaybe<String_Comparison_Exp>;
@@ -833,6 +835,7 @@ export type Github_Repositories_Bool_Exp = {
 
 /** order by max() on columns of table "github_repositories" */
 export type Github_Repositories_Max_Order_By = {
+  default_branch?: InputMaybe<Order_By>;
   git_url?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
@@ -842,6 +845,7 @@ export type Github_Repositories_Max_Order_By = {
 
 /** order by min() on columns of table "github_repositories" */
 export type Github_Repositories_Min_Order_By = {
+  default_branch?: InputMaybe<Order_By>;
   git_url?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
@@ -851,6 +855,7 @@ export type Github_Repositories_Min_Order_By = {
 
 /** Ordering options when selecting data from "github_repositories". */
 export type Github_Repositories_Order_By = {
+  default_branch?: InputMaybe<Order_By>;
   git_url?: InputMaybe<Order_By>;
   github_id?: InputMaybe<Order_By>;
   github_node_id?: InputMaybe<Order_By>;
@@ -862,6 +867,8 @@ export type Github_Repositories_Order_By = {
 
 /** select columns of table "github_repositories" */
 export enum Github_Repositories_Select_Column {
+  /** column name */
+  DefaultBranch = 'default_branch',
   /** column name */
   GitUrl = 'git_url',
   /** column name */

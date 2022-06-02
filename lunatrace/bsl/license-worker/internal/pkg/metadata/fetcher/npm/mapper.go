@@ -9,25 +9,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package npm2
+package npm
 
 import (
 	"encoding/json"
 	"time"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/fetcher"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/fetcher/npm"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata"
 )
 
-func adapt(n *npm.NpmPackageMetadataWithRawVersion, raw []byte) (*fetcher.PackageMetadata, error) {
+func adapt(n *NpmPackageMetadataWithRawVersion, raw []byte) (*metadata.PackageMetadata, error) {
 	releases, err := mapReleases(n.VersionsRaw)
 	if err != nil {
 		return nil, err
 	}
-	r := &fetcher.PackageMetadata{
+	r := &metadata.PackageMetadata{
 		Name:         n.Name,
 		Description:  n.Description,
-		Registry:     npm.NpmRegistry,
+		Registry:     NpmRegistry,
 		Maintainers:  mapMaintainers(n.Maintainers),
 		Releases:     releases,
 		UpstreamData: raw,
@@ -36,10 +35,10 @@ func adapt(n *npm.NpmPackageMetadataWithRawVersion, raw []byte) (*fetcher.Packag
 	return r, nil
 }
 
-func mapMaintainers(a []npm.Author) []fetcher.Maintainer {
-	m := make([]fetcher.Maintainer, len(a))
+func mapMaintainers(a []Author) []metadata.Maintainer {
+	m := make([]metadata.Maintainer, len(a))
 	for i, mt := range a {
-		m[i] = fetcher.Maintainer{
+		m[i] = metadata.Maintainer{
 			Name:  mt.Name,
 			Email: mt.Email,
 		}
@@ -48,21 +47,21 @@ func mapMaintainers(a []npm.Author) []fetcher.Maintainer {
 	return m
 }
 
-func mapReleases(r map[string]json.RawMessage) ([]fetcher.Release, error) {
-	m := make([]fetcher.Release, 0, len(r))
+func mapReleases(r map[string]json.RawMessage) ([]metadata.Release, error) {
+	m := make([]metadata.Release, 0, len(r))
 	for rv, rrl := range r {
 
-		var rl npm.Version
+		var rl Version
 
 		err := json.Unmarshal(rrl, &rl)
 		if err != nil {
 			return nil, err
 		}
 
-		m = append(m, fetcher.Release{
+		m = append(m, metadata.Release{
 			Version: rv,
 
-			PublishingMaintainer: fetcher.Maintainer{
+			PublishingMaintainer: metadata.Maintainer{
 				Name:  rl.NpmUser.Name,
 				Email: rl.NpmUser.Email,
 			},
@@ -74,7 +73,7 @@ func mapReleases(r map[string]json.RawMessage) ([]fetcher.Release, error) {
 
 			UpstreamData: rrl,
 
-			//todo
+			//todo make releasetime nullable
 			ReleaseTime: time.Time{},
 		})
 
@@ -82,17 +81,17 @@ func mapReleases(r map[string]json.RawMessage) ([]fetcher.Release, error) {
 	return m, nil
 }
 
-func mapDependencies(deps, devdeps map[string]string) []fetcher.Dependency {
-	m := make([]fetcher.Dependency, 0, len(deps)+len(devdeps))
+func mapDependencies(deps, devdeps map[string]string) []metadata.Dependency {
+	m := make([]metadata.Dependency, 0, len(deps)+len(devdeps))
 	for dep, ver := range deps {
-		m = append(m, fetcher.Dependency{
+		m = append(m, metadata.Dependency{
 			Name:    dep,
 			Version: ver,
 			IsDev:   false,
 		})
 	}
 	for dep, ver := range devdeps {
-		m = append(m, fetcher.Dependency{
+		m = append(m, metadata.Dependency{
 			Name:    dep,
 			Version: ver,
 			IsDev:   true,
