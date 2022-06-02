@@ -3508,7 +3508,7 @@ export type Organizations_Variance_Fields = {
 /** columns and relationships of "package.package" */
 export type Package = {
   __typename?: 'package';
-  custom_registry?: Maybe<Scalars['String']>;
+  custom_registry: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   fetched_time?: Maybe<Scalars['timestamptz']>;
   id: Scalars['uuid'];

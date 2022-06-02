@@ -78,8 +78,6 @@ func mapDependencies(ds []fetcher.Dependency) []*gql.Package_release_dependency_
 				},
 				On_conflict: gql.PackageOnConflict,
 			},
-			// todo we dont have resolved versions maybe so idk
-			Dependency_release:    nil,
 			Package_name:          dep.Name,
 			Package_version_query: dep.Version,
 		}

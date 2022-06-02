@@ -4292,7 +4292,7 @@ type organizations_variance_fields {
 columns and relationships of "package.package"
 """
 type package {
-  custom_registry: String
+  custom_registry: String!
   description: String
   fetched_time: timestamptz
   id: uuid!
