@@ -14,17 +14,19 @@
 //
 package types
 
+type UUID string
+
 type PackageManager string
 
 const (
-	NPM = "NPM"
+	NPM = "npm"
 )
 
-type LicenseSource int
+type LicenseSource string
 
 const (
-	Manual LicenseSource = iota
-	ScanRepo
-	ScanBinary
-	ApiNpm
+	Manual     LicenseSource = "manual"
+	ScanRepo   LicenseSource = "scan_repo"
+	ScanBinary LicenseSource = "scan_binary"
+	ApiNpm     LicenseSource = "api_npm"
 )
