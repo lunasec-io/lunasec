@@ -21,7 +21,7 @@ lunatrace: bindir
 	CGO_ENABLED=0 GOOS=linux go build -o ./bin/${LUNATRACE_BINARY_NAME} ./cmd/lunatrace
 
 lunatrace-docker:
-	sudo docker build -f build/package/lunatrace.dockerfile . -t lunasec/lunatrace-cli:${version}
+	sudo docker build -f docker/lunatrace.dockerfile . -t lunasec/lunatrace-cli:${version}
 
 lunatrace-agent: bindir
 	CGO_ENABLED=0 GOOS=linux go build -o bin/${LUNATRACE_AGENT_BINARY_NAME} ./cmd/lunatraceagent
