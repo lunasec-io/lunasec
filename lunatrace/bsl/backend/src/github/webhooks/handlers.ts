@@ -92,8 +92,9 @@ async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
 
   if (actionName === 'synchronize' || actionName === 'opened' || actionName === 'reopened') {
     if (!event.payload.installation) {
-      log.error(`no installation found in pull request webhook`);
-      log.info(event);
+      log.error(`no installation found in pull request webhook`, {
+        event,
+      });
       return;
     }
 
