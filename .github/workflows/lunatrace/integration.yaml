@@ -1,4 +1,4 @@
-name: LunaTrace
+name: LunaTrace Integration Test
 
 # This workflow posts hasura changes as a comment.
 on:

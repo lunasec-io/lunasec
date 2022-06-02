@@ -21,12 +21,14 @@ on:
   pull_request:
     branches: ['**', '**']
     paths:
-      - .disabled
+      #- '.github/**'
+      - 'lunadefend/**'
 
   push:
     branches: [master]
     paths:
-      - .disabled
+      #- '.github/**'
+      - 'lunadefend/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:

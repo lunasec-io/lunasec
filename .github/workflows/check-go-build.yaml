@@ -1,4 +1,4 @@
-name: Go
+name: Check Go Build
 
 # This workflow posts hasura changes as a comment.
 on:

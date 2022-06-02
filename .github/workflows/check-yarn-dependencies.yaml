@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-name: Check Dependencies
+name: Check Yarn Dependencies
 
 # This workflow checks to make sure that all dependency binaries are valid, to prevent a sneaky commit doing something malicious
 on:
