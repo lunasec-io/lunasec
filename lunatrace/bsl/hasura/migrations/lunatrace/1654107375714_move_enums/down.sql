@@ -38,3 +38,10 @@ ALTER TABLE package.release_dependency
 CREATE UNIQUE INDEX ON "package"."license" ("name");
 ALTER TABLE package.license
     DROP CONSTRAINT license_name_idx;
+
+alter table package.package
+    drop column fetched_time;
+
+alter table package.release
+    drop column fetched_time;
+

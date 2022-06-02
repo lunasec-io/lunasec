@@ -17,9 +17,10 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 )
 
+// Map converts a fetcher.PackageMetadata into the struct required by GraphQL codegen.
 func Map(p *fetcher.PackageMetadata) (*gql.Package_insert_input, error) {
 	r := &gql.Package_insert_input{
-		Custom_registry: p.Registry,
+		Custom_registry: "",
 		Description:     p.Description,
 		Name:            p.Name,
 		Package_maintainers: &gql.Package_package_maintainer_arr_rel_insert_input{

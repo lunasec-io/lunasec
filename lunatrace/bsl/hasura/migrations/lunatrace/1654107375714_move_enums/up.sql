@@ -38,3 +38,10 @@ ALTER TABLE package.maintainer
 drop index package.license_name_idx;
 ALTER TABLE package.license
     ADD CONSTRAINT license_name_idx UNIQUE (name);
+
+alter table package.package
+    add fetched_time timestamptz;
+
+alter table package.release
+    add fetched_time timestamptz;
+

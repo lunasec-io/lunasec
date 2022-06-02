@@ -3510,6 +3510,7 @@ export type Package = {
   __typename?: 'package';
   custom_registry?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  fetched_time?: Maybe<Scalars['timestamptz']>;
   id: Scalars['uuid'];
   name: Scalars['String'];
   /** An array relationship */
@@ -3546,6 +3547,7 @@ export type Package_Bool_Exp = {
   _or?: InputMaybe<Array<Package_Bool_Exp>>;
   custom_registry?: InputMaybe<String_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
+  fetched_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   package_maintainers?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
@@ -3565,6 +3567,7 @@ export enum Package_Constraint {
 export type Package_Insert_Input = {
   custom_registry?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
+  fetched_time?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
   name?: InputMaybe<Scalars['String']>;
   package_maintainers?: InputMaybe<Package_Package_Maintainer_Arr_Rel_Insert_Input>;
@@ -3847,6 +3850,7 @@ export type Package_On_Conflict = {
 export type Package_Order_By = {
   custom_registry?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
+  fetched_time?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   package_maintainers_aggregate?: InputMaybe<Package_Package_Maintainer_Aggregate_Order_By>;
@@ -3971,6 +3975,7 @@ export type Package_Pk_Columns_Input = {
 export type Package_Release = {
   __typename?: 'package_release';
   blob_hash?: Maybe<Scalars['String']>;
+  fetched_time?: Maybe<Scalars['timestamptz']>;
   id: Scalars['uuid'];
   mirrored_blob_url?: Maybe<Scalars['String']>;
   observed_time: Scalars['timestamptz'];
@@ -4053,6 +4058,7 @@ export type Package_Release_Bool_Exp = {
   _not?: InputMaybe<Package_Release_Bool_Exp>;
   _or?: InputMaybe<Array<Package_Release_Bool_Exp>>;
   blob_hash?: InputMaybe<String_Comparison_Exp>;
+  fetched_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   mirrored_blob_url?: InputMaybe<String_Comparison_Exp>;
   observed_time?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -4259,6 +4265,7 @@ export enum Package_Release_Dependency_Update_Column {
 /** input type for inserting data into table "package.release" */
 export type Package_Release_Insert_Input = {
   blob_hash?: InputMaybe<Scalars['String']>;
+  fetched_time?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
   mirrored_blob_url?: InputMaybe<Scalars['String']>;
   observed_time?: InputMaybe<Scalars['timestamptz']>;
@@ -4457,6 +4464,7 @@ export enum Package_Release_License_Update_Column {
 /** order by max() on columns of table "package.release" */
 export type Package_Release_Max_Order_By = {
   blob_hash?: InputMaybe<Order_By>;
+  fetched_time?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   mirrored_blob_url?: InputMaybe<Order_By>;
   observed_time?: InputMaybe<Order_By>;
@@ -4470,6 +4478,7 @@ export type Package_Release_Max_Order_By = {
 /** order by min() on columns of table "package.release" */
 export type Package_Release_Min_Order_By = {
   blob_hash?: InputMaybe<Order_By>;
+  fetched_time?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   mirrored_blob_url?: InputMaybe<Order_By>;
   observed_time?: InputMaybe<Order_By>;
@@ -4506,6 +4515,7 @@ export type Package_Release_On_Conflict = {
 /** Ordering options when selecting data from "package.release". */
 export type Package_Release_Order_By = {
   blob_hash?: InputMaybe<Order_By>;
+  fetched_time?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   mirrored_blob_url?: InputMaybe<Order_By>;
   observed_time?: InputMaybe<Order_By>;
@@ -4537,6 +4547,8 @@ export enum Package_Release_Select_Column {
   /** column name */
   BlobHash = 'blob_hash',
   /** column name */
+  FetchedTime = 'fetched_time',
+  /** column name */
   Id = 'id',
   /** column name */
   MirroredBlobUrl = 'mirrored_blob_url',
@@ -4559,6 +4571,7 @@ export enum Package_Release_Select_Column {
 /** input type for updating data in table "package.release" */
 export type Package_Release_Set_Input = {
   blob_hash?: InputMaybe<Scalars['String']>;
+  fetched_time?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
   mirrored_blob_url?: InputMaybe<Scalars['String']>;
   observed_time?: InputMaybe<Scalars['timestamptz']>;
@@ -4574,6 +4587,8 @@ export type Package_Release_Set_Input = {
 export enum Package_Release_Update_Column {
   /** column name */
   BlobHash = 'blob_hash',
+  /** column name */
+  FetchedTime = 'fetched_time',
   /** column name */
   Id = 'id',
   /** column name */
@@ -4601,6 +4616,8 @@ export enum Package_Select_Column {
   /** column name */
   Description = 'description',
   /** column name */
+  FetchedTime = 'fetched_time',
+  /** column name */
   Id = 'id',
   /** column name */
   Name = 'name',
@@ -4612,6 +4629,7 @@ export enum Package_Select_Column {
 export type Package_Set_Input = {
   custom_registry?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
+  fetched_time?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
   name?: InputMaybe<Scalars['String']>;
   package_manager?: InputMaybe<Scalars['package_manager']>;
@@ -4623,6 +4641,8 @@ export enum Package_Update_Column {
   CustomRegistry = 'custom_registry',
   /** column name */
   Description = 'description',
+  /** column name */
+  FetchedTime = 'fetched_time',
   /** column name */
   Id = 'id',
   /** column name */

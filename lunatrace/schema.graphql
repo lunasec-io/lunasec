@@ -4294,6 +4294,7 @@ columns and relationships of "package.package"
 type package {
   custom_registry: String
   description: String
+  fetched_time: timestamptz
   id: uuid!
   name: String!
 
@@ -4344,6 +4345,7 @@ input package_bool_exp {
   _or: [package_bool_exp!]
   custom_registry: String_comparison_exp
   description: String_comparison_exp
+  fetched_time: timestamptz_comparison_exp
   id: uuid_comparison_exp
   name: String_comparison_exp
   package_maintainers: package_package_maintainer_bool_exp
@@ -4368,6 +4370,7 @@ input type for inserting data into table "package.package"
 input package_insert_input {
   custom_registry: String
   description: String
+  fetched_time: timestamptz
   id: uuid
   name: String
   package_maintainers: package_package_maintainer_arr_rel_insert_input
@@ -4729,6 +4732,7 @@ input package_on_conflict {
 input package_order_by {
   custom_registry: order_by
   description: order_by
+  fetched_time: order_by
   id: order_by
   name: order_by
   package_maintainers_aggregate: package_package_maintainer_aggregate_order_by
@@ -4885,6 +4889,7 @@ columns and relationships of "package.release"
 """
 type package_release {
   blob_hash: String
+  fetched_time: timestamptz
   id: uuid!
   mirrored_blob_url: String
   observed_time: timestamptz!
@@ -4991,6 +4996,7 @@ input package_release_bool_exp {
   _not: package_release_bool_exp
   _or: [package_release_bool_exp!]
   blob_hash: String_comparison_exp
+  fetched_time: timestamptz_comparison_exp
   id: uuid_comparison_exp
   mirrored_blob_url: String_comparison_exp
   observed_time: timestamptz_comparison_exp
@@ -5249,6 +5255,7 @@ input type for inserting data into table "package.release"
 """
 input package_release_insert_input {
   blob_hash: String
+  fetched_time: timestamptz
   id: uuid
   mirrored_blob_url: String
   observed_time: timestamptz
@@ -5489,6 +5496,7 @@ order by max() on columns of table "package.release"
 """
 input package_release_max_order_by {
   blob_hash: order_by
+  fetched_time: order_by
   id: order_by
   mirrored_blob_url: order_by
   observed_time: order_by
@@ -5504,6 +5512,7 @@ order by min() on columns of table "package.release"
 """
 input package_release_min_order_by {
   blob_hash: order_by
+  fetched_time: order_by
   id: order_by
   mirrored_blob_url: order_by
   observed_time: order_by
@@ -5547,6 +5556,7 @@ input package_release_on_conflict {
 """Ordering options when selecting data from "package.release"."""
 input package_release_order_by {
   blob_hash: order_by
+  fetched_time: order_by
   id: order_by
   mirrored_blob_url: order_by
   observed_time: order_by
@@ -5581,6 +5591,9 @@ enum package_release_select_column {
   blob_hash
 
   """column name"""
+  fetched_time
+
+  """column name"""
   id
 
   """column name"""
@@ -5613,6 +5626,7 @@ input type for updating data in table "package.release"
 """
 input package_release_set_input {
   blob_hash: String
+  fetched_time: timestamptz
   id: uuid
   mirrored_blob_url: String
   observed_time: timestamptz
@@ -5630,6 +5644,9 @@ update columns of table "package.release"
 enum package_release_update_column {
   """column name"""
   blob_hash
+
+  """column name"""
+  fetched_time
 
   """column name"""
   id
@@ -5670,6 +5687,9 @@ enum package_select_column {
   description
 
   """column name"""
+  fetched_time
+
+  """column name"""
   id
 
   """column name"""
@@ -5685,6 +5705,7 @@ input type for updating data in table "package.package"
 input package_set_input {
   custom_registry: String
   description: String
+  fetched_time: timestamptz
   id: uuid
   name: String
   package_manager: package_manager
@@ -5699,6 +5720,9 @@ enum package_update_column {
 
   """column name"""
   description
+
+  """column name"""
+  fetched_time
 
   """column name"""
   id

@@ -226,6 +226,7 @@ type Package_bool_exp struct {
 	Or                  []*Package_bool_exp                  `json:"_or,omitempty"`
 	Custom_registry     *String_comparison_exp               `json:"custom_registry,omitempty"`
 	Description         *String_comparison_exp               `json:"description,omitempty"`
+	Fetched_time        *Timestamptz_comparison_exp          `json:"fetched_time,omitempty"`
 	Id                  *Uuid_comparison_exp                 `json:"id,omitempty"`
 	Name                *String_comparison_exp               `json:"name,omitempty"`
 	Package_maintainers *Package_package_maintainer_bool_exp `json:"package_maintainers,omitempty"`
@@ -247,6 +248,9 @@ func (v *Package_bool_exp) GetCustom_registry() *String_comparison_exp { return 
 
 // GetDescription returns Package_bool_exp.Description, and is useful for accessing the field via an interface.
 func (v *Package_bool_exp) GetDescription() *String_comparison_exp { return v.Description }
+
+// GetFetched_time returns Package_bool_exp.Fetched_time, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetFetched_time() *Timestamptz_comparison_exp { return v.Fetched_time }
 
 // GetId returns Package_bool_exp.Id, and is useful for accessing the field via an interface.
 func (v *Package_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
@@ -281,6 +285,7 @@ const (
 type Package_insert_input struct {
 	Custom_registry     string                                           `json:"custom_registry,omitempty"`
 	Description         string                                           `json:"description,omitempty"`
+	Fetched_time        time.Time                                        `json:"fetched_time,omitempty"`
 	Id                  types.UUID                                       `json:"id,omitempty"`
 	Name                string                                           `json:"name,omitempty"`
 	Package_maintainers *Package_package_maintainer_arr_rel_insert_input `json:"package_maintainers,omitempty"`
@@ -293,6 +298,9 @@ func (v *Package_insert_input) GetCustom_registry() string { return v.Custom_reg
 
 // GetDescription returns Package_insert_input.Description, and is useful for accessing the field via an interface.
 func (v *Package_insert_input) GetDescription() string { return v.Description }
+
+// GetFetched_time returns Package_insert_input.Fetched_time, and is useful for accessing the field via an interface.
+func (v *Package_insert_input) GetFetched_time() time.Time { return v.Fetched_time }
 
 // GetId returns Package_insert_input.Id, and is useful for accessing the field via an interface.
 func (v *Package_insert_input) GetId() types.UUID { return v.Id }
@@ -772,6 +780,7 @@ type Package_release_bool_exp struct {
 	Not                      *Package_release_bool_exp            `json:"_not,omitempty"`
 	Or                       []*Package_release_bool_exp          `json:"_or,omitempty"`
 	Blob_hash                *String_comparison_exp               `json:"blob_hash,omitempty"`
+	Fetched_time             *Timestamptz_comparison_exp          `json:"fetched_time,omitempty"`
 	Id                       *Uuid_comparison_exp                 `json:"id,omitempty"`
 	Mirrored_blob_url        *String_comparison_exp               `json:"mirrored_blob_url,omitempty"`
 	Observed_time            *Timestamptz_comparison_exp          `json:"observed_time,omitempty"`
@@ -799,6 +808,11 @@ func (v *Package_release_bool_exp) GetOr() []*Package_release_bool_exp { return 
 
 // GetBlob_hash returns Package_release_bool_exp.Blob_hash, and is useful for accessing the field via an interface.
 func (v *Package_release_bool_exp) GetBlob_hash() *String_comparison_exp { return v.Blob_hash }
+
+// GetFetched_time returns Package_release_bool_exp.Fetched_time, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetFetched_time() *Timestamptz_comparison_exp {
+	return v.Fetched_time
+}
 
 // GetId returns Package_release_bool_exp.Id, and is useful for accessing the field via an interface.
 func (v *Package_release_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
@@ -1066,6 +1080,7 @@ const (
 // input type for inserting data into table "package.release"
 type Package_release_insert_input struct {
 	Blob_hash                string                                           `json:"blob_hash,omitempty"`
+	Fetched_time             time.Time                                        `json:"fetched_time,omitempty"`
 	Id                       types.UUID                                       `json:"id,omitempty"`
 	Mirrored_blob_url        string                                           `json:"mirrored_blob_url,omitempty"`
 	Observed_time            time.Time                                        `json:"observed_time,omitempty"`
@@ -1084,6 +1099,9 @@ type Package_release_insert_input struct {
 
 // GetBlob_hash returns Package_release_insert_input.Blob_hash, and is useful for accessing the field via an interface.
 func (v *Package_release_insert_input) GetBlob_hash() string { return v.Blob_hash }
+
+// GetFetched_time returns Package_release_insert_input.Fetched_time, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetFetched_time() time.Time { return v.Fetched_time }
 
 // GetId returns Package_release_insert_input.Id, and is useful for accessing the field via an interface.
 func (v *Package_release_insert_input) GetId() types.UUID { return v.Id }
@@ -1328,6 +1346,8 @@ const (
 	// column name
 	Package_release_update_columnBlobHash Package_release_update_column = "blob_hash"
 	// column name
+	Package_release_update_columnFetchedTime Package_release_update_column = "fetched_time"
+	// column name
 	Package_release_update_columnId Package_release_update_column = "id"
 	// column name
 	Package_release_update_columnMirroredBlobUrl Package_release_update_column = "mirrored_blob_url"
@@ -1355,6 +1375,8 @@ const (
 	Package_update_columnCustomRegistry Package_update_column = "custom_registry"
 	// column name
 	Package_update_columnDescription Package_update_column = "description"
+	// column name
+	Package_update_columnFetchedTime Package_update_column = "fetched_time"
 	// column name
 	Package_update_columnId Package_update_column = "id"
 	// column name
