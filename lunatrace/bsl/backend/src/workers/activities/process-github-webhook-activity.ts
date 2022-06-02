@@ -12,6 +12,8 @@
  *
  */
 
+import { EmitterWebhookEvent } from '@octokit/webhooks';
+
 import { WebhookInterceptor } from '../../github/webhooks/interceptor';
 import { hasura } from '../../hasura-api';
 import { GetWebhookCacheByDeliveryIdQuery } from '../../hasura-api/generated';
@@ -25,7 +27,7 @@ type WebhookHandlerFunc = (message: ProcessGithubWebhookRequest) => Promise<Mayb
 
 export function processGithubWebhookActivity(webhooks: WebhookInterceptor): WebhookHandlerFunc {
   return async (req: ProcessGithubWebhookRequest): Promise<MaybeError<undefined>> => {
-    log.info(`Received webhook`, {
+    log.info(`received webhook`, {
       delivery_id: req.delivery_id,
     });
     const { delivery_id } = req;
@@ -42,16 +44,22 @@ export function processGithubWebhookActivity(webhooks: WebhookInterceptor): Webh
         );
 
         if (threwError(webhookData)) {
-          log.error(`Failed to get webhook data for deliveryId ${deliveryId}`);
+          log.error(`failed to get webhook data for deliveryId ${deliveryId}`);
           return newError(`Failed to get webhook data for deliveryId ${deliveryId}`);
         }
-        await webhooks.receive({
+
+        const event: EmitterWebhookEvent = {
           id: deliveryId,
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           name: webhookData.webhook_cache[0].event_type,
           payload: webhookData.webhook_cache[0].data,
+        };
+
+        log.info('processing github webhook event', {
+          event,
         });
+        await webhooks.receive(event);
 
         return newResult(undefined);
       } catch (e) {
