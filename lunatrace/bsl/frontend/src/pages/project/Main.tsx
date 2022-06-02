@@ -63,14 +63,16 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
   }, [data]);
 
   const [activeTab, setActiveTab] = useState<TabName>('dashboard');
-  const renderProjectNav = (p: ProjectInfo) => {
+  const renderProjectNavAndHeader = (p: ProjectInfo) => {
+    console.log('traits are', p.github_repository?.traits.fullTraits);
     return (
       <>
         <Helmet title={p.name} />
         <ProjectHeader
           projectName={p.name}
           organizationName={p.organization?.name}
-          githubLink={p.github_repository?.traits?.html_url}
+          githubLink={p.github_repository?.traits.fullTraits?.html_url}
+          description={p.github_repository?.traits.fullTraits?.description}
         />
         <Navbar expand="lg" className="p-0 project-nav" collapseOnSelect={true}>
           <Navbar.Toggle className="m-2" aria-controls="project-tabs-nav">
@@ -142,7 +144,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
   return (
     <SpinIfLoading isLoading={isLoading}>
       <Container className="project-page">
-        {data && data.projects_by_pk ? renderProjectNav(data.projects_by_pk) : null}
+        {data && data.projects_by_pk ? renderProjectNavAndHeader(data.projects_by_pk) : null}
       </Container>
     </SpinIfLoading>
   );

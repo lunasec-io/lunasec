@@ -13,14 +13,15 @@
  */
 import React, { useContext } from 'react';
 import { Accordion } from 'react-bootstrap';
-import { CopyBlock, dracula } from 'react-code-blocks';
-import { AiFillGithub, AiOutlineInfoCircle } from 'react-icons/ai';
-import { BiUnlink } from 'react-icons/bi';
+import { AiOutlineInfoCircle } from 'react-icons/ai';
 
+import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { UserContext } from '../../../contexts/UserContext';
 import { ProjectInfo, SetActiveTab } from '../types';
 
+import { DefaultBranchSummary } from './DefaultBranchSummary';
 import { ManifestDrop } from './ManifestDrop';
+import { ProjectCloneForAdmin } from './ProjectCloneForAdmin';
 import { ScanTypesExplanation } from './ScanTypesExplanation';
 
 interface ProjectDashboardMainProps {
@@ -31,62 +32,12 @@ interface ProjectDashboardMainProps {
 export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainProps> = ({ project, setActiveTab }) => {
   const { isAdmin } = useContext(UserContext);
 
-  const renderGithubInfo = () => {
-    if (!project.github_repository) {
-      return (
-        <p className="text-center">
-          <BiUnlink size="1rem" className="me-1 mb-1" />
-          Not linked to a GitHub Repository
-        </p>
-      );
-    }
-    const githubRepo = project.github_repository;
-
-    const getProjectUrl = () => {
-      const projectUrlStr = githubRepo.traits.gitUrl;
-      if (!projectUrlStr) {
-        return '#';
-      }
-      const projectUrl = new URL(projectUrlStr);
-      projectUrl.protocol = 'https:';
-      return projectUrl.toString();
-    };
-
-    return (
-      <a href={getProjectUrl()}>
-        <p className="text-center">
-          <AiFillGithub size="1rem" className="me-1 mb-1" />
-          Imported from GitHub
-        </p>
-      </a>
-    ); // const github_traits: GithubTraits = project.github_repository.traits;
-    // return (
-    //
-    // );
-  };
-  const cloneProject = () => {
-    const cloneUrl = project.github_repository?.authenticated_clone_url?.url;
-    if (!cloneUrl) {
-      return null;
-    }
-    const formattedCloneUrl = cloneUrl.replace('git://', 'https://');
-    return (
-      <>
-        <CopyBlock
-          text={`mkdir -p ~/lunatrace_client_repos && cd ~/lunatrace_client_repos && git clone ${formattedCloneUrl}`}
-          language="bash"
-          showLineNumbers={false}
-          startingLineNumber={false}
-          theme={dracula}
-          codeBlock
-        />
-      </>
-    );
-  };
   return (
     <>
-      {isAdmin && cloneProject()}
-      {renderGithubInfo()}
+      <ConditionallyRender if={isAdmin}>
+        <ProjectCloneForAdmin project={project} />
+      </ConditionallyRender>
+      <DefaultBranchSummary project={project} />
       {/*Github URL Github Name short github description blurb most recent several builds, master first probably*/}
       <Accordion flush={false} defaultActiveKey={project.builds.length > 0 ? '' : '0'}>
         <Accordion.Item eventKey="0">
