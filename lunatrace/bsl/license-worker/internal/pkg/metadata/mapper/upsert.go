@@ -12,6 +12,8 @@
 package mapper
 
 import (
+	"time"
+
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/fetcher"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
@@ -23,6 +25,7 @@ func Map(p *fetcher.PackageMetadata) (*gql.Package_insert_input, error) {
 		Custom_registry: "",
 		Description:     p.Description,
 		Name:            p.Name,
+		Fetched_time:    time.Now(),
 		Package_maintainers: &gql.Package_package_maintainer_arr_rel_insert_input{
 			Data:        mapMaintainers(p.Maintainers),
 			On_conflict: gql.PackageMaintainerOnConflict,
@@ -49,6 +52,8 @@ func mapReleases(r []fetcher.Release) []*gql.Package_release_insert_input {
 			Version:           rl.Version,
 
 			Mirrored_blob_url: "",
+
+			Fetched_time: time.Now(),
 
 			Release_dependencies: &gql.Package_release_dependency_arr_rel_insert_input{
 				Data:        mapDependencies(rl.Dependencies),
