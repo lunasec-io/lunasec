@@ -73,7 +73,7 @@ func mapReleases(r map[string]json.RawMessage) ([]metadata.Release, error) {
 
 			UpstreamData: rrl,
 
-			//todo
+			//todo make releasetime nullable
 			ReleaseTime: time.Time{},
 		})
 

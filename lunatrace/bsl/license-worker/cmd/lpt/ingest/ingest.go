@@ -52,7 +52,7 @@ func NewCommand(p Params) clifx.CommandResult {
 						}
 						pkgs = append(pkgs, newPkg)
 					}
-
+					fmt.Println(len(pkgs) - fetchedPkgs)
 				}
 
 				return nil
