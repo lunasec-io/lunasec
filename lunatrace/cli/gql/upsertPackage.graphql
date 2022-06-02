@@ -5,11 +5,8 @@ mutation UpsertPackage($object: package_insert_input!, $on_conflict: package_on_
             id
             release_dependencies {
                 id
-            }
-            release_licenses {
-                id
-                license {
-                    id
+                dependency_package {
+                    fetched_time
                 }
             }
         }
