@@ -13,11 +13,6 @@
       <option name="TYPE_CASE" value="3" />
       <option name="QUOTE_IDENTIFIER" value="1" />
     </SqlCodeStyleSettings>
-    <codeStyleSettings language="Python">
-      <indentOptions>
-        <option name="USE_TAB_CHARACTER" value="true" />
-      </indentOptions>
-    </codeStyleSettings>
     <codeStyleSettings language="TypeScript">
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />
