@@ -73,7 +73,7 @@
     "test:all": "yarn test:unit && yarn run test:e2e:local",
     "lint:fix": "yarn run lint --fix",
     "lint": "yarn run lint:basecommand .",
-    "lint:basecommand": "yarn run eslint --ext .js,.jsx,.ts,.tsx,.vue ./lunatrace",
+    "lint:basecommand": "yarn run eslint --ext .js,.jsx,.ts,.tsx,.vue --quiet ./lunatrace",
     "lint:lunatrace": "yarn run lint:basecommand ./lunatrace",
     "version:release": "./tools/version-release.sh",
     "compile:dev:infrastructure": "cd js/internal-infrastructure/s3-redirect-generator && yarn run compile",

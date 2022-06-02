@@ -20,15 +20,11 @@ import (
 	"go.uber.org/fx"
 )
 
-type RootAction = cli.ActionFunc
-type RootCommand = cli.Command
-
-var cliApp *cli.App
-
-func Main(opts fx.Option) {
+func Main(opts ...fx.Option) {
 	rootCtx, cancel := context.WithCancel(context.Background())
+	var cliApp *cli.App
 
-	app := fx.New(opts, fx.Options(
+	app := fx.New(fx.Options(opts...), fx.Options(
 		fx.Provide(
 			NewApp,
 		),

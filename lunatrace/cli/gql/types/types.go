@@ -14,10 +14,10 @@
 //
 package types
 
-type PackageManager int
+type PackageManager string
 
 const (
-	NPM PackageManager = iota
+	NPM = "NPM"
 )
 
 type LicenseSource int

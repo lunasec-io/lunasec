@@ -32,6 +32,7 @@ import { HostedZone } from '@aws-cdk/aws-route53';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { Secret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
+import { Duration } from '@aws-cdk/core';
 
 import { StackInputsType } from '../bin/lunatrace-backend';
 
@@ -320,6 +321,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       circuitBreaker: {
         rollback: true,
       },
+      healthCheckGracePeriod: Duration.seconds(5),
       desiredCount: 2,
       deploymentController: {
         type: DeploymentControllerType.ECS,
@@ -350,8 +352,11 @@ export class LunatraceBackendStack extends cdk.Stack {
     });
 
     storageStackStage.sbomBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
-    oryConfigBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
     storageStackStage.manifestBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
+    storageStackStage.processWebhookSqsQueue.grantSendMessages(loadBalancedFargateService.taskDefinition.taskRole);
+    storageStackStage.processRepositorySqsQueue.grantSendMessages(loadBalancedFargateService.taskDefinition.taskRole);
+
+    oryConfigBucket.grantReadWrite(loadBalancedFargateService.taskDefinition.taskRole);
 
     WorkerStack.createWorkerStack(this, {
       env: props.env,

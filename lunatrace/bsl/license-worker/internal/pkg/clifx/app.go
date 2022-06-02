@@ -48,12 +48,15 @@ type AppConfig struct {
 	// An action to execute after any subcommands are run, but after the subcommand has finished
 	// It is run even if Action() panics
 	After cli.AfterFunc
-	// The action to execute when no subcommands are specified
-	Action cli.ActionFunc
 	// Execute this function if the proper command cannot be found
 	CommandNotFound cli.CommandNotFoundFunc
 	// Execute this function if a usage error occurs
 	OnUsageError cli.OnUsageErrorFunc
+}
+
+type CommandResult struct {
+	fx.Out
+	Command *cli.Command `group:"cli_root_commands"`
 }
 
 type AppDeps struct {
@@ -61,8 +64,8 @@ type AppDeps struct {
 	// List of commands to execute
 	Commands []*cli.Command `group:"cli_root_commands"`
 	// List of flags to parse
-	Flags  []cli.Flag `group:"cli_root_flags"`
-	Action RootAction `optional:"true"`
+	Flags  []cli.Flag     `group:"cli_root_flags"`
+	Action cli.ActionFunc `optional:"true"`
 }
 
 func NewApp(in AppIn) *cli.App {
