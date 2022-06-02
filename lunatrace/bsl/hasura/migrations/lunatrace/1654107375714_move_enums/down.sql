@@ -26,7 +26,6 @@ ALTER TABLE package.package_maintainer
 CREATE UNIQUE INDEX ON "package"."package" ("package_manager", "custom_registry", "name");
 ALTER TABLE package.package
     DROP CONSTRAINT package_package_manager_custom_registry_name_idx;
-drop index package.package_package_manager_expr_name_idx;
 
 CREATE UNIQUE INDEX ON "package"."release" ("package_id", "version");
 ALTER TABLE package.release
@@ -46,3 +45,8 @@ alter table package.package
 alter table package.release
     drop column fetched_time;
 
+alter table package.package
+    alter column custom_registry drop not null;
+
+alter table package.package
+    alter column custom_registry drop default;
