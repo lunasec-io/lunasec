@@ -1,6 +1,6 @@
 module github.com/lunasec-io/lunasec
 
-go 1.17
+go 1.18
 
 // genqlient doesn't have support for omitempty yet, use a patched version
 // https://github.com/Khan/genqlient/issues/190

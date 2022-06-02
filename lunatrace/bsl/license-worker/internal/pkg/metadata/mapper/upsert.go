@@ -19,18 +19,24 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 )
 
+func ptr[T any](t T) *T {
+	return &t
+}
+
+var npmV types.PackageManager = types.NPM
+
 // Map converts a fetcher.PackageMetadata into the struct required by GraphQL codegen.
 func Map(p *fetcher.PackageMetadata) (*gql.Package_insert_input, error) {
 	r := &gql.Package_insert_input{
-		Custom_registry: "",
-		Description:     p.Description,
-		Name:            p.Name,
-		Fetched_time:    time.Now(),
+		Custom_registry: ptr(""),
+		Description:     ptr(p.Description),
+		Name:            ptr(p.Name),
+		Fetched_time:    ptr(time.Now()),
 		Package_maintainers: &gql.Package_package_maintainer_arr_rel_insert_input{
 			Data:        mapMaintainers(p.Maintainers),
 			On_conflict: gql.PackageMaintainerOnConflict,
 		},
-		Package_manager: types.NPM,
+		Package_manager: &npmV,
 		Releases: &gql.Package_release_arr_rel_insert_input{
 			Data:        mapReleases(p.Releases),
 			On_conflict: gql.ReleaseOnConflict,
@@ -45,15 +51,13 @@ func mapReleases(r []fetcher.Release) []*gql.Package_release_insert_input {
 		m[i] = &gql.Package_release_insert_input{
 			Publishing_maintainer: mapMaintainer(rl.PublishingMaintainer),
 
-			Release_time:      rl.ReleaseTime,
-			Blob_hash:         rl.BlobHash,
-			Upstream_blob_url: rl.UpstreamBlobUrl,
-			Upstream_data:     rl.UpstreamData,
-			Version:           rl.Version,
+			Release_time:      ptr(rl.ReleaseTime),
+			Blob_hash:         ptr(rl.BlobHash),
+			Upstream_blob_url: ptr(rl.UpstreamBlobUrl),
+			Upstream_data:     ptr(rl.UpstreamData),
+			Version:           ptr(rl.Version),
 
-			Mirrored_blob_url: "",
-
-			Fetched_time: time.Now(),
+			Fetched_time: ptr(time.Now()),
 
 			Release_dependencies: &gql.Package_release_dependency_arr_rel_insert_input{
 				Data:        mapDependencies(rl.Dependencies),
@@ -73,13 +77,13 @@ func mapDependencies(ds []fetcher.Dependency) []*gql.Package_release_dependency_
 			// create a stub entry for packages which are not yet analyzed.
 			Dependency_package: &gql.Package_obj_rel_insert_input{
 				Data: &gql.Package_insert_input{
-					Name:            dep.Name,
-					Package_manager: types.NPM,
+					Name:            ptr(dep.Name),
+					Package_manager: &npmV,
 				},
 				On_conflict: gql.PackageOnConflict,
 			},
-			Package_name:          dep.Name,
-			Package_version_query: dep.Version,
+			Package_name:          ptr(dep.Name),
+			Package_version_query: ptr(dep.Version),
 		}
 	}
 	return m
@@ -99,9 +103,9 @@ func mapMaintainers(p []fetcher.Maintainer) []*gql.Package_package_maintainer_in
 func mapMaintainer(pm fetcher.Maintainer) *gql.Package_maintainer_obj_rel_insert_input {
 	return &gql.Package_maintainer_obj_rel_insert_input{
 		Data: &gql.Package_maintainer_insert_input{
-			Email:           pm.Email,
-			Name:            pm.Name,
-			Package_manager: types.NPM,
+			Email:           ptr(pm.Email),
+			Name:            ptr(pm.Name),
+			Package_manager: &npmV,
 		},
 		On_conflict: gql.MaintainerOnConflict,
 	}
