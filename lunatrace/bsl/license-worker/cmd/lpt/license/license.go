@@ -9,7 +9,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package main
+package license
 
 import (
 	"fmt"
@@ -19,7 +19,7 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/clifx"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/scanner"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/license/scanner"
 )
 
 type Params struct {
@@ -28,26 +28,25 @@ type Params struct {
 	Scanner []scanner.Scanner `group:"license_scanners"`
 }
 
-type Result struct {
-	fx.Out
-	Func clifx.RootAction
-}
-
-func NewRootAction(p Params) Result {
-	return Result{
-		Func: func(ctx *cli.Context) error {
-			b, err := ioutil.ReadFile(ctx.Args().First())
-			if err != nil {
-				return err
-			}
-			for _, scan := range p.Scanner {
-				licenses, err := scan.Scan(b)
+func NewCommand(p Params) clifx.CommandResult {
+	return clifx.CommandResult{
+		Command: &cli.Command{
+			Name:  "license",
+			Usage: "[file]",
+			Action: func(ctx *cli.Context) error {
+				b, err := ioutil.ReadFile(ctx.Args().First())
 				if err != nil {
 					return err
 				}
-				fmt.Println(licenses)
-			}
-			return nil
+				for _, scan := range p.Scanner {
+					licenses, err := scan.Scan(b)
+					if err != nil {
+						return err
+					}
+					fmt.Println(licenses)
+				}
+				return nil
+			},
 		},
 	}
 }

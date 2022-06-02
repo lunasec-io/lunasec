@@ -86,16 +86,23 @@ async function organizationHandler(event: EmitterWebhookEvent<'organization'>) {
 
 async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
   const actionName = event.payload.action;
-  log.info('received pull request webhook for action: ', actionName);
+  log.info('received pull request webhook for action', {
+    actionName,
+  });
 
   if (actionName === 'synchronize' || actionName === 'opened' || actionName === 'reopened') {
     if (!event.payload.installation) {
-      log.error(`no installation found in pull request webhook`);
-      log.info(event);
+      log.error(`no installation found in pull request webhook`, {
+        event,
+      });
       return;
     }
 
-    await queueRepositoryForSnapshot(event.payload.installation.id, {
+    log.info('snapshotting repository for pull request', {
+      event,
+    });
+
+    const res = await queueRepositoryForSnapshot(event.payload.installation.id, {
       cloneUrl: event.payload.repository.clone_url,
       gitBranch: event.payload.pull_request.head.ref, // TODO make this the human readable branch name, not the ref
       repoGithubId: event.payload.repository.id,
@@ -103,6 +110,16 @@ async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
       sourceType: 'pr',
       pullRequestId: event.payload.pull_request.node_id,
       gitCommit: event.payload.pull_request.head.sha,
+    });
+
+    if (res.error) {
+      log.error('failed to queue repository for snapshot', {
+        event,
+      });
+      return;
+    }
+    log.info('processed pull request', {
+      event,
     });
   }
 }

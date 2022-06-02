@@ -20,15 +20,13 @@ name: Tests
 on:
   pull_request:
     branches: ['**', '**']
-    paths-ignore:
-      - .yarn/**
-      - lunatrace/**
+    paths:
+      - .disabled
 
   push:
     branches: [master]
-    paths-ignore:
-      - .yarn/**
-      - lunatrace/**
+    paths:
+      - .disabled
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
