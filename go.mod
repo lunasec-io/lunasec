@@ -25,8 +25,6 @@ require (
 	github.com/google/go-containerregistry v0.8.1-0.20220209165246-a44adc326839
 	github.com/google/licensecheck v0.3.1
 	github.com/google/uuid v1.3.0
-	github.com/jpillora/backoff v1.0.0
-	github.com/likexian/whois-parser v1.22.0
 	github.com/lor00x/goldap v0.0.0-20180618054307-a546dffdd1a3
 	github.com/pkg/errors v0.9.1
 	github.com/prashantv/gostub v1.1.0
@@ -35,7 +33,6 @@ require (
 	github.com/rs/zerolog v1.26.1
 	github.com/spf13/viper v1.11.0
 	github.com/stretchr/testify v1.7.1
-	github.com/undiabler/golang-whois v0.0.0-20200529150455-5fb8fbf53359
 	github.com/urfave/cli/v2 v2.6.0
 	go.uber.org/config v1.4.0
 	go.uber.org/fx v1.17.1
@@ -181,7 +178,6 @@ require (
 	github.com/knqyf263/go-deb-version v0.0.0-20190517075300-09fca494f03d // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/letsencrypt/boulder v0.0.0-20220331220046-b23ab962616e // indirect
-	github.com/likexian/gokit v0.25.6 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
