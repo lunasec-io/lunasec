@@ -66,10 +66,11 @@
     "cypress": "9.1.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
-    "jest": "27.4.3",
+    "jest": "~28.1.0",
     "lerna": "^3.22.1",
     "lint-staged": "^10.5.4",
     "serve": "^11.3.0",
+    "ts-jest": "~28.0.3",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "~4.5.3"
   },

@@ -1,6 +1,10 @@
 module github.com/lunasec-io/lunasec
 
-go 1.17
+go 1.18
+
+// genqlient doesn't have support for omitempty yet, use a patched version
+// https://github.com/Khan/genqlient/issues/190
+replace github.com/Khan/genqlient => github.com/ajvpot/genqlient v0.4.1-0.20220601222338-9a6fa43de94e
 
 require (
 	github.com/Joker/jade v1.1.3
@@ -21,9 +25,6 @@ require (
 	github.com/google/go-containerregistry v0.8.1-0.20220209165246-a44adc326839
 	github.com/google/licensecheck v0.3.1
 	github.com/google/uuid v1.3.0
-	github.com/ipfans/fxlogger v0.1.0
-	github.com/jpillora/backoff v1.0.0
-	github.com/likexian/whois-parser v1.22.0
 	github.com/lor00x/goldap v0.0.0-20180618054307-a546dffdd1a3
 	github.com/pkg/errors v0.9.1
 	github.com/prashantv/gostub v1.1.0
@@ -32,7 +33,6 @@ require (
 	github.com/rs/zerolog v1.26.1
 	github.com/spf13/viper v1.11.0
 	github.com/stretchr/testify v1.7.1
-	github.com/undiabler/golang-whois v0.0.0-20200529150455-5fb8fbf53359
 	github.com/urfave/cli/v2 v2.6.0
 	go.uber.org/config v1.4.0
 	go.uber.org/fx v1.17.1
@@ -69,7 +69,7 @@ require (
 	github.com/ThalesIgnite/crypto11 v1.2.5 // indirect
 	github.com/acobaugh/osrelease v0.1.0 // indirect
 	github.com/acomagu/bufpipe v1.0.3 // indirect
-	github.com/agnivade/levenshtein v1.1.0 // indirect
+	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/alexflint/go-arg v1.4.2 // indirect
 	github.com/alexflint/go-scalar v1.0.0 // indirect
 	github.com/anchore/go-macholibre v0.0.0-20220308212642-53e6d0aaf6fb // indirect
@@ -178,7 +178,6 @@ require (
 	github.com/knqyf263/go-deb-version v0.0.0-20190517075300-09fca494f03d // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/letsencrypt/boulder v0.0.0-20220331220046-b23ab962616e // indirect
-	github.com/likexian/gokit v0.25.6 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
@@ -234,7 +233,7 @@ require (
 	github.com/titanous/rocacheck v0.0.0-20171023193734-afe73141d399 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/vbatts/tar-split v0.11.2 // indirect
-	github.com/vektah/gqlparser/v2 v2.3.1 // indirect
+	github.com/vektah/gqlparser/v2 v2.4.1 // indirect
 	github.com/vifraa/gopom v0.1.0 // indirect
 	github.com/wagoodman/go-partybus v0.0.0-20210627031916-db1f5573bbc5 // indirect
 	github.com/wagoodman/go-progress v0.0.0-20200807221327-51d465df1451 // indirect

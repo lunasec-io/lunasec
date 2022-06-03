@@ -22,7 +22,8 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/clifx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/license/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/license/scanner/packagejson"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/fetcher/npm2"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/fetcher/npm"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/ingester"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/lunatracefx"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
@@ -51,7 +52,8 @@ func main() {
 			license.NewCommand,
 		),
 		fx.Provide(
-			npm2.NewNPMFetcher,
+			npm.NewNPMFetcher,
+			ingester.NewHasuraIngester,
 			ingest.NewCommand,
 		),
 	)
