@@ -14,6 +14,7 @@
 import { countCriticalVulnerabilities, filterFindingsByIgnored } from '@lunatrace/lunatrace-common/build/main';
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { branchLink, branchName, commitLink } from '../../../utils/build-display-helpers';
@@ -26,13 +27,23 @@ interface DefaultBranchSummaryProps {
 }
 
 export const DefaultBranchSummary: React.FC<DefaultBranchSummaryProps> = ({ project }) => {
-  const masterBuilds = project.default_branch_builds;
-  const masterBuild = masterBuilds ? masterBuilds[0] : null;
-  console.log('master build is ', masterBuild);
+  const navigate = useNavigate();
+  const defaultBranchBuilds = project.default_branch_builds;
+  const defaultBranchBuild = defaultBranchBuilds ? defaultBranchBuilds[0] : null;
   const latestBuildAnyBranch = project.builds[0];
-  const build = masterBuild || latestBuildAnyBranch;
+  // Prefer a build on the default branch if available, otherwise use a build from any branch just so we can show something here
+  const build = defaultBranchBuild || latestBuildAnyBranch;
   if (!build) {
-    return <p>Not yet scanned.</p>;
+    return (
+      <Card className="w-100">
+        <Card.Header>
+          <h3>Not yet scanned</h3>
+        </Card.Header>
+        <Card.Body>
+          <p>All new projects will be scanned soon after installation, check back in a few moments.</p>
+        </Card.Body>
+      </Card>
+    );
   }
   // const filteredFindings = filterFindingsByIgnored(build.findings);
   // const vulnerablePackageCount = countCriticalVulnerabilities(filteredFindings);
@@ -48,26 +59,26 @@ export const DefaultBranchSummary: React.FC<DefaultBranchSummaryProps> = ({ proj
   const commitUrl = commitLink(build);
 
   return (
-    <Card className="">
+    <Card className="clickable-card w-100" onClick={(e) => navigate(`build/${build.id}`)}>
       <Card.Header>
         <Container fluid>
           <Row>
             <Col sm="6">
               <Card.Title>
                 <h3>
-                  <span className="darker">Snapshot </span>
-                  {build.build_number}{' '}
+                  <span className="lighter">Latest Results</span>
+                  <ConditionallyRender if={build.git_branch}>
+                    <span className="darker"> on {build.git_branch}</span>
+                  </ConditionallyRender>
                 </h3>
               </Card.Title>
-              <Card.Subtitle className="darker">
-                <SourceIcon source_type={build.source_type} className="mb-1 me-1 lighter" /> Uploaded {uploadDate}
-              </Card.Subtitle>
+              <Card.Subtitle className="darker"></Card.Subtitle>
             </Col>
             <Col sm={{ span: 6 }}>
-              <div style={{ float: 'right', textAlign: 'right' }}>
-                <Card.Title>
+              <div>
+                <Card.Title className="text-sm-end">
                   <h3 style={{ display: 'inline' }}>{vulnerablePackageCount}</h3>
-                  <span className="text-right darker"> critical packages</span>
+                  <span className="darker"> critical packages</span>
                 </Card.Title>
               </div>
             </Col>
@@ -78,9 +89,15 @@ export const DefaultBranchSummary: React.FC<DefaultBranchSummaryProps> = ({ proj
         <Container fluid>
           <Row>
             <Col xs="12" sm={{ order: 'last', span: 5, offset: 4 }}>
-              <h6 style={{ textAlign: 'right' }}>
-                <span className="darker"> Last scanned:</span> {lastScannedDate}
+              <h6 className="text-sm-end">
+                <SourceIcon source_type={build.source_type} className="mb-1 me-1 lighter" />{' '}
+                <span className="darker"> From:</span> {uploadDate}
               </h6>
+              <ConditionallyRender if={lastScannedDate !== uploadDate}>
+                <h6 style={{ textAlign: 'right' }}>
+                  <span className="darker"> Last scanned:</span> {lastScannedDate}
+                </h6>
+              </ConditionallyRender>
             </Col>
             <Col xs="12" sm="3">
               <div className="build-git-info">

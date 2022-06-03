@@ -153,7 +153,7 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string; forHome
     return (
       <span>
         <FilePlus className="me-1 mb-1" />
-        Click here or drap-and-drop a manifest file or bundled project to manually submit a build.
+        Click here or drap-and-drop a manifest file or compressed project to manually submit a build.
         <br />
         (ex: package-lock.json, my-project.jar, my-project.zip)
       </span>
@@ -174,7 +174,7 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string; forHome
   };
   return (
     <Card
-      className={forHomepage ? 'clickable-card ms-md-6 me-md-6 homepage-manifest-drop' : 'clickable-card'}
+      className={forHomepage ? 'clickable-card ms-md-6 me-md-6 homepage-manifest-drop' : 'clickable-card w-100'}
       {...getRootProps()}
     >
       <Card.Body>

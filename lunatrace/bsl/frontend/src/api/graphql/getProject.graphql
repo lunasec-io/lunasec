@@ -5,6 +5,7 @@ query GetProject($project_id: uuid!, $build_limit: Int = 10) {
         name
         organization_id
         repo
+
         settings_id
         settings {
             id
@@ -16,6 +17,7 @@ query GetProject($project_id: uuid!, $build_limit: Int = 10) {
         github_repository {
             git_url
             github_id
+            default_branch
             traits
             authenticated_clone_url {
                 url
@@ -66,7 +68,7 @@ query GetProject($project_id: uuid!, $build_limit: Int = 10) {
                 count
             }
         }
-        default_branch_builds(limit: 1) {
+        default_branch_builds(limit: 1, order_by: {build_number: desc}) {
             build_number
             created_at
             git_branch

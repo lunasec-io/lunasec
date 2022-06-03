@@ -77,7 +77,7 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
     { onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void }
   >(({ children, onClick }, ref) => (
     <a
-      className="text-right position-absolute top-0 end-0 m-3 btn-white"
+      className="text-end position-absolute top-0 end-0 m-3 btn-white"
       href=""
       ref={ref}
       onClick={(e) => {
