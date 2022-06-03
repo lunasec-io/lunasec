@@ -1,0 +1,15 @@
+{
+  "name": "lunasec-go-monorepo",
+  "private": true,
+  "version": "1.0.7",
+  "description": "LunaSec Go Monorepo",
+  "scripts": {
+    "lint": "golangci-lint run",
+    "format": "gofmt -w ",
+    "compile:release": "make release version=\"$(yarn run --silent version)\"",
+    "publish:release": "make publish version=\"$(yarn run --silent version)\"",
+    "version": "node -p 'require(\"./package.json\").version'"
+  },
+  "author": "lunasec",
+  "license": "Apache-2.0"
+}
