@@ -159,8 +159,8 @@ module.exports = {
     announcementBar: {
       id: 'star_us',
       content:
-        '<a href="https://join.slack.com/t/lunasec-devs/shared_invite/zt-18nfz8ncw-HDU7kXaxssalPcB2eY8xQQ" target="_blank" rel="noopener" style="font-size: 15px; text-decoration: none">Claim your seat on Slack to chat with our security team.</a>',
-      backgroundColor: '#fafbfc',
+        '<a href="https://join.slack.com/t/lunaseccommunity/shared_invite/zt-1a8cdfqdg-LbgCYuxzQl7iyZzZ4H4Idw" target="_blank" rel="noopener" style="font-size: 15px; text-decoration: none">Click here to join our Slack and chat with our security team.</a>',
+      backgroundColor: '#9ec6ef',
       textColor: '#091E42',
       isCloseable: true,
     },
