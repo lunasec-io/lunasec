@@ -15,5 +15,5 @@
 package util
 
 func Ptr[T any](t T) *T {
-	return &t
+  return &t
 }

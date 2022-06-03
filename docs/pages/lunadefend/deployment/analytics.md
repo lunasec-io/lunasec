@@ -48,7 +48,7 @@ module.exports = {
     }
 }
 ```
-in your `lunasec.json` config before LunaDefend is deployed. Setting this flag will disable deploying the Lambda that collects metrics every
+in your `lunadefend.js` config before LunaDefend is deployed. Setting this flag will disable deploying the Lambda that collects metrics every
 24 hours.
 
 Regardless, thank you for using LunaDefend and helping to improve the security of software across the world. We really

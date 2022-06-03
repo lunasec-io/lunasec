@@ -66,10 +66,10 @@ We looked around at other big projects like ours and saw that some of them use m
 That's okay, but we wanted more programmatic control over Docker Compose, so we wrote a script that generates the YAML file.  
 
 We (okay, it was my very smart coworker) even generated
-[typescript types](https://github.com/lunasec-io/lunasec/blob/master/js/sdks/packages/cli/src/docker-compose/docker-compose-types.ts) 
+[typescript types](https://github.com/lunasec-io/lunasec/blob/master/lunadefend/js/sdks/packages/cli/src/docker-compose/docker-compose-types.ts) 
 for the YAML file from the official JSON Schema definition.
 
-[Here's the code](https://github.com/lunasec-io/lunasec/blob/master/js/sdks/packages/cli/src/docker-compose/lunasec-stack.ts) 
+[Here's the code](https://github.com/lunasec-io/lunasec/blob/master/lunadefend/js/sdks/packages/cli/src/docker-compose/lunasec-stack.ts) 
 that handles generating the `docker-compose.yaml`.  As you can see, it's pretty darn clean, with each container represented as a function that returns
 a config object.  I work with some smart folks.  Hopefully someday Docker Compose (or something similar) is going to 
 expose a JS SDK we can call to set up the cluster programmatically,
