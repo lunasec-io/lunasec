@@ -23,7 +23,8 @@ export const ProjectCloneForAdmin: React.FC<{ project: ProjectInfo }> = ({ proje
   }
   const formattedCloneUrl = cloneUrl.replace('git://', 'https://');
   return (
-    <>
+    <div className="p-3">
+      <p>Clone repo using: </p>
       <CopyBlock
         text={`mkdir -p ~/lunatrace_client_repos && cd ~/lunatrace_client_repos && git clone ${formattedCloneUrl}`}
         language="bash"
@@ -32,6 +33,6 @@ export const ProjectCloneForAdmin: React.FC<{ project: ProjectInfo }> = ({ proje
         theme={dracula}
         codeBlock
       />
-    </>
+    </div>
   );
 };
