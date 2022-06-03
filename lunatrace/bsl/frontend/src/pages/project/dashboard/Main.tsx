@@ -12,7 +12,7 @@
  *
  */
 import React, { useContext } from 'react';
-import { Accordion } from 'react-bootstrap';
+import { Accordion, Col, Row } from 'react-bootstrap';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
@@ -34,10 +34,14 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
 
   return (
     <>
-      <ConditionallyRender if={isAdmin}>
-        <ProjectCloneForAdmin project={project} />
-      </ConditionallyRender>
-      <DefaultBranchSummary project={project} />
+      <Row className="">
+        <Col className="d-flex align-items-stretch" lg="8">
+          <DefaultBranchSummary project={project} />
+        </Col>
+        <Col className="d-flex align-items-stretch" lg="4">
+          <ManifestDrop project_id={project.id} />
+        </Col>
+      </Row>
       {/*Github URL Github Name short github description blurb most recent several builds, master first probably*/}
       <Accordion flush={false} defaultActiveKey={project.builds.length > 0 ? '' : '0'}>
         <Accordion.Item eventKey="0">
@@ -53,8 +57,9 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
-      <hr />
-      <ManifestDrop project_id={project.id} />
+      <ConditionallyRender if={isAdmin}>
+        <ProjectCloneForAdmin project={project} />
+      </ConditionallyRender>
     </>
   );
 };
