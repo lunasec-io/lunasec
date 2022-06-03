@@ -9,4 +9,5 @@ WHERE build.git_branch = ( -- get the default branch by going to the build's pro
     INNER JOIN public.github_repositories
     ON project.id = public.github_repositories.project_id
     WHERE project.id = build.project_id)
+AND EXISTS (SELECT 1 FROM public.scans WHERE build_id = build.id)
 ;
