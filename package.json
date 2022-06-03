@@ -79,7 +79,7 @@
     "compile:dev:infrastructure": "cd lunadefend/js/internal-infrastructure/s3-redirect-generator && yarn run compile",
     "compile:dev:sdks": "cd lunadefend/js/sdks && yarn run compile:dev",
     "compile:release:sdks": "cd lunadefend/js/sdks && yarn run compile:release",
-    "compile:release:services": "cd go && yarn run compile:release",
+    "compile:release:services": "cd lunadefend/go && yarn run compile:release",
     "compile:release:demos": "VERSION=$(yarn run --silent monorepo:version) lunadefend/js/docker/release.sh build",
     "compile:release": "yarn run compile:release:sdks && yarn run compile:release:services && yarn run compile:release:demos",
     "postinstall": "sh ./tools/postinstall.sh",
