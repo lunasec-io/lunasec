@@ -29,7 +29,7 @@ In order to deploy LunaDefend into your infrastructure, you are going to need tw
 
 The CLI can be installed via NPM, as described in the [getting started guide](/pages/lunadefend/getting-started/dedicated-tokenizer/introduction/#cli). 
 
-The LunaDefend CLI tool needs a configuration file which reflects your infrastructure. To do this, create the file (or add to your existing) `lunasec.js`
+The LunaDefend CLI tool needs a configuration file which reflects your infrastructure. To do this, create the file (or add to your existing) `lunadefend.js`
 and put this as its contents:
 ```js
 module.exports = {

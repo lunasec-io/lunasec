@@ -1,0 +1,7 @@
+secure_frame_controller:
+  cdn_config:
+    protocol: ${CDN_PROTOCOL:http}
+    host: ${CDN_HOST:"localhost:8000"}
+    main_script: js/main-dev.js
+    main_style: main.css
+  tokenizer_url: ${REACT_APP_TOKENIZER_URL:"http://localhost:37766"}

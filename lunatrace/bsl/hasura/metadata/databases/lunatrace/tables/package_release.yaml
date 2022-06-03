@@ -12,14 +12,14 @@ array_relationships:
   - name: release_dependencies
     using:
       foreign_key_constraint_on:
-        column: dependency_release_id
+        column: release_id
         table:
           schema: package
           name: release_dependency
   - name: release_dependents
     using:
       foreign_key_constraint_on:
-        column: release_id
+        column: dependency_release_id
         table:
           schema: package
           name: release_dependency
@@ -35,45 +35,48 @@ insert_permissions:
     permission:
       check: {}
       columns:
-        - upstream_data
         - blob_hash
-        - mirrored_blob_url
-        - upstream_blob_url
-        - version
-        - observed_time
-        - release_time
+        - fetched_time
         - id
+        - mirrored_blob_url
+        - observed_time
         - package_id
         - publishing_maintainer_id
+        - release_time
+        - upstream_blob_url
+        - upstream_data
+        - version
       backend_only: false
 select_permissions:
   - role: service
     permission:
       columns:
-        - upstream_data
         - blob_hash
-        - mirrored_blob_url
-        - upstream_blob_url
-        - version
-        - observed_time
-        - release_time
+        - fetched_time
         - id
+        - mirrored_blob_url
+        - observed_time
         - package_id
         - publishing_maintainer_id
+        - release_time
+        - upstream_blob_url
+        - upstream_data
+        - version
       filter: {}
 update_permissions:
   - role: service
     permission:
       columns:
-        - upstream_data
         - blob_hash
-        - mirrored_blob_url
-        - upstream_blob_url
-        - version
-        - observed_time
-        - release_time
+        - fetched_time
         - id
+        - mirrored_blob_url
+        - observed_time
         - package_id
         - publishing_maintainer_id
+        - release_time
+        - upstream_blob_url
+        - upstream_data
+        - version
       filter: {}
       check: {}
