@@ -56,7 +56,7 @@ jobs:
           yarn compile:dev:infrastructure
 
       - name: Build Repo
-        working-directory: js/sdks
+        working-directory: lunadefend/js/sdks
         run: yarn compile:release
 #      - name: Set env.BRANCH
 #        run: echo "BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3 | cut -d'-' -f 2)" >> $GITHUB_ENV
