@@ -36,7 +36,7 @@ applications that might need to detokenize a token more than 15 minutes after it
 [can be customized](/pages/lunadefend/node-sdk/classes/Grants/)
 during creation if you find that you need a longer duration, up to your configured maximum.
 
-The default duration and maximum duration can be configured in your `lunasec.js` [config file](/pages/lunadefend/cli-config/interfaces/DeploymentConfigOptions/), 
+The default duration and maximum duration can be configured in your `lunadefend.js` [config file](/pages/lunadefend/cli-config/interfaces/DeploymentConfigOptions/), 
 in the grants options. 
 
 ### Alternatives

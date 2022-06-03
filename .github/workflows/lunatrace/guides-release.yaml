@@ -1,0 +1,69 @@
+# Copyright 2021 by LunaSec (owned by Refinery Labs, Inc)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+name: LunaTrace Guides Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    environment: master # This is what gives the job access to the secret env vars
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+
+      - name: Yarn Install
+        env:
+          IS_LUNASEC_CI: true
+          CI: true
+        run: yarn install --immutable --immutable-cache --inline-builds
+
+      - name: Build Common
+        run: cd lunatrace/bsl/common && yarn run compile
+
+      - name: Build Logger
+        run: cd lunatrace/bsl/logger && yarn run compile
+
+#      - name: Setup tmate session
+#        uses: mxschmitt/action-tmate@v3
+#        env:
+#          HASURA_URL: https://lunatrace.lunasec.io/api/service/v1/graphql
+#          STATIC_SECRET_ACCESS_TOKEN: ${{secrets.LUNATRACE_BACKEND_STATIC_SECRET}}
+#        with:
+#          limit-access-to-actor: true
+#          timeout-minutes: 15
+
+      - name: Upsert Guides
+        env:
+          HASURA_URL: https://lunatrace.lunasec.io/api/service/v1/graphql
+          STATIC_SECRET_ACCESS_TOKEN: ${{secrets.LUNATRACE_BACKEND_STATIC_SECRET}}
+        working-directory: lunatrace/bsl/backend
+        run: yarn run guides:update
+
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        if: always()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: Guides Deployed - ${{ job.status }}
+          SLACK_COLOR: ${{ job.status }}

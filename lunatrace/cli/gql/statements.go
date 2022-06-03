@@ -21,6 +21,7 @@ var PackageOnConflict = &Package_on_conflict{
 		Package_update_columnDescription,
 		Package_update_columnName,
 		Package_update_columnPackageManager,
+		Package_update_columnFetchedTime,
 	},
 }
 
@@ -35,6 +36,7 @@ var ReleaseOnConflict = &Package_release_on_conflict{
 		Package_release_update_columnUpstreamBlobUrl,
 		Package_release_update_columnUpstreamData,
 		Package_release_update_columnVersion,
+		Package_release_update_columnFetchedTime,
 	},
 }
 
@@ -55,9 +57,7 @@ var PackageMaintainerOnConflict = &Package_package_maintainer_on_conflict{
 var PackageReleaseDependencyOnConflict = &Package_release_dependency_on_conflict{
 	Constraint: Package_release_dependency_constraintReleaseDependencyReleaseIdPackageNamePackageVersionIdx,
 	Update_columns: []Package_release_dependency_update_column{
-		//todo is this right?
 		Package_release_dependency_update_columnDependencyPackageId,
-		Package_release_dependency_update_columnDependencyReleaseId,
 		Package_release_dependency_update_columnPackageName,
 		Package_release_dependency_update_columnPackageVersionQuery,
 	},
