@@ -44,5 +44,9 @@ export async function processLunaTraceSqsMessage(
 
   const activity = activityLookup[message.type];
 
-  return await Promise.all(message.records.map((record) => activity(record as never)));
+  return await Promise.all(
+    message.records.map(async (record) => {
+      return await log.provideFields({ source: `process-${message.type}-message` }, () => activity(record as never));
+    })
+  );
 }
