@@ -174,11 +174,7 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
               <Col xs="12">
                 <h5 className="darker">Path{pkg.locations.length === 1 ? '' : 's'}:</h5>{' '}
                 {pkg.locations.map((l) => {
-                  return (
-                    <>
-                      <h5>{l}</h5>
-                    </>
-                  );
+                  return <h5 key={l}>{l}</h5>;
                 })}
               </Col>
             </Row>
@@ -271,5 +267,4 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
       />
     </>
   );
-  return null;
 };

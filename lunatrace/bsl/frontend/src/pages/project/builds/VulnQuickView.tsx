@@ -14,8 +14,10 @@
 import React from 'react';
 import { Button, Row, Spinner } from 'react-bootstrap';
 import { ArrowLeft } from 'react-feather';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import api from '../../../api';
+import { StickyScrollableElement } from '../../../components/utils/StickyScrollableElement';
 import { VulnerabilityDetailBody } from '../../vulnerabilities/detail/DetailBody';
 interface VulnQuickViewProps {
   vulnId: string;
@@ -24,22 +26,35 @@ interface VulnQuickViewProps {
 }
 
 export const VulnQuickView: React.FC<VulnQuickViewProps> = ({ vulnId, setVulnId, sideBySideView }) => {
-  const { data } = api.useGetVulnerabilityDetailsQuery({ vulnerability_id: vulnId });
-  console.log('side by side view is ', sideBySideView);
+  const { data, isFetching } = api.useGetVulnerabilityDetailsQuery({ vulnerability_id: vulnId });
+
+  const CloseButton = (
+    <Row className="m-4">
+      <Button onClick={() => setVulnId(null)} variant="light">
+        <ArrowLeft className="pb-1" />
+        {sideBySideView ? 'Close' : 'Back to findings'}
+      </Button>
+    </Row>
+  );
+
   return (
     <>
-      <Row className="m-4">
-        <Button onClick={() => setVulnId(null)} variant="light">
-          <ArrowLeft className="pb-1" />
-          {sideBySideView ? 'Close' : 'Back to findings'}
-        </Button>
-      </Row>
+      <StickyScrollableElement enabled={sideBySideView}>
+        <h2 className="text-center">Vulnerability Quick View</h2>
 
-      {data && data.vulnerabilities_by_pk ? (
-        <VulnerabilityDetailBody vuln={data.vulnerabilities_by_pk} isEmbedded={true} sideBySideView={sideBySideView} />
-      ) : (
-        <Spinner animation="border" />
-      )}
+        {CloseButton}
+
+        {data && data.vulnerabilities_by_pk && !isFetching ? (
+          <VulnerabilityDetailBody
+            vuln={data.vulnerabilities_by_pk}
+            isEmbedded={true}
+            sideBySideView={sideBySideView}
+          />
+        ) : (
+          <Spinner animation="border" />
+        )}
+        {CloseButton}
+      </StickyScrollableElement>
     </>
   );
 };
