@@ -12,23 +12,22 @@
  *
  */
 import { filterFindingsByIgnored } from '@lunatrace/lunatrace-common';
-import React from 'react';
+import classNames from 'classnames';
+import React, { useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
-import { ArrowLeft } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
-import { NavLink, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import api from '../../../api';
 import { SpinIfLoading } from '../../../components/SpinIfLoading';
-import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import useAppDispatch from '../../../hooks/useAppDispatch';
+import useBreakpoint from '../../../hooks/useBreakpoint';
 import { add } from '../../../store/slices/alerts';
-import { branchLink, branchName, commitLink } from '../../../utils/build-display-helpers';
-import { prettyDate } from '../../../utils/pretty-date';
-import { capitalizeFirstLetter } from '../../../utils/string-utils';
 import { VulnerablePackageList } from '../finding/VulnerablePackageList';
 
+import { BuildDetailsHeader } from './BuildDetailsHeader';
 import { SourceIcon } from './SourceIcon';
+import { VulnQuickView } from './VulnQuickView';
 
 export const BuildDetails: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
@@ -39,10 +38,13 @@ export const BuildDetails: React.FunctionComponent = () => {
     return null;
   }
   const { data, isLoading } = api.useGetBuildDetailsQuery({ build_id, project_id });
-
-  const [getSbomUrl, sbomUrlResult, lastPromiseInfo] = api.useLazyGetSbomUrlQuery();
-
-  // await triggerInsertIgnored({ locations, note, project_id, vulnerability_id });
+  const isExtraLarge = useBreakpoint('xl');
+  // We show a temporary view of any vulnerabilities that get clicked, instead of redirecting.  This is much faster when doing an audit
+  // because it prevents the loss of the app state/context and any open dropdowns and filters.
+  // We prop drill these pretty deep, so consider using a context provider instead
+  const [vulnQuickViewId, setVulnQuickViewId] = useState<string | null>(null);
+  const quickViewOpen = !!vulnQuickViewId;
+  const sideBySideView = isExtraLarge && quickViewOpen;
 
   const renderBuildDetails = () => {
     if (!data) {
@@ -63,100 +65,37 @@ export const BuildDetails: React.FunctionComponent = () => {
         </span>
       );
     }
-    const firstScan = build.scans[0];
 
     const filteredFindings = filterFindingsByIgnored(build.findings);
-
-    const lastScannedDate = firstScan ? prettyDate(new Date(firstScan.created_at as string)) : 'Never';
-    const uploadDate = prettyDate(new Date(build.created_at as string));
-
-    // const githubUrl = gitUrlToLink(build);
-
-    const branch = branchName(build);
-    const branchUrl = branchLink(build);
-    const commitUrl = commitLink(build);
-
+    const packageListColClasses = classNames('d-xxl-block', { 'd-none': quickViewOpen });
     return (
       <>
         <Helmet title={`#${build.build_number} Snapshot`} />
-        <Row>
-          <Col xs="3">
-            <NavLink to="..">
-              <ArrowLeft />
-              All Snapshots
-            </NavLink>
-          </Col>
-          <Col xs="6" style={{ textAlign: 'center' }}>
-            <h1>Snapshot #{build.build_number}</h1>
-            <span>{build.project?.name}</span>
-            <h5>{uploadDate}</h5>
-          </Col>
-        </Row>
-        <Row>
-          <Col xs="12" sm={{ order: 'last', span: 5, offset: 4 }}>
-            <h6 style={{ textAlign: 'right' }}>
-              <span className="darker"> Last scanned:</span> {lastScannedDate}
-            </h6>
-            <h6 style={{ textAlign: 'right' }}>
-              <span className="darker">
-                Scanned {build.scans_aggregate.aggregate?.count} time
-                {build.scans_aggregate.aggregate?.count !== 1 ? 's' : ''}
-              </span>
-            </h6>
-            <h6 style={{ textAlign: 'right' }}>
-              <span className="darker">
-                <a
-                  href={'#'}
-                  onClick={async (e) => {
-                    const url = (await getSbomUrl({ build_id }))?.data?.builds_by_pk?.s3_url_signed;
-                    if (url) {
-                      window.location.href = url;
-                    }
-                  }}
-                >
-                  Download SBOM
-                </a>
-              </span>
-            </h6>
-          </Col>
-          <Col xs="12" sm="3">
-            <div className="build-git-info">
-              <h6>
-                <span className="darker">Source: </span>
-                <SourceIcon source_type={build.source_type} className="mb-1" />{' '}
-                <span className="text-capitalize">{build.source_type}</span>{' '}
-              </h6>
-              <ConditionallyRender if={branchUrl}>
-                <h6>
-                  <span className="darker">Branch: </span>{' '}
-                  <a target="_blank" rel="noopener noreferrer" href={branchUrl || ''}>
-                    {branch}
-                  </a>
-                </h6>
-              </ConditionallyRender>
-              <ConditionallyRender if={commitUrl}>
-                <h6>
-                  <span className="darker">Commit: </span>{' '}
-                  <a target="_blank" rel="noopener noreferrer" href={commitUrl || ''}>
-                    {build.git_hash?.substring(0, 8)}...
-                  </a>
-                </h6>
-              </ConditionallyRender>
-              <h6>
-                <span className="darker">{capitalizeFirstLetter(firstScan.source_type)}:</span> {firstScan.target}
-              </h6>
-            </div>
-          </Col>
-        </Row>
+        <BuildDetailsHeader build={build} />
         <hr />
-        <VulnerablePackageList project_id={build.project_id} findings={filteredFindings} />
+        <Row>
+          <Col xxl={quickViewOpen ? 6 : 12} className={packageListColClasses}>
+            <VulnerablePackageList
+              project_id={build.project_id}
+              findings={filteredFindings}
+              vulnQuickViewId={vulnQuickViewId}
+              setVulnQuickViewId={setVulnQuickViewId}
+            />
+          </Col>
+
+          {vulnQuickViewId ? (
+            <Col xxl={quickViewOpen ? 6 : 12}>
+              <VulnQuickView vulnId={vulnQuickViewId} setVulnId={setVulnQuickViewId} sideBySideView={sideBySideView} />{' '}
+            </Col>
+          ) : null}
+        </Row>
       </>
     );
   };
 
   return (
     <>
-      <Container className="build-page">
+      <Container fluid={sideBySideView} className="build-page">
         <SpinIfLoading isLoading={isLoading}>{renderBuildDetails()}</SpinIfLoading>
       </Container>
     </>
