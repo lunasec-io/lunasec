@@ -13,10 +13,12 @@
  */
 import React from 'react';
 
-export const LinkInNewTab: React.FC<{ href: string }> = ({ children, href }) => {
+type AnchorProps = React.ComponentProps<'a'>;
+
+export const LinkInNewTab: React.FC<AnchorProps> = (props) => {
   return (
-    <a rel="noopener noreferrer" target="_blank" href={href}>
-      {children}
+    <a {...props} rel="noopener noreferrer" target="_blank">
+      {props.children}
     </a>
   );
 };

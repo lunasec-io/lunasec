@@ -26,7 +26,7 @@ export function NodeInputSubmit<T>({ node, attributes, setValue, disabled, dispa
           className="github-signin-button"
           type="dark"
           onClick={(e) => {
-            // On click, we set this value, and once set, dispatch the submission!
+            // On click, we set this value, and once set, dispatch the submission
             void setValue(attributes.value).then(() => dispatchSubmit(e));
           }}
           // value={attributes.value || ''}
