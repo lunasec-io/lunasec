@@ -13,7 +13,7 @@
  */
 import { filterFindingsByIgnored } from '@lunatrace/lunatrace-common';
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
@@ -26,11 +26,11 @@ import { add } from '../../../store/slices/alerts';
 import { VulnerablePackageList } from '../finding/VulnerablePackageList';
 
 import { BuildDetailsHeader } from './BuildDetailsHeader';
-import { SourceIcon } from './SourceIcon';
 import { VulnQuickView } from './VulnQuickView';
 
 export const BuildDetails: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
+  const listStartRef = useRef<HTMLDivElement>(null);
 
   const { build_id, project_id } = useParams();
   if (!build_id || !project_id) {
@@ -38,6 +38,7 @@ export const BuildDetails: React.FunctionComponent = () => {
     return null;
   }
   const { data, isLoading } = api.useGetBuildDetailsQuery({ build_id, project_id });
+
   const isExtraLarge = useBreakpoint('xxl');
   // We show a temporary view of any vulnerabilities that get clicked, instead of redirecting.  This is much faster when doing an audit
   // because it prevents the loss of the app state/context and any open dropdowns and filters.
@@ -68,11 +69,13 @@ export const BuildDetails: React.FunctionComponent = () => {
 
     const filteredFindings = filterFindingsByIgnored(build.findings);
     const packageListColClasses = classNames('d-xxl-block', { 'd-none': quickViewOpen });
+
     return (
       <>
         <Helmet title={`#${build.build_number} Snapshot`} />
         <BuildDetailsHeader build={build} />
         <hr />
+        <div ref={listStartRef} />
         <Row>
           <Col xxl={quickViewOpen ? 6 : 12} className={packageListColClasses}>
             <VulnerablePackageList
