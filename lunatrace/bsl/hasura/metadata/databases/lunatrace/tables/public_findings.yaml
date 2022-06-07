@@ -5,6 +5,15 @@ object_relationships:
   - name: build
     using:
       foreign_key_constraint_on: build_id
+  - name: default_branch_build
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: default_branch_builds
+        insertion_order: null
+        column_mapping:
+          build_id: id
   - name: package_version
     using:
       foreign_key_constraint_on: package_version_id
