@@ -191,34 +191,6 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
           </Row>
         )}
       </Container>
-      {/*<Row>*/}
-      {/*  <Col xs="12" sm={{ order: 'last', span: 5, offset: 4 }}>*/}
-      {/*    <h6 style={{ textAlign: 'right' }}>*/}
-      {/*      <span className="darker"> Last scanned:</span> {lastScannedDate}*/}
-      {/*    </h6>*/}
-      {/*    <h6 style={{ textAlign: 'right' }}>*/}
-      {/*      <span className="darker">*/}
-      {/*        Scanned {build.scans_aggregate.aggregate?.count} time*/}
-      {/*        {build.scans_aggregate.aggregate?.count !== 1 ? 's' : ''}*/}
-      {/*      </span>*/}
-      {/*    </h6>*/}
-      {/*  </Col>*/}
-      {/*  <Col xs="12" sm="3">*/}
-      {/*    <div className="build-git-info">*/}
-      {/*      <h6>*/}
-      {/*        <span className="darker">Branch: </span> master*/}
-      {/*      </h6>*/}
-      {/*      <h6>*/}
-      {/*        <span className="darker">Commit: </span> 1231adf... ↪*/}
-      {/*      </h6>*/}
-      {/*      <h6>*/}
-      {/*        <span className="darker">{capitalizeFirstLetter(firstScan.source_type)}:</span> {firstScan.target}*/}
-      {/*      </h6>*/}
-      {/*    </div>*/}
-      {/*  </Col>*/}
-      {/*</Row>*/}
-      {/*<hr />*/}
-      {/*<VulnerablePackageList findings={build.findings} />*/}
     </>
   );
 };
