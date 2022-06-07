@@ -64,8 +64,7 @@ export function generateOrgsAndProjectsMutation(
           {
             github_id: repo.repoId,
             github_node_id: repo.repoNodeId,
-
-            // TODO ADD DEFAULT BRANCH HERE
+            default_branch: repo.defaultBranch,
             git_url: repo.gitUrl,
             traits: repo,
           },
