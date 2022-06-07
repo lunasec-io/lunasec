@@ -64,7 +64,6 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
 
   const [activeTab, setActiveTab] = useState<TabName>('dashboard');
   const renderProjectNavAndHeader = (p: ProjectInfo) => {
-    console.log('traits are', p.github_repository?.traits.fullTraits);
     return (
       <>
         <Helmet title={p.name} />
