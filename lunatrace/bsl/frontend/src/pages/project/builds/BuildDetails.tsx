@@ -39,13 +39,15 @@ export const BuildDetails: React.FunctionComponent = () => {
   }
   const { data, isLoading } = api.useGetBuildDetailsQuery({ build_id, project_id });
 
+  // note that we only use this breakpoint when necessary for JS stuff, otherwise we just use classname bootstrap media queries as normal
   const isExtraLarge = useBreakpoint('xxl');
+
   // We show a temporary view of any vulnerabilities that get clicked, instead of redirecting.  This is much faster when doing an audit
   // because it prevents the loss of the app state/context and any open dropdowns and filters.
   // We prop drill these pretty deep, so consider using a context provider instead
   const [vulnQuickViewId, setVulnQuickViewId] = useState<string | null>(null);
   const quickViewOpen = !!vulnQuickViewId;
-  const sideBySideView = isExtraLarge && quickViewOpen;
+  const isSideBySideView = isExtraLarge && quickViewOpen;
 
   const renderBuildDetails = () => {
     if (!data) {
@@ -68,6 +70,8 @@ export const BuildDetails: React.FunctionComponent = () => {
     }
 
     const filteredFindings = filterFindingsByIgnored(build.findings);
+    // Responsible for showing or hiding the findings list when quick view is open.  D-none only applies on screens smaller than xxl(1400)
+    // meaning that the findings list will be hidden on smaller screens when quick view is open.
     const packageListColClasses = classNames('d-xxl-block', { 'd-none': quickViewOpen });
 
     return (
@@ -88,7 +92,11 @@ export const BuildDetails: React.FunctionComponent = () => {
 
           {vulnQuickViewId ? (
             <Col xxl={quickViewOpen ? 6 : 12}>
-              <VulnQuickView vulnId={vulnQuickViewId} setVulnId={setVulnQuickViewId} sideBySideView={sideBySideView} />{' '}
+              <VulnQuickView
+                vulnId={vulnQuickViewId}
+                setVulnId={setVulnQuickViewId}
+                sideBySideView={isSideBySideView}
+              />{' '}
             </Col>
           ) : null}
         </Row>
@@ -98,7 +106,8 @@ export const BuildDetails: React.FunctionComponent = () => {
 
   return (
     <>
-      <Container fluid={sideBySideView} className="build-page">
+      {/*  widen the whole viewport using container fluid in side by side mode*/}
+      <Container fluid={isSideBySideView} className="build-page">
         <SpinIfLoading isLoading={isLoading}>{renderBuildDetails()}</SpinIfLoading>
       </Container>
     </>
