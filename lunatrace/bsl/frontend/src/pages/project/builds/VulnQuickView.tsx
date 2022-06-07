@@ -25,7 +25,7 @@ interface VulnQuickViewProps {
 
 export const VulnQuickView: React.FC<VulnQuickViewProps> = ({ vulnId, setVulnId, sideBySideView }) => {
   const { data } = api.useGetVulnerabilityDetailsQuery({ vulnerability_id: vulnId });
-
+  console.log('side by side view is ', sideBySideView);
   return (
     <>
       <Row className="m-4">
@@ -36,7 +36,7 @@ export const VulnQuickView: React.FC<VulnQuickViewProps> = ({ vulnId, setVulnId,
       </Row>
 
       {data && data.vulnerabilities_by_pk ? (
-        <VulnerabilityDetailBody vuln={data.vulnerabilities_by_pk} isEmbedded={true} />
+        <VulnerabilityDetailBody vuln={data.vulnerabilities_by_pk} isEmbedded={true} sideBySideView={sideBySideView} />
       ) : (
         <Spinner animation="border" />
       )}
