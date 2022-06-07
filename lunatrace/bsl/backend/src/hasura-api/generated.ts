@@ -18,10 +18,8 @@ export type Scalars = {
   date: any;
   fix_state_enum: any;
   jsonb: any;
-  license_source: any;
   numeric: any;
   organization_user_role: any;
-  package_manager: any;
   severity_enum: any;
   timestamp: any;
   timestamptz: any;
@@ -582,6 +580,245 @@ export type Date_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['date']>>;
 };
 
+/** columns and relationships of "default_branch_builds" */
+export type Default_Branch_Builds = {
+  __typename?: 'default_branch_builds';
+  agent_access_token?: Maybe<Scalars['uuid']>;
+  build_number?: Maybe<Scalars['Int']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  existing_github_review_id?: Maybe<Scalars['String']>;
+  /** An array relationship */
+  findings: Array<Findings>;
+  git_branch?: Maybe<Scalars['String']>;
+  git_hash?: Maybe<Scalars['String']>;
+  git_remote?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  /** An object relationship */
+  project?: Maybe<Projects>;
+  project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['String']>;
+  s3_url?: Maybe<Scalars['String']>;
+  source_type?: Maybe<Scalars['builds_source_type']>;
+};
+
+
+/** columns and relationships of "default_branch_builds" */
+export type Default_Branch_BuildsFindingsArgs = {
+  distinct_on?: InputMaybe<Array<Findings_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Findings_Order_By>>;
+  where?: InputMaybe<Findings_Bool_Exp>;
+};
+
+/** order by aggregate values of table "default_branch_builds" */
+export type Default_Branch_Builds_Aggregate_Order_By = {
+  avg?: InputMaybe<Default_Branch_Builds_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Default_Branch_Builds_Max_Order_By>;
+  min?: InputMaybe<Default_Branch_Builds_Min_Order_By>;
+  stddev?: InputMaybe<Default_Branch_Builds_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Default_Branch_Builds_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Default_Branch_Builds_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Default_Branch_Builds_Sum_Order_By>;
+  var_pop?: InputMaybe<Default_Branch_Builds_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Default_Branch_Builds_Var_Samp_Order_By>;
+  variance?: InputMaybe<Default_Branch_Builds_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "default_branch_builds" */
+export type Default_Branch_Builds_Arr_Rel_Insert_Input = {
+  data: Array<Default_Branch_Builds_Insert_Input>;
+};
+
+/** order by avg() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Avg_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "default_branch_builds". All fields are combined with a logical 'AND'. */
+export type Default_Branch_Builds_Bool_Exp = {
+  _and?: InputMaybe<Array<Default_Branch_Builds_Bool_Exp>>;
+  _not?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
+  _or?: InputMaybe<Array<Default_Branch_Builds_Bool_Exp>>;
+  agent_access_token?: InputMaybe<Uuid_Comparison_Exp>;
+  build_number?: InputMaybe<Int_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
+  findings?: InputMaybe<Findings_Bool_Exp>;
+  git_branch?: InputMaybe<String_Comparison_Exp>;
+  git_hash?: InputMaybe<String_Comparison_Exp>;
+  git_remote?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  project?: InputMaybe<Projects_Bool_Exp>;
+  project_id?: InputMaybe<Uuid_Comparison_Exp>;
+  pull_request_id?: InputMaybe<String_Comparison_Exp>;
+  s3_url?: InputMaybe<String_Comparison_Exp>;
+  source_type?: InputMaybe<Builds_Source_Type_Comparison_Exp>;
+};
+
+/** input type for incrementing numeric columns in table "default_branch_builds" */
+export type Default_Branch_Builds_Inc_Input = {
+  build_number?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "default_branch_builds" */
+export type Default_Branch_Builds_Insert_Input = {
+  agent_access_token?: InputMaybe<Scalars['uuid']>;
+  build_number?: InputMaybe<Scalars['Int']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  existing_github_review_id?: InputMaybe<Scalars['String']>;
+  findings?: InputMaybe<Findings_Arr_Rel_Insert_Input>;
+  git_branch?: InputMaybe<Scalars['String']>;
+  git_hash?: InputMaybe<Scalars['String']>;
+  git_remote?: InputMaybe<Scalars['String']>;
+  project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
+  project_id?: InputMaybe<Scalars['uuid']>;
+  pull_request_id?: InputMaybe<Scalars['String']>;
+  s3_url?: InputMaybe<Scalars['String']>;
+  source_type?: InputMaybe<Scalars['builds_source_type']>;
+};
+
+/** order by max() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Max_Order_By = {
+  agent_access_token?: InputMaybe<Order_By>;
+  build_number?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  existing_github_review_id?: InputMaybe<Order_By>;
+  git_branch?: InputMaybe<Order_By>;
+  git_hash?: InputMaybe<Order_By>;
+  git_remote?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
+  s3_url?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Min_Order_By = {
+  agent_access_token?: InputMaybe<Order_By>;
+  build_number?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  existing_github_review_id?: InputMaybe<Order_By>;
+  git_branch?: InputMaybe<Order_By>;
+  git_hash?: InputMaybe<Order_By>;
+  git_remote?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
+  s3_url?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "default_branch_builds" */
+export type Default_Branch_Builds_Mutation_Response = {
+  __typename?: 'default_branch_builds_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Default_Branch_Builds>;
+};
+
+/** input type for inserting object relation for remote table "default_branch_builds" */
+export type Default_Branch_Builds_Obj_Rel_Insert_Input = {
+  data: Default_Branch_Builds_Insert_Input;
+};
+
+/** Ordering options when selecting data from "default_branch_builds". */
+export type Default_Branch_Builds_Order_By = {
+  agent_access_token?: InputMaybe<Order_By>;
+  build_number?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  existing_github_review_id?: InputMaybe<Order_By>;
+  findings_aggregate?: InputMaybe<Findings_Aggregate_Order_By>;
+  git_branch?: InputMaybe<Order_By>;
+  git_hash?: InputMaybe<Order_By>;
+  git_remote?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project?: InputMaybe<Projects_Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
+  s3_url?: InputMaybe<Order_By>;
+  source_type?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "default_branch_builds" */
+export enum Default_Branch_Builds_Select_Column {
+  /** column name */
+  AgentAccessToken = 'agent_access_token',
+  /** column name */
+  BuildNumber = 'build_number',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExistingGithubReviewId = 'existing_github_review_id',
+  /** column name */
+  GitBranch = 'git_branch',
+  /** column name */
+  GitHash = 'git_hash',
+  /** column name */
+  GitRemote = 'git_remote',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ProjectId = 'project_id',
+  /** column name */
+  PullRequestId = 'pull_request_id',
+  /** column name */
+  S3Url = 's3_url',
+  /** column name */
+  SourceType = 'source_type'
+}
+
+/** input type for updating data in table "default_branch_builds" */
+export type Default_Branch_Builds_Set_Input = {
+  agent_access_token?: InputMaybe<Scalars['uuid']>;
+  build_number?: InputMaybe<Scalars['Int']>;
+  created_at?: InputMaybe<Scalars['timestamp']>;
+  existing_github_review_id?: InputMaybe<Scalars['String']>;
+  git_branch?: InputMaybe<Scalars['String']>;
+  git_hash?: InputMaybe<Scalars['String']>;
+  git_remote?: InputMaybe<Scalars['String']>;
+  project_id?: InputMaybe<Scalars['uuid']>;
+  pull_request_id?: InputMaybe<Scalars['String']>;
+  s3_url?: InputMaybe<Scalars['String']>;
+  source_type?: InputMaybe<Scalars['builds_source_type']>;
+};
+
+/** order by stddev() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Stddev_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_pop() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Stddev_Pop_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_samp() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Stddev_Samp_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** order by sum() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Sum_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** order by var_pop() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Var_Pop_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** order by var_samp() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Var_Samp_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
+/** order by variance() on columns of table "default_branch_builds" */
+export type Default_Branch_Builds_Variance_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+};
+
 /** columns and relationships of "findings" */
 export type Findings = {
   __typename?: 'findings';
@@ -590,6 +827,8 @@ export type Findings = {
   build_id: Scalars['uuid'];
   created_at: Scalars['timestamp'];
   dedupe_slug: Scalars['String'];
+  /** An object relationship */
+  default_branch_build?: Maybe<Default_Branch_Builds>;
   fix_state: Scalars['fix_state_enum'];
   fix_versions?: Maybe<Scalars['_text']>;
   id: Scalars['uuid'];
@@ -641,6 +880,7 @@ export type Findings_Bool_Exp = {
   build_id?: InputMaybe<Uuid_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   dedupe_slug?: InputMaybe<String_Comparison_Exp>;
+  default_branch_build?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
   fix_state?: InputMaybe<Fix_State_Enum_Comparison_Exp>;
   fix_versions?: InputMaybe<_Text_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -679,6 +919,7 @@ export type Findings_Insert_Input = {
   build_id?: InputMaybe<Scalars['uuid']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   dedupe_slug?: InputMaybe<Scalars['String']>;
+  default_branch_build?: InputMaybe<Default_Branch_Builds_Obj_Rel_Insert_Input>;
   fix_state?: InputMaybe<Scalars['fix_state_enum']>;
   fix_versions?: InputMaybe<Scalars['_text']>;
   id?: InputMaybe<Scalars['uuid']>;
@@ -767,6 +1008,7 @@ export type Findings_Order_By = {
   build_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   dedupe_slug?: InputMaybe<Order_By>;
+  default_branch_build?: InputMaybe<Default_Branch_Builds_Order_By>;
   fix_state?: InputMaybe<Order_By>;
   fix_versions?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -1880,19 +2122,6 @@ export type Jsonb_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['jsonb']>>;
 };
 
-/** Boolean expression to compare columns of type "license_source". All fields are combined with logical 'AND'. */
-export type License_Source_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['license_source']>;
-  _gt?: InputMaybe<Scalars['license_source']>;
-  _gte?: InputMaybe<Scalars['license_source']>;
-  _in?: InputMaybe<Array<Scalars['license_source']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']>;
-  _lt?: InputMaybe<Scalars['license_source']>;
-  _lte?: InputMaybe<Scalars['license_source']>;
-  _neq?: InputMaybe<Scalars['license_source']>;
-  _nin?: InputMaybe<Array<Scalars['license_source']>>;
-};
-
 /** columns and relationships of "manifests" */
 export type Manifests = {
   __typename?: 'manifests';
@@ -2104,6 +2333,10 @@ export type Mutation_Root = {
   insert_builds?: Maybe<Builds_Mutation_Response>;
   /** insert a single row into the table: "builds" */
   insert_builds_one?: Maybe<Builds>;
+  /** insert data into the table: "default_branch_builds" */
+  insert_default_branch_builds?: Maybe<Default_Branch_Builds_Mutation_Response>;
+  /** insert a single row into the table: "default_branch_builds" */
+  insert_default_branch_builds_one?: Maybe<Default_Branch_Builds>;
   /** insert data into the table: "findings" */
   insert_findings?: Maybe<Findings_Mutation_Response>;
   /** insert a single row into the table: "findings" */
@@ -2134,34 +2367,6 @@ export type Mutation_Root = {
   insert_organizations?: Maybe<Organizations_Mutation_Response>;
   /** insert a single row into the table: "organizations" */
   insert_organizations_one?: Maybe<Organizations>;
-  /** insert data into the table: "package.package" */
-  insert_package?: Maybe<Package_Mutation_Response>;
-  /** insert data into the table: "package.license" */
-  insert_package_license?: Maybe<Package_License_Mutation_Response>;
-  /** insert a single row into the table: "package.license" */
-  insert_package_license_one?: Maybe<Package_License>;
-  /** insert data into the table: "package.maintainer" */
-  insert_package_maintainer?: Maybe<Package_Maintainer_Mutation_Response>;
-  /** insert a single row into the table: "package.maintainer" */
-  insert_package_maintainer_one?: Maybe<Package_Maintainer>;
-  /** insert a single row into the table: "package.package" */
-  insert_package_one?: Maybe<Package>;
-  /** insert data into the table: "package.package_maintainer" */
-  insert_package_package_maintainer?: Maybe<Package_Package_Maintainer_Mutation_Response>;
-  /** insert a single row into the table: "package.package_maintainer" */
-  insert_package_package_maintainer_one?: Maybe<Package_Package_Maintainer>;
-  /** insert data into the table: "package.release" */
-  insert_package_release?: Maybe<Package_Release_Mutation_Response>;
-  /** insert data into the table: "package.release_dependency" */
-  insert_package_release_dependency?: Maybe<Package_Release_Dependency_Mutation_Response>;
-  /** insert a single row into the table: "package.release_dependency" */
-  insert_package_release_dependency_one?: Maybe<Package_Release_Dependency>;
-  /** insert data into the table: "package.release_license" */
-  insert_package_release_license?: Maybe<Package_Release_License_Mutation_Response>;
-  /** insert a single row into the table: "package.release_license" */
-  insert_package_release_license_one?: Maybe<Package_Release_License>;
-  /** insert a single row into the table: "package.release" */
-  insert_package_release_one?: Maybe<Package_Release>;
   /** insert data into the table: "package_versions" */
   insert_package_versions?: Maybe<Package_Versions_Mutation_Response>;
   /** insert a single row into the table: "package_versions" */
@@ -2196,6 +2401,8 @@ export type Mutation_Root = {
   update_builds?: Maybe<Builds_Mutation_Response>;
   /** update single row of the table: "builds" */
   update_builds_by_pk?: Maybe<Builds>;
+  /** update data of the table: "default_branch_builds" */
+  update_default_branch_builds?: Maybe<Default_Branch_Builds_Mutation_Response>;
   /** update data of the table: "findings" */
   update_findings?: Maybe<Findings_Mutation_Response>;
   /** update single row of the table: "findings" */
@@ -2226,32 +2433,6 @@ export type Mutation_Root = {
   update_organizations?: Maybe<Organizations_Mutation_Response>;
   /** update single row of the table: "organizations" */
   update_organizations_by_pk?: Maybe<Organizations>;
-  /** update data of the table: "package.package" */
-  update_package?: Maybe<Package_Mutation_Response>;
-  /** update single row of the table: "package.package" */
-  update_package_by_pk?: Maybe<Package>;
-  /** update data of the table: "package.license" */
-  update_package_license?: Maybe<Package_License_Mutation_Response>;
-  /** update single row of the table: "package.license" */
-  update_package_license_by_pk?: Maybe<Package_License>;
-  /** update data of the table: "package.maintainer" */
-  update_package_maintainer?: Maybe<Package_Maintainer_Mutation_Response>;
-  /** update single row of the table: "package.maintainer" */
-  update_package_maintainer_by_pk?: Maybe<Package_Maintainer>;
-  /** update data of the table: "package.package_maintainer" */
-  update_package_package_maintainer?: Maybe<Package_Package_Maintainer_Mutation_Response>;
-  /** update data of the table: "package.release" */
-  update_package_release?: Maybe<Package_Release_Mutation_Response>;
-  /** update single row of the table: "package.release" */
-  update_package_release_by_pk?: Maybe<Package_Release>;
-  /** update data of the table: "package.release_dependency" */
-  update_package_release_dependency?: Maybe<Package_Release_Dependency_Mutation_Response>;
-  /** update single row of the table: "package.release_dependency" */
-  update_package_release_dependency_by_pk?: Maybe<Package_Release_Dependency>;
-  /** update data of the table: "package.release_license" */
-  update_package_release_license?: Maybe<Package_Release_License_Mutation_Response>;
-  /** update single row of the table: "package.release_license" */
-  update_package_release_license_by_pk?: Maybe<Package_Release_License>;
   /** update data of the table: "package_versions" */
   update_package_versions?: Maybe<Package_Versions_Mutation_Response>;
   /** update single row of the table: "package_versions" */
@@ -2330,6 +2511,18 @@ export type Mutation_RootInsert_BuildsArgs = {
 export type Mutation_RootInsert_Builds_OneArgs = {
   object: Builds_Insert_Input;
   on_conflict?: InputMaybe<Builds_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Default_Branch_BuildsArgs = {
+  objects: Array<Default_Branch_Builds_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Default_Branch_Builds_OneArgs = {
+  object: Default_Branch_Builds_Insert_Input;
 };
 
 
@@ -2435,104 +2628,6 @@ export type Mutation_RootInsert_OrganizationsArgs = {
 export type Mutation_RootInsert_Organizations_OneArgs = {
   object: Organizations_Insert_Input;
   on_conflict?: InputMaybe<Organizations_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_PackageArgs = {
-  objects: Array<Package_Insert_Input>;
-  on_conflict?: InputMaybe<Package_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Package_LicenseArgs = {
-  objects: Array<Package_License_Insert_Input>;
-  on_conflict?: InputMaybe<Package_License_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Package_License_OneArgs = {
-  object: Package_License_Insert_Input;
-  on_conflict?: InputMaybe<Package_License_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Package_MaintainerArgs = {
-  objects: Array<Package_Maintainer_Insert_Input>;
-  on_conflict?: InputMaybe<Package_Maintainer_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Package_Maintainer_OneArgs = {
-  object: Package_Maintainer_Insert_Input;
-  on_conflict?: InputMaybe<Package_Maintainer_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Package_OneArgs = {
-  object: Package_Insert_Input;
-  on_conflict?: InputMaybe<Package_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Package_Package_MaintainerArgs = {
-  objects: Array<Package_Package_Maintainer_Insert_Input>;
-  on_conflict?: InputMaybe<Package_Package_Maintainer_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Package_Package_Maintainer_OneArgs = {
-  object: Package_Package_Maintainer_Insert_Input;
-  on_conflict?: InputMaybe<Package_Package_Maintainer_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Package_ReleaseArgs = {
-  objects: Array<Package_Release_Insert_Input>;
-  on_conflict?: InputMaybe<Package_Release_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Package_Release_DependencyArgs = {
-  objects: Array<Package_Release_Dependency_Insert_Input>;
-  on_conflict?: InputMaybe<Package_Release_Dependency_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Package_Release_Dependency_OneArgs = {
-  object: Package_Release_Dependency_Insert_Input;
-  on_conflict?: InputMaybe<Package_Release_Dependency_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Package_Release_LicenseArgs = {
-  objects: Array<Package_Release_License_Insert_Input>;
-  on_conflict?: InputMaybe<Package_Release_License_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Package_Release_License_OneArgs = {
-  object: Package_Release_License_Insert_Input;
-  on_conflict?: InputMaybe<Package_Release_License_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Package_Release_OneArgs = {
-  object: Package_Release_Insert_Input;
-  on_conflict?: InputMaybe<Package_Release_On_Conflict>;
 };
 
 
@@ -2653,6 +2748,14 @@ export type Mutation_RootUpdate_Builds_By_PkArgs = {
   _inc?: InputMaybe<Builds_Inc_Input>;
   _set?: InputMaybe<Builds_Set_Input>;
   pk_columns: Builds_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Default_Branch_BuildsArgs = {
+  _inc?: InputMaybe<Default_Branch_Builds_Inc_Input>;
+  _set?: InputMaybe<Default_Branch_Builds_Set_Input>;
+  where: Default_Branch_Builds_Bool_Exp;
 };
 
 
@@ -2778,117 +2881,6 @@ export type Mutation_RootUpdate_Organizations_By_PkArgs = {
   _inc?: InputMaybe<Organizations_Inc_Input>;
   _set?: InputMaybe<Organizations_Set_Input>;
   pk_columns: Organizations_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_PackageArgs = {
-  _set?: InputMaybe<Package_Set_Input>;
-  where: Package_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Package_By_PkArgs = {
-  _set?: InputMaybe<Package_Set_Input>;
-  pk_columns: Package_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Package_LicenseArgs = {
-  _set?: InputMaybe<Package_License_Set_Input>;
-  where: Package_License_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Package_License_By_PkArgs = {
-  _set?: InputMaybe<Package_License_Set_Input>;
-  pk_columns: Package_License_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Package_MaintainerArgs = {
-  _set?: InputMaybe<Package_Maintainer_Set_Input>;
-  where: Package_Maintainer_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Package_Maintainer_By_PkArgs = {
-  _set?: InputMaybe<Package_Maintainer_Set_Input>;
-  pk_columns: Package_Maintainer_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Package_Package_MaintainerArgs = {
-  _set?: InputMaybe<Package_Package_Maintainer_Set_Input>;
-  where: Package_Package_Maintainer_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Package_ReleaseArgs = {
-  _append?: InputMaybe<Package_Release_Append_Input>;
-  _delete_at_path?: InputMaybe<Package_Release_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Package_Release_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Package_Release_Delete_Key_Input>;
-  _prepend?: InputMaybe<Package_Release_Prepend_Input>;
-  _set?: InputMaybe<Package_Release_Set_Input>;
-  where: Package_Release_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Package_Release_By_PkArgs = {
-  _append?: InputMaybe<Package_Release_Append_Input>;
-  _delete_at_path?: InputMaybe<Package_Release_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Package_Release_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Package_Release_Delete_Key_Input>;
-  _prepend?: InputMaybe<Package_Release_Prepend_Input>;
-  _set?: InputMaybe<Package_Release_Set_Input>;
-  pk_columns: Package_Release_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Package_Release_DependencyArgs = {
-  _set?: InputMaybe<Package_Release_Dependency_Set_Input>;
-  where: Package_Release_Dependency_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Package_Release_Dependency_By_PkArgs = {
-  _set?: InputMaybe<Package_Release_Dependency_Set_Input>;
-  pk_columns: Package_Release_Dependency_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Package_Release_LicenseArgs = {
-  _append?: InputMaybe<Package_Release_License_Append_Input>;
-  _delete_at_path?: InputMaybe<Package_Release_License_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Package_Release_License_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Package_Release_License_Delete_Key_Input>;
-  _prepend?: InputMaybe<Package_Release_License_Prepend_Input>;
-  _set?: InputMaybe<Package_Release_License_Set_Input>;
-  where: Package_Release_License_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Package_Release_License_By_PkArgs = {
-  _append?: InputMaybe<Package_Release_License_Append_Input>;
-  _delete_at_path?: InputMaybe<Package_Release_License_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Package_Release_License_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Package_Release_License_Delete_Key_Input>;
-  _prepend?: InputMaybe<Package_Release_License_Prepend_Input>;
-  _set?: InputMaybe<Package_Release_License_Set_Input>;
-  pk_columns: Package_Release_License_Pk_Columns_Input;
 };
 
 
@@ -3505,1152 +3497,6 @@ export type Organizations_Variance_Fields = {
   installation_id?: Maybe<Scalars['Float']>;
 };
 
-/** columns and relationships of "package.package" */
-export type Package = {
-  __typename?: 'package';
-  custom_registry: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  fetched_time?: Maybe<Scalars['timestamptz']>;
-  id: Scalars['uuid'];
-  name: Scalars['String'];
-  /** An array relationship */
-  package_maintainers: Array<Package_Package_Maintainer>;
-  package_manager: Scalars['package_manager'];
-  /** An array relationship */
-  releases: Array<Package_Release>;
-};
-
-
-/** columns and relationships of "package.package" */
-export type PackagePackage_MaintainersArgs = {
-  distinct_on?: InputMaybe<Array<Package_Package_Maintainer_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Package_Maintainer_Order_By>>;
-  where?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
-};
-
-
-/** columns and relationships of "package.package" */
-export type PackageReleasesArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_Order_By>>;
-  where?: InputMaybe<Package_Release_Bool_Exp>;
-};
-
-/** Boolean expression to filter rows from the table "package.package". All fields are combined with a logical 'AND'. */
-export type Package_Bool_Exp = {
-  _and?: InputMaybe<Array<Package_Bool_Exp>>;
-  _not?: InputMaybe<Package_Bool_Exp>;
-  _or?: InputMaybe<Array<Package_Bool_Exp>>;
-  custom_registry?: InputMaybe<String_Comparison_Exp>;
-  description?: InputMaybe<String_Comparison_Exp>;
-  fetched_time?: InputMaybe<Timestamptz_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  name?: InputMaybe<String_Comparison_Exp>;
-  package_maintainers?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
-  package_manager?: InputMaybe<Package_Manager_Comparison_Exp>;
-  releases?: InputMaybe<Package_Release_Bool_Exp>;
-};
-
-/** unique or primary key constraints on table "package.package" */
-export enum Package_Constraint {
-  /** unique or primary key constraint */
-  PackagePackageManagerCustomRegistryNameIdx = 'package_package_manager_custom_registry_name_idx',
-  /** unique or primary key constraint */
-  PackagePkey = 'package_pkey'
-}
-
-/** input type for inserting data into table "package.package" */
-export type Package_Insert_Input = {
-  custom_registry?: InputMaybe<Scalars['String']>;
-  description?: InputMaybe<Scalars['String']>;
-  fetched_time?: InputMaybe<Scalars['timestamptz']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  name?: InputMaybe<Scalars['String']>;
-  package_maintainers?: InputMaybe<Package_Package_Maintainer_Arr_Rel_Insert_Input>;
-  package_manager?: InputMaybe<Scalars['package_manager']>;
-  releases?: InputMaybe<Package_Release_Arr_Rel_Insert_Input>;
-};
-
-/** columns and relationships of "package.license" */
-export type Package_License = {
-  __typename?: 'package_license';
-  id: Scalars['uuid'];
-  name: Scalars['String'];
-  /** An array relationship */
-  release_licenses: Array<Package_Release_License>;
-};
-
-
-/** columns and relationships of "package.license" */
-export type Package_LicenseRelease_LicensesArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_License_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_License_Order_By>>;
-  where?: InputMaybe<Package_Release_License_Bool_Exp>;
-};
-
-/** Boolean expression to filter rows from the table "package.license". All fields are combined with a logical 'AND'. */
-export type Package_License_Bool_Exp = {
-  _and?: InputMaybe<Array<Package_License_Bool_Exp>>;
-  _not?: InputMaybe<Package_License_Bool_Exp>;
-  _or?: InputMaybe<Array<Package_License_Bool_Exp>>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  name?: InputMaybe<String_Comparison_Exp>;
-  release_licenses?: InputMaybe<Package_Release_License_Bool_Exp>;
-};
-
-/** unique or primary key constraints on table "package.license" */
-export enum Package_License_Constraint {
-  /** unique or primary key constraint */
-  LicenseNameIdx = 'license_name_idx',
-  /** unique or primary key constraint */
-  LicensePkey = 'license_pkey'
-}
-
-/** input type for inserting data into table "package.license" */
-export type Package_License_Insert_Input = {
-  id?: InputMaybe<Scalars['uuid']>;
-  name?: InputMaybe<Scalars['String']>;
-  release_licenses?: InputMaybe<Package_Release_License_Arr_Rel_Insert_Input>;
-};
-
-/** response of any mutation on the table "package.license" */
-export type Package_License_Mutation_Response = {
-  __typename?: 'package_license_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Package_License>;
-};
-
-/** input type for inserting object relation for remote table "package.license" */
-export type Package_License_Obj_Rel_Insert_Input = {
-  data: Package_License_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Package_License_On_Conflict>;
-};
-
-/** on_conflict condition type for table "package.license" */
-export type Package_License_On_Conflict = {
-  constraint: Package_License_Constraint;
-  update_columns?: Array<Package_License_Update_Column>;
-  where?: InputMaybe<Package_License_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "package.license". */
-export type Package_License_Order_By = {
-  id?: InputMaybe<Order_By>;
-  name?: InputMaybe<Order_By>;
-  release_licenses_aggregate?: InputMaybe<Package_Release_License_Aggregate_Order_By>;
-};
-
-/** primary key columns input for table: package_license */
-export type Package_License_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** select columns of table "package.license" */
-export enum Package_License_Select_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Name = 'name'
-}
-
-/** input type for updating data in table "package.license" */
-export type Package_License_Set_Input = {
-  id?: InputMaybe<Scalars['uuid']>;
-  name?: InputMaybe<Scalars['String']>;
-};
-
-/** update columns of table "package.license" */
-export enum Package_License_Update_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Name = 'name'
-}
-
-/** columns and relationships of "package.maintainer" */
-export type Package_Maintainer = {
-  __typename?: 'package_maintainer';
-  email: Scalars['String'];
-  id: Scalars['uuid'];
-  name?: Maybe<Scalars['String']>;
-  /** An array relationship */
-  package_maintainers: Array<Package_Package_Maintainer>;
-  package_manager?: Maybe<Scalars['package_manager']>;
-  /** An array relationship */
-  published_releases: Array<Package_Release>;
-};
-
-
-/** columns and relationships of "package.maintainer" */
-export type Package_MaintainerPackage_MaintainersArgs = {
-  distinct_on?: InputMaybe<Array<Package_Package_Maintainer_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Package_Maintainer_Order_By>>;
-  where?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
-};
-
-
-/** columns and relationships of "package.maintainer" */
-export type Package_MaintainerPublished_ReleasesArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_Order_By>>;
-  where?: InputMaybe<Package_Release_Bool_Exp>;
-};
-
-/** Boolean expression to filter rows from the table "package.maintainer". All fields are combined with a logical 'AND'. */
-export type Package_Maintainer_Bool_Exp = {
-  _and?: InputMaybe<Array<Package_Maintainer_Bool_Exp>>;
-  _not?: InputMaybe<Package_Maintainer_Bool_Exp>;
-  _or?: InputMaybe<Array<Package_Maintainer_Bool_Exp>>;
-  email?: InputMaybe<String_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  name?: InputMaybe<String_Comparison_Exp>;
-  package_maintainers?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
-  package_manager?: InputMaybe<Package_Manager_Comparison_Exp>;
-  published_releases?: InputMaybe<Package_Release_Bool_Exp>;
-};
-
-/** unique or primary key constraints on table "package.maintainer" */
-export enum Package_Maintainer_Constraint {
-  /** unique or primary key constraint */
-  MaintainerPackageManagerEmailIdx = 'maintainer_package_manager_email_idx',
-  /** unique or primary key constraint */
-  MaintainerPkey = 'maintainer_pkey'
-}
-
-/** input type for inserting data into table "package.maintainer" */
-export type Package_Maintainer_Insert_Input = {
-  email?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  name?: InputMaybe<Scalars['String']>;
-  package_maintainers?: InputMaybe<Package_Package_Maintainer_Arr_Rel_Insert_Input>;
-  package_manager?: InputMaybe<Scalars['package_manager']>;
-  published_releases?: InputMaybe<Package_Release_Arr_Rel_Insert_Input>;
-};
-
-/** response of any mutation on the table "package.maintainer" */
-export type Package_Maintainer_Mutation_Response = {
-  __typename?: 'package_maintainer_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Package_Maintainer>;
-};
-
-/** input type for inserting object relation for remote table "package.maintainer" */
-export type Package_Maintainer_Obj_Rel_Insert_Input = {
-  data: Package_Maintainer_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Package_Maintainer_On_Conflict>;
-};
-
-/** on_conflict condition type for table "package.maintainer" */
-export type Package_Maintainer_On_Conflict = {
-  constraint: Package_Maintainer_Constraint;
-  update_columns?: Array<Package_Maintainer_Update_Column>;
-  where?: InputMaybe<Package_Maintainer_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "package.maintainer". */
-export type Package_Maintainer_Order_By = {
-  email?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  name?: InputMaybe<Order_By>;
-  package_maintainers_aggregate?: InputMaybe<Package_Package_Maintainer_Aggregate_Order_By>;
-  package_manager?: InputMaybe<Order_By>;
-  published_releases_aggregate?: InputMaybe<Package_Release_Aggregate_Order_By>;
-};
-
-/** primary key columns input for table: package_maintainer */
-export type Package_Maintainer_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** select columns of table "package.maintainer" */
-export enum Package_Maintainer_Select_Column {
-  /** column name */
-  Email = 'email',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Name = 'name',
-  /** column name */
-  PackageManager = 'package_manager'
-}
-
-/** input type for updating data in table "package.maintainer" */
-export type Package_Maintainer_Set_Input = {
-  email?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  name?: InputMaybe<Scalars['String']>;
-  package_manager?: InputMaybe<Scalars['package_manager']>;
-};
-
-/** update columns of table "package.maintainer" */
-export enum Package_Maintainer_Update_Column {
-  /** column name */
-  Email = 'email',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Name = 'name',
-  /** column name */
-  PackageManager = 'package_manager'
-}
-
-/** Boolean expression to compare columns of type "package_manager". All fields are combined with logical 'AND'. */
-export type Package_Manager_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['package_manager']>;
-  _gt?: InputMaybe<Scalars['package_manager']>;
-  _gte?: InputMaybe<Scalars['package_manager']>;
-  _in?: InputMaybe<Array<Scalars['package_manager']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']>;
-  _lt?: InputMaybe<Scalars['package_manager']>;
-  _lte?: InputMaybe<Scalars['package_manager']>;
-  _neq?: InputMaybe<Scalars['package_manager']>;
-  _nin?: InputMaybe<Array<Scalars['package_manager']>>;
-};
-
-/** response of any mutation on the table "package.package" */
-export type Package_Mutation_Response = {
-  __typename?: 'package_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Package>;
-};
-
-/** input type for inserting object relation for remote table "package.package" */
-export type Package_Obj_Rel_Insert_Input = {
-  data: Package_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Package_On_Conflict>;
-};
-
-/** on_conflict condition type for table "package.package" */
-export type Package_On_Conflict = {
-  constraint: Package_Constraint;
-  update_columns?: Array<Package_Update_Column>;
-  where?: InputMaybe<Package_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "package.package". */
-export type Package_Order_By = {
-  custom_registry?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  fetched_time?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  name?: InputMaybe<Order_By>;
-  package_maintainers_aggregate?: InputMaybe<Package_Package_Maintainer_Aggregate_Order_By>;
-  package_manager?: InputMaybe<Order_By>;
-  releases_aggregate?: InputMaybe<Package_Release_Aggregate_Order_By>;
-};
-
-/** columns and relationships of "package.package_maintainer" */
-export type Package_Package_Maintainer = {
-  __typename?: 'package_package_maintainer';
-  /** An object relationship */
-  maintainer?: Maybe<Package_Maintainer>;
-  maintainer_id?: Maybe<Scalars['uuid']>;
-  /** An object relationship */
-  package?: Maybe<Package>;
-  package_id?: Maybe<Scalars['uuid']>;
-};
-
-/** order by aggregate values of table "package.package_maintainer" */
-export type Package_Package_Maintainer_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Package_Package_Maintainer_Max_Order_By>;
-  min?: InputMaybe<Package_Package_Maintainer_Min_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "package.package_maintainer" */
-export type Package_Package_Maintainer_Arr_Rel_Insert_Input = {
-  data: Array<Package_Package_Maintainer_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Package_Package_Maintainer_On_Conflict>;
-};
-
-/** Boolean expression to filter rows from the table "package.package_maintainer". All fields are combined with a logical 'AND'. */
-export type Package_Package_Maintainer_Bool_Exp = {
-  _and?: InputMaybe<Array<Package_Package_Maintainer_Bool_Exp>>;
-  _not?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
-  _or?: InputMaybe<Array<Package_Package_Maintainer_Bool_Exp>>;
-  maintainer?: InputMaybe<Package_Maintainer_Bool_Exp>;
-  maintainer_id?: InputMaybe<Uuid_Comparison_Exp>;
-  package?: InputMaybe<Package_Bool_Exp>;
-  package_id?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "package.package_maintainer" */
-export enum Package_Package_Maintainer_Constraint {
-  /** unique or primary key constraint */
-  PackageMaintainerPackageIdMaintainerIdIdx = 'package_maintainer_package_id_maintainer_id_idx'
-}
-
-/** input type for inserting data into table "package.package_maintainer" */
-export type Package_Package_Maintainer_Insert_Input = {
-  maintainer?: InputMaybe<Package_Maintainer_Obj_Rel_Insert_Input>;
-  maintainer_id?: InputMaybe<Scalars['uuid']>;
-  package?: InputMaybe<Package_Obj_Rel_Insert_Input>;
-  package_id?: InputMaybe<Scalars['uuid']>;
-};
-
-/** order by max() on columns of table "package.package_maintainer" */
-export type Package_Package_Maintainer_Max_Order_By = {
-  maintainer_id?: InputMaybe<Order_By>;
-  package_id?: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "package.package_maintainer" */
-export type Package_Package_Maintainer_Min_Order_By = {
-  maintainer_id?: InputMaybe<Order_By>;
-  package_id?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "package.package_maintainer" */
-export type Package_Package_Maintainer_Mutation_Response = {
-  __typename?: 'package_package_maintainer_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Package_Package_Maintainer>;
-};
-
-/** on_conflict condition type for table "package.package_maintainer" */
-export type Package_Package_Maintainer_On_Conflict = {
-  constraint: Package_Package_Maintainer_Constraint;
-  update_columns?: Array<Package_Package_Maintainer_Update_Column>;
-  where?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "package.package_maintainer". */
-export type Package_Package_Maintainer_Order_By = {
-  maintainer?: InputMaybe<Package_Maintainer_Order_By>;
-  maintainer_id?: InputMaybe<Order_By>;
-  package?: InputMaybe<Package_Order_By>;
-  package_id?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "package.package_maintainer" */
-export enum Package_Package_Maintainer_Select_Column {
-  /** column name */
-  MaintainerId = 'maintainer_id',
-  /** column name */
-  PackageId = 'package_id'
-}
-
-/** input type for updating data in table "package.package_maintainer" */
-export type Package_Package_Maintainer_Set_Input = {
-  maintainer_id?: InputMaybe<Scalars['uuid']>;
-  package_id?: InputMaybe<Scalars['uuid']>;
-};
-
-/** update columns of table "package.package_maintainer" */
-export enum Package_Package_Maintainer_Update_Column {
-  /** column name */
-  MaintainerId = 'maintainer_id',
-  /** column name */
-  PackageId = 'package_id'
-}
-
-/** primary key columns input for table: package */
-export type Package_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** columns and relationships of "package.release" */
-export type Package_Release = {
-  __typename?: 'package_release';
-  blob_hash?: Maybe<Scalars['String']>;
-  fetched_time?: Maybe<Scalars['timestamptz']>;
-  id: Scalars['uuid'];
-  mirrored_blob_url?: Maybe<Scalars['String']>;
-  observed_time: Scalars['timestamptz'];
-  /** An object relationship */
-  package?: Maybe<Package>;
-  package_id?: Maybe<Scalars['uuid']>;
-  /** An object relationship */
-  publishing_maintainer?: Maybe<Package_Maintainer>;
-  publishing_maintainer_id?: Maybe<Scalars['uuid']>;
-  /** An array relationship */
-  release_dependencies: Array<Package_Release_Dependency>;
-  /** An array relationship */
-  release_dependents: Array<Package_Release_Dependency>;
-  /** An array relationship */
-  release_licenses: Array<Package_Release_License>;
-  release_time?: Maybe<Scalars['timestamptz']>;
-  upstream_blob_url?: Maybe<Scalars['String']>;
-  upstream_data?: Maybe<Scalars['jsonb']>;
-  version: Scalars['String'];
-};
-
-
-/** columns and relationships of "package.release" */
-export type Package_ReleaseRelease_DependenciesArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_Dependency_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_Dependency_Order_By>>;
-  where?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
-};
-
-
-/** columns and relationships of "package.release" */
-export type Package_ReleaseRelease_DependentsArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_Dependency_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_Dependency_Order_By>>;
-  where?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
-};
-
-
-/** columns and relationships of "package.release" */
-export type Package_ReleaseRelease_LicensesArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_License_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_License_Order_By>>;
-  where?: InputMaybe<Package_Release_License_Bool_Exp>;
-};
-
-
-/** columns and relationships of "package.release" */
-export type Package_ReleaseUpstream_DataArgs = {
-  path?: InputMaybe<Scalars['String']>;
-};
-
-/** order by aggregate values of table "package.release" */
-export type Package_Release_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Package_Release_Max_Order_By>;
-  min?: InputMaybe<Package_Release_Min_Order_By>;
-};
-
-/** append existing jsonb value of filtered columns with new jsonb value */
-export type Package_Release_Append_Input = {
-  upstream_data?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** input type for inserting array relation for remote table "package.release" */
-export type Package_Release_Arr_Rel_Insert_Input = {
-  data: Array<Package_Release_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Package_Release_On_Conflict>;
-};
-
-/** Boolean expression to filter rows from the table "package.release". All fields are combined with a logical 'AND'. */
-export type Package_Release_Bool_Exp = {
-  _and?: InputMaybe<Array<Package_Release_Bool_Exp>>;
-  _not?: InputMaybe<Package_Release_Bool_Exp>;
-  _or?: InputMaybe<Array<Package_Release_Bool_Exp>>;
-  blob_hash?: InputMaybe<String_Comparison_Exp>;
-  fetched_time?: InputMaybe<Timestamptz_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  mirrored_blob_url?: InputMaybe<String_Comparison_Exp>;
-  observed_time?: InputMaybe<Timestamptz_Comparison_Exp>;
-  package?: InputMaybe<Package_Bool_Exp>;
-  package_id?: InputMaybe<Uuid_Comparison_Exp>;
-  publishing_maintainer?: InputMaybe<Package_Maintainer_Bool_Exp>;
-  publishing_maintainer_id?: InputMaybe<Uuid_Comparison_Exp>;
-  release_dependencies?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
-  release_dependents?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
-  release_licenses?: InputMaybe<Package_Release_License_Bool_Exp>;
-  release_time?: InputMaybe<Timestamptz_Comparison_Exp>;
-  upstream_blob_url?: InputMaybe<String_Comparison_Exp>;
-  upstream_data?: InputMaybe<Jsonb_Comparison_Exp>;
-  version?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "package.release" */
-export enum Package_Release_Constraint {
-  /** unique or primary key constraint */
-  ReleasePackageIdVersionIdx = 'release_package_id_version_idx',
-  /** unique or primary key constraint */
-  ReleasePkey = 'release_pkey'
-}
-
-/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-export type Package_Release_Delete_At_Path_Input = {
-  upstream_data?: InputMaybe<Array<Scalars['String']>>;
-};
-
-/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-export type Package_Release_Delete_Elem_Input = {
-  upstream_data?: InputMaybe<Scalars['Int']>;
-};
-
-/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-export type Package_Release_Delete_Key_Input = {
-  upstream_data?: InputMaybe<Scalars['String']>;
-};
-
-/** columns and relationships of "package.release_dependency" */
-export type Package_Release_Dependency = {
-  __typename?: 'package_release_dependency';
-  /** An object relationship */
-  dependency_package?: Maybe<Package>;
-  dependency_package_id?: Maybe<Scalars['uuid']>;
-  /** An object relationship */
-  dependency_release?: Maybe<Package_Release>;
-  dependency_release_id?: Maybe<Scalars['uuid']>;
-  id: Scalars['uuid'];
-  package_name: Scalars['String'];
-  package_version_query: Scalars['String'];
-  /** An object relationship */
-  release: Package_Release;
-  release_id: Scalars['uuid'];
-};
-
-/** order by aggregate values of table "package.release_dependency" */
-export type Package_Release_Dependency_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Package_Release_Dependency_Max_Order_By>;
-  min?: InputMaybe<Package_Release_Dependency_Min_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "package.release_dependency" */
-export type Package_Release_Dependency_Arr_Rel_Insert_Input = {
-  data: Array<Package_Release_Dependency_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Package_Release_Dependency_On_Conflict>;
-};
-
-/** Boolean expression to filter rows from the table "package.release_dependency". All fields are combined with a logical 'AND'. */
-export type Package_Release_Dependency_Bool_Exp = {
-  _and?: InputMaybe<Array<Package_Release_Dependency_Bool_Exp>>;
-  _not?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
-  _or?: InputMaybe<Array<Package_Release_Dependency_Bool_Exp>>;
-  dependency_package?: InputMaybe<Package_Bool_Exp>;
-  dependency_package_id?: InputMaybe<Uuid_Comparison_Exp>;
-  dependency_release?: InputMaybe<Package_Release_Bool_Exp>;
-  dependency_release_id?: InputMaybe<Uuid_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  package_name?: InputMaybe<String_Comparison_Exp>;
-  package_version_query?: InputMaybe<String_Comparison_Exp>;
-  release?: InputMaybe<Package_Release_Bool_Exp>;
-  release_id?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "package.release_dependency" */
-export enum Package_Release_Dependency_Constraint {
-  /** unique or primary key constraint */
-  ReleaseDependencyPkey = 'release_dependency_pkey',
-  /** unique or primary key constraint */
-  ReleaseDependencyReleaseIdPackageNamePackageVersionIdx = 'release_dependency_release_id_package_name_package_version__idx'
-}
-
-/** input type for inserting data into table "package.release_dependency" */
-export type Package_Release_Dependency_Insert_Input = {
-  dependency_package?: InputMaybe<Package_Obj_Rel_Insert_Input>;
-  dependency_package_id?: InputMaybe<Scalars['uuid']>;
-  dependency_release?: InputMaybe<Package_Release_Obj_Rel_Insert_Input>;
-  dependency_release_id?: InputMaybe<Scalars['uuid']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  package_name?: InputMaybe<Scalars['String']>;
-  package_version_query?: InputMaybe<Scalars['String']>;
-  release?: InputMaybe<Package_Release_Obj_Rel_Insert_Input>;
-  release_id?: InputMaybe<Scalars['uuid']>;
-};
-
-/** order by max() on columns of table "package.release_dependency" */
-export type Package_Release_Dependency_Max_Order_By = {
-  dependency_package_id?: InputMaybe<Order_By>;
-  dependency_release_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  package_name?: InputMaybe<Order_By>;
-  package_version_query?: InputMaybe<Order_By>;
-  release_id?: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "package.release_dependency" */
-export type Package_Release_Dependency_Min_Order_By = {
-  dependency_package_id?: InputMaybe<Order_By>;
-  dependency_release_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  package_name?: InputMaybe<Order_By>;
-  package_version_query?: InputMaybe<Order_By>;
-  release_id?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "package.release_dependency" */
-export type Package_Release_Dependency_Mutation_Response = {
-  __typename?: 'package_release_dependency_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Package_Release_Dependency>;
-};
-
-/** on_conflict condition type for table "package.release_dependency" */
-export type Package_Release_Dependency_On_Conflict = {
-  constraint: Package_Release_Dependency_Constraint;
-  update_columns?: Array<Package_Release_Dependency_Update_Column>;
-  where?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "package.release_dependency". */
-export type Package_Release_Dependency_Order_By = {
-  dependency_package?: InputMaybe<Package_Order_By>;
-  dependency_package_id?: InputMaybe<Order_By>;
-  dependency_release?: InputMaybe<Package_Release_Order_By>;
-  dependency_release_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  package_name?: InputMaybe<Order_By>;
-  package_version_query?: InputMaybe<Order_By>;
-  release?: InputMaybe<Package_Release_Order_By>;
-  release_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: package_release_dependency */
-export type Package_Release_Dependency_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** select columns of table "package.release_dependency" */
-export enum Package_Release_Dependency_Select_Column {
-  /** column name */
-  DependencyPackageId = 'dependency_package_id',
-  /** column name */
-  DependencyReleaseId = 'dependency_release_id',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  PackageName = 'package_name',
-  /** column name */
-  PackageVersionQuery = 'package_version_query',
-  /** column name */
-  ReleaseId = 'release_id'
-}
-
-/** input type for updating data in table "package.release_dependency" */
-export type Package_Release_Dependency_Set_Input = {
-  dependency_package_id?: InputMaybe<Scalars['uuid']>;
-  dependency_release_id?: InputMaybe<Scalars['uuid']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  package_name?: InputMaybe<Scalars['String']>;
-  package_version_query?: InputMaybe<Scalars['String']>;
-  release_id?: InputMaybe<Scalars['uuid']>;
-};
-
-/** update columns of table "package.release_dependency" */
-export enum Package_Release_Dependency_Update_Column {
-  /** column name */
-  DependencyPackageId = 'dependency_package_id',
-  /** column name */
-  DependencyReleaseId = 'dependency_release_id',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  PackageName = 'package_name',
-  /** column name */
-  PackageVersionQuery = 'package_version_query',
-  /** column name */
-  ReleaseId = 'release_id'
-}
-
-/** input type for inserting data into table "package.release" */
-export type Package_Release_Insert_Input = {
-  blob_hash?: InputMaybe<Scalars['String']>;
-  fetched_time?: InputMaybe<Scalars['timestamptz']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  mirrored_blob_url?: InputMaybe<Scalars['String']>;
-  observed_time?: InputMaybe<Scalars['timestamptz']>;
-  package?: InputMaybe<Package_Obj_Rel_Insert_Input>;
-  package_id?: InputMaybe<Scalars['uuid']>;
-  publishing_maintainer?: InputMaybe<Package_Maintainer_Obj_Rel_Insert_Input>;
-  publishing_maintainer_id?: InputMaybe<Scalars['uuid']>;
-  release_dependencies?: InputMaybe<Package_Release_Dependency_Arr_Rel_Insert_Input>;
-  release_dependents?: InputMaybe<Package_Release_Dependency_Arr_Rel_Insert_Input>;
-  release_licenses?: InputMaybe<Package_Release_License_Arr_Rel_Insert_Input>;
-  release_time?: InputMaybe<Scalars['timestamptz']>;
-  upstream_blob_url?: InputMaybe<Scalars['String']>;
-  upstream_data?: InputMaybe<Scalars['jsonb']>;
-  version?: InputMaybe<Scalars['String']>;
-};
-
-/** columns and relationships of "package.release_license" */
-export type Package_Release_License = {
-  __typename?: 'package_release_license';
-  id: Scalars['uuid'];
-  /** An object relationship */
-  license: Package_License;
-  license_id: Scalars['uuid'];
-  release_id: Scalars['uuid'];
-  scan_metadata?: Maybe<Scalars['jsonb']>;
-  scan_time: Scalars['timestamptz'];
-  source: Scalars['license_source'];
-};
-
-
-/** columns and relationships of "package.release_license" */
-export type Package_Release_LicenseScan_MetadataArgs = {
-  path?: InputMaybe<Scalars['String']>;
-};
-
-/** order by aggregate values of table "package.release_license" */
-export type Package_Release_License_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Package_Release_License_Max_Order_By>;
-  min?: InputMaybe<Package_Release_License_Min_Order_By>;
-};
-
-/** append existing jsonb value of filtered columns with new jsonb value */
-export type Package_Release_License_Append_Input = {
-  scan_metadata?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** input type for inserting array relation for remote table "package.release_license" */
-export type Package_Release_License_Arr_Rel_Insert_Input = {
-  data: Array<Package_Release_License_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Package_Release_License_On_Conflict>;
-};
-
-/** Boolean expression to filter rows from the table "package.release_license". All fields are combined with a logical 'AND'. */
-export type Package_Release_License_Bool_Exp = {
-  _and?: InputMaybe<Array<Package_Release_License_Bool_Exp>>;
-  _not?: InputMaybe<Package_Release_License_Bool_Exp>;
-  _or?: InputMaybe<Array<Package_Release_License_Bool_Exp>>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  license?: InputMaybe<Package_License_Bool_Exp>;
-  license_id?: InputMaybe<Uuid_Comparison_Exp>;
-  release_id?: InputMaybe<Uuid_Comparison_Exp>;
-  scan_metadata?: InputMaybe<Jsonb_Comparison_Exp>;
-  scan_time?: InputMaybe<Timestamptz_Comparison_Exp>;
-  source?: InputMaybe<License_Source_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "package.release_license" */
-export enum Package_Release_License_Constraint {
-  /** unique or primary key constraint */
-  ReleaseLicensePkey = 'release_license_pkey'
-}
-
-/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-export type Package_Release_License_Delete_At_Path_Input = {
-  scan_metadata?: InputMaybe<Array<Scalars['String']>>;
-};
-
-/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-export type Package_Release_License_Delete_Elem_Input = {
-  scan_metadata?: InputMaybe<Scalars['Int']>;
-};
-
-/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-export type Package_Release_License_Delete_Key_Input = {
-  scan_metadata?: InputMaybe<Scalars['String']>;
-};
-
-/** input type for inserting data into table "package.release_license" */
-export type Package_Release_License_Insert_Input = {
-  id?: InputMaybe<Scalars['uuid']>;
-  license?: InputMaybe<Package_License_Obj_Rel_Insert_Input>;
-  license_id?: InputMaybe<Scalars['uuid']>;
-  release_id?: InputMaybe<Scalars['uuid']>;
-  scan_metadata?: InputMaybe<Scalars['jsonb']>;
-  scan_time?: InputMaybe<Scalars['timestamptz']>;
-  source?: InputMaybe<Scalars['license_source']>;
-};
-
-/** order by max() on columns of table "package.release_license" */
-export type Package_Release_License_Max_Order_By = {
-  id?: InputMaybe<Order_By>;
-  license_id?: InputMaybe<Order_By>;
-  release_id?: InputMaybe<Order_By>;
-  scan_time?: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "package.release_license" */
-export type Package_Release_License_Min_Order_By = {
-  id?: InputMaybe<Order_By>;
-  license_id?: InputMaybe<Order_By>;
-  release_id?: InputMaybe<Order_By>;
-  scan_time?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "package.release_license" */
-export type Package_Release_License_Mutation_Response = {
-  __typename?: 'package_release_license_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Package_Release_License>;
-};
-
-/** on_conflict condition type for table "package.release_license" */
-export type Package_Release_License_On_Conflict = {
-  constraint: Package_Release_License_Constraint;
-  update_columns?: Array<Package_Release_License_Update_Column>;
-  where?: InputMaybe<Package_Release_License_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "package.release_license". */
-export type Package_Release_License_Order_By = {
-  id?: InputMaybe<Order_By>;
-  license?: InputMaybe<Package_License_Order_By>;
-  license_id?: InputMaybe<Order_By>;
-  release_id?: InputMaybe<Order_By>;
-  scan_metadata?: InputMaybe<Order_By>;
-  scan_time?: InputMaybe<Order_By>;
-  source?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: package_release_license */
-export type Package_Release_License_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** prepend existing jsonb value of filtered columns with new jsonb value */
-export type Package_Release_License_Prepend_Input = {
-  scan_metadata?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** select columns of table "package.release_license" */
-export enum Package_Release_License_Select_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  LicenseId = 'license_id',
-  /** column name */
-  ReleaseId = 'release_id',
-  /** column name */
-  ScanMetadata = 'scan_metadata',
-  /** column name */
-  ScanTime = 'scan_time',
-  /** column name */
-  Source = 'source'
-}
-
-/** input type for updating data in table "package.release_license" */
-export type Package_Release_License_Set_Input = {
-  id?: InputMaybe<Scalars['uuid']>;
-  license_id?: InputMaybe<Scalars['uuid']>;
-  release_id?: InputMaybe<Scalars['uuid']>;
-  scan_metadata?: InputMaybe<Scalars['jsonb']>;
-  scan_time?: InputMaybe<Scalars['timestamptz']>;
-  source?: InputMaybe<Scalars['license_source']>;
-};
-
-/** update columns of table "package.release_license" */
-export enum Package_Release_License_Update_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  LicenseId = 'license_id',
-  /** column name */
-  ReleaseId = 'release_id',
-  /** column name */
-  ScanMetadata = 'scan_metadata',
-  /** column name */
-  ScanTime = 'scan_time',
-  /** column name */
-  Source = 'source'
-}
-
-/** order by max() on columns of table "package.release" */
-export type Package_Release_Max_Order_By = {
-  blob_hash?: InputMaybe<Order_By>;
-  fetched_time?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  mirrored_blob_url?: InputMaybe<Order_By>;
-  observed_time?: InputMaybe<Order_By>;
-  package_id?: InputMaybe<Order_By>;
-  publishing_maintainer_id?: InputMaybe<Order_By>;
-  release_time?: InputMaybe<Order_By>;
-  upstream_blob_url?: InputMaybe<Order_By>;
-  version?: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "package.release" */
-export type Package_Release_Min_Order_By = {
-  blob_hash?: InputMaybe<Order_By>;
-  fetched_time?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  mirrored_blob_url?: InputMaybe<Order_By>;
-  observed_time?: InputMaybe<Order_By>;
-  package_id?: InputMaybe<Order_By>;
-  publishing_maintainer_id?: InputMaybe<Order_By>;
-  release_time?: InputMaybe<Order_By>;
-  upstream_blob_url?: InputMaybe<Order_By>;
-  version?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "package.release" */
-export type Package_Release_Mutation_Response = {
-  __typename?: 'package_release_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Package_Release>;
-};
-
-/** input type for inserting object relation for remote table "package.release" */
-export type Package_Release_Obj_Rel_Insert_Input = {
-  data: Package_Release_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Package_Release_On_Conflict>;
-};
-
-/** on_conflict condition type for table "package.release" */
-export type Package_Release_On_Conflict = {
-  constraint: Package_Release_Constraint;
-  update_columns?: Array<Package_Release_Update_Column>;
-  where?: InputMaybe<Package_Release_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "package.release". */
-export type Package_Release_Order_By = {
-  blob_hash?: InputMaybe<Order_By>;
-  fetched_time?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  mirrored_blob_url?: InputMaybe<Order_By>;
-  observed_time?: InputMaybe<Order_By>;
-  package?: InputMaybe<Package_Order_By>;
-  package_id?: InputMaybe<Order_By>;
-  publishing_maintainer?: InputMaybe<Package_Maintainer_Order_By>;
-  publishing_maintainer_id?: InputMaybe<Order_By>;
-  release_dependencies_aggregate?: InputMaybe<Package_Release_Dependency_Aggregate_Order_By>;
-  release_dependents_aggregate?: InputMaybe<Package_Release_Dependency_Aggregate_Order_By>;
-  release_licenses_aggregate?: InputMaybe<Package_Release_License_Aggregate_Order_By>;
-  release_time?: InputMaybe<Order_By>;
-  upstream_blob_url?: InputMaybe<Order_By>;
-  upstream_data?: InputMaybe<Order_By>;
-  version?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: package_release */
-export type Package_Release_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** prepend existing jsonb value of filtered columns with new jsonb value */
-export type Package_Release_Prepend_Input = {
-  upstream_data?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** select columns of table "package.release" */
-export enum Package_Release_Select_Column {
-  /** column name */
-  BlobHash = 'blob_hash',
-  /** column name */
-  FetchedTime = 'fetched_time',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  MirroredBlobUrl = 'mirrored_blob_url',
-  /** column name */
-  ObservedTime = 'observed_time',
-  /** column name */
-  PackageId = 'package_id',
-  /** column name */
-  PublishingMaintainerId = 'publishing_maintainer_id',
-  /** column name */
-  ReleaseTime = 'release_time',
-  /** column name */
-  UpstreamBlobUrl = 'upstream_blob_url',
-  /** column name */
-  UpstreamData = 'upstream_data',
-  /** column name */
-  Version = 'version'
-}
-
-/** input type for updating data in table "package.release" */
-export type Package_Release_Set_Input = {
-  blob_hash?: InputMaybe<Scalars['String']>;
-  fetched_time?: InputMaybe<Scalars['timestamptz']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  mirrored_blob_url?: InputMaybe<Scalars['String']>;
-  observed_time?: InputMaybe<Scalars['timestamptz']>;
-  package_id?: InputMaybe<Scalars['uuid']>;
-  publishing_maintainer_id?: InputMaybe<Scalars['uuid']>;
-  release_time?: InputMaybe<Scalars['timestamptz']>;
-  upstream_blob_url?: InputMaybe<Scalars['String']>;
-  upstream_data?: InputMaybe<Scalars['jsonb']>;
-  version?: InputMaybe<Scalars['String']>;
-};
-
-/** update columns of table "package.release" */
-export enum Package_Release_Update_Column {
-  /** column name */
-  BlobHash = 'blob_hash',
-  /** column name */
-  FetchedTime = 'fetched_time',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  MirroredBlobUrl = 'mirrored_blob_url',
-  /** column name */
-  ObservedTime = 'observed_time',
-  /** column name */
-  PackageId = 'package_id',
-  /** column name */
-  PublishingMaintainerId = 'publishing_maintainer_id',
-  /** column name */
-  ReleaseTime = 'release_time',
-  /** column name */
-  UpstreamBlobUrl = 'upstream_blob_url',
-  /** column name */
-  UpstreamData = 'upstream_data',
-  /** column name */
-  Version = 'version'
-}
-
-/** select columns of table "package.package" */
-export enum Package_Select_Column {
-  /** column name */
-  CustomRegistry = 'custom_registry',
-  /** column name */
-  Description = 'description',
-  /** column name */
-  FetchedTime = 'fetched_time',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Name = 'name',
-  /** column name */
-  PackageManager = 'package_manager'
-}
-
-/** input type for updating data in table "package.package" */
-export type Package_Set_Input = {
-  custom_registry?: InputMaybe<Scalars['String']>;
-  description?: InputMaybe<Scalars['String']>;
-  fetched_time?: InputMaybe<Scalars['timestamptz']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  name?: InputMaybe<Scalars['String']>;
-  package_manager?: InputMaybe<Scalars['package_manager']>;
-};
-
-/** update columns of table "package.package" */
-export enum Package_Update_Column {
-  /** column name */
-  CustomRegistry = 'custom_registry',
-  /** column name */
-  Description = 'description',
-  /** column name */
-  FetchedTime = 'fetched_time',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Name = 'name',
-  /** column name */
-  PackageManager = 'package_manager'
-}
-
 /** columns and relationships of "package_versions" */
 export type Package_Versions = {
   __typename?: 'package_versions';
@@ -4890,6 +3736,8 @@ export type Projects = {
   builds_aggregate: Builds_Aggregate;
   created_at: Scalars['timestamp'];
   /** An array relationship */
+  default_branch_builds: Array<Default_Branch_Builds>;
+  /** An array relationship */
   github_repositories: Array<Github_Repositories>;
   /** An object relationship */
   github_repository?: Maybe<Github_Repositories>;
@@ -4930,6 +3778,16 @@ export type ProjectsBuilds_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Builds_Order_By>>;
   where?: InputMaybe<Builds_Bool_Exp>;
+};
+
+
+/** columns and relationships of "projects" */
+export type ProjectsDefault_Branch_BuildsArgs = {
+  distinct_on?: InputMaybe<Array<Default_Branch_Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Default_Branch_Builds_Order_By>>;
+  where?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
 };
 
 
@@ -5025,6 +3883,7 @@ export type Projects_Bool_Exp = {
   _or?: InputMaybe<Array<Projects_Bool_Exp>>;
   builds?: InputMaybe<Builds_Bool_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  default_branch_builds?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
   github_repositories?: InputMaybe<Github_Repositories_Bool_Exp>;
   github_repository?: InputMaybe<Github_Repositories_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -5052,6 +3911,7 @@ export enum Projects_Constraint {
 export type Projects_Insert_Input = {
   builds?: InputMaybe<Builds_Arr_Rel_Insert_Input>;
   created_at?: InputMaybe<Scalars['timestamp']>;
+  default_branch_builds?: InputMaybe<Default_Branch_Builds_Arr_Rel_Insert_Input>;
   github_repositories?: InputMaybe<Github_Repositories_Arr_Rel_Insert_Input>;
   github_repository?: InputMaybe<Github_Repositories_Obj_Rel_Insert_Input>;
   id?: InputMaybe<Scalars['uuid']>;
@@ -5132,6 +3992,7 @@ export type Projects_On_Conflict = {
 export type Projects_Order_By = {
   builds_aggregate?: InputMaybe<Builds_Aggregate_Order_By>;
   created_at?: InputMaybe<Order_By>;
+  default_branch_builds_aggregate?: InputMaybe<Default_Branch_Builds_Aggregate_Order_By>;
   github_repositories_aggregate?: InputMaybe<Github_Repositories_Aggregate_Order_By>;
   github_repository?: InputMaybe<Github_Repositories_Order_By>;
   id?: InputMaybe<Order_By>;
@@ -5203,6 +4064,8 @@ export type Query_Root = {
   builds_aggregate: Builds_Aggregate;
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
+  /** An array relationship */
+  default_branch_builds: Array<Default_Branch_Builds>;
   fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
@@ -5246,32 +4109,6 @@ export type Query_Root = {
   organizations_aggregate: Organizations_Aggregate;
   /** fetch data from the table: "organizations" using primary key columns */
   organizations_by_pk?: Maybe<Organizations>;
-  /** fetch data from the table: "package.package" */
-  package: Array<Package>;
-  /** fetch data from the table: "package.package" using primary key columns */
-  package_by_pk?: Maybe<Package>;
-  /** fetch data from the table: "package.license" */
-  package_license: Array<Package_License>;
-  /** fetch data from the table: "package.license" using primary key columns */
-  package_license_by_pk?: Maybe<Package_License>;
-  /** fetch data from the table: "package.maintainer" */
-  package_maintainer: Array<Package_Maintainer>;
-  /** fetch data from the table: "package.maintainer" using primary key columns */
-  package_maintainer_by_pk?: Maybe<Package_Maintainer>;
-  /** fetch data from the table: "package.package_maintainer" */
-  package_package_maintainer: Array<Package_Package_Maintainer>;
-  /** fetch data from the table: "package.release" */
-  package_release: Array<Package_Release>;
-  /** fetch data from the table: "package.release" using primary key columns */
-  package_release_by_pk?: Maybe<Package_Release>;
-  /** fetch data from the table: "package.release_dependency" */
-  package_release_dependency: Array<Package_Release_Dependency>;
-  /** fetch data from the table: "package.release_dependency" using primary key columns */
-  package_release_dependency_by_pk?: Maybe<Package_Release_Dependency>;
-  /** fetch data from the table: "package.release_license" */
-  package_release_license: Array<Package_Release_License>;
-  /** fetch data from the table: "package.release_license" using primary key columns */
-  package_release_license_by_pk?: Maybe<Package_Release_License>;
   /** An array relationship */
   package_versions: Array<Package_Versions>;
   /** fetch data from the table: "package_versions" using primary key columns */
@@ -5347,6 +4184,15 @@ export type Query_RootBuilds_AggregateArgs = {
 
 export type Query_RootBuilds_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootDefault_Branch_BuildsArgs = {
+  distinct_on?: InputMaybe<Array<Default_Branch_Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Default_Branch_Builds_Order_By>>;
+  where?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
 };
 
 
@@ -5495,99 +4341,6 @@ export type Query_RootOrganizations_AggregateArgs = {
 
 
 export type Query_RootOrganizations_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootPackageArgs = {
-  distinct_on?: InputMaybe<Array<Package_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Order_By>>;
-  where?: InputMaybe<Package_Bool_Exp>;
-};
-
-
-export type Query_RootPackage_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootPackage_LicenseArgs = {
-  distinct_on?: InputMaybe<Array<Package_License_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_License_Order_By>>;
-  where?: InputMaybe<Package_License_Bool_Exp>;
-};
-
-
-export type Query_RootPackage_License_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootPackage_MaintainerArgs = {
-  distinct_on?: InputMaybe<Array<Package_Maintainer_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Maintainer_Order_By>>;
-  where?: InputMaybe<Package_Maintainer_Bool_Exp>;
-};
-
-
-export type Query_RootPackage_Maintainer_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootPackage_Package_MaintainerArgs = {
-  distinct_on?: InputMaybe<Array<Package_Package_Maintainer_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Package_Maintainer_Order_By>>;
-  where?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
-};
-
-
-export type Query_RootPackage_ReleaseArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_Order_By>>;
-  where?: InputMaybe<Package_Release_Bool_Exp>;
-};
-
-
-export type Query_RootPackage_Release_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootPackage_Release_DependencyArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_Dependency_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_Dependency_Order_By>>;
-  where?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
-};
-
-
-export type Query_RootPackage_Release_Dependency_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootPackage_Release_LicenseArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_License_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_License_Order_By>>;
-  where?: InputMaybe<Package_Release_License_Bool_Exp>;
-};
-
-
-export type Query_RootPackage_Release_License_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -6166,6 +4919,8 @@ export type Subscription_Root = {
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
   /** An array relationship */
+  default_branch_builds: Array<Default_Branch_Builds>;
+  /** An array relationship */
   findings: Array<Findings>;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
@@ -6207,32 +4962,6 @@ export type Subscription_Root = {
   organizations_aggregate: Organizations_Aggregate;
   /** fetch data from the table: "organizations" using primary key columns */
   organizations_by_pk?: Maybe<Organizations>;
-  /** fetch data from the table: "package.package" */
-  package: Array<Package>;
-  /** fetch data from the table: "package.package" using primary key columns */
-  package_by_pk?: Maybe<Package>;
-  /** fetch data from the table: "package.license" */
-  package_license: Array<Package_License>;
-  /** fetch data from the table: "package.license" using primary key columns */
-  package_license_by_pk?: Maybe<Package_License>;
-  /** fetch data from the table: "package.maintainer" */
-  package_maintainer: Array<Package_Maintainer>;
-  /** fetch data from the table: "package.maintainer" using primary key columns */
-  package_maintainer_by_pk?: Maybe<Package_Maintainer>;
-  /** fetch data from the table: "package.package_maintainer" */
-  package_package_maintainer: Array<Package_Package_Maintainer>;
-  /** fetch data from the table: "package.release" */
-  package_release: Array<Package_Release>;
-  /** fetch data from the table: "package.release" using primary key columns */
-  package_release_by_pk?: Maybe<Package_Release>;
-  /** fetch data from the table: "package.release_dependency" */
-  package_release_dependency: Array<Package_Release_Dependency>;
-  /** fetch data from the table: "package.release_dependency" using primary key columns */
-  package_release_dependency_by_pk?: Maybe<Package_Release_Dependency>;
-  /** fetch data from the table: "package.release_license" */
-  package_release_license: Array<Package_Release_License>;
-  /** fetch data from the table: "package.release_license" using primary key columns */
-  package_release_license_by_pk?: Maybe<Package_Release_License>;
   /** An array relationship */
   package_versions: Array<Package_Versions>;
   /** fetch data from the table: "package_versions" using primary key columns */
@@ -6300,6 +5029,15 @@ export type Subscription_RootBuilds_AggregateArgs = {
 
 export type Subscription_RootBuilds_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootDefault_Branch_BuildsArgs = {
+  distinct_on?: InputMaybe<Array<Default_Branch_Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Default_Branch_Builds_Order_By>>;
+  where?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
 };
 
 
@@ -6448,99 +5186,6 @@ export type Subscription_RootOrganizations_AggregateArgs = {
 
 
 export type Subscription_RootOrganizations_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootPackageArgs = {
-  distinct_on?: InputMaybe<Array<Package_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Order_By>>;
-  where?: InputMaybe<Package_Bool_Exp>;
-};
-
-
-export type Subscription_RootPackage_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootPackage_LicenseArgs = {
-  distinct_on?: InputMaybe<Array<Package_License_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_License_Order_By>>;
-  where?: InputMaybe<Package_License_Bool_Exp>;
-};
-
-
-export type Subscription_RootPackage_License_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootPackage_MaintainerArgs = {
-  distinct_on?: InputMaybe<Array<Package_Maintainer_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Maintainer_Order_By>>;
-  where?: InputMaybe<Package_Maintainer_Bool_Exp>;
-};
-
-
-export type Subscription_RootPackage_Maintainer_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootPackage_Package_MaintainerArgs = {
-  distinct_on?: InputMaybe<Array<Package_Package_Maintainer_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Package_Maintainer_Order_By>>;
-  where?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
-};
-
-
-export type Subscription_RootPackage_ReleaseArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_Order_By>>;
-  where?: InputMaybe<Package_Release_Bool_Exp>;
-};
-
-
-export type Subscription_RootPackage_Release_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootPackage_Release_DependencyArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_Dependency_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_Dependency_Order_By>>;
-  where?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
-};
-
-
-export type Subscription_RootPackage_Release_Dependency_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootPackage_Release_LicenseArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_License_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_License_Order_By>>;
-  where?: InputMaybe<Package_Release_License_Bool_Exp>;
-};
-
-
-export type Subscription_RootPackage_Release_License_By_PkArgs = {
   id: Scalars['uuid'];
 };
 

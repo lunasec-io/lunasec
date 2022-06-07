@@ -11,24 +11,44 @@
  * limitations under the License.
  *
  */
-import { countCriticalVulnerabilities, filterFindingsByIgnored } from '@lunatrace/lunatrace-common';
+import { countCriticalVulnerabilities, filterFindingsByIgnored } from '@lunatrace/lunatrace-common/build/main';
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
+import { LinkInNewTab } from '../../../components/utils/LinkInNewTab';
 import { branchLink, branchName, commitLink } from '../../../utils/build-display-helpers';
 import { prettyDate } from '../../../utils/pretty-date';
-import { BuildInfo, ProjectInfo } from '../types';
+import { SourceIcon } from '../builds/SourceIcon';
+import { ProjectInfo } from '../types';
 
-import { SourceIcon } from './SourceIcon';
-
-interface BuildListItemProps {
-  build: BuildInfo;
+interface DefaultBranchSummaryProps {
   project: ProjectInfo;
-  onClick: (_e: unknown) => void;
 }
 
-export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ build, project, onClick }) => {
+export const DefaultBranchSummary: React.FC<DefaultBranchSummaryProps> = ({ project }) => {
+  const navigate = useNavigate();
+  const defaultBranchBuilds = project.default_branch_builds;
+  const defaultBranchBuild = defaultBranchBuilds ? defaultBranchBuilds[0] : null;
+  const latestBuildAnyBranch = project.builds[0];
+  // Prefer a build on the default branch if available, otherwise use a build from any branch just so we can show something here
+  const build = defaultBranchBuild || latestBuildAnyBranch;
+  if (!build) {
+    return (
+      <Card className="w-100">
+        <Card.Header>
+          <h3>Not yet scanned</h3>
+        </Card.Header>
+        <Card.Body>
+          <p>All new projects will be scanned soon after installation, check back in a few moments.</p>
+        </Card.Body>
+      </Card>
+    );
+  }
+  // const filteredFindings = filterFindingsByIgnored(build.findings);
+  // const vulnerablePackageCount = countCriticalVulnerabilities(filteredFindings);
+
   const uploadDate = prettyDate(new Date(build.created_at as string));
   const lastScannedDate = build.scans[0] ? prettyDate(new Date(build.scans[0].created_at as string)) : 'Never';
 
@@ -40,27 +60,25 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
   const commitUrl = commitLink(build);
 
   return (
-    <Card onClick={onClick} className="flex-fill w-100 build build-card clickable-card">
+    <Card className="clickable-card w-100" onClick={(e) => navigate(`build/${build.id}`)}>
       <Card.Header>
         <Container fluid>
           <Row>
             <Col sm="6">
               <Card.Title>
                 <h3>
-                  <span className="darker">Snapshot </span>
-                  {build.build_number}{' '}
+                  <span className="lighter">Latest Results</span>
+                  <ConditionallyRender if={build.git_branch}>
+                    <span className="darker"> on {build.git_branch}</span>
+                  </ConditionallyRender>
                 </h3>
               </Card.Title>
-              <Card.Subtitle className="darker">
-                <SourceIcon source_type={build.source_type} className="mb-1 me-1 lighter" /> Uploaded {uploadDate}
-              </Card.Subtitle>
+              <Card.Subtitle className="darker"></Card.Subtitle>
             </Col>
             <Col sm={{ span: 6 }}>
               <div>
                 <Card.Title className="text-sm-end">
-                  <h3 className="text-sm-right" style={{ display: 'inline' }}>
-                    {vulnerablePackageCount}
-                  </h3>
+                  <h3 style={{ display: 'inline' }}>{vulnerablePackageCount}</h3>
                   <span className="darker"> critical packages</span>
                 </Card.Title>
               </div>
@@ -68,34 +86,28 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
           </Row>
         </Container>
       </Card.Header>
-
       <Card.Body className="d-flex">
         <Container fluid>
           <Row>
             <Col xs="12" sm={{ order: 'last', span: 5, offset: 4 }}>
               <h6 className="text-sm-end">
-                <span className="darker"> Last scanned:</span> {lastScannedDate}
+                <SourceIcon source_type={build.source_type} className="mb-1 me-1 lighter" />{' '}
+                <span className="darker"> From:</span> {uploadDate}
               </h6>
-              <h6 className="text-sm-end">
-                <span className="darker">
-                  Scanned {build.scans_aggregate.aggregate?.count} time
-                  {build.scans_aggregate.aggregate?.count !== 1 ? 's' : ''}
-                </span>
-              </h6>
+              <ConditionallyRender if={lastScannedDate !== uploadDate}>
+                <h6 style={{ textAlign: 'right' }}>
+                  <span className="darker"> Last scanned:</span> {lastScannedDate}
+                </h6>
+              </ConditionallyRender>
             </Col>
             <Col xs="12" sm="3">
               <div className="build-git-info">
                 <ConditionallyRender if={branchUrl}>
                   <h6>
                     <span className="darker">Branch: </span>{' '}
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={branchUrl || ''}
-                      onClick={(e) => e.stopPropagation()}
-                    >
+                    <LinkInNewTab href={branchUrl || ''} onClick={(e) => e.stopPropagation()}>
                       {branch}
-                    </a>
+                    </LinkInNewTab>
                   </h6>
                 </ConditionallyRender>
                 <ConditionallyRender if={commitUrl}>
