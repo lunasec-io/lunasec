@@ -4,7 +4,10 @@ on:
   push:
     branches: [ "*" ]
   pull_request:
-    branches: [ master ]
+    paths:
+      - '**.go'
+      - go.mod
+      - go.sum
 
 jobs:
   build:
@@ -16,7 +19,7 @@ jobs:
 
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v1
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go }}
           cache: true
