@@ -68,10 +68,20 @@ select_permissions:
         - createdAt
         - settings_id
       filter:
-        organization_users:
-          user:
-            kratos_id:
-              _eq: X-Hasura-User-Id
+        _or:
+          - organization_users:
+              user_id:
+                _eq: X-Hasura-Real-User-Id
+          - _exists:
+              _where:
+                _and:
+                  - id:
+                      _eq: X-Hasura-Real-User-Id
+                  - role:
+                      _eq: lunatrace_admin
+              _table:
+                schema: public
+                name: users
 update_permissions:
   - role: service
     permission:

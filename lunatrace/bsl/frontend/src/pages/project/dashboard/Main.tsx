@@ -12,11 +12,12 @@
  *
  */
 import React, { useContext } from 'react';
-import { Accordion } from 'react-bootstrap';
+import { Accordion, Button } from 'react-bootstrap';
 import { CopyBlock, dracula } from 'react-code-blocks';
 import { AiFillGithub, AiOutlineInfoCircle } from 'react-icons/ai';
 import { BiUnlink } from 'react-icons/bi';
 
+import api from '../../../api';
 import { UserContext } from '../../../contexts/UserContext';
 import { ProjectInfo, SetActiveTab } from '../types';
 
@@ -30,6 +31,14 @@ interface ProjectDashboardMainProps {
 
 export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainProps> = ({ project, setActiveTab }) => {
   const { isAdmin } = useContext(UserContext);
+
+  const [triggerGenerateProjectCloneUrl, projectCloneUrlResult] = api.useLazyGetProjectCloneUrlQuery();
+
+  const generateProjectCloneUrl = async () => {
+    await triggerGenerateProjectCloneUrl({
+      project_id: project.id,
+    });
+  };
 
   const renderGithubInfo = () => {
     if (!project.github_repository) {
@@ -64,11 +73,18 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
     //
     // );
   };
-  const cloneProject = () => {
-    const cloneUrl = project.github_repository?.authenticated_clone_url?.url;
+  const cloneProjectDetails = () => {
+    const { data } = projectCloneUrlResult;
+    if (!data) {
+      return null;
+    }
+
+    const cloneUrl = data.projects_by_pk?.github_repository?.authenticated_clone_url?.url;
+
     if (!cloneUrl) {
       return null;
     }
+
     const formattedCloneUrl = cloneUrl.replace('git://', 'https://');
     return (
       <>
@@ -85,7 +101,6 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
   };
   return (
     <>
-      {isAdmin && cloneProject()}
       {renderGithubInfo()}
       {/*Github URL Github Name short github description blurb most recent several builds, master first probably*/}
       <Accordion flush={false} defaultActiveKey={project.builds.length > 0 ? '' : '0'}>
@@ -104,6 +119,12 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
       </Accordion>
       <hr />
       <ManifestDrop project_id={project.id} />
+      {isAdmin && (
+        <>
+          <Button onClick={generateProjectCloneUrl}>Clone Url</Button>
+          {cloneProjectDetails()}
+        </>
+      )}
     </>
   );
 };

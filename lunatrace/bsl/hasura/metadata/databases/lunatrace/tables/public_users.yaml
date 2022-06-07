@@ -35,12 +35,12 @@ select_permissions:
       filter:
         _or:
           - kratos_id:
-              _eq: X-Hasura-User-Id
+              _eq: X-Hasura-Real-User-Id
           - _exists:
               _where:
                 _and:
-                  - kratos_id:
-                      _eq: X-Hasura-User-Id
+                  - id:
+                      _eq: X-Hasura-Real-User-Id
                   - role:
                       _eq: lunatrace_admin
               _table:
