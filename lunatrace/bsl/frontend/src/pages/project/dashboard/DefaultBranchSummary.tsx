@@ -45,8 +45,6 @@ export const DefaultBranchSummary: React.FC<DefaultBranchSummaryProps> = ({ proj
       </Card>
     );
   }
-  // const filteredFindings = filterFindingsByIgnored(build.findings);
-  // const vulnerablePackageCount = countCriticalVulnerabilities(filteredFindings);
 
   const uploadDate = prettyDate(new Date(build.created_at as string));
   const lastScannedDate = build.scans[0] ? prettyDate(new Date(build.scans[0].created_at as string)) : 'Never';

@@ -4759,11 +4759,11 @@ export type SearchVulnerabilitiesQueryVariables = Exact<{
 export type SearchVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, namespace: string, name: string, created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', id: any, name: string, namespace: string } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null, id: any, slug: string }> }> };
 
 export type GetVulnerabilityDetailsQueryVariables = Exact<{
-  vulnerability_id?: InputMaybe<Scalars['uuid']>;
+  vulnerability_id: Scalars['uuid'];
 }>;
 
 
-export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, id: any, name: string, namespace: string, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> }> };
+export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities_by_pk?: { __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, id: any, name: string, namespace: string, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> } | null };
 
 export type InsertPersonalProjectAndOrgMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -5250,8 +5250,8 @@ export const SearchVulnerabilitiesDocument = `
 }
     `;
 export const GetVulnerabilityDetailsDocument = `
-    query GetVulnerabilityDetails($vulnerability_id: uuid) {
-  vulnerabilities(where: {id: {_eq: $vulnerability_id}}) {
+    query GetVulnerabilityDetails($vulnerability_id: uuid!) {
+  vulnerabilities_by_pk(id: $vulnerability_id) {
     created_at
     cvss_exploitability_score
     cvss_impact_score
@@ -5398,7 +5398,7 @@ const injectedRtkApi = api.injectEndpoints({
     SearchVulnerabilities: build.query<SearchVulnerabilitiesQuery, SearchVulnerabilitiesQueryVariables>({
       query: (variables) => ({ document: SearchVulnerabilitiesDocument, variables })
     }),
-    GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables | void>({
+    GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables>({
       query: (variables) => ({ document: GetVulnerabilityDetailsDocument, variables })
     }),
     InsertPersonalProjectAndOrg: build.mutation<InsertPersonalProjectAndOrgMutation, InsertPersonalProjectAndOrgMutationVariables | void>({
