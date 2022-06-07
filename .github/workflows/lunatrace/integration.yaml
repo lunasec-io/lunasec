@@ -35,7 +35,7 @@ jobs:
           (cd lunatrace/bsl/logger && yarn run compile)
           (cd lunatrace/bsl/common && yarn run compile)
           (cd lunatrace/bsl/backend && yarn run compile)
-          #(cd lunatrace/bsl/frontend && yarn run build:docker)
+          (cd lunatrace/bsl/frontend && yarn run build)
 
       - name: Start backend
         run: |-
