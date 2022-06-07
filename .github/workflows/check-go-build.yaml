@@ -1,34 +1,43 @@
 name: Check Go Build
 
-# This workflow posts hasura changes as a comment.
 on:
+  push:
+    branches: [ "*" ]
   pull_request:
-    paths:
-      - '**.go'
-      - go.mod
-      - go.sum
+    branches: [ master ]
 
 jobs:
   build:
+    name: Test
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        go:
-          - '1.18'
-    runs-on: ubuntu-latest
+        go: [ '1.16', '1.17', '1.18' ]
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - name: Set up Go
+        uses: actions/setup-go@v1
         with:
           go-version: ${{ matrix.go }}
           cache: true
-      - name: Setup Golang caches
-        uses: actions/cache@v3
+        id: go
+
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Run tests
+        run: |
+          go test -cover -v ./...
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Run lint
+        uses: golangci/golangci-lint-action@v2
         with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-golang-${{ matrix.go }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-golang-${{ matrix.go }}-
-      - name: go build
-        run: go build ./...
+          version: v1.45   # should match internal/lint/go.mod
