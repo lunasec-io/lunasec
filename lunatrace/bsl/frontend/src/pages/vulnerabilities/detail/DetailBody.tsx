@@ -22,10 +22,12 @@ import { VulnInfoDetails } from '../types';
 interface VulnerabilityDetailBodyProps {
   vuln: VulnInfoDetails;
   isEmbedded?: boolean;
+  sideBySideView?: boolean;
 }
 
 export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetailBodyProps> = ({
   isEmbedded = false,
+  sideBySideView = false,
   vuln,
 }) => {
   const navigate = useNavigate();
@@ -51,7 +53,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
             </h5>
           </Col>
           <hr />
-          <Col md={{ span: 4, order: 'last' }} xs="12">
+          <Col md={sideBySideView ? '12' : { span: 4, order: 'last' }} xs="12">
             <Card style={{ height: '90%' }}>
               <Modal.Header>
                 <Modal.Title>
@@ -87,7 +89,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
               </Modal.Body>
             </Card>
           </Col>
-          <Col md="8" xs="12">
+          <Col md={sideBySideView ? '12' : '8'} xs="12">
             <Card>
               <Modal.Header>
                 <Modal.Title className="darker">Description</Modal.Title>

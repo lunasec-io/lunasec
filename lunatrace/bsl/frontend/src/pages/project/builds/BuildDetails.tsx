@@ -38,7 +38,7 @@ export const BuildDetails: React.FunctionComponent = () => {
     return null;
   }
   const { data, isLoading } = api.useGetBuildDetailsQuery({ build_id, project_id });
-  const isExtraLarge = useBreakpoint('xl');
+  const isExtraLarge = useBreakpoint('xxl');
   // We show a temporary view of any vulnerabilities that get clicked, instead of redirecting.  This is much faster when doing an audit
   // because it prevents the loss of the app state/context and any open dropdowns and filters.
   // We prop drill these pretty deep, so consider using a context provider instead
