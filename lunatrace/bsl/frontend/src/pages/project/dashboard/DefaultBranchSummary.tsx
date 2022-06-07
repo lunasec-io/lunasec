@@ -17,6 +17,7 @@ import { Card, Col, Container, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
+import { LinkInNewTab } from '../../../components/utils/LinkInNewTab';
 import { branchLink, branchName, commitLink } from '../../../utils/build-display-helpers';
 import { prettyDate } from '../../../utils/pretty-date';
 import { SourceIcon } from '../builds/SourceIcon';
@@ -104,14 +105,9 @@ export const DefaultBranchSummary: React.FC<DefaultBranchSummaryProps> = ({ proj
                 <ConditionallyRender if={branchUrl}>
                   <h6>
                     <span className="darker">Branch: </span>{' '}
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={branchUrl || ''}
-                      onClick={(e) => e.stopPropagation()}
-                    >
+                    <LinkInNewTab href={branchUrl || ''} onClick={(e) => e.stopPropagation()}>
                       {branch}
-                    </a>
+                    </LinkInNewTab>
                   </h6>
                 </ConditionallyRender>
                 <ConditionallyRender if={commitUrl}>
