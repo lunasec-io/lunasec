@@ -34,7 +34,7 @@ select_permissions:
         - role
       filter:
         _or:
-          - kratos_id:
+          - id:
               _eq: X-Hasura-Real-User-Id
           - _exists:
               _where:
