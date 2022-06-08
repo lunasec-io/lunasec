@@ -13,6 +13,7 @@
  */
 
 import { JsonTransport, LunaLogger } from '@lunatrace/logger';
+import { FileTransport } from '@lunatrace/logger/build/main/file-transport';
 import { LogIOTransport } from '@lunatrace/logger/build/main/logio-transport';
 
 import { getLogConfig, isProduction } from '../config';
@@ -28,6 +29,15 @@ log.addTransport(
     pretty: !isProduction,
   })
 );
+
+if (logConfig.logFilePath) {
+  log.addTransport(
+    new FileTransport({
+      filename: logConfig.logFilePath,
+      minLevel: isProduction ? 'info' : 'debug',
+    })
+  );
+}
 
 // TODO (cthompson) formalize this into a README
 // npm install -g log.io
