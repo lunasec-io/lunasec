@@ -86,6 +86,7 @@ jobs:
           git status
 
       - name: Check Generated Files
+        id: check_generated
         run: |-          
           DIFF=`git diff -p -- . ':(exclude)lunatrace/schema.graphql'`
           
@@ -96,7 +97,7 @@ jobs:
             echo "$DIFF" | tee -a $GITHUB_STEP_SUMMARY
             echo "::error Generated files do not match. See job summary for diff."
             echo '```' >> $GITHUB_STEP_SUMMARY
-            exit 1 
+            echo "::set-output name=changes::true"
           fi
 
       - name: Create Pull Request
@@ -106,6 +107,7 @@ jobs:
           commit-message: Update generated files
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          base: ${{ github.ref_name }}
           branch: autogenerate/${{ github.ref_name }}
           delete-branch: true
           title: "Regenerate files for ${{ github.ref_name }}"
@@ -116,8 +118,7 @@ jobs:
           assignees: ${{ github.actor }}
           reviewers: ${{ github.actor }}
           draft: false
-      - name: Check outputs
+      - name: Fail if there were changes
         if: ${{ steps.cpr.outputs.pull-request-number }}
         run: |
-          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+          exit 1
