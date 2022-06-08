@@ -100,8 +100,6 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
             echo "::set-output name=changes::true"
           fi
-
-      - run: git checkout ${{ github.head_ref }}
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v4
