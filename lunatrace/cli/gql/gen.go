@@ -1926,8 +1926,6 @@ mutation SetBuildS3Url ($id: uuid!, $s3_url: String!) {
 			S3_url: s3_url,
 		},
 	}
-
-	broken
 	var err error
 
 	var data SetBuildS3UrlResponse
