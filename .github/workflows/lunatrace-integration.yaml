@@ -100,6 +100,7 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
             echo "::set-output name=changes::true"
           fi
+
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v4
@@ -107,6 +108,7 @@ jobs:
           commit-message: Update generated files
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          base: ${{ github.head_ref }}
           branch: regenerate/${{ github.head_ref }}
           delete-branch: true
           title: "Regenerate files for ${{ github.ref_name }}"
