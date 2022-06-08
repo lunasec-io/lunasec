@@ -7556,6 +7556,13 @@ export type GetCountOfPersonalOrgQueryVariables = Exact<{
 
 export type GetCountOfPersonalOrgQuery = { __typename?: 'query_root', organizations_aggregate: { __typename?: 'organizations_aggregate', aggregate?: { __typename?: 'organizations_aggregate_fields', count: number } | null } };
 
+export type GetGithubRepositoriesByIdsQueryVariables = Exact<{
+  ids: Array<Scalars['Int']> | Scalars['Int'];
+}>;
+
+
+export type GetGithubRepositoriesByIdsQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', github_id?: number | null, project: { __typename?: 'projects', name: string } }> };
+
 export type GetOrganizationFromInstallationIdQueryVariables = Exact<{
   installation_id?: InputMaybe<Scalars['Int']>;
 }>;
@@ -7578,13 +7585,6 @@ export type GetPreviousBuildForPrQueryVariables = Exact<{
 
 
 export type GetPreviousBuildForPrQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', existing_github_review_id?: string | null }> };
-
-export type GetProjectCountForInstallationQueryVariables = Exact<{
-  installation_id: Scalars['Int'];
-}>;
-
-
-export type GetProjectCountForInstallationQuery = { __typename?: 'query_root', projects_aggregate: { __typename?: 'projects_aggregate', aggregate?: { __typename?: 'projects_aggregate_fields', count: number } | null } };
 
 export type GetUserRoleQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
@@ -7810,6 +7810,16 @@ export const GetCountOfPersonalOrgDocument = gql`
   }
 }
     `;
+export const GetGithubRepositoriesByIdsDocument = gql`
+    query GetGithubRepositoriesByIds($ids: [Int!]!) {
+  github_repositories(where: {github_id: {_in: $ids}}) {
+    github_id
+    project {
+      name
+    }
+  }
+}
+    `;
 export const GetOrganizationFromInstallationIdDocument = gql`
     query GetOrganizationFromInstallationId($installation_id: Int) {
   organizations(where: {installation_id: {_eq: $installation_id}}) {
@@ -7837,17 +7847,6 @@ export const GetPreviousBuildForPrDocument = gql`
     order_by: {created_at: desc}
   ) {
     existing_github_review_id
-  }
-}
-    `;
-export const GetProjectCountForInstallationDocument = gql`
-    query GetProjectCountForInstallation($installation_id: Int!) {
-  projects_aggregate(
-    where: {organization: {installation_id: {_eq: $installation_id}}}
-  ) {
-    aggregate {
-      count
-    }
   }
 }
     `;
@@ -8106,6 +8105,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetCountOfPersonalOrg(variables: GetCountOfPersonalOrgQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetCountOfPersonalOrgQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetCountOfPersonalOrgQuery>(GetCountOfPersonalOrgDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetCountOfPersonalOrg', 'query');
     },
+    GetGithubRepositoriesByIds(variables: GetGithubRepositoriesByIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetGithubRepositoriesByIdsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetGithubRepositoriesByIdsQuery>(GetGithubRepositoriesByIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetGithubRepositoriesByIds', 'query');
+    },
     GetOrganizationFromInstallationId(variables?: GetOrganizationFromInstallationIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetOrganizationFromInstallationIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetOrganizationFromInstallationIdQuery>(GetOrganizationFromInstallationIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetOrganizationFromInstallationId', 'query');
     },
@@ -8114,9 +8116,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetPreviousBuildForPr(variables: GetPreviousBuildForPrQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPreviousBuildForPrQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPreviousBuildForPrQuery>(GetPreviousBuildForPrDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPreviousBuildForPr', 'query');
-    },
-    GetProjectCountForInstallation(variables: GetProjectCountForInstallationQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectCountForInstallationQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectCountForInstallationQuery>(GetProjectCountForInstallationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectCountForInstallation', 'query');
     },
     GetUserRole(variables?: GetUserRoleQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserRoleQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserRoleQuery>(GetUserRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserRole', 'query');
