@@ -107,8 +107,8 @@ jobs:
           commit-message: Update generated files
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          base: ${{ github.ref_name }}
-          branch: regenerate_pr_${{ github.ref_name }}
+          base: ${{ github.head_ref }}
+          branch: regenerate/${{ github.head_ref }}
           delete-branch: true
           title: "Regenerate files for ${{ github.ref_name }}"
           body: |
