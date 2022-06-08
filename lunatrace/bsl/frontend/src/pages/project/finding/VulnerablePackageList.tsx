@@ -40,7 +40,12 @@ export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = 
   const pkgCards = filteredVulnerablePkgs.map((pkg) => {
     return (
       <Row key={pkg.purl}>
-        <VulnerablePackageItem severityFilter={severityFilter} pkg={pkg} setVulnQuickViewId={setVulnQuickViewId} />
+        <VulnerablePackageItem
+          severityFilter={severityFilter}
+          pkg={pkg}
+          setVulnQuickViewId={setVulnQuickViewId}
+          vulnQuickViewId={vulnQuickViewId}
+        />
       </Row>
     );
   });

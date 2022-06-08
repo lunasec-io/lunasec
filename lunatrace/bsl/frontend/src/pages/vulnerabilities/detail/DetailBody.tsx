@@ -16,8 +16,9 @@ import { Card, Col, Container, Modal, OverlayTrigger, Row, Spinner, Table, Toolt
 import { ExternalLink } from 'react-feather';
 import { NavLink, useNavigate } from 'react-router-dom';
 
-import { CvssInferredWarning } from '../../../components/CvssInferredWarning';
 import { VulnInfoDetails } from '../types';
+
+import { AffectedPackagesList } from './AffectedPackagesList';
 
 interface VulnerabilityDetailBodyProps {
   vuln: VulnInfoDetails;
@@ -146,49 +147,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
           </Col>
         </Row>
         {vuln.related_vulnerabilities.length < 1 ? null : (
-          <Row>
-            <Col xs="12">
-              <Card>
-                <Card.Body>
-                  <Card.Title>Related Vulnerabilities</Card.Title>
-                  <Table size="sm" hover>
-                    <thead>
-                      <tr>
-                        <th>Source</th>
-                        <th>Vulnerability Number</th>
-                        <th>Severity</th>
-                        <th>CVSS</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {vuln.related_vulnerabilities.map(({ vulnerability: relatedVuln }) => {
-                        return (
-                          <OverlayTrigger
-                            placement="bottom"
-                            overlay={<Tooltip className="wide-tooltip"> {relatedVuln.description}</Tooltip>}
-                            key={relatedVuln.id}
-                          >
-                            <tr
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => navigate(`/vulnerabilities/${relatedVuln.id as string}`)}
-                            >
-                              <td>{relatedVuln.namespace}</td>
-                              <td>{relatedVuln.name}</td>
-                              <td>{relatedVuln.severity}</td>
-                              <td>
-                                {relatedVuln.cvss_score}{' '}
-                                <CvssInferredWarning inferred={relatedVuln.cvss_inferred || false} placement="top" />
-                              </td>
-                            </tr>
-                          </OverlayTrigger>
-                        );
-                      })}
-                    </tbody>
-                  </Table>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
+          <AffectedPackagesList relatedVulns={vuln.related_vulnerabilities} />
         )}
       </Container>
     </>
