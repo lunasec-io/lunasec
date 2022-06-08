@@ -120,7 +120,7 @@ jobs:
           reviewers: ${{ github.actor }}
           draft: false
       - name: Clean up PR if closed
-        if: ${{ github.event.pull_request.action }} == "closed"
+        if: ${{ github.event.pull_request.action }} == "closed" && ${{ steps.cpr.outputs.pull-request-number }}
         uses: peter-evans/close-pull@v2
         with:
           pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
