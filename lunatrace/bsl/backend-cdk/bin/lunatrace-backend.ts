@@ -38,6 +38,7 @@ export interface StackInputsType {
   githubOauthAppLoginClientIdArn: string;
   kratosCookieSecretArn: string;
   kratosCipherSecretArn: string;
+  datadogApiKeySSMPath: string;
   vpcId: string;
 }
 
@@ -60,6 +61,7 @@ const requiredFields = [
   'githubOauthAppLoginClientIdArn',
   'kratosCookieSecretArn',
   'kratosCipherSecretArn',
+  'datadogApiKeySSMPath',
   'vpcId',
 ];
 
