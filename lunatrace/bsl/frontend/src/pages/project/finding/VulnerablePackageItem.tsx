@@ -42,14 +42,20 @@ import { Finding } from './types';
 interface FindingListItemProps {
   pkg: VulnerablePackage<Finding>;
   severityFilter: number;
+  setVulnQuickViewId: (vulnId: string) => void;
+  vulnQuickViewId: string | null;
 }
 
-export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps> = ({ pkg, severityFilter }) => {
+export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps> = ({
+  pkg,
+  severityFilter,
+  setVulnQuickViewId,
+  vulnQuickViewId,
+}) => {
   const [shouldFilterFindings, setShouldFilterFindings] = useState(true);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [ignoreNote, setIgnoreNote] = useState('');
 
-  console.log('vuln package is ', pkg);
   const filteredFindings = pkg.findings.filter((f) => {
     return severityOrder.indexOf(f.severity) >= severityFilter || !shouldFilterFindings;
   });
@@ -77,7 +83,7 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
     { onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void }
   >(({ children, onClick }, ref) => (
     <a
-      className="text-right position-absolute top-0 end-0 m-3 btn-white"
+      className="text-end position-absolute top-0 end-0 m-3 btn-white"
       href=""
       ref={ref}
       onClick={(e) => {
@@ -170,11 +176,7 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
               <Col xs="12">
                 <h5 className="darker">Path{pkg.locations.length === 1 ? '' : 's'}:</h5>{' '}
                 {pkg.locations.map((l) => {
-                  return (
-                    <>
-                      <h5>{l}</h5>
-                    </>
-                  );
+                  return <h5 key={l}>{l}</h5>;
                 })}
               </Col>
             </Row>
@@ -205,7 +207,12 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
                       </thead>
                       <tbody>
                         {filteredFindings.map((f) => (
-                          <VulnerabilityTableItem key={f.id} finding={f} />
+                          <VulnerabilityTableItem
+                            key={f.id}
+                            finding={f}
+                            setVulnQuickViewId={setVulnQuickViewId}
+                            vulnQuickViewId={vulnQuickViewId}
+                          />
                         ))}
                       </tbody>
                     </Table>
@@ -267,5 +274,4 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
       />
     </>
   );
-  return null;
 };
