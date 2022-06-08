@@ -170,7 +170,7 @@
     preserve_host: true
     url: $OATHKEEPER_FRONTEND_URL
   match:
-    url: "$OATHKEEPER_MATCH_URL/<(?!api).*>"
+    url: "$OATHKEEPER_MATCH_URL/<(?!api/).*>"
     methods:
       - GET
   authenticators:
