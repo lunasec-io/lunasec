@@ -25,7 +25,6 @@ import { SetupWizard } from './cards/SetupWizard';
 
 export const AuthenticatedHome: React.FunctionComponent = (_props) => {
   const wizardOpen = useContext(WizardOpenContext);
-  const [trigger, result, lastPromiseInfo] = api.useLazyGetSidebarInfoQuery();
   return (
     <>
       <Helmet title="Home" />

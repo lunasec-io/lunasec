@@ -12,7 +12,7 @@
  *
  */
 import React, { useState } from 'react';
-import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
+import { Button, Card, Col, Form, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 import { api } from '../../api/generated';
@@ -20,7 +20,7 @@ import { ImpersonateUser } from '../../types/user';
 import { inputChangeHandler } from '../../utils/input-helpers';
 import { setImpersonatedUser } from '../../utils/users';
 
-export const AdminDashboard = () => {
+export const AdminDashboardUsers = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>('');
 
@@ -51,7 +51,7 @@ export const AdminDashboard = () => {
   };
 
   return (
-    <Container>
+    <>
       <Row className="mb-5">
         <Form>
           <Form.Group>
@@ -101,6 +101,6 @@ export const AdminDashboard = () => {
             );
           })}
       </Row>
-    </Container>
+    </>
   );
 };
