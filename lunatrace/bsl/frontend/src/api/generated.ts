@@ -4709,6 +4709,11 @@ export type GetGuideDetailsQueryVariables = Exact<{
 
 export type GetGuideDetailsQuery = { __typename?: 'query_root', guides_by_pk?: { __typename?: 'guides', id: any, body: string, metadata: any, severity: any, title: string, summary: string, created_at: any, metadata_schema_version: number, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', id: any, name: string, namespace: string } }>, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } | null };
 
+export type GetLunaTraceOrganizationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetLunaTraceOrganizationsQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, name: string }> };
+
 export type GetLunaTraceUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -4728,6 +4733,13 @@ export type GetProjectQueryVariables = Exact<{
 
 
 export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id: any, settings: { __typename?: 'settings', id: any, pr_feedback_disabled?: boolean | null }, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, default_branch?: string | null, traits: any, authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', language: string, purl: string, severity: any, locations: any, vulnerability: { __typename?: 'vulnerabilities', ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', locations: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }>, builds_aggregate: { __typename?: 'builds_aggregate', aggregate?: { __typename?: 'builds_aggregate_fields', count: number } | null }, default_branch_builds: Array<{ __typename?: 'default_branch_builds', build_number?: number | null, created_at?: any | null, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id?: any | null, source_type?: any | null, project_id?: any | null, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }>, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerabilities', id: any, slug: string, description?: string | null, cvss_score?: any | null, cvss_inferred?: boolean | null, name: string, namespace: string, data_source: string, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, severity: any, summary: string, created_at: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> }> } | null };
+
+export type GetProjectCloneUrlQueryVariables = Exact<{
+  project_id: Scalars['uuid'];
+}>;
+
+
+export type GetProjectCloneUrlQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', github_repository?: { __typename?: 'github_repositories', authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null } | null };
 
 export type SampleVulnerabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4764,6 +4776,13 @@ export type GetVulnerabilityDetailsQueryVariables = Exact<{
 
 
 export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities_by_pk?: { __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, id: any, name: string, namespace: string, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> } | null };
+
+export type InsertNewOrgUserMutationVariables = Exact<{
+  organization_id: Scalars['uuid'];
+}>;
+
+
+export type InsertNewOrgUserMutation = { __typename?: 'mutation_root', insert_organization_user_one?: { __typename?: 'organization_user', id: any } | null };
 
 export type InsertPersonalProjectAndOrgMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -4976,6 +4995,14 @@ export const GetGuideDetailsDocument = `
   }
 }
     `;
+export const GetLunaTraceOrganizationsDocument = `
+    query GetLunaTraceOrganizations {
+  organizations {
+    id
+    name
+  }
+}
+    `;
 export const GetLunaTraceUsersDocument = `
     query GetLunaTraceUsers {
   users {
@@ -5152,6 +5179,17 @@ export const GetProjectDocument = `
   }
 }
     `;
+export const GetProjectCloneUrlDocument = `
+    query GetProjectCloneUrl($project_id: uuid!) {
+  projects_by_pk(id: $project_id) {
+    github_repository {
+      authenticated_clone_url {
+        url
+      }
+    }
+  }
+}
+    `;
 export const SampleVulnerabilitiesDocument = `
     query SampleVulnerabilities {
   vulnerabilities(limit: 15) {
@@ -5295,6 +5333,13 @@ export const GetVulnerabilityDetailsDocument = `
   }
 }
     `;
+export const InsertNewOrgUserDocument = `
+    mutation InsertNewOrgUser($organization_id: uuid!) {
+  insert_organization_user_one(object: {organization_id: $organization_id}) {
+    id
+  }
+}
+    `;
 export const InsertPersonalProjectAndOrgDocument = `
     mutation InsertPersonalProjectAndOrg {
   insert_organizations_one(
@@ -5377,6 +5422,9 @@ const injectedRtkApi = api.injectEndpoints({
     GetGuideDetails: build.query<GetGuideDetailsQuery, GetGuideDetailsQueryVariables>({
       query: (variables) => ({ document: GetGuideDetailsDocument, variables })
     }),
+    GetLunaTraceOrganizations: build.query<GetLunaTraceOrganizationsQuery, GetLunaTraceOrganizationsQueryVariables | void>({
+      query: (variables) => ({ document: GetLunaTraceOrganizationsDocument, variables })
+    }),
     GetLunaTraceUsers: build.query<GetLunaTraceUsersQuery, GetLunaTraceUsersQueryVariables | void>({
       query: (variables) => ({ document: GetLunaTraceUsersDocument, variables })
     }),
@@ -5385,6 +5433,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetProject: build.query<GetProjectQuery, GetProjectQueryVariables>({
       query: (variables) => ({ document: GetProjectDocument, variables })
+    }),
+    GetProjectCloneUrl: build.query<GetProjectCloneUrlQuery, GetProjectCloneUrlQueryVariables>({
+      query: (variables) => ({ document: GetProjectCloneUrlDocument, variables })
     }),
     SampleVulnerabilities: build.query<SampleVulnerabilitiesQuery, SampleVulnerabilitiesQueryVariables | void>({
       query: (variables) => ({ document: SampleVulnerabilitiesDocument, variables })
@@ -5400,6 +5451,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables>({
       query: (variables) => ({ document: GetVulnerabilityDetailsDocument, variables })
+    }),
+    InsertNewOrgUser: build.mutation<InsertNewOrgUserMutation, InsertNewOrgUserMutationVariables>({
+      query: (variables) => ({ document: InsertNewOrgUserDocument, variables })
     }),
     InsertPersonalProjectAndOrg: build.mutation<InsertPersonalProjectAndOrgMutation, InsertPersonalProjectAndOrgMutationVariables | void>({
       query: (variables) => ({ document: InsertPersonalProjectAndOrgDocument, variables })
