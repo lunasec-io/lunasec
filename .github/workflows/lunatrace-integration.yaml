@@ -108,7 +108,7 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           base: ${{ github.ref_name }}
-          branch: autogenerate/${{ github.ref_name }}
+          branch: regenerate_pr_${{ github.ref_name }}
           delete-branch: true
           title: "Regenerate files for ${{ github.ref_name }}"
           body: |
