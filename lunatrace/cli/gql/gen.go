@@ -1724,24 +1724,6 @@ func (v *__InsertNewBuildQueryInput) GetGit_branch() *string { return v.Git_bran
 // GetGit_hash returns __InsertNewBuildQueryInput.Git_hash, and is useful for accessing the field via an interface.
 func (v *__InsertNewBuildQueryInput) GetGit_hash() *string { return v.Git_hash }
 
-// __PackageFetchTimeInput is used internally by genqlient
-type __PackageFetchTimeInput struct {
-	Package_manager *types.PackageManager `json:"package_manager,omitempty"`
-	Custom_registry *string               `json:"custom_registry,omitempty"`
-	Name            *string               `json:"name,omitempty"`
-}
-
-// GetPackage_manager returns __PackageFetchTimeInput.Package_manager, and is useful for accessing the field via an interface.
-func (v *__PackageFetchTimeInput) GetPackage_manager() *types.PackageManager {
-	return v.Package_manager
-}
-
-// GetCustom_registry returns __PackageFetchTimeInput.Custom_registry, and is useful for accessing the field via an interface.
-func (v *__PackageFetchTimeInput) GetCustom_registry() *string { return v.Custom_registry }
-
-// GetName returns __PackageFetchTimeInput.Name, and is useful for accessing the field via an interface.
-func (v *__PackageFetchTimeInput) GetName() *string { return v.Name }
-
 // __SetBuildS3UrlInput is used internally by genqlient
 type __SetBuildS3UrlInput struct {
 	Id     uuid.UUID `json:"id,omitempty"`
@@ -1929,51 +1911,6 @@ mutation SetBuildS3Url ($id: uuid!, $s3_url: String!) {
 	var err error
 
 	var data SetBuildS3UrlResponse
-	resp := &graphql.Response{Data: &data}
-
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
-	)
-
-	return &data, err
-}
-
-func UpsertPackage(
-	ctx context.Context,
-	client graphql.Client,
-	object *Package_insert_input,
-	on_conflict *Package_on_conflict,
-) (*UpsertPackageResponse, error) {
-	req := &graphql.Request{
-		OpName: "UpsertPackage",
-		Query: `
-mutation UpsertPackage ($object: package_insert_input!, $on_conflict: package_on_conflict!) {
-	insert_package_one(object: $object, on_conflict: $on_conflict) {
-		id
-		releases {
-			id
-			release_dependencies {
-				id
-				dependency_package {
-					id
-					name
-					fetched_time
-				}
-			}
-		}
-	}
-}
-`,
-		Variables: &__UpsertPackageInput{
-			Object:      object,
-			On_conflict: on_conflict,
-		},
-	}
-	var err error
-
-	var data UpsertPackageResponse
 	resp := &graphql.Response{Data: &data}
 
 	err = client.MakeRequest(
