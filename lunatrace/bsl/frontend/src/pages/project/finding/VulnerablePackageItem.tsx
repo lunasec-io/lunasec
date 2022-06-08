@@ -43,12 +43,14 @@ interface FindingListItemProps {
   pkg: VulnerablePackage<Finding>;
   severityFilter: number;
   setVulnQuickViewId: (vulnId: string) => void;
+  vulnQuickViewId: string | null;
 }
 
 export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps> = ({
   pkg,
   severityFilter,
   setVulnQuickViewId,
+  vulnQuickViewId,
 }) => {
   const [shouldFilterFindings, setShouldFilterFindings] = useState(true);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -205,7 +207,12 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
                       </thead>
                       <tbody>
                         {filteredFindings.map((f) => (
-                          <VulnerabilityTableItem key={f.id} finding={f} setVulnQuickViewId={setVulnQuickViewId} />
+                          <VulnerabilityTableItem
+                            key={f.id}
+                            finding={f}
+                            setVulnQuickViewId={setVulnQuickViewId}
+                            vulnQuickViewId={vulnQuickViewId}
+                          />
                         ))}
                       </tbody>
                     </Table>
