@@ -12,15 +12,31 @@
  *
  */
 import React from 'react';
+import { Button } from 'react-bootstrap';
 import { CopyBlock, dracula } from 'react-code-blocks';
 
+import api from '../../../api';
 import { ProjectInfo } from '../types';
 
 export const ProjectCloneForAdmin: React.FC<{ project: ProjectInfo }> = ({ project }) => {
-  const cloneUrl = project.github_repository?.authenticated_clone_url?.url;
-  if (!cloneUrl) {
-    return null;
+  const [triggerGenerateProjectCloneUrl, projectCloneUrlResult] = api.useLazyGetProjectCloneUrlQuery();
+
+  const generateProjectCloneUrl = async () => {
+    await triggerGenerateProjectCloneUrl({
+      project_id: project.id,
+    });
+  };
+
+  const { data } = projectCloneUrlResult;
+  if (!data) {
+    return <Button onClick={generateProjectCloneUrl}>Clone Url</Button>;
   }
+
+  const cloneUrl = projectCloneUrlResult.data?.projects_by_pk?.github_repository?.authenticated_clone_url?.url;
+  if (!cloneUrl) {
+    return <p>Unable to get clone url.</p>;
+  }
+
   const formattedCloneUrl = cloneUrl.replace('git://', 'https://');
   return (
     <div className="p-3">
