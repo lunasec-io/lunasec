@@ -98,3 +98,26 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
             exit 1 
           fi
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v4
+        with:
+          commit-message: Update generated files
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          branch: autogenerate/${{ github.ref_name }}
+          delete-branch: true
+          title: "Regenerate files for ${{ github.ref_name }}"
+          body: |
+            Update generated files
+          labels: |
+            automated
+          assignees: ${{ github.actor }}
+          reviewers: ${{ github.actor }}
+          draft: false
+      - name: Check outputs
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
