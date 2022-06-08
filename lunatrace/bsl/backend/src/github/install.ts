@@ -96,6 +96,7 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
   const installationAuthToken = await getInstallationAccessToken(installationId);
 
   if (installationAuthToken.error) {
+    log.error('unable to get authentication token for Github App');
     res.status(500).send(errorResponse(installationAuthToken.msg));
     return;
   }

@@ -1,0 +1,5 @@
+mutation InsertNewOrgUser($organization_id: uuid!) {
+  insert_organization_user_one(object: {organization_id: $organization_id}) {
+    id
+  }
+}

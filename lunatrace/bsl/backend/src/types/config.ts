@@ -48,6 +48,11 @@ export interface GithubAppConfig {
   githubPrivateKey: string;
 }
 
+export interface LogConfig {
+  enableLogIOLogging: boolean;
+  loggerName: string;
+}
+
 export interface AwsConfig {
   awsRegion: string;
 }

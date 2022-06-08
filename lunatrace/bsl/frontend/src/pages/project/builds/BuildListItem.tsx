@@ -56,24 +56,27 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
               </Card.Subtitle>
             </Col>
             <Col sm={{ span: 6 }}>
-              <div style={{ float: 'right', textAlign: 'right' }}>
-                <Card.Title>
-                  <h3 style={{ display: 'inline' }}>{vulnerablePackageCount}</h3>
-                  <span className="text-right darker"> critical packages</span>
+              <div>
+                <Card.Title className="text-sm-end">
+                  <h3 className="text-sm-right" style={{ display: 'inline' }}>
+                    {vulnerablePackageCount}
+                  </h3>
+                  <span className="darker"> critical packages</span>
                 </Card.Title>
               </div>
             </Col>
           </Row>
         </Container>
       </Card.Header>
+
       <Card.Body className="d-flex">
         <Container fluid>
           <Row>
             <Col xs="12" sm={{ order: 'last', span: 5, offset: 4 }}>
-              <h6 style={{ textAlign: 'right' }}>
+              <h6 className="text-sm-end">
                 <span className="darker"> Last scanned:</span> {lastScannedDate}
               </h6>
-              <h6 style={{ textAlign: 'right' }}>
+              <h6 className="text-sm-end">
                 <span className="darker">
                   Scanned {build.scans_aggregate.aggregate?.count} time
                   {build.scans_aggregate.aggregate?.count !== 1 ? 's' : ''}
