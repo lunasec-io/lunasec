@@ -1,0 +1,9 @@
+query GetProjectCloneUrl($project_id: uuid!) {
+    projects_by_pk(id: $project_id){
+        github_repository {
+            authenticated_clone_url {
+                url
+            }
+        }
+    }
+}

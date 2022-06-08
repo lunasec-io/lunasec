@@ -68,6 +68,7 @@
       <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/tokenizer-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/vue-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/isomorphic-common/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/frontend/build" />
     </content>
     <content url="file://$MODULE_DIR$/lunatrace/bsl/backend/api/node_modules" />
     <orderEntry type="inheritedJdk" />
