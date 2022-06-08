@@ -19,6 +19,7 @@ import {
   GithubAppConfig,
   HasuraConfig,
   JwksConfig,
+  LogConfig,
   QueueHandlerConfig,
   RepositoryQueueConfig,
   ServerConfig,
@@ -46,9 +47,25 @@ export const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
 };
 
 const nodeEnv = checkEnvVar('NODE_ENV', 'development');
-const isProduction = nodeEnv === 'production';
+export const isProduction = nodeEnv === 'production';
 
 dotenv.config({ path: isProduction ? '.env' : '.env.dev' });
+
+export function getLogConfig(): LogConfig {
+  const enableLogIOEnv = checkEnvVar('ENABLE_LOGIO_LOGGING', 'false');
+  const enableLogIOLogging = validateBooleanString(enableLogIOEnv);
+  if (enableLogIOLogging.error) {
+    throw new Error(enableLogIOLogging.msg);
+  }
+
+  // if WORKER_TYPE is not set, then we are running the backend
+  const loggerName = checkEnvVar('WORKER_TYPE', 'lunatrace-backend');
+
+  return {
+    enableLogIOLogging: enableLogIOLogging.res,
+    loggerName,
+  };
+}
 
 export function getServerConfig(): ServerConfig {
   const serverPortString = checkEnvVar('PORT', '3002');

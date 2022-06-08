@@ -43,9 +43,9 @@ export async function processS3SqsMessage(
     };
 
     if (s3Record.bucketName === bucketConfig.sbomBucket) {
-      return scanSnapshotActivity(s3Record);
+      return log.provideFields({ source: 'process-sbom-message' }, () => scanSnapshotActivity(s3Record));
     } else if (s3Record.bucketName === bucketConfig.manifestBucket) {
-      return snapshotManifestActivity(s3Record);
+      return log.provideFields({ source: 'process-manifest-message' }, () => snapshotManifestActivity(s3Record));
     } else {
       return newError(`unknown event from s3 bucket: ${s3Record.bucketName}`);
     }

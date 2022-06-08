@@ -107,6 +107,13 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+#  datadog:
+#    image: datadog/agent:latest
+#    environment:
+#     DD_LOGS_ENABLED: true
+#     DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: true
+#     DD_CONTAINER_EXCLUDE_LOGS: "name:datadog-agent"
+
   mailslurper:
     image: oryd/mailslurper:latest-smtps
     ports:
