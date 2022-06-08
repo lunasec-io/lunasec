@@ -672,6 +672,313 @@ input date_comparison_exp {
 }
 
 """
+columns and relationships of "default_branch_builds"
+"""
+type default_branch_builds {
+  build_number: Int
+  created_at: timestamp
+  existing_github_review_id: String
+
+  """An array relationship"""
+  findings(
+    """distinct select on columns"""
+    distinct_on: [findings_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [findings_order_by!]
+
+    """filter the rows returned"""
+    where: findings_bool_exp
+  ): [findings!]!
+  git_branch: String
+  git_hash: String
+  git_remote: String
+  id: uuid
+
+  """An object relationship"""
+  project: projects
+  project_id: uuid
+  pull_request_id: String
+  s3_url: String
+
+  """An array relationship"""
+  scans(
+    """distinct select on columns"""
+    distinct_on: [scans_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [scans_order_by!]
+
+    """filter the rows returned"""
+    where: scans_bool_exp
+  ): [scans!]!
+  source_type: builds_source_type
+}
+
+"""
+order by aggregate values of table "default_branch_builds"
+"""
+input default_branch_builds_aggregate_order_by {
+  avg: default_branch_builds_avg_order_by
+  count: order_by
+  max: default_branch_builds_max_order_by
+  min: default_branch_builds_min_order_by
+  stddev: default_branch_builds_stddev_order_by
+  stddev_pop: default_branch_builds_stddev_pop_order_by
+  stddev_samp: default_branch_builds_stddev_samp_order_by
+  sum: default_branch_builds_sum_order_by
+  var_pop: default_branch_builds_var_pop_order_by
+  var_samp: default_branch_builds_var_samp_order_by
+  variance: default_branch_builds_variance_order_by
+}
+
+"""
+input type for inserting array relation for remote table "default_branch_builds"
+"""
+input default_branch_builds_arr_rel_insert_input {
+  data: [default_branch_builds_insert_input!]!
+}
+
+"""
+order by avg() on columns of table "default_branch_builds"
+"""
+input default_branch_builds_avg_order_by {
+  build_number: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "default_branch_builds". All fields are combined with a logical 'AND'.
+"""
+input default_branch_builds_bool_exp {
+  _and: [default_branch_builds_bool_exp!]
+  _not: default_branch_builds_bool_exp
+  _or: [default_branch_builds_bool_exp!]
+  build_number: Int_comparison_exp
+  created_at: timestamp_comparison_exp
+  existing_github_review_id: String_comparison_exp
+  findings: findings_bool_exp
+  git_branch: String_comparison_exp
+  git_hash: String_comparison_exp
+  git_remote: String_comparison_exp
+  id: uuid_comparison_exp
+  project: projects_bool_exp
+  project_id: uuid_comparison_exp
+  pull_request_id: String_comparison_exp
+  s3_url: String_comparison_exp
+  scans: scans_bool_exp
+  source_type: builds_source_type_comparison_exp
+}
+
+"""
+input type for incrementing numeric columns in table "default_branch_builds"
+"""
+input default_branch_builds_inc_input {
+  build_number: Int
+}
+
+"""
+input type for inserting data into table "default_branch_builds"
+"""
+input default_branch_builds_insert_input {
+  build_number: Int
+  created_at: timestamp
+  existing_github_review_id: String
+  findings: findings_arr_rel_insert_input
+  git_branch: String
+  git_hash: String
+  git_remote: String
+  project: projects_obj_rel_insert_input
+  project_id: uuid
+  pull_request_id: String
+  s3_url: String
+  scans: scans_arr_rel_insert_input
+  source_type: builds_source_type
+}
+
+"""
+order by max() on columns of table "default_branch_builds"
+"""
+input default_branch_builds_max_order_by {
+  build_number: order_by
+  created_at: order_by
+  existing_github_review_id: order_by
+  git_branch: order_by
+  git_hash: order_by
+  git_remote: order_by
+  id: order_by
+  project_id: order_by
+  pull_request_id: order_by
+  s3_url: order_by
+}
+
+"""
+order by min() on columns of table "default_branch_builds"
+"""
+input default_branch_builds_min_order_by {
+  build_number: order_by
+  created_at: order_by
+  existing_github_review_id: order_by
+  git_branch: order_by
+  git_hash: order_by
+  git_remote: order_by
+  id: order_by
+  project_id: order_by
+  pull_request_id: order_by
+  s3_url: order_by
+}
+
+"""
+response of any mutation on the table "default_branch_builds"
+"""
+type default_branch_builds_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [default_branch_builds!]!
+}
+
+"""
+input type for inserting object relation for remote table "default_branch_builds"
+"""
+input default_branch_builds_obj_rel_insert_input {
+  data: default_branch_builds_insert_input!
+}
+
+"""Ordering options when selecting data from "default_branch_builds"."""
+input default_branch_builds_order_by {
+  build_number: order_by
+  created_at: order_by
+  existing_github_review_id: order_by
+  findings_aggregate: findings_aggregate_order_by
+  git_branch: order_by
+  git_hash: order_by
+  git_remote: order_by
+  id: order_by
+  project: projects_order_by
+  project_id: order_by
+  pull_request_id: order_by
+  s3_url: order_by
+  scans_aggregate: scans_aggregate_order_by
+  source_type: order_by
+}
+
+"""
+select columns of table "default_branch_builds"
+"""
+enum default_branch_builds_select_column {
+  """column name"""
+  build_number
+
+  """column name"""
+  created_at
+
+  """column name"""
+  existing_github_review_id
+
+  """column name"""
+  git_branch
+
+  """column name"""
+  git_hash
+
+  """column name"""
+  git_remote
+
+  """column name"""
+  id
+
+  """column name"""
+  project_id
+
+  """column name"""
+  pull_request_id
+
+  """column name"""
+  s3_url
+
+  """column name"""
+  source_type
+}
+
+"""
+input type for updating data in table "default_branch_builds"
+"""
+input default_branch_builds_set_input {
+  build_number: Int
+  created_at: timestamp
+  existing_github_review_id: String
+  git_branch: String
+  git_hash: String
+  git_remote: String
+  project_id: uuid
+  pull_request_id: String
+  s3_url: String
+  source_type: builds_source_type
+}
+
+"""
+order by stddev() on columns of table "default_branch_builds"
+"""
+input default_branch_builds_stddev_order_by {
+  build_number: order_by
+}
+
+"""
+order by stddev_pop() on columns of table "default_branch_builds"
+"""
+input default_branch_builds_stddev_pop_order_by {
+  build_number: order_by
+}
+
+"""
+order by stddev_samp() on columns of table "default_branch_builds"
+"""
+input default_branch_builds_stddev_samp_order_by {
+  build_number: order_by
+}
+
+"""
+order by sum() on columns of table "default_branch_builds"
+"""
+input default_branch_builds_sum_order_by {
+  build_number: order_by
+}
+
+"""
+order by var_pop() on columns of table "default_branch_builds"
+"""
+input default_branch_builds_var_pop_order_by {
+  build_number: order_by
+}
+
+"""
+order by var_samp() on columns of table "default_branch_builds"
+"""
+input default_branch_builds_var_samp_order_by {
+  build_number: order_by
+}
+
+"""
+order by variance() on columns of table "default_branch_builds"
+"""
+input default_branch_builds_variance_order_by {
+  build_number: order_by
+}
+
+"""
 columns and relationships of "findings"
 """
 type findings {
@@ -680,6 +987,9 @@ type findings {
   build_id: uuid!
   created_at: timestamp!
   dedupe_slug: String!
+
+  """An object relationship"""
+  default_branch_build: default_branch_builds
   fix_state: fix_state_enum!
   fix_versions: _text
   id: uuid!
@@ -742,6 +1052,7 @@ input findings_bool_exp {
   build_id: uuid_comparison_exp
   created_at: timestamp_comparison_exp
   dedupe_slug: String_comparison_exp
+  default_branch_build: default_branch_builds_bool_exp
   fix_state: fix_state_enum_comparison_exp
   fix_versions: _text_comparison_exp
   id: uuid_comparison_exp
@@ -785,6 +1096,7 @@ input findings_insert_input {
   build_id: uuid
   created_at: timestamp
   dedupe_slug: String
+  default_branch_build: default_branch_builds_obj_rel_insert_input
   fix_state: fix_state_enum
   fix_versions: _text
   id: uuid
@@ -881,6 +1193,7 @@ input findings_order_by {
   build_id: order_by
   created_at: order_by
   dedupe_slug: order_by
+  default_branch_build: default_branch_builds_order_by
   fix_state: order_by
   fix_versions: order_by
   id: order_by
@@ -2588,6 +2901,22 @@ type mutation_root {
   ): builds
 
   """
+  insert data into the table: "default_branch_builds"
+  """
+  insert_default_branch_builds(
+    """the rows to be inserted"""
+    objects: [default_branch_builds_insert_input!]!
+  ): default_branch_builds_mutation_response
+
+  """
+  insert a single row into the table: "default_branch_builds"
+  """
+  insert_default_branch_builds_one(
+    """the row to be inserted"""
+    object: default_branch_builds_insert_input!
+  ): default_branch_builds
+
+  """
   insert data into the table: "findings"
   """
   insert_findings(
@@ -3088,6 +3417,20 @@ type mutation_root {
     _set: builds_set_input
     pk_columns: builds_pk_columns_input!
   ): builds
+
+  """
+  update data of the table: "default_branch_builds"
+  """
+  update_default_branch_builds(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: default_branch_builds_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: default_branch_builds_set_input
+
+    """filter the rows which have to be updated"""
+    where: default_branch_builds_bool_exp!
+  ): default_branch_builds_mutation_response
 
   """
   update data of the table: "findings"
@@ -6065,6 +6408,24 @@ type projects {
   created_at: timestamp!
 
   """An array relationship"""
+  default_branch_builds(
+    """distinct select on columns"""
+    distinct_on: [default_branch_builds_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [default_branch_builds_order_by!]
+
+    """filter the rows returned"""
+    where: default_branch_builds_bool_exp
+  ): [default_branch_builds!]!
+
+  """An array relationship"""
   github_repositories(
     """distinct select on columns"""
     distinct_on: [github_repositories_select_column!]
@@ -6214,6 +6575,7 @@ input projects_bool_exp {
   _or: [projects_bool_exp!]
   builds: builds_bool_exp
   created_at: timestamp_comparison_exp
+  default_branch_builds: default_branch_builds_bool_exp
   github_repositories: github_repositories_bool_exp
   github_repository: github_repositories_bool_exp
   id: uuid_comparison_exp
@@ -6246,6 +6608,7 @@ input type for inserting data into table "projects"
 input projects_insert_input {
   builds: builds_arr_rel_insert_input
   created_at: timestamp
+  default_branch_builds: default_branch_builds_arr_rel_insert_input
   github_repositories: github_repositories_arr_rel_insert_input
   github_repository: github_repositories_obj_rel_insert_input
   id: uuid
@@ -6335,6 +6698,7 @@ input projects_on_conflict {
 input projects_order_by {
   builds_aggregate: builds_aggregate_order_by
   created_at: order_by
+  default_branch_builds_aggregate: default_branch_builds_aggregate_order_by
   github_repositories_aggregate: github_repositories_aggregate_order_by
   github_repository: github_repositories_order_by
   id: order_by
@@ -6454,6 +6818,24 @@ type query_root {
 
   """fetch data from the table: "builds" using primary key columns"""
   builds_by_pk(id: uuid!): builds
+
+  """An array relationship"""
+  default_branch_builds(
+    """distinct select on columns"""
+    distinct_on: [default_branch_builds_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [default_branch_builds_order_by!]
+
+    """filter the rows returned"""
+    where: default_branch_builds_bool_exp
+  ): [default_branch_builds!]!
   fakeQueryToHackHasuraBeingABuggyMess: String
 
   """An array relationship"""
@@ -7672,6 +8054,24 @@ type subscription_root {
 
   """fetch data from the table: "builds" using primary key columns"""
   builds_by_pk(id: uuid!): builds
+
+  """An array relationship"""
+  default_branch_builds(
+    """distinct select on columns"""
+    distinct_on: [default_branch_builds_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [default_branch_builds_order_by!]
+
+    """filter the rows returned"""
+    where: default_branch_builds_bool_exp
+  ): [default_branch_builds!]!
 
   """An array relationship"""
   findings(

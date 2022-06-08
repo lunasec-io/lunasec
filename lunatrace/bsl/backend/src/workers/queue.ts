@@ -139,7 +139,8 @@ class QueueWorker {
       throw new Error('Queue url is not defined. Make sure that setup is called first.');
     }
 
-    await log.provideFields({ queueName: this.queueConfig.queueName, trace: 'queue-logger' }, async () => {
+    const queueName = this.queueConfig.queueName;
+    await log.provideFields({ source: queueName }, async () => {
       // read loop
       // eslint-disable-next-line no-constant-condition
       while (true) {

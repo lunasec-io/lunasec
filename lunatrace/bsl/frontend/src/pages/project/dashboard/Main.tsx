@@ -57,6 +57,8 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
+      <hr />
+      <ManifestDrop project_id={project.id} />
       <ConditionallyRender if={isAdmin}>
         <ProjectCloneForAdmin project={project} />
       </ConditionallyRender>
