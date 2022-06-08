@@ -6,6 +6,7 @@
 - "!include package_release_dependency.yaml"
 - "!include package_release_license.yaml"
 - "!include public_builds.yaml"
+- "!include public_default_branch_builds.yaml"
 - "!include public_findings.yaml"
 - "!include public_github_repositories.yaml"
 - "!include public_guide_related_guides.yaml"
