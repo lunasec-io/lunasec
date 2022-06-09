@@ -24,11 +24,11 @@ is just normal application code, like in any other web app.  Only a small part i
 
 ### Folder Structure
 The Demo is separated into two applications, the front-end and back-end in 
-[the demo apps folder](https://github.com/lunasec-io/lunasec-monorepo/tree/master/lunadefend/js/demo-apps/packages).
+[the demo apps folder](https://github.com/lunasec-io/lunasec/tree/master/lunadefend/js/demo-apps/packages).
 
 The apps are really multiple apps, one for each of the different modes. We wanted to reuse as much code as possible, 
 which lives in the `common` folders of each app. Only code that needs to be different for each demo is broken into 
-folders like [/src/dedicated-tokenizer/passport-express](https://github.com/lunasec-io/lunasec-monorepo/tree/demo-app-refactor/js/demo-apps/packages/demo-back-end/src/dedicated-tokenizer/passport-express).
+folders like [/src/dedicated-tokenizer/passport-express](https://github.com/lunasec-io/lunasec/tree/master/lunadefend/js/demo-apps/packages/demo-back-end/src/dedicated-tokenizer/passport-express).
 That's a bit confusing but this needs to be maintainable, and we also wanted use it for integration testing.
 
 #### Front-end
@@ -37,34 +37,34 @@ All frontend features work the same regardless of whether express, graphql, or s
 The only difference is how the tokens (and other data) are fetched (which happens inside the `store` file).
 
 You can see the Secure Components being used 
-[here](https://github.com/lunasec-io/lunasec-monorepo/tree/demo-app-refactor/js/demo-apps/packages/react-front-end/src/common/components/secure-components).
+[here](https://github.com/lunasec-io/lunasec/tree/master/lunadefend/js/demo-apps/packages/react-front-end/src/common/components/secure-components).
 
 To see the LunaDefend Provider wrapping the components, look 
-[here](https://github.com/lunasec-io/lunasec-monorepo/blob/de384d69d4c78e6b39505561c6c25b6a34a34e23/js/demo-apps/packages/react-front-end/src/common/App.tsx#L37).
+[here](https://github.com/lunasec-io/lunasec/tree/master/lunadefend/js/demo-apps/packages/react-front-end/src/common/App.tsx#L37).
 
 Note the use of the `SecureInput` element 
-[natively with MaterialUi](https://github.com/lunasec-io/lunasec-monorepo/blob/de384d69d4c78e6b39505561c6c25b6a34a34e23/js/demo-apps/packages/react-front-end/src/common/components/secure-components/SecureInputDemo.tsx#L118).
+[natively with MaterialUi](https://github.com/lunasec-io/lunasec/tree/master/lunadefend/js/demo-apps/packages/react-front-end/src/common/components/secure-components/SecureInputDemo.tsx#L118).
 
 ![demo screenshot tokenization](/img/demo-app-tokenization.png)
 
 
 The `simple` tokenizer has a different developer experience because it doesn't use Secure Frames.
 Getting and storing tokens is done with JavaScript methods, 
-[like this](https://github.com/lunasec-io/lunasec-monorepo/blob/de384d69d4c78e6b39505561c6c25b6a34a34e23/js/demo-apps/packages/react-front-end/src/simple-tokenizer/components/secure-components/TokenizeDemo.tsx#L23).
+[like this](https://github.com/lunasec-io/lunasec/tree/master/lunadefend/js/demo-apps/packages/react-front-end/src/simple-tokenizer/components/secure-components/TokenizeDemo.tsx#L23).
 It shares no code with the other demos.
 
 ![simple screenshot](/img/demo-app-simple.png)
 
 #### Back-end
 The Backend launches each mode as a separate Express server running in parallel on different ports, starting from 3001.
-You can see that happening in the [server's entrypoint](https://github.com/lunasec-io/lunasec-monorepo/blob/demo-app-refactor/js/demo-apps/packages/demo-back-end/src/main.ts).
+You can see that happening in the [server's entrypoint](https://github.com/lunasec-io/lunasec/blob/demo-app-refactor/js/demo-apps/packages/demo-back-end/src/main.ts).
 From there you can trace through and see how the different apps are configured.
 
 For an example of LunaDefend's [Node SDK](../../node-sdk/index.md) being configured, 
-[look here](https://github.com/lunasec-io/lunasec-monorepo/blob/de384d69d4c78e6b39505561c6c25b6a34a34e23/js/demo-apps/packages/demo-back-end/src/dedicated-tokenizer/passport-express/config/configure-lunasec.ts).
+[look here](https://github.com/lunasec-io/lunasec/tree/master/lunadefend/js/demo-apps/packages/demo-back-end/src/dedicated-tokenizer/passport-express/config/configure-lunasec.ts).
 
 To see an Express Route properly creating and checking grants, 
-[look here](https://github.com/lunasec-io/lunasec-monorepo/blob/de384d69d4c78e6b39505561c6c25b6a34a34e23/js/demo-apps/packages/demo-back-end/src/dedicated-tokenizer/passport-express/routes/user-router.ts#L17).
+[look here](https://github.com/lunasec-io/lunasec/tree/master/lunadefend/js/demo-apps/packages/demo-back-end/src/dedicated-tokenizer/passport-express/routes/user-router.ts#L17).
 
 :::warning Production Readiness and Library Choices
 This demo is made to simulate a production application, not be one.  Please use concepts or snippets from it in your code, but we do not 

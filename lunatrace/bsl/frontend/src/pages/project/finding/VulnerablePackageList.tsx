@@ -21,10 +21,16 @@ import { Finding } from './types';
 interface FindingListProps {
   findings: Finding[];
   project_id: string;
+  vulnQuickViewId: string | null;
+  setVulnQuickViewId: (vulnId: string) => void;
 }
 
-export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = ({ project_id, findings }) => {
-  console.log('rendering finding list');
+export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = ({
+  project_id,
+  findings,
+  vulnQuickViewId,
+  setVulnQuickViewId,
+}) => {
   const [severityFilter, setSeverityFilter] = useState(severityOrder.indexOf('Critical'));
   const prettySeverity = severityOrder[severityFilter] === 'Unknown' ? 'None' : severityOrder[severityFilter];
 
@@ -34,13 +40,18 @@ export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = 
   const pkgCards = filteredVulnerablePkgs.map((pkg) => {
     return (
       <Row key={pkg.purl}>
-        <VulnerablePackageItem severityFilter={severityFilter} pkg={pkg} />
+        <VulnerablePackageItem
+          severityFilter={severityFilter}
+          pkg={pkg}
+          setVulnQuickViewId={setVulnQuickViewId}
+          vulnQuickViewId={vulnQuickViewId}
+        />
       </Row>
     );
   });
 
   return (
-    <Container className="vulnerability-list">
+    <div className="vulnerability-list p-3">
       <Row>
         <Col md="6">
           <h2>Vulnerable Packages</h2>
@@ -76,6 +87,6 @@ export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = 
           </span>
         </Row>
       ) : null}
-    </Container>
+    </div>
   );
 };

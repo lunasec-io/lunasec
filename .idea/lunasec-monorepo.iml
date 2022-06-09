@@ -14,8 +14,8 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/go" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/lunatrace/bsl/backend/api" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/lunadefend/go" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/secure-frame-sdk/packages/browser-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/secure-frame-sdk/packages/common/build" />
       <excludeFolder url="file://$MODULE_DIR$/secure-frame-sdk/packages/node-sdk/build" />
@@ -43,20 +43,8 @@
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/secure-frame/js-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/node-sdk/build" />
       <excludeFolder url="file://$MODULE_DIR$/sdks/packages/server-common/build" />
-      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/react-sdk/build" />
-      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/secure-frame-iframe/build" />
-      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/js-sdk/build" />
-      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/tokenizer-sdk/build" />
-      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/browser-common/build" />
-      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/cli/build" />
-      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/express-auth-plugin/build" />
-      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/node-sdk/build" />
-      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/server-common/build" />
-      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/secure-frame-iframe/public/js" />
       <excludeFolder url="file://$MODULE_DIR$/docs/build" />
       <excludeFolder url="file://$MODULE_DIR$/docs/.docusaurus" />
-      <excludeFolder url="file://$MODULE_DIR$/js/sdks/packages/cli-wrapper/build" />
-      <excludeFolder url="file://$MODULE_DIR$/js/internal-infrastructure/s3-redirect-generator/build" />
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/backend/api/node_modules" />
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/backend-cdk/cdk.out" />
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/backend/build" />
@@ -66,6 +54,21 @@
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/logger/build" />
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/cli/test" />
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/cli/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/internal-infrastructure/s3-redirect-generator/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/browser-common/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/react-sdk/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/js-sdk/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/express-auth-plugin/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/server-common/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/secure-frame-iframe/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/secure-frame-iframe/public/js" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/cli-wrapper/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/cli/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/node-sdk/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/tokenizer-sdk/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/vue-sdk/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunadefend/js/sdks/packages/isomorphic-common/build" />
+      <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/frontend/build" />
     </content>
     <content url="file://$MODULE_DIR$/lunatrace/bsl/backend/api/node_modules" />
     <orderEntry type="inheritedJdk" />

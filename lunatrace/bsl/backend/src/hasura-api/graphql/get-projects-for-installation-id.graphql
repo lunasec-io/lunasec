@@ -1,7 +1,0 @@
-query GetProjectCountForInstallation($installation_id: Int!) {
-  projects_aggregate(where: {organization: {installation_id: {_eq: $installation_id}}}) {
-    aggregate {
-      count
-    }
-  }
-}

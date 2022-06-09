@@ -152,14 +152,12 @@ Currently, the root folder contains all public LunaDefend code: the LunaDefend S
 applications, documentation, and supporting scripts.
 
 
-Eventually everything will move to `/lunadefend`.
-
 # MonoRepo Folder Structure
 We have split LunaDefend's code first by language, and then by purpose.
 
-Our backend services and CLI tools are all written in Golang and live in `/go`.
+Our backend services and CLI tools are all written in Golang and live in `/lunadefend/go`.
 
-Our web components and NPM modules are all written in TypeScript and live in `/js/sdks/packages`.
+Our web components and NPM modules are all written in TypeScript and live in `/lunadefend/js/sdks/packages`.
 
 Our Demo Apps are also written in typescript and live in `/lunadefend/js/demo-apps/packages`.
 
@@ -172,7 +170,7 @@ Demo apps that use our toolkit for testing and demonstration.  The react-app and
 These are our only SDK supported frameworks currently.
 
 ### TypeScript/JavaScript SDKs
-Path: `/js/sdks/packages`
+Path: `/lunadefend/js/sdks/packages`
 
 Contains front and backend SDKs.
 
@@ -182,14 +180,14 @@ They're all written in Typescript and outputs to a few different formats:
 - Browser build (concatenated into one file that's loaded into browser global namespace)
 
 ### Secure Frame Front-End
-Path: `/js/sdks/packages/secure-frame-iframe`
+Path: `/lunadefend/js/sdks/packages/secure-frame-iframe`
 
 This holds the SDK frontend components which load into the iframe. The React SDK uses this to isolate sensitive data
 from front-end apps by using the iframe as an isolated "sandbox". We've hardened this iFrame by adding a very strict
 Content Security Policy (CSP) that limits the impact of any security issues by heavily restricting network access.
 
 ### Tokenizer, Secure Frame Back-End, and CLI
-Path: `/go`
+Path: `/lunadefend/go`
 
 These are the back-end components of the LunaSec stack. They share a common codebase and are built into separate binaries
 by the entrypoints defined in the `/go/cmd` folder, the most important being the `tokenizerbackend`.

@@ -14,7 +14,7 @@
 
 import { BuildDetailInfo } from '../pages/project/builds/types';
 
-type BuildInfoSubset = Pick<BuildDetailInfo, 'git_branch' | 'git_remote' | 'git_hash' | 'source_type'>;
+type BuildInfoSubset = Pick<BuildDetailInfo, 'git_branch' | 'git_remote' | 'git_hash'>;
 
 export const gitUrlToLink = (build: BuildInfoSubset): string | false => {
   const gitUrl = build.git_remote;

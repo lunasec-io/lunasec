@@ -21,7 +21,7 @@ FROM lerna-bootstrap as application-back-end
 
 WORKDIR /repo/lunadefend/js/demo-apps/packages/demo-back-end
 
-ENTRYPOINT ["sh", "/repo/go/scripts/wait-for-file.sh", "/outputs/aws_resources.json", "yarn", "start:prod"]
+ENTRYPOINT ["sh", "/repo/lunadefend/go/scripts/wait-for-file.sh", "/outputs/aws_resources.json", "yarn", "start:prod"]
 
 FROM lerna-bootstrap as application-front-end
 
@@ -50,7 +50,7 @@ WORKDIR /repo
 # This is required because we aren't able to pass additional command arguments via Docker-Compose unless we are invoking
 # via the "exec" Entrypoint syntax. This lets us then expand environment variables at runtime.
 # This gives a better explanation: https://stackoverflow.com/questions/49133234/docker-entrypoint-with-env-variable-and-optional-arguments
-ENTRYPOINT ["sh", "/repo/js/sdks/packages/cli/scripts/docker-entrypoint.sh"]
+ENTRYPOINT ["sh", "/repo/lunadefend/js/sdks/packages/cli/scripts/docker-entrypoint.sh"]
 
 FROM cypress/included:9.1.0 as integration-test
 
@@ -66,7 +66,7 @@ ENTRYPOINT /repo/tools/service-scripts/wait-for-services.sh "$DEPENDENCIES__INTE
 
 FROM lerna-bootstrap as secure-frame-iframe
 
-WORKDIR /repo/js/sdks/packages/secure-frame-iframe
+WORKDIR /repo/lunadefend/js/sdks/packages/secure-frame-iframe
 
 RUN yarn run compile
 
