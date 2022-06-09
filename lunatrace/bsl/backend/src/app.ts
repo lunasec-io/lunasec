@@ -42,8 +42,6 @@ export async function newApp() {
     });
   });
 
-  app.use(Express.json());
-
   app.use((req, res, next) => {
     const requestId: string = randomUUID();
     const loggerFields = { source: 'express', requestId, path: req.path, method: req.method };
