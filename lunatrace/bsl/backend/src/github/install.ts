@@ -125,7 +125,8 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
   const installError = await waitForGithubInstall(installationId, installationAuthToken.res);
 
   if (installError.error) {
-    log.error(installError.msg, {
+    log.error('unable to verify that Github App was installed successfully', {
+      message: installError.msg,
       installationId,
     });
     const errorMsg = querystring.stringify({
