@@ -40,12 +40,10 @@ func defaultLunaSecConfig() types.LunaTraceConfigFile {
 	}
 }
 
-func LoadLunaTraceConfig() (appConfig types.LunaTraceConfig, err error) {
-	defaultOps := config.Static(defaultLunaSecConfig())
-
+func LoadConfigProvider() (config.Provider, error) {
 	configFiles := []string{constants.LunaTraceConfigFileName}
 
-	_, err = os.Stat(constants.LunaTraceConfigFileName)
+	_, err := os.Stat(constants.LunaTraceConfigFileName)
 	if err != nil {
 		configFiles = []string{}
 
@@ -55,14 +53,18 @@ func LoadLunaTraceConfig() (appConfig types.LunaTraceConfig, err error) {
 			Msg("using default config, unable to locate lunatrace config file")
 	}
 
-	provider, err := GetConfigProviderFromFiles(configFiles, defaultOps)
+	provider, err := GetConfigProviderFromFiles(configFiles, config.Static(defaultLunaSecConfig()))
 	if err != nil {
 		log.Error().
 			Err(err).
 			Msg("unable to load config provider")
-		return
+		return nil, err
 	}
+	return provider, nil
 
+}
+
+func LoadLunaTraceConfig(provider config.Provider) (appConfig types.LunaTraceConfig, err error) {
 	value := provider.Get(constants.LunaTraceProviderName)
 
 	err = value.Populate(&appConfig)
