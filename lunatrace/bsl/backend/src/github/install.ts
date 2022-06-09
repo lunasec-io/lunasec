@@ -12,6 +12,7 @@
  *
  */
 import * as querystring from 'querystring';
+import * as util from 'util';
 
 import { Request, Response } from 'express';
 
@@ -23,41 +24,49 @@ import { log } from '../utils/log';
 import { tryParseInt } from '../utils/parse';
 import { sleep } from '../utils/sleep';
 
+import { getGithubReposForInstallation } from './actions/get-github-repos-for-installation';
 import { getInstallationAccessToken } from './auth';
 
 const serverConfig = getServerConfig();
 
-async function waitForGithubInstall(installationId: number): Promise<MaybeErrorVoid> {
-  // Check to see if user has any projects installed
-  // TODO (cthompson) this is a simple check at the moment for the scenario where someone
-  // is performing their first install. For any updates to an install, we want to be smart with this check
-  // and make sure that the newly added repos have been installed correctly before moving on.
+// Installation happens from the installed webhook, which is async, so we poll until all repos are present in hasura
+async function waitForGithubInstall(installationId: number, installationAuthToken: string): Promise<MaybeErrorVoid> {
   let attempts = 0;
   const maxAttempts = 10;
 
-  while (attempts < maxAttempts) {
-    const projectCountQuery = await hasura.GetProjectCountForInstallation({
-      installation_id: installationId,
+  const newRepos = await getGithubReposForInstallation(installationAuthToken, installationId);
+
+  const newRepoIds = newRepos.map((r) => r.repoId);
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const reposFromHasuraQuery = await hasura.GetGithubRepositoriesByIds({
+      ids: newRepoIds,
     });
 
-    const count = projectCountQuery.projects_aggregate.aggregate?.count;
+    const existingRepos = reposFromHasuraQuery.github_repositories;
 
-    if (count === undefined) {
+    if (existingRepos === undefined) {
       return newError(
         'Unable to verify Github App was installed successfully. Contact support if this problem persists.'
       );
     }
-    if (count > 0) {
-      break;
+    const insertedIds = existingRepos.map((r) => r.github_id);
+
+    const missingFromHasura = newRepos.filter((r) => !insertedIds.includes(r.repoId));
+
+    const allReposAreInstalled = missingFromHasura.length === 0;
+    if (allReposAreInstalled) {
+      return newResult(undefined);
+    }
+    if (attempts >= maxAttempts) {
+      const missingNames = missingFromHasura.map((r) => r.repoName).join(', ');
+      return newError(`Failed to install repos, missing ${missingNames}`);
     }
     await sleep(1000);
     attempts += 1;
   }
-  if (attempts === maxAttempts) {
-    return newError(
-      'Unable to verify Github App was installed successfully. Contact support if this problem persists.'
-    );
-  }
+
   return newResult(undefined);
 }
 
@@ -87,6 +96,7 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
   const installationAuthToken = await getInstallationAccessToken(installationId);
 
   if (installationAuthToken.error) {
+    log.error('unable to get authentication token for Github App');
     res.status(500).send(errorResponse(installationAuthToken.msg));
     return;
   }
@@ -112,10 +122,11 @@ export async function githubInstall(req: Request, res: Response): Promise<void> 
     return;
   }
 
-  const installError = await waitForGithubInstall(installationId);
+  const installError = await waitForGithubInstall(installationId, installationAuthToken.res);
 
   if (installError.error) {
     log.error('unable to verify that Github App was installed successfully', {
+      message: installError.msg,
       installationId,
     });
     const errorMsg = querystring.stringify({

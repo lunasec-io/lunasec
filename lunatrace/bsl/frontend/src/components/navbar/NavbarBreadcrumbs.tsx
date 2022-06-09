@@ -88,11 +88,17 @@ const BuildMainPathBreadCrumb: BreadcrumbComponentType = (crumbProps: Breadcrumb
 };
 const VulnBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
   const vulnerability_id = crumbProps.match.params.vulnerability_id;
+  if (!vulnerability_id) {
+    return null;
+  }
   const { data } = api.useGetVulnerabilityDetailsQuery({ vulnerability_id });
   if (!data) {
     return null;
   }
-  const vuln = data.vulnerabilities[0];
+  const vuln = data.vulnerabilities_by_pk;
+  if (!vuln) {
+    return null;
+  }
   return <span>{vuln.name}</span>;
 };
 
