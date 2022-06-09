@@ -4,4 +4,4 @@ build/
 *.pem
 !package-lock.json
 .env.dev
-logs/
+logs/*.log
