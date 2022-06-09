@@ -1,3 +1,4 @@
 *.pem
 generated-lunatrace-tmuxp.yaml
 .env
+.env.dev
