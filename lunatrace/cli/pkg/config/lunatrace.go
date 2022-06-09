@@ -40,7 +40,7 @@ func defaultLunaSecConfig() types.LunaTraceConfigFile {
 	}
 }
 
-func LoadConfigProvider() (config.Provider, error) {
+func NewConfigProvider() (config.Provider, error) {
 	configFiles := []string{constants.LunaTraceConfigFileName}
 
 	_, err := os.Stat(constants.LunaTraceConfigFileName)
@@ -64,7 +64,7 @@ func LoadConfigProvider() (config.Provider, error) {
 
 }
 
-func LoadLunaTraceConfig(provider config.Provider) (appConfig types.LunaTraceConfig, err error) {
+func NewLunaTraceConfig(provider config.Provider) (appConfig types.LunaTraceConfig, err error) {
 	value := provider.Get(constants.LunaTraceProviderName)
 
 	err = value.Populate(&appConfig)

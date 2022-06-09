@@ -42,7 +42,7 @@ func NewGraphQLClient(appConfig types.LunaTraceConfig) graphql.Client {
 var Module = fx.Options(
 	fx.Provide(
 		types.NewLunaTraceGlobalFlags,
-		config.LoadConfigProvider,
+		config.NewConfigProvider,
 	),
 	// todo instrument me
 	fx.Supply(http.DefaultClient),

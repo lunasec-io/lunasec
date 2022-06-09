@@ -15,16 +15,18 @@
 package main
 
 import (
+	"os"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
+
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/command"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/config"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/snapshot"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/snapshot"
-	"os"
 )
 
 func main() {
@@ -32,7 +34,12 @@ func main() {
 
 	command.EnableGlobalFlags(globalFlags)
 
-	appConfig, err := config.LoadLunaTraceConfig()
+	configProvider, err := config.NewConfigProvider()
+	if err != nil {
+		return
+	}
+
+	appConfig, err := config.NewLunaTraceConfig(configProvider)
 	if err != nil {
 		return
 	}
