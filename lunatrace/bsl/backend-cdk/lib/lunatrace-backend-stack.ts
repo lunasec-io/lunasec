@@ -33,12 +33,11 @@ import { Bucket } from '@aws-cdk/aws-s3';
 import { Secret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
 import { Duration } from '@aws-cdk/core';
-import { DatadogFargateIntegration } from 'aws-cdk-datadog-ecs-integration';
 
 import { StackInputsType } from '../bin/lunatrace-backend';
 
 import { commonBuildProps } from './constants';
-import { addDatadogToTaskDefinition } from './datadog';
+import { addDatadogToTaskDefinition } from './datadog-fargate-integration';
 import { getContainerTarballPath } from './util';
 import { WorkerStack } from './worker-stack';
 import { WorkerStorageStack } from './worker-storage-stack';
@@ -141,7 +140,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       executionRole: execRole,
     });
 
-    addDatadogToTaskDefinition(this, taskDef, props.datadogApiKeySSMPath);
+    addDatadogToTaskDefinition(this, taskDef, props.datadogApiKeyArn);
 
     const frontendContainerImage = ContainerImage.fromTarball(getContainerTarballPath('lunatrace-frontend.tar'));
 
@@ -373,7 +372,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       hasuraDatabaseUrlSecret,
       hasuraAdminSecret,
       backendStaticSecret,
-      datadogApiKeySSMPath: props.datadogApiKeySSMPath,
+      datadogApiKeyArn: props.datadogApiKeyArn,
     });
   }
 }

@@ -19,10 +19,9 @@ import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
-import { Construct, Duration } from '@aws-cdk/core';
-import { DatadogFargateIntegration } from 'aws-cdk-datadog-ecs-integration';
+import { Construct } from '@aws-cdk/core';
 
-import { addDatadogToTaskDefinition } from './datadog';
+import { addDatadogToTaskDefinition } from './datadog-fargate-integration';
 import { getContainerTarballPath } from './util';
 import { WorkerStorageStackState } from './worker-storage-stack';
 
@@ -35,7 +34,7 @@ interface WorkerStackProps extends cdk.StackProps {
   hasuraDatabaseUrlSecret: ISecret;
   hasuraAdminSecret: ISecret;
   backendStaticSecret: ISecret;
-  datadogApiKeySSMPath: string;
+  datadogApiKeyArn: string;
   storageStack: WorkerStorageStackState;
 }
 
@@ -71,7 +70,7 @@ export class WorkerStack extends cdk.Stack {
       hasuraAdminSecret,
       backendStaticSecret,
       storageStack,
-      datadogApiKeySSMPath,
+      datadogApiKeyArn,
     } = props;
 
     const webhookQueue = storageStack.processWebhookSqsQueue;
@@ -162,7 +161,7 @@ export class WorkerStack extends cdk.Stack {
         }
       );
 
-      addDatadogToTaskDefinition(context, queueFargateService.taskDefinition, datadogApiKeySSMPath);
+      addDatadogToTaskDefinition(context, queueFargateService.taskDefinition, datadogApiKeyArn);
 
       storageStack.sbomBucket.grantReadWrite(queueFargateService.taskDefinition.taskRole);
       storageStack.manifestBucket.grantReadWrite(queueFargateService.taskDefinition.taskRole);
