@@ -260,8 +260,12 @@ export class LunatraceBackendStack extends cdk.Stack {
       issuer: 'http://oathkeeper:4455/',
     };
 
+    const hasuraContainerImage = ContainerImage.fromAsset('../hasura', {
+      ...commonBuildProps,
+    });
+
     const hasura = taskDef.addContainer('HasuraContainer', {
-      image: ContainerImage.fromRegistry('hasura/graphql-engine:v2.2.0'),
+      image: hasuraContainerImage,
       portMappings: [{ containerPort: 8080 }],
       logging: LogDriver.awsLogs({
         streamPrefix: 'lunatrace-hasura',
