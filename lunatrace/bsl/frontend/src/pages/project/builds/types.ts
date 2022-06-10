@@ -14,3 +14,8 @@
 import { GetBuildDetailsQuery } from '../../../api/generated';
 
 export type BuildDetailInfo = NonNullable<GetBuildDetailsQuery['builds_by_pk']>;
+
+export interface QuickViewProps {
+  setVulnQuickViewId: (vulnId: string) => void;
+  vulnQuickViewId: string | null;
+}
