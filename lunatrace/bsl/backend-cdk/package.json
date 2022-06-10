@@ -45,8 +45,5 @@
     "ts-jest": "^26.2.0",
     "ts-node": "^10.4.0",
     "typescript": "~3.9.7"
-  },
-  "dependencies": {
-    "aws-cdk-datadog-ecs-integration": "~0.2.2"
   }
 }
