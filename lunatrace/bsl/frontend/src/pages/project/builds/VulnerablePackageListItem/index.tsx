@@ -11,24 +11,17 @@
  * limitations under the License.
  *
  */
-import {VulnerablePackage} from "@lunatrace/lunatrace-common/build/main";
+import { VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
 import React, { useState } from 'react';
-import {
-  Card,
-  Dropdown,
-  FloatingLabel,
-  Form,
-  FormControl,
-  Spinner,
-} from 'react-bootstrap';
+import { Card, Dropdown, FloatingLabel, Form, FormControl, Spinner } from 'react-bootstrap';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
-import api from '../../api';
-import { ConfirmationDailog } from '../ConfirmationDialog';
+import api from '../../../../api';
+import { ConfirmationDailog } from '../../../../components/ConfirmationDialog';
+import { QuickViewProps } from '../types';
 
-import {VulnerablePackageCardBody} from "./VulnerablePackageCardBody";
-import {VulnerablePackageCardHeader} from "./VulnerablePackageCardHeader";
-import { QuickViewProps } from './VulnerablePackageList';
+import { VulnerablePackageCardBody } from './VulnerablePackageCardBody';
+import { VulnerablePackageCardHeader } from './VulnerablePackageCardHeader';
 import { Finding } from './types';
 
 interface FindingListItemProps {
@@ -37,7 +30,7 @@ interface FindingListItemProps {
   quickView: QuickViewProps;
 }
 
-export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps> = ({
+export const VulnerablePackageListItem: React.FunctionComponent<FindingListItemProps> = ({
   pkg,
   severityFilter,
   quickView,
@@ -78,7 +71,7 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
 
   const getIgnoreState = () => {
     if (insertVulnIgnoreState.isLoading) {
-      return <Spinner animation="border" className="position-absolute top-0 end-0 m-3" />
+      return <Spinner animation="border" className="position-absolute top-0 end-0 m-3" />;
     }
 
     return (
@@ -88,8 +81,8 @@ export const VulnerablePackageItem: React.FunctionComponent<FindingListItemProps
           <Dropdown.Item onClick={(e) => setShowConfirmation(true)}>Ignore</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
-    )
-  }
+    );
+  };
 
   return (
     <>
