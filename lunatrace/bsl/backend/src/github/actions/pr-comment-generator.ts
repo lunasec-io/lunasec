@@ -99,9 +99,9 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
   }
 
   if (!pullRequestId) {
-    log.info(
-      `pull request id is not defined for buildId: ${buildId}, skipping comment because this build did not come from a PR`
-    );
+    log.info(`pull request id is not defined, skipping comment because this build did not come from a PR`, {
+      buildId,
+    });
     return;
   }
 
