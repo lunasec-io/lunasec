@@ -20,6 +20,16 @@ export function envVars(vars: Record<string, string>): string {
     .join(' ');
 }
 
+const logFilePathEnv = 'LOG_FILE_PATH';
+
+export const backendLogFilePath = {
+  [logFilePathEnv]: 'logs/backend.log',
+};
+
+export const queueHandlerLogFilePath = {
+  [logFilePathEnv]: 'logs/queue-handler.log',
+};
+
 const smeeWebhookUrlEnv = process.env.SMEE_WEBHOOK_URL;
 const githubAppIdEnv = process.env.GITHUB_APP_ID;
 
@@ -41,10 +51,12 @@ export const githubAppConfig = {
 
 export const backendEnv = envVars({
   ...githubAppConfig,
+  ...backendLogFilePath,
 });
 
 export const queueWorkerEnv = envVars({
   ...githubAppConfig,
+  ...queueHandlerLogFilePath,
   WORKER_TYPE: 'queue-handler',
 });
 
