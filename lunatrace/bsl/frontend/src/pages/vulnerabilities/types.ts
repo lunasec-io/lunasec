@@ -11,8 +11,10 @@
  * limitations under the License.
  *
  */
-import { SearchVulnerabilitiesQuery } from '../../api/generated';
+import { GetVulnerabilityDetailsQuery, SearchVulnerabilitiesQuery } from '../../api/generated';
 
 export type VulnInfo = SearchVulnerabilitiesQuery['vulnerabilities'][number];
+
+export type VulnInfoDetails = NonNullable<GetVulnerabilityDetailsQuery['vulnerabilities_by_pk']>;
 
 export type Order = 'cvss' | 'date' | 'severity' | 'none';
