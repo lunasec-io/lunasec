@@ -16,8 +16,7 @@
  */
 const process = require('process');
 
-//const hideErrorsInDev = process.env.HIDE_ERRORS_IN_DEV === 'true';
-const hideErrorsInDev = true;
+const hideErrorsInDev = process.env.HIDE_ERRORS_IN_DEV === 'true';
 
 const productionError = hideErrorsInDev ? 'warn': 'error';
 const productionWarn = hideErrorsInDev ? 'off': 'warn';
@@ -83,7 +82,7 @@ module.exports = {
     '@typescript-eslint/no-unsafe-call': productionWarn,
     '@typescript-eslint/no-unsafe-return': productionWarn,
     '@typescript-eslint/no-unsafe-member-access': productionWarn,
-    'import/namespace': productionError,
+    'import/namespace': 'off', // productionError,
     'no-console': productionWarn,
     'no-debugger': productionError,
     eqeqeq: 'error',
