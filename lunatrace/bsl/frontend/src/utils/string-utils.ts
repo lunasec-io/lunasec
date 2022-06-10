@@ -22,6 +22,6 @@ export function truncateString(str: string, maxLength: number) {
   return str;
 }
 
-export function maybePluralize(count: number, noun: string, includeCount = false, suffix = 's') {
+export function pluralizeIfMultiple(count: number, noun: string, includeCount = false, suffix = 's') {
   return (includeCount ? `${count} ` : '') + `${noun}${count !== 1 ? suffix : ''}`;
 }

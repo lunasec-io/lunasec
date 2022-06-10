@@ -18,7 +18,7 @@ import { Accordion, Card, Col, Container, Row, Table } from 'react-bootstrap';
 import { ChevronDown, ChevronUp } from 'react-feather';
 
 import { ConditionallyRender } from '../../../../components/utils/ConditionallyRender';
-import { capitalizeFirstLetter, maybePluralize } from '../../../../utils/string-utils';
+import { capitalizeFirstLetter, pluralizeIfMultiple } from '../../../../utils/string-utils';
 import { QuickViewProps } from '../types';
 
 import { GuideBlurb } from './GuideBlurb';
@@ -66,7 +66,7 @@ const VulnerabilityAccordionHeader: React.FunctionComponent<VulnerabilityAccordi
   const severityDescription = getSeverityDescription();
 
   const headerTitle = severityDescription + 'finding';
-  const formattedHeaderTitle = maybePluralize(filteredFindingsCount, headerTitle, true);
+  const formattedHeaderTitle = pluralizeIfMultiple(filteredFindingsCount, headerTitle, true);
 
   return <Accordion.Header>{formattedHeaderTitle}</Accordion.Header>;
 };
@@ -147,7 +147,7 @@ const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ pkg }) =
       </Row>
       <Row>
         <Col xs="12" className="d-flex">
-          <span className="darker">{maybePluralize(pkg.locations.length, 'Path') + ': '}</span>
+          <span className="darker">{pluralizeIfMultiple(pkg.locations.length, 'Path') + ': '}</span>
           <div className="lighter mx-1">{pkgLocations}</div>
         </Col>
       </Row>
