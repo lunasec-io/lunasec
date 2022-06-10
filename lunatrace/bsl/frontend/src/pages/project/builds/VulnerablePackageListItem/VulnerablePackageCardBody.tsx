@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -11,20 +11,19 @@
  * limitations under the License.
  *
  */
-import {severityOrder, VulnerablePackage} from "@lunatrace/lunatrace-common/build/main";
-import compareVersions from "compare-versions";
-import React, {useState} from "react";
-import {Accordion, Card, Col, Container, Row, Table} from "react-bootstrap";
+import { severityOrder, VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
+import compareVersions from 'compare-versions';
+import React, { useState } from 'react';
+import { Accordion, Card, Col, Container, Row, Table } from 'react-bootstrap';
 import { ChevronDown, ChevronUp } from 'react-feather';
 
-import {capitalizeFirstLetter, maybePluralize} from "../../utils/string-utils";
-import {ConditionallyRender} from "../utils/ConditionallyRender";
+import { ConditionallyRender } from '../../../../components/utils/ConditionallyRender';
+import { capitalizeFirstLetter, maybePluralize } from '../../../../utils/string-utils';
+import { QuickViewProps } from '../types';
 
-import {GuideBlurb} from "./GuideBlurb";
-import {VulnerabilityTableItem} from "./VulnerabilityTableItem";
-import {QuickViewProps} from "./VulnerablePackageList";
-import {Finding} from "./types";
-
+import { GuideBlurb } from './GuideBlurb';
+import { VulnerabilityTableItem } from './VulnerabilityTableItem';
+import { Finding } from './types';
 
 interface VulnerablePackageCardBodyProps {
   pkg: VulnerablePackage<Finding>;
@@ -62,7 +61,7 @@ const VulnerabilityAccordionHeader: React.FunctionComponent<VulnerabilityAccordi
       return severityOrder[severityFilter] + extraSeverityInfo;
     }
     return '';
-  }
+  };
 
   const severityDescription = getSeverityDescription();
 
@@ -70,7 +69,7 @@ const VulnerabilityAccordionHeader: React.FunctionComponent<VulnerabilityAccordi
   const formattedHeaderTitle = maybePluralize(filteredFindingsCount, headerTitle, true);
 
   return <Accordion.Header>{formattedHeaderTitle}</Accordion.Header>;
-}
+};
 
 const VulnerabilityAccordionBody: React.FunctionComponent<VulnerabilityAccordionBodyProps> = ({
   shouldFilterFindings,
@@ -83,24 +82,24 @@ const VulnerabilityAccordionBody: React.FunctionComponent<VulnerabilityAccordion
     <Accordion.Body>
       <Table hover size="sm">
         <thead>
-        <tr>
-          <th>Source</th>
-          <th>Vulnerability Number</th>
-          <th>Severity</th>
-          <th>CVSS</th>
-          <th>Fix</th>
-          <th>Ignore</th>
-        </tr>
+          <tr>
+            <th>Source</th>
+            <th>Vulnerability Number</th>
+            <th>Severity</th>
+            <th>CVSS</th>
+            <th>Fix</th>
+            <th>Ignore</th>
+          </tr>
         </thead>
         <tbody>
-        {filteredFindings.map((f) => (
-          <VulnerabilityTableItem
-            key={f.id}
-            finding={f}
-            setVulnQuickViewId={quickView.setVulnQuickViewId}
-            vulnQuickViewId={quickView.vulnQuickViewId}
-          />
-        ))}
+          {filteredFindings.map((f) => (
+            <VulnerabilityTableItem
+              key={f.id}
+              finding={f}
+              setVulnQuickViewId={quickView.setVulnQuickViewId}
+              vulnQuickViewId={quickView.vulnQuickViewId}
+            />
+          ))}
         </tbody>
       </Table>
 
@@ -118,14 +117,12 @@ const VulnerabilityAccordionBody: React.FunctionComponent<VulnerabilityAccordion
         </span>
       )}
     </Accordion.Body>
-  )
-}
+  );
+};
 
-const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({
-  pkg,
-}) => {
+const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ pkg }) => {
   const fixVersions = [...pkg.fix_versions];
-  const pkgLocations = pkg.locations.join(', ')
+  const pkgLocations = pkg.locations.join(', ');
   const recommendVersion = fixVersions.sort(compareVersions).reverse()[0];
 
   return (
@@ -150,22 +147,18 @@ const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({
       </Row>
       <Row>
         <Col xs="12" className="d-flex">
-            <span className="darker">
-              {maybePluralize(pkg.locations.length, 'Path') + ': '}
-            </span>
-          <div className="lighter mx-1">
-            {pkgLocations}
-          </div>
+          <span className="darker">{maybePluralize(pkg.locations.length, 'Path') + ': '}</span>
+          <div className="lighter mx-1">{pkgLocations}</div>
         </Col>
       </Row>
     </div>
-  )
-}
+  );
+};
 
 export const VulnerablePackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyProps> = ({
- pkg,
- severityFilter,
- quickView,
+  pkg,
+  severityFilter,
+  quickView,
 }) => {
   const [shouldFilterFindings, setShouldFilterFindings] = useState(true);
 
@@ -204,5 +197,5 @@ export const VulnerablePackageCardBody: React.FunctionComponent<VulnerablePackag
         </Row>
       </Container>
     </Card.Body>
-  )
-}
+  );
+};

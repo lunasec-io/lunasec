@@ -20,13 +20,13 @@ import { useParams } from 'react-router-dom';
 
 import api from '../../../api';
 import { SpinIfLoading } from '../../../components/SpinIfLoading';
-import { VulnerablePackageList } from '../../../components/finding/VulnerablePackageList';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import useBreakpoint from '../../../hooks/useBreakpoint';
 import { add } from '../../../store/slices/alerts';
 
 import { BuildDetailsHeader } from './BuildDetailsHeader';
 import { VulnQuickView } from './VulnQuickView';
+import { VulnerablePackageList } from './VulnerablePackageList';
 
 export const BuildDetails: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();

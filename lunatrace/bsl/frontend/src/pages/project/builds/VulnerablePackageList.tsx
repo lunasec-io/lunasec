@@ -13,15 +13,11 @@
  */
 import { groupByPackage, severityOrder } from '@lunatrace/lunatrace-common/build/main';
 import React, { ChangeEvent, useState } from 'react';
-import { Col, Container, Dropdown, Row } from 'react-bootstrap';
+import { Col, Dropdown, Row } from 'react-bootstrap';
 
-import { VulnerablePackageItem } from './VulnerablePackageItem';
-import { Finding } from './types';
-
-export interface QuickViewProps {
-  setVulnQuickViewId: (vulnId: string) => void;
-  vulnQuickViewId: string | null;
-}
+import { VulnerablePackageListItem } from './VulnerablePackageListItem';
+import { Finding } from './VulnerablePackageListItem/types';
+import { QuickViewProps } from './types';
 
 interface FindingListProps {
   findings: Finding[];
@@ -45,7 +41,7 @@ export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = 
   const pkgCards = filteredVulnerablePkgs.map((pkg) => {
     return (
       <Row key={pkg.purl}>
-        <VulnerablePackageItem severityFilter={severityFilter} pkg={pkg} quickView={quickView} />
+        <VulnerablePackageListItem severityFilter={severityFilter} pkg={pkg} quickView={quickView} />
       </Row>
     );
   });
