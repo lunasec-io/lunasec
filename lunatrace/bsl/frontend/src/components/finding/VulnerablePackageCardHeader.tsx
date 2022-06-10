@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -11,26 +11,34 @@
  * limitations under the License.
  *
  */
-import {VulnerablePackage} from "@lunatrace/lunatrace-common/build/main";
+import { filterFindingsByIgnored, VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
 import React from 'react';
-import {Card, Col, Container, Row} from "react-bootstrap";
+import { Card, Col, Container, Row } from 'react-bootstrap';
 
-import {Finding} from "./types";
+import { Finding } from './types';
 
 interface VulnerablePackageCardHeaderProps {
   pkg: VulnerablePackage<Finding>;
 }
 
-export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePackageCardHeaderProps> = ({
-  pkg,
-}) => {
+export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePackageCardHeaderProps> = ({ pkg }) => {
+  const filteredFindings = filterFindingsByIgnored(pkg.findings);
+  const allFindingsAreIgnored = filteredFindings.length === 0;
   return (
     <Card.Header>
       <Container fluid>
         <Row>
           <Col sm="6">
             <Card.Title>
-              <h2>{pkg.package_name} </h2>
+              <h2>
+                {pkg.package_name}
+                {allFindingsAreIgnored && (
+                  <>
+                    {' '}
+                    - <b>Ignored</b>
+                  </>
+                )}
+              </h2>
             </Card.Title>
             <Card.Subtitle>
               {' '}
