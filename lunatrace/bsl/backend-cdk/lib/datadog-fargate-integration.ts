@@ -12,7 +12,7 @@
  *
  */
 import * as ecs from '@aws-cdk/aws-ecs';
-import { Secret as EcsSecret, TaskDefinition } from '@aws-cdk/aws-ecs';
+import { Secret as EcsSecret, LogDriver, TaskDefinition } from '@aws-cdk/aws-ecs';
 import { Secret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
 import { Construct } from '@aws-cdk/core';
@@ -44,7 +44,7 @@ export function addDatadogToTaskDefinition(
   apiKeyArn: string,
   env?: Record<string, string>
 ) {
-  new DatadogFargateIntegration(parent, 'DatadogAgentService', taskDef, {
+  new DatadogFargateIntegration(parent, 'DatadogAgentService' + taskDef.family, taskDef, {
     datadogApiKeyArn: apiKeyArn,
     environment: {
       DD_LOGS_ENABLED: 'true',
@@ -74,8 +74,10 @@ export class DatadogFargateIntegration extends cdk.Construct {
     const datadog = taskDefinition.addContainer('dd-agent', {
       image: ecs.ContainerImage.fromRegistry('datadog/docker-dd-agent'),
       memoryLimitMiB: 256,
-      logging: props.logging,
       environment,
+      logging: LogDriver.awsLogs({
+        streamPrefix: 'datadog',
+      }),
       secrets: {
         DD_API_KEY: EcsSecret.fromSecretsManager(datadogApiKey),
       },
