@@ -24,21 +24,14 @@ interface VulnerablePackageCardHeaderProps {
 export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePackageCardHeaderProps> = ({ pkg }) => {
   const filteredFindings = filterFindingsByIgnored(pkg.findings);
   const allFindingsAreIgnored = filteredFindings.length === 0;
+  const headerClassNames = allFindingsAreIgnored ? 'text-decoration-line-through' : '';
   return (
     <Card.Header>
       <Container fluid>
         <Row>
           <Col sm="6">
             <Card.Title>
-              <h2>
-                {pkg.package_name}
-                {allFindingsAreIgnored && (
-                  <>
-                    {' '}
-                    - <b>Ignored</b>
-                  </>
-                )}
-              </h2>
+              <h2 className={headerClassNames}>{pkg.package_name}</h2>
             </Card.Title>
             <Card.Subtitle>
               {' '}
