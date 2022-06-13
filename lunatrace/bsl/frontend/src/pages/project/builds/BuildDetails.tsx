@@ -23,10 +23,10 @@ import { SpinIfLoading } from '../../../components/SpinIfLoading';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import useBreakpoint from '../../../hooks/useBreakpoint';
 import { add } from '../../../store/slices/alerts';
-import { VulnerablePackageList } from '../finding/VulnerablePackageList';
 
 import { BuildDetailsHeader } from './BuildDetailsHeader';
 import { VulnQuickView } from './VulnQuickView';
+import { VulnerablePackageList } from './VulnerablePackageList';
 
 export const BuildDetails: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
@@ -49,6 +49,8 @@ export const BuildDetails: React.FunctionComponent = () => {
   const quickViewOpen = !!vulnQuickViewId;
   const isSideBySideView = isExtraLarge && quickViewOpen;
 
+  const [ignoreFindings, setIgnoreFindings] = useState<boolean>(true);
+
   const renderBuildDetails = () => {
     if (!data) {
       return null;
@@ -69,7 +71,8 @@ export const BuildDetails: React.FunctionComponent = () => {
       );
     }
 
-    const filteredFindings = filterFindingsByIgnored(build.findings);
+    const filteredFindings = ignoreFindings ? filterFindingsByIgnored(build.findings) : build.findings;
+
     // Responsible for showing or hiding the findings list when quick view is open.  D-none only applies on screens smaller than xxl(1400)
     // meaning that the findings list will be hidden on smaller screens when quick view is open.
     const packageListColClasses = classNames('d-xxl-block', { 'd-none': quickViewOpen });
@@ -85,8 +88,8 @@ export const BuildDetails: React.FunctionComponent = () => {
             <VulnerablePackageList
               project_id={build.project_id}
               findings={filteredFindings}
-              vulnQuickViewId={vulnQuickViewId}
-              setVulnQuickViewId={setVulnQuickViewId}
+              quickView={{ vulnQuickViewId, setVulnQuickViewId }}
+              setIgnoreFindings={setIgnoreFindings}
             />
           </Col>
 
