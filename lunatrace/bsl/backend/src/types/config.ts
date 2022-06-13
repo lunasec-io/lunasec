@@ -50,6 +50,7 @@ export interface GithubAppConfig {
 
 export interface LogConfig {
   enableLogIOLogging: boolean;
+  logFilePath: string;
   loggerName: string;
 }
 

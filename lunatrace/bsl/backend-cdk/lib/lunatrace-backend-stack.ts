@@ -37,6 +37,7 @@ import { Duration } from '@aws-cdk/core';
 import { StackInputsType } from '../bin/lunatrace-backend';
 
 import { commonBuildProps } from './constants';
+import { addDatadogToTaskDefinition } from './datadog-fargate-integration';
 import { getContainerTarballPath } from './util';
 import { WorkerStack } from './worker-stack';
 import { WorkerStorageStack } from './worker-storage-stack';
@@ -138,6 +139,8 @@ export class LunatraceBackendStack extends cdk.Stack {
       memoryLimitMiB: 8192,
       executionRole: execRole,
     });
+
+    addDatadogToTaskDefinition(this, taskDef, props.datadogApiKeyArn);
 
     const frontendContainerImage = ContainerImage.fromTarball(getContainerTarballPath('lunatrace-frontend.tar'));
 
@@ -257,8 +260,12 @@ export class LunatraceBackendStack extends cdk.Stack {
       issuer: 'http://oathkeeper:4455/',
     };
 
+    const hasuraContainerImage = ContainerImage.fromAsset('../hasura', {
+      ...commonBuildProps,
+    });
+
     const hasura = taskDef.addContainer('HasuraContainer', {
-      image: ContainerImage.fromRegistry('hasura/graphql-engine:v2.2.0'),
+      image: hasuraContainerImage,
       portMappings: [{ containerPort: 8080 }],
       logging: LogDriver.awsLogs({
         streamPrefix: 'lunatrace-hasura',
@@ -369,6 +376,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       hasuraDatabaseUrlSecret,
       hasuraAdminSecret,
       backendStaticSecret,
+      datadogApiKeyArn: props.datadogApiKeyArn,
     });
   }
 }

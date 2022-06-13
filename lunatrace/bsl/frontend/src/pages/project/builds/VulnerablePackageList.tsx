@@ -11,25 +11,26 @@
  * limitations under the License.
  *
  */
-import { groupByPackage, severityOrder } from '@lunatrace/lunatrace-common';
-import React, { useState } from 'react';
-import { Col, Container, Dropdown, Row } from 'react-bootstrap';
+import { groupByPackage, severityOrder } from '@lunatrace/lunatrace-common/build/main';
+import React, { ChangeEvent, useState } from 'react';
+import { Col, Dropdown, Row } from 'react-bootstrap';
 
-import { VulnerablePackageItem } from './VulnerablePackageItem';
-import { Finding } from './types';
+import { VulnerablePackageListItem } from './VulnerablePackageListItem';
+import { Finding } from './VulnerablePackageListItem/types';
+import { QuickViewProps } from './types';
 
 interface FindingListProps {
   findings: Finding[];
   project_id: string;
-  vulnQuickViewId: string | null;
-  setVulnQuickViewId: (vulnId: string) => void;
+  quickView: QuickViewProps;
+  setIgnoreFindings: (ignored: boolean) => void;
 }
 
 export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = ({
   project_id,
   findings,
-  vulnQuickViewId,
-  setVulnQuickViewId,
+  quickView,
+  setIgnoreFindings,
 }) => {
   const [severityFilter, setSeverityFilter] = useState(severityOrder.indexOf('Critical'));
   const prettySeverity = severityOrder[severityFilter] === 'Unknown' ? 'None' : severityOrder[severityFilter];
@@ -40,15 +41,12 @@ export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = 
   const pkgCards = filteredVulnerablePkgs.map((pkg) => {
     return (
       <Row key={pkg.purl}>
-        <VulnerablePackageItem
-          severityFilter={severityFilter}
-          pkg={pkg}
-          setVulnQuickViewId={setVulnQuickViewId}
-          vulnQuickViewId={vulnQuickViewId}
-        />
+        <VulnerablePackageListItem severityFilter={severityFilter} pkg={pkg} quickView={quickView} />
       </Row>
     );
   });
+
+  const handleShowIgnoredFindings = (e: ChangeEvent<HTMLInputElement>) => setIgnoreFindings(!e.target.checked);
 
   return (
     <div className="vulnerability-list p-3">
@@ -57,6 +55,10 @@ export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = 
           <h2>Vulnerable Packages</h2>
         </Col>
         <Col md="6" style={{ display: 'flex', justifyContent: 'right' }}>
+          <label className="form-check mx-2 p-1 cursor-pointer user-select-none">
+            <input className="form-check-input" type="checkbox" value="" onChange={handleShowIgnoredFindings} />
+            Show Ignored Findings
+          </label>
           <Dropdown align={{ md: 'end' }} className="d-inline me-2">
             <Dropdown.Toggle>Minimum Severity: {prettySeverity}</Dropdown.Toggle>
             <Dropdown.Menu>
