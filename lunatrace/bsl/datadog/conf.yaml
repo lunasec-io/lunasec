@@ -1,0 +1,10 @@
+logs:
+  # Options: https://docs.datadoghq.com/agent/logs/?tab=tailfiles#custom-log-collection
+  - type: file
+    path: /logs/backend.log
+    source: lunatrace-dev
+    service: backend
+  - type: file
+    path: /logs/queue-handler.log
+    source: lunatrace-dev
+    service: queue-handler

@@ -58,11 +58,14 @@ export function getLogConfig(): LogConfig {
     throw new Error(enableLogIOLogging.msg);
   }
 
+  const logFilePath = checkEnvVar('LOG_FILE_PATH', '');
+
   // if WORKER_TYPE is not set, then we are running the backend
   const loggerName = checkEnvVar('WORKER_TYPE', 'lunatrace-backend');
 
   return {
     enableLogIOLogging: enableLogIOLogging.res,
+    logFilePath,
     loggerName,
   };
 }
