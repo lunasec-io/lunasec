@@ -37,7 +37,7 @@ import { Duration } from '@aws-cdk/core';
 import { StackInputsType } from '../bin/lunatrace-backend';
 
 import { commonBuildProps } from './constants';
-import { addDatadogToTaskDefinition } from './datadog-fargate-integration';
+import { addDatadogToTaskDefinition, datadogLogDriverForService } from './datadog-fargate-integration';
 import { getContainerTarballPath } from './util';
 import { WorkerStack } from './worker-stack';
 import { WorkerStorageStack } from './worker-storage-stack';
@@ -148,9 +148,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       image: frontendContainerImage,
       containerName: 'LunaTraceFrontendContainer',
       portMappings: [{ containerPort: 80 }],
-      logging: LogDriver.awsLogs({
-        streamPrefix: 'lunatrace-frontend',
-      }),
+      logging: datadogLogDriverForService('lunatrace', 'frontend'),
       healthCheck: {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost || exit 1'],
       },
@@ -171,9 +169,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       containerName: 'OathkeeperContainer',
       image: oathkeeperContainerImage,
       portMappings: [{ containerPort: 4455 }],
-      logging: LogDriver.awsLogs({
-        streamPrefix: 'lunatrace-oathkeeper',
-      }),
+      logging: datadogLogDriverForService('lunatrace', 'oathkeeper'),
       command: ['--config', '/generated/config.yaml', 'serve'],
       environment: {
         MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: oryConfigBucket.s3UrlForObject(oathkeeperJwksFile),
@@ -202,9 +198,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     const kratos = taskDef.addContainer('KratosContainer', {
       image: kratosContainerImage,
       portMappings: [{ containerPort: 4433 }],
-      logging: LogDriver.awsLogs({
-        streamPrefix: 'lunatrace-kratos',
-      }),
+      logging: datadogLogDriverForService('lunatrace', 'kratos'),
       command: ['--config', '/config/config.yaml', '--config', '/config/config.production.yaml', 'serve'],
       environment: {
         // Set this to 'trace' if you need more data
@@ -230,9 +224,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       image: backendContainerImage,
       containerName: 'LunaTraceBackendContainer',
       portMappings: [{ containerPort: 3002 }],
-      logging: LogDriver.awsLogs({
-        streamPrefix: 'lunatrace-backend',
-      }),
+      logging: datadogLogDriverForService('lunatrace', 'backend'),
       environment: {
         GITHUB_APP_ID: props.gitHubAppId,
         S3_SBOM_BUCKET: storageStackStage.sbomBucket.bucketName,
@@ -267,9 +259,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     const hasura = taskDef.addContainer('HasuraContainer', {
       image: hasuraContainerImage,
       portMappings: [{ containerPort: 8080 }],
-      logging: LogDriver.awsLogs({
-        streamPrefix: 'lunatrace-hasura',
-      }),
+      logging: datadogLogDriverForService('lunatrace', 'hasura'),
       environment: {
         HASURA_GRAPHQL_CORS_DOMAIN: `${publicBaseUrl}, http://localhost:9695`,
         HASURA_GRAPHQL_ENABLE_CONSOLE: 'true',
@@ -298,6 +288,12 @@ export class LunatraceBackendStack extends cdk.Stack {
       container: oathkeeper,
       condition: ContainerDependencyCondition.HEALTHY,
     });
+
+    // get hasura health check working before enabling this
+    // backend.addContainerDependencies({
+    //   container: hasura,
+    //   condition: ContainerDependencyCondition.HEALTHY,
+    // });
 
     frontend.addContainerDependencies({
       container: oathkeeper,
