@@ -81,8 +81,8 @@ select_permissions:
           organization:
             organization_users:
               user:
-                kratos_id:
-                  _eq: X-Hasura-User-Id
+                id:
+                  _eq: X-Hasura-Real-User-Id
       allow_aggregations: true
 update_permissions:
   - role: service
