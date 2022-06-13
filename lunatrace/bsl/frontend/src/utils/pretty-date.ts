@@ -21,33 +21,32 @@
  *
  * Note: date must be a date object (new Date(x)).
  */
-export function prettyDate(date: Date) {
+export function prettyDate(date: Date, showTime = true) {
   const secondsSince = Math.floor((new Date().getTime() - date.getTime()) / 1000);
   const secPerDay = 86400;
   const secPerHour = 3600;
   const secPerMin = 60;
 
+  const monthOptions: Intl.DateTimeFormatOptions = {
+    month: 'long',
+    day: 'numeric',
+  };
+
+  const hourOptions: Intl.DateTimeFormatOptions = {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  };
+  const monthDay = date.toLocaleString('en-US', monthOptions);
+  const hrMin = date.toLocaleString('en-US', hourOptions);
   // time is over a two days old
   if (secondsSince >= 2 * secPerDay) {
-    const monthOptions: Intl.DateTimeFormatOptions = {
-      month: 'long',
-      day: 'numeric',
-    };
-
-    const hourOptions: Intl.DateTimeFormatOptions = {
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true,
-    };
-
-    const monthDay = date.toLocaleString('en-US', monthOptions);
-    const hrMin = date.toLocaleString('en-US', hourOptions);
-    return `${monthDay} at ${hrMin}`;
+    return `${monthDay} ${showTime ? `at ${hrMin}` : ''}`;
   }
 
   // time is over a day old
   if (secondsSince >= secPerDay) {
-    return 'Yesterday';
+    return `Yesterday ${showTime ? `at ${hrMin}` : ''}`;
   }
 
   // time is over an hour old
@@ -67,10 +66,3 @@ export function prettyDate(date: Date) {
     return 'Just now';
   }
 }
-
-// export const prettyDate = (d: string) => {
-//   console.log('got date string', d);
-//   const dateFormat = format as (d: Date) => string;
-//   const prettyDate = dateFormat(new Date(d));
-//   return prettyDate.charAt(0).toUpperCase() + prettyDate.slice(1);
-// };
