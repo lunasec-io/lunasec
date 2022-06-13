@@ -14,6 +14,15 @@ object_relationships:
         insertion_order: null
         column_mapping:
           build_id: id
+  - name: latest_default_build
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: latest_default_builds
+        insertion_order: null
+        column_mapping:
+          build_id: id
   - name: package_version
     using:
       foreign_key_constraint_on: package_version_id

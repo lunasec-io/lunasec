@@ -27,16 +27,14 @@ insert_permissions:
           - organization:
               creator_id:
                 _eq: X-Hasura-Real-User-Id
-          - _exists:
-              _where:
+          - organization:
+              organization_users:
                 _and:
-                  - id:
-                      _eq: X-Hasura-Real-User-Id
+                  - user:
+                      kratos_id:
+                        _eq: X-Hasura-User-Id
                   - role:
-                      _eq: lunatrace_admin
-              _table:
-                schema: public
-                name: users
+                      _eq: admin
       set:
         user_id: x-hasura-Real-User-Id
       columns:
