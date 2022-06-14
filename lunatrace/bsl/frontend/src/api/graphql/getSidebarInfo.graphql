@@ -1,30 +1,28 @@
-query GetSidebarInfo($users_filter: users_bool_exp = {}) {
+query GetSidebarInfo($kratos_id: uuid) {
+  projects(order_by: {name: asc}) {
+    name
+    id
+    created_at
+    builds {
+      id
+      build_number
+    }
+  }
+  organizations(order_by: {projects_aggregate: {count: asc}}, where: {organization_users: {user: {kratos_id: {_eq: $kratos_id}}}}) {
+    name
+    id
+    createdAt
     projects(order_by: {name: asc}) {
-        name
+      name
+      id
+      created_at
+      github_repository {
         id
-        created_at
-
-        builds {
-            id
-            build_number
-        }
-    }
-
-    organizations(order_by: {projects_aggregate: {count: asc}}) {
-        name
+      }
+      builds {
         id
-        createdAt
-        projects(order_by: {name: asc}) {
-            name
-            id
-            created_at
-            github_repository {
-                id
-            }
-            builds {
-                id
-                build_number
-            }
-        }
+        build_number
+      }
     }
+  }
 }
