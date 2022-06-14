@@ -1,0 +1,36 @@
+table:
+  schema: public
+  name: latest_default_builds
+object_relationships:
+  - name: project
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: projects
+        insertion_order: null
+        column_mapping:
+          project_id: id
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - build_number
+        - created_at
+        - existing_github_review_id
+        - git_branch
+        - git_hash
+        - git_remote
+        - id
+        - project_id
+        - pull_request_id
+        - s3_url
+        - source_type
+      filter:
+        project:
+          organization:
+            organization_users:
+              user:
+                id:
+                  _eq: X-Hasura-Real-User-Id
+      allow_aggregations: true
