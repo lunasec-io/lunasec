@@ -5,12 +5,12 @@ lunatrace/bsl/frontend @factoidforrest
 lunatrace/bsl/backend/graphql-yoga @factoidforrest
 lunatrace/bsl/common @factoidforrest
 lunatrace/bsl/logger @factoidforrest
+.github/ @factoidforrest @freeqaz
 
 # Chris
-lunatrace/bsl/backend-cdk
-
-# Gabe
-docs/ @G00b
+lunatrace/bsl/backend-cdk @breadchris
+lunatrace/cli @breadchris
+docs/blog @breadchris
 
 
 # CODEOWNERS DOCUMENTATION AND EXAMPLES BELOW ---------------------------------------------------------------------

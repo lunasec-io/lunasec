@@ -54,7 +54,7 @@ lunasec --version
 ```
 and we should see that the CLI is installed.
 
-The LunaDefend CLI needs to be configured to know where your application's front and back end are. To do this, in the root of your repository create the file `lunasec.js` with the contents:
+The LunaDefend CLI needs to be configured to know where your application's front and back end are. To do this, in the root of your repository create the file `lunadefend.js` with the contents:
 ```js
 module.exports = {
     development: {

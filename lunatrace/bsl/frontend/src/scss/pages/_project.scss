@@ -15,3 +15,12 @@
 .ignore-vuln-button:hover {
   color:red;
 }
+
+.vuln-table-item.open {
+  background-color: $primary;
+  color: $white;
+}
+
+.vuln-table-item.ignored {
+  background-color: $gray-100;
+}

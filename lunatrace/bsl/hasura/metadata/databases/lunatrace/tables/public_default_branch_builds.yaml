@@ -1,0 +1,102 @@
+table:
+  schema: public
+  name: default_branch_builds
+object_relationships:
+  - name: project
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: projects
+        insertion_order: null
+        column_mapping:
+          project_id: id
+array_relationships:
+  - name: findings
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: findings
+        insertion_order: null
+        column_mapping:
+          id: build_id
+  - name: scans
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: scans
+        insertion_order: null
+        column_mapping:
+          id: build_id
+insert_permissions:
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - build_number
+        - created_at
+        - existing_github_review_id
+        - git_branch
+        - git_hash
+        - git_remote
+        - project_id
+        - pull_request_id
+        - s3_url
+        - source_type
+      backend_only: false
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - build_number
+        - existing_github_review_id
+        - git_branch
+        - git_hash
+        - git_remote
+        - pull_request_id
+        - s3_url
+        - created_at
+        - source_type
+        - id
+        - project_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - build_number
+        - created_at
+        - existing_github_review_id
+        - git_branch
+        - git_hash
+        - git_remote
+        - id
+        - project_id
+        - pull_request_id
+        - s3_url
+        - source_type
+      filter:
+        project:
+          organization:
+            organization_users:
+              user:
+                kratos_id:
+                  _eq: X-Hasura-User-Id
+      allow_aggregations: true
+update_permissions:
+  - role: service
+    permission:
+      columns:
+        - build_number
+        - created_at
+        - existing_github_review_id
+        - git_branch
+        - git_hash
+        - git_remote
+        - project_id
+        - pull_request_id
+        - s3_url
+        - source_type
+      filter: {}
+      check: null

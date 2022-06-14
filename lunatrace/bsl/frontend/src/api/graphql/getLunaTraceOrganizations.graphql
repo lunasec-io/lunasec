@@ -1,0 +1,6 @@
+query GetLunaTraceOrganizations {
+  organizations {
+    id
+    name
+  }
+}
