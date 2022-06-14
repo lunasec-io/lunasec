@@ -1,16 +1,3 @@
-/*
- * Copyright by LunaSec (owned by Refinery Labs, Inc)
- *
- * Licensed under the Business Source License v1.1 
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
@@ -24019,7 +24006,7 @@ export type GetMembersForOrganizationQueryVariables = Exact<{
 }>;
 
 
-export type GetMembersForOrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', id: string, login: string, teams: { __typename?: 'TeamConnection', nodes?: Array<{ __typename?: 'Team', members: { __typename?: 'TeamMemberConnection', nodes?: Array<{ __typename?: 'User', name?: string | null, id: string } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, startCursor?: string | null } } } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, startCursor?: string | null } }, membersWithRole: { __typename?: 'OrganizationMemberConnection', nodes?: Array<{ __typename?: 'User', name?: string | null, id: string } | null> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null, startCursor?: string | null } } } | null };
+export type GetMembersForOrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', id: string, login: string, teams: { __typename?: 'TeamConnection', nodes?: Array<{ __typename?: 'Team', members: { __typename?: 'TeamMemberConnection', nodes?: Array<{ __typename?: 'User', name?: string | null, databaseId?: number | null, id: string } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, startCursor?: string | null } } } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, startCursor?: string | null } }, membersWithRole: { __typename?: 'OrganizationMemberConnection', nodes?: Array<{ __typename?: 'User', name?: string | null, databaseId?: number | null, id: string } | null> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null, startCursor?: string | null } } } | null };
 
 export type GetRepositoryQueryVariables = Exact<{
   name: Scalars['String'];
@@ -24039,7 +24026,7 @@ export type GetUserOrganizationsQuery = { __typename?: 'Query', viewer: { __type
 export type GetViewerIdQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetViewerIdQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string } };
+export type GetViewerIdQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, databaseId?: number | null } };
 
 export type SubmitPrReviewMutationVariables = Exact<{
   pull_request_id: Scalars['ID'];
@@ -24085,6 +24072,7 @@ export const GetMembersForOrganizationDocument = gql`
         members(first: 100, after: $after) {
           nodes {
             name
+            databaseId
             id
           }
           pageInfo {
@@ -24103,6 +24091,7 @@ export const GetMembersForOrganizationDocument = gql`
     membersWithRole(first: 100, after: $after) {
       nodes {
         name
+        databaseId
         id
       }
       pageInfo {
@@ -24147,6 +24136,7 @@ export const GetViewerIdDocument = gql`
     query GetViewerId {
   viewer {
     id
+    databaseId
   }
 }
     `;

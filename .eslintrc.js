@@ -54,12 +54,12 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
     project: [
-      'js/sdks/packages/vue-sdk/tsconfig.json',
-      'js/sdks/tsconfig.json',
+      'lunadefend/js/sdks/packages/vue-sdk/tsconfig.json',
+      'lunadefend/js/sdks/tsconfig.json',
       'lunadefend/js/demo-apps/packages/demo-back-end/tsconfig.json',
       'lunadefend/js/demo-apps/packages/react-front-end/tsconfig.json',
-      'js/internal-infrastructure/metrics-server-backend/tsconfig.json',
-      'js/internal-infrastructure/s3-redirect-generator/tsconfig.json',
+      'lunadefend/js/internal-infrastructure/metrics-server-backend/tsconfig.json',
+      'lunadefend/js/internal-infrastructure/s3-redirect-generator/tsconfig.json',
       'lunatrace/bsl/common/tsconfig.json',
       'lunatrace/bsl/frontend/tsconfig.json',
       'lunatrace/bsl/backend-cdk/tsconfig.json',
@@ -138,7 +138,7 @@ module.exports = {
       productionWarn,
       { 'argsIgnorePattern': '^_' },
     ],
-    'unused-imports/no-unused-imports': 'error', // turn this on if you want to --fix all of these out of the codebase
+   // 'unused-imports/no-unused-imports': 'warn', // turn this on if you want to --fix all of these out of the codebase
     '@typescript-eslint/unbound-method': 'warn',
     '@typescript-eslint/restrict-template-expressions': 'off',
     'import/order': [

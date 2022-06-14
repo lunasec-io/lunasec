@@ -4,7 +4,6 @@ table:
 configuration:
   custom_root_fields: {}
   custom_name: package
-  column_config: {}
   custom_column_names: {}
 array_relationships:
   - name: package_maintainers
@@ -28,9 +27,10 @@ insert_permissions:
       columns:
         - custom_registry
         - description
+        - fetched_time
+        - id
         - name
         - package_manager
-        - id
       backend_only: false
 select_permissions:
   - role: service
@@ -38,9 +38,10 @@ select_permissions:
       columns:
         - custom_registry
         - description
+        - fetched_time
+        - id
         - name
         - package_manager
-        - id
       filter: {}
 update_permissions:
   - role: service
@@ -48,8 +49,9 @@ update_permissions:
       columns:
         - custom_registry
         - description
+        - fetched_time
+        - id
         - name
         - package_manager
-        - id
       filter: {}
       check: {}

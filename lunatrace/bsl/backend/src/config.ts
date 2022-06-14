@@ -19,6 +19,7 @@ import {
   GithubAppConfig,
   HasuraConfig,
   JwksConfig,
+  LogConfig,
   QueueHandlerConfig,
   RepositoryQueueConfig,
   ServerConfig,
@@ -46,9 +47,28 @@ export const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
 };
 
 const nodeEnv = checkEnvVar('NODE_ENV', 'development');
-const isProduction = nodeEnv === 'production';
+export const isProduction = nodeEnv === 'production';
 
 dotenv.config({ path: isProduction ? '.env' : '.env.dev' });
+
+export function getLogConfig(): LogConfig {
+  const enableLogIOEnv = checkEnvVar('ENABLE_LOGIO_LOGGING', 'false');
+  const enableLogIOLogging = validateBooleanString(enableLogIOEnv);
+  if (enableLogIOLogging.error) {
+    throw new Error(enableLogIOLogging.msg);
+  }
+
+  const logFilePath = checkEnvVar('LOG_FILE_PATH', '');
+
+  // if WORKER_TYPE is not set, then we are running the backend
+  const loggerName = checkEnvVar('WORKER_TYPE', 'lunatrace-backend');
+
+  return {
+    enableLogIOLogging: enableLogIOLogging.res,
+    logFilePath,
+    loggerName,
+  };
+}
 
 export function getServerConfig(): ServerConfig {
   const serverPortString = checkEnvVar('PORT', '3002');
@@ -77,6 +97,7 @@ export function getWebhookConfig(): WebhookConfig {
     throw new Error(disableWebhookQueue.msg);
   }
 
+  // QUEUE_NAME means DEVELOPMENT_QUEUE_NAME
   const developmentQueueName = checkEnvVar('QUEUE_NAME', notSet);
 
   // In production, this queue will be specifically set since it references a different queue.
@@ -85,7 +106,9 @@ export function getWebhookConfig(): WebhookConfig {
   const queueName = checkEnvVar('PROCESS_WEBHOOK_QUEUE', developmentQueueName);
 
   if (queueName === notSet) {
-    throw new Error('PROCESS_WEBHOOK_QUEUE is not set and QUEUE_NAME for development is not set');
+    throw new Error(
+      'Unknown queue name.  Must set either QUEUE_NAME in development or PROCESS_WEBHOOK_QUEUE in production'
+    );
   }
 
   const secret = checkEnvVar('GITHUB_APP_WEBHOOK_SECRET', 'mysecret');
