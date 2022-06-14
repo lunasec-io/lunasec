@@ -37,13 +37,15 @@ It can also produce official reports like SBOMs which may be required by enterpr
 government regulators. If using the GitHub integration, it can automatically comment detected issues directly on your Pull Requests.
 
 ### How to add it to your workflow
-There are two main ways to add lunatrace to your projects. The first and easiest is GitHub integration. By installing
+There are two main ways to add LunaTrace to your projects. 
+
+The first and easiest is GitHub integration. By installing
 the GitHub application your projects can automatically be scanned during pull requests and during commits to the main
-branch. LunaTrace can comment directly on pull requests if any issues are found. The [web app](https://lunatrace.lunasec.io) will walk you through this process.  It takes about 30 seconds to get up and running.
+branch. LunaTrace can comment directly on pull requests if any issues are found. The [web app](https://lunatrace.lunasec.io) will walk you through this process.  It takes about a minute to get up and running.
 
 The second way to integrate LunaTrace is with the [LunaTrace CLI](https://github.com/lunasec-io/lunasec/releases). By adding this CLI to your CI scripts, you get more
 fine-grain control and additional capability, such as the ability to scan built artifacts such as containers, and built
-files that wouldn't usually be committed to git. Simply go to "Secrets and Keys"
+files that wouldn't usually be committed to git. Scanning a container gives LunaTrace the most complete picture possible of your code and how it is being run. Simply go to "Secrets and Keys" in your project on LunaTrace and follow the instructions to pass the secret into the CLI. 
 
 ### Roadmap
 Lunatrace is built on an open source foundation, and we are rapidly adding features to make LunaTrace a complete
