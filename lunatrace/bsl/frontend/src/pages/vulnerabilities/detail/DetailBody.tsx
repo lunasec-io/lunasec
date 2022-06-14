@@ -96,9 +96,16 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
 
                 {vuln.findings.map((f) => {
                   const projectName = f.default_branch_build?.project?.name;
-                  const buildLink = `/project/${f.default_branch_build?.project_id}/build/${
-                    f.default_branch_build?.id as string
-                  }`;
+                  const projectId = f.default_branch_build?.project_id;
+                  const buildId = f.default_branch_build?.id;
+                  const buildDate = f.default_branch_build?.created_at;
+
+                  if (!projectName || !projectId || !buildId || !buildDate) {
+                    console.error('missing data to show project vulnerable', projectName, projectId, buildId);
+                    return null;
+                  }
+
+                  const buildLink = `/project/${projectId}/build/${buildId}`;
                   return (
                     <div key={f.id as string}>
                       <h3>
@@ -108,7 +115,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                         </NavLink>
                         <span className="darker" style={{ fontSize: '.9rem' }}>
                           {' '}
-                          - as of: {prettyDate(new Date(f.default_branch_build?.created_at), false)}
+                          - as of: {prettyDate(new Date(buildDate), false)}
                         </span>
                       </h3>
                     </div>
