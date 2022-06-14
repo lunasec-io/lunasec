@@ -59,7 +59,6 @@ export function userRouter(models: Models) {
     }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       await lunaSec.grants.verify(req.session.id, body.ssn_token);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       await models.user.setSsn(req.user.id, body.ssn_token);

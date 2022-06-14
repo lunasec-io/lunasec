@@ -1,7 +1,5 @@
 import { MaybeError } from '../types/util';
 
-import { newError, newResult } from './errors';
-
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
@@ -55,7 +53,13 @@ export function tryGithubIdBase64Decode(data: string): string {
 
 export function validateBooleanString(booleanString: string): MaybeError<boolean> {
   if (!['true', 'false'].some((b) => b === booleanString)) {
-    return newError(`unable to parse boolean string: '${booleanString}', must be either 'true' or 'false'`);
+    return {
+      error: true,
+      msg: `unable to parse boolean string: '${booleanString}', must be either 'true' or 'false'`,
+    };
   }
-  return newResult(booleanString === 'true');
+  return {
+    error: false,
+    res: booleanString === 'true',
+  };
 }

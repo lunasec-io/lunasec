@@ -39,7 +39,7 @@ To start ngrok, run:
 ngrok start --all
 ```
 
-Take the generated domain names and set then in your `lunasec.json`:
+Take the generated domain names and set then in your `lunadefend.js`:
 ```js
 module.exports = {
   // ...

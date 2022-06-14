@@ -1,0 +1,5 @@
+query GetGithubRepositoriesByIds($ids: [Int!]!) {
+  github_repositories(where: {github_id: {_in: $ids}}) {
+    github_id
+  }
+}

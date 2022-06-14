@@ -4,10 +4,8 @@ RUN apt-get update && apt-get install -y wget curl make
 
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
 
-# Build the lunatrace CLI
-WORKDIR /usr/repo/lunatrace/cli/
-RUN make lunatrace
-RUN mv build/lunatrace /usr/local/bin
+# copy the lunatrace cli from the locally built container
+COPY --from=lunatrace-cli /lunatrace /usr/local/bin
 
 WORKDIR /usr/repo/lunatrace/bsl/backend
 RUN yarn run compile

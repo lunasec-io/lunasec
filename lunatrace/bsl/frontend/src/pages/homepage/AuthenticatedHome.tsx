@@ -15,6 +15,7 @@ import React, { useContext } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 
+import api from '../../api';
 import { ConditionallyRender } from '../../components/utils/ConditionallyRender';
 import { WizardOpenContext } from '../../contexts/WizardContext';
 
@@ -24,7 +25,6 @@ import { SetupWizard } from './cards/SetupWizard';
 
 export const AuthenticatedHome: React.FunctionComponent = (_props) => {
   const wizardOpen = useContext(WizardOpenContext);
-
   return (
     <>
       <Helmet title="Home" />

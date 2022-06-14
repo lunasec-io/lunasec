@@ -13,15 +13,44 @@
  */
 
 import { JsonTransport, LunaLogger } from '@lunatrace/logger';
+import { FileTransport } from '@lunatrace/logger/build/main/file-transport';
+import { LogIOTransport } from '@lunatrace/logger/build/main/logio-transport';
 
-const isProd = process.env.NODE_ENV === 'production';
+import { getLogConfig, isProduction } from '../config';
 
-export const log = new LunaLogger({ loggerName: 'default-backend' });
+const logConfig = getLogConfig();
+
+export const log = new LunaLogger({ loggerName: logConfig.loggerName });
 
 log.addTransport(
   new JsonTransport({
     colors: true,
-    minLevel: isProd ? 'info' : 'debug',
-    pretty: !isProd,
+    minLevel: isProduction ? 'info' : 'debug',
+    pretty: !isProduction,
   })
 );
+
+if (logConfig.logFilePath) {
+  log.addTransport(
+    new FileTransport({
+      filename: logConfig.logFilePath,
+      minLevel: isProduction ? 'info' : 'debug',
+    })
+  );
+}
+
+// TODO (cthompson) formalize this into a README
+// npm install -g log.io
+// start log server: log.io-server
+// go to: http://localhost:6688/
+// need to check the boxes of log sources that you want to follow
+// There is a way to build a config file that will start the server with a specific config: https://github.com/breadchris/log.io
+// We can have field level filtering with something like this: https://ianwitherow.github.io/react-filterable-table/example/index.html
+
+if (logConfig.enableLogIOLogging) {
+  log.addTransport(
+    new LogIOTransport({
+      minLevel: isProduction ? 'info' : 'debug',
+    })
+  );
+}
