@@ -840,6 +840,8 @@ export type Findings = {
   fix_versions?: Maybe<Scalars['_text']>;
   id: Scalars['uuid'];
   language: Scalars['String'];
+  /** An object relationship */
+  latest_default_build?: Maybe<Latest_Default_Builds>;
   locations: Scalars['_text'];
   matcher: Scalars['String'];
   package_name: Scalars['String'];
@@ -907,6 +909,7 @@ export type Findings_Bool_Exp = {
   fix_versions?: InputMaybe<_Text_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   language?: InputMaybe<String_Comparison_Exp>;
+  latest_default_build?: InputMaybe<Latest_Default_Builds_Bool_Exp>;
   locations?: InputMaybe<_Text_Comparison_Exp>;
   matcher?: InputMaybe<String_Comparison_Exp>;
   package_name?: InputMaybe<String_Comparison_Exp>;
@@ -1024,6 +1027,7 @@ export type Findings_Order_By = {
   fix_versions?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   language?: InputMaybe<Order_By>;
+  latest_default_build?: InputMaybe<Latest_Default_Builds_Order_By>;
   locations?: InputMaybe<Order_By>;
   matcher?: InputMaybe<Order_By>;
   package_name?: InputMaybe<Order_By>;
@@ -1784,6 +1788,193 @@ export type Jsonb_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['jsonb']>;
   _neq?: InputMaybe<Scalars['jsonb']>;
   _nin?: InputMaybe<Array<Scalars['jsonb']>>;
+};
+
+/** columns and relationships of "latest_default_builds" */
+export type Latest_Default_Builds = {
+  __typename?: 'latest_default_builds';
+  build_number?: Maybe<Scalars['Int']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  existing_github_review_id?: Maybe<Scalars['String']>;
+  git_branch?: Maybe<Scalars['String']>;
+  git_hash?: Maybe<Scalars['String']>;
+  git_remote?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  /** An object relationship */
+  project?: Maybe<Projects>;
+  project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['String']>;
+  s3_url?: Maybe<Scalars['String']>;
+  source_type?: Maybe<Scalars['builds_source_type']>;
+};
+
+/** aggregated selection of "latest_default_builds" */
+export type Latest_Default_Builds_Aggregate = {
+  __typename?: 'latest_default_builds_aggregate';
+  aggregate?: Maybe<Latest_Default_Builds_Aggregate_Fields>;
+  nodes: Array<Latest_Default_Builds>;
+};
+
+/** aggregate fields of "latest_default_builds" */
+export type Latest_Default_Builds_Aggregate_Fields = {
+  __typename?: 'latest_default_builds_aggregate_fields';
+  avg?: Maybe<Latest_Default_Builds_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Latest_Default_Builds_Max_Fields>;
+  min?: Maybe<Latest_Default_Builds_Min_Fields>;
+  stddev?: Maybe<Latest_Default_Builds_Stddev_Fields>;
+  stddev_pop?: Maybe<Latest_Default_Builds_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Latest_Default_Builds_Stddev_Samp_Fields>;
+  sum?: Maybe<Latest_Default_Builds_Sum_Fields>;
+  var_pop?: Maybe<Latest_Default_Builds_Var_Pop_Fields>;
+  var_samp?: Maybe<Latest_Default_Builds_Var_Samp_Fields>;
+  variance?: Maybe<Latest_Default_Builds_Variance_Fields>;
+};
+
+
+/** aggregate fields of "latest_default_builds" */
+export type Latest_Default_Builds_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Latest_Default_Builds_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate avg on columns */
+export type Latest_Default_Builds_Avg_Fields = {
+  __typename?: 'latest_default_builds_avg_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
+/** Boolean expression to filter rows from the table "latest_default_builds". All fields are combined with a logical 'AND'. */
+export type Latest_Default_Builds_Bool_Exp = {
+  _and?: InputMaybe<Array<Latest_Default_Builds_Bool_Exp>>;
+  _not?: InputMaybe<Latest_Default_Builds_Bool_Exp>;
+  _or?: InputMaybe<Array<Latest_Default_Builds_Bool_Exp>>;
+  build_number?: InputMaybe<Int_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
+  git_branch?: InputMaybe<String_Comparison_Exp>;
+  git_hash?: InputMaybe<String_Comparison_Exp>;
+  git_remote?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  project?: InputMaybe<Projects_Bool_Exp>;
+  project_id?: InputMaybe<Uuid_Comparison_Exp>;
+  pull_request_id?: InputMaybe<String_Comparison_Exp>;
+  s3_url?: InputMaybe<String_Comparison_Exp>;
+  source_type?: InputMaybe<Builds_Source_Type_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Latest_Default_Builds_Max_Fields = {
+  __typename?: 'latest_default_builds_max_fields';
+  build_number?: Maybe<Scalars['Int']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  existing_github_review_id?: Maybe<Scalars['String']>;
+  git_branch?: Maybe<Scalars['String']>;
+  git_hash?: Maybe<Scalars['String']>;
+  git_remote?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['String']>;
+  s3_url?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Latest_Default_Builds_Min_Fields = {
+  __typename?: 'latest_default_builds_min_fields';
+  build_number?: Maybe<Scalars['Int']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  existing_github_review_id?: Maybe<Scalars['String']>;
+  git_branch?: Maybe<Scalars['String']>;
+  git_hash?: Maybe<Scalars['String']>;
+  git_remote?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['String']>;
+  s3_url?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "latest_default_builds". */
+export type Latest_Default_Builds_Order_By = {
+  build_number?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  existing_github_review_id?: InputMaybe<Order_By>;
+  git_branch?: InputMaybe<Order_By>;
+  git_hash?: InputMaybe<Order_By>;
+  git_remote?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project?: InputMaybe<Projects_Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
+  s3_url?: InputMaybe<Order_By>;
+  source_type?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "latest_default_builds" */
+export enum Latest_Default_Builds_Select_Column {
+  /** column name */
+  BuildNumber = 'build_number',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExistingGithubReviewId = 'existing_github_review_id',
+  /** column name */
+  GitBranch = 'git_branch',
+  /** column name */
+  GitHash = 'git_hash',
+  /** column name */
+  GitRemote = 'git_remote',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ProjectId = 'project_id',
+  /** column name */
+  PullRequestId = 'pull_request_id',
+  /** column name */
+  S3Url = 's3_url',
+  /** column name */
+  SourceType = 'source_type'
+}
+
+/** aggregate stddev on columns */
+export type Latest_Default_Builds_Stddev_Fields = {
+  __typename?: 'latest_default_builds_stddev_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Latest_Default_Builds_Stddev_Pop_Fields = {
+  __typename?: 'latest_default_builds_stddev_pop_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Latest_Default_Builds_Stddev_Samp_Fields = {
+  __typename?: 'latest_default_builds_stddev_samp_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate sum on columns */
+export type Latest_Default_Builds_Sum_Fields = {
+  __typename?: 'latest_default_builds_sum_fields';
+  build_number?: Maybe<Scalars['Int']>;
+};
+
+/** aggregate var_pop on columns */
+export type Latest_Default_Builds_Var_Pop_Fields = {
+  __typename?: 'latest_default_builds_var_pop_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type Latest_Default_Builds_Var_Samp_Fields = {
+  __typename?: 'latest_default_builds_var_samp_fields';
+  build_number?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type Latest_Default_Builds_Variance_Fields = {
+  __typename?: 'latest_default_builds_variance_fields';
+  build_number?: Maybe<Scalars['Float']>;
 };
 
 /** columns and relationships of "manifests" */
@@ -3020,6 +3211,10 @@ export type Query_Root = {
   ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
   /** fetch data from the table: "ignored_vulnerabilities" using primary key columns */
   ignored_vulnerabilities_by_pk?: Maybe<Ignored_Vulnerabilities>;
+  /** fetch data from the table: "latest_default_builds" */
+  latest_default_builds: Array<Latest_Default_Builds>;
+  /** fetch aggregated fields from the table: "latest_default_builds" */
+  latest_default_builds_aggregate: Latest_Default_Builds_Aggregate;
   /** An array relationship */
   manifests: Array<Manifests>;
   /** fetch data from the table: "manifests" using primary key columns */
@@ -3226,6 +3421,24 @@ export type Query_RootIgnored_VulnerabilitiesArgs = {
 
 export type Query_RootIgnored_Vulnerabilities_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootLatest_Default_BuildsArgs = {
+  distinct_on?: InputMaybe<Array<Latest_Default_Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Latest_Default_Builds_Order_By>>;
+  where?: InputMaybe<Latest_Default_Builds_Bool_Exp>;
+};
+
+
+export type Query_RootLatest_Default_Builds_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Latest_Default_Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Latest_Default_Builds_Order_By>>;
+  where?: InputMaybe<Latest_Default_Builds_Bool_Exp>;
 };
 
 
@@ -3892,6 +4105,10 @@ export type Subscription_Root = {
   ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
   /** fetch data from the table: "ignored_vulnerabilities" using primary key columns */
   ignored_vulnerabilities_by_pk?: Maybe<Ignored_Vulnerabilities>;
+  /** fetch data from the table: "latest_default_builds" */
+  latest_default_builds: Array<Latest_Default_Builds>;
+  /** fetch aggregated fields from the table: "latest_default_builds" */
+  latest_default_builds_aggregate: Latest_Default_Builds_Aggregate;
   /** An array relationship */
   manifests: Array<Manifests>;
   /** fetch data from the table: "manifests" using primary key columns */
@@ -4090,6 +4307,24 @@ export type Subscription_RootIgnored_VulnerabilitiesArgs = {
 
 export type Subscription_RootIgnored_Vulnerabilities_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootLatest_Default_BuildsArgs = {
+  distinct_on?: InputMaybe<Array<Latest_Default_Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Latest_Default_Builds_Order_By>>;
+  where?: InputMaybe<Latest_Default_Builds_Bool_Exp>;
+};
+
+
+export type Subscription_RootLatest_Default_Builds_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Latest_Default_Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Latest_Default_Builds_Order_By>>;
+  where?: InputMaybe<Latest_Default_Builds_Bool_Exp>;
 };
 
 
@@ -4775,7 +5010,7 @@ export type GetVulnerabilityDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities_by_pk?: { __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, id: any, name: string, namespace: string, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }> } | null };
+export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerabilities_by_pk?: { __typename?: 'vulnerabilities', created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, id: any, name: string, namespace: string, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', name: string, namespace: string, description?: string | null, severity: any, cvss_score?: any | null, cvss_inferred?: boolean | null, id: any } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', advisories: string, id: any, name?: string | null, package_versions: Array<{ __typename?: 'package_versions', cpes: any, fix_state: string, fixed_in_versions: any, id: any, version_constraint: string, version_format: string }> }>, findings: Array<{ __typename?: 'findings', id: any, build_id: any, default_branch_build?: { __typename?: 'default_branch_builds', id?: any | null, build_number?: number | null, created_at?: any | null, project_id?: any | null, project?: { __typename?: 'projects', name: string, id: any } | null } | null }> } | null };
 
 export type InsertNewOrgUserMutationVariables = Exact<{
   organization_id: Scalars['uuid'];
@@ -5328,6 +5563,20 @@ export const GetVulnerabilityDetailsDocument = `
         id
         version_constraint
         version_format
+      }
+    }
+    findings(where: {latest_default_build: {}}) {
+      id
+      build_id
+      default_branch_build {
+        id
+        project {
+          name
+          id
+        }
+        build_number
+        created_at
+        project_id
       }
     }
   }
