@@ -4989,7 +4989,7 @@ export type GetSbomUrlQueryVariables = Exact<{
 export type GetSbomUrlQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', s3_url_signed?: string | null } | null };
 
 export type GetSidebarInfoQueryVariables = Exact<{
-  users_filter?: InputMaybe<Users_Bool_Exp>;
+  kratos_id?: InputMaybe<Scalars['uuid']>;
 }>;
 
 
@@ -5455,7 +5455,7 @@ export const GetSbomUrlDocument = `
 }
     `;
 export const GetSidebarInfoDocument = `
-    query GetSidebarInfo($users_filter: users_bool_exp = {}) {
+    query GetSidebarInfo($kratos_id: uuid) {
   projects(order_by: {name: asc}) {
     name
     id
@@ -5465,7 +5465,10 @@ export const GetSidebarInfoDocument = `
       build_number
     }
   }
-  organizations(order_by: {projects_aggregate: {count: asc}}) {
+  organizations(
+    order_by: {projects_aggregate: {count: asc}}
+    where: {organization_users: {user: {kratos_id: {_eq: $kratos_id}}}}
+  ) {
     name
     id
     createdAt
