@@ -19,18 +19,18 @@ import (
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/cmd/lpt/ingest"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/cmd/lpt/license"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/clifx"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/license/scanner/licensecheck"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/license/scanner/packagejson"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/fetcher/npm"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata/ingester"
+	clifx2 "github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/clifx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/license/scanner/licensecheck"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/license/scanner/packagejson"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata/fetcher/npm"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata/ingester"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/lunatracefx"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 )
 
 func main() {
-	clifx.Main(
+	clifx2.Main(
 		lunatracefx.Module,
 		// todo make a module
 		fx.Provide(func(appConfig types.LunaTraceConfig, hc *http.Client) graphql.Client {
@@ -41,7 +41,7 @@ func main() {
 			}}
 			return graphql.NewClient("http://localhost:8080/v1/graphql", lhc)
 		}),
-		fx.Supply(&clifx.AppConfig{
+		fx.Supply(&clifx2.AppConfig{
 			Name:    "lpt",
 			Usage:   "LunaTrace Package Tool",
 			Version: "0.0.1",

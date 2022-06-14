@@ -16,7 +16,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata"
 )
 
 func adapt(n *NpmPackageMetadataWithRawVersions, packageRaw []byte) (*metadata.PackageMetadata, error) {
