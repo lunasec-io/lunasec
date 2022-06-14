@@ -22,6 +22,7 @@ import (
 	"github.com/rs/zerolog"
 	"go.uber.org/fx"
 
+	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/tallyfx"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/command"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/config"
@@ -43,6 +44,7 @@ var Module = fx.Options(
 	fx.Provide(
 		types.NewLunaTraceGlobalFlags,
 		config.LoadLunaTraceConfig,
+		tallyfx.NewMetrics,
 	),
 	// todo instrument me
 	fx.Supply(http.DefaultClient),
