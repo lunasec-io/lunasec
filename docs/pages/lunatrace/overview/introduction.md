@@ -27,7 +27,7 @@ currently for free](https://lunatrace.lunasec.io)) or you can deploy it and mana
 
 ### What it scans
 
-LunaTrace can scan a variety of artifacts, such as project folders, zip files, built artifacts such as. Jar files, and
+LunaTrace can scan a variety of artifacts, such as project folders, zip files, and built artifacts such as Jar files and
 docker containers. It identifies the dependencies used by projects written in a wide variety of languages.
 
 ### What it outputs
