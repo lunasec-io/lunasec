@@ -22,19 +22,33 @@ import (
 	"github.com/uber-go/tally/v4/prometheus"
 	"go.uber.org/config"
 	"go.uber.org/fx"
+	"go.uber.org/zap"
 )
 
 const metricsConfigKey = "metrics"
 
 type MetricsConfig struct {
+	Enabled     bool   `yaml:"enabled"`
 	ServiceName string `yaml:"service_name"`
 }
 
-func NewMetrics(c config.Provider, lc fx.Lifecycle) (tally.Scope, error) {
+type NewMetricsParams struct {
+	fx.In
+	Config    config.Provider
+	Lifecycle fx.Lifecycle
+	Log       *zap.Logger
+}
+
+func NewMetrics(p NewMetricsParams) (tally.Scope, error) {
 	var cfg MetricsConfig
-	err := c.Get(metricsConfigKey).Populate(&cfg)
+	err := p.Config.Get(metricsConfigKey).Populate(&cfg)
 	if err != nil {
 		return nil, err
+	}
+
+	if !cfg.Enabled {
+		p.Log.Warn("metrics collection disabled")
+		return tally.NewTestScope("", nil), nil
 	}
 
 	reporter := prometheus.NewReporter(prometheus.Options{})
@@ -43,10 +57,10 @@ func NewMetrics(c config.Provider, lc fx.Lifecycle) (tally.Scope, error) {
 		Tags: map[string]string{
 			"service": "asdf",
 		},
-		Reporter: reporter,
+		CachedReporter: reporter,
 	}, time.Second)
 
-	lc.Append(fx.Hook{OnStop: func(_ context.Context) error {
+	p.Lifecycle.Append(fx.Hook{OnStop: func(_ context.Context) error {
 		return closer.Close()
 	}})
 
