@@ -53,7 +53,8 @@ jobs:
           yarn run start:prod &
           timeout 120 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:3002)" != "200" ]]; do sleep 1; done' || false
 
-      - run: |-
+      - name: "Start Vendor Services with Docker Compose Up"
+        run: |-
           echo "DD_API_KEY=fake" >> .env.dev
           docker-compose up -d
         working-directory: lunatrace/bsl
