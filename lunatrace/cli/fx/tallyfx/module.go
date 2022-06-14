@@ -16,6 +16,7 @@ package tallyfx
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/uber-go/tally/v4"
@@ -51,11 +52,15 @@ func NewMetrics(p NewMetricsParams) (tally.Scope, error) {
 		return tally.NewTestScope("", nil), nil
 	}
 
+	if cfg.ServiceName == "" {
+		return nil, fmt.Errorf("%s.service_name must not be empty when metrics are enabled", metricsConfigKey)
+	}
+
 	reporter := prometheus.NewReporter(prometheus.Options{})
 
 	scope, closer := tally.NewRootScope(tally.ScopeOptions{
 		Tags: map[string]string{
-			"service": "asdf",
+			"service": cfg.ServiceName,
 		},
 		CachedReporter: reporter,
 	}, time.Second)
