@@ -12,10 +12,38 @@
  *
  */
 import * as ecs from '@aws-cdk/aws-ecs';
-import { Secret as EcsSecret, LogDriver, TaskDefinition } from '@aws-cdk/aws-ecs';
+import {
+  AwsLogDriver,
+  Secret as EcsSecret,
+  FirelensLogRouterType,
+  LogDriver,
+  LogDrivers,
+  TaskDefinition,
+} from '@aws-cdk/aws-ecs';
 import { Secret } from '@aws-cdk/aws-secretsmanager';
 import * as cdk from '@aws-cdk/core';
 import { Construct } from '@aws-cdk/core';
+
+export function datadogLogDriverForService(source: string, service: string) {
+  const datadogApiKey = process.env.DATADOG_API_KEY;
+  if (!datadogApiKey) {
+    throw new Error('DATADOG_API_KEY is not set in environment');
+  }
+
+  return LogDrivers.firelens({
+    options: {
+      dd_message_key: 'log',
+      apikey: datadogApiKey,
+      provider: 'ecs',
+      dd_service: service,
+      dd_source: source,
+      Host: 'http-intake.logs.datadoghq.com',
+      TLS: 'on',
+      dd_tags: 'project:fluent-bit',
+      Name: 'datadog',
+    },
+  });
+}
 
 /** The properties for the Datadog integration. */
 export interface DataDogIntegrationProps {
@@ -44,14 +72,30 @@ export function addDatadogToTaskDefinition(
   apiKeyArn: string,
   env?: Record<string, string>
 ) {
-  new DatadogFargateIntegration(parent, 'DatadogAgentService' + taskDef.family, taskDef, {
+  new DatadogFargateIntegration(parent, 'DatadogAgent' + taskDef.family, taskDef, {
     datadogApiKeyArn: apiKeyArn,
-    environment: {
-      DD_LOGS_ENABLED: 'true',
-      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: 'true',
-      ...env,
-    },
   });
+
+  new DatadogIntegration(parent, 'DatadogService' + taskDef.family, taskDef);
+}
+
+export class DatadogIntegration extends cdk.Construct {
+  constructor(parent: cdk.Construct, name: string, taskDefinition: ecs.TaskDefinition) {
+    super(parent, name);
+
+    taskDefinition.addFirelensLogRouter('LogRouter', {
+      image: ecs.ContainerImage.fromRegistry('amazon/aws-for-fluent-bit'),
+      essential: false,
+      firelensConfig: {
+        type: FirelensLogRouterType.FLUENTBIT,
+        options: {
+          enableECSLogMetadata: true,
+          configFileValue: '/fluent-bit/configs/parse-json.conf',
+        },
+      },
+      logging: new AwsLogDriver({ streamPrefix: 'firelens' }),
+    });
+  }
 }
 
 /** Include Datadog agent in the specified task definition. */
@@ -66,7 +110,8 @@ export class DatadogFargateIntegration extends cdk.Construct {
     // Datadog parameters
     const environment = {
       ECS_FARGATE: 'true',
-      ...props.environment,
+      DD_LOGS_ENABLED: 'true',
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: 'true',
     };
 
     const datadogApiKey = Secret.fromSecretCompleteArn(this, 'DatadogApiKeySecret', props.datadogApiKeyArn);

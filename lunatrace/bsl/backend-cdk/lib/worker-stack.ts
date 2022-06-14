@@ -21,7 +21,7 @@ import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
 import { Construct } from '@aws-cdk/core';
 
-import { addDatadogToTaskDefinition } from './datadog-fargate-integration';
+import { addDatadogToTaskDefinition, datadogLogDriverForService } from './datadog-fargate-integration';
 import { getContainerTarballPath } from './util';
 import { WorkerStorageStackState } from './worker-storage-stack';
 
@@ -139,6 +139,7 @@ export class WorkerStack extends cdk.Stack {
           queue: queueService.queue, // will pass queue_name env var automatically
           assignPublicIp: true,
           enableLogging: true,
+          logDriver: datadogLogDriverForService('lunatrace', queueService.name),
           environment: {
             ...processQueueCommonEnvVars,
             // 10 seconds
