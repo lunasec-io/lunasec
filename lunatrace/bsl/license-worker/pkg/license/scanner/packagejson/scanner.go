@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/license/scanner"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/license/scanner"
 )
 
 type packageJson struct {

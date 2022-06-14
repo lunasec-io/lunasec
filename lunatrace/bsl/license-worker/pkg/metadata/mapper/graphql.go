@@ -14,7 +14,7 @@ package mapper
 import (
 	"time"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
