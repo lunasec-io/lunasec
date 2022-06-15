@@ -168,6 +168,11 @@ func (v *GetVulnerabilityVulnerability) GetEquivalents() []*vulnerabilityFragmen
 	return v.vulnerabilityFragment.Equivalents
 }
 
+// GetReferences returns GetVulnerabilityVulnerability.References, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityVulnerability) GetReferences() []*vulnerabilityFragmentReferencesVulnerability_reference {
+	return v.vulnerabilityFragment.References
+}
+
 // GetSource returns GetVulnerabilityVulnerability.Source, and is useful for accessing the field via an interface.
 func (v *GetVulnerabilityVulnerability) GetSource() string { return v.vulnerabilityFragment.Source }
 
@@ -208,6 +213,8 @@ type __premarshalGetVulnerabilityVulnerability struct {
 
 	Equivalents []*vulnerabilityFragmentEquivalentsVulnerability_equivalent `json:"equivalents"`
 
+	References []*vulnerabilityFragmentReferencesVulnerability_reference `json:"references"`
+
 	Source string `json:"source"`
 
 	Source_id string `json:"source_id"`
@@ -227,6 +234,7 @@ func (v *GetVulnerabilityVulnerability) __premarshalJSON() (*__premarshalGetVuln
 	retval.Id = v.vulnerabilityFragment.Id
 	retval.Affected = v.vulnerabilityFragment.Affected
 	retval.Equivalents = v.vulnerabilityFragment.Equivalents
+	retval.References = v.vulnerabilityFragment.References
 	retval.Source = v.vulnerabilityFragment.Source
 	retval.Source_id = v.vulnerabilityFragment.Source_id
 	return &retval, nil
@@ -1962,8 +1970,10 @@ type vulnerabilityFragment struct {
 	Affected []*vulnerabilityFragmentAffectedVulnerability_affected `json:"affected"`
 	// An array relationship
 	Equivalents []*vulnerabilityFragmentEquivalentsVulnerability_equivalent `json:"equivalents"`
-	Source      string                                                      `json:"source"`
-	Source_id   string                                                      `json:"source_id"`
+	// An array relationship
+	References []*vulnerabilityFragmentReferencesVulnerability_reference `json:"references"`
+	Source     string                                                    `json:"source"`
+	Source_id  string                                                    `json:"source_id"`
 }
 
 // GetId returns vulnerabilityFragment.Id, and is useful for accessing the field via an interface.
@@ -1977,6 +1987,11 @@ func (v *vulnerabilityFragment) GetAffected() []*vulnerabilityFragmentAffectedVu
 // GetEquivalents returns vulnerabilityFragment.Equivalents, and is useful for accessing the field via an interface.
 func (v *vulnerabilityFragment) GetEquivalents() []*vulnerabilityFragmentEquivalentsVulnerability_equivalent {
 	return v.Equivalents
+}
+
+// GetReferences returns vulnerabilityFragment.References, and is useful for accessing the field via an interface.
+func (v *vulnerabilityFragment) GetReferences() []*vulnerabilityFragmentReferencesVulnerability_reference {
+	return v.References
 }
 
 // GetSource returns vulnerabilityFragment.Source, and is useful for accessing the field via an interface.
@@ -2107,6 +2122,21 @@ func (v *vulnerabilityFragmentEquivalentsVulnerability_equivalentVulnerability) 
 	return v.Source_id
 }
 
+// vulnerabilityFragmentReferencesVulnerability_reference includes the requested fields of the GraphQL type vulnerability_reference.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "vulnerability.reference"
+type vulnerabilityFragmentReferencesVulnerability_reference struct {
+	Id  uuid.UUID `json:"id"`
+	Url string    `json:"url"`
+}
+
+// GetId returns vulnerabilityFragmentReferencesVulnerability_reference.Id, and is useful for accessing the field via an interface.
+func (v *vulnerabilityFragmentReferencesVulnerability_reference) GetId() uuid.UUID { return v.Id }
+
+// GetUrl returns vulnerabilityFragmentReferencesVulnerability_reference.Url, and is useful for accessing the field via an interface.
+func (v *vulnerabilityFragmentReferencesVulnerability_reference) GetUrl() string { return v.Url }
+
 func DeleteBuild(
 	ctx context.Context,
 	client graphql.Client,
@@ -2206,6 +2236,10 @@ fragment vulnerabilityFragment on vulnerability {
 			source
 			source_id
 		}
+	}
+	references {
+		id
+		url
 	}
 	source
 	source_id
