@@ -22,7 +22,7 @@ import (
 	"go.uber.org/fx"
 )
 
-const schemaVersion = 69420
+const schemaVersion = 42069
 
 type GraphQLStoreDeps struct {
 	fx.In
@@ -43,12 +43,18 @@ func (g *graphQLStore) GetID() (*v3.ID, error) {
 	}, nil
 }
 
+// GetVulnerability retrieves one or more vulnerabilities given a namespace and package name.
 func (g *graphQLStore) GetVulnerability(namespace, name string) ([]v3.Vulnerability, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
+// GetVulnerabilityMetadata retrieves metadata for the given vulnerability ID relative to a specific record source.
 func (g *graphQLStore) GetVulnerabilityMetadata(id, namespace string) (*v3.VulnerabilityMetadata, error) {
 	//TODO implement me
 	panic("implement me")
+}
+
+func NewGraphQLStore(d GraphQLStoreDeps) (v3.StoreReader, error) {
+	return &graphQLStore{d: d}, nil
 }
