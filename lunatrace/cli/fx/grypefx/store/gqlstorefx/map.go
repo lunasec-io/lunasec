@@ -15,11 +15,18 @@
 package gqlstorefx
 
 import (
+	v3 "github.com/anchore/grype/grype/db/v3"
+
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 )
 
 func mapNamespace(namespace string) types.PackageManager {
+	//TODO implement me
+	panic("implement me")
+}
+
+func mapVulns(ov []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, error) {
 	//TODO implement me
 	panic("implement me")
 }
