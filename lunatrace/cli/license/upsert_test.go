@@ -86,7 +86,10 @@ func TestUpsert(t *testing.T) {
 
 	command.EnableGlobalFlags(globalFlags)
 
-	appConfig, err := config.LoadLunaTraceConfig()
+	configProvider, err := config.NewConfigProvider()
+	assert.NoError(t, err)
+
+	appConfig, err := config.NewLunaTraceConfig(configProvider)
 	assert.NoError(t, err)
 
 	if appConfig.Stage == constants.DevelopmentEnv {

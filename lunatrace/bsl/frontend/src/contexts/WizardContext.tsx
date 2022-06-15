@@ -11,30 +11,24 @@
  * limitations under the License.
  *
  */
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import api from '../api';
 import useAppSelector from '../hooks/useAppSelector';
-import { selectIsAuthenticated } from '../store/slices/authentication';
+import { selectIsAuthenticated, selectKratosId } from '../store/slices/authentication';
 import { userHasAnyOrganizations } from '../utils/organizations';
+
+import { SidebarContext } from './SidebarContext';
 
 const defaultState = false;
 
 const WizardOpenContext = React.createContext(defaultState);
 
 function WizardOpenProvider({ children }: { children: React.ReactNode }) {
-  const [trigger, result, lastPromiseInfo] = api.useLazyGetSidebarInfoQuery();
-  const { data } = result;
-
+  const { sidebarData } = useContext(SidebarContext);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      void trigger();
-    }
-  }, [isAuthenticated]);
-
-  const wizardOpen = isAuthenticated && !userHasAnyOrganizations(data);
+  const wizardOpen = isAuthenticated && !userHasAnyOrganizations(sidebarData);
 
   return <WizardOpenContext.Provider value={wizardOpen}>{children}</WizardOpenContext.Provider>;
 }
