@@ -11,19 +11,20 @@
  * limitations under the License.
  *
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button, Form, InputGroup } from 'react-bootstrap';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { Option } from 'react-bootstrap-typeahead/types/types';
 import { Search } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 
-import api from '../../api';
 import { GetSidebarInfoQuery } from '../../api/generated';
+import { SidebarContext } from '../../contexts/SidebarContext';
+
 export const ProjectSearch: React.FunctionComponent = () => {
   const navigate = useNavigate();
   // Just reuse the same query from the sidebar despite the overfetch, because it will be cached
-  const { data } = api.useGetSidebarInfoQuery();
+  const { sidebarData } = useContext(SidebarContext);
 
   const handleProjectSelected = (options: Option[]) => {
     const selected = options[0] as GetSidebarInfoQuery['projects'][number] | undefined;
@@ -41,7 +42,7 @@ export const ProjectSearch: React.FunctionComponent = () => {
           aria-label="Search Projects"
           onChange={handleProjectSelected}
           labelKey="name"
-          options={!data ? [] : data.projects}
+          options={!sidebarData ? [] : sidebarData.projects}
           highlightOnlyResult={true}
         />
         <Button variant="">

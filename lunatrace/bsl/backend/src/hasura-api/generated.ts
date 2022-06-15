@@ -3059,6 +3059,11 @@ export type Mutation_RootUpdate_Organizations_By_PkArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_PackageArgs = {
+  _append?: InputMaybe<Package_Append_Input>;
+  _delete_at_path?: InputMaybe<Package_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Package_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Package_Delete_Key_Input>;
+  _prepend?: InputMaybe<Package_Prepend_Input>;
   _set?: InputMaybe<Package_Set_Input>;
   where: Package_Bool_Exp;
 };
@@ -3066,6 +3071,11 @@ export type Mutation_RootUpdate_PackageArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Package_By_PkArgs = {
+  _append?: InputMaybe<Package_Append_Input>;
+  _delete_at_path?: InputMaybe<Package_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Package_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Package_Delete_Key_Input>;
+  _prepend?: InputMaybe<Package_Prepend_Input>;
   _set?: InputMaybe<Package_Set_Input>;
   pk_columns: Package_Pk_Columns_Input;
 };
@@ -3794,6 +3804,7 @@ export type Package = {
   package_manager: Scalars['package_manager'];
   /** An array relationship */
   releases: Array<Package_Release>;
+  upstream_data?: Maybe<Scalars['jsonb']>;
 };
 
 
@@ -3816,6 +3827,17 @@ export type PackageReleasesArgs = {
   where?: InputMaybe<Package_Release_Bool_Exp>;
 };
 
+
+/** columns and relationships of "package.package" */
+export type PackageUpstream_DataArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Package_Append_Input = {
+  upstream_data?: InputMaybe<Scalars['jsonb']>;
+};
+
 /** Boolean expression to filter rows from the table "package.package". All fields are combined with a logical 'AND'. */
 export type Package_Bool_Exp = {
   _and?: InputMaybe<Array<Package_Bool_Exp>>;
@@ -3829,6 +3851,7 @@ export type Package_Bool_Exp = {
   package_maintainers?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
   package_manager?: InputMaybe<Package_Manager_Comparison_Exp>;
   releases?: InputMaybe<Package_Release_Bool_Exp>;
+  upstream_data?: InputMaybe<Jsonb_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "package.package" */
@@ -3838,6 +3861,21 @@ export enum Package_Constraint {
   /** unique or primary key constraint */
   PackagePkey = 'package_pkey'
 }
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Package_Delete_At_Path_Input = {
+  upstream_data?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Package_Delete_Elem_Input = {
+  upstream_data?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Package_Delete_Key_Input = {
+  upstream_data?: InputMaybe<Scalars['String']>;
+};
 
 /** input type for inserting data into table "package.package" */
 export type Package_Insert_Input = {
@@ -3849,6 +3887,7 @@ export type Package_Insert_Input = {
   package_maintainers?: InputMaybe<Package_Package_Maintainer_Arr_Rel_Insert_Input>;
   package_manager?: InputMaybe<Scalars['package_manager']>;
   releases?: InputMaybe<Package_Release_Arr_Rel_Insert_Input>;
+  upstream_data?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** columns and relationships of "package.license" */
@@ -4132,6 +4171,7 @@ export type Package_Order_By = {
   package_maintainers_aggregate?: InputMaybe<Package_Package_Maintainer_Aggregate_Order_By>;
   package_manager?: InputMaybe<Order_By>;
   releases_aggregate?: InputMaybe<Package_Release_Aggregate_Order_By>;
+  upstream_data?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "package.package_maintainer" */
@@ -4245,6 +4285,11 @@ export enum Package_Package_Maintainer_Update_Column {
 /** primary key columns input for table: package */
 export type Package_Pk_Columns_Input = {
   id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Package_Prepend_Input = {
+  upstream_data?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** columns and relationships of "package.release" */
@@ -4898,7 +4943,9 @@ export enum Package_Select_Column {
   /** column name */
   Name = 'name',
   /** column name */
-  PackageManager = 'package_manager'
+  PackageManager = 'package_manager',
+  /** column name */
+  UpstreamData = 'upstream_data'
 }
 
 /** input type for updating data in table "package.package" */
@@ -4909,6 +4956,7 @@ export type Package_Set_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   name?: InputMaybe<Scalars['String']>;
   package_manager?: InputMaybe<Scalars['package_manager']>;
+  upstream_data?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** update columns of table "package.package" */
@@ -4924,7 +4972,9 @@ export enum Package_Update_Column {
   /** column name */
   Name = 'name',
   /** column name */
-  PackageManager = 'package_manager'
+  PackageManager = 'package_manager',
+  /** column name */
+  UpstreamData = 'upstream_data'
 }
 
 /** columns and relationships of "package_versions" */

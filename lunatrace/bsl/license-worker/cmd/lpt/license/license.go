@@ -18,8 +18,8 @@ import (
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/clifx"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/license/scanner"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/clifx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/license/scanner"
 )
 
 type Params struct {

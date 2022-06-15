@@ -11,19 +11,19 @@
  * limitations under the License.
  *
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Card, Modal } from 'react-bootstrap';
 import { AiFillFolderOpen } from 'react-icons/ai';
 import { NavLink } from 'react-router-dom';
 
-import api from '../../../api';
+import { SidebarContext } from '../../../contexts/SidebarContext';
 import { useRecentProjects } from '../../../hooks/useRecentProjects';
 
 export const RecentProjectsCard: React.FC = () => {
-  const { data } = api.useGetSidebarInfoQuery();
+  const { sidebarData } = useContext(SidebarContext);
   // Get some filler projects so we have something to show brand new users
   // will be replaced with real data once they start clicking projects
-  const fillerProjects = data?.projects.slice(0, 4) || [];
+  const fillerProjects = sidebarData?.projects.slice(0, 4) || [];
   const [recentProjects] = useRecentProjects(fillerProjects);
 
   return (
