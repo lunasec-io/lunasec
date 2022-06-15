@@ -37,6 +37,7 @@ require (
 	go.uber.org/config v1.4.0
 	go.uber.org/fx v1.17.1
 	go.uber.org/zap v1.21.0
+	gocloud.dev v0.24.1-0.20211119014450-028788aaaa4c
 	golang.org/x/crypto v0.0.0-20220511200225-c6db032c6c88
 	gopkg.in/square/go-jose.v2 v2.6.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b

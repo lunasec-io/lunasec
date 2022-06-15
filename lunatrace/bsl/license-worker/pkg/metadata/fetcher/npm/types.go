@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -18,33 +18,25 @@ type NpmPackageMetadata struct {
 	ID          string      `json:"_id"`
 	Rev         string      `json:"_rev"`
 	// either Author or string
-	Author         json.RawMessage    `json:"author"`
-	Description    string             `json:"description"`
-	DistTags       DistTags           `json:"dist-tags"`
-	License        json.RawMessage    `json:"license"`
-	Maintainers    []Author           `json:"maintainers"`
-	Name           string             `json:"name"`
-	Readme         string             `json:"readme"`
-	ReadmeFilename string             `json:"readmeFilename"`
-	Time           Time               `json:"time"`
-	Versions       map[string]Version `json:"versions"`
+	Author         json.RawMessage `json:"author"`
+	Description    string          `json:"description"`
+	DistTags       DistTags        `json:"dist-tags"`
+	License        json.RawMessage `json:"license"`
+	Maintainers    []Author        `json:"maintainers"`
+	Name           string          `json:"name"`
+	Readme         string          `json:"readme"`
+	ReadmeFilename string          `json:"readmeFilename"`
+	Time           Time            `json:"time"`
 }
 
-type NpmPackageMetadataWithRawVersion struct {
-	Attachments Attachments `json:"_attachments"`
-	ID          string      `json:"_id"`
-	Rev         string      `json:"_rev"`
-	// either Author or string
-	Author         json.RawMessage            `json:"author"`
-	Description    string                     `json:"description"`
-	DistTags       DistTags                   `json:"dist-tags"`
-	License        json.RawMessage            `json:"license"`
-	Maintainers    []Author                   `json:"maintainers"`
-	Name           string                     `json:"name"`
-	Readme         string                     `json:"readme"`
-	ReadmeFilename string                     `json:"readmeFilename"`
-	Time           Time                       `json:"time"`
-	VersionsRaw    map[string]json.RawMessage `json:"versions"`
+type NpmPackageMetadataWithRawVersions struct {
+	NpmPackageMetadata
+	VersionsRaw map[string]json.RawMessage `json:"versions"`
+}
+
+type NpmPackageMetadataWithParsedVersions struct {
+	NpmPackageMetadata
+	Versions map[string]Version `json:"versions"`
 }
 
 type Attachments struct {
