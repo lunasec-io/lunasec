@@ -25,7 +25,14 @@ type multiStore struct {
 }
 
 func (m *multiStore) GetID() (*v3.ID, error) {
-	return m.stores[0].GetID()
+	for _, store := range m.stores {
+		id, err := store.GetID()
+		if err != nil {
+			continue
+		}
+		return id, nil
+	}
+	return nil, errors.New("all stores errored")
 }
 
 func (m *multiStore) GetVulnerability(namespace, name string) ([]v3.Vulnerability, error) {
