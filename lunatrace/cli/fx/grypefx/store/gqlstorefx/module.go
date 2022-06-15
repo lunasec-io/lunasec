@@ -15,11 +15,16 @@
 package gqlstorefx
 
 import (
+	"context"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/anchore/grype/grype/db/v3"
+	"github.com/google/uuid"
 	"go.uber.org/fx"
+
+	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 )
 
 const SchemaVersion = 42069
@@ -43,16 +48,53 @@ func (g *gqlStore) GetID() (*v3.ID, error) {
 	}, nil
 }
 
-// GetVulnerability retrieves one or more vulnerabilities given a namespace and package name.
-func (g *gqlStore) GetVulnerability(namespace, name string) ([]v3.Vulnerability, error) {
+func mapNamespace(namespace string) types.PackageManager {
 	//TODO implement me
 	panic("implement me")
 }
 
-// GetVulnerabilityMetadata retrieves metadata for the given vulnerability ID relative to a specific record source.
-func (g *gqlStore) GetVulnerabilityMetadata(id, namespace string) (*v3.VulnerabilityMetadata, error) {
+// GetVulnerability retrieves one or more vulnerabilities given a namespace and package name.
+func (g *gqlStore) GetVulnerability(namespace, name string) ([]v3.Vulnerability, error) {
+	vulns, err := gql.GetVulnerability(context.TODO(), g.d.GQLClient, name, mapNamespace(namespace))
 	//TODO implement me
 	panic("implement me")
+}
+
+// n2z converts nil pointers to the zero value of their type.
+func n2z[T any](test *T) T {
+	var result T
+	if test == nil {
+		return result
+	}
+	return *test
+}
+
+func mapURLs(urls []*gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) []string {
+	out := make([]string, len(urls))
+	for i, ou := range urls {
+		out[i] = ou.Url
+	}
+	return out
+}
+
+// GetVulnerabilityMetadata retrieves metadata for the given vulnerability ID relative to a specific record source.
+func (g *gqlStore) GetVulnerabilityMetadata(id, namespace string) (*v3.VulnerabilityMetadata, error) {
+	uid, err := uuid.Parse(id)
+	if err != nil {
+		return nil, err
+	}
+	meta, err := gql.GetVulnerabilityMetadata(context.TODO(), g.d.GQLClient, uid)
+
+	return &v3.VulnerabilityMetadata{
+		ID:           meta.Vulnerability_by_pk.Id.String(),
+		Namespace:    meta.Vulnerability_by_pk.Source, //todo sourceid?
+		DataSource:   "",
+		RecordSource: "",
+		Severity:     "",
+		URLs:         mapURLs(meta.Vulnerability_by_pk.References),
+		Description:  n2z(meta.Vulnerability_by_pk.Details),
+		Cvss:         nil,
+	}, nil
 }
 
 func NewGraphQLStore(d StoreDeps) (v3.StoreReader, error) {

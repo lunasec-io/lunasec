@@ -92,88 +92,54 @@ func (v *GetVulnerabilityMetadataResponse) GetVulnerability_by_pk() *GetVulnerab
 //
 // columns and relationships of "vulnerability.vulnerability"
 type GetVulnerabilityMetadataVulnerability_by_pkVulnerability struct {
-	vulnerabilityFragment `json:"-"`
+	Id        uuid.UUID `json:"id"`
+	Source    string    `json:"source"`
+	Source_id string    `json:"source_id"`
+	// An array relationship
+	References []*GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference `json:"references"`
+	Details    *string                                                                                      `json:"details"`
 }
 
 // GetId returns GetVulnerabilityMetadataVulnerability_by_pkVulnerability.Id, and is useful for accessing the field via an interface.
-func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) GetId() uuid.UUID {
-	return v.vulnerabilityFragment.Id
-}
-
-// GetAffected returns GetVulnerabilityMetadataVulnerability_by_pkVulnerability.Affected, and is useful for accessing the field via an interface.
-func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) GetAffected() []*vulnerabilityFragmentAffectedVulnerability_affected {
-	return v.vulnerabilityFragment.Affected
-}
-
-// GetEquivalents returns GetVulnerabilityMetadataVulnerability_by_pkVulnerability.Equivalents, and is useful for accessing the field via an interface.
-func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) GetEquivalents() []*vulnerabilityFragmentEquivalentsVulnerability_equivalent {
-	return v.vulnerabilityFragment.Equivalents
-}
+func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) GetId() uuid.UUID { return v.Id }
 
 // GetSource returns GetVulnerabilityMetadataVulnerability_by_pkVulnerability.Source, and is useful for accessing the field via an interface.
 func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) GetSource() string {
-	return v.vulnerabilityFragment.Source
+	return v.Source
 }
 
 // GetSource_id returns GetVulnerabilityMetadataVulnerability_by_pkVulnerability.Source_id, and is useful for accessing the field via an interface.
 func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) GetSource_id() string {
-	return v.vulnerabilityFragment.Source_id
+	return v.Source_id
 }
 
-func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GetVulnerabilityMetadataVulnerability_by_pkVulnerability
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GetVulnerabilityMetadataVulnerability_by_pkVulnerability = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.vulnerabilityFragment)
-	if err != nil {
-		return err
-	}
-	return nil
+// GetReferences returns GetVulnerabilityMetadataVulnerability_by_pkVulnerability.References, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) GetReferences() []*GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference {
+	return v.References
 }
 
-type __premarshalGetVulnerabilityMetadataVulnerability_by_pkVulnerability struct {
-	Id uuid.UUID `json:"id"`
-
-	Affected []*vulnerabilityFragmentAffectedVulnerability_affected `json:"affected"`
-
-	Equivalents []*vulnerabilityFragmentEquivalentsVulnerability_equivalent `json:"equivalents"`
-
-	Source string `json:"source"`
-
-	Source_id string `json:"source_id"`
+// GetDetails returns GetVulnerabilityMetadataVulnerability_by_pkVulnerability.Details, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) GetDetails() *string {
+	return v.Details
 }
 
-func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
+// GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference includes the requested fields of the GraphQL type vulnerability_reference.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "vulnerability.reference"
+type GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference struct {
+	Type string `json:"type"`
+	Url  string `json:"url"`
 }
 
-func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) __premarshalJSON() (*__premarshalGetVulnerabilityMetadataVulnerability_by_pkVulnerability, error) {
-	var retval __premarshalGetVulnerabilityMetadataVulnerability_by_pkVulnerability
+// GetType returns GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference.Type, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) GetType() string {
+	return v.Type
+}
 
-	retval.Id = v.vulnerabilityFragment.Id
-	retval.Affected = v.vulnerabilityFragment.Affected
-	retval.Equivalents = v.vulnerabilityFragment.Equivalents
-	retval.Source = v.vulnerabilityFragment.Source
-	retval.Source_id = v.vulnerabilityFragment.Source_id
-	return &retval, nil
+// GetUrl returns GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference.Url, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) GetUrl() string {
+	return v.Url
 }
 
 // GetVulnerabilityResponse is returned by GetVulnerability on success.
@@ -1908,25 +1874,23 @@ func (v *__DeleteBuildInput) GetId() uuid.UUID { return v.Id }
 
 // __GetVulnerabilityInput is used internally by genqlient
 type __GetVulnerabilityInput struct {
-	Package_name    *string               `json:"package_name,omitempty"`
-	Package_manager *types.PackageManager `json:"package_manager,omitempty"`
+	Package_name    string               `json:"package_name,omitempty"`
+	Package_manager types.PackageManager `json:"package_manager,omitempty"`
 }
 
 // GetPackage_name returns __GetVulnerabilityInput.Package_name, and is useful for accessing the field via an interface.
-func (v *__GetVulnerabilityInput) GetPackage_name() *string { return v.Package_name }
+func (v *__GetVulnerabilityInput) GetPackage_name() string { return v.Package_name }
 
 // GetPackage_manager returns __GetVulnerabilityInput.Package_manager, and is useful for accessing the field via an interface.
-func (v *__GetVulnerabilityInput) GetPackage_manager() *types.PackageManager {
-	return v.Package_manager
-}
+func (v *__GetVulnerabilityInput) GetPackage_manager() types.PackageManager { return v.Package_manager }
 
 // __GetVulnerabilityMetadataInput is used internally by genqlient
 type __GetVulnerabilityMetadataInput struct {
-	Id *uuid.UUID `json:"id,omitempty"`
+	Id uuid.UUID `json:"id,omitempty"`
 }
 
 // GetId returns __GetVulnerabilityMetadataInput.Id, and is useful for accessing the field via an interface.
-func (v *__GetVulnerabilityMetadataInput) GetId() *uuid.UUID { return v.Id }
+func (v *__GetVulnerabilityMetadataInput) GetId() uuid.UUID { return v.Id }
 
 // __InsertNewBuildQueryInput is used internally by genqlient
 type __InsertNewBuildQueryInput struct {
@@ -2215,13 +2179,13 @@ query GetProjectInfoQuery {
 func GetVulnerability(
 	ctx context.Context,
 	client graphql.Client,
-	package_name *string,
-	package_manager *types.PackageManager,
+	package_name string,
+	package_manager types.PackageManager,
 ) (*GetVulnerabilityResponse, error) {
 	req := &graphql.Request{
 		OpName: "GetVulnerability",
 		Query: `
-query GetVulnerability ($package_name: String = "", $package_manager: package_manager = "") {
+query GetVulnerability ($package_name: String!, $package_manager: package_manager!) {
 	vulnerability(where: {affected:{package:{name:{_eq:$package_name},package_manager:{_eq:$package_manager}}}}) {
 		... vulnerabilityFragment
 	}
@@ -2275,41 +2239,22 @@ fragment vulnerabilityFragment on vulnerability {
 func GetVulnerabilityMetadata(
 	ctx context.Context,
 	client graphql.Client,
-	id *uuid.UUID,
+	id uuid.UUID,
 ) (*GetVulnerabilityMetadataResponse, error) {
 	req := &graphql.Request{
 		OpName: "GetVulnerabilityMetadata",
 		Query: `
-query GetVulnerabilityMetadata ($id: uuid = "") {
+query GetVulnerabilityMetadata ($id: uuid!) {
 	vulnerability_by_pk(id: $id) {
-		... vulnerabilityFragment
-	}
-}
-fragment vulnerabilityFragment on vulnerability {
-	id
-	affected {
-		package {
-			name
-			package_manager
-		}
-		affected_range_events {
-			event
-			version
-		}
-		affected_versions {
+		id
+		source
+		source_id
+		references {
 			type
-			version
+			url
 		}
+		details
 	}
-	equivalents {
-		vulnerability {
-			id
-			source
-			source_id
-		}
-	}
-	source
-	source_id
 }
 `,
 		Variables: &__GetVulnerabilityMetadataInput{
