@@ -42,12 +42,12 @@ func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, err
 				PackageName: ova.Package.Name,
 				Namespace:   mapPackageManager(ova.Package.Package_manager),
 				// todo how advanced is the semver query support, ||?
-				VersionConstraint:      "",
-				VersionFormat:          "semver",
-				CPEs:                   nil,
+				VersionConstraint: "",
+				VersionFormat:     "semver",
+				// todo do we need to provide cpes
+				CPEs: nil,
+				// todo
 				RelatedVulnerabilities: nil,
-				Fix:                    v3.Fix{},
-				Advisories:             nil,
 			})
 		}
 	}

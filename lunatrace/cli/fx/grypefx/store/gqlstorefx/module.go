@@ -76,10 +76,12 @@ func (g *gqlStore) GetVulnerabilityMetadata(id, namespace string) (*v3.Vulnerabi
 		Namespace:    meta.Vulnerability_by_pk.Source, //todo sourceid?
 		DataSource:   "",
 		RecordSource: "",
-		Severity:     "",
-		URLs:         mapURLs(meta.Vulnerability_by_pk.References),
-		Description:  n2z(meta.Vulnerability_by_pk.Details),
-		Cvss:         nil,
+
+		URLs:        mapURLs(meta.Vulnerability_by_pk.References),
+		Description: n2z(meta.Vulnerability_by_pk.Details),
+
+		Cvss:     nil,
+		Severity: "",
 	}, nil
 }
 
