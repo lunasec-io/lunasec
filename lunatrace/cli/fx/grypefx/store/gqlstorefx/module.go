@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package vulnproviderfx
+package gqlstorefx
 
 import (
 	"time"
@@ -22,39 +22,39 @@ import (
 	"go.uber.org/fx"
 )
 
-const schemaVersion = 42069
+const SchemaVersion = 42069
 
-type GraphQLStoreDeps struct {
+type StoreDeps struct {
 	fx.In
 	GQLClient graphql.Client
 }
 
-// graphQLStore is a vulnerability store for Grype that is backed by the LunaTrace GraphQL database.
-type graphQLStore struct {
-	d GraphQLStoreDeps
+// gqlStore is a vulnerability store for Grype that is backed by the LunaTrace GraphQL database.
+type gqlStore struct {
+	d StoreDeps
 }
 
 // GetID returns info about the state of the graphql db. It is considered to be always up to date and has a special
 // schema version number to differentiate it from Grype's native data.
-func (g *graphQLStore) GetID() (*v3.ID, error) {
+func (g *gqlStore) GetID() (*v3.ID, error) {
 	return &v3.ID{
 		BuildTimestamp: time.Now(),
-		SchemaVersion:  schemaVersion,
+		SchemaVersion:  SchemaVersion,
 	}, nil
 }
 
 // GetVulnerability retrieves one or more vulnerabilities given a namespace and package name.
-func (g *graphQLStore) GetVulnerability(namespace, name string) ([]v3.Vulnerability, error) {
+func (g *gqlStore) GetVulnerability(namespace, name string) ([]v3.Vulnerability, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
 // GetVulnerabilityMetadata retrieves metadata for the given vulnerability ID relative to a specific record source.
-func (g *graphQLStore) GetVulnerabilityMetadata(id, namespace string) (*v3.VulnerabilityMetadata, error) {
+func (g *gqlStore) GetVulnerabilityMetadata(id, namespace string) (*v3.VulnerabilityMetadata, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func NewGraphQLStore(d GraphQLStoreDeps) (v3.StoreReader, error) {
-	return &graphQLStore{d: d}, nil
+func NewGraphQLStore(d StoreDeps) (v3.StoreReader, error) {
+	return &gqlStore{d: d}, nil
 }
