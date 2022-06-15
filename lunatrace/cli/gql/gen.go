@@ -128,13 +128,7 @@ func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) GetDetails() 
 //
 // columns and relationships of "vulnerability.reference"
 type GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference struct {
-	Type string `json:"type"`
-	Url  string `json:"url"`
-}
-
-// GetType returns GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference.Type, and is useful for accessing the field via an interface.
-func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) GetType() string {
-	return v.Type
+	Url string `json:"url"`
 }
 
 // GetUrl returns GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference.Url, and is useful for accessing the field via an interface.
@@ -2250,7 +2244,6 @@ query GetVulnerabilityMetadata ($id: uuid!) {
 		source
 		source_id
 		references {
-			type
 			url
 		}
 		details
