@@ -2455,10 +2455,6 @@ export type Mutation_Root = {
   insert_vulnerability_affected?: Maybe<Vulnerability_Affected_Mutation_Response>;
   /** insert a single row into the table: "vulnerability.affected" */
   insert_vulnerability_affected_one?: Maybe<Vulnerability_Affected>;
-  /** insert data into the table: "vulnerability.affected_range_event" */
-  insert_vulnerability_affected_range_event?: Maybe<Vulnerability_Affected_Range_Event_Mutation_Response>;
-  /** insert a single row into the table: "vulnerability.affected_range_event" */
-  insert_vulnerability_affected_range_event_one?: Maybe<Vulnerability_Affected_Range_Event>;
   /** insert data into the table: "vulnerability.affected_version" */
   insert_vulnerability_affected_version?: Maybe<Vulnerability_Affected_Version_Mutation_Response>;
   /** insert a single row into the table: "vulnerability.affected_version" */
@@ -2579,10 +2575,6 @@ export type Mutation_Root = {
   update_vulnerability_affected?: Maybe<Vulnerability_Affected_Mutation_Response>;
   /** update single row of the table: "vulnerability.affected" */
   update_vulnerability_affected_by_pk?: Maybe<Vulnerability_Affected>;
-  /** update data of the table: "vulnerability.affected_range_event" */
-  update_vulnerability_affected_range_event?: Maybe<Vulnerability_Affected_Range_Event_Mutation_Response>;
-  /** update single row of the table: "vulnerability.affected_range_event" */
-  update_vulnerability_affected_range_event_by_pk?: Maybe<Vulnerability_Affected_Range_Event>;
   /** update data of the table: "vulnerability.affected_version" */
   update_vulnerability_affected_version?: Maybe<Vulnerability_Affected_Version_Mutation_Response>;
   /** update single row of the table: "vulnerability.affected_version" */
@@ -2962,20 +2954,6 @@ export type Mutation_RootInsert_Vulnerability_Affected_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_Vulnerability_Affected_Range_EventArgs = {
-  objects: Array<Vulnerability_Affected_Range_Event_Insert_Input>;
-  on_conflict?: InputMaybe<Vulnerability_Affected_Range_Event_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Vulnerability_Affected_Range_Event_OneArgs = {
-  object: Vulnerability_Affected_Range_Event_Insert_Input;
-  on_conflict?: InputMaybe<Vulnerability_Affected_Range_Event_On_Conflict>;
-};
-
-
-/** mutation root */
 export type Mutation_RootInsert_Vulnerability_Affected_VersionArgs = {
   objects: Array<Vulnerability_Affected_Version_Insert_Input>;
   on_conflict?: InputMaybe<Vulnerability_Affected_Version_On_Conflict>;
@@ -3242,6 +3220,11 @@ export type Mutation_RootUpdate_Organizations_By_PkArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_PackageArgs = {
+  _append?: InputMaybe<Package_Append_Input>;
+  _delete_at_path?: InputMaybe<Package_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Package_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Package_Delete_Key_Input>;
+  _prepend?: InputMaybe<Package_Prepend_Input>;
   _set?: InputMaybe<Package_Set_Input>;
   where: Package_Bool_Exp;
 };
@@ -3249,6 +3232,11 @@ export type Mutation_RootUpdate_PackageArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Package_By_PkArgs = {
+  _append?: InputMaybe<Package_Append_Input>;
+  _delete_at_path?: InputMaybe<Package_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Package_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Package_Delete_Key_Input>;
+  _prepend?: InputMaybe<Package_Prepend_Input>;
   _set?: InputMaybe<Package_Set_Input>;
   pk_columns: Package_Pk_Columns_Input;
 };
@@ -3444,30 +3432,6 @@ export type Mutation_RootUpdate_Vulnerability_Affected_By_PkArgs = {
   _prepend?: InputMaybe<Vulnerability_Affected_Prepend_Input>;
   _set?: InputMaybe<Vulnerability_Affected_Set_Input>;
   pk_columns: Vulnerability_Affected_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Vulnerability_Affected_Range_EventArgs = {
-  _append?: InputMaybe<Vulnerability_Affected_Range_Event_Append_Input>;
-  _delete_at_path?: InputMaybe<Vulnerability_Affected_Range_Event_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Vulnerability_Affected_Range_Event_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Vulnerability_Affected_Range_Event_Delete_Key_Input>;
-  _prepend?: InputMaybe<Vulnerability_Affected_Range_Event_Prepend_Input>;
-  _set?: InputMaybe<Vulnerability_Affected_Range_Event_Set_Input>;
-  where: Vulnerability_Affected_Range_Event_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Vulnerability_Affected_Range_Event_By_PkArgs = {
-  _append?: InputMaybe<Vulnerability_Affected_Range_Event_Append_Input>;
-  _delete_at_path?: InputMaybe<Vulnerability_Affected_Range_Event_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Vulnerability_Affected_Range_Event_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Vulnerability_Affected_Range_Event_Delete_Key_Input>;
-  _prepend?: InputMaybe<Vulnerability_Affected_Range_Event_Prepend_Input>;
-  _set?: InputMaybe<Vulnerability_Affected_Range_Event_Set_Input>;
-  pk_columns: Vulnerability_Affected_Range_Event_Pk_Columns_Input;
 };
 
 
@@ -4108,6 +4072,7 @@ export type Package = {
   package_manager: Scalars['package_manager'];
   /** An array relationship */
   releases: Array<Package_Release>;
+  upstream_data?: Maybe<Scalars['jsonb']>;
 };
 
 
@@ -4130,6 +4095,17 @@ export type PackageReleasesArgs = {
   where?: InputMaybe<Package_Release_Bool_Exp>;
 };
 
+
+/** columns and relationships of "package.package" */
+export type PackageUpstream_DataArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Package_Append_Input = {
+  upstream_data?: InputMaybe<Scalars['jsonb']>;
+};
+
 /** Boolean expression to filter rows from the table "package.package". All fields are combined with a logical 'AND'. */
 export type Package_Bool_Exp = {
   _and?: InputMaybe<Array<Package_Bool_Exp>>;
@@ -4143,6 +4119,7 @@ export type Package_Bool_Exp = {
   package_maintainers?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
   package_manager?: InputMaybe<Package_Manager_Comparison_Exp>;
   releases?: InputMaybe<Package_Release_Bool_Exp>;
+  upstream_data?: InputMaybe<Jsonb_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "package.package" */
@@ -4152,6 +4129,21 @@ export enum Package_Constraint {
   /** unique or primary key constraint */
   PackagePkey = 'package_pkey'
 }
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Package_Delete_At_Path_Input = {
+  upstream_data?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Package_Delete_Elem_Input = {
+  upstream_data?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Package_Delete_Key_Input = {
+  upstream_data?: InputMaybe<Scalars['String']>;
+};
 
 /** input type for inserting data into table "package.package" */
 export type Package_Insert_Input = {
@@ -4163,6 +4155,7 @@ export type Package_Insert_Input = {
   package_maintainers?: InputMaybe<Package_Package_Maintainer_Arr_Rel_Insert_Input>;
   package_manager?: InputMaybe<Scalars['package_manager']>;
   releases?: InputMaybe<Package_Release_Arr_Rel_Insert_Input>;
+  upstream_data?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** columns and relationships of "package.license" */
@@ -4446,6 +4439,7 @@ export type Package_Order_By = {
   package_maintainers_aggregate?: InputMaybe<Package_Package_Maintainer_Aggregate_Order_By>;
   package_manager?: InputMaybe<Order_By>;
   releases_aggregate?: InputMaybe<Package_Release_Aggregate_Order_By>;
+  upstream_data?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "package.package_maintainer" */
@@ -4559,6 +4553,11 @@ export enum Package_Package_Maintainer_Update_Column {
 /** primary key columns input for table: package */
 export type Package_Pk_Columns_Input = {
   id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Package_Prepend_Input = {
+  upstream_data?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** columns and relationships of "package.release" */
@@ -5212,7 +5211,9 @@ export enum Package_Select_Column {
   /** column name */
   Name = 'name',
   /** column name */
-  PackageManager = 'package_manager'
+  PackageManager = 'package_manager',
+  /** column name */
+  UpstreamData = 'upstream_data'
 }
 
 /** input type for updating data in table "package.package" */
@@ -5223,6 +5224,7 @@ export type Package_Set_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   name?: InputMaybe<Scalars['String']>;
   package_manager?: InputMaybe<Scalars['package_manager']>;
+  upstream_data?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** update columns of table "package.package" */
@@ -5238,7 +5240,9 @@ export enum Package_Update_Column {
   /** column name */
   Name = 'name',
   /** column name */
-  PackageManager = 'package_manager'
+  PackageManager = 'package_manager',
+  /** column name */
+  UpstreamData = 'upstream_data'
 }
 
 /** columns and relationships of "package_versions" */
@@ -5922,10 +5926,6 @@ export type Query_Root = {
   vulnerability_affected: Array<Vulnerability_Affected>;
   /** fetch data from the table: "vulnerability.affected" using primary key columns */
   vulnerability_affected_by_pk?: Maybe<Vulnerability_Affected>;
-  /** fetch data from the table: "vulnerability.affected_range_event" */
-  vulnerability_affected_range_event: Array<Vulnerability_Affected_Range_Event>;
-  /** fetch data from the table: "vulnerability.affected_range_event" using primary key columns */
-  vulnerability_affected_range_event_by_pk?: Maybe<Vulnerability_Affected_Range_Event>;
   /** fetch data from the table: "vulnerability.affected_version" */
   vulnerability_affected_version: Array<Vulnerability_Affected_Version>;
   /** fetch data from the table: "vulnerability.affected_version" using primary key columns */
@@ -6389,20 +6389,6 @@ export type Query_RootVulnerability_AffectedArgs = {
 
 
 export type Query_RootVulnerability_Affected_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootVulnerability_Affected_Range_EventArgs = {
-  distinct_on?: InputMaybe<Array<Vulnerability_Affected_Range_Event_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Vulnerability_Affected_Range_Event_Order_By>>;
-  where?: InputMaybe<Vulnerability_Affected_Range_Event_Bool_Exp>;
-};
-
-
-export type Query_RootVulnerability_Affected_Range_Event_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -7041,10 +7027,6 @@ export type Subscription_Root = {
   vulnerability_affected: Array<Vulnerability_Affected>;
   /** fetch data from the table: "vulnerability.affected" using primary key columns */
   vulnerability_affected_by_pk?: Maybe<Vulnerability_Affected>;
-  /** fetch data from the table: "vulnerability.affected_range_event" */
-  vulnerability_affected_range_event: Array<Vulnerability_Affected_Range_Event>;
-  /** fetch data from the table: "vulnerability.affected_range_event" using primary key columns */
-  vulnerability_affected_range_event_by_pk?: Maybe<Vulnerability_Affected_Range_Event>;
   /** fetch data from the table: "vulnerability.affected_version" */
   vulnerability_affected_version: Array<Vulnerability_Affected_Version>;
   /** fetch data from the table: "vulnerability.affected_version" using primary key columns */
@@ -7492,20 +7474,6 @@ export type Subscription_RootVulnerability_AffectedArgs = {
 
 
 export type Subscription_RootVulnerability_Affected_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootVulnerability_Affected_Range_EventArgs = {
-  distinct_on?: InputMaybe<Array<Vulnerability_Affected_Range_Event_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Vulnerability_Affected_Range_Event_Order_By>>;
-  where?: InputMaybe<Vulnerability_Affected_Range_Event_Bool_Exp>;
-};
-
-
-export type Subscription_RootVulnerability_Affected_Range_Event_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -8157,8 +8125,6 @@ export type Vulnerabilities_Variance_Fields = {
 /** columns and relationships of "vulnerability.affected" */
 export type Vulnerability_Affected = {
   __typename?: 'vulnerability_affected';
-  /** An object relationship */
-  affected_range_event?: Maybe<Vulnerability_Affected_Range_Event>;
   /** An array relationship */
   affected_versions: Array<Vulnerability_Affected_Version>;
   database_specific?: Maybe<Scalars['jsonb']>;
@@ -8217,7 +8183,6 @@ export type Vulnerability_Affected_Bool_Exp = {
   _and?: InputMaybe<Array<Vulnerability_Affected_Bool_Exp>>;
   _not?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
   _or?: InputMaybe<Array<Vulnerability_Affected_Bool_Exp>>;
-  affected_range_event?: InputMaybe<Vulnerability_Affected_Range_Event_Bool_Exp>;
   affected_versions?: InputMaybe<Vulnerability_Affected_Version_Bool_Exp>;
   database_specific?: InputMaybe<Jsonb_Comparison_Exp>;
   ecosystem_specific?: InputMaybe<Jsonb_Comparison_Exp>;
@@ -8255,7 +8220,6 @@ export type Vulnerability_Affected_Delete_Key_Input = {
 
 /** input type for inserting data into table "vulnerability.affected" */
 export type Vulnerability_Affected_Insert_Input = {
-  affected_range_event?: InputMaybe<Vulnerability_Affected_Range_Event_Obj_Rel_Insert_Input>;
   affected_versions?: InputMaybe<Vulnerability_Affected_Version_Arr_Rel_Insert_Input>;
   database_specific?: InputMaybe<Scalars['jsonb']>;
   ecosystem_specific?: InputMaybe<Scalars['jsonb']>;
@@ -8304,7 +8268,6 @@ export type Vulnerability_Affected_On_Conflict = {
 
 /** Ordering options when selecting data from "vulnerability.affected". */
 export type Vulnerability_Affected_Order_By = {
-  affected_range_event?: InputMaybe<Vulnerability_Affected_Range_Event_Order_By>;
   affected_versions_aggregate?: InputMaybe<Vulnerability_Affected_Version_Aggregate_Order_By>;
   database_specific?: InputMaybe<Order_By>;
   ecosystem_specific?: InputMaybe<Order_By>;
@@ -8324,164 +8287,6 @@ export type Vulnerability_Affected_Prepend_Input = {
   database_specific?: InputMaybe<Scalars['jsonb']>;
   ecosystem_specific?: InputMaybe<Scalars['jsonb']>;
 };
-
-/** columns and relationships of "vulnerability.affected_range_event" */
-export type Vulnerability_Affected_Range_Event = {
-  __typename?: 'vulnerability_affected_range_event';
-  /** An object relationship */
-  affected?: Maybe<Vulnerability_Affected>;
-  affected_id?: Maybe<Scalars['uuid']>;
-  commit?: Maybe<Scalars['String']>;
-  database_specific?: Maybe<Scalars['jsonb']>;
-  event: Scalars['String'];
-  id: Scalars['uuid'];
-  version?: Maybe<Scalars['String']>;
-};
-
-
-/** columns and relationships of "vulnerability.affected_range_event" */
-export type Vulnerability_Affected_Range_EventDatabase_SpecificArgs = {
-  path?: InputMaybe<Scalars['String']>;
-};
-
-/** append existing jsonb value of filtered columns with new jsonb value */
-export type Vulnerability_Affected_Range_Event_Append_Input = {
-  database_specific?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** Boolean expression to filter rows from the table "vulnerability.affected_range_event". All fields are combined with a logical 'AND'. */
-export type Vulnerability_Affected_Range_Event_Bool_Exp = {
-  _and?: InputMaybe<Array<Vulnerability_Affected_Range_Event_Bool_Exp>>;
-  _not?: InputMaybe<Vulnerability_Affected_Range_Event_Bool_Exp>;
-  _or?: InputMaybe<Array<Vulnerability_Affected_Range_Event_Bool_Exp>>;
-  affected?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
-  affected_id?: InputMaybe<Uuid_Comparison_Exp>;
-  commit?: InputMaybe<String_Comparison_Exp>;
-  database_specific?: InputMaybe<Jsonb_Comparison_Exp>;
-  event?: InputMaybe<String_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  version?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "vulnerability.affected_range_event" */
-export enum Vulnerability_Affected_Range_Event_Constraint {
-  /** unique or primary key constraint */
-  AffectedRangeEventAffectedIdIdx = 'affected_range_event_affected_id_idx',
-  /** unique or primary key constraint */
-  AffectedRangeEventPkey = 'affected_range_event_pkey'
-}
-
-/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-export type Vulnerability_Affected_Range_Event_Delete_At_Path_Input = {
-  database_specific?: InputMaybe<Array<Scalars['String']>>;
-};
-
-/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-export type Vulnerability_Affected_Range_Event_Delete_Elem_Input = {
-  database_specific?: InputMaybe<Scalars['Int']>;
-};
-
-/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-export type Vulnerability_Affected_Range_Event_Delete_Key_Input = {
-  database_specific?: InputMaybe<Scalars['String']>;
-};
-
-/** input type for inserting data into table "vulnerability.affected_range_event" */
-export type Vulnerability_Affected_Range_Event_Insert_Input = {
-  affected?: InputMaybe<Vulnerability_Affected_Obj_Rel_Insert_Input>;
-  affected_id?: InputMaybe<Scalars['uuid']>;
-  commit?: InputMaybe<Scalars['String']>;
-  database_specific?: InputMaybe<Scalars['jsonb']>;
-  event?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  version?: InputMaybe<Scalars['String']>;
-};
-
-/** response of any mutation on the table "vulnerability.affected_range_event" */
-export type Vulnerability_Affected_Range_Event_Mutation_Response = {
-  __typename?: 'vulnerability_affected_range_event_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Vulnerability_Affected_Range_Event>;
-};
-
-/** input type for inserting object relation for remote table "vulnerability.affected_range_event" */
-export type Vulnerability_Affected_Range_Event_Obj_Rel_Insert_Input = {
-  data: Vulnerability_Affected_Range_Event_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Vulnerability_Affected_Range_Event_On_Conflict>;
-};
-
-/** on_conflict condition type for table "vulnerability.affected_range_event" */
-export type Vulnerability_Affected_Range_Event_On_Conflict = {
-  constraint: Vulnerability_Affected_Range_Event_Constraint;
-  update_columns?: Array<Vulnerability_Affected_Range_Event_Update_Column>;
-  where?: InputMaybe<Vulnerability_Affected_Range_Event_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "vulnerability.affected_range_event". */
-export type Vulnerability_Affected_Range_Event_Order_By = {
-  affected?: InputMaybe<Vulnerability_Affected_Order_By>;
-  affected_id?: InputMaybe<Order_By>;
-  commit?: InputMaybe<Order_By>;
-  database_specific?: InputMaybe<Order_By>;
-  event?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  version?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: vulnerability_affected_range_event */
-export type Vulnerability_Affected_Range_Event_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** prepend existing jsonb value of filtered columns with new jsonb value */
-export type Vulnerability_Affected_Range_Event_Prepend_Input = {
-  database_specific?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** select columns of table "vulnerability.affected_range_event" */
-export enum Vulnerability_Affected_Range_Event_Select_Column {
-  /** column name */
-  AffectedId = 'affected_id',
-  /** column name */
-  Commit = 'commit',
-  /** column name */
-  DatabaseSpecific = 'database_specific',
-  /** column name */
-  Event = 'event',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Version = 'version'
-}
-
-/** input type for updating data in table "vulnerability.affected_range_event" */
-export type Vulnerability_Affected_Range_Event_Set_Input = {
-  affected_id?: InputMaybe<Scalars['uuid']>;
-  commit?: InputMaybe<Scalars['String']>;
-  database_specific?: InputMaybe<Scalars['jsonb']>;
-  event?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  version?: InputMaybe<Scalars['String']>;
-};
-
-/** update columns of table "vulnerability.affected_range_event" */
-export enum Vulnerability_Affected_Range_Event_Update_Column {
-  /** column name */
-  AffectedId = 'affected_id',
-  /** column name */
-  Commit = 'commit',
-  /** column name */
-  DatabaseSpecific = 'database_specific',
-  /** column name */
-  Event = 'event',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Version = 'version'
-}
 
 /** select columns of table "vulnerability.affected" */
 export enum Vulnerability_Affected_Select_Column {
