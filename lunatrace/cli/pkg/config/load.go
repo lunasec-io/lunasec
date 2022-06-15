@@ -15,11 +15,13 @@
 package config
 
 import (
-	"github.com/rs/zerolog/log"
-	"go.uber.org/config"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
 	"os"
 	"path/filepath"
+
+	"github.com/rs/zerolog/log"
+	"go.uber.org/config"
+
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
 )
 
 func GetConfigProviderFromFiles(filenames []string, defaultOpts ...config.YAMLOption) (provider config.Provider, err error) {

@@ -32,6 +32,7 @@ insert_permissions:
         - id
         - name
         - package_manager
+        - upstream_data
       backend_only: false
 select_permissions:
   - role: service
@@ -43,6 +44,7 @@ select_permissions:
         - id
         - name
         - package_manager
+        - upstream_data
       filter: {}
 update_permissions:
   - role: service
@@ -54,5 +56,6 @@ update_permissions:
         - id
         - name
         - package_manager
+        - upstream_data
       filter: {}
       check: {}
