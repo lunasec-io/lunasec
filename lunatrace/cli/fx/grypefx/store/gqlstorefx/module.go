@@ -51,8 +51,10 @@ func (g *gqlStore) GetID() (*v3.ID, error) {
 // GetVulnerability retrieves one or more vulnerabilities given a namespace and package name.
 func (g *gqlStore) GetVulnerability(namespace, name string) ([]v3.Vulnerability, error) {
 	vulns, err := gql.GetVulnerability(context.TODO(), g.d.GQLClient, name, mapNamespace(namespace))
-	//TODO implement me
-	panic("implement me")
+	if err != nil {
+		return nil, err
+	}
+	return mapVulns(vulns.Vulnerability)
 }
 
 // GetVulnerabilityMetadata retrieves metadata for the given vulnerability ID relative to a specific record source.
