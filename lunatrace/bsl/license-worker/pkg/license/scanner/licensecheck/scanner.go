@@ -14,7 +14,7 @@ package licensecheck
 import (
 	"github.com/google/licensecheck"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/scanner"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/license/scanner"
 )
 
 type licenseCheckScanner struct {
