@@ -47,7 +47,7 @@ var Module = fx.Options(
 	// todo instrument me
 	fx.Supply(http.DefaultClient),
 	// todo remove all global stuff
-	fx.Invoke(command.EnableGlobalFlags),3
+	fx.Invoke(command.EnableGlobalFlags),
 	fx.Invoke(func(lc fx.Lifecycle) {
 		lc.Append(fx.Hook{OnStop: func(_ context.Context) error {
 			util.RemoveCleanupDirs()
