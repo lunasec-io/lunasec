@@ -134,6 +134,23 @@ input _text_comparison_exp {
   _nin: [_text!]
 }
 
+scalar affected_version_type
+
+"""
+Boolean expression to compare columns of type "affected_version_type". All fields are combined with logical 'AND'.
+"""
+input affected_version_type_comparison_exp {
+  _eq: affected_version_type
+  _gt: affected_version_type
+  _gte: affected_version_type
+  _in: [affected_version_type!]
+  _is_null: Boolean
+  _lt: affected_version_type
+  _lte: affected_version_type
+  _neq: affected_version_type
+  _nin: [affected_version_type!]
+}
+
 """
 columns and relationships of "builds"
 """
@@ -3346,6 +3363,110 @@ type mutation_root {
   ): vulnerabilities
 
   """
+  insert data into the table: "vulnerability.affected"
+  """
+  insert_vulnerability_affected(
+    """the rows to be inserted"""
+    objects: [vulnerability_affected_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: vulnerability_affected_on_conflict
+  ): vulnerability_affected_mutation_response
+
+  """
+  insert a single row into the table: "vulnerability.affected"
+  """
+  insert_vulnerability_affected_one(
+    """the row to be inserted"""
+    object: vulnerability_affected_insert_input!
+
+    """upsert condition"""
+    on_conflict: vulnerability_affected_on_conflict
+  ): vulnerability_affected
+
+  """
+  insert data into the table: "vulnerability.affected_range_event"
+  """
+  insert_vulnerability_affected_range_event(
+    """the rows to be inserted"""
+    objects: [vulnerability_affected_range_event_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: vulnerability_affected_range_event_on_conflict
+  ): vulnerability_affected_range_event_mutation_response
+
+  """
+  insert a single row into the table: "vulnerability.affected_range_event"
+  """
+  insert_vulnerability_affected_range_event_one(
+    """the row to be inserted"""
+    object: vulnerability_affected_range_event_insert_input!
+
+    """upsert condition"""
+    on_conflict: vulnerability_affected_range_event_on_conflict
+  ): vulnerability_affected_range_event
+
+  """
+  insert data into the table: "vulnerability.affected_version"
+  """
+  insert_vulnerability_affected_version(
+    """the rows to be inserted"""
+    objects: [vulnerability_affected_version_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: vulnerability_affected_version_on_conflict
+  ): vulnerability_affected_version_mutation_response
+
+  """
+  insert a single row into the table: "vulnerability.affected_version"
+  """
+  insert_vulnerability_affected_version_one(
+    """the row to be inserted"""
+    object: vulnerability_affected_version_insert_input!
+
+    """upsert condition"""
+    on_conflict: vulnerability_affected_version_on_conflict
+  ): vulnerability_affected_version
+
+  """
+  insert data into the table: "vulnerability.credit"
+  """
+  insert_vulnerability_credit(
+    """the rows to be inserted"""
+    objects: [vulnerability_credit_insert_input!]!
+  ): vulnerability_credit_mutation_response
+
+  """
+  insert a single row into the table: "vulnerability.credit"
+  """
+  insert_vulnerability_credit_one(
+    """the row to be inserted"""
+    object: vulnerability_credit_insert_input!
+  ): vulnerability_credit
+
+  """
+  insert data into the table: "vulnerability.equivalent"
+  """
+  insert_vulnerability_equivalent(
+    """the rows to be inserted"""
+    objects: [vulnerability_equivalent_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: vulnerability_equivalent_on_conflict
+  ): vulnerability_equivalent_mutation_response
+
+  """
+  insert a single row into the table: "vulnerability.equivalent"
+  """
+  insert_vulnerability_equivalent_one(
+    """the row to be inserted"""
+    object: vulnerability_equivalent_insert_input!
+
+    """upsert condition"""
+    on_conflict: vulnerability_equivalent_on_conflict
+  ): vulnerability_equivalent
+
+  """
   insert data into the table: "vulnerability_packages"
   """
   insert_vulnerability_packages(
@@ -3366,6 +3487,72 @@ type mutation_root {
     """upsert condition"""
     on_conflict: vulnerability_packages_on_conflict
   ): vulnerability_packages
+
+  """
+  insert data into the table: "vulnerability.reference"
+  """
+  insert_vulnerability_reference(
+    """the rows to be inserted"""
+    objects: [vulnerability_reference_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: vulnerability_reference_on_conflict
+  ): vulnerability_reference_mutation_response
+
+  """
+  insert a single row into the table: "vulnerability.reference"
+  """
+  insert_vulnerability_reference_one(
+    """the row to be inserted"""
+    object: vulnerability_reference_insert_input!
+
+    """upsert condition"""
+    on_conflict: vulnerability_reference_on_conflict
+  ): vulnerability_reference
+
+  """
+  insert data into the table: "vulnerability.severity"
+  """
+  insert_vulnerability_severity(
+    """the rows to be inserted"""
+    objects: [vulnerability_severity_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: vulnerability_severity_on_conflict
+  ): vulnerability_severity_mutation_response
+
+  """
+  insert a single row into the table: "vulnerability.severity"
+  """
+  insert_vulnerability_severity_one(
+    """the row to be inserted"""
+    object: vulnerability_severity_insert_input!
+
+    """upsert condition"""
+    on_conflict: vulnerability_severity_on_conflict
+  ): vulnerability_severity
+
+  """
+  insert data into the table: "vulnerability.vulnerability"
+  """
+  insert_vulnerability_vulnerability(
+    """the rows to be inserted"""
+    objects: [vulnerability_vulnerability_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: vulnerability_vulnerability_on_conflict
+  ): vulnerability_vulnerability_mutation_response
+
+  """
+  insert a single row into the table: "vulnerability.vulnerability"
+  """
+  insert_vulnerability_vulnerability_one(
+    """the row to be inserted"""
+    object: vulnerability_vulnerability_insert_input!
+
+    """upsert condition"""
+    on_conflict: vulnerability_vulnerability_on_conflict
+  ): vulnerability_vulnerability
 
   """
   insert data into the table: "webhook_cache"
@@ -3983,6 +4170,203 @@ type mutation_root {
   ): vulnerabilities
 
   """
+  update data of the table: "vulnerability.affected"
+  """
+  update_vulnerability_affected(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: vulnerability_affected_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: vulnerability_affected_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: vulnerability_affected_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: vulnerability_affected_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: vulnerability_affected_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_affected_set_input
+
+    """filter the rows which have to be updated"""
+    where: vulnerability_affected_bool_exp!
+  ): vulnerability_affected_mutation_response
+
+  """
+  update single row of the table: "vulnerability.affected"
+  """
+  update_vulnerability_affected_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: vulnerability_affected_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: vulnerability_affected_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: vulnerability_affected_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: vulnerability_affected_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: vulnerability_affected_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_affected_set_input
+    pk_columns: vulnerability_affected_pk_columns_input!
+  ): vulnerability_affected
+
+  """
+  update data of the table: "vulnerability.affected_range_event"
+  """
+  update_vulnerability_affected_range_event(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: vulnerability_affected_range_event_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: vulnerability_affected_range_event_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: vulnerability_affected_range_event_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: vulnerability_affected_range_event_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: vulnerability_affected_range_event_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_affected_range_event_set_input
+
+    """filter the rows which have to be updated"""
+    where: vulnerability_affected_range_event_bool_exp!
+  ): vulnerability_affected_range_event_mutation_response
+
+  """
+  update single row of the table: "vulnerability.affected_range_event"
+  """
+  update_vulnerability_affected_range_event_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: vulnerability_affected_range_event_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: vulnerability_affected_range_event_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: vulnerability_affected_range_event_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: vulnerability_affected_range_event_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: vulnerability_affected_range_event_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_affected_range_event_set_input
+    pk_columns: vulnerability_affected_range_event_pk_columns_input!
+  ): vulnerability_affected_range_event
+
+  """
+  update data of the table: "vulnerability.affected_version"
+  """
+  update_vulnerability_affected_version(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: vulnerability_affected_version_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: vulnerability_affected_version_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: vulnerability_affected_version_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: vulnerability_affected_version_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: vulnerability_affected_version_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_affected_version_set_input
+
+    """filter the rows which have to be updated"""
+    where: vulnerability_affected_version_bool_exp!
+  ): vulnerability_affected_version_mutation_response
+
+  """
+  update single row of the table: "vulnerability.affected_version"
+  """
+  update_vulnerability_affected_version_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: vulnerability_affected_version_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: vulnerability_affected_version_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: vulnerability_affected_version_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: vulnerability_affected_version_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: vulnerability_affected_version_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_affected_version_set_input
+    pk_columns: vulnerability_affected_version_pk_columns_input!
+  ): vulnerability_affected_version
+
+  """
+  update data of the table: "vulnerability.equivalent"
+  """
+  update_vulnerability_equivalent(
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_equivalent_set_input
+
+    """filter the rows which have to be updated"""
+    where: vulnerability_equivalent_bool_exp!
+  ): vulnerability_equivalent_mutation_response
+
+  """
   update data of the table: "vulnerability_packages"
   """
   update_vulnerability_packages(
@@ -4001,6 +4385,108 @@ type mutation_root {
     _set: vulnerability_packages_set_input
     pk_columns: vulnerability_packages_pk_columns_input!
   ): vulnerability_packages
+
+  """
+  update data of the table: "vulnerability.reference"
+  """
+  update_vulnerability_reference(
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_reference_set_input
+
+    """filter the rows which have to be updated"""
+    where: vulnerability_reference_bool_exp!
+  ): vulnerability_reference_mutation_response
+
+  """
+  update single row of the table: "vulnerability.reference"
+  """
+  update_vulnerability_reference_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_reference_set_input
+    pk_columns: vulnerability_reference_pk_columns_input!
+  ): vulnerability_reference
+
+  """
+  update data of the table: "vulnerability.severity"
+  """
+  update_vulnerability_severity(
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_severity_set_input
+
+    """filter the rows which have to be updated"""
+    where: vulnerability_severity_bool_exp!
+  ): vulnerability_severity_mutation_response
+
+  """
+  update single row of the table: "vulnerability.severity"
+  """
+  update_vulnerability_severity_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_severity_set_input
+    pk_columns: vulnerability_severity_pk_columns_input!
+  ): vulnerability_severity
+
+  """
+  update data of the table: "vulnerability.vulnerability"
+  """
+  update_vulnerability_vulnerability(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: vulnerability_vulnerability_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: vulnerability_vulnerability_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: vulnerability_vulnerability_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: vulnerability_vulnerability_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: vulnerability_vulnerability_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_vulnerability_set_input
+
+    """filter the rows which have to be updated"""
+    where: vulnerability_vulnerability_bool_exp!
+  ): vulnerability_vulnerability_mutation_response
+
+  """
+  update single row of the table: "vulnerability.vulnerability"
+  """
+  update_vulnerability_vulnerability_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: vulnerability_vulnerability_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: vulnerability_vulnerability_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: vulnerability_vulnerability_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: vulnerability_vulnerability_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: vulnerability_vulnerability_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_vulnerability_set_input
+    pk_columns: vulnerability_vulnerability_pk_columns_input!
+  ): vulnerability_vulnerability
 
   """
   update data of the table: "webhook_cache"
@@ -7474,6 +7960,126 @@ type query_root {
   """fetch data from the table: "vulnerabilities" using primary key columns"""
   vulnerabilities_by_pk(id: uuid!): vulnerabilities
 
+  """
+  fetch data from the table: "vulnerability.affected"
+  """
+  vulnerability_affected(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_affected_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_affected_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_affected_bool_exp
+  ): [vulnerability_affected!]!
+
+  """
+  fetch data from the table: "vulnerability.affected" using primary key columns
+  """
+  vulnerability_affected_by_pk(id: uuid!): vulnerability_affected
+
+  """
+  fetch data from the table: "vulnerability.affected_range_event"
+  """
+  vulnerability_affected_range_event(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_affected_range_event_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_affected_range_event_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_affected_range_event_bool_exp
+  ): [vulnerability_affected_range_event!]!
+
+  """
+  fetch data from the table: "vulnerability.affected_range_event" using primary key columns
+  """
+  vulnerability_affected_range_event_by_pk(id: uuid!): vulnerability_affected_range_event
+
+  """
+  fetch data from the table: "vulnerability.affected_version"
+  """
+  vulnerability_affected_version(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_affected_version_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_affected_version_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_affected_version_bool_exp
+  ): [vulnerability_affected_version!]!
+
+  """
+  fetch data from the table: "vulnerability.affected_version" using primary key columns
+  """
+  vulnerability_affected_version_by_pk(id: uuid!): vulnerability_affected_version
+
+  """
+  fetch data from the table: "vulnerability.credit"
+  """
+  vulnerability_credit(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_credit_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_credit_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_credit_bool_exp
+  ): [vulnerability_credit!]!
+
+  """
+  fetch data from the table: "vulnerability.credit" using primary key columns
+  """
+  vulnerability_credit_by_pk(id: uuid!): vulnerability_credit
+
+  """
+  fetch data from the table: "vulnerability.equivalent"
+  """
+  vulnerability_equivalent(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_equivalent_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_equivalent_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_equivalent_bool_exp
+  ): [vulnerability_equivalent!]!
+
   """An array relationship"""
   vulnerability_packages(
     """distinct select on columns"""
@@ -7498,6 +8104,81 @@ type query_root {
   vulnerability_packages_by_pk(id: uuid!): vulnerability_packages
 
   """
+  fetch data from the table: "vulnerability.reference"
+  """
+  vulnerability_reference(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_reference_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_reference_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_reference_bool_exp
+  ): [vulnerability_reference!]!
+
+  """
+  fetch data from the table: "vulnerability.reference" using primary key columns
+  """
+  vulnerability_reference_by_pk(id: uuid!): vulnerability_reference
+
+  """
+  fetch data from the table: "vulnerability.severity"
+  """
+  vulnerability_severity(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_severity_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_severity_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_severity_bool_exp
+  ): [vulnerability_severity!]!
+
+  """
+  fetch data from the table: "vulnerability.severity" using primary key columns
+  """
+  vulnerability_severity_by_pk(id: uuid!): vulnerability_severity
+
+  """
+  fetch data from the table: "vulnerability.vulnerability"
+  """
+  vulnerability_vulnerability(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_vulnerability_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_vulnerability_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_vulnerability_bool_exp
+  ): [vulnerability_vulnerability!]!
+
+  """
+  fetch data from the table: "vulnerability.vulnerability" using primary key columns
+  """
+  vulnerability_vulnerability_by_pk(id: uuid!): vulnerability_vulnerability
+
+  """
   fetch data from the table: "webhook_cache"
   """
   webhook_cache(
@@ -7519,6 +8200,23 @@ type query_root {
 
   """fetch data from the table: "webhook_cache" using primary key columns"""
   webhook_cache_by_pk(delivery_id: uuid!): webhook_cache
+}
+
+scalar reference_type
+
+"""
+Boolean expression to compare columns of type "reference_type". All fields are combined with logical 'AND'.
+"""
+input reference_type_comparison_exp {
+  _eq: reference_type
+  _gt: reference_type
+  _gte: reference_type
+  _in: [reference_type!]
+  _is_null: Boolean
+  _lt: reference_type
+  _lte: reference_type
+  _neq: reference_type
+  _nin: [reference_type!]
 }
 
 """join table for adding holding additional vulns on a finding"""
@@ -8705,6 +9403,126 @@ type subscription_root {
   """fetch data from the table: "vulnerabilities" using primary key columns"""
   vulnerabilities_by_pk(id: uuid!): vulnerabilities
 
+  """
+  fetch data from the table: "vulnerability.affected"
+  """
+  vulnerability_affected(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_affected_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_affected_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_affected_bool_exp
+  ): [vulnerability_affected!]!
+
+  """
+  fetch data from the table: "vulnerability.affected" using primary key columns
+  """
+  vulnerability_affected_by_pk(id: uuid!): vulnerability_affected
+
+  """
+  fetch data from the table: "vulnerability.affected_range_event"
+  """
+  vulnerability_affected_range_event(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_affected_range_event_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_affected_range_event_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_affected_range_event_bool_exp
+  ): [vulnerability_affected_range_event!]!
+
+  """
+  fetch data from the table: "vulnerability.affected_range_event" using primary key columns
+  """
+  vulnerability_affected_range_event_by_pk(id: uuid!): vulnerability_affected_range_event
+
+  """
+  fetch data from the table: "vulnerability.affected_version"
+  """
+  vulnerability_affected_version(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_affected_version_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_affected_version_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_affected_version_bool_exp
+  ): [vulnerability_affected_version!]!
+
+  """
+  fetch data from the table: "vulnerability.affected_version" using primary key columns
+  """
+  vulnerability_affected_version_by_pk(id: uuid!): vulnerability_affected_version
+
+  """
+  fetch data from the table: "vulnerability.credit"
+  """
+  vulnerability_credit(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_credit_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_credit_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_credit_bool_exp
+  ): [vulnerability_credit!]!
+
+  """
+  fetch data from the table: "vulnerability.credit" using primary key columns
+  """
+  vulnerability_credit_by_pk(id: uuid!): vulnerability_credit
+
+  """
+  fetch data from the table: "vulnerability.equivalent"
+  """
+  vulnerability_equivalent(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_equivalent_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_equivalent_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_equivalent_bool_exp
+  ): [vulnerability_equivalent!]!
+
   """An array relationship"""
   vulnerability_packages(
     """distinct select on columns"""
@@ -8727,6 +9545,81 @@ type subscription_root {
   fetch data from the table: "vulnerability_packages" using primary key columns
   """
   vulnerability_packages_by_pk(id: uuid!): vulnerability_packages
+
+  """
+  fetch data from the table: "vulnerability.reference"
+  """
+  vulnerability_reference(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_reference_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_reference_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_reference_bool_exp
+  ): [vulnerability_reference!]!
+
+  """
+  fetch data from the table: "vulnerability.reference" using primary key columns
+  """
+  vulnerability_reference_by_pk(id: uuid!): vulnerability_reference
+
+  """
+  fetch data from the table: "vulnerability.severity"
+  """
+  vulnerability_severity(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_severity_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_severity_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_severity_bool_exp
+  ): [vulnerability_severity!]!
+
+  """
+  fetch data from the table: "vulnerability.severity" using primary key columns
+  """
+  vulnerability_severity_by_pk(id: uuid!): vulnerability_severity
+
+  """
+  fetch data from the table: "vulnerability.vulnerability"
+  """
+  vulnerability_vulnerability(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_vulnerability_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_vulnerability_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_vulnerability_bool_exp
+  ): [vulnerability_vulnerability!]!
+
+  """
+  fetch data from the table: "vulnerability.vulnerability" using primary key columns
+  """
+  vulnerability_vulnerability_by_pk(id: uuid!): vulnerability_vulnerability
 
   """
   fetch data from the table: "webhook_cache"
@@ -9394,6 +10287,912 @@ type vulnerabilities_variance_fields {
   cvss_score: Float
 }
 
+"""
+columns and relationships of "vulnerability.affected"
+"""
+type vulnerability_affected {
+  """An object relationship"""
+  affected_range_event: vulnerability_affected_range_event
+
+  """An array relationship"""
+  affected_versions(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_affected_version_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_affected_version_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_affected_version_bool_exp
+  ): [vulnerability_affected_version!]!
+  database_specific(
+    """JSON select path"""
+    path: String
+  ): jsonb
+  ecosystem_specific(
+    """JSON select path"""
+    path: String
+  ): jsonb
+  id: uuid!
+  package_id: uuid!
+
+  """An object relationship"""
+  vulnerability: vulnerability_vulnerability
+  vulnerability_id: uuid
+}
+
+"""
+order by aggregate values of table "vulnerability.affected"
+"""
+input vulnerability_affected_aggregate_order_by {
+  count: order_by
+  max: vulnerability_affected_max_order_by
+  min: vulnerability_affected_min_order_by
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input vulnerability_affected_append_input {
+  database_specific: jsonb
+  ecosystem_specific: jsonb
+}
+
+"""
+input type for inserting array relation for remote table "vulnerability.affected"
+"""
+input vulnerability_affected_arr_rel_insert_input {
+  data: [vulnerability_affected_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: vulnerability_affected_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "vulnerability.affected". All fields are combined with a logical 'AND'.
+"""
+input vulnerability_affected_bool_exp {
+  _and: [vulnerability_affected_bool_exp!]
+  _not: vulnerability_affected_bool_exp
+  _or: [vulnerability_affected_bool_exp!]
+  affected_range_event: vulnerability_affected_range_event_bool_exp
+  affected_versions: vulnerability_affected_version_bool_exp
+  database_specific: jsonb_comparison_exp
+  ecosystem_specific: jsonb_comparison_exp
+  id: uuid_comparison_exp
+  package_id: uuid_comparison_exp
+  vulnerability: vulnerability_vulnerability_bool_exp
+  vulnerability_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "vulnerability.affected"
+"""
+enum vulnerability_affected_constraint {
+  """unique or primary key constraint"""
+  affected_pkey
+
+  """unique or primary key constraint"""
+  affected_vulnerability_id_package_id_idx
+}
+
+"""
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input vulnerability_affected_delete_at_path_input {
+  database_specific: [String!]
+  ecosystem_specific: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input vulnerability_affected_delete_elem_input {
+  database_specific: Int
+  ecosystem_specific: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input vulnerability_affected_delete_key_input {
+  database_specific: String
+  ecosystem_specific: String
+}
+
+"""
+input type for inserting data into table "vulnerability.affected"
+"""
+input vulnerability_affected_insert_input {
+  affected_range_event: vulnerability_affected_range_event_obj_rel_insert_input
+  affected_versions: vulnerability_affected_version_arr_rel_insert_input
+  database_specific: jsonb
+  ecosystem_specific: jsonb
+  id: uuid
+  package_id: uuid
+  vulnerability: vulnerability_vulnerability_obj_rel_insert_input
+  vulnerability_id: uuid
+}
+
+"""
+order by max() on columns of table "vulnerability.affected"
+"""
+input vulnerability_affected_max_order_by {
+  id: order_by
+  package_id: order_by
+  vulnerability_id: order_by
+}
+
+"""
+order by min() on columns of table "vulnerability.affected"
+"""
+input vulnerability_affected_min_order_by {
+  id: order_by
+  package_id: order_by
+  vulnerability_id: order_by
+}
+
+"""
+response of any mutation on the table "vulnerability.affected"
+"""
+type vulnerability_affected_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [vulnerability_affected!]!
+}
+
+"""
+input type for inserting object relation for remote table "vulnerability.affected"
+"""
+input vulnerability_affected_obj_rel_insert_input {
+  data: vulnerability_affected_insert_input!
+
+  """upsert condition"""
+  on_conflict: vulnerability_affected_on_conflict
+}
+
+"""
+on_conflict condition type for table "vulnerability.affected"
+"""
+input vulnerability_affected_on_conflict {
+  constraint: vulnerability_affected_constraint!
+  update_columns: [vulnerability_affected_update_column!]! = []
+  where: vulnerability_affected_bool_exp
+}
+
+"""Ordering options when selecting data from "vulnerability.affected"."""
+input vulnerability_affected_order_by {
+  affected_range_event: vulnerability_affected_range_event_order_by
+  affected_versions_aggregate: vulnerability_affected_version_aggregate_order_by
+  database_specific: order_by
+  ecosystem_specific: order_by
+  id: order_by
+  package_id: order_by
+  vulnerability: vulnerability_vulnerability_order_by
+  vulnerability_id: order_by
+}
+
+"""primary key columns input for table: vulnerability_affected"""
+input vulnerability_affected_pk_columns_input {
+  id: uuid!
+}
+
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input vulnerability_affected_prepend_input {
+  database_specific: jsonb
+  ecosystem_specific: jsonb
+}
+
+"""
+columns and relationships of "vulnerability.affected_range_event"
+"""
+type vulnerability_affected_range_event {
+  """An object relationship"""
+  affected: vulnerability_affected
+  affected_id: uuid
+  commit: String
+  database_specific(
+    """JSON select path"""
+    path: String
+  ): jsonb
+  event: String!
+  id: uuid!
+  version: String
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input vulnerability_affected_range_event_append_input {
+  database_specific: jsonb
+}
+
+"""
+Boolean expression to filter rows from the table "vulnerability.affected_range_event". All fields are combined with a logical 'AND'.
+"""
+input vulnerability_affected_range_event_bool_exp {
+  _and: [vulnerability_affected_range_event_bool_exp!]
+  _not: vulnerability_affected_range_event_bool_exp
+  _or: [vulnerability_affected_range_event_bool_exp!]
+  affected: vulnerability_affected_bool_exp
+  affected_id: uuid_comparison_exp
+  commit: String_comparison_exp
+  database_specific: jsonb_comparison_exp
+  event: String_comparison_exp
+  id: uuid_comparison_exp
+  version: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "vulnerability.affected_range_event"
+"""
+enum vulnerability_affected_range_event_constraint {
+  """unique or primary key constraint"""
+  affected_range_event_affected_id_idx
+
+  """unique or primary key constraint"""
+  affected_range_event_pkey
+}
+
+"""
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input vulnerability_affected_range_event_delete_at_path_input {
+  database_specific: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input vulnerability_affected_range_event_delete_elem_input {
+  database_specific: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input vulnerability_affected_range_event_delete_key_input {
+  database_specific: String
+}
+
+"""
+input type for inserting data into table "vulnerability.affected_range_event"
+"""
+input vulnerability_affected_range_event_insert_input {
+  affected: vulnerability_affected_obj_rel_insert_input
+  affected_id: uuid
+  commit: String
+  database_specific: jsonb
+  event: String
+  id: uuid
+  version: String
+}
+
+"""
+response of any mutation on the table "vulnerability.affected_range_event"
+"""
+type vulnerability_affected_range_event_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [vulnerability_affected_range_event!]!
+}
+
+"""
+input type for inserting object relation for remote table "vulnerability.affected_range_event"
+"""
+input vulnerability_affected_range_event_obj_rel_insert_input {
+  data: vulnerability_affected_range_event_insert_input!
+
+  """upsert condition"""
+  on_conflict: vulnerability_affected_range_event_on_conflict
+}
+
+"""
+on_conflict condition type for table "vulnerability.affected_range_event"
+"""
+input vulnerability_affected_range_event_on_conflict {
+  constraint: vulnerability_affected_range_event_constraint!
+  update_columns: [vulnerability_affected_range_event_update_column!]! = []
+  where: vulnerability_affected_range_event_bool_exp
+}
+
+"""
+Ordering options when selecting data from "vulnerability.affected_range_event".
+"""
+input vulnerability_affected_range_event_order_by {
+  affected: vulnerability_affected_order_by
+  affected_id: order_by
+  commit: order_by
+  database_specific: order_by
+  event: order_by
+  id: order_by
+  version: order_by
+}
+
+"""
+primary key columns input for table: vulnerability_affected_range_event
+"""
+input vulnerability_affected_range_event_pk_columns_input {
+  id: uuid!
+}
+
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input vulnerability_affected_range_event_prepend_input {
+  database_specific: jsonb
+}
+
+"""
+select columns of table "vulnerability.affected_range_event"
+"""
+enum vulnerability_affected_range_event_select_column {
+  """column name"""
+  affected_id
+
+  """column name"""
+  commit
+
+  """column name"""
+  database_specific
+
+  """column name"""
+  event
+
+  """column name"""
+  id
+
+  """column name"""
+  version
+}
+
+"""
+input type for updating data in table "vulnerability.affected_range_event"
+"""
+input vulnerability_affected_range_event_set_input {
+  affected_id: uuid
+  commit: String
+  database_specific: jsonb
+  event: String
+  id: uuid
+  version: String
+}
+
+"""
+update columns of table "vulnerability.affected_range_event"
+"""
+enum vulnerability_affected_range_event_update_column {
+  """column name"""
+  affected_id
+
+  """column name"""
+  commit
+
+  """column name"""
+  database_specific
+
+  """column name"""
+  event
+
+  """column name"""
+  id
+
+  """column name"""
+  version
+}
+
+"""
+select columns of table "vulnerability.affected"
+"""
+enum vulnerability_affected_select_column {
+  """column name"""
+  database_specific
+
+  """column name"""
+  ecosystem_specific
+
+  """column name"""
+  id
+
+  """column name"""
+  package_id
+
+  """column name"""
+  vulnerability_id
+}
+
+"""
+input type for updating data in table "vulnerability.affected"
+"""
+input vulnerability_affected_set_input {
+  database_specific: jsonb
+  ecosystem_specific: jsonb
+  id: uuid
+  package_id: uuid
+  vulnerability_id: uuid
+}
+
+"""
+update columns of table "vulnerability.affected"
+"""
+enum vulnerability_affected_update_column {
+  """column name"""
+  database_specific
+
+  """column name"""
+  ecosystem_specific
+
+  """column name"""
+  id
+
+  """column name"""
+  package_id
+
+  """column name"""
+  vulnerability_id
+}
+
+"""
+columns and relationships of "vulnerability.affected_version"
+"""
+type vulnerability_affected_version {
+  """An object relationship"""
+  affected: vulnerability_affected
+  affected_id: uuid
+  database_specific(
+    """JSON select path"""
+    path: String
+  ): jsonb
+  id: uuid!
+  type: affected_version_type!
+  version: String!
+}
+
+"""
+order by aggregate values of table "vulnerability.affected_version"
+"""
+input vulnerability_affected_version_aggregate_order_by {
+  count: order_by
+  max: vulnerability_affected_version_max_order_by
+  min: vulnerability_affected_version_min_order_by
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input vulnerability_affected_version_append_input {
+  database_specific: jsonb
+}
+
+"""
+input type for inserting array relation for remote table "vulnerability.affected_version"
+"""
+input vulnerability_affected_version_arr_rel_insert_input {
+  data: [vulnerability_affected_version_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: vulnerability_affected_version_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "vulnerability.affected_version". All fields are combined with a logical 'AND'.
+"""
+input vulnerability_affected_version_bool_exp {
+  _and: [vulnerability_affected_version_bool_exp!]
+  _not: vulnerability_affected_version_bool_exp
+  _or: [vulnerability_affected_version_bool_exp!]
+  affected: vulnerability_affected_bool_exp
+  affected_id: uuid_comparison_exp
+  database_specific: jsonb_comparison_exp
+  id: uuid_comparison_exp
+  type: affected_version_type_comparison_exp
+  version: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "vulnerability.affected_version"
+"""
+enum vulnerability_affected_version_constraint {
+  """unique or primary key constraint"""
+  affected_version_affected_id_type_version
+
+  """unique or primary key constraint"""
+  affected_version_pkey
+}
+
+"""
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input vulnerability_affected_version_delete_at_path_input {
+  database_specific: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input vulnerability_affected_version_delete_elem_input {
+  database_specific: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input vulnerability_affected_version_delete_key_input {
+  database_specific: String
+}
+
+"""
+input type for inserting data into table "vulnerability.affected_version"
+"""
+input vulnerability_affected_version_insert_input {
+  affected: vulnerability_affected_obj_rel_insert_input
+  affected_id: uuid
+  database_specific: jsonb
+  id: uuid
+  type: affected_version_type
+  version: String
+}
+
+"""
+order by max() on columns of table "vulnerability.affected_version"
+"""
+input vulnerability_affected_version_max_order_by {
+  affected_id: order_by
+  id: order_by
+  version: order_by
+}
+
+"""
+order by min() on columns of table "vulnerability.affected_version"
+"""
+input vulnerability_affected_version_min_order_by {
+  affected_id: order_by
+  id: order_by
+  version: order_by
+}
+
+"""
+response of any mutation on the table "vulnerability.affected_version"
+"""
+type vulnerability_affected_version_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [vulnerability_affected_version!]!
+}
+
+"""
+on_conflict condition type for table "vulnerability.affected_version"
+"""
+input vulnerability_affected_version_on_conflict {
+  constraint: vulnerability_affected_version_constraint!
+  update_columns: [vulnerability_affected_version_update_column!]! = []
+  where: vulnerability_affected_version_bool_exp
+}
+
+"""
+Ordering options when selecting data from "vulnerability.affected_version".
+"""
+input vulnerability_affected_version_order_by {
+  affected: vulnerability_affected_order_by
+  affected_id: order_by
+  database_specific: order_by
+  id: order_by
+  type: order_by
+  version: order_by
+}
+
+"""primary key columns input for table: vulnerability_affected_version"""
+input vulnerability_affected_version_pk_columns_input {
+  id: uuid!
+}
+
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input vulnerability_affected_version_prepend_input {
+  database_specific: jsonb
+}
+
+"""
+select columns of table "vulnerability.affected_version"
+"""
+enum vulnerability_affected_version_select_column {
+  """column name"""
+  affected_id
+
+  """column name"""
+  database_specific
+
+  """column name"""
+  id
+
+  """column name"""
+  type
+
+  """column name"""
+  version
+}
+
+"""
+input type for updating data in table "vulnerability.affected_version"
+"""
+input vulnerability_affected_version_set_input {
+  affected_id: uuid
+  database_specific: jsonb
+  id: uuid
+  type: affected_version_type
+  version: String
+}
+
+"""
+update columns of table "vulnerability.affected_version"
+"""
+enum vulnerability_affected_version_update_column {
+  """column name"""
+  affected_id
+
+  """column name"""
+  database_specific
+
+  """column name"""
+  id
+
+  """column name"""
+  type
+
+  """column name"""
+  version
+}
+
+"""
+columns and relationships of "vulnerability.credit"
+"""
+type vulnerability_credit {
+  contact: _text
+  id: uuid!
+  name: String!
+
+  """An object relationship"""
+  vulnerability: vulnerability_vulnerability
+  vulnerability_id: uuid
+}
+
+"""
+order by aggregate values of table "vulnerability.credit"
+"""
+input vulnerability_credit_aggregate_order_by {
+  count: order_by
+  max: vulnerability_credit_max_order_by
+  min: vulnerability_credit_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "vulnerability.credit"
+"""
+input vulnerability_credit_arr_rel_insert_input {
+  data: [vulnerability_credit_insert_input!]!
+}
+
+"""
+Boolean expression to filter rows from the table "vulnerability.credit". All fields are combined with a logical 'AND'.
+"""
+input vulnerability_credit_bool_exp {
+  _and: [vulnerability_credit_bool_exp!]
+  _not: vulnerability_credit_bool_exp
+  _or: [vulnerability_credit_bool_exp!]
+  contact: _text_comparison_exp
+  id: uuid_comparison_exp
+  name: String_comparison_exp
+  vulnerability: vulnerability_vulnerability_bool_exp
+  vulnerability_id: uuid_comparison_exp
+}
+
+"""
+input type for inserting data into table "vulnerability.credit"
+"""
+input vulnerability_credit_insert_input {
+  contact: _text
+  id: uuid
+  name: String
+  vulnerability: vulnerability_vulnerability_obj_rel_insert_input
+  vulnerability_id: uuid
+}
+
+"""
+order by max() on columns of table "vulnerability.credit"
+"""
+input vulnerability_credit_max_order_by {
+  id: order_by
+  name: order_by
+  vulnerability_id: order_by
+}
+
+"""
+order by min() on columns of table "vulnerability.credit"
+"""
+input vulnerability_credit_min_order_by {
+  id: order_by
+  name: order_by
+  vulnerability_id: order_by
+}
+
+"""
+response of any mutation on the table "vulnerability.credit"
+"""
+type vulnerability_credit_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [vulnerability_credit!]!
+}
+
+"""Ordering options when selecting data from "vulnerability.credit"."""
+input vulnerability_credit_order_by {
+  contact: order_by
+  id: order_by
+  name: order_by
+  vulnerability: vulnerability_vulnerability_order_by
+  vulnerability_id: order_by
+}
+
+"""
+select columns of table "vulnerability.credit"
+"""
+enum vulnerability_credit_select_column {
+  """column name"""
+  contact
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  vulnerability_id
+}
+
+"""
+columns and relationships of "vulnerability.equivalent"
+"""
+type vulnerability_equivalent {
+  a: uuid
+  b: uuid
+
+  """An object relationship"""
+  vulnerability: vulnerability_vulnerability
+
+  """An object relationship"""
+  vulnerabilityByB: vulnerability_vulnerability
+}
+
+"""
+order by aggregate values of table "vulnerability.equivalent"
+"""
+input vulnerability_equivalent_aggregate_order_by {
+  count: order_by
+  max: vulnerability_equivalent_max_order_by
+  min: vulnerability_equivalent_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "vulnerability.equivalent"
+"""
+input vulnerability_equivalent_arr_rel_insert_input {
+  data: [vulnerability_equivalent_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: vulnerability_equivalent_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "vulnerability.equivalent". All fields are combined with a logical 'AND'.
+"""
+input vulnerability_equivalent_bool_exp {
+  _and: [vulnerability_equivalent_bool_exp!]
+  _not: vulnerability_equivalent_bool_exp
+  _or: [vulnerability_equivalent_bool_exp!]
+  a: uuid_comparison_exp
+  b: uuid_comparison_exp
+  vulnerability: vulnerability_vulnerability_bool_exp
+  vulnerabilityByB: vulnerability_vulnerability_bool_exp
+}
+
+"""
+unique or primary key constraints on table "vulnerability.equivalent"
+"""
+enum vulnerability_equivalent_constraint {
+  """unique or primary key constraint"""
+  equivalent_a_b_idx
+}
+
+"""
+input type for inserting data into table "vulnerability.equivalent"
+"""
+input vulnerability_equivalent_insert_input {
+  a: uuid
+  b: uuid
+  vulnerability: vulnerability_vulnerability_obj_rel_insert_input
+  vulnerabilityByB: vulnerability_vulnerability_obj_rel_insert_input
+}
+
+"""
+order by max() on columns of table "vulnerability.equivalent"
+"""
+input vulnerability_equivalent_max_order_by {
+  a: order_by
+  b: order_by
+}
+
+"""
+order by min() on columns of table "vulnerability.equivalent"
+"""
+input vulnerability_equivalent_min_order_by {
+  a: order_by
+  b: order_by
+}
+
+"""
+response of any mutation on the table "vulnerability.equivalent"
+"""
+type vulnerability_equivalent_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [vulnerability_equivalent!]!
+}
+
+"""
+on_conflict condition type for table "vulnerability.equivalent"
+"""
+input vulnerability_equivalent_on_conflict {
+  constraint: vulnerability_equivalent_constraint!
+  update_columns: [vulnerability_equivalent_update_column!]! = []
+  where: vulnerability_equivalent_bool_exp
+}
+
+"""Ordering options when selecting data from "vulnerability.equivalent"."""
+input vulnerability_equivalent_order_by {
+  a: order_by
+  b: order_by
+  vulnerability: vulnerability_vulnerability_order_by
+  vulnerabilityByB: vulnerability_vulnerability_order_by
+}
+
+"""
+select columns of table "vulnerability.equivalent"
+"""
+enum vulnerability_equivalent_select_column {
+  """column name"""
+  a
+
+  """column name"""
+  b
+}
+
+"""
+input type for updating data in table "vulnerability.equivalent"
+"""
+input vulnerability_equivalent_set_input {
+  a: uuid
+  b: uuid
+}
+
+"""
+update columns of table "vulnerability.equivalent"
+"""
+enum vulnerability_equivalent_update_column {
+  """column name"""
+  a
+
+  """column name"""
+  b
+}
+
 """All of the package vulnerabilities belonging to a given vulnerability"""
 type vulnerability_packages {
   advisories: String!
@@ -9601,6 +11400,705 @@ update columns of table "vulnerability_packages"
 enum vulnerability_packages_update_column {
   """column name"""
   slug
+}
+
+"""
+columns and relationships of "vulnerability.reference"
+"""
+type vulnerability_reference {
+  id: uuid!
+  type: reference_type!
+  url: String!
+
+  """An object relationship"""
+  vulnerability: vulnerability_vulnerability
+  vulnerability_id: uuid
+}
+
+"""
+order by aggregate values of table "vulnerability.reference"
+"""
+input vulnerability_reference_aggregate_order_by {
+  count: order_by
+  max: vulnerability_reference_max_order_by
+  min: vulnerability_reference_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "vulnerability.reference"
+"""
+input vulnerability_reference_arr_rel_insert_input {
+  data: [vulnerability_reference_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: vulnerability_reference_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "vulnerability.reference". All fields are combined with a logical 'AND'.
+"""
+input vulnerability_reference_bool_exp {
+  _and: [vulnerability_reference_bool_exp!]
+  _not: vulnerability_reference_bool_exp
+  _or: [vulnerability_reference_bool_exp!]
+  id: uuid_comparison_exp
+  type: reference_type_comparison_exp
+  url: String_comparison_exp
+  vulnerability: vulnerability_vulnerability_bool_exp
+  vulnerability_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "vulnerability.reference"
+"""
+enum vulnerability_reference_constraint {
+  """unique or primary key constraint"""
+  reference_pkey
+
+  """unique or primary key constraint"""
+  reference_vulnerability_id_type_url_idx
+}
+
+"""
+input type for inserting data into table "vulnerability.reference"
+"""
+input vulnerability_reference_insert_input {
+  id: uuid
+  type: reference_type
+  url: String
+  vulnerability: vulnerability_vulnerability_obj_rel_insert_input
+  vulnerability_id: uuid
+}
+
+"""
+order by max() on columns of table "vulnerability.reference"
+"""
+input vulnerability_reference_max_order_by {
+  id: order_by
+  url: order_by
+  vulnerability_id: order_by
+}
+
+"""
+order by min() on columns of table "vulnerability.reference"
+"""
+input vulnerability_reference_min_order_by {
+  id: order_by
+  url: order_by
+  vulnerability_id: order_by
+}
+
+"""
+response of any mutation on the table "vulnerability.reference"
+"""
+type vulnerability_reference_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [vulnerability_reference!]!
+}
+
+"""
+on_conflict condition type for table "vulnerability.reference"
+"""
+input vulnerability_reference_on_conflict {
+  constraint: vulnerability_reference_constraint!
+  update_columns: [vulnerability_reference_update_column!]! = []
+  where: vulnerability_reference_bool_exp
+}
+
+"""Ordering options when selecting data from "vulnerability.reference"."""
+input vulnerability_reference_order_by {
+  id: order_by
+  type: order_by
+  url: order_by
+  vulnerability: vulnerability_vulnerability_order_by
+  vulnerability_id: order_by
+}
+
+"""primary key columns input for table: vulnerability_reference"""
+input vulnerability_reference_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "vulnerability.reference"
+"""
+enum vulnerability_reference_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  type
+
+  """column name"""
+  url
+
+  """column name"""
+  vulnerability_id
+}
+
+"""
+input type for updating data in table "vulnerability.reference"
+"""
+input vulnerability_reference_set_input {
+  id: uuid
+  type: reference_type
+  url: String
+  vulnerability_id: uuid
+}
+
+"""
+update columns of table "vulnerability.reference"
+"""
+enum vulnerability_reference_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  type
+
+  """column name"""
+  url
+
+  """column name"""
+  vulnerability_id
+}
+
+"""
+columns and relationships of "vulnerability.severity"
+"""
+type vulnerability_severity {
+  id: uuid!
+  score: String!
+  source: String!
+  type: String!
+
+  """An object relationship"""
+  vulnerability: vulnerability_vulnerability
+  vulnerability_id: uuid
+}
+
+"""
+order by aggregate values of table "vulnerability.severity"
+"""
+input vulnerability_severity_aggregate_order_by {
+  count: order_by
+  max: vulnerability_severity_max_order_by
+  min: vulnerability_severity_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "vulnerability.severity"
+"""
+input vulnerability_severity_arr_rel_insert_input {
+  data: [vulnerability_severity_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: vulnerability_severity_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "vulnerability.severity". All fields are combined with a logical 'AND'.
+"""
+input vulnerability_severity_bool_exp {
+  _and: [vulnerability_severity_bool_exp!]
+  _not: vulnerability_severity_bool_exp
+  _or: [vulnerability_severity_bool_exp!]
+  id: uuid_comparison_exp
+  score: String_comparison_exp
+  source: String_comparison_exp
+  type: String_comparison_exp
+  vulnerability: vulnerability_vulnerability_bool_exp
+  vulnerability_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "vulnerability.severity"
+"""
+enum vulnerability_severity_constraint {
+  """unique or primary key constraint"""
+  severity_pkey
+
+  """unique or primary key constraint"""
+  severity_vulnerability_id_source_type_idx
+}
+
+"""
+input type for inserting data into table "vulnerability.severity"
+"""
+input vulnerability_severity_insert_input {
+  id: uuid
+  score: String
+  source: String
+  type: String
+  vulnerability: vulnerability_vulnerability_obj_rel_insert_input
+  vulnerability_id: uuid
+}
+
+"""
+order by max() on columns of table "vulnerability.severity"
+"""
+input vulnerability_severity_max_order_by {
+  id: order_by
+  score: order_by
+  source: order_by
+  type: order_by
+  vulnerability_id: order_by
+}
+
+"""
+order by min() on columns of table "vulnerability.severity"
+"""
+input vulnerability_severity_min_order_by {
+  id: order_by
+  score: order_by
+  source: order_by
+  type: order_by
+  vulnerability_id: order_by
+}
+
+"""
+response of any mutation on the table "vulnerability.severity"
+"""
+type vulnerability_severity_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [vulnerability_severity!]!
+}
+
+"""
+on_conflict condition type for table "vulnerability.severity"
+"""
+input vulnerability_severity_on_conflict {
+  constraint: vulnerability_severity_constraint!
+  update_columns: [vulnerability_severity_update_column!]! = []
+  where: vulnerability_severity_bool_exp
+}
+
+"""Ordering options when selecting data from "vulnerability.severity"."""
+input vulnerability_severity_order_by {
+  id: order_by
+  score: order_by
+  source: order_by
+  type: order_by
+  vulnerability: vulnerability_vulnerability_order_by
+  vulnerability_id: order_by
+}
+
+"""primary key columns input for table: vulnerability_severity"""
+input vulnerability_severity_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "vulnerability.severity"
+"""
+enum vulnerability_severity_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  score
+
+  """column name"""
+  source
+
+  """column name"""
+  type
+
+  """column name"""
+  vulnerability_id
+}
+
+"""
+input type for updating data in table "vulnerability.severity"
+"""
+input vulnerability_severity_set_input {
+  id: uuid
+  score: String
+  source: String
+  type: String
+  vulnerability_id: uuid
+}
+
+"""
+update columns of table "vulnerability.severity"
+"""
+enum vulnerability_severity_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  score
+
+  """column name"""
+  source
+
+  """column name"""
+  type
+
+  """column name"""
+  vulnerability_id
+}
+
+"""
+columns and relationships of "vulnerability.vulnerability"
+"""
+type vulnerability_vulnerability {
+  """An array relationship"""
+  affected(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_affected_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_affected_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_affected_bool_exp
+  ): [vulnerability_affected!]!
+  aliases: _text
+
+  """An array relationship"""
+  credits(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_credit_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_credit_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_credit_bool_exp
+  ): [vulnerability_credit!]!
+  database_specific(
+    """JSON select path"""
+    path: String
+  ): jsonb
+  details: String
+
+  """An array relationship"""
+  equivalents(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_equivalent_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_equivalent_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_equivalent_bool_exp
+  ): [vulnerability_equivalent!]!
+  id: uuid!
+  modified: timestamptz!
+  published: timestamptz
+
+  """An array relationship"""
+  references(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_reference_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_reference_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_reference_bool_exp
+  ): [vulnerability_reference!]!
+
+  """An array relationship"""
+  severities(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_severity_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_severity_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_severity_bool_exp
+  ): [vulnerability_severity!]!
+  source: String!
+  source_id: String!
+  summary: String
+  upstream_data(
+    """JSON select path"""
+    path: String
+  ): jsonb
+  withdrawn: timestamptz
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input vulnerability_vulnerability_append_input {
+  database_specific: jsonb
+  upstream_data: jsonb
+}
+
+"""
+Boolean expression to filter rows from the table "vulnerability.vulnerability". All fields are combined with a logical 'AND'.
+"""
+input vulnerability_vulnerability_bool_exp {
+  _and: [vulnerability_vulnerability_bool_exp!]
+  _not: vulnerability_vulnerability_bool_exp
+  _or: [vulnerability_vulnerability_bool_exp!]
+  affected: vulnerability_affected_bool_exp
+  aliases: _text_comparison_exp
+  credits: vulnerability_credit_bool_exp
+  database_specific: jsonb_comparison_exp
+  details: String_comparison_exp
+  equivalents: vulnerability_equivalent_bool_exp
+  id: uuid_comparison_exp
+  modified: timestamptz_comparison_exp
+  published: timestamptz_comparison_exp
+  references: vulnerability_reference_bool_exp
+  severities: vulnerability_severity_bool_exp
+  source: String_comparison_exp
+  source_id: String_comparison_exp
+  summary: String_comparison_exp
+  upstream_data: jsonb_comparison_exp
+  withdrawn: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "vulnerability.vulnerability"
+"""
+enum vulnerability_vulnerability_constraint {
+  """unique or primary key constraint"""
+  vulnerability_pkey
+
+  """unique or primary key constraint"""
+  vulnerability_source_source_id_idx
+}
+
+"""
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input vulnerability_vulnerability_delete_at_path_input {
+  database_specific: [String!]
+  upstream_data: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input vulnerability_vulnerability_delete_elem_input {
+  database_specific: Int
+  upstream_data: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input vulnerability_vulnerability_delete_key_input {
+  database_specific: String
+  upstream_data: String
+}
+
+"""
+input type for inserting data into table "vulnerability.vulnerability"
+"""
+input vulnerability_vulnerability_insert_input {
+  affected: vulnerability_affected_arr_rel_insert_input
+  aliases: _text
+  credits: vulnerability_credit_arr_rel_insert_input
+  database_specific: jsonb
+  details: String
+  equivalents: vulnerability_equivalent_arr_rel_insert_input
+  id: uuid
+  modified: timestamptz
+  published: timestamptz
+  references: vulnerability_reference_arr_rel_insert_input
+  severities: vulnerability_severity_arr_rel_insert_input
+  source: String
+  source_id: String
+  summary: String
+  upstream_data: jsonb
+  withdrawn: timestamptz
+}
+
+"""
+response of any mutation on the table "vulnerability.vulnerability"
+"""
+type vulnerability_vulnerability_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [vulnerability_vulnerability!]!
+}
+
+"""
+input type for inserting object relation for remote table "vulnerability.vulnerability"
+"""
+input vulnerability_vulnerability_obj_rel_insert_input {
+  data: vulnerability_vulnerability_insert_input!
+
+  """upsert condition"""
+  on_conflict: vulnerability_vulnerability_on_conflict
+}
+
+"""
+on_conflict condition type for table "vulnerability.vulnerability"
+"""
+input vulnerability_vulnerability_on_conflict {
+  constraint: vulnerability_vulnerability_constraint!
+  update_columns: [vulnerability_vulnerability_update_column!]! = []
+  where: vulnerability_vulnerability_bool_exp
+}
+
+"""
+Ordering options when selecting data from "vulnerability.vulnerability".
+"""
+input vulnerability_vulnerability_order_by {
+  affected_aggregate: vulnerability_affected_aggregate_order_by
+  aliases: order_by
+  credits_aggregate: vulnerability_credit_aggregate_order_by
+  database_specific: order_by
+  details: order_by
+  equivalents_aggregate: vulnerability_equivalent_aggregate_order_by
+  id: order_by
+  modified: order_by
+  published: order_by
+  references_aggregate: vulnerability_reference_aggregate_order_by
+  severities_aggregate: vulnerability_severity_aggregate_order_by
+  source: order_by
+  source_id: order_by
+  summary: order_by
+  upstream_data: order_by
+  withdrawn: order_by
+}
+
+"""primary key columns input for table: vulnerability_vulnerability"""
+input vulnerability_vulnerability_pk_columns_input {
+  id: uuid!
+}
+
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input vulnerability_vulnerability_prepend_input {
+  database_specific: jsonb
+  upstream_data: jsonb
+}
+
+"""
+select columns of table "vulnerability.vulnerability"
+"""
+enum vulnerability_vulnerability_select_column {
+  """column name"""
+  aliases
+
+  """column name"""
+  database_specific
+
+  """column name"""
+  details
+
+  """column name"""
+  id
+
+  """column name"""
+  modified
+
+  """column name"""
+  published
+
+  """column name"""
+  source
+
+  """column name"""
+  source_id
+
+  """column name"""
+  summary
+
+  """column name"""
+  upstream_data
+
+  """column name"""
+  withdrawn
+}
+
+"""
+input type for updating data in table "vulnerability.vulnerability"
+"""
+input vulnerability_vulnerability_set_input {
+  aliases: _text
+  database_specific: jsonb
+  details: String
+  id: uuid
+  modified: timestamptz
+  published: timestamptz
+  source: String
+  source_id: String
+  summary: String
+  upstream_data: jsonb
+  withdrawn: timestamptz
+}
+
+"""
+update columns of table "vulnerability.vulnerability"
+"""
+enum vulnerability_vulnerability_update_column {
+  """column name"""
+  aliases
+
+  """column name"""
+  database_specific
+
+  """column name"""
+  details
+
+  """column name"""
+  id
+
+  """column name"""
+  modified
+
+  """column name"""
+  published
+
+  """column name"""
+  source
+
+  """column name"""
+  source_id
+
+  """column name"""
+  summary
+
+  """column name"""
+  upstream_data
+
+  """column name"""
+  withdrawn
 }
 
 """
