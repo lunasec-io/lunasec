@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Card, Col, FloatingLabel, Form, Row, Spinner } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { BiUnlink } from 'react-icons/bi';
@@ -24,6 +24,7 @@ import { GetSidebarInfoQuery } from '../../api/generated';
 import { SpinIfLoading } from '../../components/SpinIfLoading';
 import { ConditionallyRender } from '../../components/utils/ConditionallyRender';
 import { GithubAppUrl } from '../../constants';
+import { SidebarContext } from '../../contexts/SidebarContext';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import { add } from '../../store/slices/alerts';
 
@@ -129,13 +130,13 @@ const ProjectCreateForm = ({ data }: { data: GetSidebarInfoQuery | undefined }) 
 };
 
 export const ProjectCreate: React.FC = () => {
-  const { data, isLoading } = api.useGetSidebarInfoQuery();
+  const { sidebarData, sidebarIsLoaded } = useContext(SidebarContext);
 
   return (
     <>
       <Helmet title={'Create Project'} />
-      <SpinIfLoading isLoading={isLoading}>
-        <ProjectCreateForm data={data} />
+      <SpinIfLoading isLoading={!sidebarIsLoaded}>
+        <ProjectCreateForm data={sidebarData} />
       </SpinIfLoading>
     </>
   );

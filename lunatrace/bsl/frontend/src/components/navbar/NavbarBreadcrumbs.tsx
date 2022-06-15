@@ -23,6 +23,7 @@ import useBreadCrumbs, {
 
 import api from '../../api/';
 import { GetSidebarInfoQuery } from '../../api/generated';
+import { SidebarContext } from '../../contexts/SidebarContext';
 import { WizardOpenContext } from '../../contexts/WizardContext';
 
 type Project = GetSidebarInfoQuery['projects'][number];
@@ -42,11 +43,11 @@ const getCurrentProject = (projects: Project[], params: Params): Project | null 
 // TODO: it seems like it's possible to define these breadcrumbs in the route definitions, instead of in this file.  That would be cleaner
 const ProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
   // Doing queries here is actually completely performant thanks to the cache system, no new queries will fire
-  const { data } = api.useGetSidebarInfoQuery();
-  if (!data) {
+  const { sidebarData } = useContext(SidebarContext);
+  if (!sidebarData) {
     return null;
   }
-  const projects = data.projects;
+  const projects = sidebarData.projects;
 
   if (projects.length === 0) {
     console.error('no projects were found');
@@ -62,11 +63,11 @@ const ProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbCompon
 };
 
 const BuildBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
-  const { data } = api.useGetSidebarInfoQuery();
-  if (!data) {
+  const { sidebarData } = useContext(SidebarContext);
+  if (!sidebarData) {
     return null;
   }
-  const projects = data.projects;
+  const projects = sidebarData.projects;
 
   if (projects.length === 0) {
     console.error('no projects were found');
@@ -103,11 +104,11 @@ const VulnBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponent
 };
 
 const OrganizationBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
-  const { data } = api.useGetSidebarInfoQuery();
-  if (!data) {
+  const { sidebarData } = useContext(SidebarContext);
+  if (!sidebarData) {
     return null;
   }
-  const filteredOrg = data.organizations.find((o) => o.id === crumbProps.match.params.project_id);
+  const filteredOrg = sidebarData.organizations.find((o) => o.id === crumbProps.match.params.project_id);
   if (!filteredOrg) {
     console.error('breadcrumb couldnt find org');
     return null;

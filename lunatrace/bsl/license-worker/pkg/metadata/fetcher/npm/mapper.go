@@ -13,12 +13,13 @@ package npm
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/internal/pkg/metadata"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata"
 )
 
-func adapt(n *NpmPackageMetadataWithRawVersion, raw []byte) (*metadata.PackageMetadata, error) {
+func adapt(n *NpmPackageMetadataWithRawVersions, packageRaw []byte) (*metadata.PackageMetadata, error) {
 	releases, err := mapReleases(n.VersionsRaw)
 	if err != nil {
 		return nil, err
@@ -29,7 +30,7 @@ func adapt(n *NpmPackageMetadataWithRawVersion, raw []byte) (*metadata.PackageMe
 		Registry:     NpmRegistry,
 		Maintainers:  mapMaintainers(n.Maintainers),
 		Releases:     releases,
-		UpstreamData: raw,
+		UpstreamData: packageRaw,
 	}
 
 	return r, nil
@@ -55,7 +56,8 @@ func mapReleases(r map[string]json.RawMessage) ([]metadata.Release, error) {
 
 		err := json.Unmarshal(rrl, &rl)
 		if err != nil {
-			return nil, err
+			fmt.Println("release failed to unmarshal, dropping error")
+			continue
 		}
 
 		m = append(m, metadata.Release{
