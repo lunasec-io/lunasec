@@ -43,3 +43,7 @@ bindings:
     type: github.com/lunasec-io/lunasec/lunatrace/cli/gql/types.PackageManager
   license_source:
     type: github.com/lunasec-io/lunasec/lunatrace/cli/gql/types.LicenseSource
+  affected_version_type:
+    type: github.com/lunasec-io/lunasec/lunatrace/cli/gql/types.AffectedVersionType
+  reference_type:
+    type: string

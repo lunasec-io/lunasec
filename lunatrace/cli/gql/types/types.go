@@ -30,3 +30,11 @@ const (
 	ScanBinary LicenseSource = "scan_binary"
 	ApiNpm     LicenseSource = "api_npm"
 )
+
+type AffectedVersionType string
+
+const (
+	Git       AffectedVersionType = "git"
+	SemVer    AffectedVersionType = "semver"
+	Ecosystem AffectedVersionType = "ecosystem"
+)
