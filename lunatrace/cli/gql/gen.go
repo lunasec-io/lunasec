@@ -152,20 +152,33 @@ func (v *GetVulnerabilityResponse) GetVulnerability() []*GetVulnerabilityVulnera
 //
 // columns and relationships of "vulnerability.vulnerability"
 type GetVulnerabilityVulnerability struct {
-	vulnerabilityFragment `json:"-"`
+	Id uuid.UUID `json:"id"`
+	// An array relationship
+	Affected []*GetVulnerabilityVulnerabilityAffectedVulnerability_affected `json:"affected"`
+	// An array relationship
+	Equivalents []*GetVulnerabilityVulnerabilityEquivalentsVulnerability_equivalent `json:"equivalents"`
+	// An array relationship
+	References []*GetVulnerabilityVulnerabilityReferencesVulnerability_reference `json:"references"`
+	Source     string                                                            `json:"source"`
+	Source_id  string                                                            `json:"source_id"`
 }
 
 // GetId returns GetVulnerabilityVulnerability.Id, and is useful for accessing the field via an interface.
-func (v *GetVulnerabilityVulnerability) GetId() uuid.UUID { return v.vulnerabilityFragment.Id }
+func (v *GetVulnerabilityVulnerability) GetId() uuid.UUID { return v.Id }
 
 // GetAffected returns GetVulnerabilityVulnerability.Affected, and is useful for accessing the field via an interface.
-func (v *GetVulnerabilityVulnerability) GetAffected() []*vulnerabilityFragmentAffectedVulnerability_affected {
-	return v.vulnerabilityFragment.Affected
+func (v *GetVulnerabilityVulnerability) GetAffected() []*GetVulnerabilityVulnerabilityAffectedVulnerability_affected {
+	return v.Affected
 }
 
 // GetEquivalents returns GetVulnerabilityVulnerability.Equivalents, and is useful for accessing the field via an interface.
-func (v *GetVulnerabilityVulnerability) GetEquivalents() []*vulnerabilityFragmentEquivalentsVulnerability_equivalent {
-	return v.vulnerabilityFragment.Equivalents
+func (v *GetVulnerabilityVulnerability) GetEquivalents() []*GetVulnerabilityVulnerabilityEquivalentsVulnerability_equivalent {
+	return v.Equivalents
+}
+
+// GetReferences returns GetVulnerabilityVulnerability.References, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityVulnerability) GetReferences() []*GetVulnerabilityVulnerabilityReferencesVulnerability_reference {
+	return v.References
 }
 
 // GetReferences returns GetVulnerabilityVulnerability.References, and is useful for accessing the field via an interface.
@@ -174,36 +187,27 @@ func (v *GetVulnerabilityVulnerability) GetReferences() []*vulnerabilityFragment
 }
 
 // GetSource returns GetVulnerabilityVulnerability.Source, and is useful for accessing the field via an interface.
-func (v *GetVulnerabilityVulnerability) GetSource() string { return v.vulnerabilityFragment.Source }
+func (v *GetVulnerabilityVulnerability) GetSource() string { return v.Source }
 
 // GetSource_id returns GetVulnerabilityVulnerability.Source_id, and is useful for accessing the field via an interface.
-func (v *GetVulnerabilityVulnerability) GetSource_id() string {
-	return v.vulnerabilityFragment.Source_id
+func (v *GetVulnerabilityVulnerability) GetSource_id() string { return v.Source_id }
+
+// GetVulnerabilityVulnerabilityAffectedVulnerability_affected includes the requested fields of the GraphQL type vulnerability_affected.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "vulnerability.affected"
+type GetVulnerabilityVulnerabilityAffectedVulnerability_affected struct {
+	// An object relationship
+	Package *GetVulnerabilityVulnerabilityAffectedVulnerability_affectedPackage `json:"package"`
+	// An array relationship
+	Affected_range_events []*GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event `json:"affected_range_events"`
+	// An array relationship
+	Affected_versions []*GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version `json:"affected_versions"`
 }
 
-func (v *GetVulnerabilityVulnerability) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GetVulnerabilityVulnerability
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GetVulnerabilityVulnerability = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.vulnerabilityFragment)
-	if err != nil {
-		return err
-	}
-	return nil
+// GetPackage returns GetVulnerabilityVulnerabilityAffectedVulnerability_affected.Package, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityVulnerabilityAffectedVulnerability_affected) GetPackage() *GetVulnerabilityVulnerabilityAffectedVulnerability_affectedPackage {
+	return v.Package
 }
 
 type __premarshalGetVulnerabilityVulnerability struct {
@@ -220,16 +224,19 @@ type __premarshalGetVulnerabilityVulnerability struct {
 	Source_id string `json:"source_id"`
 }
 
-func (v *GetVulnerabilityVulnerability) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
+// GetAffected_versions returns GetVulnerabilityVulnerabilityAffectedVulnerability_affected.Affected_versions, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityVulnerabilityAffectedVulnerability_affected) GetAffected_versions() []*GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version {
+	return v.Affected_versions
 }
 
-func (v *GetVulnerabilityVulnerability) __premarshalJSON() (*__premarshalGetVulnerabilityVulnerability, error) {
-	var retval __premarshalGetVulnerabilityVulnerability
+// GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event includes the requested fields of the GraphQL type vulnerability_affected_range_event.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "vulnerability.affected_range_event"
+type GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event struct {
+	Event   string `json:"event"`
+	Version string `json:"version"`
+}
 
 	retval.Id = v.vulnerabilityFragment.Id
 	retval.Affected = v.vulnerabilityFragment.Affected
@@ -2211,31 +2218,34 @@ func GetVulnerability(
 		Query: `
 query GetVulnerability ($package_name: String!, $package_manager: package_manager!) {
 	vulnerability(where: {affected:{package:{name:{_eq:$package_name},package_manager:{_eq:$package_manager}}}}) {
-		... vulnerabilityFragment
-	}
-}
-fragment vulnerabilityFragment on vulnerability {
-	id
-	affected {
-		package {
-			name
-			package_manager
+		id
+		affected {
+			package {
+				name
+				package_manager
+			}
+			affected_range_events {
+				event
+				version
+			}
+			affected_versions {
+				type
+				version
+			}
 		}
-		affected_range_events {
-			event
-			version
+		equivalents {
+			vulnerability {
+				id
+				source
+				source_id
+			}
 		}
-		affected_versions {
-			type
-			version
-		}
-	}
-	equivalents {
-		vulnerability {
+		references {
 			id
-			source
-			source_id
+			url
 		}
+		source
+		source_id
 	}
 	references {
 		id
