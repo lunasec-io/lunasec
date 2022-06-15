@@ -21,14 +21,37 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 )
 
+// map grype namespace to packagemanager
 func mapNamespace(namespace string) types.PackageManager {
 	//TODO implement me
 	panic("implement me")
 }
 
-func mapVulns(ov []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, error) {
+// map packagemanager to grype namespace
+func mapPackageManager(pm types.PackageManager) string {
 	//TODO implement me
 	panic("implement me")
+}
+
+func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, error) {
+	out := make([]v3.Vulnerability, len(ovs))
+	for _, ov := range ovs {
+		for _, ova := range ov.Affected {
+			out = append(out, v3.Vulnerability{
+				ID:          ov.Id.String(),
+				PackageName: ova.Package.Name,
+				Namespace:   mapPackageManager(ova.Package.Package_manager),
+				// todo how advanced is the semver query support, ||?
+				VersionConstraint:      "",
+				VersionFormat:          "semver",
+				CPEs:                   nil,
+				RelatedVulnerabilities: nil,
+				Fix:                    v3.Fix{},
+				Advisories:             nil,
+			})
+		}
+	}
+	return out, nil
 }
 
 // n2z converts nil pointers to the zero value of their type.
