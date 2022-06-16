@@ -17,9 +17,9 @@ import { log } from '../../../utils/log';
 import { upsertInstalledProjects } from '../../actions/upsert-installed-projects';
 import { getInstallationAccessToken } from '../../auth';
 
-export // This simply calls github and upserts all repos.  We can call it in different situations where we thing the repos may have
+// This simply calls github and upserts all repos.  We can call it in different situations where we thing the repos may have
 // Not the most performant solution but it works and is simple
-async function syncRepositoriesHandler(
+export async function syncRepositoriesHandler(
   event: EmitterWebhookEvent<'installation_repositories.added' | 'installation.created'>
 ) {
   const installationId = event.payload.installation.id;
