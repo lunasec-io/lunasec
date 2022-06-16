@@ -13,7 +13,7 @@
  */
 import React from 'react';
 import { IconType } from 'react-icons';
-import { FiFilePlus, FiGithub, FiTerminal } from 'react-icons/fi';
+import { FiFilePlus, FiGithub, FiGitMerge, FiTerminal } from 'react-icons/fi';
 
 import { BuildDetailInfo } from './types';
 
@@ -29,6 +29,9 @@ export const SourceIcon: React.FC<{ source_type: SourceType } & React.ComponentP
   }
   if (source_type === 'cli') {
     return <FiTerminal {...remainingProps} />;
+  }
+  if (source_type === 'default_branch') {
+    return <FiGitMerge {...remainingProps} />;
   }
   return null;
 };
