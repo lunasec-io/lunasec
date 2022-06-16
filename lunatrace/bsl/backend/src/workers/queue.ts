@@ -23,10 +23,7 @@ import { log } from '../utils/log';
 import { getSqsUrlFromName } from '../utils/sqs';
 import { catchError, threwError } from '../utils/try';
 
-import {
-  createMessageTypeToActivityLookup,
-  processLunaTraceSqsMessage,
-} from './queue-processors/process-luna-trace-sqs-message';
+import { createActivities, processLunaTraceSqsMessage } from './queue-processors/process-luna-trace-sqs-message';
 import { processS3SqsMessage } from './queue-processors/process-s3-sqs-message';
 
 async function loadQueueUrlFromName(queueName: string): Promise<string> {
@@ -58,19 +55,19 @@ export async function startQueueWorker(): Promise<void> {
 class QueueWorker {
   private queueUrl?: string;
   private queueConfig: SqsQueueConfig;
-  private activityLookup: MessageTypeToActivityLookup | null;
+  private activities: MessageTypeToActivityLookup | null;
   private bucketConfig: WorkerBucketConfig;
 
   constructor() {
     this.queueConfig = getQueueHandlerConfig();
-    this.activityLookup = null;
+    this.activities = null;
     this.bucketConfig = getWorkerBucketConfig();
   }
 
   async setup() {
     this.queueUrl = await loadQueueUrlFromName(this.queueConfig.queueName);
 
-    this.activityLookup = await createMessageTypeToActivityLookup();
+    this.activities = await createActivities();
   }
 
   async deleteMessage(message: Message, queueUrl: string) {
@@ -90,10 +87,10 @@ class QueueWorker {
   async processMessageBasedOnDataSource(parsedMessage: any): Promise<MaybeErrorVoid[]> {
     if ('type' in parsedMessage) {
       // if the key 'type' is present in the message, then this message is one that we have sent from one of our services
-      if (this.activityLookup === null) {
+      if (this.activities === null) {
         throw new Error('activityLookup is null. Make sure that setup was called first.');
       }
-      return await processLunaTraceSqsMessage(this.activityLookup, parsedMessage);
+      return await processLunaTraceSqsMessage(this.activities, parsedMessage);
     } else if ('Records' in parsedMessage) {
       // if the key 'Records is present in the message, then this message came from S3
       return await processS3SqsMessage(this.bucketConfig, parsedMessage);

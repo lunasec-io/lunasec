@@ -21,7 +21,6 @@ import { ConditionallyRender } from '../../../components/utils/ConditionallyRend
 import { branchLink, branchName, commitLink } from '../../../utils/build-display-helpers';
 import { prettyDate } from '../../../utils/pretty-date';
 import { capitalizeFirstLetter } from '../../../utils/string-utils';
-import { BuildInfo } from '../types';
 
 import { SourceIcon } from './SourceIcon';
 import { BuildDetailInfo } from './types';
@@ -40,6 +39,7 @@ export const BuildDetailsHeader: React.FC<{ build: BuildDetailInfo }> = ({ build
   const branchUrl = branchLink(build);
   const commitUrl = commitLink(build);
 
+  const sourceTypePretty = build.source_type === 'default_branch' ? 'Commit to Default Branch' : build.source_type;
   return (
     <Container>
       <Row>
@@ -85,9 +85,9 @@ export const BuildDetailsHeader: React.FC<{ build: BuildDetailInfo }> = ({ build
         <Col xs="12" sm="3">
           <div className="build-git-info">
             <h6>
-              <span className="darker">Source: </span>
+              <span className="darker">Trigger: </span>
               <SourceIcon source_type={build.source_type} className="mb-1" />{' '}
-              <span className="text-capitalize">{build.source_type}</span>{' '}
+              <span className="text-capitalize">{sourceTypePretty}</span>{' '}
             </h6>
             <ConditionallyRender if={branchUrl}>
               <h6>
