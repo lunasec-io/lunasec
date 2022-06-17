@@ -27,7 +27,7 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 )
 
-const SchemaVersion = 42069
+const SchemaVersion = -1
 
 type StoreDeps struct {
 	fx.In

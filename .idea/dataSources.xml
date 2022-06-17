@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5431/lunatrace</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="Grype Vulnerabilities" uuid="923a8325-b3bf-4f21-ac44-e19080ee804d">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:../.cache/grype/db/3/vulnerability.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

@@ -1,1 +1,2 @@
-ALTER TABLE public.github_repositories DROP COLUMN api_response CASCADE;
+ALTER TABLE public.github_repositories
+    DROP COLUMN api_response CASCADE;
