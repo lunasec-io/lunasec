@@ -249,7 +249,7 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
       previousReviewId
     );
   }
-  if (!buildLookup.builds_by_pk.project.settings.pr_check_enabled) {
+  if (buildLookup.builds_by_pk.project.settings.pr_check_enabled) {
     await executePRComment(
       buildLookup,
       scanReport,
