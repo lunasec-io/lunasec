@@ -4020,6 +4020,7 @@ export type Settings = {
   id: Scalars['uuid'];
   /** An object relationship */
   organization?: Maybe<Organizations>;
+  pr_check_enabled?: Maybe<Scalars['Boolean']>;
   pr_feedback_disabled?: Maybe<Scalars['Boolean']>;
   /** An object relationship */
   project?: Maybe<Projects>;
@@ -4033,6 +4034,7 @@ export type Settings_Bool_Exp = {
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   organization?: InputMaybe<Organizations_Bool_Exp>;
+  pr_check_enabled?: InputMaybe<Boolean_Comparison_Exp>;
   pr_feedback_disabled?: InputMaybe<Boolean_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
 };
@@ -4051,6 +4053,7 @@ export type Settings_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   organization?: InputMaybe<Organizations_Order_By>;
+  pr_check_enabled?: InputMaybe<Order_By>;
   pr_feedback_disabled?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
 };
@@ -4067,11 +4070,14 @@ export enum Settings_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  PrCheckEnabled = 'pr_check_enabled',
+  /** column name */
   PrFeedbackDisabled = 'pr_feedback_disabled'
 }
 
 /** input type for updating data in table "settings" */
 export type Settings_Set_Input = {
+  pr_check_enabled?: InputMaybe<Scalars['Boolean']>;
   pr_feedback_disabled?: InputMaybe<Scalars['Boolean']>;
 };
 
