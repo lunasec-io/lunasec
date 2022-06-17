@@ -15,6 +15,7 @@ import { filterFindingsByIgnored, Finding, groupByPackage, VulnerablePackage } f
 import markdownTable from 'markdown-table';
 
 import { hasura } from '../../hasura-api';
+import { GetBuildQuery } from '../../hasura-api/generated';
 import { InsertedScan } from '../../models/scan';
 import { log } from '../../utils/log';
 import { generateGithubGraphqlClient } from '../api';
@@ -67,7 +68,127 @@ function generatePullRequestCommentFromReport(projectId: string, scan: InsertedS
   return messageParts.join('\n');
 }
 
-export async function commentOnPrIfExists(buildId: string, scanReport: InsertedScan) {
+async function executePRComment(
+  buildLookup: GetBuildQuery,
+  scanReport: InsertedScan,
+  buildId: string,
+  projectId: any,
+  body: string,
+  pullRequestId: string,
+  previousReviewId: string | null
+) {
+  const installationId = buildLookup.builds_by_pk?.project?.organization?.installation_id;
+  if (!installationId) {
+    log.error(
+      `github installation id is not defined for the organization linked to build: ${buildId}, skipping github PR comment`
+    );
+    return;
+  }
+  const githubClient = await generateGithubGraphqlClient(installationId);
+  if (githubClient.error) {
+    log.error(`unable to create github client`, {
+      projectId,
+      installationId,
+      pullRequestId,
+    });
+    return;
+  }
+  const github = githubClient.res;
+
+  // This is the first build on this pr so make a new comment
+  if (!previousReviewId) {
+    const githubReviewResponse = await github.AddPrReview({
+      pull_request_id: pullRequestId.toString(),
+      body,
+    });
+    const existing_github_review_id = githubReviewResponse.addPullRequestReview?.pullRequestReview?.id;
+    if (!existing_github_review_id) {
+      return log.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
+    }
+
+    log.info('review created');
+
+    await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
+    return;
+  }
+
+  // Otherwise just update the existing review on the PR.  Very similar to above but we update instead
+  const githubReviewResponse = await github.UpdatePrReview({
+    pull_request_review_id: previousReviewId,
+    body,
+  });
+  const existing_github_review_id = githubReviewResponse.updatePullRequestReview?.pullRequestReview?.id;
+
+  if (!existing_github_review_id) {
+    return log.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
+  }
+  log.info('successfully updated the PR review');
+  // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
+  await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
+  return;
+}
+
+async function executePRCheck(
+  buildLookup: GetBuildQuery,
+  scanReport: InsertedScan,
+  buildId: string,
+  projectId: any,
+  body: string,
+  pullRequestId: string,
+  previousReviewId: string | null
+) {
+  const checkData = {
+    name: 'LunaTrace',
+    head_sha: buildLookup.builds_by_pk?.git_hash,
+    status: scanReport.findings.length ? 'neutral' : 'success',
+    external_id: buildId,
+    completed_at: Date.now().toString(),
+    details_url: `https://lunatrace.lunasec.io/project/${projectId}/build/${buildId}`,
+    output: {
+      title: 'LunaTrace',
+      summary: scanReport.findings.length ? 'Vulnerabilities detected' : 'No vulnerabilities detected',
+      text: body,
+    },
+  };
+
+  // This is the first build on this pr so make a new comment
+  if (!previousReviewId) {
+    const githubReviewResponse = await octokit.request('POST /repos/{owner}/{repo}/check-runs', {
+      owner: buildLookup.builds_by_pk?.project?.organization?.name,
+      repo: buildLookup.builds_by_pk?.project?.repo,
+      ...checkData,
+    });
+
+    const existing_github_review_id = githubReviewResponse.id;
+
+    log.info('review created');
+    // const submitResponse = await github.SubmitPrReview({ pull_request_id: pullRequestId.toString() })
+    // logger.log('successfully reviewed the PR',submitResponse)
+
+    await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
+    return;
+  }
+
+  // Otherwise just update the existing review on the PR.  Very similar to above but we update instead
+  const githubReviewResponse = await octokit.request('PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}', {
+    owner: buildLookup.builds_by_pk?.project?.organization?.name,
+    repo: buildLookup.builds_by_pk?.project?.repo,
+    check_run_id: buildLookup.builds_by_pk?.existing_github_review_id,
+    ...checkData,
+  });
+
+  const existing_github_review_id = githubReviewResponse.id;
+
+  if (!existing_github_review_id) {
+    return log.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
+  }
+  log.info('successfully updated the PR review');
+  // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
+  await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
+  return;
+}
+
+export async function interactWithPR(buildId: string, scanReport: InsertedScan) {
   const buildLookup = await hasura.GetBuild({
     build_id: buildId,
   });
@@ -87,16 +208,7 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
     return;
   }
 
-  const projectId = buildLookup.builds_by_pk.project.id;
-  const installationId = buildLookup.builds_by_pk.project.organization.installation_id;
   const pullRequestId = buildLookup.builds_by_pk.pull_request_id;
-
-  if (!installationId) {
-    log.error(
-      `github installation id is not defined for the organization linked to build: ${buildId}, skipping github PR comment`
-    );
-    return;
-  }
 
   if (!pullRequestId) {
     log.info(`pull request id is not defined, skipping comment because this build did not come from a PR`, {
@@ -105,16 +217,7 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
     return;
   }
 
-  const githubClient = await generateGithubGraphqlClient(installationId);
-  if (githubClient.error) {
-    log.error(`unable to create github client`, {
-      projectId,
-      installationId,
-      pullRequestId,
-    });
-    return;
-  }
-  const github = githubClient.res;
+  const projectId = buildLookup.builds_by_pk.project.id;
 
   const body = generatePullRequestCommentFromReport(projectId, scanReport);
 
@@ -131,74 +234,7 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
 
   log.info('Starting PR Comment Submission flow');
   log.info('found previous review id of ', previousReviewId);
-
-  const checkData = {
-    name: 'LunaTrace',
-    head_sha: buildLookup.builds_by_pk.git_hash,
-    status: scanReport.findings.length ? 'neutral' : 'success',
-    external_id: buildId,
-    completed_at: Date.now().toString(),
-    details_url: `https://lunatrace.lunasec.io/project/${projectId}/build/${buildId}`,
-    output: {
-      title: 'LunaTrace',
-      summary: scanReport.findings.length ? 'Vulnerabilities detected' : 'No vulnerabilities detected',
-      text: body,
-    },
-  };
-
-  // This is the first build on this pr so make a new comment
-  if (!previousReviewId) {
-    /*
-    const githubReviewResponse = await github.AddPrReview({
-      pull_request_id: pullRequestId.toString(),
-      body,
-    });
-    const existing_github_review_id = githubReviewResponse.addPullRequestReview?.pullRequestReview?.id;
-    if (!existing_github_review_id) {
-      return log.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
-    }
-    */
-
-    const githubReviewResponse = await octokit.request('POST /repos/{owner}/{repo}/check-runs', {
-      owner: buildLookup.builds_by_pk.project.organization.name,
-      repo: buildLookup.builds_by_pk.project.repo,
-      ...checkData,
-    });
-
-    const existing_github_review_id = githubReviewResponse.id;
-
-    log.info('review created');
-    // const submitResponse = await github.SubmitPrReview({ pull_request_id: pullRequestId.toString() })
-    // logger.log('successfully reviewed the PR',submitResponse)
-
-    await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
-    return;
-  }
-
-  // Otherwise just update the existing review on the PR.  Very similar to above but we update instead
-  /*const githubReviewResponse = await github.UpdatePrReview({
-    pull_request_review_id: previousReviewId,
-    body,
-  });
-  const existing_github_review_id = githubReviewResponse.updatePullRequestReview?.pullRequestReview?.id;
-  */
-
-  const githubReviewResponse = await octokit.request('PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}', {
-    owner: buildLookup.builds_by_pk.project.organization.name,
-    repo: buildLookup.builds_by_pk.project.repo,
-    check_run_id: buildLookup.builds_by_pk.existing_github_review_id,
-    ...checkData,
-  });
-
-  const existing_github_review_id = githubReviewResponse.id;
-
-  if (!existing_github_review_id) {
-    return log.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
-  }
-  log.info('successfully updated the PR review');
-  // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
-  await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
-  return;
+  return await executePRCheck(buildLookup, scanReport, buildId, projectId, body, pullRequestId, previousReviewId);
 }
 
 async function findPreviousReviewId(pullRequestId: string): Promise<string | null> {
