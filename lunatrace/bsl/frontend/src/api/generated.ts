@@ -12,6 +12,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   _text: string;
+  bigint: number;
   builds_source_type: 'cli'|'gui'|'pr';
   date: string;
   fix_state_enum: 'fixed'|'not-fixed'|'unknown';
@@ -122,12 +123,25 @@ export type _Text_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['_text']>>;
 };
 
+/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
+export type Bigint_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['bigint']>;
+  _gt?: InputMaybe<Scalars['bigint']>;
+  _gte?: InputMaybe<Scalars['bigint']>;
+  _in?: InputMaybe<Array<Scalars['bigint']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['bigint']>;
+  _lte?: InputMaybe<Scalars['bigint']>;
+  _neq?: InputMaybe<Scalars['bigint']>;
+  _nin?: InputMaybe<Array<Scalars['bigint']>>;
+};
+
 /** columns and relationships of "builds" */
 export type Builds = {
   __typename?: 'builds';
   build_number?: Maybe<Scalars['Int']>;
   created_at: Scalars['timestamp'];
-  existing_github_check_id?: Maybe<Scalars['Int']>;
+  existing_github_check_id?: Maybe<Scalars['bigint']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
@@ -267,7 +281,7 @@ export type Builds_Bool_Exp = {
   _or?: InputMaybe<Array<Builds_Bool_Exp>>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
-  existing_github_check_id?: InputMaybe<Int_Comparison_Exp>;
+  existing_github_check_id?: InputMaybe<Bigint_Comparison_Exp>;
   existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
   findings?: InputMaybe<Findings_Bool_Exp>;
   git_branch?: InputMaybe<String_Comparison_Exp>;
@@ -288,7 +302,7 @@ export type Builds_Max_Fields = {
   __typename?: 'builds_max_fields';
   build_number?: Maybe<Scalars['Int']>;
   created_at?: Maybe<Scalars['timestamp']>;
-  existing_github_check_id?: Maybe<Scalars['Int']>;
+  existing_github_check_id?: Maybe<Scalars['bigint']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
   git_hash?: Maybe<Scalars['String']>;
@@ -319,7 +333,7 @@ export type Builds_Min_Fields = {
   __typename?: 'builds_min_fields';
   build_number?: Maybe<Scalars['Int']>;
   created_at?: Maybe<Scalars['timestamp']>;
-  existing_github_check_id?: Maybe<Scalars['Int']>;
+  existing_github_check_id?: Maybe<Scalars['bigint']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
   git_hash?: Maybe<Scalars['String']>;
@@ -468,7 +482,7 @@ export type Builds_Stddev_Samp_Order_By = {
 export type Builds_Sum_Fields = {
   __typename?: 'builds_sum_fields';
   build_number?: Maybe<Scalars['Int']>;
-  existing_github_check_id?: Maybe<Scalars['Int']>;
+  existing_github_check_id?: Maybe<Scalars['bigint']>;
 };
 
 /** order by sum() on columns of table "builds" */

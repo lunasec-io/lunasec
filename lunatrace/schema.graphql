@@ -151,6 +151,23 @@ input affected_range_type_comparison_exp {
   _nin: [affected_range_type!]
 }
 
+scalar bigint
+
+"""
+Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'.
+"""
+input bigint_comparison_exp {
+  _eq: bigint
+  _gt: bigint
+  _gte: bigint
+  _in: [bigint!]
+  _is_null: Boolean
+  _lt: bigint
+  _lte: bigint
+  _neq: bigint
+  _nin: [bigint!]
+}
+
 """
 columns and relationships of "builds"
 """
@@ -158,7 +175,7 @@ type builds {
   agent_access_token: uuid!
   build_number: Int
   created_at: timestamp!
-  existing_github_check_id: Int
+  existing_github_check_id: bigint
   existing_github_review_id: String
 
   """An array relationship"""
@@ -304,7 +321,7 @@ input builds_bool_exp {
   agent_access_token: uuid_comparison_exp
   build_number: Int_comparison_exp
   created_at: timestamp_comparison_exp
-  existing_github_check_id: Int_comparison_exp
+  existing_github_check_id: bigint_comparison_exp
   existing_github_review_id: String_comparison_exp
   findings: findings_bool_exp
   git_branch: String_comparison_exp
@@ -339,7 +356,7 @@ input type for incrementing numeric columns in table "builds"
 """
 input builds_inc_input {
   build_number: Int
-  existing_github_check_id: Int
+  existing_github_check_id: bigint
 }
 
 """
@@ -349,7 +366,7 @@ input builds_insert_input {
   agent_access_token: uuid
   build_number: Int
   created_at: timestamp
-  existing_github_check_id: Int
+  existing_github_check_id: bigint
   existing_github_review_id: String
   findings: findings_arr_rel_insert_input
   git_branch: String
@@ -370,7 +387,7 @@ type builds_max_fields {
   agent_access_token: uuid
   build_number: Int
   created_at: timestamp
-  existing_github_check_id: Int
+  existing_github_check_id: bigint
   existing_github_review_id: String
   git_branch: String
   git_hash: String
@@ -404,7 +421,7 @@ type builds_min_fields {
   agent_access_token: uuid
   build_number: Int
   created_at: timestamp
-  existing_github_check_id: Int
+  existing_github_check_id: bigint
   existing_github_review_id: String
   git_branch: String
   git_hash: String
@@ -540,7 +557,7 @@ input builds_set_input {
   agent_access_token: uuid
   build_number: Int
   created_at: timestamp
-  existing_github_check_id: Int
+  existing_github_check_id: bigint
   existing_github_review_id: String
   git_branch: String
   git_hash: String
@@ -612,7 +629,7 @@ input builds_stddev_samp_order_by {
 """aggregate sum on columns"""
 type builds_sum_fields {
   build_number: Int
-  existing_github_check_id: Int
+  existing_github_check_id: bigint
 }
 
 """
