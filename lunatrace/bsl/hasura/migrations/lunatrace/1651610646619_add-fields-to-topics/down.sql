@@ -1,1 +1,2 @@
-ALTER TABLE public.topics DROP COLUMN severity;
+ALTER TABLE public.topics
+    DROP COLUMN severity;
