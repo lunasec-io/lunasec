@@ -20,9 +20,13 @@ import { getInstallationAccessToken } from '../../auth';
 // This simply calls github and upserts all repos.  We can call it in different situations where we thing the repos may have
 // Not the most performant solution but it works and is simple
 export async function syncRepositoriesHandler(
-  event: EmitterWebhookEvent<'installation_repositories.added' | 'installation.created'>
+  event: EmitterWebhookEvent<'installation_repositories.added' | 'installation.created' | 'repository.edited'>
 ) {
-  const installationId = event.payload.installation.id;
+  const installationId = event.payload.installation?.id;
+  if (!installationId) {
+    log.error('hook was missing installation id, exiting');
+    return;
+  }
   const installationAuthToken = await getInstallationAccessToken(installationId);
   if (installationAuthToken.error) {
     log.error('unable to get installation token', {
