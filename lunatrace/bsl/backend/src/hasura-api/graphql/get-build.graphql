@@ -2,8 +2,10 @@ query GetBuild($build_id: uuid!) {
   builds_by_pk(id: $build_id) {
     project {
       id
+      repo
       organization {
         installation_id
+        name
       }
       settings {
         pr_feedback_disabled
@@ -12,5 +14,6 @@ query GetBuild($build_id: uuid!) {
     pull_request_id
     existing_github_review_id
     s3_url
+    git_hash
   }
 }
