@@ -12,29 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package types
+package grypefx
 
-type UUID string
-
-type PackageManager string
-
-const (
-	NPM = "npm"
+import (
+	"github.com/anchore/grype/grype/db"
+	v3 "github.com/anchore/grype/grype/db/v3"
+	"github.com/anchore/grype/grype/vulnerability"
 )
 
-type LicenseSource string
+func LoadVulnerabilityDB(store v3.StoreReader) (vulnerability.Provider, vulnerability.MetadataProvider, *db.Status, error) {
+	status, err := store.GetID()
+	if err != nil {
+		return nil, nil, nil, err
+	}
 
-const (
-	Manual     LicenseSource = "manual"
-	ScanRepo   LicenseSource = "scan_repo"
-	ScanBinary LicenseSource = "scan_binary"
-	ApiNpm     LicenseSource = "api_npm"
-)
-
-type AffectedVersionType string
-
-const (
-	Git       AffectedVersionType = "git"
-	SemVer    AffectedVersionType = "semver"
-	Ecosystem AffectedVersionType = "ecosystem"
-)
+	return db.NewVulnerabilityProvider(store), db.NewVulnerabilityMetadataProvider(store), &db.Status{
+		Built:         status.BuildTimestamp,
+		SchemaVersion: status.SchemaVersion,
+	}, nil
+}
