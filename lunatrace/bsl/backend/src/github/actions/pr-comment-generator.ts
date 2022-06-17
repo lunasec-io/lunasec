@@ -162,11 +162,7 @@ async function executePRCheck(
 
     inserted_check_id = githubReviewResponse.data.id;
 
-    log.info('review created');
-    // const submitResponse = await github.SubmitPrReview({ pull_request_id: pullRequestId.toString() })
-    // logger.log('successfully reviewed the PR',submitResponse)
-
-    await hasura.UpdateBuildExistingCheckId({ id: buildId, existing_github_check_id: inserted_check_id });
+    log.info('check created');
   }
 
   // Otherwise just update the existing review on the PR.  Very similar to above but we update instead
@@ -181,9 +177,9 @@ async function executePRCheck(
   const existing_github_check_id = githubReviewResponse.data.id;
 
   if (!existing_github_check_id) {
-    return log.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
+    return log.error('Failed to generate a check, github responded ', githubReviewResponse);
   }
-  log.info('successfully updated the PR review');
+  log.info('successfully updated the check');
   // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
   await hasura.UpdateBuildExistingCheckId({ id: buildId, existing_github_check_id });
   return;
