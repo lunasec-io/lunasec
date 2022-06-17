@@ -1,11 +1,11 @@
 CREATE TABLE public.ignored_vulnerabilities
 (
     id               uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
-    project_id       uuid    NOT NULL references public.projects ON DELETE CASCADE,
-    vulnerability_id uuid    NOT NULL references public.vulnerabilities ON DELETE CASCADE,
-    creator_id       uuid    references public.identities ON DELETE SET NULL,
-    locations        jsonb NOT NULL,
-    note             text    NOT NULL,
+    project_id       uuid                                  NOT NULL REFERENCES public.projects ON DELETE CASCADE,
+    vulnerability_id uuid                                  NOT NULL REFERENCES public.vulnerabilities ON DELETE CASCADE,
+    creator_id       uuid                                  REFERENCES public.identities ON DELETE SET NULL,
+    locations        jsonb                                 NOT NULL,
+    note             TEXT                                  NOT NULL,
     UNIQUE (project_id, vulnerability_id)
 )
 

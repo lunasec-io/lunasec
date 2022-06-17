@@ -3630,6 +3630,105 @@ func GetVulnerability(
 		Query: `
 query GetVulnerability ($package_name: String!, $package_manager: package_manager!) {
 	vulnerability(where: {affected:{package:{name:{_eq:$package_name},package_manager:{_eq:$package_manager}}}}) {
+		id
+		affected {
+			package {
+				name
+				package_manager
+			}
+			affected_range_events {
+				event
+				version
+			}
+			affected_versions {
+				type
+				version
+			}
+		}
+		equivalents {
+			vulnerability {
+				id
+				source
+				source_id
+			}
+		}
+		references {
+			id
+			url
+		}
+		source
+		source_id
+	}
+}
+`,
+		Variables: &__GetVulnerabilityInput{
+			Package_name:    package_name,
+			Package_manager: package_manager,
+		},
+	}
+	var err error
+
+	var data GetVulnerabilityResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
+
+func GetVulnerabilityMetadata(
+	ctx context.Context,
+	client graphql.Client,
+	id uuid.UUID,
+) (*GetVulnerabilityMetadataResponse, error) {
+	req := &graphql.Request{
+		OpName: "GetVulnerabilityMetadata",
+		Query: `
+query GetVulnerabilityMetadata ($id: uuid!) {
+	vulnerability_by_pk(id: $id) {
+		id
+		source
+		source_id
+		references {
+			url
+		}
+		details
+	}
+}
+`,
+		Variables: &__GetVulnerabilityMetadataInput{
+			Id: id,
+		},
+	}
+	var err error
+
+	var data GetVulnerabilityMetadataResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
+
+func GetVulnerability(
+	ctx context.Context,
+	client graphql.Client,
+	package_name string,
+	package_manager types.PackageManager,
+) (*GetVulnerabilityResponse, error) {
+	req := &graphql.Request{
+		OpName: "GetVulnerability",
+		Query: `
+query GetVulnerability ($package_name: String!, $package_manager: package_manager!) {
+	vulnerability(where: {affected:{package:{name:{_eq:$package_name},package_manager:{_eq:$package_manager}}}}) {
 		... vulnerabilityFragment
 	}
 }
