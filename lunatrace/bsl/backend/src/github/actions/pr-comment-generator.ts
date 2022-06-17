@@ -224,7 +224,6 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
   if (body === null) {
     log.error(`generated scan report is null`, {
       projectId,
-      installationId,
       pullRequestId,
     });
     return;
@@ -234,7 +233,11 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
 
   log.info('Starting PR Comment Submission flow');
   log.info('found previous review id of ', previousReviewId);
-  return await executePRCheck(buildLookup, scanReport, buildId, projectId, body, pullRequestId, previousReviewId);
+
+  await executePRCheck(buildLookup, scanReport, buildId, projectId, body, pullRequestId, previousReviewId);
+  await executePRComment(buildLookup, scanReport, buildId, projectId, body, pullRequestId, previousReviewId);
+
+  return;
 }
 
 async function findPreviousReviewId(pullRequestId: string): Promise<string | null> {
