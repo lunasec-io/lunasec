@@ -29,29 +29,84 @@ func mapNamespace(namespace string) types.PackageManager {
 
 // map packagemanager to grype namespace
 func mapPackageManager(pm types.PackageManager) string {
-  //TODO implement me
-  panic("implement me")
+	//TODO implement me
+	panic("implement me")
+}
+
+type versionEvent struct {
+	Event   string
+	Version semver.Version
+}
+
+// sort events by semver
+// find all ranges which are vulnerable
+func eventsToRanges(gqlevts []*gql.GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event) []string {
+	// build introducedEvent struct
+	evts := make([]versionEvent, len(gqlevts))
+	for i, gqlevt := range gqlevts {
+		ver, err := semver.ParseTolerant(gqlevt.Version)
+		if err != nil {
+			fmt.Println("todo change me to a log statement failed to parse a version")
+			continue
+		}
+		evts[i] = versionEvent{
+			Event:   gqlevt.Event,
+			Version: ver,
+		}
+	}
+
+	// sort evts
+	sort.Slice(evts, func(i, j int) bool {
+		return evts[i].Version.LT(evts[j].Version)
+	})
+
+	ranges := make([]string, 0)
+
+	// for each introduced
+introduced:
+	for evti, introducedEvent := range evts {
+		if introducedEvent.Event != "introduced" {
+			continue
+		}
+		// loop over next
+		for _, fixedEvent := range evts[evti:] {
+			// find fixed
+			if fixedEvent.Event == "fixed" {
+				// emit a range
+				ranges = append(ranges, fmt.Sprintf(">= %s <= %s", introducedEvent.Version.String(), fixedEvent.Version.String()))
+				continue introduced
+			}
+		}
+	}
+	return ranges
 }
 
 func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, error) {
-  out := make([]v3.Vulnerability, len(ovs))
-  for _, ov := range ovs {
-    for _, ova := range ov.Affected {
-      out = append(out, v3.Vulnerability{
-        ID:          ov.Id.String(),
-        PackageName: ova.Package.Name,
-        Namespace:   mapPackageManager(ova.Package.Package_manager),
-        // todo how advanced is the semver query support, ||?
-        VersionConstraint: "",
-        VersionFormat:     "semver",
-        // todo do we need to provide cpes
-        CPEs: nil,
-        // todo
-        RelatedVulnerabilities: nil,
-      })
-    }
-  }
-  return out, nil
+	out := make([]v3.Vulnerability, 0)
+	for _, ov := range ovs {
+		for _, ova := range ov.Affected {
+			constraints := make([]string, 0)
+			for _, av := range ova.Affected_versions {
+				constraints = append(constraints, fmt.Sprintf("= %s", av.Version))
+			}
+
+			constraints = append(constraints, eventsToRanges(ova.Affected_range_events)...)
+
+			out = append(out, v3.Vulnerability{
+				ID:          ov.Id.String(),
+				PackageName: ova.Package.Name,
+				Namespace:   mapPackageManager(ova.Package.Package_manager),
+				// CVE-2019-17542,ffmpeg,nvd,"< 2.8.16 || >= 3.2, < 3.2.15 || >= 3.4, < 3.4.7 || >= 4.0, < 4.0.5 || >= 4.1, < 4.1.5"
+				VersionConstraint: strings.Join(constraints, " || "),
+				VersionFormat:     "semver",
+				// todo do we need to provide cpes no unless we WANT bad matching
+				CPEs: nil,
+				// todo is this required?
+				RelatedVulnerabilities: nil,
+			})
+		}
+	}
+	return out, nil
 }
 
 // n2z converts nil pointers to the zero value of their type.
@@ -64,9 +119,9 @@ func n2z[T any](test *T) T {
 }
 
 func mapURLs(urls []*gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) []string {
-  out := make([]string, len(urls))
-  for i, ou := range urls {
-    out[i] = ou.Url
-  }
-  return out
+	out := make([]string, len(urls))
+	for i, ou := range urls {
+		out[i] = ou.Url
+	}
+	return out
 }
