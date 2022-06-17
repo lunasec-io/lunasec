@@ -24,7 +24,7 @@ export async function syncRepositoriesHandler(
 ) {
   const installationId = event.payload.installation?.id;
   if (!installationId) {
-    log.error('hook was missing installation id, exiting');
+    log.error('hook was missing installation id, aborting handler');
     return;
   }
   const installationAuthToken = await getInstallationAccessToken(installationId);
