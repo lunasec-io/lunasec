@@ -1,5 +1,5 @@
-ALTER TABLE builds
+ALTER TABLE public.builds
     DROP COLUMN existing_github_check_id;
 
-ALTER TABLE settings
+ALTER TABLE public.settings
     DROP COLUMN pr_check_enabled;
