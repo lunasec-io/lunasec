@@ -35,7 +35,7 @@ func mapNamespace(namespace string) types.PackageManager {
 // map packagemanager to grype namespace
 func mapPackageManager(pm types.PackageManager) string {
 	//TODO implement me
-	panic("implement me")
+	return string(pm)
 }
 
 type versionEvent struct {

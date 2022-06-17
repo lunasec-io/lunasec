@@ -138,7 +138,7 @@ func validateDBLoad(loadErr error, status *db.Status) error {
 }
 
 func GrypeSbomScanFromFile(filename string) (document models.Document, err error) {
-	log.Error().Msg("loading gql db")
+	log.Debug().Msg("loading gql db")
 
 	gqlStore, err := gqlstorefx.NewGraphQLStore(gqlstorefx.StoreDeps{
 		GQLClient: graphql.NewClient("http://localhost:8080/v1/graphql", &http.Client{
