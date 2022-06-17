@@ -18,6 +18,7 @@ import { Octokit } from 'octokit';
 import { hasura } from '../../hasura-api';
 import { GetBuildQuery } from '../../hasura-api/generated';
 import { InsertedScan } from '../../models/scan';
+import { newError } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { generateGithubGraphqlClient } from '../api';
 import { getInstallationAccessToken } from '../auth';
@@ -134,18 +135,33 @@ async function executePRCheck(
   pullRequestId: string,
   previousReviewId: string | null
 ) {
+  log.info('starting check flow');
   const authToken = await getInstallationAccessToken(installationId);
-  const octokit = new Octokit({ auth: authToken });
+
+  if (authToken.error) {
+    const msg = 'unable to get installation token';
+    log.error(msg, {
+      error: authToken.msg,
+    });
+    return newError(msg);
+  }
+
+  const octokit = new Octokit({ auth: authToken.res });
+
+  if (!buildLookup.builds_by_pk?.git_hash) {
+    log.error("can't comment because git hash is missing");
+  }
 
   const checkData = {
     name: 'LunaTrace',
-    head_sha: buildLookup.builds_by_pk?.git_hash || '',
+    head_sha: buildLookup.builds_by_pk?.git_hash,
     external_id: buildId,
-    completed_at: Date.now().toString(),
     details_url: `https://lunatrace.lunasec.io/project/${projectId}/build/${buildId}`,
     output: {
       title: 'LunaTrace',
-      summary: scanReport.findings.length ? 'Vulnerabilities detected' : 'No vulnerabilities detected',
+      summary: scanReport.findings.length
+        ? `${scanReport.findings.length} vulnerabilities detected`
+        : 'No vulnerabilities detected',
       text: body,
     },
   };
@@ -153,24 +169,24 @@ async function executePRCheck(
   let inserted_check_id;
   // This is the first build on this pr so make a new comment
   if (!previousReviewId) {
-    const githubReviewResponse = await octokit.request('POST /repos/{owner}/{repo}/check-runs', {
+    const githubReviewResponse = await octokit.rest.checks.create({
       owner: buildLookup.builds_by_pk?.project?.organization?.name || '',
-      repo: buildLookup.builds_by_pk?.project?.repo || '',
+      repo: buildLookup.builds_by_pk?.project?.name || '',
       status: 'in_progress',
       ...checkData,
     });
 
     inserted_check_id = githubReviewResponse.data.id;
-
     log.info('check created');
   }
 
   // Otherwise just update the existing review on the PR.  Very similar to above but we update instead
-  const githubReviewResponse = await octokit.request('PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}', {
+  const githubReviewResponse = await octokit.rest.checks.update({
     owner: buildLookup.builds_by_pk?.project?.organization?.name || '',
-    repo: buildLookup.builds_by_pk?.project?.repo || '',
-    check_run_id: inserted_check_id || buildLookup.builds_by_pk?.existing_github_check_id || 0,
+    repo: buildLookup.builds_by_pk?.project?.name || '',
+    check_run_id: inserted_check_id || buildLookup.builds_by_pk?.existing_github_check_id,
     conclusion: scanReport.findings.length ? 'neutral' : 'success',
+    completed_at: new Date().toISOString(),
     ...checkData,
   });
 

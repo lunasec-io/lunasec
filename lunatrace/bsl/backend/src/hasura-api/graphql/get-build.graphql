@@ -2,7 +2,7 @@ query GetBuild($build_id: uuid!) {
   builds_by_pk(id: $build_id) {
     project {
       id
-      repo
+      name
       organization {
         installation_id
         name
