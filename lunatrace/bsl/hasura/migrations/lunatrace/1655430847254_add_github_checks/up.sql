@@ -1,5 +1,5 @@
 ALTER TABLE public.builds
-    ADD COLUMN existing_github_check_id INTEGER
+    ADD COLUMN existing_github_check_id BIGINT
         NULL;
 
 ALTER TABLE public.settings
