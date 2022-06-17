@@ -12,88 +12,88 @@
 package ingester
 
 import (
-	"context"
-	"fmt"
-	"time"
+  "context"
+  "fmt"
+  "github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
+  "time"
 
-	"github.com/Khan/genqlient/graphql"
-	"go.uber.org/fx"
+  "github.com/Khan/genqlient/graphql"
+  "go.uber.org/fx"
 
-	metadata2 "github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata/mapper"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
+  metadata2 "github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata/mapper"
+  "github.com/lunasec-io/lunasec/lunatrace/cli/gql"
+  "github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
 // todo tune date
 const refetchDays = 0
 
 type Params struct {
-	fx.In
+  fx.In
 
-	Fetcher   metadata2.Fetcher
-	GQLClient graphql.Client
+  Fetcher   metadata2.Fetcher
+  GQLClient graphql.Client
 }
 
 type hasuraNPMIngester struct {
-	deps Params
+  deps Params
 }
 
 var npmV types.PackageManager = types.NPM
 
 func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]string, error) {
-	// todo make sure this isn't too restrictive
-	// check if we've already fetched this package
-	checkRes, err := gql.PackageFetchTime(ctx, h.deps.GQLClient, &npmV, util.Ptr(""), util.Ptr(packageName))
-	if err != nil {
-		return nil, err
-	}
-	for _, pkg := range checkRes.Package {
-		fmt.Println(pkg)
-		if pkg.Fetched_time != nil &&
-			pkg.Fetched_time.After(time.Now().AddDate(0, 0, -refetchDays)) {
-			// bail out early
-			fmt.Println("bail out because we already have package")
-			return nil, nil
-		}
-	}
+  // todo make sure this isn't too restrictive
+  // check if we've already fetched this package
+  checkRes, err := gql.PackageFetchTime(ctx, h.deps.GQLClient, &npmV, util.Ptr(""), util.Ptr(packageName))
+  if err != nil {
+    return nil, err
+  }
+  for _, pkg := range checkRes.Package {
+    fmt.Println(pkg)
+    if pkg.Fetched_time != nil &&
+      pkg.Fetched_time.After(time.Now().AddDate(0, 0, -refetchDays)) {
+      // bail out early
+      fmt.Println("bail out because we already have package")
+      return nil, nil
+    }
+  }
 
-	pkg, err := h.deps.Fetcher.Fetch(ctx, packageName)
-	if err != nil {
-		return nil, err
-	}
+  pkg, err := h.deps.Fetcher.Fetch(ctx, packageName)
+  if err != nil {
+    return nil, err
+  }
 
-	gqlPkg, err := mapper.Map(pkg)
-	if err != nil {
-		return nil, err
-	}
+  gqlPkg, err := mapper.Map(pkg)
+  if err != nil {
+    return nil, err
+  }
 
-	res, err := gql.UpsertPackage(ctx, h.deps.GQLClient, gqlPkg, gql.PackageOnConflict)
-	if err != nil {
-		return nil, err
-	}
+  res, err := gql.UpsertPackage(ctx, h.deps.GQLClient, gqlPkg, gql.PackageOnConflict)
+  if err != nil {
+    return nil, err
+  }
 
-	needToCheck := make(map[string]struct{})
+  needToCheck := make(map[string]struct{})
 
-	for _, rel := range res.Insert_package_one.Releases {
-		for _, dep := range rel.Release_dependencies {
-			if dep.Dependency_package == nil ||
-				dep.Dependency_package.Fetched_time == nil ||
-				dep.Dependency_package.Fetched_time.Before(time.Now().AddDate(0, 0, -refetchDays)) {
-				needToCheck[dep.Dependency_package.Name] = struct{}{}
-			}
-		}
-	}
+  for _, rel := range res.Insert_package_one.Releases {
+    for _, dep := range rel.Release_dependencies {
+      if dep.Dependency_package == nil ||
+        dep.Dependency_package.Fetched_time == nil ||
+        dep.Dependency_package.Fetched_time.Before(time.Now().AddDate(0, 0, -refetchDays)) {
+        needToCheck[dep.Dependency_package.Name] = struct{}{}
+      }
+    }
+  }
 
-	checkList := make([]string, 0, len(needToCheck))
-	for pkgName, _ := range needToCheck {
-		checkList = append(checkList, pkgName)
-	}
+  checkList := make([]string, 0, len(needToCheck))
+  for pkgName, _ := range needToCheck {
+    checkList = append(checkList, pkgName)
+  }
 
-	return checkList, nil
+  return checkList, nil
 }
 
 func NewHasuraIngester(p Params) (metadata2.Ingester, error) {
-	return &hasuraNPMIngester{deps: p}, nil
+  return &hasuraNPMIngester{deps: p}, nil
 }

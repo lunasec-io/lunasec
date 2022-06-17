@@ -134,21 +134,21 @@ input _text_comparison_exp {
   _nin: [_text!]
 }
 
-scalar affected_version_type
+scalar affected_range_type
 
 """
-Boolean expression to compare columns of type "affected_version_type". All fields are combined with logical 'AND'.
+Boolean expression to compare columns of type "affected_range_type". All fields are combined with logical 'AND'.
 """
-input affected_version_type_comparison_exp {
-  _eq: affected_version_type
-  _gt: affected_version_type
-  _gte: affected_version_type
-  _in: [affected_version_type!]
+input affected_range_type_comparison_exp {
+  _eq: affected_range_type
+  _gt: affected_range_type
+  _gte: affected_range_type
+  _in: [affected_range_type!]
   _is_null: Boolean
-  _lt: affected_version_type
-  _lte: affected_version_type
-  _neq: affected_version_type
-  _nin: [affected_version_type!]
+  _lt: affected_range_type
+  _lte: affected_range_type
+  _neq: affected_range_type
+  _nin: [affected_range_type!]
 }
 
 """
@@ -3445,6 +3445,9 @@ type mutation_root {
   insert_vulnerability_credit(
     """the rows to be inserted"""
     objects: [vulnerability_credit_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: vulnerability_credit_on_conflict
   ): vulnerability_credit_mutation_response
 
   """
@@ -3453,6 +3456,9 @@ type mutation_root {
   insert_vulnerability_credit_one(
     """the row to be inserted"""
     object: vulnerability_credit_insert_input!
+
+    """upsert condition"""
+    on_conflict: vulnerability_credit_on_conflict
   ): vulnerability_credit
 
   """
@@ -4458,6 +4464,26 @@ type mutation_root {
     _set: vulnerability_set_input
     pk_columns: vulnerability_pk_columns_input!
   ): vulnerability
+
+  """
+  update data of the table: "vulnerability.credit"
+  """
+  update_vulnerability_credit(
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_credit_set_input
+
+    """filter the rows which have to be updated"""
+    where: vulnerability_credit_bool_exp!
+  ): vulnerability_credit_mutation_response
+
+  """
+  update single row of the table: "vulnerability.credit"
+  """
+  update_vulnerability_credit_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: vulnerability_credit_set_input
+    pk_columns: vulnerability_credit_pk_columns_input!
+  ): vulnerability_credit
 
   """
   update data of the table: "vulnerability.equivalent"
@@ -10395,7 +10421,6 @@ type vulnerability {
     """filter the rows returned"""
     where: vulnerability_affected_bool_exp
   ): [vulnerability_affected!]!
-  aliases: _text
 
   """An array relationship"""
   credits(
@@ -10536,8 +10561,8 @@ type vulnerability_affected {
   id: uuid!
 
   """An object relationship"""
-  package: package!
-  package_id: uuid!
+  package: package
+  package_id: uuid
 
   """An object relationship"""
   vulnerability: vulnerability
@@ -10722,6 +10747,7 @@ type vulnerability_affected_range_event {
   ): jsonb
   event: String!
   id: uuid!
+  type: affected_range_type!
   version: String!
 }
 
@@ -10761,6 +10787,7 @@ input vulnerability_affected_range_event_bool_exp {
   database_specific: jsonb_comparison_exp
   event: String_comparison_exp
   id: uuid_comparison_exp
+  type: affected_range_type_comparison_exp
   version: String_comparison_exp
 }
 
@@ -10769,7 +10796,7 @@ unique or primary key constraints on table "vulnerability.affected_range_event"
 """
 enum vulnerability_affected_range_event_constraint {
   """unique or primary key constraint"""
-  affected_range_event_affected_id_idx
+  affected_range_event_affected_id_type_event_version_idx
 
   """unique or primary key constraint"""
   affected_range_event_pkey
@@ -10805,6 +10832,7 @@ input vulnerability_affected_range_event_insert_input {
   database_specific: jsonb
   event: String
   id: uuid
+  type: affected_range_type
   version: String
 }
 
@@ -10857,6 +10885,7 @@ input vulnerability_affected_range_event_order_by {
   database_specific: order_by
   event: order_by
   id: order_by
+  type: order_by
   version: order_by
 }
 
@@ -10889,6 +10918,9 @@ enum vulnerability_affected_range_event_select_column {
   id
 
   """column name"""
+  type
+
+  """column name"""
   version
 }
 
@@ -10900,6 +10932,7 @@ input vulnerability_affected_range_event_set_input {
   database_specific: jsonb
   event: String
   id: uuid
+  type: affected_range_type
   version: String
 }
 
@@ -10918,6 +10951,9 @@ enum vulnerability_affected_range_event_update_column {
 
   """column name"""
   id
+
+  """column name"""
+  type
 
   """column name"""
   version
@@ -10986,7 +11022,6 @@ type vulnerability_affected_version {
     path: String
   ): jsonb
   id: uuid!
-  type: affected_version_type!
   version: String!
 }
 
@@ -11025,7 +11060,6 @@ input vulnerability_affected_version_bool_exp {
   affected_id: uuid_comparison_exp
   database_specific: jsonb_comparison_exp
   id: uuid_comparison_exp
-  type: affected_version_type_comparison_exp
   version: String_comparison_exp
 }
 
@@ -11069,7 +11103,6 @@ input vulnerability_affected_version_insert_input {
   affected_id: uuid
   database_specific: jsonb
   id: uuid
-  type: affected_version_type
   version: String
 }
 
@@ -11119,7 +11152,6 @@ input vulnerability_affected_version_order_by {
   affected_id: order_by
   database_specific: order_by
   id: order_by
-  type: order_by
   version: order_by
 }
 
@@ -11147,9 +11179,6 @@ enum vulnerability_affected_version_select_column {
   id
 
   """column name"""
-  type
-
-  """column name"""
   version
 }
 
@@ -11160,7 +11189,6 @@ input vulnerability_affected_version_set_input {
   affected_id: uuid
   database_specific: jsonb
   id: uuid
-  type: affected_version_type
   version: String
 }
 
@@ -11176,9 +11204,6 @@ enum vulnerability_affected_version_update_column {
 
   """column name"""
   id
-
-  """column name"""
-  type
 
   """column name"""
   version
@@ -11198,7 +11223,6 @@ input vulnerability_bool_exp {
   _not: vulnerability_bool_exp
   _or: [vulnerability_bool_exp!]
   affected: vulnerability_affected_bool_exp
-  aliases: _text_comparison_exp
   credits: vulnerability_credit_bool_exp
   database_specific: jsonb_comparison_exp
   details: String_comparison_exp
@@ -11253,6 +11277,9 @@ input type for inserting array relation for remote table "vulnerability.credit"
 """
 input vulnerability_credit_arr_rel_insert_input {
   data: [vulnerability_credit_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: vulnerability_credit_on_conflict
 }
 
 """
@@ -11267,6 +11294,17 @@ input vulnerability_credit_bool_exp {
   name: String_comparison_exp
   vulnerability: vulnerability_bool_exp
   vulnerability_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "vulnerability.credit"
+"""
+enum vulnerability_credit_constraint {
+  """unique or primary key constraint"""
+  credit_pkey
+
+  """unique or primary key constraint"""
+  credit_vulnerability_id_name
 }
 
 """
@@ -11309,6 +11347,15 @@ type vulnerability_credit_mutation_response {
   returning: [vulnerability_credit!]!
 }
 
+"""
+on_conflict condition type for table "vulnerability.credit"
+"""
+input vulnerability_credit_on_conflict {
+  constraint: vulnerability_credit_constraint!
+  update_columns: [vulnerability_credit_update_column!]! = []
+  where: vulnerability_credit_bool_exp
+}
+
 """Ordering options when selecting data from "vulnerability.credit"."""
 input vulnerability_credit_order_by {
   contact: order_by
@@ -11318,10 +11365,42 @@ input vulnerability_credit_order_by {
   vulnerability_id: order_by
 }
 
+"""primary key columns input for table: vulnerability_credit"""
+input vulnerability_credit_pk_columns_input {
+  id: uuid!
+}
+
 """
 select columns of table "vulnerability.credit"
 """
 enum vulnerability_credit_select_column {
+  """column name"""
+  contact
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  vulnerability_id
+}
+
+"""
+input type for updating data in table "vulnerability.credit"
+"""
+input vulnerability_credit_set_input {
+  contact: _text
+  id: uuid
+  name: String
+  vulnerability_id: uuid
+}
+
+"""
+update columns of table "vulnerability.credit"
+"""
+enum vulnerability_credit_update_column {
   """column name"""
   contact
 
@@ -11502,7 +11581,6 @@ input type for inserting data into table "vulnerability.vulnerability"
 """
 input vulnerability_insert_input {
   affected: vulnerability_affected_arr_rel_insert_input
-  aliases: _text
   credits: vulnerability_credit_arr_rel_insert_input
   database_specific: jsonb
   details: String
@@ -11554,7 +11632,6 @@ Ordering options when selecting data from "vulnerability.vulnerability".
 """
 input vulnerability_order_by {
   affected_aggregate: vulnerability_affected_aggregate_order_by
-  aliases: order_by
   credits_aggregate: vulnerability_credit_aggregate_order_by
   database_specific: order_by
   details: order_by
@@ -11960,9 +12037,6 @@ select columns of table "vulnerability.vulnerability"
 """
 enum vulnerability_select_column {
   """column name"""
-  aliases
-
-  """column name"""
   database_specific
 
   """column name"""
@@ -11997,7 +12071,6 @@ enum vulnerability_select_column {
 input type for updating data in table "vulnerability.vulnerability"
 """
 input vulnerability_set_input {
-  aliases: _text
   database_specific: jsonb
   details: String
   id: uuid
@@ -12193,9 +12266,6 @@ enum vulnerability_severity_update_column {
 update columns of table "vulnerability.vulnerability"
 """
 enum vulnerability_update_column {
-  """column name"""
-  aliases
-
   """column name"""
   database_specific
 
