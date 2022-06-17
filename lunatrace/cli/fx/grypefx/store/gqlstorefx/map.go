@@ -15,58 +15,58 @@
 package gqlstorefx
 
 import (
-	v3 "github.com/anchore/grype/grype/db/v3"
+  v3 "github.com/anchore/grype/grype/db/v3"
+  "github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
+  "github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 )
 
 // map grype namespace to packagemanager
 func mapNamespace(namespace string) types.PackageManager {
-	//TODO implement me
-	panic("implement me")
+  //TODO implement me
+  panic("implement me")
 }
 
 // map packagemanager to grype namespace
 func mapPackageManager(pm types.PackageManager) string {
-	//TODO implement me
-	panic("implement me")
+  //TODO implement me
+  panic("implement me")
 }
 
 func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, error) {
-	out := make([]v3.Vulnerability, len(ovs))
-	for _, ov := range ovs {
-		for _, ova := range ov.Affected {
-			out = append(out, v3.Vulnerability{
-				ID:          ov.Id.String(),
-				PackageName: ova.Package.Name,
-				Namespace:   mapPackageManager(ova.Package.Package_manager),
-				// todo how advanced is the semver query support, ||?
-				VersionConstraint: "",
-				VersionFormat:     "semver",
-				// todo do we need to provide cpes
-				CPEs: nil,
-				// todo
-				RelatedVulnerabilities: nil,
-			})
-		}
-	}
-	return out, nil
+  out := make([]v3.Vulnerability, len(ovs))
+  for _, ov := range ovs {
+    for _, ova := range ov.Affected {
+      out = append(out, v3.Vulnerability{
+        ID:          ov.Id.String(),
+        PackageName: ova.Package.Name,
+        Namespace:   mapPackageManager(ova.Package.Package_manager),
+        // todo how advanced is the semver query support, ||?
+        VersionConstraint: "",
+        VersionFormat:     "semver",
+        // todo do we need to provide cpes
+        CPEs: nil,
+        // todo
+        RelatedVulnerabilities: nil,
+      })
+    }
+  }
+  return out, nil
 }
 
 // n2z converts nil pointers to the zero value of their type.
 func n2z[T any](test *T) T {
-	var result T
-	if test == nil {
-		return result
-	}
-	return *test
+  var result T
+  if test == nil {
+    return result
+  }
+  return *test
 }
 
 func mapURLs(urls []*gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) []string {
-	out := make([]string, len(urls))
-	for i, ou := range urls {
-		out[i] = ou.Url
-	}
-	return out
+  out := make([]string, len(urls))
+  for i, ou := range urls {
+    out[i] = ou.Url
+  }
+  return out
 }

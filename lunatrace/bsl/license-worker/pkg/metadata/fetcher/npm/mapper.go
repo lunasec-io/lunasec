@@ -12,92 +12,91 @@
 package npm
 
 import (
-	"encoding/json"
-	"fmt"
-	"time"
+  "encoding/json"
+  "fmt"
+  "time"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata"
 )
 
 func adapt(n *NpmPackageMetadataWithRawVersions, packageRaw []byte) (*metadata.PackageMetadata, error) {
-	releases, err := mapReleases(n.VersionsRaw)
-	if err != nil {
-		return nil, err
-	}
-	r := &metadata.PackageMetadata{
-		Name:         n.Name,
-		Description:  n.Description,
-		Registry:     NpmRegistry,
-		Maintainers:  mapMaintainers(n.Maintainers),
-		Releases:     releases,
-		UpstreamData: packageRaw,
-	}
+  releases, err := mapReleases(n.VersionsRaw)
+  if err != nil {
+    return nil, err
+  }
+  r := &metadata.PackageMetadata{
+    Name:         n.Name,
+    Description:  n.Description,
+    Registry:     NpmRegistry,
+    Maintainers:  mapMaintainers(n.Maintainers),
+    Releases:     releases,
+    UpstreamData: packageRaw,
+  }
 
-	return r, nil
+  return r, nil
 }
 
 func mapMaintainers(a []Author) []metadata.Maintainer {
-	m := make([]metadata.Maintainer, len(a))
-	for i, mt := range a {
-		m[i] = metadata.Maintainer{
-			Name:  mt.Name,
-			Email: mt.Email,
-		}
+  m := make([]metadata.Maintainer, len(a))
+  for i, mt := range a {
+    m[i] = metadata.Maintainer{
+      Name:  mt.Name,
+      Email: mt.Email,
+    }
 
-	}
-	return m
+  }
+  return m
 }
 
 func mapReleases(r map[string]json.RawMessage) ([]metadata.Release, error) {
-	m := make([]metadata.Release, 0, len(r))
-	for rv, rrl := range r {
+  m := make([]metadata.Release, 0, len(r))
+  for rv, rrl := range r {
 
-		var rl Version
+    var rl Version
 
-		err := json.Unmarshal(rrl, &rl)
-		if err != nil {
-			fmt.Println("release failed to unmarshal, dropping error")
-			continue
-		}
+    err := json.Unmarshal(rrl, &rl)
+    if err != nil {
+      fmt.Println("release failed to unmarshal, dropping error")
+      continue
+    }
 
-		m = append(m, metadata.Release{
-			Version: rv,
+    m = append(m, metadata.Release{
+      Version: rv,
 
-			PublishingMaintainer: metadata.Maintainer{
-				Name:  rl.NpmUser.Name,
-				Email: rl.NpmUser.Email,
-			},
+      PublishingMaintainer: metadata.Maintainer{
+        Name:  rl.NpmUser.Name,
+        Email: rl.NpmUser.Email,
+      },
 
-			BlobHash:        rl.Dist.Shasum,
-			UpstreamBlobUrl: rl.Dist.Tarball,
+      BlobHash:        rl.Dist.Shasum,
+      UpstreamBlobUrl: rl.Dist.Tarball,
 
-			Dependencies: mapDependencies(rl.Dependencies, rl.DevDependencies),
+      Dependencies: mapDependencies(rl.Dependencies, rl.DevDependencies),
 
-			UpstreamData: rrl,
+      UpstreamData: rrl,
 
-			//todo make releasetime nullable
-			ReleaseTime: time.Time{},
-		})
-
-	}
-	return m, nil
+      //todo make releasetime nullable
+      ReleaseTime: time.Time{},
+    })
+  }
+  return m, nil
 }
 
 func mapDependencies(deps, devdeps map[string]string) []metadata.Dependency {
-	m := make([]metadata.Dependency, 0, len(deps)+len(devdeps))
-	for dep, ver := range deps {
-		m = append(m, metadata.Dependency{
-			Name:    dep,
-			Version: ver,
-			IsDev:   false,
-		})
-	}
-	for dep, ver := range devdeps {
-		m = append(m, metadata.Dependency{
-			Name:    dep,
-			Version: ver,
-			IsDev:   true,
-		})
-	}
-	return m
+  m := make([]metadata.Dependency, 0, len(deps)+len(devdeps))
+  for dep, ver := range deps {
+    m = append(m, metadata.Dependency{
+      Name:    dep,
+      Version: ver,
+      IsDev:   false,
+    })
+  }
+  for dep, ver := range devdeps {
+    m = append(m, metadata.Dependency{
+      Name:    dep,
+      Version: ver,
+      IsDev:   true,
+    })
+  }
+  return m
 }

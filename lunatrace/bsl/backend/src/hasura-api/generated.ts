@@ -14,7 +14,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   _text: any;
-  affected_version_type: any;
+  affected_range_type: any;
   builds_source_type: any;
   date: any;
   fix_state_enum: any;
@@ -128,17 +128,17 @@ export type _Text_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['_text']>>;
 };
 
-/** Boolean expression to compare columns of type "affected_version_type". All fields are combined with logical 'AND'. */
-export type Affected_Version_Type_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['affected_version_type']>;
-  _gt?: InputMaybe<Scalars['affected_version_type']>;
-  _gte?: InputMaybe<Scalars['affected_version_type']>;
-  _in?: InputMaybe<Array<Scalars['affected_version_type']>>;
+/** Boolean expression to compare columns of type "affected_range_type". All fields are combined with logical 'AND'. */
+export type Affected_Range_Type_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['affected_range_type']>;
+  _gt?: InputMaybe<Scalars['affected_range_type']>;
+  _gte?: InputMaybe<Scalars['affected_range_type']>;
+  _in?: InputMaybe<Array<Scalars['affected_range_type']>>;
   _is_null?: InputMaybe<Scalars['Boolean']>;
-  _lt?: InputMaybe<Scalars['affected_version_type']>;
-  _lte?: InputMaybe<Scalars['affected_version_type']>;
-  _neq?: InputMaybe<Scalars['affected_version_type']>;
-  _nin?: InputMaybe<Array<Scalars['affected_version_type']>>;
+  _lt?: InputMaybe<Scalars['affected_range_type']>;
+  _lte?: InputMaybe<Scalars['affected_range_type']>;
+  _neq?: InputMaybe<Scalars['affected_range_type']>;
+  _nin?: InputMaybe<Array<Scalars['affected_range_type']>>;
 };
 
 /** columns and relationships of "builds" */
@@ -2591,6 +2591,10 @@ export type Mutation_Root = {
   update_vulnerability_affected_version_by_pk?: Maybe<Vulnerability_Affected_Version>;
   /** update single row of the table: "vulnerability.vulnerability" */
   update_vulnerability_by_pk?: Maybe<Vulnerability>;
+  /** update data of the table: "vulnerability.credit" */
+  update_vulnerability_credit?: Maybe<Vulnerability_Credit_Mutation_Response>;
+  /** update single row of the table: "vulnerability.credit" */
+  update_vulnerability_credit_by_pk?: Maybe<Vulnerability_Credit>;
   /** update data of the table: "vulnerability.equivalent" */
   update_vulnerability_equivalent?: Maybe<Vulnerability_Equivalent_Mutation_Response>;
   /** update data of the table: "vulnerability_packages" */
@@ -2999,12 +3003,14 @@ export type Mutation_RootInsert_Vulnerability_Affected_Version_OneArgs = {
 /** mutation root */
 export type Mutation_RootInsert_Vulnerability_CreditArgs = {
   objects: Array<Vulnerability_Credit_Insert_Input>;
+  on_conflict?: InputMaybe<Vulnerability_Credit_On_Conflict>;
 };
 
 
 /** mutation root */
 export type Mutation_RootInsert_Vulnerability_Credit_OneArgs = {
   object: Vulnerability_Credit_Insert_Input;
+  on_conflict?: InputMaybe<Vulnerability_Credit_On_Conflict>;
 };
 
 
@@ -3526,6 +3532,20 @@ export type Mutation_RootUpdate_Vulnerability_By_PkArgs = {
   _prepend?: InputMaybe<Vulnerability_Prepend_Input>;
   _set?: InputMaybe<Vulnerability_Set_Input>;
   pk_columns: Vulnerability_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Vulnerability_CreditArgs = {
+  _set?: InputMaybe<Vulnerability_Credit_Set_Input>;
+  where: Vulnerability_Credit_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Vulnerability_Credit_By_PkArgs = {
+  _set?: InputMaybe<Vulnerability_Credit_Set_Input>;
+  pk_columns: Vulnerability_Credit_Pk_Columns_Input;
 };
 
 
@@ -8209,7 +8229,6 @@ export type Vulnerability = {
   __typename?: 'vulnerability';
   /** An array relationship */
   affected: Array<Vulnerability_Affected>;
-  aliases?: Maybe<Scalars['_text']>;
   /** An array relationship */
   credits: Array<Vulnerability_Credit>;
   database_specific?: Maybe<Scalars['jsonb']>;
@@ -8303,8 +8322,8 @@ export type Vulnerability_Affected = {
   ecosystem_specific?: Maybe<Scalars['jsonb']>;
   id: Scalars['uuid'];
   /** An object relationship */
-  package: Package;
-  package_id: Scalars['uuid'];
+  package?: Maybe<Package>;
+  package_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   vulnerability?: Maybe<Vulnerability>;
   vulnerability_id?: Maybe<Scalars['uuid']>;
@@ -8487,6 +8506,7 @@ export type Vulnerability_Affected_Range_Event = {
   database_specific?: Maybe<Scalars['jsonb']>;
   event: Scalars['String'];
   id: Scalars['uuid'];
+  type: Scalars['affected_range_type'];
   version: Scalars['String'];
 };
 
@@ -8525,13 +8545,14 @@ export type Vulnerability_Affected_Range_Event_Bool_Exp = {
   database_specific?: InputMaybe<Jsonb_Comparison_Exp>;
   event?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  type?: InputMaybe<Affected_Range_Type_Comparison_Exp>;
   version?: InputMaybe<String_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "vulnerability.affected_range_event" */
 export enum Vulnerability_Affected_Range_Event_Constraint {
   /** unique or primary key constraint */
-  AffectedRangeEventAffectedIdIdx = 'affected_range_event_affected_id_idx',
+  AffectedRangeEventAffectedIdTypeEventVersionIdx = 'affected_range_event_affected_id_type_event_version_idx',
   /** unique or primary key constraint */
   AffectedRangeEventPkey = 'affected_range_event_pkey'
 }
@@ -8558,6 +8579,7 @@ export type Vulnerability_Affected_Range_Event_Insert_Input = {
   database_specific?: InputMaybe<Scalars['jsonb']>;
   event?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
+  type?: InputMaybe<Scalars['affected_range_type']>;
   version?: InputMaybe<Scalars['String']>;
 };
 
@@ -8600,6 +8622,7 @@ export type Vulnerability_Affected_Range_Event_Order_By = {
   database_specific?: InputMaybe<Order_By>;
   event?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  type?: InputMaybe<Order_By>;
   version?: InputMaybe<Order_By>;
 };
 
@@ -8624,6 +8647,8 @@ export enum Vulnerability_Affected_Range_Event_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  Type = 'type',
+  /** column name */
   Version = 'version'
 }
 
@@ -8633,6 +8658,7 @@ export type Vulnerability_Affected_Range_Event_Set_Input = {
   database_specific?: InputMaybe<Scalars['jsonb']>;
   event?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
+  type?: InputMaybe<Scalars['affected_range_type']>;
   version?: InputMaybe<Scalars['String']>;
 };
 
@@ -8646,6 +8672,8 @@ export enum Vulnerability_Affected_Range_Event_Update_Column {
   Event = 'event',
   /** column name */
   Id = 'id',
+  /** column name */
+  Type = 'type',
   /** column name */
   Version = 'version'
 }
@@ -8695,7 +8723,6 @@ export type Vulnerability_Affected_Version = {
   affected_id?: Maybe<Scalars['uuid']>;
   database_specific?: Maybe<Scalars['jsonb']>;
   id: Scalars['uuid'];
-  type: Scalars['affected_version_type'];
   version: Scalars['String'];
 };
 
@@ -8733,7 +8760,6 @@ export type Vulnerability_Affected_Version_Bool_Exp = {
   affected_id?: InputMaybe<Uuid_Comparison_Exp>;
   database_specific?: InputMaybe<Jsonb_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  type?: InputMaybe<Affected_Version_Type_Comparison_Exp>;
   version?: InputMaybe<String_Comparison_Exp>;
 };
 
@@ -8766,7 +8792,6 @@ export type Vulnerability_Affected_Version_Insert_Input = {
   affected_id?: InputMaybe<Scalars['uuid']>;
   database_specific?: InputMaybe<Scalars['jsonb']>;
   id?: InputMaybe<Scalars['uuid']>;
-  type?: InputMaybe<Scalars['affected_version_type']>;
   version?: InputMaybe<Scalars['String']>;
 };
 
@@ -8806,7 +8831,6 @@ export type Vulnerability_Affected_Version_Order_By = {
   affected_id?: InputMaybe<Order_By>;
   database_specific?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  type?: InputMaybe<Order_By>;
   version?: InputMaybe<Order_By>;
 };
 
@@ -8829,8 +8853,6 @@ export enum Vulnerability_Affected_Version_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  Type = 'type',
-  /** column name */
   Version = 'version'
 }
 
@@ -8839,7 +8861,6 @@ export type Vulnerability_Affected_Version_Set_Input = {
   affected_id?: InputMaybe<Scalars['uuid']>;
   database_specific?: InputMaybe<Scalars['jsonb']>;
   id?: InputMaybe<Scalars['uuid']>;
-  type?: InputMaybe<Scalars['affected_version_type']>;
   version?: InputMaybe<Scalars['String']>;
 };
 
@@ -8851,8 +8872,6 @@ export enum Vulnerability_Affected_Version_Update_Column {
   DatabaseSpecific = 'database_specific',
   /** column name */
   Id = 'id',
-  /** column name */
-  Type = 'type',
   /** column name */
   Version = 'version'
 }
@@ -8869,7 +8888,6 @@ export type Vulnerability_Bool_Exp = {
   _not?: InputMaybe<Vulnerability_Bool_Exp>;
   _or?: InputMaybe<Array<Vulnerability_Bool_Exp>>;
   affected?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
-  aliases?: InputMaybe<_Text_Comparison_Exp>;
   credits?: InputMaybe<Vulnerability_Credit_Bool_Exp>;
   database_specific?: InputMaybe<Jsonb_Comparison_Exp>;
   details?: InputMaybe<String_Comparison_Exp>;
@@ -8915,6 +8933,8 @@ export type Vulnerability_Credit_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "vulnerability.credit" */
 export type Vulnerability_Credit_Arr_Rel_Insert_Input = {
   data: Array<Vulnerability_Credit_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Vulnerability_Credit_On_Conflict>;
 };
 
 /** Boolean expression to filter rows from the table "vulnerability.credit". All fields are combined with a logical 'AND'. */
@@ -8928,6 +8948,14 @@ export type Vulnerability_Credit_Bool_Exp = {
   vulnerability?: InputMaybe<Vulnerability_Bool_Exp>;
   vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
+
+/** unique or primary key constraints on table "vulnerability.credit" */
+export enum Vulnerability_Credit_Constraint {
+  /** unique or primary key constraint */
+  CreditPkey = 'credit_pkey',
+  /** unique or primary key constraint */
+  CreditVulnerabilityIdName = 'credit_vulnerability_id_name'
+}
 
 /** input type for inserting data into table "vulnerability.credit" */
 export type Vulnerability_Credit_Insert_Input = {
@@ -8961,6 +8989,13 @@ export type Vulnerability_Credit_Mutation_Response = {
   returning: Array<Vulnerability_Credit>;
 };
 
+/** on_conflict condition type for table "vulnerability.credit" */
+export type Vulnerability_Credit_On_Conflict = {
+  constraint: Vulnerability_Credit_Constraint;
+  update_columns?: Array<Vulnerability_Credit_Update_Column>;
+  where?: InputMaybe<Vulnerability_Credit_Bool_Exp>;
+};
+
 /** Ordering options when selecting data from "vulnerability.credit". */
 export type Vulnerability_Credit_Order_By = {
   contact?: InputMaybe<Order_By>;
@@ -8970,8 +9005,33 @@ export type Vulnerability_Credit_Order_By = {
   vulnerability_id?: InputMaybe<Order_By>;
 };
 
+/** primary key columns input for table: vulnerability_credit */
+export type Vulnerability_Credit_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
 /** select columns of table "vulnerability.credit" */
 export enum Vulnerability_Credit_Select_Column {
+  /** column name */
+  Contact = 'contact',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  VulnerabilityId = 'vulnerability_id'
+}
+
+/** input type for updating data in table "vulnerability.credit" */
+export type Vulnerability_Credit_Set_Input = {
+  contact?: InputMaybe<Scalars['_text']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  name?: InputMaybe<Scalars['String']>;
+  vulnerability_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** update columns of table "vulnerability.credit" */
+export enum Vulnerability_Credit_Update_Column {
   /** column name */
   Contact = 'contact',
   /** column name */
@@ -9111,7 +9171,6 @@ export enum Vulnerability_Equivalent_Update_Column {
 /** input type for inserting data into table "vulnerability.vulnerability" */
 export type Vulnerability_Insert_Input = {
   affected?: InputMaybe<Vulnerability_Affected_Arr_Rel_Insert_Input>;
-  aliases?: InputMaybe<Scalars['_text']>;
   credits?: InputMaybe<Vulnerability_Credit_Arr_Rel_Insert_Input>;
   database_specific?: InputMaybe<Scalars['jsonb']>;
   details?: InputMaybe<Scalars['String']>;
@@ -9154,7 +9213,6 @@ export type Vulnerability_On_Conflict = {
 /** Ordering options when selecting data from "vulnerability.vulnerability". */
 export type Vulnerability_Order_By = {
   affected_aggregate?: InputMaybe<Vulnerability_Affected_Aggregate_Order_By>;
-  aliases?: InputMaybe<Order_By>;
   credits_aggregate?: InputMaybe<Vulnerability_Credit_Aggregate_Order_By>;
   database_specific?: InputMaybe<Order_By>;
   details?: InputMaybe<Order_By>;
@@ -9479,8 +9537,6 @@ export enum Vulnerability_Reference_Update_Column {
 /** select columns of table "vulnerability.vulnerability" */
 export enum Vulnerability_Select_Column {
   /** column name */
-  Aliases = 'aliases',
-  /** column name */
   DatabaseSpecific = 'database_specific',
   /** column name */
   Details = 'details',
@@ -9504,7 +9560,6 @@ export enum Vulnerability_Select_Column {
 
 /** input type for updating data in table "vulnerability.vulnerability" */
 export type Vulnerability_Set_Input = {
-  aliases?: InputMaybe<Scalars['_text']>;
   database_specific?: InputMaybe<Scalars['jsonb']>;
   details?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
@@ -9662,8 +9717,6 @@ export enum Vulnerability_Severity_Update_Column {
 
 /** update columns of table "vulnerability.vulnerability" */
 export enum Vulnerability_Update_Column {
-  /** column name */
-  Aliases = 'aliases',
   /** column name */
   DatabaseSpecific = 'database_specific',
   /** column name */
