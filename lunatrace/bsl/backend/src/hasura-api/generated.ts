@@ -9992,7 +9992,7 @@ export type GetBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, s3_url?: string | null, project?: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null, settings: { __typename?: 'settings', pr_feedback_disabled?: boolean | null } } | null } | null };
+export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, s3_url?: string | null, git_hash?: string | null, project?: { __typename?: 'projects', id: any, repo?: string | null, organization?: { __typename?: 'organizations', installation_id?: number | null, name: string } | null, settings: { __typename?: 'settings', pr_feedback_disabled?: boolean | null } } | null } | null };
 
 export type GetCloneRepoInfoFromRepoIdQueryVariables = Exact<{
   repo_github_id: Scalars['Int'];
@@ -10230,8 +10230,10 @@ export const GetBuildDocument = gql`
   builds_by_pk(id: $build_id) {
     project {
       id
+      repo
       organization {
         installation_id
+        name
       }
       settings {
         pr_feedback_disabled
@@ -10240,6 +10242,7 @@ export const GetBuildDocument = gql`
     pull_request_id
     existing_github_review_id
     s3_url
+    git_hash
   }
 }
     `;

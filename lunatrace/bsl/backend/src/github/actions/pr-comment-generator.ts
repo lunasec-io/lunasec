@@ -127,6 +127,22 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
     return;
   }
 
+  await octokit.request('POST /repos/{owner}/{repo}/check-runs', {
+    owner: buildLookup.builds_by_pk.project.organization.name,
+    repo: buildLookup.builds_by_pk.project.repo,
+    name: 'LunaTrace',
+    head_sha: buildLookup.builds_by_pk.git_hash,
+    status: scanReport.findings.length ? 'neutral' : 'success',
+    external_id: buildId,
+    completed_at: Date.now().toString(),
+    details_url: `https://lunatrace.lunasec.io/project/${projectId}/build/${buildId}`,
+    output: {
+      title: 'LunaTrace',
+      summary: scanReport.findings.length ? 'Vulnerabilities detected' : 'No vulnerabilities detected',
+      text: body,
+    },
+  });
+
   // Check if a previous build already commented on the PR. Could probably query github for this but its hard and rate limits exist so we just check our own db
   const previousReviewId = await findPreviousReviewId(pullRequestId);
 
