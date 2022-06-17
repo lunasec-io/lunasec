@@ -12,6 +12,46 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 )
 
+// Boolean expression to compare columns of type "affected_range_type". All fields are combined with logical 'AND'.
+type Affected_range_type_comparison_exp struct {
+	Eq      *types.AffectedRangeType  `json:"_eq,omitempty"`
+	Gt      *types.AffectedRangeType  `json:"_gt,omitempty"`
+	Gte     *types.AffectedRangeType  `json:"_gte,omitempty"`
+	In      []types.AffectedRangeType `json:"_in,omitempty"`
+	Is_null *bool                     `json:"_is_null,omitempty"`
+	Lt      *types.AffectedRangeType  `json:"_lt,omitempty"`
+	Lte     *types.AffectedRangeType  `json:"_lte,omitempty"`
+	Neq     *types.AffectedRangeType  `json:"_neq,omitempty"`
+	Nin     []types.AffectedRangeType `json:"_nin,omitempty"`
+}
+
+// GetEq returns Affected_range_type_comparison_exp.Eq, and is useful for accessing the field via an interface.
+func (v *Affected_range_type_comparison_exp) GetEq() *types.AffectedRangeType { return v.Eq }
+
+// GetGt returns Affected_range_type_comparison_exp.Gt, and is useful for accessing the field via an interface.
+func (v *Affected_range_type_comparison_exp) GetGt() *types.AffectedRangeType { return v.Gt }
+
+// GetGte returns Affected_range_type_comparison_exp.Gte, and is useful for accessing the field via an interface.
+func (v *Affected_range_type_comparison_exp) GetGte() *types.AffectedRangeType { return v.Gte }
+
+// GetIn returns Affected_range_type_comparison_exp.In, and is useful for accessing the field via an interface.
+func (v *Affected_range_type_comparison_exp) GetIn() []types.AffectedRangeType { return v.In }
+
+// GetIs_null returns Affected_range_type_comparison_exp.Is_null, and is useful for accessing the field via an interface.
+func (v *Affected_range_type_comparison_exp) GetIs_null() *bool { return v.Is_null }
+
+// GetLt returns Affected_range_type_comparison_exp.Lt, and is useful for accessing the field via an interface.
+func (v *Affected_range_type_comparison_exp) GetLt() *types.AffectedRangeType { return v.Lt }
+
+// GetLte returns Affected_range_type_comparison_exp.Lte, and is useful for accessing the field via an interface.
+func (v *Affected_range_type_comparison_exp) GetLte() *types.AffectedRangeType { return v.Lte }
+
+// GetNeq returns Affected_range_type_comparison_exp.Neq, and is useful for accessing the field via an interface.
+func (v *Affected_range_type_comparison_exp) GetNeq() *types.AffectedRangeType { return v.Neq }
+
+// GetNin returns Affected_range_type_comparison_exp.Nin, and is useful for accessing the field via an interface.
+func (v *Affected_range_type_comparison_exp) GetNin() []types.AffectedRangeType { return v.Nin }
+
 // DeleteBuildDelete_builds_by_pkBuilds includes the requested fields of the GraphQL type builds.
 // The GraphQL type's documentation follows.
 //
@@ -1580,6 +1620,46 @@ const (
 	Package_update_columnUpstreamData Package_update_column = "upstream_data"
 )
 
+// Boolean expression to compare columns of type "reference_type". All fields are combined with logical 'AND'.
+type Reference_type_comparison_exp struct {
+	Eq      *types.ReferenceType  `json:"_eq,omitempty"`
+	Gt      *types.ReferenceType  `json:"_gt,omitempty"`
+	Gte     *types.ReferenceType  `json:"_gte,omitempty"`
+	In      []types.ReferenceType `json:"_in,omitempty"`
+	Is_null *bool                 `json:"_is_null,omitempty"`
+	Lt      *types.ReferenceType  `json:"_lt,omitempty"`
+	Lte     *types.ReferenceType  `json:"_lte,omitempty"`
+	Neq     *types.ReferenceType  `json:"_neq,omitempty"`
+	Nin     []types.ReferenceType `json:"_nin,omitempty"`
+}
+
+// GetEq returns Reference_type_comparison_exp.Eq, and is useful for accessing the field via an interface.
+func (v *Reference_type_comparison_exp) GetEq() *types.ReferenceType { return v.Eq }
+
+// GetGt returns Reference_type_comparison_exp.Gt, and is useful for accessing the field via an interface.
+func (v *Reference_type_comparison_exp) GetGt() *types.ReferenceType { return v.Gt }
+
+// GetGte returns Reference_type_comparison_exp.Gte, and is useful for accessing the field via an interface.
+func (v *Reference_type_comparison_exp) GetGte() *types.ReferenceType { return v.Gte }
+
+// GetIn returns Reference_type_comparison_exp.In, and is useful for accessing the field via an interface.
+func (v *Reference_type_comparison_exp) GetIn() []types.ReferenceType { return v.In }
+
+// GetIs_null returns Reference_type_comparison_exp.Is_null, and is useful for accessing the field via an interface.
+func (v *Reference_type_comparison_exp) GetIs_null() *bool { return v.Is_null }
+
+// GetLt returns Reference_type_comparison_exp.Lt, and is useful for accessing the field via an interface.
+func (v *Reference_type_comparison_exp) GetLt() *types.ReferenceType { return v.Lt }
+
+// GetLte returns Reference_type_comparison_exp.Lte, and is useful for accessing the field via an interface.
+func (v *Reference_type_comparison_exp) GetLte() *types.ReferenceType { return v.Lte }
+
+// GetNeq returns Reference_type_comparison_exp.Neq, and is useful for accessing the field via an interface.
+func (v *Reference_type_comparison_exp) GetNeq() *types.ReferenceType { return v.Neq }
+
+// GetNin returns Reference_type_comparison_exp.Nin, and is useful for accessing the field via an interface.
+func (v *Reference_type_comparison_exp) GetNin() []types.ReferenceType { return v.Nin }
+
 // SetBuildS3UrlResponse is returned by SetBuildS3Url on success.
 type SetBuildS3UrlResponse struct {
 	// update single row of the table: "builds"
@@ -1691,6 +1771,46 @@ func (v *String_comparison_exp) GetRegex() *string { return v.Regex }
 
 // GetSimilar returns String_comparison_exp.Similar, and is useful for accessing the field via an interface.
 func (v *String_comparison_exp) GetSimilar() *string { return v.Similar }
+
+// Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'.
+type Text_comparison_exp struct {
+	Eq      *string  `json:"_eq,omitempty"`
+	Gt      *string  `json:"_gt,omitempty"`
+	Gte     *string  `json:"_gte,omitempty"`
+	In      []string `json:"_in,omitempty"`
+	Is_null *bool    `json:"_is_null,omitempty"`
+	Lt      *string  `json:"_lt,omitempty"`
+	Lte     *string  `json:"_lte,omitempty"`
+	Neq     *string  `json:"_neq,omitempty"`
+	Nin     []string `json:"_nin,omitempty"`
+}
+
+// GetEq returns Text_comparison_exp.Eq, and is useful for accessing the field via an interface.
+func (v *Text_comparison_exp) GetEq() *string { return v.Eq }
+
+// GetGt returns Text_comparison_exp.Gt, and is useful for accessing the field via an interface.
+func (v *Text_comparison_exp) GetGt() *string { return v.Gt }
+
+// GetGte returns Text_comparison_exp.Gte, and is useful for accessing the field via an interface.
+func (v *Text_comparison_exp) GetGte() *string { return v.Gte }
+
+// GetIn returns Text_comparison_exp.In, and is useful for accessing the field via an interface.
+func (v *Text_comparison_exp) GetIn() []string { return v.In }
+
+// GetIs_null returns Text_comparison_exp.Is_null, and is useful for accessing the field via an interface.
+func (v *Text_comparison_exp) GetIs_null() *bool { return v.Is_null }
+
+// GetLt returns Text_comparison_exp.Lt, and is useful for accessing the field via an interface.
+func (v *Text_comparison_exp) GetLt() *string { return v.Lt }
+
+// GetLte returns Text_comparison_exp.Lte, and is useful for accessing the field via an interface.
+func (v *Text_comparison_exp) GetLte() *string { return v.Lte }
+
+// GetNeq returns Text_comparison_exp.Neq, and is useful for accessing the field via an interface.
+func (v *Text_comparison_exp) GetNeq() *string { return v.Neq }
+
+// GetNin returns Text_comparison_exp.Nin, and is useful for accessing the field via an interface.
+func (v *Text_comparison_exp) GetNin() []string { return v.Nin }
 
 // Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'.
 type Timestamptz_comparison_exp struct {
@@ -1826,6 +1946,28 @@ func (v *UpsertPackageResponse) GetInsert_package_one() *UpsertPackageInsert_pac
 	return v.Insert_package_one
 }
 
+// UpsertVulnerabilityInsert_vulnerability_oneVulnerability includes the requested fields of the GraphQL type vulnerability.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "vulnerability.vulnerability"
+type UpsertVulnerabilityInsert_vulnerability_oneVulnerability struct {
+	Id uuid.UUID `json:"id"`
+}
+
+// GetId returns UpsertVulnerabilityInsert_vulnerability_oneVulnerability.Id, and is useful for accessing the field via an interface.
+func (v *UpsertVulnerabilityInsert_vulnerability_oneVulnerability) GetId() uuid.UUID { return v.Id }
+
+// UpsertVulnerabilityResponse is returned by UpsertVulnerability on success.
+type UpsertVulnerabilityResponse struct {
+	// insert a single row into the table: "vulnerability.vulnerability"
+	Insert_vulnerability_one *UpsertVulnerabilityInsert_vulnerability_oneVulnerability `json:"insert_vulnerability_one"`
+}
+
+// GetInsert_vulnerability_one returns UpsertVulnerabilityResponse.Insert_vulnerability_one, and is useful for accessing the field via an interface.
+func (v *UpsertVulnerabilityResponse) GetInsert_vulnerability_one() *UpsertVulnerabilityInsert_vulnerability_oneVulnerability {
+	return v.Insert_vulnerability_one
+}
+
 // Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
 type Uuid_comparison_exp struct {
 	Eq      *uuid.UUID  `json:"_eq,omitempty"`
@@ -1865,6 +2007,1267 @@ func (v *Uuid_comparison_exp) GetNeq() *uuid.UUID { return v.Neq }
 
 // GetNin returns Uuid_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Uuid_comparison_exp) GetNin() []uuid.UUID { return v.Nin }
+
+// input type for inserting array relation for remote table "vulnerability.affected"
+type Vulnerability_affected_arr_rel_insert_input struct {
+	Data []*Vulnerability_affected_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Vulnerability_affected_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Vulnerability_affected_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_arr_rel_insert_input) GetData() []*Vulnerability_affected_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Vulnerability_affected_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_arr_rel_insert_input) GetOn_conflict() *Vulnerability_affected_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "vulnerability.affected". All fields are combined with a logical 'AND'.
+type Vulnerability_affected_bool_exp struct {
+	And                   []*Vulnerability_affected_bool_exp           `json:"_and,omitempty"`
+	Not                   *Vulnerability_affected_bool_exp             `json:"_not,omitempty"`
+	Or                    []*Vulnerability_affected_bool_exp           `json:"_or,omitempty"`
+	Affected_range_events *Vulnerability_affected_range_event_bool_exp `json:"affected_range_events,omitempty"`
+	Affected_versions     *Vulnerability_affected_version_bool_exp     `json:"affected_versions,omitempty"`
+	Database_specific     *Jsonb_comparison_exp                        `json:"database_specific,omitempty"`
+	Ecosystem_specific    *Jsonb_comparison_exp                        `json:"ecosystem_specific,omitempty"`
+	Id                    *Uuid_comparison_exp                         `json:"id,omitempty"`
+	Package               *Package_bool_exp                            `json:"package,omitempty"`
+	Package_id            *Uuid_comparison_exp                         `json:"package_id,omitempty"`
+	Vulnerability         *Vulnerability_bool_exp                      `json:"vulnerability,omitempty"`
+	Vulnerability_id      *Uuid_comparison_exp                         `json:"vulnerability_id,omitempty"`
+}
+
+// GetAnd returns Vulnerability_affected_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_bool_exp) GetAnd() []*Vulnerability_affected_bool_exp { return v.And }
+
+// GetNot returns Vulnerability_affected_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_bool_exp) GetNot() *Vulnerability_affected_bool_exp { return v.Not }
+
+// GetOr returns Vulnerability_affected_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_bool_exp) GetOr() []*Vulnerability_affected_bool_exp { return v.Or }
+
+// GetAffected_range_events returns Vulnerability_affected_bool_exp.Affected_range_events, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_bool_exp) GetAffected_range_events() *Vulnerability_affected_range_event_bool_exp {
+	return v.Affected_range_events
+}
+
+// GetAffected_versions returns Vulnerability_affected_bool_exp.Affected_versions, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_bool_exp) GetAffected_versions() *Vulnerability_affected_version_bool_exp {
+	return v.Affected_versions
+}
+
+// GetDatabase_specific returns Vulnerability_affected_bool_exp.Database_specific, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_bool_exp) GetDatabase_specific() *Jsonb_comparison_exp {
+	return v.Database_specific
+}
+
+// GetEcosystem_specific returns Vulnerability_affected_bool_exp.Ecosystem_specific, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_bool_exp) GetEcosystem_specific() *Jsonb_comparison_exp {
+	return v.Ecosystem_specific
+}
+
+// GetId returns Vulnerability_affected_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetPackage returns Vulnerability_affected_bool_exp.Package, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_bool_exp) GetPackage() *Package_bool_exp { return v.Package }
+
+// GetPackage_id returns Vulnerability_affected_bool_exp.Package_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_bool_exp) GetPackage_id() *Uuid_comparison_exp { return v.Package_id }
+
+// GetVulnerability returns Vulnerability_affected_bool_exp.Vulnerability, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_bool_exp) GetVulnerability() *Vulnerability_bool_exp {
+	return v.Vulnerability
+}
+
+// GetVulnerability_id returns Vulnerability_affected_bool_exp.Vulnerability_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_bool_exp) GetVulnerability_id() *Uuid_comparison_exp {
+	return v.Vulnerability_id
+}
+
+// unique or primary key constraints on table "vulnerability.affected"
+type Vulnerability_affected_constraint string
+
+const (
+	// unique or primary key constraint
+	Vulnerability_affected_constraintAffectedPkey Vulnerability_affected_constraint = "affected_pkey"
+	// unique or primary key constraint
+	Vulnerability_affected_constraintAffectedVulnerabilityIdPackageIdIdx Vulnerability_affected_constraint = "affected_vulnerability_id_package_id_idx"
+)
+
+// input type for inserting data into table "vulnerability.affected"
+type Vulnerability_affected_insert_input struct {
+	Affected_range_events *Vulnerability_affected_range_event_arr_rel_insert_input `json:"affected_range_events,omitempty"`
+	Affected_versions     *Vulnerability_affected_version_arr_rel_insert_input     `json:"affected_versions,omitempty"`
+	Database_specific     *json.RawMessage                                         `json:"database_specific,omitempty"`
+	Ecosystem_specific    *json.RawMessage                                         `json:"ecosystem_specific,omitempty"`
+	Id                    *uuid.UUID                                               `json:"id,omitempty"`
+	Package               *Package_obj_rel_insert_input                            `json:"package,omitempty"`
+	Package_id            *uuid.UUID                                               `json:"package_id,omitempty"`
+	Vulnerability         *Vulnerability_obj_rel_insert_input                      `json:"vulnerability,omitempty"`
+	Vulnerability_id      *uuid.UUID                                               `json:"vulnerability_id,omitempty"`
+}
+
+// GetAffected_range_events returns Vulnerability_affected_insert_input.Affected_range_events, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_insert_input) GetAffected_range_events() *Vulnerability_affected_range_event_arr_rel_insert_input {
+	return v.Affected_range_events
+}
+
+// GetAffected_versions returns Vulnerability_affected_insert_input.Affected_versions, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_insert_input) GetAffected_versions() *Vulnerability_affected_version_arr_rel_insert_input {
+	return v.Affected_versions
+}
+
+// GetDatabase_specific returns Vulnerability_affected_insert_input.Database_specific, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_insert_input) GetDatabase_specific() *json.RawMessage {
+	return v.Database_specific
+}
+
+// GetEcosystem_specific returns Vulnerability_affected_insert_input.Ecosystem_specific, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_insert_input) GetEcosystem_specific() *json.RawMessage {
+	return v.Ecosystem_specific
+}
+
+// GetId returns Vulnerability_affected_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetPackage returns Vulnerability_affected_insert_input.Package, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_insert_input) GetPackage() *Package_obj_rel_insert_input {
+	return v.Package
+}
+
+// GetPackage_id returns Vulnerability_affected_insert_input.Package_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_insert_input) GetPackage_id() *uuid.UUID { return v.Package_id }
+
+// GetVulnerability returns Vulnerability_affected_insert_input.Vulnerability, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_insert_input) GetVulnerability() *Vulnerability_obj_rel_insert_input {
+	return v.Vulnerability
+}
+
+// GetVulnerability_id returns Vulnerability_affected_insert_input.Vulnerability_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_insert_input) GetVulnerability_id() *uuid.UUID {
+	return v.Vulnerability_id
+}
+
+// input type for inserting object relation for remote table "vulnerability.affected"
+type Vulnerability_affected_obj_rel_insert_input struct {
+	Data *Vulnerability_affected_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Vulnerability_affected_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Vulnerability_affected_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_obj_rel_insert_input) GetData() *Vulnerability_affected_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Vulnerability_affected_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_obj_rel_insert_input) GetOn_conflict() *Vulnerability_affected_on_conflict {
+	return v.On_conflict
+}
+
+// on_conflict condition type for table "vulnerability.affected"
+type Vulnerability_affected_on_conflict struct {
+	Constraint     Vulnerability_affected_constraint      `json:"constraint,omitempty"`
+	Update_columns []Vulnerability_affected_update_column `json:"update_columns,omitempty"`
+	Where          *Vulnerability_affected_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Vulnerability_affected_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_on_conflict) GetConstraint() Vulnerability_affected_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Vulnerability_affected_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_on_conflict) GetUpdate_columns() []Vulnerability_affected_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Vulnerability_affected_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_on_conflict) GetWhere() *Vulnerability_affected_bool_exp {
+	return v.Where
+}
+
+// input type for inserting array relation for remote table "vulnerability.affected_range_event"
+type Vulnerability_affected_range_event_arr_rel_insert_input struct {
+	Data []*Vulnerability_affected_range_event_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Vulnerability_affected_range_event_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Vulnerability_affected_range_event_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_arr_rel_insert_input) GetData() []*Vulnerability_affected_range_event_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Vulnerability_affected_range_event_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_arr_rel_insert_input) GetOn_conflict() *Vulnerability_affected_range_event_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "vulnerability.affected_range_event". All fields are combined with a logical 'AND'.
+type Vulnerability_affected_range_event_bool_exp struct {
+	And               []*Vulnerability_affected_range_event_bool_exp `json:"_and,omitempty"`
+	Not               *Vulnerability_affected_range_event_bool_exp   `json:"_not,omitempty"`
+	Or                []*Vulnerability_affected_range_event_bool_exp `json:"_or,omitempty"`
+	Affected          *Vulnerability_affected_bool_exp               `json:"affected,omitempty"`
+	Affected_id       *Uuid_comparison_exp                           `json:"affected_id,omitempty"`
+	Database_specific *Jsonb_comparison_exp                          `json:"database_specific,omitempty"`
+	Event             *String_comparison_exp                         `json:"event,omitempty"`
+	Id                *Uuid_comparison_exp                           `json:"id,omitempty"`
+	Type              *Affected_range_type_comparison_exp            `json:"type,omitempty"`
+	Version           *String_comparison_exp                         `json:"version,omitempty"`
+}
+
+// GetAnd returns Vulnerability_affected_range_event_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_bool_exp) GetAnd() []*Vulnerability_affected_range_event_bool_exp {
+	return v.And
+}
+
+// GetNot returns Vulnerability_affected_range_event_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_bool_exp) GetNot() *Vulnerability_affected_range_event_bool_exp {
+	return v.Not
+}
+
+// GetOr returns Vulnerability_affected_range_event_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_bool_exp) GetOr() []*Vulnerability_affected_range_event_bool_exp {
+	return v.Or
+}
+
+// GetAffected returns Vulnerability_affected_range_event_bool_exp.Affected, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_bool_exp) GetAffected() *Vulnerability_affected_bool_exp {
+	return v.Affected
+}
+
+// GetAffected_id returns Vulnerability_affected_range_event_bool_exp.Affected_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_bool_exp) GetAffected_id() *Uuid_comparison_exp {
+	return v.Affected_id
+}
+
+// GetDatabase_specific returns Vulnerability_affected_range_event_bool_exp.Database_specific, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_bool_exp) GetDatabase_specific() *Jsonb_comparison_exp {
+	return v.Database_specific
+}
+
+// GetEvent returns Vulnerability_affected_range_event_bool_exp.Event, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_bool_exp) GetEvent() *String_comparison_exp {
+	return v.Event
+}
+
+// GetId returns Vulnerability_affected_range_event_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetType returns Vulnerability_affected_range_event_bool_exp.Type, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_bool_exp) GetType() *Affected_range_type_comparison_exp {
+	return v.Type
+}
+
+// GetVersion returns Vulnerability_affected_range_event_bool_exp.Version, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_bool_exp) GetVersion() *String_comparison_exp {
+	return v.Version
+}
+
+// unique or primary key constraints on table "vulnerability.affected_range_event"
+type Vulnerability_affected_range_event_constraint string
+
+const (
+	// unique or primary key constraint
+	Vulnerability_affected_range_event_constraintAffectedRangeEventAffectedIdTypeEventVersionIdx Vulnerability_affected_range_event_constraint = "affected_range_event_affected_id_type_event_version_idx"
+	// unique or primary key constraint
+	Vulnerability_affected_range_event_constraintAffectedRangeEventPkey Vulnerability_affected_range_event_constraint = "affected_range_event_pkey"
+)
+
+// input type for inserting data into table "vulnerability.affected_range_event"
+type Vulnerability_affected_range_event_insert_input struct {
+	Affected          *Vulnerability_affected_obj_rel_insert_input `json:"affected,omitempty"`
+	Affected_id       *uuid.UUID                                   `json:"affected_id,omitempty"`
+	Database_specific *json.RawMessage                             `json:"database_specific,omitempty"`
+	Event             *string                                      `json:"event,omitempty"`
+	Id                *uuid.UUID                                   `json:"id,omitempty"`
+	Type              *types.AffectedRangeType                     `json:"type,omitempty"`
+	Version           *string                                      `json:"version,omitempty"`
+}
+
+// GetAffected returns Vulnerability_affected_range_event_insert_input.Affected, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_insert_input) GetAffected() *Vulnerability_affected_obj_rel_insert_input {
+	return v.Affected
+}
+
+// GetAffected_id returns Vulnerability_affected_range_event_insert_input.Affected_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_insert_input) GetAffected_id() *uuid.UUID {
+	return v.Affected_id
+}
+
+// GetDatabase_specific returns Vulnerability_affected_range_event_insert_input.Database_specific, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_insert_input) GetDatabase_specific() *json.RawMessage {
+	return v.Database_specific
+}
+
+// GetEvent returns Vulnerability_affected_range_event_insert_input.Event, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_insert_input) GetEvent() *string { return v.Event }
+
+// GetId returns Vulnerability_affected_range_event_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetType returns Vulnerability_affected_range_event_insert_input.Type, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_insert_input) GetType() *types.AffectedRangeType {
+	return v.Type
+}
+
+// GetVersion returns Vulnerability_affected_range_event_insert_input.Version, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_insert_input) GetVersion() *string { return v.Version }
+
+// on_conflict condition type for table "vulnerability.affected_range_event"
+type Vulnerability_affected_range_event_on_conflict struct {
+	Constraint     Vulnerability_affected_range_event_constraint      `json:"constraint,omitempty"`
+	Update_columns []Vulnerability_affected_range_event_update_column `json:"update_columns,omitempty"`
+	Where          *Vulnerability_affected_range_event_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Vulnerability_affected_range_event_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_on_conflict) GetConstraint() Vulnerability_affected_range_event_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Vulnerability_affected_range_event_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_on_conflict) GetUpdate_columns() []Vulnerability_affected_range_event_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Vulnerability_affected_range_event_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_range_event_on_conflict) GetWhere() *Vulnerability_affected_range_event_bool_exp {
+	return v.Where
+}
+
+// update columns of table "vulnerability.affected_range_event"
+type Vulnerability_affected_range_event_update_column string
+
+const (
+	// column name
+	Vulnerability_affected_range_event_update_columnAffectedId Vulnerability_affected_range_event_update_column = "affected_id"
+	// column name
+	Vulnerability_affected_range_event_update_columnDatabaseSpecific Vulnerability_affected_range_event_update_column = "database_specific"
+	// column name
+	Vulnerability_affected_range_event_update_columnEvent Vulnerability_affected_range_event_update_column = "event"
+	// column name
+	Vulnerability_affected_range_event_update_columnId Vulnerability_affected_range_event_update_column = "id"
+	// column name
+	Vulnerability_affected_range_event_update_columnType Vulnerability_affected_range_event_update_column = "type"
+	// column name
+	Vulnerability_affected_range_event_update_columnVersion Vulnerability_affected_range_event_update_column = "version"
+)
+
+// update columns of table "vulnerability.affected"
+type Vulnerability_affected_update_column string
+
+const (
+	// column name
+	Vulnerability_affected_update_columnDatabaseSpecific Vulnerability_affected_update_column = "database_specific"
+	// column name
+	Vulnerability_affected_update_columnEcosystemSpecific Vulnerability_affected_update_column = "ecosystem_specific"
+	// column name
+	Vulnerability_affected_update_columnId Vulnerability_affected_update_column = "id"
+	// column name
+	Vulnerability_affected_update_columnPackageId Vulnerability_affected_update_column = "package_id"
+	// column name
+	Vulnerability_affected_update_columnVulnerabilityId Vulnerability_affected_update_column = "vulnerability_id"
+)
+
+// input type for inserting array relation for remote table "vulnerability.affected_version"
+type Vulnerability_affected_version_arr_rel_insert_input struct {
+	Data []*Vulnerability_affected_version_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Vulnerability_affected_version_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Vulnerability_affected_version_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_arr_rel_insert_input) GetData() []*Vulnerability_affected_version_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Vulnerability_affected_version_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_arr_rel_insert_input) GetOn_conflict() *Vulnerability_affected_version_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "vulnerability.affected_version". All fields are combined with a logical 'AND'.
+type Vulnerability_affected_version_bool_exp struct {
+	And               []*Vulnerability_affected_version_bool_exp `json:"_and,omitempty"`
+	Not               *Vulnerability_affected_version_bool_exp   `json:"_not,omitempty"`
+	Or                []*Vulnerability_affected_version_bool_exp `json:"_or,omitempty"`
+	Affected          *Vulnerability_affected_bool_exp           `json:"affected,omitempty"`
+	Affected_id       *Uuid_comparison_exp                       `json:"affected_id,omitempty"`
+	Database_specific *Jsonb_comparison_exp                      `json:"database_specific,omitempty"`
+	Id                *Uuid_comparison_exp                       `json:"id,omitempty"`
+	Version           *String_comparison_exp                     `json:"version,omitempty"`
+}
+
+// GetAnd returns Vulnerability_affected_version_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_bool_exp) GetAnd() []*Vulnerability_affected_version_bool_exp {
+	return v.And
+}
+
+// GetNot returns Vulnerability_affected_version_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_bool_exp) GetNot() *Vulnerability_affected_version_bool_exp {
+	return v.Not
+}
+
+// GetOr returns Vulnerability_affected_version_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_bool_exp) GetOr() []*Vulnerability_affected_version_bool_exp {
+	return v.Or
+}
+
+// GetAffected returns Vulnerability_affected_version_bool_exp.Affected, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_bool_exp) GetAffected() *Vulnerability_affected_bool_exp {
+	return v.Affected
+}
+
+// GetAffected_id returns Vulnerability_affected_version_bool_exp.Affected_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_bool_exp) GetAffected_id() *Uuid_comparison_exp {
+	return v.Affected_id
+}
+
+// GetDatabase_specific returns Vulnerability_affected_version_bool_exp.Database_specific, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_bool_exp) GetDatabase_specific() *Jsonb_comparison_exp {
+	return v.Database_specific
+}
+
+// GetId returns Vulnerability_affected_version_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetVersion returns Vulnerability_affected_version_bool_exp.Version, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_bool_exp) GetVersion() *String_comparison_exp {
+	return v.Version
+}
+
+// unique or primary key constraints on table "vulnerability.affected_version"
+type Vulnerability_affected_version_constraint string
+
+const (
+	// unique or primary key constraint
+	Vulnerability_affected_version_constraintAffectedVersionAffectedIdTypeVersion Vulnerability_affected_version_constraint = "affected_version_affected_id_type_version"
+	// unique or primary key constraint
+	Vulnerability_affected_version_constraintAffectedVersionPkey Vulnerability_affected_version_constraint = "affected_version_pkey"
+)
+
+// input type for inserting data into table "vulnerability.affected_version"
+type Vulnerability_affected_version_insert_input struct {
+	Affected          *Vulnerability_affected_obj_rel_insert_input `json:"affected,omitempty"`
+	Affected_id       *uuid.UUID                                   `json:"affected_id,omitempty"`
+	Database_specific *json.RawMessage                             `json:"database_specific,omitempty"`
+	Id                *uuid.UUID                                   `json:"id,omitempty"`
+	Version           *string                                      `json:"version,omitempty"`
+}
+
+// GetAffected returns Vulnerability_affected_version_insert_input.Affected, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_insert_input) GetAffected() *Vulnerability_affected_obj_rel_insert_input {
+	return v.Affected
+}
+
+// GetAffected_id returns Vulnerability_affected_version_insert_input.Affected_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_insert_input) GetAffected_id() *uuid.UUID {
+	return v.Affected_id
+}
+
+// GetDatabase_specific returns Vulnerability_affected_version_insert_input.Database_specific, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_insert_input) GetDatabase_specific() *json.RawMessage {
+	return v.Database_specific
+}
+
+// GetId returns Vulnerability_affected_version_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetVersion returns Vulnerability_affected_version_insert_input.Version, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_insert_input) GetVersion() *string { return v.Version }
+
+// on_conflict condition type for table "vulnerability.affected_version"
+type Vulnerability_affected_version_on_conflict struct {
+	Constraint     Vulnerability_affected_version_constraint      `json:"constraint,omitempty"`
+	Update_columns []Vulnerability_affected_version_update_column `json:"update_columns,omitempty"`
+	Where          *Vulnerability_affected_version_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Vulnerability_affected_version_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_on_conflict) GetConstraint() Vulnerability_affected_version_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Vulnerability_affected_version_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_on_conflict) GetUpdate_columns() []Vulnerability_affected_version_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Vulnerability_affected_version_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_version_on_conflict) GetWhere() *Vulnerability_affected_version_bool_exp {
+	return v.Where
+}
+
+// update columns of table "vulnerability.affected_version"
+type Vulnerability_affected_version_update_column string
+
+const (
+	// column name
+	Vulnerability_affected_version_update_columnAffectedId Vulnerability_affected_version_update_column = "affected_id"
+	// column name
+	Vulnerability_affected_version_update_columnDatabaseSpecific Vulnerability_affected_version_update_column = "database_specific"
+	// column name
+	Vulnerability_affected_version_update_columnId Vulnerability_affected_version_update_column = "id"
+	// column name
+	Vulnerability_affected_version_update_columnVersion Vulnerability_affected_version_update_column = "version"
+)
+
+// Boolean expression to filter rows from the table "vulnerability.vulnerability". All fields are combined with a logical 'AND'.
+type Vulnerability_bool_exp struct {
+	And               []*Vulnerability_bool_exp          `json:"_and,omitempty"`
+	Not               *Vulnerability_bool_exp            `json:"_not,omitempty"`
+	Or                []*Vulnerability_bool_exp          `json:"_or,omitempty"`
+	Affected          *Vulnerability_affected_bool_exp   `json:"affected,omitempty"`
+	Credits           *Vulnerability_credit_bool_exp     `json:"credits,omitempty"`
+	Database_specific *Jsonb_comparison_exp              `json:"database_specific,omitempty"`
+	Details           *String_comparison_exp             `json:"details,omitempty"`
+	Equivalents       *Vulnerability_equivalent_bool_exp `json:"equivalents,omitempty"`
+	Id                *Uuid_comparison_exp               `json:"id,omitempty"`
+	Modified          *Timestamptz_comparison_exp        `json:"modified,omitempty"`
+	Published         *Timestamptz_comparison_exp        `json:"published,omitempty"`
+	References        *Vulnerability_reference_bool_exp  `json:"references,omitempty"`
+	Severities        *Vulnerability_severity_bool_exp   `json:"severities,omitempty"`
+	Source            *String_comparison_exp             `json:"source,omitempty"`
+	Source_id         *String_comparison_exp             `json:"source_id,omitempty"`
+	Summary           *String_comparison_exp             `json:"summary,omitempty"`
+	Upstream_data     *Jsonb_comparison_exp              `json:"upstream_data,omitempty"`
+	Withdrawn         *Timestamptz_comparison_exp        `json:"withdrawn,omitempty"`
+}
+
+// GetAnd returns Vulnerability_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetAnd() []*Vulnerability_bool_exp { return v.And }
+
+// GetNot returns Vulnerability_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetNot() *Vulnerability_bool_exp { return v.Not }
+
+// GetOr returns Vulnerability_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetOr() []*Vulnerability_bool_exp { return v.Or }
+
+// GetAffected returns Vulnerability_bool_exp.Affected, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetAffected() *Vulnerability_affected_bool_exp { return v.Affected }
+
+// GetCredits returns Vulnerability_bool_exp.Credits, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetCredits() *Vulnerability_credit_bool_exp { return v.Credits }
+
+// GetDatabase_specific returns Vulnerability_bool_exp.Database_specific, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetDatabase_specific() *Jsonb_comparison_exp {
+	return v.Database_specific
+}
+
+// GetDetails returns Vulnerability_bool_exp.Details, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetDetails() *String_comparison_exp { return v.Details }
+
+// GetEquivalents returns Vulnerability_bool_exp.Equivalents, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetEquivalents() *Vulnerability_equivalent_bool_exp {
+	return v.Equivalents
+}
+
+// GetId returns Vulnerability_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetModified returns Vulnerability_bool_exp.Modified, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetModified() *Timestamptz_comparison_exp { return v.Modified }
+
+// GetPublished returns Vulnerability_bool_exp.Published, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetPublished() *Timestamptz_comparison_exp { return v.Published }
+
+// GetReferences returns Vulnerability_bool_exp.References, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetReferences() *Vulnerability_reference_bool_exp {
+	return v.References
+}
+
+// GetSeverities returns Vulnerability_bool_exp.Severities, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetSeverities() *Vulnerability_severity_bool_exp {
+	return v.Severities
+}
+
+// GetSource returns Vulnerability_bool_exp.Source, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetSource() *String_comparison_exp { return v.Source }
+
+// GetSource_id returns Vulnerability_bool_exp.Source_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetSource_id() *String_comparison_exp { return v.Source_id }
+
+// GetSummary returns Vulnerability_bool_exp.Summary, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetSummary() *String_comparison_exp { return v.Summary }
+
+// GetUpstream_data returns Vulnerability_bool_exp.Upstream_data, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetUpstream_data() *Jsonb_comparison_exp { return v.Upstream_data }
+
+// GetWithdrawn returns Vulnerability_bool_exp.Withdrawn, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetWithdrawn() *Timestamptz_comparison_exp { return v.Withdrawn }
+
+// unique or primary key constraints on table "vulnerability.vulnerability"
+type Vulnerability_constraint string
+
+const (
+	// unique or primary key constraint
+	Vulnerability_constraintVulnerabilityPkey Vulnerability_constraint = "vulnerability_pkey"
+	// unique or primary key constraint
+	Vulnerability_constraintVulnerabilitySourceSourceIdIdx Vulnerability_constraint = "vulnerability_source_source_id_idx"
+)
+
+// input type for inserting array relation for remote table "vulnerability.credit"
+type Vulnerability_credit_arr_rel_insert_input struct {
+	Data []*Vulnerability_credit_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Vulnerability_credit_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Vulnerability_credit_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_arr_rel_insert_input) GetData() []*Vulnerability_credit_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Vulnerability_credit_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_arr_rel_insert_input) GetOn_conflict() *Vulnerability_credit_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "vulnerability.credit". All fields are combined with a logical 'AND'.
+type Vulnerability_credit_bool_exp struct {
+	And              []*Vulnerability_credit_bool_exp `json:"_and,omitempty"`
+	Not              *Vulnerability_credit_bool_exp   `json:"_not,omitempty"`
+	Or               []*Vulnerability_credit_bool_exp `json:"_or,omitempty"`
+	Contact          *Text_comparison_exp             `json:"contact,omitempty"`
+	Id               *Uuid_comparison_exp             `json:"id,omitempty"`
+	Name             *String_comparison_exp           `json:"name,omitempty"`
+	Vulnerability    *Vulnerability_bool_exp          `json:"vulnerability,omitempty"`
+	Vulnerability_id *Uuid_comparison_exp             `json:"vulnerability_id,omitempty"`
+}
+
+// GetAnd returns Vulnerability_credit_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_bool_exp) GetAnd() []*Vulnerability_credit_bool_exp { return v.And }
+
+// GetNot returns Vulnerability_credit_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_bool_exp) GetNot() *Vulnerability_credit_bool_exp { return v.Not }
+
+// GetOr returns Vulnerability_credit_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_bool_exp) GetOr() []*Vulnerability_credit_bool_exp { return v.Or }
+
+// GetContact returns Vulnerability_credit_bool_exp.Contact, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_bool_exp) GetContact() *Text_comparison_exp { return v.Contact }
+
+// GetId returns Vulnerability_credit_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetName returns Vulnerability_credit_bool_exp.Name, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_bool_exp) GetName() *String_comparison_exp { return v.Name }
+
+// GetVulnerability returns Vulnerability_credit_bool_exp.Vulnerability, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_bool_exp) GetVulnerability() *Vulnerability_bool_exp {
+	return v.Vulnerability
+}
+
+// GetVulnerability_id returns Vulnerability_credit_bool_exp.Vulnerability_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_bool_exp) GetVulnerability_id() *Uuid_comparison_exp {
+	return v.Vulnerability_id
+}
+
+// unique or primary key constraints on table "vulnerability.credit"
+type Vulnerability_credit_constraint string
+
+const (
+	// unique or primary key constraint
+	Vulnerability_credit_constraintCreditPkey Vulnerability_credit_constraint = "credit_pkey"
+	// unique or primary key constraint
+	Vulnerability_credit_constraintCreditVulnerabilityIdName Vulnerability_credit_constraint = "credit_vulnerability_id_name"
+)
+
+// input type for inserting data into table "vulnerability.credit"
+type Vulnerability_credit_insert_input struct {
+	Contact          *string                             `json:"contact,omitempty"`
+	Id               *uuid.UUID                          `json:"id,omitempty"`
+	Name             *string                             `json:"name,omitempty"`
+	Vulnerability    *Vulnerability_obj_rel_insert_input `json:"vulnerability,omitempty"`
+	Vulnerability_id *uuid.UUID                          `json:"vulnerability_id,omitempty"`
+}
+
+// GetContact returns Vulnerability_credit_insert_input.Contact, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_insert_input) GetContact() *string { return v.Contact }
+
+// GetId returns Vulnerability_credit_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetName returns Vulnerability_credit_insert_input.Name, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_insert_input) GetName() *string { return v.Name }
+
+// GetVulnerability returns Vulnerability_credit_insert_input.Vulnerability, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_insert_input) GetVulnerability() *Vulnerability_obj_rel_insert_input {
+	return v.Vulnerability
+}
+
+// GetVulnerability_id returns Vulnerability_credit_insert_input.Vulnerability_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_insert_input) GetVulnerability_id() *uuid.UUID {
+	return v.Vulnerability_id
+}
+
+// on_conflict condition type for table "vulnerability.credit"
+type Vulnerability_credit_on_conflict struct {
+	Constraint     Vulnerability_credit_constraint      `json:"constraint,omitempty"`
+	Update_columns []Vulnerability_credit_update_column `json:"update_columns,omitempty"`
+	Where          *Vulnerability_credit_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Vulnerability_credit_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_on_conflict) GetConstraint() Vulnerability_credit_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Vulnerability_credit_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_on_conflict) GetUpdate_columns() []Vulnerability_credit_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Vulnerability_credit_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Vulnerability_credit_on_conflict) GetWhere() *Vulnerability_credit_bool_exp { return v.Where }
+
+// update columns of table "vulnerability.credit"
+type Vulnerability_credit_update_column string
+
+const (
+	// column name
+	Vulnerability_credit_update_columnContact Vulnerability_credit_update_column = "contact"
+	// column name
+	Vulnerability_credit_update_columnId Vulnerability_credit_update_column = "id"
+	// column name
+	Vulnerability_credit_update_columnName Vulnerability_credit_update_column = "name"
+	// column name
+	Vulnerability_credit_update_columnVulnerabilityId Vulnerability_credit_update_column = "vulnerability_id"
+)
+
+// input type for inserting array relation for remote table "vulnerability.equivalent"
+type Vulnerability_equivalent_arr_rel_insert_input struct {
+	Data []*Vulnerability_equivalent_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Vulnerability_equivalent_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Vulnerability_equivalent_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_arr_rel_insert_input) GetData() []*Vulnerability_equivalent_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Vulnerability_equivalent_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_arr_rel_insert_input) GetOn_conflict() *Vulnerability_equivalent_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "vulnerability.equivalent". All fields are combined with a logical 'AND'.
+type Vulnerability_equivalent_bool_exp struct {
+	And              []*Vulnerability_equivalent_bool_exp `json:"_and,omitempty"`
+	Not              *Vulnerability_equivalent_bool_exp   `json:"_not,omitempty"`
+	Or               []*Vulnerability_equivalent_bool_exp `json:"_or,omitempty"`
+	A                *Uuid_comparison_exp                 `json:"a,omitempty"`
+	B                *Uuid_comparison_exp                 `json:"b,omitempty"`
+	Vulnerability    *Vulnerability_bool_exp              `json:"vulnerability,omitempty"`
+	VulnerabilityByB *Vulnerability_bool_exp              `json:"vulnerabilityByB,omitempty"`
+}
+
+// GetAnd returns Vulnerability_equivalent_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_bool_exp) GetAnd() []*Vulnerability_equivalent_bool_exp {
+	return v.And
+}
+
+// GetNot returns Vulnerability_equivalent_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_bool_exp) GetNot() *Vulnerability_equivalent_bool_exp { return v.Not }
+
+// GetOr returns Vulnerability_equivalent_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_bool_exp) GetOr() []*Vulnerability_equivalent_bool_exp { return v.Or }
+
+// GetA returns Vulnerability_equivalent_bool_exp.A, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_bool_exp) GetA() *Uuid_comparison_exp { return v.A }
+
+// GetB returns Vulnerability_equivalent_bool_exp.B, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_bool_exp) GetB() *Uuid_comparison_exp { return v.B }
+
+// GetVulnerability returns Vulnerability_equivalent_bool_exp.Vulnerability, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_bool_exp) GetVulnerability() *Vulnerability_bool_exp {
+	return v.Vulnerability
+}
+
+// GetVulnerabilityByB returns Vulnerability_equivalent_bool_exp.VulnerabilityByB, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_bool_exp) GetVulnerabilityByB() *Vulnerability_bool_exp {
+	return v.VulnerabilityByB
+}
+
+// unique or primary key constraints on table "vulnerability.equivalent"
+type Vulnerability_equivalent_constraint string
+
+const (
+	// unique or primary key constraint
+	Vulnerability_equivalent_constraintEquivalentABIdx Vulnerability_equivalent_constraint = "equivalent_a_b_idx"
+)
+
+// input type for inserting data into table "vulnerability.equivalent"
+type Vulnerability_equivalent_insert_input struct {
+	A                *uuid.UUID                          `json:"a,omitempty"`
+	B                *uuid.UUID                          `json:"b,omitempty"`
+	Vulnerability    *Vulnerability_obj_rel_insert_input `json:"vulnerability,omitempty"`
+	VulnerabilityByB *Vulnerability_obj_rel_insert_input `json:"vulnerabilityByB,omitempty"`
+}
+
+// GetA returns Vulnerability_equivalent_insert_input.A, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_insert_input) GetA() *uuid.UUID { return v.A }
+
+// GetB returns Vulnerability_equivalent_insert_input.B, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_insert_input) GetB() *uuid.UUID { return v.B }
+
+// GetVulnerability returns Vulnerability_equivalent_insert_input.Vulnerability, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_insert_input) GetVulnerability() *Vulnerability_obj_rel_insert_input {
+	return v.Vulnerability
+}
+
+// GetVulnerabilityByB returns Vulnerability_equivalent_insert_input.VulnerabilityByB, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_insert_input) GetVulnerabilityByB() *Vulnerability_obj_rel_insert_input {
+	return v.VulnerabilityByB
+}
+
+// on_conflict condition type for table "vulnerability.equivalent"
+type Vulnerability_equivalent_on_conflict struct {
+	Constraint     Vulnerability_equivalent_constraint      `json:"constraint,omitempty"`
+	Update_columns []Vulnerability_equivalent_update_column `json:"update_columns,omitempty"`
+	Where          *Vulnerability_equivalent_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Vulnerability_equivalent_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_on_conflict) GetConstraint() Vulnerability_equivalent_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Vulnerability_equivalent_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_on_conflict) GetUpdate_columns() []Vulnerability_equivalent_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Vulnerability_equivalent_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Vulnerability_equivalent_on_conflict) GetWhere() *Vulnerability_equivalent_bool_exp {
+	return v.Where
+}
+
+// update columns of table "vulnerability.equivalent"
+type Vulnerability_equivalent_update_column string
+
+const (
+	// column name
+	Vulnerability_equivalent_update_columnA Vulnerability_equivalent_update_column = "a"
+	// column name
+	Vulnerability_equivalent_update_columnB Vulnerability_equivalent_update_column = "b"
+)
+
+// input type for inserting data into table "vulnerability.vulnerability"
+type Vulnerability_insert_input struct {
+	Affected          *Vulnerability_affected_arr_rel_insert_input   `json:"affected,omitempty"`
+	Credits           *Vulnerability_credit_arr_rel_insert_input     `json:"credits,omitempty"`
+	Database_specific *json.RawMessage                               `json:"database_specific,omitempty"`
+	Details           *string                                        `json:"details,omitempty"`
+	Equivalents       *Vulnerability_equivalent_arr_rel_insert_input `json:"equivalents,omitempty"`
+	Id                *uuid.UUID                                     `json:"id,omitempty"`
+	Modified          *time.Time                                     `json:"modified,omitempty"`
+	Published         *time.Time                                     `json:"published,omitempty"`
+	References        *Vulnerability_reference_arr_rel_insert_input  `json:"references,omitempty"`
+	Severities        *Vulnerability_severity_arr_rel_insert_input   `json:"severities,omitempty"`
+	Source            *string                                        `json:"source,omitempty"`
+	Source_id         *string                                        `json:"source_id,omitempty"`
+	Summary           *string                                        `json:"summary,omitempty"`
+	Upstream_data     *json.RawMessage                               `json:"upstream_data,omitempty"`
+	Withdrawn         *time.Time                                     `json:"withdrawn,omitempty"`
+}
+
+// GetAffected returns Vulnerability_insert_input.Affected, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetAffected() *Vulnerability_affected_arr_rel_insert_input {
+	return v.Affected
+}
+
+// GetCredits returns Vulnerability_insert_input.Credits, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetCredits() *Vulnerability_credit_arr_rel_insert_input {
+	return v.Credits
+}
+
+// GetDatabase_specific returns Vulnerability_insert_input.Database_specific, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetDatabase_specific() *json.RawMessage {
+	return v.Database_specific
+}
+
+// GetDetails returns Vulnerability_insert_input.Details, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetDetails() *string { return v.Details }
+
+// GetEquivalents returns Vulnerability_insert_input.Equivalents, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetEquivalents() *Vulnerability_equivalent_arr_rel_insert_input {
+	return v.Equivalents
+}
+
+// GetId returns Vulnerability_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetModified returns Vulnerability_insert_input.Modified, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetModified() *time.Time { return v.Modified }
+
+// GetPublished returns Vulnerability_insert_input.Published, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetPublished() *time.Time { return v.Published }
+
+// GetReferences returns Vulnerability_insert_input.References, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetReferences() *Vulnerability_reference_arr_rel_insert_input {
+	return v.References
+}
+
+// GetSeverities returns Vulnerability_insert_input.Severities, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetSeverities() *Vulnerability_severity_arr_rel_insert_input {
+	return v.Severities
+}
+
+// GetSource returns Vulnerability_insert_input.Source, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetSource() *string { return v.Source }
+
+// GetSource_id returns Vulnerability_insert_input.Source_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetSource_id() *string { return v.Source_id }
+
+// GetSummary returns Vulnerability_insert_input.Summary, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetSummary() *string { return v.Summary }
+
+// GetUpstream_data returns Vulnerability_insert_input.Upstream_data, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetUpstream_data() *json.RawMessage { return v.Upstream_data }
+
+// GetWithdrawn returns Vulnerability_insert_input.Withdrawn, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetWithdrawn() *time.Time { return v.Withdrawn }
+
+// input type for inserting object relation for remote table "vulnerability.vulnerability"
+type Vulnerability_obj_rel_insert_input struct {
+	Data *Vulnerability_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Vulnerability_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Vulnerability_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Vulnerability_obj_rel_insert_input) GetData() *Vulnerability_insert_input { return v.Data }
+
+// GetOn_conflict returns Vulnerability_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Vulnerability_obj_rel_insert_input) GetOn_conflict() *Vulnerability_on_conflict {
+	return v.On_conflict
+}
+
+// on_conflict condition type for table "vulnerability.vulnerability"
+type Vulnerability_on_conflict struct {
+	Constraint     Vulnerability_constraint      `json:"constraint,omitempty"`
+	Update_columns []Vulnerability_update_column `json:"update_columns,omitempty"`
+	Where          *Vulnerability_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Vulnerability_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Vulnerability_on_conflict) GetConstraint() Vulnerability_constraint { return v.Constraint }
+
+// GetUpdate_columns returns Vulnerability_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Vulnerability_on_conflict) GetUpdate_columns() []Vulnerability_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Vulnerability_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Vulnerability_on_conflict) GetWhere() *Vulnerability_bool_exp { return v.Where }
+
+// input type for inserting array relation for remote table "vulnerability.reference"
+type Vulnerability_reference_arr_rel_insert_input struct {
+	Data []*Vulnerability_reference_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Vulnerability_reference_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Vulnerability_reference_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_arr_rel_insert_input) GetData() []*Vulnerability_reference_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Vulnerability_reference_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_arr_rel_insert_input) GetOn_conflict() *Vulnerability_reference_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "vulnerability.reference". All fields are combined with a logical 'AND'.
+type Vulnerability_reference_bool_exp struct {
+	And              []*Vulnerability_reference_bool_exp `json:"_and,omitempty"`
+	Not              *Vulnerability_reference_bool_exp   `json:"_not,omitempty"`
+	Or               []*Vulnerability_reference_bool_exp `json:"_or,omitempty"`
+	Id               *Uuid_comparison_exp                `json:"id,omitempty"`
+	Type             *Reference_type_comparison_exp      `json:"type,omitempty"`
+	Url              *String_comparison_exp              `json:"url,omitempty"`
+	Vulnerability    *Vulnerability_bool_exp             `json:"vulnerability,omitempty"`
+	Vulnerability_id *Uuid_comparison_exp                `json:"vulnerability_id,omitempty"`
+}
+
+// GetAnd returns Vulnerability_reference_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_bool_exp) GetAnd() []*Vulnerability_reference_bool_exp { return v.And }
+
+// GetNot returns Vulnerability_reference_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_bool_exp) GetNot() *Vulnerability_reference_bool_exp { return v.Not }
+
+// GetOr returns Vulnerability_reference_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_bool_exp) GetOr() []*Vulnerability_reference_bool_exp { return v.Or }
+
+// GetId returns Vulnerability_reference_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetType returns Vulnerability_reference_bool_exp.Type, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_bool_exp) GetType() *Reference_type_comparison_exp { return v.Type }
+
+// GetUrl returns Vulnerability_reference_bool_exp.Url, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_bool_exp) GetUrl() *String_comparison_exp { return v.Url }
+
+// GetVulnerability returns Vulnerability_reference_bool_exp.Vulnerability, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_bool_exp) GetVulnerability() *Vulnerability_bool_exp {
+	return v.Vulnerability
+}
+
+// GetVulnerability_id returns Vulnerability_reference_bool_exp.Vulnerability_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_bool_exp) GetVulnerability_id() *Uuid_comparison_exp {
+	return v.Vulnerability_id
+}
+
+// unique or primary key constraints on table "vulnerability.reference"
+type Vulnerability_reference_constraint string
+
+const (
+	// unique or primary key constraint
+	Vulnerability_reference_constraintReferencePkey Vulnerability_reference_constraint = "reference_pkey"
+	// unique or primary key constraint
+	Vulnerability_reference_constraintReferenceVulnerabilityIdTypeUrlIdx Vulnerability_reference_constraint = "reference_vulnerability_id_type_url_idx"
+)
+
+// input type for inserting data into table "vulnerability.reference"
+type Vulnerability_reference_insert_input struct {
+	Id               *uuid.UUID                          `json:"id,omitempty"`
+	Type             *types.ReferenceType                `json:"type,omitempty"`
+	Url              *string                             `json:"url,omitempty"`
+	Vulnerability    *Vulnerability_obj_rel_insert_input `json:"vulnerability,omitempty"`
+	Vulnerability_id *uuid.UUID                          `json:"vulnerability_id,omitempty"`
+}
+
+// GetId returns Vulnerability_reference_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetType returns Vulnerability_reference_insert_input.Type, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_insert_input) GetType() *types.ReferenceType { return v.Type }
+
+// GetUrl returns Vulnerability_reference_insert_input.Url, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_insert_input) GetUrl() *string { return v.Url }
+
+// GetVulnerability returns Vulnerability_reference_insert_input.Vulnerability, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_insert_input) GetVulnerability() *Vulnerability_obj_rel_insert_input {
+	return v.Vulnerability
+}
+
+// GetVulnerability_id returns Vulnerability_reference_insert_input.Vulnerability_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_insert_input) GetVulnerability_id() *uuid.UUID {
+	return v.Vulnerability_id
+}
+
+// on_conflict condition type for table "vulnerability.reference"
+type Vulnerability_reference_on_conflict struct {
+	Constraint     Vulnerability_reference_constraint      `json:"constraint,omitempty"`
+	Update_columns []Vulnerability_reference_update_column `json:"update_columns,omitempty"`
+	Where          *Vulnerability_reference_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Vulnerability_reference_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_on_conflict) GetConstraint() Vulnerability_reference_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Vulnerability_reference_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_on_conflict) GetUpdate_columns() []Vulnerability_reference_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Vulnerability_reference_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Vulnerability_reference_on_conflict) GetWhere() *Vulnerability_reference_bool_exp {
+	return v.Where
+}
+
+// update columns of table "vulnerability.reference"
+type Vulnerability_reference_update_column string
+
+const (
+	// column name
+	Vulnerability_reference_update_columnId Vulnerability_reference_update_column = "id"
+	// column name
+	Vulnerability_reference_update_columnType Vulnerability_reference_update_column = "type"
+	// column name
+	Vulnerability_reference_update_columnUrl Vulnerability_reference_update_column = "url"
+	// column name
+	Vulnerability_reference_update_columnVulnerabilityId Vulnerability_reference_update_column = "vulnerability_id"
+)
+
+// input type for inserting array relation for remote table "vulnerability.severity"
+type Vulnerability_severity_arr_rel_insert_input struct {
+	Data []*Vulnerability_severity_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Vulnerability_severity_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Vulnerability_severity_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_arr_rel_insert_input) GetData() []*Vulnerability_severity_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Vulnerability_severity_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_arr_rel_insert_input) GetOn_conflict() *Vulnerability_severity_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "vulnerability.severity". All fields are combined with a logical 'AND'.
+type Vulnerability_severity_bool_exp struct {
+	And              []*Vulnerability_severity_bool_exp `json:"_and,omitempty"`
+	Not              *Vulnerability_severity_bool_exp   `json:"_not,omitempty"`
+	Or               []*Vulnerability_severity_bool_exp `json:"_or,omitempty"`
+	Id               *Uuid_comparison_exp               `json:"id,omitempty"`
+	Score            *String_comparison_exp             `json:"score,omitempty"`
+	Source           *String_comparison_exp             `json:"source,omitempty"`
+	Type             *String_comparison_exp             `json:"type,omitempty"`
+	Vulnerability    *Vulnerability_bool_exp            `json:"vulnerability,omitempty"`
+	Vulnerability_id *Uuid_comparison_exp               `json:"vulnerability_id,omitempty"`
+}
+
+// GetAnd returns Vulnerability_severity_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_bool_exp) GetAnd() []*Vulnerability_severity_bool_exp { return v.And }
+
+// GetNot returns Vulnerability_severity_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_bool_exp) GetNot() *Vulnerability_severity_bool_exp { return v.Not }
+
+// GetOr returns Vulnerability_severity_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_bool_exp) GetOr() []*Vulnerability_severity_bool_exp { return v.Or }
+
+// GetId returns Vulnerability_severity_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetScore returns Vulnerability_severity_bool_exp.Score, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_bool_exp) GetScore() *String_comparison_exp { return v.Score }
+
+// GetSource returns Vulnerability_severity_bool_exp.Source, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_bool_exp) GetSource() *String_comparison_exp { return v.Source }
+
+// GetType returns Vulnerability_severity_bool_exp.Type, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_bool_exp) GetType() *String_comparison_exp { return v.Type }
+
+// GetVulnerability returns Vulnerability_severity_bool_exp.Vulnerability, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_bool_exp) GetVulnerability() *Vulnerability_bool_exp {
+	return v.Vulnerability
+}
+
+// GetVulnerability_id returns Vulnerability_severity_bool_exp.Vulnerability_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_bool_exp) GetVulnerability_id() *Uuid_comparison_exp {
+	return v.Vulnerability_id
+}
+
+// unique or primary key constraints on table "vulnerability.severity"
+type Vulnerability_severity_constraint string
+
+const (
+	// unique or primary key constraint
+	Vulnerability_severity_constraintSeverityPkey Vulnerability_severity_constraint = "severity_pkey"
+	// unique or primary key constraint
+	Vulnerability_severity_constraintSeverityVulnerabilityIdSourceTypeIdx Vulnerability_severity_constraint = "severity_vulnerability_id_source_type_idx"
+)
+
+// input type for inserting data into table "vulnerability.severity"
+type Vulnerability_severity_insert_input struct {
+	Id               *uuid.UUID                          `json:"id,omitempty"`
+	Score            *string                             `json:"score,omitempty"`
+	Source           *string                             `json:"source,omitempty"`
+	Type             *string                             `json:"type,omitempty"`
+	Vulnerability    *Vulnerability_obj_rel_insert_input `json:"vulnerability,omitempty"`
+	Vulnerability_id *uuid.UUID                          `json:"vulnerability_id,omitempty"`
+}
+
+// GetId returns Vulnerability_severity_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetScore returns Vulnerability_severity_insert_input.Score, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_insert_input) GetScore() *string { return v.Score }
+
+// GetSource returns Vulnerability_severity_insert_input.Source, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_insert_input) GetSource() *string { return v.Source }
+
+// GetType returns Vulnerability_severity_insert_input.Type, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_insert_input) GetType() *string { return v.Type }
+
+// GetVulnerability returns Vulnerability_severity_insert_input.Vulnerability, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_insert_input) GetVulnerability() *Vulnerability_obj_rel_insert_input {
+	return v.Vulnerability
+}
+
+// GetVulnerability_id returns Vulnerability_severity_insert_input.Vulnerability_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_insert_input) GetVulnerability_id() *uuid.UUID {
+	return v.Vulnerability_id
+}
+
+// on_conflict condition type for table "vulnerability.severity"
+type Vulnerability_severity_on_conflict struct {
+	Constraint     Vulnerability_severity_constraint      `json:"constraint,omitempty"`
+	Update_columns []Vulnerability_severity_update_column `json:"update_columns,omitempty"`
+	Where          *Vulnerability_severity_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Vulnerability_severity_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_on_conflict) GetConstraint() Vulnerability_severity_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Vulnerability_severity_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_on_conflict) GetUpdate_columns() []Vulnerability_severity_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Vulnerability_severity_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Vulnerability_severity_on_conflict) GetWhere() *Vulnerability_severity_bool_exp {
+	return v.Where
+}
+
+// update columns of table "vulnerability.severity"
+type Vulnerability_severity_update_column string
+
+const (
+	// column name
+	Vulnerability_severity_update_columnId Vulnerability_severity_update_column = "id"
+	// column name
+	Vulnerability_severity_update_columnScore Vulnerability_severity_update_column = "score"
+	// column name
+	Vulnerability_severity_update_columnSource Vulnerability_severity_update_column = "source"
+	// column name
+	Vulnerability_severity_update_columnType Vulnerability_severity_update_column = "type"
+	// column name
+	Vulnerability_severity_update_columnVulnerabilityId Vulnerability_severity_update_column = "vulnerability_id"
+)
+
+// update columns of table "vulnerability.vulnerability"
+type Vulnerability_update_column string
+
+const (
+	// column name
+	Vulnerability_update_columnDatabaseSpecific Vulnerability_update_column = "database_specific"
+	// column name
+	Vulnerability_update_columnDetails Vulnerability_update_column = "details"
+	// column name
+	Vulnerability_update_columnId Vulnerability_update_column = "id"
+	// column name
+	Vulnerability_update_columnModified Vulnerability_update_column = "modified"
+	// column name
+	Vulnerability_update_columnPublished Vulnerability_update_column = "published"
+	// column name
+	Vulnerability_update_columnSource Vulnerability_update_column = "source"
+	// column name
+	Vulnerability_update_columnSourceId Vulnerability_update_column = "source_id"
+	// column name
+	Vulnerability_update_columnSummary Vulnerability_update_column = "summary"
+	// column name
+	Vulnerability_update_columnUpstreamData Vulnerability_update_column = "upstream_data"
+	// column name
+	Vulnerability_update_columnWithdrawn Vulnerability_update_column = "withdrawn"
+)
 
 // __DeleteBuildInput is used internally by genqlient
 type __DeleteBuildInput struct {
@@ -1960,6 +3363,22 @@ func (v *__UpsertPackageInput) GetObject() *Package_insert_input { return v.Obje
 // GetOn_conflict returns __UpsertPackageInput.On_conflict, and is useful for accessing the field via an interface.
 func (v *__UpsertPackageInput) GetOn_conflict() *Package_on_conflict { return v.On_conflict }
 
+// __UpsertVulnerabilityInput is used internally by genqlient
+type __UpsertVulnerabilityInput struct {
+	Vulnerability *Vulnerability_insert_input `json:"vulnerability,omitempty"`
+	On_conflict   *Vulnerability_on_conflict  `json:"on_conflict,omitempty"`
+}
+
+// GetVulnerability returns __UpsertVulnerabilityInput.Vulnerability, and is useful for accessing the field via an interface.
+func (v *__UpsertVulnerabilityInput) GetVulnerability() *Vulnerability_insert_input {
+	return v.Vulnerability
+}
+
+// GetOn_conflict returns __UpsertVulnerabilityInput.On_conflict, and is useful for accessing the field via an interface.
+func (v *__UpsertVulnerabilityInput) GetOn_conflict() *Vulnerability_on_conflict {
+	return v.On_conflict
+}
+
 // vulnerabilityFragment includes the GraphQL fields of vulnerability requested by the fragment vulnerabilityFragment.
 // The GraphQL type's documentation follows.
 //
@@ -2033,8 +3452,14 @@ func (v *vulnerabilityFragmentAffectedVulnerability_affected) GetAffected_versio
 //
 // columns and relationships of "vulnerability.affected_range_event"
 type vulnerabilityFragmentAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event struct {
-	Event   string `json:"event"`
-	Version string `json:"version"`
+	Type    types.AffectedRangeType `json:"type"`
+	Event   string                  `json:"event"`
+	Version string                  `json:"version"`
+}
+
+// GetType returns vulnerabilityFragmentAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event.Type, and is useful for accessing the field via an interface.
+func (v *vulnerabilityFragmentAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event) GetType() types.AffectedRangeType {
+	return v.Type
 }
 
 // GetEvent returns vulnerabilityFragmentAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event.Event, and is useful for accessing the field via an interface.
@@ -2052,13 +3477,7 @@ func (v *vulnerabilityFragmentAffectedVulnerability_affectedAffected_range_event
 //
 // columns and relationships of "vulnerability.affected_version"
 type vulnerabilityFragmentAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version struct {
-	Type    types.AffectedVersionType `json:"type"`
-	Version string                    `json:"version"`
-}
-
-// GetType returns vulnerabilityFragmentAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version.Type, and is useful for accessing the field via an interface.
-func (v *vulnerabilityFragmentAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version) GetType() types.AffectedVersionType {
-	return v.Type
+	Version string `json:"version"`
 }
 
 // GetVersion returns vulnerabilityFragmentAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version.Version, and is useful for accessing the field via an interface.
@@ -2222,11 +3641,11 @@ fragment vulnerabilityFragment on vulnerability {
 			package_manager
 		}
 		affected_range_events {
+			type
 			event
 			version
 		}
 		affected_versions {
-			type
 			version
 		}
 	}
@@ -2447,6 +3866,40 @@ mutation UpsertPackage ($object: package_insert_input!, $on_conflict: package_on
 	var err error
 
 	var data UpsertPackageResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
+
+func UpsertVulnerability(
+	ctx context.Context,
+	client graphql.Client,
+	vulnerability *Vulnerability_insert_input,
+	on_conflict *Vulnerability_on_conflict,
+) (*UpsertVulnerabilityResponse, error) {
+	req := &graphql.Request{
+		OpName: "UpsertVulnerability",
+		Query: `
+mutation UpsertVulnerability ($vulnerability: vulnerability_insert_input!, $on_conflict: vulnerability_on_conflict!) {
+	insert_vulnerability_one(object: $vulnerability, on_conflict: $on_conflict) {
+		id
+	}
+}
+`,
+		Variables: &__UpsertVulnerabilityInput{
+			Vulnerability: vulnerability,
+			On_conflict:   on_conflict,
+		},
+	}
+	var err error
+
+	var data UpsertVulnerabilityResponse
 	resp := &graphql.Response{Data: &data}
 
 	err = client.MakeRequest(
