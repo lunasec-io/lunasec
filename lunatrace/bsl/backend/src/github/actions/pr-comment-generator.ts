@@ -126,10 +126,13 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
     });
     return;
   }
+  // Check if a previous build already commented on the PR. Could probably query github for this but its hard and rate limits exist so we just check our own db
+  const previousReviewId = await findPreviousReviewId(pullRequestId);
 
-  await octokit.request('POST /repos/{owner}/{repo}/check-runs', {
-    owner: buildLookup.builds_by_pk.project.organization.name,
-    repo: buildLookup.builds_by_pk.project.repo,
+  log.info('Starting PR Comment Submission flow');
+  log.info('found previous review id of ', previousReviewId);
+
+  const checkData = {
     name: 'LunaTrace',
     head_sha: buildLookup.builds_by_pk.git_hash,
     status: scanReport.findings.length ? 'neutral' : 'success',
@@ -141,15 +144,11 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
       summary: scanReport.findings.length ? 'Vulnerabilities detected' : 'No vulnerabilities detected',
       text: body,
     },
-  });
+  };
 
-  // Check if a previous build already commented on the PR. Could probably query github for this but its hard and rate limits exist so we just check our own db
-  const previousReviewId = await findPreviousReviewId(pullRequestId);
-
-  log.info('Starting PR Comment Submission flow');
-  log.info('found previous review id of ', previousReviewId);
   // This is the first build on this pr so make a new comment
   if (!previousReviewId) {
+    /*
     const githubReviewResponse = await github.AddPrReview({
       pull_request_id: pullRequestId.toString(),
       body,
@@ -158,6 +157,16 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
     if (!existing_github_review_id) {
       return log.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
     }
+    */
+
+    const githubReviewResponse = await octokit.request('POST /repos/{owner}/{repo}/check-runs', {
+      owner: buildLookup.builds_by_pk.project.organization.name,
+      repo: buildLookup.builds_by_pk.project.repo,
+      ...checkData,
+    });
+
+    const existing_github_review_id = githubReviewResponse.id;
+
     log.info('review created');
     // const submitResponse = await github.SubmitPrReview({ pull_request_id: pullRequestId.toString() })
     // logger.log('successfully reviewed the PR',submitResponse)
@@ -167,11 +176,22 @@ export async function commentOnPrIfExists(buildId: string, scanReport: InsertedS
   }
 
   // Otherwise just update the existing review on the PR.  Very similar to above but we update instead
-  const githubReviewResponse = await github.UpdatePrReview({
+  /*const githubReviewResponse = await github.UpdatePrReview({
     pull_request_review_id: previousReviewId,
     body,
   });
   const existing_github_review_id = githubReviewResponse.updatePullRequestReview?.pullRequestReview?.id;
+  */
+
+  const githubReviewResponse = await octokit.request('PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}', {
+    owner: buildLookup.builds_by_pk.project.organization.name,
+    repo: buildLookup.builds_by_pk.project.repo,
+    check_run_id: buildLookup.builds_by_pk.existing_github_review_id,
+    ...checkData,
+  });
+
+  const existing_github_review_id = githubReviewResponse.id;
+
   if (!existing_github_review_id) {
     return log.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
   }
