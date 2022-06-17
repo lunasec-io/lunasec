@@ -139,8 +139,7 @@ async function executePRCheck(
 
   const checkData = {
     name: 'LunaTrace',
-    head_sha: buildLookup.builds_by_pk?.git_hash,
-    status: scanReport.findings.length ? 'neutral' : 'success',
+    head_sha: buildLookup.builds_by_pk?.git_hash || '',
     external_id: buildId,
     completed_at: Date.now().toString(),
     details_url: `https://lunatrace.lunasec.io/project/${projectId}/build/${buildId}`,
@@ -151,29 +150,31 @@ async function executePRCheck(
     },
   };
 
+  let inserted_check_id;
   // This is the first build on this pr so make a new comment
   if (!previousReviewId) {
     const githubReviewResponse = await octokit.request('POST /repos/{owner}/{repo}/check-runs', {
       owner: buildLookup.builds_by_pk?.project?.organization?.name || '',
       repo: buildLookup.builds_by_pk?.project?.repo || '',
+      status: 'in_progress',
       ...checkData,
     });
 
-    const existing_github_check_id = githubReviewResponse.data.id;
+    inserted_check_id = githubReviewResponse.data.id;
 
     log.info('review created');
     // const submitResponse = await github.SubmitPrReview({ pull_request_id: pullRequestId.toString() })
     // logger.log('successfully reviewed the PR',submitResponse)
 
-    await hasura.UpdateBuildExistingCheckId({ id: buildId, existing_github_check_id });
-    return;
+    await hasura.UpdateBuildExistingCheckId({ id: buildId, existing_github_check_id: inserted_check_id });
   }
 
   // Otherwise just update the existing review on the PR.  Very similar to above but we update instead
   const githubReviewResponse = await octokit.request('PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}', {
     owner: buildLookup.builds_by_pk?.project?.organization?.name || '',
     repo: buildLookup.builds_by_pk?.project?.repo || '',
-    check_run_id: buildLookup.builds_by_pk?.existing_github_check_id || '',
+    check_run_id: inserted_check_id || buildLookup.builds_by_pk?.existing_github_check_id || 0,
+    conclusion: scanReport.findings.length ? 'neutral' : 'success',
     ...checkData,
   });
 
