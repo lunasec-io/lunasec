@@ -13,6 +13,7 @@ query GetBuild($build_id: uuid!) {
     }
     pull_request_id
     existing_github_review_id
+    existing_github_check_id
     s3_url
     git_hash
   }
