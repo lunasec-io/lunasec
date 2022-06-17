@@ -203,11 +203,6 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
     return;
   }
 
-  if (buildLookup.builds_by_pk.project.settings.pr_feedback_disabled) {
-    log.info('Skipping PR Feedback due to project settings');
-    return;
-  }
-
   const pullRequestId = buildLookup.builds_by_pk.pull_request_id;
 
   if (!pullRequestId) {
@@ -242,26 +237,30 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
   log.info('Starting PR Comment Submission flow');
   log.info('found previous review id of ', previousReviewId);
 
-  await executePRCheck(
-    buildLookup,
-    scanReport,
-    buildId,
-    projectId,
-    body,
-    installationId,
-    pullRequestId,
-    previousReviewId
-  );
-  await executePRComment(
-    buildLookup,
-    scanReport,
-    buildId,
-    projectId,
-    body,
-    installationId,
-    pullRequestId,
-    previousReviewId
-  );
+  if (!buildLookup.builds_by_pk.project.settings.pr_feedback_disabled) {
+    await executePRCheck(
+      buildLookup,
+      scanReport,
+      buildId,
+      projectId,
+      body,
+      installationId,
+      pullRequestId,
+      previousReviewId
+    );
+  }
+  if (!buildLookup.builds_by_pk.project.settings.pr_check_enabled) {
+    await executePRComment(
+      buildLookup,
+      scanReport,
+      buildId,
+      projectId,
+      body,
+      installationId,
+      pullRequestId,
+      previousReviewId
+    );
+  }
 
   return;
 }
