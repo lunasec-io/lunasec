@@ -8935,6 +8935,7 @@ type settings {
 
   """An object relationship"""
   organization: organizations
+  pr_check_enabled: Boolean
   pr_feedback_disabled: Boolean
 
   """An object relationship"""
@@ -8951,6 +8952,7 @@ input settings_bool_exp {
   created_at: timestamp_comparison_exp
   id: uuid_comparison_exp
   organization: organizations_bool_exp
+  pr_check_enabled: Boolean_comparison_exp
   pr_feedback_disabled: Boolean_comparison_exp
   project: projects_bool_exp
 }
@@ -8960,6 +8962,7 @@ input settings_order_by {
   created_at: order_by
   id: order_by
   organization: organizations_order_by
+  pr_check_enabled: order_by
   pr_feedback_disabled: order_by
   project: projects_order_by
 }
@@ -8973,6 +8976,9 @@ enum settings_select_column {
 
   """column name"""
   id
+
+  """column name"""
+  pr_check_enabled
 
   """column name"""
   pr_feedback_disabled
