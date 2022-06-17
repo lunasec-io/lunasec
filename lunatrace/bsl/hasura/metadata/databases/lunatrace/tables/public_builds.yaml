@@ -63,6 +63,7 @@ insert_permissions:
         - agent_access_token
         - build_number
         - created_at
+        - existing_github_check_id
         - existing_github_review_id
         - git_branch
         - git_hash
@@ -98,6 +99,7 @@ select_permissions:
         - agent_access_token
         - build_number
         - created_at
+        - existing_github_check_id
         - existing_github_review_id
         - git_branch
         - git_hash
@@ -114,6 +116,7 @@ select_permissions:
       columns:
         - build_number
         - created_at
+        - existing_github_check_id
         - existing_github_review_id
         - git_branch
         - git_hash
@@ -151,6 +154,7 @@ update_permissions:
         - agent_access_token
         - build_number
         - created_at
+        - existing_github_check_id
         - existing_github_review_id
         - git_branch
         - git_hash

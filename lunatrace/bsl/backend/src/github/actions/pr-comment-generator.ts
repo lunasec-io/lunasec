@@ -13,12 +13,14 @@
  */
 import { filterFindingsByIgnored, Finding, groupByPackage, VulnerablePackage } from '@lunatrace/lunatrace-common';
 import markdownTable from 'markdown-table';
+import { Octokit } from 'octokit';
 
 import { hasura } from '../../hasura-api';
 import { GetBuildQuery } from '../../hasura-api/generated';
 import { InsertedScan } from '../../models/scan';
 import { log } from '../../utils/log';
 import { generateGithubGraphqlClient } from '../api';
+import { getInstallationAccessToken } from '../auth';
 
 function formatLocationText(finding: VulnerablePackage<Finding>) {
   if (finding.locations.length === 0) {
@@ -74,16 +76,10 @@ async function executePRComment(
   buildId: string,
   projectId: any,
   body: string,
+  installationId: number,
   pullRequestId: string,
   previousReviewId: string | null
 ) {
-  const installationId = buildLookup.builds_by_pk?.project?.organization?.installation_id;
-  if (!installationId) {
-    log.error(
-      `github installation id is not defined for the organization linked to build: ${buildId}, skipping github PR comment`
-    );
-    return;
-  }
   const githubClient = await generateGithubGraphqlClient(installationId);
   if (githubClient.error) {
     log.error(`unable to create github client`, {
@@ -134,9 +130,13 @@ async function executePRCheck(
   buildId: string,
   projectId: any,
   body: string,
+  installationId: number,
   pullRequestId: string,
   previousReviewId: string | null
 ) {
+  const authToken = await getInstallationAccessToken(installationId);
+  const octokit = new Octokit({ auth: authToken });
+
   const checkData = {
     name: 'LunaTrace',
     head_sha: buildLookup.builds_by_pk?.git_hash,
@@ -154,37 +154,37 @@ async function executePRCheck(
   // This is the first build on this pr so make a new comment
   if (!previousReviewId) {
     const githubReviewResponse = await octokit.request('POST /repos/{owner}/{repo}/check-runs', {
-      owner: buildLookup.builds_by_pk?.project?.organization?.name,
-      repo: buildLookup.builds_by_pk?.project?.repo,
+      owner: buildLookup.builds_by_pk?.project?.organization?.name || '',
+      repo: buildLookup.builds_by_pk?.project?.repo || '',
       ...checkData,
     });
 
-    const existing_github_review_id = githubReviewResponse.id;
+    const existing_github_check_id = githubReviewResponse.data.id;
 
     log.info('review created');
     // const submitResponse = await github.SubmitPrReview({ pull_request_id: pullRequestId.toString() })
     // logger.log('successfully reviewed the PR',submitResponse)
 
-    await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
+    await hasura.UpdateBuildExistingCheckId({ id: buildId, existing_github_check_id });
     return;
   }
 
   // Otherwise just update the existing review on the PR.  Very similar to above but we update instead
   const githubReviewResponse = await octokit.request('PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}', {
-    owner: buildLookup.builds_by_pk?.project?.organization?.name,
-    repo: buildLookup.builds_by_pk?.project?.repo,
-    check_run_id: buildLookup.builds_by_pk?.existing_github_review_id,
+    owner: buildLookup.builds_by_pk?.project?.organization?.name || '',
+    repo: buildLookup.builds_by_pk?.project?.repo || '',
+    check_run_id: buildLookup.builds_by_pk?.existing_github_check_id || '',
     ...checkData,
   });
 
-  const existing_github_review_id = githubReviewResponse.id;
+  const existing_github_check_id = githubReviewResponse.data.id;
 
-  if (!existing_github_review_id) {
+  if (!existing_github_check_id) {
     return log.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
   }
   log.info('successfully updated the PR review');
   // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
-  await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
+  await hasura.UpdateBuildExistingCheckId({ id: buildId, existing_github_check_id });
   return;
 }
 
@@ -217,6 +217,14 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
     return;
   }
 
+  const installationId = buildLookup.builds_by_pk?.project?.organization?.installation_id;
+  if (!installationId) {
+    log.error(
+      `github installation id is not defined for the organization linked to build: ${buildId}, skipping github PR comment`
+    );
+    return;
+  }
+
   const projectId = buildLookup.builds_by_pk.project.id;
 
   const body = generatePullRequestCommentFromReport(projectId, scanReport);
@@ -234,8 +242,26 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
   log.info('Starting PR Comment Submission flow');
   log.info('found previous review id of ', previousReviewId);
 
-  await executePRCheck(buildLookup, scanReport, buildId, projectId, body, pullRequestId, previousReviewId);
-  await executePRComment(buildLookup, scanReport, buildId, projectId, body, pullRequestId, previousReviewId);
+  await executePRCheck(
+    buildLookup,
+    scanReport,
+    buildId,
+    projectId,
+    body,
+    installationId,
+    pullRequestId,
+    previousReviewId
+  );
+  await executePRComment(
+    buildLookup,
+    scanReport,
+    buildId,
+    projectId,
+    body,
+    installationId,
+    pullRequestId,
+    previousReviewId
+  );
 
   return;
 }
