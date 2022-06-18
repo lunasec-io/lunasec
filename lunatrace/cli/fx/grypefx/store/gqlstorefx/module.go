@@ -79,7 +79,7 @@ func (g *gqlStore) GetVulnerabilityMetadata(id, namespace string) (*v3.Vulnerabi
 		RecordSource: "",
 
 		URLs:        mapURLs(meta.Vulnerability_by_pk.References),
-		Description: util.Nil2Zero(meta.Vulnerability_by_pk.Details),
+		Description: util.DerefOr0(meta.Vulnerability_by_pk.Details),
 
 		Cvss:     nil,
 		Severity: "",

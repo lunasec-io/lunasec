@@ -18,11 +18,10 @@ func Ptr[T any](t T) *T {
 	return &t
 }
 
-// Nil2Zero converts nil pointers to the zero value of their type.
-func Nil2Zero[T any](test *T) T {
-	var result T
-	if test == nil {
-		return result
+// DerefOr0 converts nil pointers to the zero value of their type.
+func DerefOr0[T any](a *T) T {
+	if a != nil {
+		return *a
 	}
-	return *test
+	return *new(T)
 }
