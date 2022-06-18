@@ -1946,26 +1946,42 @@ func (v *UpsertPackageResponse) GetInsert_package_one() *UpsertPackageInsert_pac
 	return v.Insert_package_one
 }
 
-// UpsertVulnerabilityInsert_vulnerability_oneVulnerability includes the requested fields of the GraphQL type vulnerability.
+// UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_response includes the requested fields of the GraphQL type vulnerability_mutation_response.
+// The GraphQL type's documentation follows.
+//
+// response of any mutation on the table "vulnerability.vulnerability"
+type UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_response struct {
+	// data from the rows affected by the mutation
+	Returning []*UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_responseReturningVulnerability `json:"returning"`
+}
+
+// GetReturning returns UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_response.Returning, and is useful for accessing the field via an interface.
+func (v *UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_response) GetReturning() []*UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_responseReturningVulnerability {
+	return v.Returning
+}
+
+// UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_responseReturningVulnerability includes the requested fields of the GraphQL type vulnerability.
 // The GraphQL type's documentation follows.
 //
 // columns and relationships of "vulnerability.vulnerability"
-type UpsertVulnerabilityInsert_vulnerability_oneVulnerability struct {
+type UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_responseReturningVulnerability struct {
 	Id uuid.UUID `json:"id"`
 }
 
-// GetId returns UpsertVulnerabilityInsert_vulnerability_oneVulnerability.Id, and is useful for accessing the field via an interface.
-func (v *UpsertVulnerabilityInsert_vulnerability_oneVulnerability) GetId() uuid.UUID { return v.Id }
-
-// UpsertVulnerabilityResponse is returned by UpsertVulnerability on success.
-type UpsertVulnerabilityResponse struct {
-	// insert a single row into the table: "vulnerability.vulnerability"
-	Insert_vulnerability_one *UpsertVulnerabilityInsert_vulnerability_oneVulnerability `json:"insert_vulnerability_one"`
+// GetId returns UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_responseReturningVulnerability.Id, and is useful for accessing the field via an interface.
+func (v *UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_responseReturningVulnerability) GetId() uuid.UUID {
+	return v.Id
 }
 
-// GetInsert_vulnerability_one returns UpsertVulnerabilityResponse.Insert_vulnerability_one, and is useful for accessing the field via an interface.
-func (v *UpsertVulnerabilityResponse) GetInsert_vulnerability_one() *UpsertVulnerabilityInsert_vulnerability_oneVulnerability {
-	return v.Insert_vulnerability_one
+// UpsertVulnerabilitiesResponse is returned by UpsertVulnerabilities on success.
+type UpsertVulnerabilitiesResponse struct {
+	// insert data into the table: "vulnerability.vulnerability"
+	Insert_vulnerability *UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_response `json:"insert_vulnerability"`
+}
+
+// GetInsert_vulnerability returns UpsertVulnerabilitiesResponse.Insert_vulnerability, and is useful for accessing the field via an interface.
+func (v *UpsertVulnerabilitiesResponse) GetInsert_vulnerability() *UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_response {
+	return v.Insert_vulnerability
 }
 
 // Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
@@ -3363,20 +3379,20 @@ func (v *__UpsertPackageInput) GetObject() *Package_insert_input { return v.Obje
 // GetOn_conflict returns __UpsertPackageInput.On_conflict, and is useful for accessing the field via an interface.
 func (v *__UpsertPackageInput) GetOn_conflict() *Package_on_conflict { return v.On_conflict }
 
-// __UpsertVulnerabilityInput is used internally by genqlient
-type __UpsertVulnerabilityInput struct {
-	Vulnerability *Vulnerability_insert_input `json:"vulnerability,omitempty"`
-	On_conflict   *Vulnerability_on_conflict  `json:"on_conflict,omitempty"`
+// __UpsertVulnerabilitiesInput is used internally by genqlient
+type __UpsertVulnerabilitiesInput struct {
+	Vulnerabilities           []*Vulnerability_insert_input `json:"vulnerabilities,omitempty"`
+	Vulnerability_on_conflict *Vulnerability_on_conflict    `json:"vulnerability_on_conflict,omitempty"`
 }
 
-// GetVulnerability returns __UpsertVulnerabilityInput.Vulnerability, and is useful for accessing the field via an interface.
-func (v *__UpsertVulnerabilityInput) GetVulnerability() *Vulnerability_insert_input {
-	return v.Vulnerability
+// GetVulnerabilities returns __UpsertVulnerabilitiesInput.Vulnerabilities, and is useful for accessing the field via an interface.
+func (v *__UpsertVulnerabilitiesInput) GetVulnerabilities() []*Vulnerability_insert_input {
+	return v.Vulnerabilities
 }
 
-// GetOn_conflict returns __UpsertVulnerabilityInput.On_conflict, and is useful for accessing the field via an interface.
-func (v *__UpsertVulnerabilityInput) GetOn_conflict() *Vulnerability_on_conflict {
-	return v.On_conflict
+// GetVulnerability_on_conflict returns __UpsertVulnerabilitiesInput.Vulnerability_on_conflict, and is useful for accessing the field via an interface.
+func (v *__UpsertVulnerabilitiesInput) GetVulnerability_on_conflict() *Vulnerability_on_conflict {
+	return v.Vulnerability_on_conflict
 }
 
 // vulnerabilityFragment includes the GraphQL fields of vulnerability requested by the fragment vulnerabilityFragment.
@@ -3608,105 +3624,6 @@ query GetProjectInfoQuery {
 	var err error
 
 	var data GetProjectInfoQueryResponse
-	resp := &graphql.Response{Data: &data}
-
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
-	)
-
-	return &data, err
-}
-
-func GetVulnerability(
-	ctx context.Context,
-	client graphql.Client,
-	package_name string,
-	package_manager types.PackageManager,
-) (*GetVulnerabilityResponse, error) {
-	req := &graphql.Request{
-		OpName: "GetVulnerability",
-		Query: `
-query GetVulnerability ($package_name: String!, $package_manager: package_manager!) {
-	vulnerability(where: {affected:{package:{name:{_eq:$package_name},package_manager:{_eq:$package_manager}}}}) {
-		id
-		affected {
-			package {
-				name
-				package_manager
-			}
-			affected_range_events {
-				event
-				version
-			}
-			affected_versions {
-				type
-				version
-			}
-		}
-		equivalents {
-			vulnerability {
-				id
-				source
-				source_id
-			}
-		}
-		references {
-			id
-			url
-		}
-		source
-		source_id
-	}
-}
-`,
-		Variables: &__GetVulnerabilityInput{
-			Package_name:    package_name,
-			Package_manager: package_manager,
-		},
-	}
-	var err error
-
-	var data GetVulnerabilityResponse
-	resp := &graphql.Response{Data: &data}
-
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
-	)
-
-	return &data, err
-}
-
-func GetVulnerabilityMetadata(
-	ctx context.Context,
-	client graphql.Client,
-	id uuid.UUID,
-) (*GetVulnerabilityMetadataResponse, error) {
-	req := &graphql.Request{
-		OpName: "GetVulnerabilityMetadata",
-		Query: `
-query GetVulnerabilityMetadata ($id: uuid!) {
-	vulnerability_by_pk(id: $id) {
-		id
-		source
-		source_id
-		references {
-			url
-		}
-		details
-	}
-}
-`,
-		Variables: &__GetVulnerabilityMetadataInput{
-			Id: id,
-		},
-	}
-	var err error
-
-	var data GetVulnerabilityMetadataResponse
 	resp := &graphql.Response{Data: &data}
 
 	err = client.MakeRequest(
@@ -3976,29 +3893,31 @@ mutation UpsertPackage ($object: package_insert_input!, $on_conflict: package_on
 	return &data, err
 }
 
-func UpsertVulnerability(
+func UpsertVulnerabilities(
 	ctx context.Context,
 	client graphql.Client,
-	vulnerability *Vulnerability_insert_input,
-	on_conflict *Vulnerability_on_conflict,
-) (*UpsertVulnerabilityResponse, error) {
+	vulnerabilities []*Vulnerability_insert_input,
+	vulnerability_on_conflict *Vulnerability_on_conflict,
+) (*UpsertVulnerabilitiesResponse, error) {
 	req := &graphql.Request{
-		OpName: "UpsertVulnerability",
+		OpName: "UpsertVulnerabilities",
 		Query: `
-mutation UpsertVulnerability ($vulnerability: vulnerability_insert_input!, $on_conflict: vulnerability_on_conflict!) {
-	insert_vulnerability_one(object: $vulnerability, on_conflict: $on_conflict) {
-		id
+mutation UpsertVulnerabilities ($vulnerabilities: [vulnerability_insert_input!]!, $vulnerability_on_conflict: vulnerability_on_conflict!) {
+	insert_vulnerability(objects: $vulnerabilities, on_conflict: $vulnerability_on_conflict) {
+		returning {
+			id
+		}
 	}
 }
 `,
-		Variables: &__UpsertVulnerabilityInput{
-			Vulnerability: vulnerability,
-			On_conflict:   on_conflict,
+		Variables: &__UpsertVulnerabilitiesInput{
+			Vulnerabilities:           vulnerabilities,
+			Vulnerability_on_conflict: vulnerability_on_conflict,
 		},
 	}
 	var err error
 
-	var data UpsertVulnerabilityResponse
+	var data UpsertVulnerabilitiesResponse
 	resp := &graphql.Response{Data: &data}
 
 	err = client.MakeRequest(
