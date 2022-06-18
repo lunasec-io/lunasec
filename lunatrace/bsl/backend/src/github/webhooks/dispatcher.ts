@@ -34,6 +34,7 @@ export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): 
 
   listenToHook('installation_repositories.added', syncRepositoriesHandler);
   listenToHook('installation.created', syncRepositoriesHandler);
+  listenToHook('repository.edited', syncRepositoriesHandler); // Particularly inefficient over-fetching but...it does work
   listenToHook('pull_request', pullRequestHandler);
   listenToHook('organization.member_added', organizationMemberAddedHandler);
   listenToHook('push', pushHandler);
