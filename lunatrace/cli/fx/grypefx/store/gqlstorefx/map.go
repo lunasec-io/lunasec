@@ -15,16 +15,20 @@
 package gqlstorefx
 
 import (
-  v3 "github.com/anchore/grype/grype/db/v3"
-  "github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
+	"fmt"
+	v3 "github.com/anchore/grype/grype/db/v3"
+	"github.com/blang/semver/v4"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
+	"sort"
+	"strings"
 
-  "github.com/lunasec-io/lunasec/lunatrace/cli/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 )
 
 // map grype namespace to packagemanager
 func mapNamespace(namespace string) types.PackageManager {
-  //TODO implement me
-  panic("implement me")
+	//TODO implement me
+	panic("implement me")
 }
 
 // map packagemanager to grype namespace
@@ -111,11 +115,11 @@ func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, err
 
 // n2z converts nil pointers to the zero value of their type.
 func n2z[T any](test *T) T {
-  var result T
-  if test == nil {
-    return result
-  }
-  return *test
+	var result T
+	if test == nil {
+		return result
+	}
+	return *test
 }
 
 func mapURLs(urls []*gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) []string {
