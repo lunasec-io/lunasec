@@ -15,5 +15,14 @@
 package util
 
 func Ptr[T any](t T) *T {
-  return &t
+	return &t
+}
+
+// Nil2Zero converts nil pointers to the zero value of their type.
+func Nil2Zero[T any](test *T) T {
+	var result T
+	if test == nil {
+		return result
+	}
+	return *test
 }
