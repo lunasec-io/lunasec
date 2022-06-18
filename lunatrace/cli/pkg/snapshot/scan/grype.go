@@ -143,7 +143,7 @@ func validateDBLoad(loadErr error, status *db.Status) error {
 func GrypeSbomScanFromFile(filename string) (document models.Document, err error) {
 	multiStore, err := getVulnStore()
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	log.Debug().Msg("gathering packages")
