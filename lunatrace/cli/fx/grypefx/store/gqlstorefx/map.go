@@ -114,15 +114,6 @@ func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, err
 	return out, nil
 }
 
-// n2z converts nil pointers to the zero value of their type.
-func n2z[T any](test *T) T {
-	var result T
-	if test == nil {
-		return result
-	}
-	return *test
-}
-
 func mapURLs(urls []*gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) []string {
 	out := make([]string, len(urls))
 	for i, ou := range urls {
