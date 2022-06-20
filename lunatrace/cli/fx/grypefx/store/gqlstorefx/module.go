@@ -17,6 +17,7 @@ package gqlstorefx
 import (
 	"context"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
@@ -51,7 +52,14 @@ func (g *gqlStore) GetID() (*v3.ID, error) {
 
 // GetVulnerability retrieves one or more vulnerabilities given a namespace and package name.
 func (g *gqlStore) GetVulnerability(namespace, name string) ([]v3.Vulnerability, error) {
-	vulns, err := gql.GetVulnerability(context.TODO(), g.d.GQLClient, name, mapNamespace(namespace))
+	// ignore vulnerabilities that do not come from github advisories
+	githubNamespacePrefix := "github:"
+	if !strings.HasPrefix(namespace, githubNamespacePrefix) {
+		return nil, nil
+	}
+	formattedNamespace := strings.ReplaceAll(namespace, githubNamespacePrefix, "")
+
+	vulns, err := gql.GetVulnerability(context.TODO(), g.d.GQLClient, name, mapNamespace(formattedNamespace))
 	if err != nil {
 		return nil, err
 	}
