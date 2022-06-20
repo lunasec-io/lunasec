@@ -35,11 +35,6 @@ func EnableGlobalFlags(flags *types.LunaTraceGlobalFlags) {
     zerolog.SetGlobalLevel(zerolog.ErrorLevel)
   }
 
-  if flags.Debug {
-    // include file and line number when logging
-    log.Logger = log.With().Caller().Logger()
-  }
-
   outStream := os.Stdout
   if flags.LogToStderr {
     outStream = os.Stderr
@@ -89,4 +84,8 @@ func EnableGlobalFlags(flags *types.LunaTraceGlobalFlags) {
 
     log.Logger = log.Output(consoleOutput)
   }
+
+  // TODO (cthompson) this should be behind a config value
+  // include file and line number when logging
+  log.Logger = log.Logger.With().Caller().Logger()
 }

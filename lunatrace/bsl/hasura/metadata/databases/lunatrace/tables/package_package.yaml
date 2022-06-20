@@ -21,6 +21,15 @@ array_relationships:
         table:
           schema: package
           name: release
+  - name: vulnerabilities
+    using:
+      manual_configuration:
+        remote_table:
+          schema: vulnerability
+          name: affected
+        insertion_order: null
+        column_mapping:
+          id: package_id
 insert_permissions:
   - role: service
     permission:

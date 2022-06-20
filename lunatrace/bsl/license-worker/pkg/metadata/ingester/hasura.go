@@ -14,6 +14,7 @@ package ingester
 import (
 	"context"
 	"fmt"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
@@ -22,7 +23,6 @@ import (
 	metadata2 "github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata/mapper"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
@@ -87,7 +87,7 @@ func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]s
 	}
 
 	checkList := make([]string, 0, len(needToCheck))
-	for pkgName, _ := range needToCheck {
+	for pkgName := range needToCheck {
 		checkList = append(checkList, pkgName)
 	}
 

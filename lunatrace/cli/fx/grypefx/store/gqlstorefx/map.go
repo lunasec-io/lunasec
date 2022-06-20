@@ -16,14 +16,13 @@ package gqlstorefx
 
 import (
 	"fmt"
+	v3 "github.com/anchore/grype/grype/db/v3"
+	"github.com/blang/semver/v4"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 	"sort"
 	"strings"
 
-	v3 "github.com/anchore/grype/grype/db/v3"
-	"github.com/blang/semver/v4"
-
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 )
 
 // map grype namespace to packagemanager
