@@ -14,7 +14,7 @@
 
 import { MaybeError } from './util';
 
-export type BuildSourceType = 'pr' | 'gui' | 'cli';
+export type BuildSourceType = 'pr' | 'gui' | 'cli' | 'default_branch';
 
 export type QueueMessageProcessorType = 's3-queue-handler' | 'lunatrace-queue-handler';
 
