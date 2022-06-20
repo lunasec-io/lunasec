@@ -12,16 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package util
+package grypestorefx
 
-func Ptr[T any](t T) *T {
-	return &t
-}
+import (
+	"github.com/anchore/grype/grype/db"
+	v3 "github.com/anchore/grype/grype/db/v3"
+	"github.com/rs/zerolog/log"
+)
 
-// DerefOr0 converts nil pointers to the zero value of their type.
-func DerefOr0[T any](a *T) T {
-	if a != nil {
-		return *a
+func LoadVulnerabilityDB(cfg db.Config, update bool) (v3.StoreReader, *db.Status, error) {
+	dbCurator, err := db.NewCurator(cfg)
+	if err != nil {
+		return nil, nil, err
 	}
-	return *new(T)
+
+	if update {
+		log.Debug().Msg("looking for updates on vulnerability database")
+		_, err := dbCurator.Update()
+		if err != nil {
+			return nil, nil, err
+		}
+	}
+
+	store, err := dbCurator.GetStore()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	status := dbCurator.Status()
+
+	return store, &status, status.Err
 }
