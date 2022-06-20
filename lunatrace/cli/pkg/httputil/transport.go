@@ -16,6 +16,8 @@ package httputil
 
 import (
 	"net/http"
+
+	"github.com/rs/zerolog/log"
 )
 
 type HeadersTransport struct {
@@ -24,6 +26,7 @@ type HeadersTransport struct {
 }
 
 func (t *HeadersTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	log.Error().Interface("req", req).Msg("gql")
 	if t.RT == nil {
 		t.RT = http.DefaultTransport
 	}

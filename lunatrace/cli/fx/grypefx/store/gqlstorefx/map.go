@@ -34,7 +34,7 @@ func mapNamespace(namespace string) types.PackageManager {
 // map packagemanager to grype namespace
 func mapPackageManager(pm types.PackageManager) string {
 	//TODO implement me
-	panic("implement me")
+	return string(pm)
 }
 
 type versionEvent struct {
@@ -111,15 +111,6 @@ func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, err
 		}
 	}
 	return out, nil
-}
-
-// n2z converts nil pointers to the zero value of their type.
-func n2z[T any](test *T) T {
-	var result T
-	if test == nil {
-		return result
-	}
-	return *test
 }
 
 func mapURLs(urls []*gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) []string {
