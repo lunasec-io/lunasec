@@ -25,6 +25,7 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
 const SchemaVersion = -1
@@ -78,7 +79,7 @@ func (g *gqlStore) GetVulnerabilityMetadata(id, namespace string) (*v3.Vulnerabi
 		RecordSource: "",
 
 		URLs:        mapURLs(meta.Vulnerability_by_pk.References),
-		Description: n2z(meta.Vulnerability_by_pk.Details),
+		Description: util.DerefOr0(meta.Vulnerability_by_pk.Details),
 
 		Cvss:     nil,
 		Severity: "",

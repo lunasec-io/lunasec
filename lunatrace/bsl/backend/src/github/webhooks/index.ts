@@ -18,7 +18,7 @@ import { log } from '../../utils/log';
 import { getSqsUrlFromName } from '../../utils/sqs';
 import { catchError, threwError } from '../../utils/try';
 
-import { registerWebhooksToInterceptor } from './handlers';
+import { registerWebhooksToInterceptor } from './dispatcher';
 import { WebhookInterceptor } from './interceptor';
 
 export async function createGithubWebhookInterceptor(): Promise<WebhookInterceptor | null> {

@@ -16,9 +16,14 @@ package scan
 
 import (
 	"fmt"
+	"net/http"
+	"path"
+
+	"github.com/Khan/genqlient/graphql"
 	"github.com/adrg/xdg"
 	"github.com/anchore/grype/grype"
 	"github.com/anchore/grype/grype/db"
+	v3 "github.com/anchore/grype/grype/db/v3"
 	"github.com/anchore/grype/grype/match"
 	"github.com/anchore/grype/grype/matcher"
 	"github.com/anchore/grype/grype/pkg"
@@ -27,7 +32,11 @@ import (
 	"github.com/anchore/stereoscope/pkg/image"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
-	"path"
+
+	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/grypefx/store/gqlstorefx"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/grypefx/store/grypestorefx"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/grypefx/store/multistorefx"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/httputil"
 )
 
 type RegistryCredentials struct {
@@ -132,30 +141,17 @@ func validateDBLoad(loadErr error, status *db.Status) error {
 }
 
 func GrypeSbomScanFromFile(filename string) (document models.Document, err error) {
-	var (
-		provider         vulnerability.Provider
-		dbStatus         *db.Status
-		packages         []pkg.Package
-		context          pkg.Context
-		metadataProvider vulnerability.MetadataProvider
-		ignoredMatches   []match.IgnoredMatch
-		matches          match.Matches
-	)
-
-	log.Debug().Msg("loading DB")
-	provider, metadataProvider, dbStatus, err = grype.LoadVulnerabilityDB(appConfig.DB.ToCuratorConfig(), appConfig.DB.AutoUpdate)
-	if err = validateDBLoad(err, dbStatus); err != nil {
-		log.Error().Err(err).Msg("unable to load db")
+	multiStore, err := getVulnStore()
+	if err != nil {
 		return
 	}
-	log.Debug().Msg("finished loading DB")
 
 	log.Debug().Msg("gathering packages")
 	providerConfig := pkg.ProviderConfig{
 		//RegistryOptions: appConfig.Registry.ToOptions(),
 		Exclusions: appConfig.Exclusions,
 	}
-	packages, context, err = pkg.Provide("sbom:"+filename, providerConfig)
+	packages, context, err := pkg.Provide("sbom:"+filename, providerConfig)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to load sbom")
 		return
@@ -164,13 +160,45 @@ func GrypeSbomScanFromFile(filename string) (document models.Document, err error
 
 	log.Debug().Msg("finding vulnerabilities")
 	matchers := matcher.NewDefaultMatchers(matcher.Config{})
-	matches = grype.FindVulnerabilitiesForPackage(provider, context.Distro, matchers, packages)
+	matches := grype.FindVulnerabilitiesForPackage(db.NewVulnerabilityProvider(multiStore), context.Distro, matchers, packages)
 	log.Debug().Msg("done looking for vulnerabilities")
 
-	document, err = models.NewDocument(packages, context, matches, ignoredMatches, metadataProvider, appConfig, dbStatus)
+	document, err = models.NewDocument(packages, context, matches, nil, db.NewVulnerabilityMetadataProvider(multiStore), appConfig, &db.Status{Location: "online"})
 	if err != nil {
 		log.Error().Err(err).Msg("unable to create sbom model")
 		return
 	}
 	return
+}
+
+func getVulnStore() (v3.StoreReader, error) {
+	log.Debug().Msg("loading grype store")
+	grypeStore, dbStatus, err := grypestorefx.LoadVulnerabilityDB(appConfig.DB.ToCuratorConfig(), appConfig.DB.AutoUpdate)
+	if err = validateDBLoad(err, dbStatus); err != nil {
+		log.Error().Err(err).Msg("unable to load db")
+		return nil, err
+	}
+	log.Debug().Msg("finished loading grype store")
+
+	log.Debug().Msg("loading gql store")
+	gqlStore, err := gqlstorefx.NewGraphQLStore(gqlstorefx.StoreDeps{
+		GQLClient: graphql.NewClient("http://localhost:8080/v1/graphql", &http.Client{
+			Transport: &httputil.HeadersTransport{Headers: map[string]string{
+				"x-hasura-admin-secret": "myadminsecretkey", "x-hasura-role": "service",
+			}},
+		}),
+	})
+
+	if err != nil {
+		log.Error().Err(err).Msg("unable to load gql store")
+		return nil, err
+	}
+	log.Debug().Msg("loaded gql store")
+
+	multiStore, err := multistorefx.NewMultiStore(gqlStore, grypeStore)
+	if err != nil {
+		log.Error().Err(err).Msg("unable to create multistore")
+		return nil, err
+	}
+	return multiStore, nil
 }
