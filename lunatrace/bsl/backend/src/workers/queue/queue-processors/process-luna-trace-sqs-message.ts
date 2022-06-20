@@ -18,7 +18,7 @@ import { log } from '../../../utils/log';
 import { processGithubWebhookActivity } from '../activities/process-github-webhook-activity';
 import { snapshotRepositoryActivity } from '../activities/snapshot-repository-activity';
 
-export async function createMessageTypeToActivityLookup(): Promise<MessageTypeToActivityLookup> {
+export async function createActivities(): Promise<MessageTypeToActivityLookup> {
   const webhooks = await createGithubWebhookInterceptor();
   if (webhooks === null) {
     throw new Error('github webhook interceptor cannot be null');
@@ -32,17 +32,17 @@ export async function createMessageTypeToActivityLookup(): Promise<MessageTypeTo
 }
 
 export async function processLunaTraceSqsMessage(
-  activityLookup: MessageTypeToActivityLookup,
+  activities: MessageTypeToActivityLookup,
   message: LunaTraceSqsMessage
 ): Promise<MaybeErrorVoid[]> {
-  if (!(message.type in activityLookup)) {
+  if (!(message.type in activities)) {
     log.error('unable to find message type in activity lookup', {
       type: message.type,
     });
     return [];
   }
 
-  const activity = activityLookup[message.type];
+  const activity = activities[message.type];
 
   return await Promise.all(
     message.records.map(async (record) => {
