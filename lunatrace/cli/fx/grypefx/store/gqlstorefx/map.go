@@ -18,6 +18,7 @@ import (
 	"fmt"
 	v3 "github.com/anchore/grype/grype/db/v3"
 	"github.com/blang/semver/v4"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/vulnerability/advisory"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 	"sort"
 	"strings"
@@ -27,13 +28,11 @@ import (
 
 // map grype namespace to packagemanager
 func mapNamespace(namespace string) types.PackageManager {
-	//TODO implement me
-	panic("implement me")
+	return advisory.MapStringToPackageManager(namespace)
 }
 
 // map packagemanager to grype namespace
 func mapPackageManager(pm types.PackageManager) string {
-	//TODO implement me
 	return string(pm)
 }
 
