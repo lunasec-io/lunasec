@@ -1,0 +1,306 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Open Source Vulnerability",
+  "description": "A schema for describing a vulnerability in an open source package.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "modified": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "published": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "withdrawn": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "related": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "summary": {
+      "type": "string"
+    },
+    "details": {
+      "type": "string"
+    },
+    "severity": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "CVSS_V3"
+            ]
+          },
+          "score": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "score"
+        ]
+      }
+    },
+    "affected": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "package": {
+            "type": "object",
+            "properties": {
+              "ecosystem": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "purl": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "ecosystem",
+              "name"
+            ]
+          },
+          "ranges": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "GIT",
+                    "SEMVER",
+                    "ECOSYSTEM"
+                  ]
+                },
+                "repo": {
+                  "type": "string"
+                },
+                "events": {
+                  "type": "array",
+                  "contains": {
+                    "required": [
+                      "introduced"
+                    ]
+                  },
+                  "items": {
+                    "type": "object",
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "introduced": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "introduced"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "fixed": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "fixed"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "last_affected": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "last_affected"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "limit": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "limit"
+                        ]
+                      }
+                    ]
+                  },
+                  "minItems": 1
+                },
+                "database_specific": {
+                  "type": "object"
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "const": "GIT"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "repo"
+                    ]
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "events": {
+                        "contains": {
+                          "required": ["last_affected"]
+                        }
+                      }
+                    }
+                  },
+                  "then": {
+                    "not": {
+                      "properties": {
+                        "events": {
+                          "contains": {
+                            "required": ["fixed"]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ],
+              "required": [
+                "type",
+                "events"
+              ]
+            }
+          },
+          "versions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ecosystem_specific": {
+            "type": "object"
+          },
+          "database_specific": {
+            "type": "object"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "ranges": {
+                  "contains": {
+                    "properties": {
+                      "type": {
+                        "enum": [
+                          "SEMVER",
+                          "ECOSYSTEM"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "then": {},
+            "else": {
+              "required": [
+                "versions"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "ADVISORY",
+              "ARTICLE",
+              "REPORT",
+              "FIX",
+              "GIT",
+              "PACKAGE",
+              "WEB"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "type",
+          "url"
+        ]
+      }
+    },
+    "credits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "contact": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    "database_specific": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "id",
+    "modified"
+  ]
+}
