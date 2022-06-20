@@ -4139,6 +4139,8 @@ export type Package = {
   /** An array relationship */
   releases: Array<Package_Release>;
   upstream_data?: Maybe<Scalars['jsonb']>;
+  /** An array relationship */
+  vulnerabilities: Array<Vulnerability_Affected>;
 };
 
 
@@ -4167,6 +4169,16 @@ export type PackageUpstream_DataArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
 
+
+/** columns and relationships of "package.package" */
+export type PackageVulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Affected_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Affected_Order_By>>;
+  where?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
+};
+
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type Package_Append_Input = {
   upstream_data?: InputMaybe<Scalars['jsonb']>;
@@ -4186,6 +4198,7 @@ export type Package_Bool_Exp = {
   package_manager?: InputMaybe<Package_Manager_Comparison_Exp>;
   releases?: InputMaybe<Package_Release_Bool_Exp>;
   upstream_data?: InputMaybe<Jsonb_Comparison_Exp>;
+  vulnerabilities?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
 };
 
 /** unique or primary key constraints on table "package.package" */
@@ -4222,6 +4235,7 @@ export type Package_Insert_Input = {
   package_manager?: InputMaybe<Scalars['package_manager']>;
   releases?: InputMaybe<Package_Release_Arr_Rel_Insert_Input>;
   upstream_data?: InputMaybe<Scalars['jsonb']>;
+  vulnerabilities?: InputMaybe<Vulnerability_Affected_Arr_Rel_Insert_Input>;
 };
 
 /** columns and relationships of "package.license" */
@@ -4506,6 +4520,7 @@ export type Package_Order_By = {
   package_manager?: InputMaybe<Order_By>;
   releases_aggregate?: InputMaybe<Package_Release_Aggregate_Order_By>;
   upstream_data?: InputMaybe<Order_By>;
+  vulnerabilities_aggregate?: InputMaybe<Vulnerability_Affected_Aggregate_Order_By>;
 };
 
 /** columns and relationships of "package.package_maintainer" */
