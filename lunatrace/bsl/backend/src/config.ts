@@ -162,14 +162,6 @@ export function getVulnerabilityUpdateConfig(): VulnerabilityUpdateConfig {
   };
 }
 
-export function getWorkerConfig(): WorkerConfig {
-  const workerType = checkEnvVar('WORKER_TYPE');
-
-  return {
-    workerType: workerType as WorkerType,
-  };
-}
-
 export function getQueueHandlerConfig(): SqsQueueConfig {
   const DEFAULT_QUEUE_MAX_MESSAGES = '10';
   const DEFAULT_QUEUE_VISIBILITY = '60';
