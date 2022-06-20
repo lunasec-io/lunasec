@@ -5235,6 +5235,24 @@ type package {
     """JSON select path"""
     path: String
   ): jsonb
+
+  """An array relationship"""
+  vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_affected_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_affected_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_affected_bool_exp
+  ): [vulnerability_affected!]!
 }
 
 """append existing jsonb value of filtered columns with new jsonb value"""
@@ -5258,6 +5276,7 @@ input package_bool_exp {
   package_manager: package_manager_comparison_exp
   releases: package_release_bool_exp
   upstream_data: jsonb_comparison_exp
+  vulnerabilities: vulnerability_affected_bool_exp
 }
 
 """
@@ -5305,6 +5324,7 @@ input package_insert_input {
   package_manager: package_manager
   releases: package_release_arr_rel_insert_input
   upstream_data: jsonb
+  vulnerabilities: vulnerability_affected_arr_rel_insert_input
 }
 
 """
@@ -5668,6 +5688,7 @@ input package_order_by {
   package_manager: order_by
   releases_aggregate: package_release_aggregate_order_by
   upstream_data: order_by
+  vulnerabilities_aggregate: vulnerability_affected_aggregate_order_by
 }
 
 """
