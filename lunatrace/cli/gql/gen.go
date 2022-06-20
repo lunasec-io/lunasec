@@ -548,6 +548,7 @@ type Package_bool_exp struct {
 	Package_manager     *Package_manager_comparison_exp      `json:"package_manager,omitempty"`
 	Releases            *Package_release_bool_exp            `json:"releases,omitempty"`
 	Upstream_data       *Jsonb_comparison_exp                `json:"upstream_data,omitempty"`
+	Vulnerabilities     *Vulnerability_affected_bool_exp     `json:"vulnerabilities,omitempty"`
 }
 
 // GetAnd returns Package_bool_exp.And, and is useful for accessing the field via an interface.
@@ -590,6 +591,11 @@ func (v *Package_bool_exp) GetReleases() *Package_release_bool_exp { return v.Re
 // GetUpstream_data returns Package_bool_exp.Upstream_data, and is useful for accessing the field via an interface.
 func (v *Package_bool_exp) GetUpstream_data() *Jsonb_comparison_exp { return v.Upstream_data }
 
+// GetVulnerabilities returns Package_bool_exp.Vulnerabilities, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetVulnerabilities() *Vulnerability_affected_bool_exp {
+	return v.Vulnerabilities
+}
+
 // unique or primary key constraints on table "package.package"
 type Package_constraint string
 
@@ -611,6 +617,7 @@ type Package_insert_input struct {
 	Package_manager     *types.PackageManager                            `json:"package_manager,omitempty"`
 	Releases            *Package_release_arr_rel_insert_input            `json:"releases,omitempty"`
 	Upstream_data       *json.RawMessage                                 `json:"upstream_data,omitempty"`
+	Vulnerabilities     *Vulnerability_affected_arr_rel_insert_input     `json:"vulnerabilities,omitempty"`
 }
 
 // GetCustom_registry returns Package_insert_input.Custom_registry, and is useful for accessing the field via an interface.
@@ -641,6 +648,11 @@ func (v *Package_insert_input) GetReleases() *Package_release_arr_rel_insert_inp
 
 // GetUpstream_data returns Package_insert_input.Upstream_data, and is useful for accessing the field via an interface.
 func (v *Package_insert_input) GetUpstream_data() *json.RawMessage { return v.Upstream_data }
+
+// GetVulnerabilities returns Package_insert_input.Vulnerabilities, and is useful for accessing the field via an interface.
+func (v *Package_insert_input) GetVulnerabilities() *Vulnerability_affected_arr_rel_insert_input {
+	return v.Vulnerabilities
+}
 
 // Boolean expression to filter rows from the table "package.license". All fields are combined with a logical 'AND'.
 type Package_license_bool_exp struct {
