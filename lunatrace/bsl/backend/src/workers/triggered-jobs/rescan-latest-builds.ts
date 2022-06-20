@@ -51,7 +51,6 @@ export async function rescanLatestBuilds() {
     fakeS3Messages.push({ Records: [record] });
   });
   logger.log('sending ', fakeS3Messages.length, ' sqs messages to queue scans');
-  console.log(util.inspect(fakeS3Messages, { depth: Infinity, colors: true }));
   const sqsPromises = fakeS3Messages.map(sendSqsMessage);
   await Promise.all(sqsPromises);
   logger.log('donezo');
