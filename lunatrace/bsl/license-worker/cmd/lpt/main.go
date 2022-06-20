@@ -12,6 +12,7 @@
 package main
 
 import (
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/cmd/lpt/vulnerability"
 	"net/http"
 
 	"github.com/Khan/genqlient/graphql"
@@ -24,6 +25,7 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/license/scanner/packagejson"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata/fetcher/npm"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata/ingester"
+	vulnmanager "github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/vulnerability"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/lunatracefx"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
@@ -50,11 +52,13 @@ func main() {
 			licensecheck.NewScanner,
 			packagejson.NewScanner,
 			license.NewCommand,
+			vulnmanager.NewFileIngester,
 		),
 		fx.Provide(
 			npm.NewNPMFetcher,
 			ingester.NewHasuraIngester,
 			ingest.NewCommand,
+			vulnerability.NewCommand,
 		),
 	)
 }

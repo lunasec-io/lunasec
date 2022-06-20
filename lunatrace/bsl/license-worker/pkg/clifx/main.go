@@ -13,6 +13,7 @@ package clifx
 
 import (
 	"context"
+	"github.com/rs/zerolog/log"
 	"os"
 	"time"
 
@@ -43,7 +44,10 @@ func Main(opts ...fx.Option) {
 
 	err := cliApp.RunContext(rootCtx, os.Args)
 	if err != nil {
-		panic(err)
+		log.Error().
+			Err(err).
+			Msg("failed to run")
+		return
 	}
 
 	cancel()
@@ -52,5 +56,4 @@ func Main(opts ...fx.Option) {
 	if err := app.Stop(stopCtx); err != nil {
 		panic(err)
 	}
-
 }
