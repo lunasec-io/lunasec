@@ -20,6 +20,8 @@ import { newError, newResult } from './errors';
 import { log } from './log';
 import { catchError, threwError } from './try';
 
+// Queue Name cache, a cache of promises that will resolve to the name. The first request gets put into the cache
+// and subsequent calls return that
 // If the queueName ever changes we are in trouble but it shouldn't
 const cache: { [queueName: string]: Promise<string | undefined> } = {};
 
@@ -35,13 +37,14 @@ export async function getSqsUrlPromise(queueName: string): Promise<string | unde
   );
 
   const queueNamePromise = awsResPromise.then((res) => {
+    log.info('AWS Responded to request for queueUrl', { res });
     return res.QueueUrl;
   });
   cache[queueName] = queueNamePromise;
   return queueNamePromise;
 }
 
-//wraps the above promise in the error handler pattern for easier parsing
+// wraps the above promise in the error handler pattern for easier parsing.
 export async function getSqsUrlFromName(queueName: string): Promise<MaybeError<string>> {
   const queueUrl = await getSqsUrlPromise(queueName);
   if (!queueUrl) {
