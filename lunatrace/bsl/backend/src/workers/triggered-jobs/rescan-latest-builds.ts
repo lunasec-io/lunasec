@@ -38,6 +38,7 @@ export async function rescanLatestBuilds() {
       // This will happen for any builds we catch in progress, or any that had issues during upload. Just skip them.
       return;
     }
+    // Parse the s3 key and s3 bucket name out of the s3 url.  This is a bit hairy, so perhaps in the future we can just store those pieces directly if this becomes problematic.
     const s3Url = new URL(build.s3_url);
     const key = s3Url.pathname.substring(1);
     const bucketName = s3Url.host.split('.')[0];
