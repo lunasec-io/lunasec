@@ -13,40 +13,20 @@
  */
 import { DeleteMessageCommand, Message, ReceiveMessageCommand, ReceiveMessageCommandOutput } from '@aws-sdk/client-sqs';
 
-import { sqsClient } from '../aws/sqs-client';
-import { getQueueHandlerConfig, getWorkerBucketConfig } from '../config';
-import { SqsQueueConfig, WorkerBucketConfig } from '../types/config';
-import { MessageTypeToActivityLookup } from '../types/sqs';
-import { MaybeErrorVoid } from '../types/util';
-import { newError, newResult } from '../utils/errors';
-import { log } from '../utils/log';
-import { getSqsUrlFromName } from '../utils/sqs';
-import { catchError, threwError } from '../utils/try';
+import { sqsClient } from '../../aws/sqs-client';
+import { getQueueHandlerConfig, getWorkerBucketConfig } from '../../config';
+import { SqsQueueConfig, WorkerBucketConfig } from '../../types/config';
+import { MessageTypeToActivityLookup } from '../../types/sqs';
+import { MaybeErrorVoid } from '../../types/util';
+import { newError, newResult } from '../../utils/errors';
+import { log } from '../../utils/log';
+import { loadQueueUrlOrExit } from '../../utils/sqs';
 
 import {
   createMessageTypeToActivityLookup,
   processLunaTraceSqsMessage,
 } from './queue-processors/process-luna-trace-sqs-message';
 import { processS3SqsMessage } from './queue-processors/process-s3-sqs-message';
-
-async function loadQueueUrlFromName(queueName: string): Promise<string> {
-  const queueUrl = await catchError(getSqsUrlFromName(sqsClient, queueName));
-
-  if (threwError(queueUrl) || queueUrl.error) {
-    log.error('unable to load queue url', {
-      queueName: queueName,
-    });
-    process.exit(-1);
-  }
-
-  const loadedQueueUrl = queueUrl.res;
-
-  log.info('Resolved url for queue', {
-    queueName: queueName,
-    loadedQueueUrl,
-  });
-  return loadedQueueUrl;
-}
 
 export async function startQueueWorker(): Promise<void> {
   const queueWorker = new QueueWorker();
@@ -68,7 +48,7 @@ class QueueWorker {
   }
 
   async setup() {
-    this.queueUrl = await loadQueueUrlFromName(this.queueConfig.queueName);
+    this.queueUrl = await loadQueueUrlOrExit(this.queueConfig.queueName);
 
     this.activityLookup = await createMessageTypeToActivityLookup();
   }

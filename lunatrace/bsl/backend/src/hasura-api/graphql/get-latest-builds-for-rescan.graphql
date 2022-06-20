@@ -1,0 +1,5 @@
+query GetLatestBuildsForRescan {
+    latest_builds(where: {s3_url: {_is_null: false}}) {
+        s3_url
+    }
+}

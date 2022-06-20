@@ -49,7 +49,7 @@ export async function queueNewReposForSnapshot(
         gitBranch: repo.defaultBranch,
         installationId: installationId,
         repoGithubId: repo.repoId,
-        sourceType: 'pr',
+        sourceType: 'pr', // TODO: Change to default branch build after my other branch merges (forrest)
       };
       return queueRepositoryForSnapshot(installationId, record);
     })

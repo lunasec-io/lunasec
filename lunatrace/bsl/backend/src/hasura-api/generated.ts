@@ -2145,6 +2145,86 @@ export type Jsonb_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['jsonb']>>;
 };
 
+/** columns and relationships of "latest_builds" */
+export type Latest_Builds = {
+  __typename?: 'latest_builds';
+  agent_access_token?: Maybe<Scalars['uuid']>;
+  build_number?: Maybe<Scalars['Int']>;
+  created_at?: Maybe<Scalars['timestamp']>;
+  existing_github_review_id?: Maybe<Scalars['String']>;
+  git_branch?: Maybe<Scalars['String']>;
+  git_hash?: Maybe<Scalars['String']>;
+  git_remote?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  project_id?: Maybe<Scalars['uuid']>;
+  pull_request_id?: Maybe<Scalars['String']>;
+  s3_url?: Maybe<Scalars['String']>;
+  source_type?: Maybe<Scalars['builds_source_type']>;
+};
+
+/** Boolean expression to filter rows from the table "latest_builds". All fields are combined with a logical 'AND'. */
+export type Latest_Builds_Bool_Exp = {
+  _and?: InputMaybe<Array<Latest_Builds_Bool_Exp>>;
+  _not?: InputMaybe<Latest_Builds_Bool_Exp>;
+  _or?: InputMaybe<Array<Latest_Builds_Bool_Exp>>;
+  agent_access_token?: InputMaybe<Uuid_Comparison_Exp>;
+  build_number?: InputMaybe<Int_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
+  git_branch?: InputMaybe<String_Comparison_Exp>;
+  git_hash?: InputMaybe<String_Comparison_Exp>;
+  git_remote?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  project_id?: InputMaybe<Uuid_Comparison_Exp>;
+  pull_request_id?: InputMaybe<String_Comparison_Exp>;
+  s3_url?: InputMaybe<String_Comparison_Exp>;
+  source_type?: InputMaybe<Builds_Source_Type_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "latest_builds". */
+export type Latest_Builds_Order_By = {
+  agent_access_token?: InputMaybe<Order_By>;
+  build_number?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  existing_github_review_id?: InputMaybe<Order_By>;
+  git_branch?: InputMaybe<Order_By>;
+  git_hash?: InputMaybe<Order_By>;
+  git_remote?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  pull_request_id?: InputMaybe<Order_By>;
+  s3_url?: InputMaybe<Order_By>;
+  source_type?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "latest_builds" */
+export enum Latest_Builds_Select_Column {
+  /** column name */
+  AgentAccessToken = 'agent_access_token',
+  /** column name */
+  BuildNumber = 'build_number',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExistingGithubReviewId = 'existing_github_review_id',
+  /** column name */
+  GitBranch = 'git_branch',
+  /** column name */
+  GitHash = 'git_hash',
+  /** column name */
+  GitRemote = 'git_remote',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ProjectId = 'project_id',
+  /** column name */
+  PullRequestId = 'pull_request_id',
+  /** column name */
+  S3Url = 's3_url',
+  /** column name */
+  SourceType = 'source_type'
+}
+
 /** Boolean expression to compare columns of type "license_source". All fields are combined with logical 'AND'. */
 export type License_Source_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['license_source']>;
@@ -5889,6 +5969,8 @@ export type Query_Root = {
   ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
   /** fetch data from the table: "ignored_vulnerabilities" using primary key columns */
   ignored_vulnerabilities_by_pk?: Maybe<Ignored_Vulnerabilities>;
+  /** fetch data from the table: "latest_builds" */
+  latest_builds: Array<Latest_Builds>;
   /** An array relationship */
   manifests: Array<Manifests>;
   /** fetch data from the table: "manifests" using primary key columns */
@@ -6141,6 +6223,15 @@ export type Query_RootIgnored_VulnerabilitiesArgs = {
 
 export type Query_RootIgnored_Vulnerabilities_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootLatest_BuildsArgs = {
+  distinct_on?: InputMaybe<Array<Latest_Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Latest_Builds_Order_By>>;
+  where?: InputMaybe<Latest_Builds_Bool_Exp>;
 };
 
 
@@ -7011,6 +7102,8 @@ export type Subscription_Root = {
   ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
   /** fetch data from the table: "ignored_vulnerabilities" using primary key columns */
   ignored_vulnerabilities_by_pk?: Maybe<Ignored_Vulnerabilities>;
+  /** fetch data from the table: "latest_builds" */
+  latest_builds: Array<Latest_Builds>;
   /** An array relationship */
   manifests: Array<Manifests>;
   /** fetch data from the table: "manifests" using primary key columns */
@@ -7255,6 +7348,15 @@ export type Subscription_RootIgnored_VulnerabilitiesArgs = {
 
 export type Subscription_RootIgnored_Vulnerabilities_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootLatest_BuildsArgs = {
+  distinct_on?: InputMaybe<Array<Latest_Builds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Latest_Builds_Order_By>>;
+  where?: InputMaybe<Latest_Builds_Bool_Exp>;
 };
 
 
@@ -9845,6 +9947,11 @@ export type GetGithubRepositoriesByIdsQueryVariables = Exact<{
 
 export type GetGithubRepositoriesByIdsQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', github_id?: number | null }> };
 
+export type GetLatestBuildsForRescanQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetLatestBuildsForRescanQuery = { __typename?: 'query_root', latest_builds: Array<{ __typename?: 'latest_builds', s3_url?: string | null }> };
+
 export type GetOrganizationFromInstallationIdQueryVariables = Exact<{
   installation_id?: InputMaybe<Scalars['Int']>;
 }>;
@@ -10096,6 +10203,13 @@ export const GetGithubRepositoriesByIdsDocument = gql`
     query GetGithubRepositoriesByIds($ids: [Int!]!) {
   github_repositories(where: {github_id: {_in: $ids}}) {
     github_id
+  }
+}
+    `;
+export const GetLatestBuildsForRescanDocument = gql`
+    query GetLatestBuildsForRescan {
+  latest_builds(where: {s3_url: {_is_null: false}}) {
+    s3_url
   }
 }
     `;
@@ -10386,6 +10500,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetGithubRepositoriesByIds(variables: GetGithubRepositoriesByIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetGithubRepositoriesByIdsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetGithubRepositoriesByIdsQuery>(GetGithubRepositoriesByIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetGithubRepositoriesByIds', 'query');
+    },
+    GetLatestBuildsForRescan(variables?: GetLatestBuildsForRescanQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetLatestBuildsForRescanQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetLatestBuildsForRescanQuery>(GetLatestBuildsForRescanDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetLatestBuildsForRescan', 'query');
     },
     GetOrganizationFromInstallationId(variables?: GetOrganizationFromInstallationIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetOrganizationFromInstallationIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetOrganizationFromInstallationIdQuery>(GetOrganizationFromInstallationIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetOrganizationFromInstallationId', 'query');

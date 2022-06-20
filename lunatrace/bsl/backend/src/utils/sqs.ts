@@ -13,9 +13,12 @@
  */
 import { GetQueueUrlCommand, SQSClient } from '@aws-sdk/client-sqs';
 
+import { sqsClient } from '../aws/sqs-client';
 import { MaybeError } from '../types/util';
 
 import { newError, newResult } from './errors';
+import { log } from './log';
+import { catchError, threwError } from './try';
 
 // If the queueName ever changes we are in trouble but it shouldn't
 const cache: { [queueName: string]: string } = {};
@@ -34,4 +37,23 @@ export async function getSqsUrlFromName(sqsClient: SQSClient, queueName: string)
   }
   cache[queueName] = queueUrl;
   return newResult(queueUrl);
+}
+
+export async function loadQueueUrlOrExit(queueName: string): Promise<string> {
+  const queueUrl = await catchError(getSqsUrlFromName(sqsClient, queueName));
+
+  if (threwError(queueUrl) || queueUrl.error) {
+    log.error('unable to load queue url', {
+      queueName: queueName,
+    });
+    process.exit(-1);
+  }
+
+  const loadedQueueUrl = queueUrl.res;
+
+  log.info('Resolved url for queue', {
+    queueName: queueName,
+    loadedQueueUrl,
+  });
+  return loadedQueueUrl;
 }
