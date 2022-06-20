@@ -8,7 +8,7 @@
     "start": "concurrently 'yarn dev:graphql:watch' 'yarn run start:server'",
     "start:server": "nodemon ./src/server.ts --enable-source-maps",
     "start:worker": "nodemon src/workers/queue/start.ts --enable-source-maps",
-    "start:job:update-vulns": "NODE_OPTIONS=\\\"--max-old-space-size=8192\\\" WORKER_TYPE=job-runner yarn run ts-node --files src/workers/triggered-jobs/upsert-vulnerabilities.ts",
+    "start:job:update-vulns": "NODE_OPTIONS=\\\"--max-old-space-size=8192\\\" yarn run ts-node --files src/workers/triggered-jobs/upsert-vulnerabilities.ts",
     "builds:rescan":"yarn run ts-node ./src/workers/triggered-jobs/rescan-latest-builds.ts",
     "prod:worker": "node build/workers/handler.js --enable-source-maps",
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",
