@@ -11,11 +11,12 @@
  * limitations under the License.
  *
  */
+import * as util from 'util';
+
 import { SendMessageCommand } from '@aws-sdk/client-sqs';
-import { v4 as uuid } from 'uuid';
 
 import { sqsClient } from '../../aws/sqs-client';
-import { checkEnvVar, getAwsConfig } from '../../config';
+import { getAwsConfig } from '../../config';
 import { hasura } from '../../hasura-api';
 import { FakeS3SqsRecord, S3SqsMessage } from '../../types/sqs';
 import { log } from '../../utils/log';
@@ -38,7 +39,7 @@ export async function rescanLatestBuilds() {
       return;
     }
     const s3Url = new URL(build.s3_url);
-    const key = s3Url.pathname;
+    const key = s3Url.pathname.substring(1);
     const bucketName = s3Url.host.split('.')[0];
     if (!bucketName) {
       logger.error('failed to split bucket name out of s3 url from build', { build });
@@ -50,14 +51,14 @@ export async function rescanLatestBuilds() {
     fakeS3Messages.push({ Records: [record] });
   });
   logger.log('sending ', fakeS3Messages.length, ' sqs messages to queue scans');
-  console.log(fakeS3Messages);
+  console.log(util.inspect(fakeS3Messages, { depth: Infinity, colors: true }));
   const sqsPromises = fakeS3Messages.map(sendSqsMessage);
   await Promise.all(sqsPromises);
   logger.log('donezo');
 }
 
 // TODO: if called from a webhook this needs to be renamed to be clear.. or passed as an arg or something
-const queueName = checkEnvVar('QUEUE_NAME');
+const queueName = 'lunatrace-forrest-EtlStorage-LunaTraceDevelopmentQueue04E796C2-FmrSZGlohvYO'; // checkEnvVar('QUEUE_NAME');
 // Send pretend S3 events to trigger builds on the same queue as the s3 events
 // It may someday be necessary to break this into a separate queue/worker if it effects the UX speed of other jobs
 async function sendSqsMessage(fakeS3Record: S3SqsMessage) {
