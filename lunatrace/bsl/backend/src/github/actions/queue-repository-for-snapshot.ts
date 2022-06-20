@@ -24,8 +24,8 @@ import { catchError, threwError } from '../../utils/try';
 export async function queueRepositoryForSnapshot(installationId: number, repo: SnapshotForRepositoryRequest) {
   const repoQueueConfig = getRepositoryQueueConfig();
   // TODO (cthompson) move this outside of this function, this should only need to be called once
-  // note (forrest): I made this returned cached values so at least it is performant now
-  const repositoryQueueUrl = await catchError(getSqsUrlFromName(sqsClient, repoQueueConfig.queueName));
+  // note (forrest): I made this returned cached values so at least it is performant now, this is perfectly, 100% fine
+  const repositoryQueueUrl = await catchError(getSqsUrlFromName(repoQueueConfig.queueName));
 
   if (threwError(repositoryQueueUrl) || repositoryQueueUrl.error) {
     log.error('unable to load repository queue url', {
