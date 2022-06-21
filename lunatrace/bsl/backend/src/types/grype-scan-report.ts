@@ -226,24 +226,16 @@ export interface Source {
   target: string;
 }
 
-// Converts JSON strings to/from your types
-// and asserts the results of JSON.parse at runtime
-export class Convert {
-  public static toScanReport(json: string): GrypeScanReport {
-    // disable all type reflection/checking for now as it is too fragile
-    try {
-      return JSON.parse(json) as GrypeScanReport;
-    } catch (e) {
-      log.error('unable to parse scan report json', {
-        error: e,
-        json
-      });
-      throw e;
-    }
-  }
-
-  public static scanReportToJson(value: GrypeScanReport): string {
-    return JSON.stringify(uncast(value, r('ScanReport')), null, 2);
+export function parseJsonToGrypeScanReport(json: string): GrypeScanReport {
+  // disable all type reflection/checking for now as it is too fragile
+  try {
+    return JSON.parse(json) as GrypeScanReport;
+  } catch (e) {
+    log.error('unable to parse scan report json', {
+      error: e,
+      json
+    });
+    throw e;
   }
 }
 

@@ -65,7 +65,9 @@ async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Pr
 
   const scanReport = await performSnapshotScanAndCollectReport(unZippedSbomStream, buildId);
 
-  log.info('upload complete, notifying manifest if one exists');
+  log.info('upload complete, notifying manifest if one exists', {
+    createdFindings: scanReport.findings.length,
+  });
   await hasura.UpdateManifestStatusIfExists({ status: 'scanned', buildId: buildId });
 
   log.info('done with scan');
