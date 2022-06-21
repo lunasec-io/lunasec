@@ -11,12 +11,12 @@
  * limitations under the License.
  *
  */
-import { WorkerBucketConfig } from '../../types/config';
-import { S3ObjectMetadata } from '../../types/s3';
-import { S3SqsMessage } from '../../types/sqs';
-import { MaybeErrorVoid } from '../../types/util';
-import { newError } from '../../utils/errors';
-import { log } from '../../utils/log';
+import { WorkerBucketConfig } from '../../../types/config';
+import { S3ObjectMetadata } from '../../../types/s3';
+import { S3SqsMessage } from '../../../types/sqs';
+import { MaybeErrorVoid } from '../../../types/util';
+import { newError } from '../../../utils/errors';
+import { log } from '../../../utils/log';
 import { scanSnapshotActivity } from '../activities/scan-snapshot-activity';
 import { snapshotManifestActivity } from '../activities/snapshot-manifest-activity';
 

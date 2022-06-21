@@ -21,6 +21,7 @@ import { log } from '../utils/log';
 
 import { generateSbomFromAsset } from './call-cli';
 
+// Todo: this doesn't generate a snapshot, this uploads to s3, it should be elsewhere
 export async function uploadSbomToS3(organizationId: string, buildId: string, gzippedSbom: zlib.Gzip) {
   const bucketConfig = getWorkerBucketConfig();
   // upload the sbom to s3, streaming
