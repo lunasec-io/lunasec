@@ -23,7 +23,7 @@ import {
   InsertScanMutation,
   Scans_Insert_Input,
 } from '../hasura-api/generated';
-import { Convert, GrypeScanReport, Match } from '../types/grype-scan-report';
+import { GrypeScanReport, Match, parseJsonToGrypeScanReport } from '../types/grype-scan-report';
 import { log } from '../utils/log';
 
 export type InsertedScan = NonNullable<InsertScanMutation['insert_scans_one']>;
@@ -37,15 +37,16 @@ export async function performSnapshotScanAndCollectReport(
     buildId,
   });
 
-  const typedRawGrypeReport = Convert.toScanReport(rawGrypeReport);
+  const typedRawGrypeReport = parseJsonToGrypeScanReport(rawGrypeReport);
   log.info('parsing scan results into report', {
     buildId,
     typedRawGrypeReport,
   });
-  const scan = await parseScan(typedRawGrypeReport, buildId);
+  const scan = await mapGrypeScanToGraphql(typedRawGrypeReport, buildId);
 
   log.info('inserting scan results in hasura', {
     buildId,
+    findingsCount: scan.findings ? scan.findings.data.length : 0,
   });
   const insertRes = await hasura.InsertScan({
     scan,
@@ -87,9 +88,9 @@ export async function runLunaTraceScan(sbomStream: Readable): Promise<string> {
   });
 }
 
-async function parseScan(scan: GrypeScanReport, buildId: string): Promise<Scans_Insert_Input> {
+async function mapGrypeScanToGraphql(scan: GrypeScanReport, buildId: string): Promise<Scans_Insert_Input> {
   return {
-    findings: await parseMatches(buildId, scan.matches),
+    findings: await mapGrypeMatchesToGraphqlFindings(buildId, scan.matches),
     source_type: scan.source.type,
     target: scan.source.target,
     db_date: scan.descriptor.db.built,
@@ -115,7 +116,84 @@ function parseVersionConstraint(versionConstraint: string) {
   return versionConstraint.replace(' (unknown)', '');
 }
 
-async function parseMatches(buildId: string, matches: Match[]): Promise<Findings_Arr_Rel_Insert_Input> {
+const mapGrypeMatchToGraphqlFinding =
+  (buildId: string) =>
+  async (match: Match): Promise<Findings_Insert_Input | null> => {
+    const { vulnerability, artifact } = match;
+    const details = match.matchDetails[0];
+
+    log.info('match details', {
+      vuln_id: vulnerability.id,
+      vuln_namespace: vulnerability.namespace,
+      artifact_name: match.artifact.name,
+    });
+
+    // slugs
+    const vuln_slug = vulnerability.id + ':' + vulnerability.namespace;
+    const pkg_slug = vuln_slug + ':' + match.artifact.name;
+
+    const versionConstraint = parseVersionConstraint(match.matchDetails[0].found.versionConstraint);
+
+    const version_slug = pkg_slug + ':' + (versionConstraint ? versionConstraint : '');
+
+    const slugs = {
+      vuln_slug,
+      pkg_slug,
+      version_slug,
+    };
+
+    // Todo: making a separate request to hasura for every finding has pretty low performance
+
+    const ids = await hasura.GetPackageAndVulnFromSlugs({
+      vuln_slug,
+      pkg_slug,
+      version_slug,
+    });
+
+    const vulnerability_id = ids.vulnerabilities.length === 1 ? ids.vulnerabilities[0].id : undefined;
+    const vulnerability_package_id =
+      ids.vulnerability_packages.length === 1 ? ids.vulnerability_packages[0].id : undefined;
+    const package_version_id = ids.package_versions.length >= 1 ? ids.package_versions[0].id : undefined;
+
+    if ([vulnerability_id, vulnerability_package_id, package_version_id].some((id) => !id)) {
+      log.error(
+        {
+          slugs,
+          ids,
+          vulnerability: match.vulnerability.id,
+        },
+        'unable to get all required ids when inserting a finding, its likely the vulnerability database is out of sync'
+      );
+      return null;
+    }
+
+    const locations = artifact.locations.map((l) => l.path);
+    return {
+      package_name: artifact.name,
+      version: artifact.version,
+      version_matcher: details.found.versionConstraint,
+      type: artifact.type,
+      locations: formatPsqlStringArray(locations),
+      language: artifact.language,
+      purl: artifact.purl,
+      severity: vulnerability.severity,
+      virtual_path: artifact.metadata ? artifact.metadata.VirtualPath : null,
+      matcher: details.matcher,
+      dedupe_slug: pkg_slug + locations.sort().join(':'),
+      fix_state: vulnerability.fix?.state || null,
+      fix_versions: vulnerability.fix?.versions ? formatPsqlStringArray(vulnerability.fix?.versions) : null,
+      build_id: buildId,
+      vulnerability_id,
+      vulnerability_package_id,
+      package_version_id,
+    };
+  };
+
+async function mapGrypeMatchesToGraphqlFindings(
+  buildId: string,
+  matches: Match[]
+): Promise<Findings_Arr_Rel_Insert_Input> {
+  const parseMatchTo = mapGrypeMatchToGraphqlFinding(buildId);
   return {
     on_conflict: {
       constraint: Findings_Constraint.FindingsDedupeSlugBuildIdKey,
@@ -125,73 +203,6 @@ async function parseMatches(buildId: string, matches: Match[]): Promise<Findings
         Findings_Update_Column.Severity,
       ],
     },
-    data: (
-      await Promise.all(
-        matches.map(async (match): Promise<Findings_Insert_Input | null> => {
-          const { vulnerability, artifact } = match;
-          const details = match.matchDetails[0];
-
-          // slugs
-          const vuln_slug = vulnerability.id + ':' + vulnerability.namespace;
-          const pkg_slug = vuln_slug + ':' + match.artifact.name;
-
-          const versionConstraint = parseVersionConstraint(match.matchDetails[0].found.versionConstraint);
-
-          const version_slug = pkg_slug + ':' + (versionConstraint ? versionConstraint : '');
-
-          const slugs = {
-            vuln_slug,
-            pkg_slug,
-            version_slug,
-          };
-
-          // Todo: making a separate request to hasura for every finding has pretty low performance
-
-          const ids = await hasura.GetPackageAndVulnFromSlugs({
-            vuln_slug,
-            pkg_slug,
-            version_slug,
-          });
-
-          const vulnerability_id = ids.vulnerabilities.length === 1 ? ids.vulnerabilities[0].id : undefined;
-          const vulnerability_package_id =
-            ids.vulnerability_packages.length === 1 ? ids.vulnerability_packages[0].id : undefined;
-          const package_version_id = ids.package_versions.length >= 1 ? ids.package_versions[0].id : undefined;
-
-          if ([vulnerability_id, vulnerability_package_id, package_version_id].some((id) => !id)) {
-            log.error(
-              {
-                slugs,
-                ids,
-                vulnerability: match.vulnerability.id,
-              },
-              'unable to get all required ids when inserting a finding, its likely the vulnerability database is out of sync'
-            );
-            return null;
-          }
-
-          const locations = artifact.locations.map((l) => l.path);
-          return {
-            package_name: artifact.name,
-            version: artifact.version,
-            version_matcher: details.found.versionConstraint,
-            type: artifact.type,
-            locations: formatPsqlStringArray(locations),
-            language: artifact.language,
-            purl: artifact.purl,
-            severity: vulnerability.severity,
-            virtual_path: artifact.metadata ? artifact.metadata.VirtualPath : null,
-            matcher: details.matcher,
-            dedupe_slug: pkg_slug + locations.sort().join(':'),
-            fix_state: vulnerability.fix?.state || null,
-            fix_versions: vulnerability.fix?.versions ? formatPsqlStringArray(vulnerability.fix?.versions) : null,
-            build_id: buildId,
-            vulnerability_id,
-            vulnerability_package_id,
-            package_version_id,
-          };
-        })
-      )
-    ).filter((e) => e !== null) as Findings_Insert_Input[],
+    data: (await Promise.all(matches.map(parseMatchTo))).filter((e) => e !== null) as Findings_Insert_Input[],
   };
 }
