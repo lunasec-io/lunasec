@@ -16,6 +16,7 @@ package gqlstorefx
 
 import (
 	"fmt"
+	"net/url"
 	"sort"
 	"strings"
 
@@ -29,6 +30,8 @@ import (
 
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 )
+
+const LunaTracePackageScheme = "lunatrace-package"
 
 // map grype namespace to packagemanager
 func mapNamespace(namespace string) types.PackageManager {
@@ -119,8 +122,19 @@ func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, err
 	return out, nil
 }
 
-func mapURLs(urls []*gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) []string {
-	return util.Map(urls, func(ou *gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) string {
-		return ou.Url
-	})
+func mapURLs(v *gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerability) []string {
+	return append(
+		util.Map(v.References,
+			func(ou *gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) string {
+				return ou.Url
+			},
+		),
+		util.Dedup(
+			util.Map(v.Affected,
+				func(a *gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affected) string {
+					return (&url.URL{Scheme: LunaTracePackageScheme, Host: a.Package.Id.String()}).String()
+				},
+			),
+		)...,
+	)
 }
