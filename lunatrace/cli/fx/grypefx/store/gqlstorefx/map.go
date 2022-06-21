@@ -16,6 +16,7 @@ package gqlstorefx
 
 import (
 	"fmt"
+	"net/url"
 	"sort"
 	"strings"
 
@@ -119,8 +120,13 @@ func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, err
 	return out, nil
 }
 
-func mapURLs(urls []*gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) []string {
-	return util.Map(urls, func(ou *gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) string {
-		return ou.Url
-	})
+func mapURLs(v *gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerability) []string {
+	return append(
+		util.Map(v.References, func(ou *gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) string {
+			return ou.Url
+		}),
+		util.Map(v.Affected, func(a *gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affected) string {
+			return (&url.URL{Scheme: "lunatrace-package", Host: a.Package.Id.String()}).String()
+		})...,
+	)
 }

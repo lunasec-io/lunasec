@@ -138,6 +138,8 @@ type GetVulnerabilityMetadataVulnerability_by_pkVulnerability struct {
 	// An array relationship
 	References []*GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference `json:"references"`
 	Details    *string                                                                                      `json:"details"`
+	// An array relationship
+	Affected []*GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affected `json:"affected"`
 }
 
 // GetId returns GetVulnerabilityMetadataVulnerability_by_pkVulnerability.Id, and is useful for accessing the field via an interface.
@@ -161,6 +163,38 @@ func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) GetReferences
 // GetDetails returns GetVulnerabilityMetadataVulnerability_by_pkVulnerability.Details, and is useful for accessing the field via an interface.
 func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) GetDetails() *string {
 	return v.Details
+}
+
+// GetAffected returns GetVulnerabilityMetadataVulnerability_by_pkVulnerability.Affected, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) GetAffected() []*GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affected {
+	return v.Affected
+}
+
+// GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affected includes the requested fields of the GraphQL type vulnerability_affected.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "vulnerability.affected"
+type GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affected struct {
+	// An object relationship
+	Package *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage `json:"package"`
+}
+
+// GetPackage returns GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affected.Package, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affected) GetPackage() *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage {
+	return v.Package
+}
+
+// GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage includes the requested fields of the GraphQL type package.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "package.package"
+type GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage struct {
+	Id uuid.UUID `json:"id"`
+}
+
+// GetId returns GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage.Id, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage) GetId() uuid.UUID {
+	return v.Id
 }
 
 // GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference includes the requested fields of the GraphQL type vulnerability_reference.
@@ -3638,6 +3672,11 @@ query GetVulnerabilityMetadata ($id: uuid!) {
 			url
 		}
 		details
+		affected {
+			package {
+				id
+			}
+		}
 	}
 }
 `,
