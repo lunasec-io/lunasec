@@ -18,7 +18,7 @@ import path from 'path';
 
 import { generateSbomFromAsset } from '../snapshot/call-cli';
 import { S3ObjectMetadata } from '../types/s3';
-import { snapshotManifestActivity } from '../workers/activities/snapshot-manifest-activity';
+import { snapshotManifestActivity } from '../workers/queue/activities/snapshot-manifest-activity';
 const objectMetadata: S3ObjectMetadata = {
   key: '64ce049e-7dac-49a9-b9cb-0e3a53c23e37/2022/2/5/13/9c20ac11-556d-4c2a-886e-00dc12b81ab4',
   bucketName: 'test-manifest-bucket-one',

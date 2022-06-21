@@ -1,0 +1,20 @@
+table:
+  schema: public
+  name: latest_builds
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - build_number
+        - existing_github_review_id
+        - git_branch
+        - git_hash
+        - git_remote
+        - pull_request_id
+        - s3_url
+        - created_at
+        - source_type
+        - agent_access_token
+        - id
+        - project_id
+      filter: {}

@@ -2601,6 +2601,102 @@ input jsonb_comparison_exp {
   _nin: [jsonb!]
 }
 
+"""
+columns and relationships of "latest_builds"
+"""
+type latest_builds {
+  agent_access_token: uuid
+  build_number: Int
+  created_at: timestamp
+  existing_github_review_id: String
+  git_branch: String
+  git_hash: String
+  git_remote: String
+  id: uuid
+  project_id: uuid
+  pull_request_id: String
+  s3_url: String
+  source_type: builds_source_type
+}
+
+"""
+Boolean expression to filter rows from the table "latest_builds". All fields are combined with a logical 'AND'.
+"""
+input latest_builds_bool_exp {
+  _and: [latest_builds_bool_exp!]
+  _not: latest_builds_bool_exp
+  _or: [latest_builds_bool_exp!]
+  agent_access_token: uuid_comparison_exp
+  build_number: Int_comparison_exp
+  created_at: timestamp_comparison_exp
+  existing_github_review_id: String_comparison_exp
+  git_branch: String_comparison_exp
+  git_hash: String_comparison_exp
+  git_remote: String_comparison_exp
+  id: uuid_comparison_exp
+  project_id: uuid_comparison_exp
+  pull_request_id: String_comparison_exp
+  s3_url: String_comparison_exp
+  source_type: builds_source_type_comparison_exp
+}
+
+"""Ordering options when selecting data from "latest_builds"."""
+input latest_builds_order_by {
+  agent_access_token: order_by
+  build_number: order_by
+  created_at: order_by
+  existing_github_review_id: order_by
+  git_branch: order_by
+  git_hash: order_by
+  git_remote: order_by
+  id: order_by
+  project_id: order_by
+  pull_request_id: order_by
+  s3_url: order_by
+  source_type: order_by
+}
+
+"""
+select columns of table "latest_builds"
+"""
+enum latest_builds_select_column {
+  """column name"""
+  agent_access_token
+
+  """column name"""
+  build_number
+
+  """column name"""
+  created_at
+
+  """column name"""
+  existing_github_review_id
+
+  """column name"""
+  git_branch
+
+  """column name"""
+  git_hash
+
+  """column name"""
+  git_remote
+
+  """column name"""
+  id
+
+  """column name"""
+  project_id
+
+  """column name"""
+  pull_request_id
+
+  """column name"""
+  s3_url
+
+  """column name"""
+  source_type
+}
+
 scalar license_source
 
 """
@@ -7619,6 +7715,26 @@ type query_root {
   """
   ignored_vulnerabilities_by_pk(id: uuid!): ignored_vulnerabilities
 
+  """
+  fetch data from the table: "latest_builds"
+  """
+  latest_builds(
+    """distinct select on columns"""
+    distinct_on: [latest_builds_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [latest_builds_order_by!]
+
+    """filter the rows returned"""
+    where: latest_builds_bool_exp
+  ): [latest_builds!]!
+
   """An array relationship"""
   manifests(
     """distinct select on columns"""
@@ -9065,6 +9181,26 @@ type subscription_root {
   fetch data from the table: "ignored_vulnerabilities" using primary key columns
   """
   ignored_vulnerabilities_by_pk(id: uuid!): ignored_vulnerabilities
+
+  """
+  fetch data from the table: "latest_builds"
+  """
+  latest_builds(
+    """distinct select on columns"""
+    distinct_on: [latest_builds_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [latest_builds_order_by!]
+
+    """filter the rows returned"""
+    where: latest_builds_bool_exp
+  ): [latest_builds!]!
 
   """An array relationship"""
   manifests(

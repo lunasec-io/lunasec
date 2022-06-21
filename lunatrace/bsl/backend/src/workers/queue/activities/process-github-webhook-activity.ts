@@ -14,14 +14,14 @@
 
 import { EmitterWebhookEvent } from '@octokit/webhooks';
 
-import { WebhookInterceptor } from '../../github/webhooks/interceptor';
-import { hasura } from '../../hasura-api';
-import { GetWebhookCacheByDeliveryIdQuery } from '../../hasura-api/generated';
-import { ProcessGithubWebhookRequest } from '../../types/sqs';
-import { MaybeError } from '../../types/util';
-import { newError, newResult } from '../../utils/errors';
-import { log } from '../../utils/log';
-import { catchError, threwError, Try } from '../../utils/try';
+import { WebhookInterceptor } from '../../../github/webhooks/interceptor';
+import { hasura } from '../../../hasura-api';
+import { GetWebhookCacheByDeliveryIdQuery } from '../../../hasura-api/generated';
+import { ProcessGithubWebhookRequest } from '../../../types/sqs';
+import { MaybeError } from '../../../types/util';
+import { newError, newResult } from '../../../utils/errors';
+import { log } from '../../../utils/log';
+import { catchError, threwError, Try } from '../../../utils/try';
 
 type WebhookHandlerFunc = (message: ProcessGithubWebhookRequest) => Promise<MaybeError<undefined>>;
 

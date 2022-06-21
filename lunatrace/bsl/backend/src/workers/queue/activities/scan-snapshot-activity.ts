@@ -16,16 +16,16 @@ import zlib from 'zlib';
 
 import validate from 'validator';
 
-import { commentOnPrIfExists } from '../../github/actions/pr-comment-generator';
-import { hasura } from '../../hasura-api';
-import { InsertedScan, performSnapshotScanAndCollectReport } from '../../models/scan';
-import { S3ObjectMetadata } from '../../types/s3';
-import { SbomBucketInfo } from '../../types/scan';
-import { MaybeError } from '../../types/util';
-import { aws } from '../../utils/aws-utils';
-import { newError, newResult } from '../../utils/errors';
-import { log } from '../../utils/log';
-import { catchError, threwError } from '../../utils/try';
+import { commentOnPrIfExists } from '../../../github/actions/pr-comment-generator';
+import { hasura } from '../../../hasura-api';
+import { InsertedScan, performSnapshotScanAndCollectReport } from '../../../models/scan';
+import { S3ObjectMetadata } from '../../../types/s3';
+import { SbomBucketInfo } from '../../../types/scan';
+import { MaybeError } from '../../../types/util';
+import { aws } from '../../../utils/aws-utils';
+import { newError, newResult } from '../../../utils/errors';
+import { log } from '../../../utils/log';
+import { catchError, threwError } from '../../../utils/try';
 
 function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gzip> {
   return new Promise((resolve, reject) => {
