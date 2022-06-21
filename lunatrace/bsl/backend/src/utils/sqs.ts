@@ -13,25 +13,55 @@
  */
 import { GetQueueUrlCommand, SQSClient } from '@aws-sdk/client-sqs';
 
+import { sqsClient } from '../aws/sqs-client';
 import { MaybeError } from '../types/util';
 
 import { newError, newResult } from './errors';
+import { log } from './log';
+import { catchError, threwError } from './try';
 
+// Queue Name cache, a cache of promises that will resolve to the name. The first request gets put into the cache
+// and subsequent calls return that
 // If the queueName ever changes we are in trouble but it shouldn't
-const cache: { [queueName: string]: string } = {};
+const cache: { [queueName: string]: Promise<string | undefined> } = {};
 
-export async function getSqsUrlFromName(sqsClient: SQSClient, queueName: string): Promise<MaybeError<string>> {
-  if (cache[queueName]) {
-    return newResult(cache[queueName]);
+export async function getSqsUrlPromise(queueName: string): Promise<string | undefined> {
+  if (Object.keys(cache).includes(queueName)) {
+    return cache[queueName];
   }
-  const { QueueUrl: queueUrl } = await sqsClient.send(
+  log.info('cache miss looking for queue url, fetching from AWS', { queueName });
+  const awsResPromise = sqsClient.send(
     new GetQueueUrlCommand({
       QueueName: queueName,
     })
   );
+
+  const queueNamePromise = awsResPromise.then((res) => {
+    log.info('AWS Responded to request for queueUrl', { res });
+    return res.QueueUrl;
+  });
+  cache[queueName] = queueNamePromise;
+  return queueNamePromise;
+}
+
+// wraps the above promise in the error handler pattern for easier parsing.
+export async function getSqsUrlFromName(queueName: string): Promise<MaybeError<string>> {
+  const queueUrl = await getSqsUrlPromise(queueName);
   if (!queueUrl) {
-    return newError(`unable to get queue url for queue: ${queueName}`);
+    return newError('Failed to retrieve queue url from aws using queue name');
   }
-  cache[queueName] = queueUrl;
   return newResult(queueUrl);
+}
+
+export async function loadQueueUrlOrExit(queueName: string): Promise<string> {
+  const queueUrl = await catchError(getSqsUrlFromName(queueName));
+
+  if (threwError(queueUrl) || queueUrl.error) {
+    log.error('unable to load queue url', {
+      queueName: queueName,
+    });
+    process.exit(1);
+  }
+
+  return queueUrl.res;
 }

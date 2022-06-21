@@ -15,8 +15,7 @@ import { sqsClient } from '../../aws/sqs-client';
 import { getWebhookConfig } from '../../config';
 import { hasura } from '../../hasura-api';
 import { log } from '../../utils/log';
-import { getSqsUrlFromName } from '../../utils/sqs';
-import { catchError, threwError } from '../../utils/try';
+import { loadQueueUrlOrExit } from '../../utils/sqs';
 
 import { registerWebhooksToInterceptor } from './dispatcher';
 import { WebhookInterceptor } from './interceptor';
@@ -29,16 +28,9 @@ export async function createGithubWebhookInterceptor(): Promise<WebhookIntercept
     return null;
   }
 
-  const webhookQueueUrl = await catchError(getSqsUrlFromName(sqsClient, webhookConfig.queueName));
+  const webhookQueueUrl = await loadQueueUrlOrExit(webhookConfig.queueName);
 
-  if (threwError(webhookQueueUrl) || webhookQueueUrl.error) {
-    log.error('unable to load queue url', {
-      queueName: webhookConfig.queueName,
-    });
-    process.exit(-1);
-  }
-
-  const webhookInterceptor = new WebhookInterceptor(hasura, webhookQueueUrl.res, {
+  const webhookInterceptor = new WebhookInterceptor(hasura, webhookQueueUrl, {
     secret: webhookConfig.secret,
   });
 
