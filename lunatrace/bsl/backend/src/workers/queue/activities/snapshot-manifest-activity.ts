@@ -1,12 +1,25 @@
+/*
+ * Copyright by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Business Source License v1.1
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 // This handler is currently only triggered when someone drags and drops a file on the frontend
-import { hasura } from '../../hasura-api';
-import { createBuildAndGenerateSbom } from '../../snapshot/generate-snapshot';
-import { S3ObjectMetadata } from '../../types/s3';
-import { SbomBucketInfo } from '../../types/scan';
-import { MaybeError } from '../../types/util';
-import { newError, newResult } from '../../utils/errors';
-import { log } from '../../utils/log';
-import { catchError, threwError } from '../../utils/try';
+import { hasura } from '../../../hasura-api';
+import { createBuildAndGenerateSbom } from '../../../snapshot/generate-snapshot';
+import { S3ObjectMetadata } from '../../../types/s3';
+import { SbomBucketInfo } from '../../../types/scan';
+import { MaybeError } from '../../../types/util';
+import { newError, newResult } from '../../../utils/errors';
+import { log } from '../../../utils/log';
+import { catchError, threwError } from '../../../utils/try';
 
 async function attemptGenerateManifestSbom(bucketInfo: SbomBucketInfo) {
   // let hasura know we are starting the process, so it ends up in the UI.  Also will throw if there is no manifest

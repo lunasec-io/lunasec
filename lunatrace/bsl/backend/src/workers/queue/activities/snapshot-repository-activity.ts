@@ -11,16 +11,16 @@
  * limitations under the License.
  *
  */
-import { getRepoCloneUrlWithAuth } from '../../github/actions/get-repo-clone-url-with-auth';
-import { hasura } from '../../hasura-api';
-import { InsertBuildMutation } from '../../hasura-api/generated';
-import { generateSbomFromAsset } from '../../snapshot/call-cli';
-import { uploadSbomToS3 } from '../../snapshot/generate-snapshot';
-import { SnapshotForRepositoryRequest } from '../../types/sqs';
-import { MaybeError } from '../../types/util';
-import { newError, newResult } from '../../utils/errors';
-import { log } from '../../utils/log';
-import { catchError, threwError, Try } from '../../utils/try';
+import { getRepoCloneUrlWithAuth } from '../../../github/actions/get-repo-clone-url-with-auth';
+import { hasura } from '../../../hasura-api';
+import { InsertBuildMutation } from '../../../hasura-api/generated';
+import { generateSbomFromAsset } from '../../../snapshot/call-cli';
+import { uploadSbomToS3 } from '../../../snapshot/generate-snapshot';
+import { SnapshotForRepositoryRequest } from '../../../types/sqs';
+import { MaybeError } from '../../../types/util';
+import { newError, newResult } from '../../../utils/errors';
+import { log } from '../../../utils/log';
+import { catchError, threwError, Try } from '../../../utils/try';
 
 export async function snapshotRepositoryActivity(req: SnapshotForRepositoryRequest): Promise<MaybeError<undefined>> {
   const logger = log.child('repo-snapshot', {
@@ -90,13 +90,13 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
     buildId,
   });
 
-  const res = await catchError(uploadSbomToS3(req.installationId.toString(), buildId, gzippedSbom));
-  if (threwError(res)) {
+  const s3UploadRes = await catchError(uploadSbomToS3(req.installationId.toString(), buildId, gzippedSbom));
+  if (threwError(s3UploadRes)) {
     logger.error('unable to upload sbom to s3', {
       buildId,
-      message: res.message,
+      message: s3UploadRes.message,
     });
-    return newError(res.message);
+    return newError(s3UploadRes.message);
   }
 
   return newResult(undefined);

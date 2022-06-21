@@ -58,7 +58,7 @@ export interface SnapshotForRepositoryRequest {
 }
 
 export interface S3SqsMessage {
-  Records?: S3SqsRecord[];
+  Records?: Array<FakeS3SqsRecord | S3SqsRecord>;
 }
 
 export interface S3SqsRecord {
@@ -71,6 +71,18 @@ export interface S3SqsRecord {
   requestParameters: RequestParameters;
   responseElements: ResponseElements;
   s3: S3;
+}
+
+export interface FakeS3SqsRecord {
+  s3: {
+    bucket: {
+      name: string;
+    };
+    object: {
+      key: string;
+    };
+  };
+  awsRegion: string;
 }
 
 export interface RequestParameters {

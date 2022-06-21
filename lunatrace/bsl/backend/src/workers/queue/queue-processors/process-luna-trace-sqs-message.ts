@@ -11,10 +11,10 @@
  * limitations under the License.
  *
  */
-import { createGithubWebhookInterceptor } from '../../github/webhooks';
-import { LunaTraceSqsMessage, MessageTypeToActivityLookup } from '../../types/sqs';
-import { MaybeErrorVoid } from '../../types/util';
-import { log } from '../../utils/log';
+import { createGithubWebhookInterceptor } from '../../../github/webhooks';
+import { LunaTraceSqsMessage, MessageTypeToActivityLookup } from '../../../types/sqs';
+import { MaybeErrorVoid } from '../../../types/util';
+import { log } from '../../../utils/log';
 import { processGithubWebhookActivity } from '../activities/process-github-webhook-activity';
 import { snapshotRepositoryActivity } from '../activities/snapshot-repository-activity';
 
