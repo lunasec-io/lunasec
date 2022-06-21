@@ -34,7 +34,6 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/grypefx/store/gqlstorefx"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/grypefx/store/grypestorefx"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/grypefx/store/multistorefx"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/httputil"
 )
@@ -172,13 +171,13 @@ func GrypeSbomScanFromFile(filename string) (document models.Document, err error
 }
 
 func getVulnStore() (v3.StoreReader, error) {
-	log.Debug().Msg("loading grype store")
-	grypeStore, dbStatus, err := grypestorefx.LoadVulnerabilityDB(appConfig.DB.ToCuratorConfig(), appConfig.DB.AutoUpdate)
-	if err = validateDBLoad(err, dbStatus); err != nil {
-		log.Error().Err(err).Msg("unable to load db")
-		return nil, err
-	}
-	log.Debug().Msg("finished loading grype store")
+	//log.Debug().Msg("loading grype store")
+	//grypeStore, dbStatus, err := grypestorefx.LoadVulnerabilityDB(appConfig.DB.ToCuratorConfig(), appConfig.DB.AutoUpdate)
+	//if err = validateDBLoad(err, dbStatus); err != nil {
+	//	log.Error().Err(err).Msg("unable to load db")
+	//	return nil, err
+	//}
+	//log.Debug().Msg("finished loading grype store")
 
 	log.Debug().Msg("loading gql store")
 	gqlStore, err := gqlstorefx.NewGraphQLStore(gqlstorefx.StoreDeps{
@@ -195,7 +194,7 @@ func getVulnStore() (v3.StoreReader, error) {
 	}
 	log.Debug().Msg("loaded gql store")
 
-	multiStore, err := multistorefx.NewMultiStore(gqlStore, grypeStore)
+	multiStore, err := multistorefx.NewMultiStore(gqlStore)
 	if err != nil {
 		log.Error().Err(err).Msg("unable to create multistore")
 		return nil, err
