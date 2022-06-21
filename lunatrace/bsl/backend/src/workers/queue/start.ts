@@ -11,8 +11,6 @@
  * limitations under the License.
  *
  */
-import { Vulnerability } from '../models/vulnerability';
+import { startQueueWorker } from './handler';
 
-export async function runUpdateVulnerabilities(): Promise<void> {
-  await Vulnerability.updateVulnDb();
-}
+void startQueueWorker();
