@@ -27,7 +27,11 @@ const waitForBackendServer = waitForItCmd('localhost', 3002);
 
 export const backend = tmuxPane(['cd backend', `${backendEnv} yarn run start:server`]);
 
-export const hasura = tmuxPane(['cd hasura', `${waitForGraphqlServer} && sleep 3`, 'hasura console']);
+export const hasura = tmuxPane([
+  'cd hasura',
+  `${waitForGraphqlServer} && sleep 3`,
+  'hasura console --skip-update-check',
+]);
 
 export const frontend = tmuxPane(['cd frontend', 'yarn run start:server']);
 
