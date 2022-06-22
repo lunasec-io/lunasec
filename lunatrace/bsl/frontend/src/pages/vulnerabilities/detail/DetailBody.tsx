@@ -17,6 +17,7 @@ import { ExternalLink } from 'react-feather';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
+import { getCvssVectorFromSeverities } from '../../../utils/cvss';
 import { prettyDate } from '../../../utils/pretty-date';
 import { VulnInfoDetails } from '../types';
 
@@ -35,6 +36,8 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
 }) => {
   const navigate = useNavigate();
 
+  const severity = vuln.severities.length > 0 ? getCvssVectorFromSeverities(vuln.severities) : null;
+
   return (
     <>
       <Container className="vulnerability-detail-page">
@@ -42,16 +45,16 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
           <Col xs="12">
             {isEmbedded ? (
               <NavLink to={`/vulnerabilities/${vuln.id}`}>
-                <h1 className="link-primary">{vuln.name}</h1>
+                <h1 className="link-primary">{vuln.source_id}</h1>
               </NavLink>
             ) : (
-              <h1>{vuln.name}</h1>
+              <h1>{vuln.source_id}</h1>
             )}
 
             <h5>
-              <a className="text-lg" href={vuln.data_source || ''}>
+              <a className="text-lg" href={''}>
                 <ExternalLink size="1em" className="mb-1 me-1" />
-                {vuln.namespace}
+                {vuln.source}
               </a>
             </h5>
           </Col>
@@ -62,27 +65,31 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                 <Modal.Title>
                   <span className="darker "> Severity: </span>
                   <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
-                    <h4 className={`${vuln.severity}`} style={{ display: 'inline' }}>
-                      {vuln.severity}
-                    </h4>
+                    {severity ? (
+                      <h4 className={`${severity.cvss3OverallSeverityText}`} style={{ display: 'inline' }}>
+                        {severity.cvss3OverallSeverityText}
+                      </h4>
+                    ) : (
+                      <h4 style={{ display: 'inline' }}>unknown</h4>
+                    )}
                   </div>
                 </Modal.Title>
               </Modal.Header>
 
               <Modal.Body className="cvss-scores">
-                {vuln.cvss_score ? (
+                {severity ? (
                   <>
                     <div>
-                      <h2 className="d-inline-block"> {vuln.cvss_score} </h2>{' '}
-                      <h6 className="d-inline-block darker">/ 10 overall CVSS v.{vuln.cvss_version}</h6>
+                      <h2 className="d-inline-block"> {severity.overallScore} </h2>{' '}
+                      <h6 className="d-inline-block darker">/ 10 overall CVSS</h6>
                     </div>
 
                     <div>
-                      <h5 className="d-inline-block">{vuln.cvss_impact_score}</h5>
+                      <h5 className="d-inline-block">{severity.impactSubscore}</h5>
                       <span className="darker"> impact score</span>
                     </div>
                     <div>
-                      <h5 className="d-inline-block">{vuln.cvss_exploitability_score}</h5>
+                      <h5 className="d-inline-block">{severity.exploitabilitySubscore}</h5>
                       <span className="darker"> exploitability score</span>
                     </div>
                   </>
@@ -130,12 +137,12 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                 <Modal.Title className="darker">Description</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <p className="lighter">{vuln.description}</p>
+                <p className="lighter">{vuln.summary}</p>
                 <hr />
                 <p>Relevant links:</p>
-                {(vuln.urls as string[]).map((l) => (
-                  <p key={l}>
-                    <a href={l}> {l} </a>
+                {vuln.references.map((r) => (
+                  <p key={r.id}>
+                    {r.type}: <a href={r.url}> {r.url}</a>
                   </p>
                 ))}
               </Modal.Body>
@@ -158,18 +165,18 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                     </tr>
                   </thead>
                   <tbody>
-                    {vuln.vulnerability_packages.map((pkg) => {
-                      return pkg.package_versions.map((v) => {
+                    {vuln.affected.map((pkg) => {
+                      return pkg.affected_range_events.map((v) => {
                         return (
                           <tr key={v.id}>
                             <td className="lighter">
-                              {pkg.name?.substring(0, 40)}
-                              {pkg.name && pkg.name.length > 41 ? '...' : ''}
+                              {pkg.package?.name?.substring(0, 40)}
+                              {pkg.package?.name && pkg.package.name.length > 41 ? '...' : ''}
                               {/*  TODO: Make these show full name in a tooltip when truncated*/}
                             </td>
-                            <td>{v.version_constraint}</td>
-                            <td>{v.fix_state}</td>
-                            <td>{v.fixed_in_versions}</td>
+                            <td>{v.type}</td>
+                            <td>{v.event}</td>
+                            <td>{v.version}</td>
                           </tr>
                         );
                       });
@@ -180,9 +187,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
             </Card>
           </Col>
         </Row>
-        {vuln.related_vulnerabilities.length < 1 ? null : (
-          <AffectedPackagesList relatedVulns={vuln.related_vulnerabilities} />
-        )}
+        {vuln.equivalents.length < 1 ? null : <AffectedPackagesList relatedVulns={vuln.equivalents} />}
       </Container>
     </>
   );

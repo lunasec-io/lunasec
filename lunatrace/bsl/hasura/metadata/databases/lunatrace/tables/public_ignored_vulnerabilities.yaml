@@ -34,22 +34,22 @@ select_permissions:
   - role: service
     permission:
       columns:
-        - locations
-        - note
         - creator_id
         - id
+        - locations
+        - note
         - project_id
         - vulnerability_id
       filter: {}
   - role: user
     permission:
       columns:
-        - id
-        - project_id
-        - vulnerability_id
         - creator_id
+        - id
         - locations
         - note
+        - project_id
+        - vulnerability_id
       filter:
         project:
           organization:
@@ -61,7 +61,11 @@ update_permissions:
   - role: user
     permission:
       columns:
+        - creator_id
         - locations
+        - note
+        - project_id
+        - vulnerability_id
       filter:
         project:
           organization:

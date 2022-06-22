@@ -139,7 +139,8 @@ export const GuideDetails: React.FC<{ guide: GuideDetailsData }> = ({ guide }) =
                     return [
                       n > 0 && ', ',
                       <NavLink key={vulnerability.id} to={`/vulnerabilities/${vulnerability.id}`}>
-                        {vulnerability.namespace}:{vulnerability.name}
+                        {/*{vulnerability.namespace}:{vulnerability.name}*/}
+                        {vulnerability.source}
                       </NavLink>,
                     ];
                   })}
