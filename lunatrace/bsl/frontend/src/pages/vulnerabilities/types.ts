@@ -15,6 +15,6 @@ import { GetVulnerabilityDetailsQuery, SearchVulnerabilitiesQuery } from '../../
 
 export type VulnInfo = SearchVulnerabilitiesQuery['vulnerabilities'][number];
 
-export type VulnInfoDetails = NonNullable<GetVulnerabilityDetailsQuery['vulnerabilities_by_pk']>;
+export type VulnInfoDetails = NonNullable<GetVulnerabilityDetailsQuery['vulnerability_by_pk']>;
 
 export type Order = 'cvss' | 'date' | 'severity' | 'none';

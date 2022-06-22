@@ -28,7 +28,7 @@ export function findingIsNotIgnored<F extends FindingToIgnore>(finding: F): bool
     return true;
   }
 
-  // check if any of the rules match all of the locations in our list
+  // Check if any of the rules match all of the locations in our list
   return !finding.locations.every((location) => {
     return ignoreRule.locations.includes(location);
   });

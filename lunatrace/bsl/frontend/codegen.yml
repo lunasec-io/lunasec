@@ -24,6 +24,9 @@ generates:
             timestamptz: string
             uuid: string
             UUID: string
+            affected_range_type: "'git'|'semver'|'ecosystem'"
+            reference_type: "'advisory'|'article'|'fix'|'git'|'package'|'report'|'web'"
+            package_manager: string
 
       - "typescript-operations"
       - "typescript-rtk-query":
