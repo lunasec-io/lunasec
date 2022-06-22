@@ -17,9 +17,7 @@ import { Readable } from 'stream';
 import { hasura } from '../hasura-api';
 import {
   Findings_Arr_Rel_Insert_Input,
-  Findings_Constraint,
   Findings_Insert_Input,
-  Findings_Update_Column,
   InsertScanMutation,
   Scans_Insert_Input,
 } from '../hasura-api/generated';
@@ -42,7 +40,7 @@ export async function performSnapshotScanAndCollectReport(
     buildId,
     typedRawGrypeReport,
   });
-  const scan = await mapGrypeScanToGraphql(typedRawGrypeReport, buildId);
+  const scan = mapGrypeScanToGraphql(typedRawGrypeReport, buildId);
 
   log.info('inserting scan results in hasura', {
     buildId,
@@ -76,7 +74,8 @@ export async function runLunaTraceScan(sbomStream: Readable): Promise<string> {
       if (code !== 0) {
         return reject(`lunatrace exited with non-zero code: ${code}`);
       }
-      resolve(Buffer.concat(outputBuffers).toString());
+      const result = Buffer.concat(outputBuffers).toString();
+      resolve(result);
     });
     sbomStream.on('data', (chunk) => lunatraceCli.stdin.write(chunk));
     sbomStream.on('end', () =>
@@ -88,9 +87,9 @@ export async function runLunaTraceScan(sbomStream: Readable): Promise<string> {
   });
 }
 
-async function mapGrypeScanToGraphql(scan: GrypeScanReport, buildId: string): Promise<Scans_Insert_Input> {
+function mapGrypeScanToGraphql(scan: GrypeScanReport, buildId: string): Scans_Insert_Input {
   return {
-    findings: await mapGrypeMatchesToGraphqlFindings(buildId, scan.matches),
+    findings: mapGrypeMatchesToGraphqlFindings(buildId, scan.matches),
     source_type: scan.source.type,
     target: scan.source.target,
     db_date: scan.descriptor.db.built,
@@ -109,16 +108,9 @@ function formatPsqlStringArray(array: string[]) {
   return `{${array.map((e) => `"${escapeQuotes(e)}"`).join(', ')}}`;
 }
 
-function parseVersionConstraint(versionConstraint: string) {
-  if (versionConstraint === 'none (unknown)') {
-    return null;
-  }
-  return versionConstraint.replace(' (unknown)', '');
-}
-
 const mapGrypeMatchToGraphqlFinding =
   (buildId: string) =>
-  async (match: Match): Promise<Findings_Insert_Input | null> => {
+  (match: Match): Findings_Insert_Input | null => {
     const { vulnerability, artifact } = match;
     const details = match.matchDetails[0];
 
@@ -128,44 +120,11 @@ const mapGrypeMatchToGraphqlFinding =
       artifact_name: match.artifact.name,
     });
 
-    // slugs
     const vuln_slug = vulnerability.id + ':' + vulnerability.namespace;
     const pkg_slug = vuln_slug + ':' + match.artifact.name;
 
-    const versionConstraint = parseVersionConstraint(match.matchDetails[0].found.versionConstraint);
-
-    const version_slug = pkg_slug + ':' + (versionConstraint ? versionConstraint : '');
-
-    const slugs = {
-      vuln_slug,
-      pkg_slug,
-      version_slug,
-    };
-
-    // Todo: making a separate request to hasura for every finding has pretty low performance
-
-    const ids = await hasura.GetPackageAndVulnFromSlugs({
-      vuln_slug,
-      pkg_slug,
-      version_slug,
-    });
-
-    const vulnerability_id = ids.vulnerabilities.length === 1 ? ids.vulnerabilities[0].id : undefined;
-    const vulnerability_package_id =
-      ids.vulnerability_packages.length === 1 ? ids.vulnerability_packages[0].id : undefined;
-    const package_version_id = ids.package_versions.length >= 1 ? ids.package_versions[0].id : undefined;
-
-    if ([vulnerability_id, vulnerability_package_id, package_version_id].some((id) => !id)) {
-      log.error(
-        {
-          slugs,
-          ids,
-          vulnerability: match.vulnerability.id,
-        },
-        'unable to get all required ids when inserting a finding, its likely the vulnerability database is out of sync'
-      );
-      return null;
-    }
+    const grypeFixVersions = vulnerability.fix?.versions;
+    const graphqlFixVersions = grypeFixVersions ? formatPsqlStringArray(grypeFixVersions) : null;
 
     const locations = artifact.locations.map((l) => l.path);
     return {
@@ -181,28 +140,17 @@ const mapGrypeMatchToGraphqlFinding =
       matcher: details.matcher,
       dedupe_slug: pkg_slug + locations.sort().join(':'),
       fix_state: vulnerability.fix?.state || null,
-      fix_versions: vulnerability.fix?.versions ? formatPsqlStringArray(vulnerability.fix?.versions) : null,
+      fix_versions: graphqlFixVersions,
       build_id: buildId,
-      vulnerability_id,
-      vulnerability_package_id,
-      package_version_id,
     };
   };
 
-async function mapGrypeMatchesToGraphqlFindings(
-  buildId: string,
-  matches: Match[]
-): Promise<Findings_Arr_Rel_Insert_Input> {
+function mapGrypeMatchesToGraphqlFindings(buildId: string, matches: Match[]): Findings_Arr_Rel_Insert_Input {
   const parseMatchTo = mapGrypeMatchToGraphqlFinding(buildId);
   return {
-    on_conflict: {
-      constraint: Findings_Constraint.FindingsDedupeSlugBuildIdKey,
-      update_columns: [
-        Findings_Update_Column.Version,
-        Findings_Update_Column.VirtualPath,
-        Findings_Update_Column.Severity,
-      ],
-    },
-    data: (await Promise.all(matches.map(parseMatchTo))).filter((e) => e !== null) as Findings_Insert_Input[],
+    // TODO
+    // on_conflict: {
+    // },
+    data: matches.map(parseMatchTo).filter((e) => e !== null) as Findings_Insert_Input[],
   };
 }

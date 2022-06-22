@@ -44,7 +44,7 @@ function createNewVulnPackage<F extends Finding>(project_id: string, finding: F)
     type: finding.type,
     guides: finding.vulnerability.guide_vulnerabilities?.map((tv) => tv.guide) || [],
     package_name: finding.package_name,
-    cvss_score: finding.vulnerability.namespace === 'nvd' ? finding.vulnerability.cvss_score || null : null,
+    cvss_score: null, //finding.vulnerability.namespace === 'nvd' ? finding.vulnerability.cvss_score || null : null,
     fix_state: finding.fix_state || null,
     fix_versions: finding.fix_versions || [],
     findings: [finding],
@@ -54,11 +54,11 @@ function createNewVulnPackage<F extends Finding>(project_id: string, finding: F)
 
 function mergeExistingFindingIntoPackage<F extends Finding>(vulnPackage: VulnerablePackage<F>, finding: F): void {
   // add the finding to the finding list if its not a dupe
-  const existingSlugs = vulnPackage.findings.map((f) => f.vulnerability.slug);
-  const newSlug = finding.vulnerability.slug;
-  if (!existingSlugs.includes(newSlug)) {
-    vulnPackage.findings.push(finding);
-  }
+  // const existingSlugs = vulnPackage.findings.map((f) => f.vulnerability.slug);
+  // const newSlug = finding.vulnerability.slug;
+  // if (!existingSlugs.includes(newSlug)) {
+  //   vulnPackage.findings.push(finding);
+  // }
   // add any new locations
   finding.locations.forEach((l) => {
     if (!vulnPackage.locations.includes(l)) {
@@ -66,16 +66,16 @@ function mergeExistingFindingIntoPackage<F extends Finding>(vulnPackage: Vulnera
     }
   });
   // set the highest CVSS score to the package score
-  try {
-    if (
-      finding.vulnerability.namespace === 'nvd' &&
-      Number(finding.vulnerability.cvss_score) > Number(vulnPackage.cvss_score)
-    ) {
-      vulnPackage.cvss_score = finding.vulnerability.cvss_score || null;
-    }
-  } catch {
-    console.error('failed converting cvss to number');
-  }
+  // try {
+  //   if (
+  //     finding.vulnerability.namespace === 'nvd' &&
+  //     Number(finding.vulnerability.cvss_score) > Number(vulnPackage.cvss_score)
+  //   ) {
+  //     vulnPackage.cvss_score = finding.vulnerability.cvss_score || null;
+  //   }
+  // } catch {
+  //   console.error('failed converting cvss to number');
+  // }
   // Add any fix versions/state
   if (finding.fix_state === 'fixed') {
     vulnPackage.fix_state = finding.fix_state;

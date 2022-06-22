@@ -49,13 +49,13 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
                   </h4>
                 </div>
               </Card.Title>
-              {pkg.cvss_score ? (
-                <Card.Subtitle>
-                  {' '}
-                  <span className="darker">CVSS: </span>
-                  {pkg.cvss_score}
-                </Card.Subtitle>
-              ) : null}
+              {/*{pkg.cvss_score ? (*/}
+              {/*  <Card.Subtitle>*/}
+              {/*    {' '}*/}
+              {/*    <span className="darker">CVSS: </span>*/}
+              {/*    {pkg.cvss_score}*/}
+              {/*  </Card.Subtitle>*/}
+              {/*) : null}*/}
             </div>
           </Col>
         </Row>

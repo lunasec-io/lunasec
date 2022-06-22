@@ -1031,7 +1031,7 @@ type findings {
   virtual_path: String
 
   """An object relationship"""
-  vulnerability: vulnerabilities!
+  vulnerability: vulnerability!
   vulnerability_id: uuid!
 
   """An object relationship"""
@@ -1053,9 +1053,6 @@ input type for inserting array relation for remote table "findings"
 """
 input findings_arr_rel_insert_input {
   data: [findings_insert_input!]!
-
-  """upsert condition"""
-  on_conflict: findings_on_conflict
 }
 
 """
@@ -1088,21 +1085,10 @@ input findings_bool_exp {
   version: String_comparison_exp
   version_matcher: String_comparison_exp
   virtual_path: String_comparison_exp
-  vulnerability: vulnerabilities_bool_exp
+  vulnerability: vulnerability_bool_exp
   vulnerability_id: uuid_comparison_exp
   vulnerability_package: vulnerability_packages_bool_exp
   vulnerability_package_id: uuid_comparison_exp
-}
-
-"""
-unique or primary key constraints on table "findings"
-"""
-enum findings_constraint {
-  """unique or primary key constraint"""
-  findings_dedupe_slug_build_id_key
-
-  """unique or primary key constraint"""
-  findings_pkey
 }
 
 """
@@ -1132,7 +1118,7 @@ input findings_insert_input {
   version: String
   version_matcher: String
   virtual_path: String
-  vulnerability: vulnerabilities_obj_rel_insert_input
+  vulnerability: vulnerability_obj_rel_insert_input
   vulnerability_id: uuid
   vulnerability_package: vulnerability_packages_obj_rel_insert_input
   vulnerability_package_id: uuid
@@ -1195,15 +1181,6 @@ type findings_mutation_response {
   returning: [findings!]!
 }
 
-"""
-on_conflict condition type for table "findings"
-"""
-input findings_on_conflict {
-  constraint: findings_constraint!
-  update_columns: [findings_update_column!]! = []
-  where: findings_bool_exp
-}
-
 """Ordering options when selecting data from "findings"."""
 input findings_order_by {
   build: builds_order_by
@@ -1229,116 +1206,16 @@ input findings_order_by {
   version: order_by
   version_matcher: order_by
   virtual_path: order_by
-  vulnerability: vulnerabilities_order_by
+  vulnerability: vulnerability_order_by
   vulnerability_id: order_by
   vulnerability_package: vulnerability_packages_order_by
   vulnerability_package_id: order_by
-}
-
-"""primary key columns input for table: findings"""
-input findings_pk_columns_input {
-  id: uuid!
 }
 
 """
 select columns of table "findings"
 """
 enum findings_select_column {
-  """column name"""
-  build_id
-
-  """column name"""
-  created_at
-
-  """column name"""
-  dedupe_slug
-
-  """column name"""
-  fix_state
-
-  """column name"""
-  fix_versions
-
-  """column name"""
-  id
-
-  """column name"""
-  language
-
-  """column name"""
-  locations
-
-  """column name"""
-  matcher
-
-  """column name"""
-  package_name
-
-  """column name"""
-  package_version_id
-
-  """column name"""
-  purl
-
-  """column name"""
-  scan_id
-
-  """column name"""
-  severity
-
-  """column name"""
-  type
-
-  """column name"""
-  updated_at
-
-  """column name"""
-  version
-
-  """column name"""
-  version_matcher
-
-  """column name"""
-  virtual_path
-
-  """column name"""
-  vulnerability_id
-
-  """column name"""
-  vulnerability_package_id
-}
-
-"""
-input type for updating data in table "findings"
-"""
-input findings_set_input {
-  build_id: uuid
-  created_at: timestamp
-  dedupe_slug: String
-  fix_state: fix_state_enum
-  fix_versions: _text
-  id: uuid
-  language: String
-  locations: _text
-  matcher: String
-  package_name: String
-  package_version_id: uuid
-  purl: String
-  scan_id: uuid
-  severity: severity_enum
-  type: String
-  updated_at: timestamptz
-  version: String
-  version_matcher: String
-  virtual_path: String
-  vulnerability_id: uuid
-  vulnerability_package_id: uuid
-}
-
-"""
-update columns of table "findings"
-"""
-enum findings_update_column {
   """column name"""
   build_id
 
@@ -2475,8 +2352,8 @@ type ignored_vulnerabilities {
   project_id: uuid!
 
   """An object relationship"""
-  vulnerability: vulnerabilities!
-  vulnerability_id: uuid!
+  vulnerability: vulnerability
+  vulnerability_id: uuid
 }
 
 """
@@ -2502,7 +2379,7 @@ input ignored_vulnerabilities_bool_exp {
   note: String_comparison_exp
   project: projects_bool_exp
   project_id: uuid_comparison_exp
-  vulnerability: vulnerabilities_bool_exp
+  vulnerability: vulnerability_bool_exp
   vulnerability_id: uuid_comparison_exp
 }
 
@@ -2537,7 +2414,7 @@ input ignored_vulnerabilities_order_by {
   note: order_by
   project: projects_order_by
   project_id: order_by
-  vulnerability: vulnerabilities_order_by
+  vulnerability: vulnerability_order_by
   vulnerability_id: order_by
 }
 
@@ -3035,9 +2912,6 @@ type mutation_root {
   insert_findings(
     """the rows to be inserted"""
     objects: [findings_insert_input!]!
-
-    """upsert condition"""
-    on_conflict: findings_on_conflict
   ): findings_mutation_response
 
   """
@@ -3046,9 +2920,6 @@ type mutation_root {
   insert_findings_one(
     """the row to be inserted"""
     object: findings_insert_input!
-
-    """upsert condition"""
-    on_conflict: findings_on_conflict
   ): findings
 
   """
@@ -3720,26 +3591,6 @@ type mutation_root {
     """filter the rows which have to be updated"""
     where: default_branch_builds_bool_exp!
   ): default_branch_builds_mutation_response
-
-  """
-  update data of the table: "findings"
-  """
-  update_findings(
-    """sets the columns of the filtered rows to the given values"""
-    _set: findings_set_input
-
-    """filter the rows which have to be updated"""
-    where: findings_bool_exp!
-  ): findings_mutation_response
-
-  """
-  update single row of the table: "findings"
-  """
-  update_findings_by_pk(
-    """sets the columns of the filtered rows to the given values"""
-    _set: findings_set_input
-    pk_columns: findings_pk_columns_input!
-  ): findings
 
   """
   update data of the table: "github_repositories"
@@ -10145,24 +9996,6 @@ type vulnerabilities {
   description: String
 
   """An array relationship"""
-  findings(
-    """distinct select on columns"""
-    distinct_on: [findings_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [findings_order_by!]
-
-    """filter the rows returned"""
-    where: findings_bool_exp
-  ): [findings!]!
-
-  """An array relationship"""
   guide_vulnerabilities(
     """distinct select on columns"""
     distinct_on: [guide_vulnerabilities_select_column!]
@@ -10180,24 +10013,6 @@ type vulnerabilities {
     where: guide_vulnerabilities_bool_exp
   ): [guide_vulnerabilities!]!
   id: uuid!
-
-  """An array relationship"""
-  ignored_vulnerabilities(
-    """distinct select on columns"""
-    distinct_on: [ignored_vulnerabilities_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [ignored_vulnerabilities_order_by!]
-
-    """filter the rows returned"""
-    where: ignored_vulnerabilities_bool_exp
-  ): [ignored_vulnerabilities!]!
   name: String!
   namespace: String!
   record_source: String
@@ -10308,10 +10123,8 @@ input vulnerabilities_bool_exp {
   cvss_version: String_comparison_exp
   data_source: String_comparison_exp
   description: String_comparison_exp
-  findings: findings_bool_exp
   guide_vulnerabilities: guide_vulnerabilities_bool_exp
   id: uuid_comparison_exp
-  ignored_vulnerabilities: ignored_vulnerabilities_bool_exp
   name: String_comparison_exp
   namespace: String_comparison_exp
   record_source: String_comparison_exp
@@ -10339,7 +10152,6 @@ enum vulnerabilities_constraint {
 input type for inserting data into table "vulnerabilities"
 """
 input vulnerabilities_insert_input {
-  findings: findings_arr_rel_insert_input
   guide_vulnerabilities: guide_vulnerabilities_arr_rel_insert_input
   slug: String
   vulnerability_packages: vulnerability_packages_arr_rel_insert_input
@@ -10419,10 +10231,8 @@ input vulnerabilities_order_by {
   cvss_version: order_by
   data_source: order_by
   description: order_by
-  findings_aggregate: findings_aggregate_order_by
   guide_vulnerabilities_aggregate: guide_vulnerabilities_aggregate_order_by
   id: order_by
-  ignored_vulnerabilities_aggregate: ignored_vulnerabilities_aggregate_order_by
   name: order_by
   namespace: order_by
   record_source: order_by
@@ -10619,7 +10429,43 @@ type vulnerability {
     """filter the rows returned"""
     where: vulnerability_equivalent_bool_exp
   ): [vulnerability_equivalent!]!
+
+  """An array relationship"""
+  findings(
+    """distinct select on columns"""
+    distinct_on: [findings_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [findings_order_by!]
+
+    """filter the rows returned"""
+    where: findings_bool_exp
+  ): [findings!]!
   id: uuid!
+
+  """An array relationship"""
+  ignored_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [ignored_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ignored_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: ignored_vulnerabilities_bool_exp
+  ): [ignored_vulnerabilities!]!
   modified: timestamptz!
   published: timestamptz
 
@@ -11384,7 +11230,9 @@ input vulnerability_bool_exp {
   database_specific: jsonb_comparison_exp
   details: String_comparison_exp
   equivalents: vulnerability_equivalent_bool_exp
+  findings: findings_bool_exp
   id: uuid_comparison_exp
+  ignored_vulnerabilities: ignored_vulnerabilities_bool_exp
   modified: timestamptz_comparison_exp
   published: timestamptz_comparison_exp
   references: vulnerability_reference_bool_exp
@@ -11742,6 +11590,7 @@ input vulnerability_insert_input {
   database_specific: jsonb
   details: String
   equivalents: vulnerability_equivalent_arr_rel_insert_input
+  findings: findings_arr_rel_insert_input
   id: uuid
   modified: timestamptz
   published: timestamptz
@@ -11793,7 +11642,9 @@ input vulnerability_order_by {
   database_specific: order_by
   details: order_by
   equivalents_aggregate: vulnerability_equivalent_aggregate_order_by
+  findings_aggregate: findings_aggregate_order_by
   id: order_by
+  ignored_vulnerabilities_aggregate: ignored_vulnerabilities_aggregate_order_by
   modified: order_by
   published: order_by
   references_aggregate: vulnerability_reference_aggregate_order_by

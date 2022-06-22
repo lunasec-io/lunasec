@@ -17515,6 +17515,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:~18.0.0":
+  version: 18.0.0
+  resolution: "@types/node@npm:18.0.0"
+  checksum: aab2b325727a2599f6d25ebe0dedf58c40fb66a51ce4ca9c0226ceb70fcda2d3afccdca29db5942eb48b158ee8585a274a1e3750c718bbd5399d7f41d62dfdcc
+  languageName: node
+  linkType: hard
+
 "@types/normalize-package-data@npm:^2.4.0":
   version: 2.4.1
   resolution: "@types/normalize-package-data@npm:2.4.1"
@@ -30328,6 +30335,7 @@ __metadata:
     url: ~0.11.0
     use-react-router-breadcrumbs: ^3.0.2
     uuid: ^8.3.2
+    vuln-vects: ~1.0.0
     watch: ^1.0.2
     webpack: ~5.72.0
   languageName: unknown
@@ -38427,7 +38435,7 @@ __metadata:
     "@types/jsonwebtoken": ~8.5.8
     "@types/jwk-to-pem": ~2.0.1
     "@types/markdown-table": 2.0.0
-    "@types/node": ^14.0.0
+    "@types/node": ~18.0.0
     "@types/semver": ^7.3.9
     "@types/uuid": ^8.3.4
     "@types/validator": ^13.7.1
@@ -53859,6 +53867,13 @@ __metadata:
     "@vue/server-renderer": 3.2.31
     "@vue/shared": 3.2.31
   checksum: 2d66b563e60ce01ff4872f425b1acaf9a9f9d36f48eb986c89962d9b324c6bf566868503811462317052273b53056bbc58be3ceb06ea39dff174bb0fa62db3a2
+  languageName: node
+  linkType: hard
+
+"vuln-vects@npm:~1.0.0":
+  version: 1.0.0
+  resolution: "vuln-vects@npm:1.0.0"
+  checksum: a0c7504fc37b3a90f29a037c20da30535d99a345e7059906db1da03100c459df32e018def962c21664030d1540439277b6fee71fdd2afdb0cb0ef9d3b1093770
   languageName: node
   linkType: hard
 
