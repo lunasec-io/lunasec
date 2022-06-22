@@ -1474,7 +1474,7 @@ export type Guide_Vulnerabilities = {
   id: Scalars['uuid'];
   updated_at: Scalars['timestamptz'];
   /** An object relationship */
-  vulnerability: Vulnerabilities;
+  vulnerability: Vulnerability;
   vulnerability_id: Scalars['uuid'];
 };
 
@@ -1501,7 +1501,7 @@ export type Guide_Vulnerabilities_Bool_Exp = {
   guide_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  vulnerability?: InputMaybe<Vulnerabilities_Bool_Exp>;
+  vulnerability?: InputMaybe<Vulnerability_Bool_Exp>;
   vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
@@ -1520,7 +1520,7 @@ export type Guide_Vulnerabilities_Insert_Input = {
   guide_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
-  vulnerability?: InputMaybe<Vulnerabilities_Obj_Rel_Insert_Input>;
+  vulnerability?: InputMaybe<Vulnerability_Obj_Rel_Insert_Input>;
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -1564,7 +1564,7 @@ export type Guide_Vulnerabilities_Order_By = {
   guide_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
-  vulnerability?: InputMaybe<Vulnerabilities_Order_By>;
+  vulnerability?: InputMaybe<Vulnerability_Order_By>;
   vulnerability_id?: InputMaybe<Order_By>;
 };
 
@@ -7870,8 +7870,6 @@ export type Vulnerabilities = {
   cvss_version?: Maybe<Scalars['String']>;
   data_source: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  /** An array relationship */
-  guide_vulnerabilities: Array<Guide_Vulnerabilities>;
   id: Scalars['uuid'];
   name: Scalars['String'];
   namespace: Scalars['String'];
@@ -7886,16 +7884,6 @@ export type Vulnerabilities = {
   urls?: Maybe<Scalars['_text']>;
   /** An array relationship */
   vulnerability_packages: Array<Vulnerability_Packages>;
-};
-
-
-/** columns and relationships of "vulnerabilities" */
-export type VulnerabilitiesGuide_VulnerabilitiesArgs = {
-  distinct_on?: InputMaybe<Array<Guide_Vulnerabilities_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Guide_Vulnerabilities_Order_By>>;
-  where?: InputMaybe<Guide_Vulnerabilities_Bool_Exp>;
 };
 
 
@@ -7979,7 +7967,6 @@ export type Vulnerabilities_Bool_Exp = {
   cvss_version?: InputMaybe<String_Comparison_Exp>;
   data_source?: InputMaybe<String_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
-  guide_vulnerabilities?: InputMaybe<Guide_Vulnerabilities_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   namespace?: InputMaybe<String_Comparison_Exp>;
@@ -8003,7 +7990,6 @@ export enum Vulnerabilities_Constraint {
 
 /** input type for inserting data into table "vulnerabilities" */
 export type Vulnerabilities_Insert_Input = {
-  guide_vulnerabilities?: InputMaybe<Guide_Vulnerabilities_Arr_Rel_Insert_Input>;
   slug?: InputMaybe<Scalars['String']>;
   vulnerability_packages?: InputMaybe<Vulnerability_Packages_Arr_Rel_Insert_Input>;
 };
@@ -8077,7 +8063,6 @@ export type Vulnerabilities_Order_By = {
   cvss_version?: InputMaybe<Order_By>;
   data_source?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
-  guide_vulnerabilities_aggregate?: InputMaybe<Guide_Vulnerabilities_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   namespace?: InputMaybe<Order_By>;
@@ -8212,6 +8197,8 @@ export type Vulnerability = {
   equivalents: Array<Vulnerability_Equivalent>;
   /** An array relationship */
   findings: Array<Findings>;
+  /** An array relationship */
+  guide_vulnerabilities: Array<Guide_Vulnerabilities>;
   id: Scalars['uuid'];
   /** An array relationship */
   ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
@@ -8272,6 +8259,16 @@ export type VulnerabilityFindingsArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Findings_Order_By>>;
   where?: InputMaybe<Findings_Bool_Exp>;
+};
+
+
+/** columns and relationships of "vulnerability.vulnerability" */
+export type VulnerabilityGuide_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Guide_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Guide_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Guide_Vulnerabilities_Bool_Exp>;
 };
 
 
@@ -8892,6 +8889,7 @@ export type Vulnerability_Bool_Exp = {
   details?: InputMaybe<String_Comparison_Exp>;
   equivalents?: InputMaybe<Vulnerability_Equivalent_Bool_Exp>;
   findings?: InputMaybe<Findings_Bool_Exp>;
+  guide_vulnerabilities?: InputMaybe<Guide_Vulnerabilities_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   ignored_vulnerabilities?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
   modified?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -9064,12 +9062,12 @@ export type Vulnerability_Delete_Key_Input = {
 /** columns and relationships of "vulnerability.equivalent" */
 export type Vulnerability_Equivalent = {
   __typename?: 'vulnerability_equivalent';
-  a?: Maybe<Scalars['uuid']>;
-  b?: Maybe<Scalars['uuid']>;
+  a: Scalars['uuid'];
+  b: Scalars['uuid'];
   /** An object relationship */
-  vulnerability?: Maybe<Vulnerability>;
+  equivalent_vulnerability: Vulnerability;
   /** An object relationship */
-  vulnerabilityByB?: Maybe<Vulnerability>;
+  vulnerability: Vulnerability;
 };
 
 /** order by aggregate values of table "vulnerability.equivalent" */
@@ -9093,8 +9091,8 @@ export type Vulnerability_Equivalent_Bool_Exp = {
   _or?: InputMaybe<Array<Vulnerability_Equivalent_Bool_Exp>>;
   a?: InputMaybe<Uuid_Comparison_Exp>;
   b?: InputMaybe<Uuid_Comparison_Exp>;
+  equivalent_vulnerability?: InputMaybe<Vulnerability_Bool_Exp>;
   vulnerability?: InputMaybe<Vulnerability_Bool_Exp>;
-  vulnerabilityByB?: InputMaybe<Vulnerability_Bool_Exp>;
 };
 
 /** unique or primary key constraints on table "vulnerability.equivalent" */
@@ -9107,8 +9105,8 @@ export enum Vulnerability_Equivalent_Constraint {
 export type Vulnerability_Equivalent_Insert_Input = {
   a?: InputMaybe<Scalars['uuid']>;
   b?: InputMaybe<Scalars['uuid']>;
+  equivalent_vulnerability?: InputMaybe<Vulnerability_Obj_Rel_Insert_Input>;
   vulnerability?: InputMaybe<Vulnerability_Obj_Rel_Insert_Input>;
-  vulnerabilityByB?: InputMaybe<Vulnerability_Obj_Rel_Insert_Input>;
 };
 
 /** order by max() on columns of table "vulnerability.equivalent" */
@@ -9143,8 +9141,8 @@ export type Vulnerability_Equivalent_On_Conflict = {
 export type Vulnerability_Equivalent_Order_By = {
   a?: InputMaybe<Order_By>;
   b?: InputMaybe<Order_By>;
+  equivalent_vulnerability?: InputMaybe<Vulnerability_Order_By>;
   vulnerability?: InputMaybe<Vulnerability_Order_By>;
-  vulnerabilityByB?: InputMaybe<Vulnerability_Order_By>;
 };
 
 /** select columns of table "vulnerability.equivalent" */
@@ -9177,6 +9175,7 @@ export type Vulnerability_Insert_Input = {
   details?: InputMaybe<Scalars['String']>;
   equivalents?: InputMaybe<Vulnerability_Equivalent_Arr_Rel_Insert_Input>;
   findings?: InputMaybe<Findings_Arr_Rel_Insert_Input>;
+  guide_vulnerabilities?: InputMaybe<Guide_Vulnerabilities_Arr_Rel_Insert_Input>;
   id?: InputMaybe<Scalars['uuid']>;
   modified?: InputMaybe<Scalars['timestamptz']>;
   published?: InputMaybe<Scalars['timestamptz']>;
@@ -9220,6 +9219,7 @@ export type Vulnerability_Order_By = {
   details?: InputMaybe<Order_By>;
   equivalents_aggregate?: InputMaybe<Vulnerability_Equivalent_Aggregate_Order_By>;
   findings_aggregate?: InputMaybe<Findings_Aggregate_Order_By>;
+  guide_vulnerabilities_aggregate?: InputMaybe<Guide_Vulnerabilities_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
   ignored_vulnerabilities_aggregate?: InputMaybe<Ignored_Vulnerabilities_Aggregate_Order_By>;
   modified?: InputMaybe<Order_By>;

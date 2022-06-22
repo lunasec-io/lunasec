@@ -1766,7 +1766,7 @@ type guide_vulnerabilities {
   updated_at: timestamptz!
 
   """An object relationship"""
-  vulnerability: vulnerabilities!
+  vulnerability: vulnerability!
   vulnerability_id: uuid!
 }
 
@@ -1800,7 +1800,7 @@ input guide_vulnerabilities_bool_exp {
   guide_id: uuid_comparison_exp
   id: uuid_comparison_exp
   updated_at: timestamptz_comparison_exp
-  vulnerability: vulnerabilities_bool_exp
+  vulnerability: vulnerability_bool_exp
   vulnerability_id: uuid_comparison_exp
 }
 
@@ -1824,7 +1824,7 @@ input guide_vulnerabilities_insert_input {
   guide_id: uuid
   id: uuid
   updated_at: timestamptz
-  vulnerability: vulnerabilities_obj_rel_insert_input
+  vulnerability: vulnerability_obj_rel_insert_input
   vulnerability_id: uuid
 }
 
@@ -1876,7 +1876,7 @@ input guide_vulnerabilities_order_by {
   guide_id: order_by
   id: order_by
   updated_at: order_by
-  vulnerability: vulnerabilities_order_by
+  vulnerability: vulnerability_order_by
   vulnerability_id: order_by
 }
 
@@ -9994,24 +9994,6 @@ type vulnerabilities {
   cvss_version: String
   data_source: String!
   description: String
-
-  """An array relationship"""
-  guide_vulnerabilities(
-    """distinct select on columns"""
-    distinct_on: [guide_vulnerabilities_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [guide_vulnerabilities_order_by!]
-
-    """filter the rows returned"""
-    where: guide_vulnerabilities_bool_exp
-  ): [guide_vulnerabilities!]!
   id: uuid!
   name: String!
   namespace: String!
@@ -10123,7 +10105,6 @@ input vulnerabilities_bool_exp {
   cvss_version: String_comparison_exp
   data_source: String_comparison_exp
   description: String_comparison_exp
-  guide_vulnerabilities: guide_vulnerabilities_bool_exp
   id: uuid_comparison_exp
   name: String_comparison_exp
   namespace: String_comparison_exp
@@ -10152,7 +10133,6 @@ enum vulnerabilities_constraint {
 input type for inserting data into table "vulnerabilities"
 """
 input vulnerabilities_insert_input {
-  guide_vulnerabilities: guide_vulnerabilities_arr_rel_insert_input
   slug: String
   vulnerability_packages: vulnerability_packages_arr_rel_insert_input
 }
@@ -10231,7 +10211,6 @@ input vulnerabilities_order_by {
   cvss_version: order_by
   data_source: order_by
   description: order_by
-  guide_vulnerabilities_aggregate: guide_vulnerabilities_aggregate_order_by
   id: order_by
   name: order_by
   namespace: order_by
@@ -10447,6 +10426,24 @@ type vulnerability {
     """filter the rows returned"""
     where: findings_bool_exp
   ): [findings!]!
+
+  """An array relationship"""
+  guide_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [guide_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [guide_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: guide_vulnerabilities_bool_exp
+  ): [guide_vulnerabilities!]!
   id: uuid!
 
   """An array relationship"""
@@ -11231,6 +11228,7 @@ input vulnerability_bool_exp {
   details: String_comparison_exp
   equivalents: vulnerability_equivalent_bool_exp
   findings: findings_bool_exp
+  guide_vulnerabilities: guide_vulnerabilities_bool_exp
   id: uuid_comparison_exp
   ignored_vulnerabilities: ignored_vulnerabilities_bool_exp
   modified: timestamptz_comparison_exp
@@ -11447,14 +11445,14 @@ input vulnerability_delete_key_input {
 columns and relationships of "vulnerability.equivalent"
 """
 type vulnerability_equivalent {
-  a: uuid
-  b: uuid
+  a: uuid!
+  b: uuid!
 
   """An object relationship"""
-  vulnerability: vulnerability
+  equivalent_vulnerability: vulnerability!
 
   """An object relationship"""
-  vulnerabilityByB: vulnerability
+  vulnerability: vulnerability!
 }
 
 """
@@ -11485,8 +11483,8 @@ input vulnerability_equivalent_bool_exp {
   _or: [vulnerability_equivalent_bool_exp!]
   a: uuid_comparison_exp
   b: uuid_comparison_exp
+  equivalent_vulnerability: vulnerability_bool_exp
   vulnerability: vulnerability_bool_exp
-  vulnerabilityByB: vulnerability_bool_exp
 }
 
 """
@@ -11503,8 +11501,8 @@ input type for inserting data into table "vulnerability.equivalent"
 input vulnerability_equivalent_insert_input {
   a: uuid
   b: uuid
+  equivalent_vulnerability: vulnerability_obj_rel_insert_input
   vulnerability: vulnerability_obj_rel_insert_input
-  vulnerabilityByB: vulnerability_obj_rel_insert_input
 }
 
 """
@@ -11547,8 +11545,8 @@ input vulnerability_equivalent_on_conflict {
 input vulnerability_equivalent_order_by {
   a: order_by
   b: order_by
+  equivalent_vulnerability: vulnerability_order_by
   vulnerability: vulnerability_order_by
-  vulnerabilityByB: vulnerability_order_by
 }
 
 """
@@ -11591,6 +11589,7 @@ input vulnerability_insert_input {
   details: String
   equivalents: vulnerability_equivalent_arr_rel_insert_input
   findings: findings_arr_rel_insert_input
+  guide_vulnerabilities: guide_vulnerabilities_arr_rel_insert_input
   id: uuid
   modified: timestamptz
   published: timestamptz
@@ -11643,6 +11642,7 @@ input vulnerability_order_by {
   details: order_by
   equivalents_aggregate: vulnerability_equivalent_aggregate_order_by
   findings_aggregate: findings_aggregate_order_by
+  guide_vulnerabilities_aggregate: guide_vulnerabilities_aggregate_order_by
   id: order_by
   ignored_vulnerabilities_aggregate: ignored_vulnerabilities_aggregate_order_by
   modified: order_by
