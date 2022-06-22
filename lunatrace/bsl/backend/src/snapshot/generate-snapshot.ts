@@ -32,6 +32,7 @@ export async function uploadSbomToS3(organizationId: string, buildId: string, gz
   if (!update_builds_by_pk) {
     throw new Error('Failed to update build s3 url');
   }
+  log.info('Updated S3 URL in hasuras build record', { update_builds_by_pk });
 }
 
 // This is only called from the GUI drag and drop
