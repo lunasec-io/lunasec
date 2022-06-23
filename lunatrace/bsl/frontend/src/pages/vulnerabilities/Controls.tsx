@@ -12,7 +12,7 @@
  *
  */
 import React, { useState } from 'react';
-import { Button, Col, Dropdown, Form, FormGroup, InputGroup, Row } from 'react-bootstrap';
+import { Button, Col, Dropdown, Form, FormGroup, InputGroup, Row, Spinner } from 'react-bootstrap';
 import { AlignLeft, ChevronDown, Filter, Search } from 'react-feather';
 
 import useTheme from '../../hooks/useTheme';
@@ -24,6 +24,7 @@ export interface VulnerabilitiesControlsProps {
   submitFilter: (s: string) => void;
   submitOrder: (s: Order) => void;
   order: Order;
+  isFetching: boolean;
 }
 export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesControlsProps> = (props) => {
   const [search, setSearch] = useState('');
@@ -50,7 +51,11 @@ export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesCon
               onChange={(e) => setSearch(e.target.value)}
             />
             <Button type="submit" variant="">
-              <Search className="feather" />
+              {props.isFetching ? (
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+              ) : (
+                <Search className="feather" />
+              )}
             </Button>
           </InputGroup>
         </form>
@@ -91,7 +96,7 @@ export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesCon
             <InputGroup className="input-group-vulnerabilities">
               <Form.Control
                 placeholder="NameSpace"
-                aria-label="Search Vulnerabilities"
+                aria-label="Filter Vulnerabilities"
                 value={namespaceFilter}
                 onChange={(e) => setNamespaceFilter(e.target.value)}
               />

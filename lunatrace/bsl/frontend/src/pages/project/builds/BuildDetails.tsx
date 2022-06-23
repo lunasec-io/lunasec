@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { filterFindingsByIgnored } from '@lunatrace/lunatrace-common';
+import { filterFindingsNotIgnored } from '@lunatrace/lunatrace-common';
 import classNames from 'classnames';
 import React, { useRef, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
@@ -71,7 +71,7 @@ export const BuildDetails: React.FunctionComponent = () => {
       );
     }
 
-    const filteredFindings = ignoreFindings ? filterFindingsByIgnored(build.findings) : build.findings;
+    const filteredFindings = ignoreFindings ? filterFindingsNotIgnored(build.findings) : build.findings;
 
     // Responsible for showing or hiding the findings list when quick view is open.  D-none only applies on screens smaller than xxl(1400)
     // meaning that the findings list will be hidden on smaller screens when quick view is open.
