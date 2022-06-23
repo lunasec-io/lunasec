@@ -19,6 +19,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { getCvssVectorFromSeverities } from '../../../utils/cvss';
 import { prettyDate } from '../../../utils/pretty-date';
+import { toTitleCase } from '../../../utils/string-utils';
 import { VulnInfoDetails } from '../types';
 
 import { AffectedPackagesList } from './AffectedPackagesList';
@@ -36,7 +37,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
 }) => {
   const navigate = useNavigate();
 
-  const severity = vuln.severities.length > 0 ? getCvssVectorFromSeverities(vuln.severities) : null;
+  const severity = getCvssVectorFromSeverities(vuln.severities);
 
   return (
     <>
@@ -67,7 +68,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                   <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
                     {severity ? (
                       <h4 className={`${severity.cvss3OverallSeverityText}`} style={{ display: 'inline' }}>
-                        {severity.cvss3OverallSeverityText}
+                        {toTitleCase(severity.cvss3OverallSeverityText)}
                       </h4>
                     ) : (
                       <h4 style={{ display: 'inline' }}>unknown</h4>
@@ -85,11 +86,11 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                     </div>
 
                     <div>
-                      <h5 className="d-inline-block">{severity.impactSubscore}</h5>
+                      <h5 className="d-inline-block">{severity.impactSubscore.toFixed(1)}</h5>
                       <span className="darker"> impact score</span>
                     </div>
                     <div>
-                      <h5 className="d-inline-block">{severity.exploitabilitySubscore}</h5>
+                      <h5 className="d-inline-block">{severity.exploitabilitySubscore.toFixed(1)}</h5>
                       <span className="darker"> exploitability score</span>
                     </div>
                   </>
@@ -165,21 +166,19 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                     </tr>
                   </thead>
                   <tbody>
-                    {vuln.affected.map((pkg) => {
-                      return pkg.affected_range_events.map((v) => {
-                        return (
-                          <tr key={v.id}>
-                            <td className="lighter">
-                              {pkg.package?.name?.substring(0, 40)}
-                              {pkg.package?.name && pkg.package.name.length > 41 ? '...' : ''}
-                              {/*  TODO: Make these show full name in a tooltip when truncated*/}
-                            </td>
-                            <td>{v.type}</td>
-                            <td>{v.event}</td>
-                            <td>{v.version}</td>
-                          </tr>
-                        );
-                      });
+                    {vuln.affected.map((affected) => {
+                      return (
+                        <tr key={affected.id}>
+                          <td className="lighter">
+                            {affected.package?.name?.substring(0, 40)}
+                            {affected.package?.name && affected.package.name.length > 41 ? '...' : ''}
+                            {/*  TODO: Make these show full name in a tooltip when truncated*/}
+                          </td>
+                          <td>{affected.version_constraint}</td>
+                          <td>{false}</td>
+                          <td>{false}</td>
+                        </tr>
+                      );
                     })}
                   </tbody>
                 </Table>

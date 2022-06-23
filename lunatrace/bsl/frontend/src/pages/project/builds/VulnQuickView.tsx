@@ -44,12 +44,8 @@ export const VulnQuickView: React.FC<VulnQuickViewProps> = ({ vulnId, setVulnId,
 
         {CloseButton}
 
-        {data && data.vulnerabilities_by_pk && !isFetching ? (
-          <VulnerabilityDetailBody
-            vuln={data.vulnerabilities_by_pk}
-            isEmbedded={true}
-            sideBySideView={sideBySideView}
-          />
+        {data && data.vulnerability_by_pk && !isFetching ? (
+          <VulnerabilityDetailBody vuln={data.vulnerability_by_pk} isEmbedded={true} sideBySideView={sideBySideView} />
         ) : (
           <Spinner animation="border" />
         )}

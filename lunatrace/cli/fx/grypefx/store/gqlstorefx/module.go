@@ -52,6 +52,10 @@ func (g *gqlStore) GetID() (*v3.ID, error) {
 
 // GetVulnerability retrieves one or more vulnerabilities given a namespace and package name.
 func (g *gqlStore) GetVulnerability(namespace, name string) ([]v3.Vulnerability, error) {
+
+	// TODO (cthompson) this will be problematic in the future if want to have different namespaces outside of github
+	// the mapNamespace function should return an error if it can not find the namespace
+
 	// ignore vulnerabilities that do not come from github advisories
 	githubNamespacePrefix := "github:"
 	if !strings.HasPrefix(namespace, githubNamespacePrefix) {

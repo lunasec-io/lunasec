@@ -17597,16 +17597,16 @@ pre[class*=language-] {
   text-decoration-color: red;
   text-decoration-thickness: 0.2em;
 }
-.vulnerability-severity-badge .Critical {
+.vulnerability-severity-badge .critical {
   text-decoration-color: #AD1A1A;
 }
-.vulnerability-severity-badge .High {
+.vulnerability-severity-badge .high {
   text-decoration-color: #CC4F19;
 }
-.vulnerability-severity-badge .Medium {
+.vulnerability-severity-badge .medium {
   text-decoration-color: #D68100;
 }
-.vulnerability-severity-badge .Low, .vulnerability-severity-badge .Negligible, .vulnerability-severity-badge .Unknown {
+.vulnerability-severity-badge .low, .vulnerability-severity-badge .negligible, .vulnerability-severity-badge .unknown {
   text-decoration-color: #86859D;
 }
 

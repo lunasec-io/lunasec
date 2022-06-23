@@ -5329,6 +5329,7 @@ export type Vulnerability_Affected = {
   /** An object relationship */
   package?: Maybe<Package>;
   package_id?: Maybe<Scalars['uuid']>;
+  version_constraint?: Maybe<Scalars['String']>;
   /** An object relationship */
   vulnerability?: Maybe<Vulnerability>;
   vulnerability_id?: Maybe<Scalars['uuid']>;
@@ -5385,6 +5386,7 @@ export type Vulnerability_Affected_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   package?: InputMaybe<Package_Bool_Exp>;
   package_id?: InputMaybe<Uuid_Comparison_Exp>;
+  version_constraint?: InputMaybe<String_Comparison_Exp>;
   vulnerability?: InputMaybe<Vulnerability_Bool_Exp>;
   vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
@@ -5393,6 +5395,7 @@ export type Vulnerability_Affected_Bool_Exp = {
 export type Vulnerability_Affected_Max_Order_By = {
   id?: InputMaybe<Order_By>;
   package_id?: InputMaybe<Order_By>;
+  version_constraint?: InputMaybe<Order_By>;
   vulnerability_id?: InputMaybe<Order_By>;
 };
 
@@ -5400,6 +5403,7 @@ export type Vulnerability_Affected_Max_Order_By = {
 export type Vulnerability_Affected_Min_Order_By = {
   id?: InputMaybe<Order_By>;
   package_id?: InputMaybe<Order_By>;
+  version_constraint?: InputMaybe<Order_By>;
   vulnerability_id?: InputMaybe<Order_By>;
 };
 
@@ -5412,6 +5416,7 @@ export type Vulnerability_Affected_Order_By = {
   id?: InputMaybe<Order_By>;
   package?: InputMaybe<Package_Order_By>;
   package_id?: InputMaybe<Order_By>;
+  version_constraint?: InputMaybe<Order_By>;
   vulnerability?: InputMaybe<Vulnerability_Order_By>;
   vulnerability_id?: InputMaybe<Order_By>;
 };
@@ -5509,6 +5514,8 @@ export enum Vulnerability_Affected_Select_Column {
   Id = 'id',
   /** column name */
   PackageId = 'package_id',
+  /** column name */
+  VersionConstraint = 'version_constraint',
   /** column name */
   VulnerabilityId = 'vulnerability_id'
 }
@@ -6117,20 +6124,20 @@ export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
-  namespace?: InputMaybe<String_Comparison_Exp>;
-  order_by?: InputMaybe<Array<Vulnerabilities_Order_By> | Vulnerabilities_Order_By>;
+  source?: InputMaybe<String_Comparison_Exp>;
+  order_by?: InputMaybe<Array<Vulnerability_Order_By> | Vulnerability_Order_By>;
   limit: Scalars['Int'];
 }>;
 
 
-export type SearchVulnerabilitiesQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any, namespace: string, name: string, created_at: any, cvss_exploitability_score?: any | null, cvss_impact_score?: any | null, cvss_inferred?: boolean | null, cvss_score?: any | null, cvss_version?: string | null, data_source: string, description?: string | null, record_source?: string | null, severity: any, slug: string, topic_id?: any | null, urls?: any | null, related_vulnerabilities: Array<{ __typename?: 'related_vulnerabilities', vulnerability: { __typename?: 'vulnerabilities', id: any, name: string, namespace: string } }>, vulnerability_packages: Array<{ __typename?: 'vulnerability_packages', name?: string | null, id: any, slug: string }> }> };
+export type SearchVulnerabilitiesQuery = { __typename?: 'query_root', vulnerability: Array<{ __typename?: 'vulnerability', database_specific?: any | null, details?: string | null, source: string, source_id: string, summary?: string | null, withdrawn?: any | null, published?: any | null, modified: any, id: any, affected: Array<{ __typename?: 'vulnerability_affected', database_specific?: any | null, ecosystem_specific?: any | null, id: any, version_constraint?: string | null, package?: { __typename?: 'package', name: string, id: any } | null, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', database_specific?: any | null, event: string, id: any, type: any, version: string }> }>, equivalents: Array<{ __typename?: 'vulnerability_equivalent', equivalent_vulnerability: { __typename?: 'vulnerability', id: any, source: string, source_id: string, summary?: string | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, type: string, score: string, source: string }> } }>, findings: Array<{ __typename?: 'findings', id: any, build_id: any, default_branch_build?: { __typename?: 'default_branch_builds', id?: any | null, build_number?: number | null, created_at?: any | null, project_id?: any | null, project?: { __typename?: 'projects', name: string, id: any } | null } | null }>, references: Array<{ __typename?: 'vulnerability_reference', id: any, type: any, url: string }>, severities: Array<{ __typename?: 'vulnerability_severity', id: any, score: string, source: string, type: string }> }> };
 
 export type GetVulnerabilityDetailsQueryVariables = Exact<{
   vulnerability_id: Scalars['uuid'];
 }>;
 
 
-export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerability_by_pk?: { __typename?: 'vulnerability', database_specific?: any | null, details?: string | null, source: string, source_id: string, summary?: string | null, withdrawn?: any | null, published?: any | null, modified: any, id: any, affected: Array<{ __typename?: 'vulnerability_affected', database_specific?: any | null, ecosystem_specific?: any | null, id: any, package?: { __typename?: 'package', name: string, id: any } | null, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', database_specific?: any | null, event: string, id: any, type: any, version: string }>, affected_versions: Array<{ __typename?: 'vulnerability_affected_version', database_specific?: any | null, id: any, version: string }> }>, equivalents: Array<{ __typename?: 'vulnerability_equivalent', equivalent_vulnerability: { __typename?: 'vulnerability', id: any, source: string, source_id: string, summary?: string | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, type: string, score: string, source: string }> } }>, findings: Array<{ __typename?: 'findings', id: any, build_id: any, default_branch_build?: { __typename?: 'default_branch_builds', id?: any | null, build_number?: number | null, created_at?: any | null, project_id?: any | null, project?: { __typename?: 'projects', name: string, id: any } | null } | null }>, references: Array<{ __typename?: 'vulnerability_reference', id: any, type: any, url: string }>, severities: Array<{ __typename?: 'vulnerability_severity', id: any, score: string, source: string, type: string }> } | null };
+export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerability_by_pk?: { __typename?: 'vulnerability', database_specific?: any | null, details?: string | null, source: string, source_id: string, summary?: string | null, withdrawn?: any | null, published?: any | null, modified: any, id: any, affected: Array<{ __typename?: 'vulnerability_affected', database_specific?: any | null, ecosystem_specific?: any | null, id: any, version_constraint?: string | null, package?: { __typename?: 'package', name: string, id: any } | null, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', database_specific?: any | null, event: string, id: any, type: any, version: string }>, affected_versions: Array<{ __typename?: 'vulnerability_affected_version', database_specific?: any | null, id: any, version: string }> }>, equivalents: Array<{ __typename?: 'vulnerability_equivalent', equivalent_vulnerability: { __typename?: 'vulnerability', id: any, source: string, source_id: string, summary?: string | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, type: string, score: string, source: string }> } }>, findings: Array<{ __typename?: 'findings', id: any, build_id: any, default_branch_build?: { __typename?: 'default_branch_builds', id?: any | null, build_number?: number | null, created_at?: any | null, project_id?: any | null, project?: { __typename?: 'projects', name: string, id: any } | null } | null }>, references: Array<{ __typename?: 'vulnerability_reference', id: any, type: any, url: string }>, severities: Array<{ __typename?: 'vulnerability_severity', id: any, score: string, source: string, type: string }> } | null };
 
 export type InsertNewOrgUserMutationVariables = Exact<{
   organization_id: Scalars['uuid'];
@@ -6606,40 +6613,77 @@ export const GetSidebarInfoDocument = `
 }
     `;
 export const SearchVulnerabilitiesDocument = `
-    query SearchVulnerabilities($search: String!, $namespace: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerabilities_order_by!] = {}, $limit: Int!) {
-  vulnerabilities(
-    where: {_or: [{name: {_ilike: $search}}, {description: {_ilike: $search}}, {vulnerability_packages: {name: {_ilike: $search}}}], namespace: $namespace}
-    order_by: $order_by
+    query SearchVulnerabilities($search: String!, $source: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerability_order_by!] = {}, $limit: Int!) {
+  vulnerability(
+    where: {_and: [{severities: {id: {_is_null: false}}}, {affected: {id: {_is_null: false}}}, {_or: [{source_id: {_ilike: $search}}, {summary: {_ilike: $search}}, {source: $source}, {affected: {package: {name: {_ilike: $search}}}}]}]}
     limit: $limit
+    order_by: $order_by
   ) {
-    id
-    namespace
-    name
-    created_at
-    cvss_exploitability_score
-    cvss_impact_score
-    cvss_inferred
-    cvss_score
-    cvss_version
-    data_source
-    description
-    record_source
-    severity
-    slug
-    topic_id
-    urls
-    related_vulnerabilities {
-      vulnerability {
-        id
+    affected {
+      database_specific
+      ecosystem_specific
+      id
+      package {
         name
-        namespace
+        id
+      }
+      affected_range_events {
+        database_specific
+        event
+        id
+        type
+        version
+      }
+      version_constraint
+    }
+    database_specific
+    details
+    equivalents {
+      equivalent_vulnerability {
+        id
+        source
+        source_id
+        summary
+        severities {
+          id
+          type
+          score
+          source
+        }
       }
     }
-    vulnerability_packages {
-      name
+    findings(where: {latest_default_build: {}}) {
       id
-      slug
+      build_id
+      default_branch_build {
+        id
+        project {
+          name
+          id
+        }
+        build_number
+        created_at
+        project_id
+      }
     }
+    references {
+      id
+      type
+      url
+    }
+    severities {
+      id
+      score
+      source
+      type
+    }
+    source
+    source_id
+    summary
+    withdrawn
+    published
+    modified
+    id
   }
 }
     `;
@@ -6650,6 +6694,7 @@ export const GetVulnerabilityDetailsDocument = `
       database_specific
       ecosystem_specific
       id
+      version_constraint
       package {
         name
         id
