@@ -20,20 +20,20 @@ export interface FindingToIgnore {
   };
 }
 
-export function findingIsNotIgnored<F extends FindingToIgnore>(finding: F): boolean {
+export function checkIfFindingIgnored<F extends FindingToIgnore>(finding: F): boolean {
   // Get the ignored_vulnerability that is linked to this finding, if any.  There are a maximum of one because of the unique constraint
   const ignoreRule = finding.vulnerability.ignored_vulnerabilities[0];
   // if there are none just keep it
   if (!ignoreRule) {
-    return true;
+    return false;
   }
 
   // check if any of the rules match all of the locations in our list
-  return !finding.locations.every((location) => {
+  return finding.locations.every((location) => {
     return ignoreRule.locations.includes(location);
   });
 }
 
-export function filterFindingsByIgnored<F extends FindingToIgnore>(findings: F[]): F[] {
-  return findings.filter(findingIsNotIgnored);
+export function filterFindingsNotIgnored<F extends FindingToIgnore>(findings: F[]): F[] {
+  return findings.filter((f) => !checkIfFindingIgnored(f));
 }

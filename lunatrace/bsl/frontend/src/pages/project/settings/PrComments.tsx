@@ -49,7 +49,7 @@ export const SettingsPrComments: React.FC<SettingsPRCommentsProps> = ({ project 
           <h3>Pull Request Feedback</h3>
         </Col>
         <Col md>
-          <p>Whether LunaTrace will automatically submit feedback your PRs.</p>
+          <p>Whether LunaTrace will automatically submit feedback on your PRs.</p>
         </Col>
       </Row>
       <Row>
