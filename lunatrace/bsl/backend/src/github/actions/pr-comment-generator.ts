@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { filterFindingsByIgnored, Finding, groupByPackage, VulnerablePackage } from '@lunatrace/lunatrace-common';
+import { filterFindingsNotIgnored, Finding, groupByPackage, VulnerablePackage } from '@lunatrace/lunatrace-common';
 import markdownTable from 'markdown-table';
 
 import { hasura } from '../../hasura-api';
@@ -35,7 +35,7 @@ function generatePullRequestCommentFromReport(projectId: string, scan: InsertedS
     `\n[View Full Report](https://lunatrace.lunasec.io/project/${projectId}/build/${scan.build_id})`,
   ];
 
-  const unignoredFindings = filterFindingsByIgnored(scan.findings);
+  const unignoredFindings = filterFindingsNotIgnored(scan.findings);
 
   if (!unignoredFindings) {
     return messageParts.join('\n');
