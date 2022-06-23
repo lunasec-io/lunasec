@@ -41,9 +41,8 @@ export const VulnerabilitiesMain: React.FunctionComponent = () => {
   const postgresSearch = searchString ? `%${searchString}%` : '%%'; // Bit of a hack, it would be a faster query to pull out this where clause
   const postgresFilter = filterString ? { _ilike: `%${filterString}%` } : {};
   const postgresOrderMap: Record<Order, Record<string, unknown>> = {
-    severity: { severity: Order_By.Asc },
     cvss: { cvss_score: Order_By.DescNullsLast },
-    date: { created_at: Order_By.Desc },
+    date: { published: Order_By.Desc },
     none: {},
   };
 
@@ -52,7 +51,7 @@ export const VulnerabilitiesMain: React.FunctionComponent = () => {
   // RUN SEARCH QUERY
   const { data, isFetching, refetch } = api.useSearchVulnerabilitiesQuery({
     search: postgresSearch,
-    namespace: postgresFilter,
+    source: postgresFilter,
     order_by: postgresOrderMap[orderBy],
     limit: vulnLimit,
   });
@@ -60,8 +59,8 @@ export const VulnerabilitiesMain: React.FunctionComponent = () => {
   // lazy loading. Reloads all the old vulns when expanding the batch size but..it works fine
   useBottomScrollListener(
     () => {
-      if (data && data.vulnerabilities) {
-        const vulnCount = data.vulnerabilities.length;
+      if (data && data.vulnerability) {
+        const vulnCount = data.vulnerability.length;
         if (vulnCount === vulnLimit) {
           setVulnLimit(vulnLimit + 20);
           refetch();
@@ -81,7 +80,7 @@ export const VulnerabilitiesMain: React.FunctionComponent = () => {
           submitOrder={setOrderBy}
           order={orderBy}
         />
-        <VulnerabilitiesList vulnerabilities={data ? data.vulnerabilities : []} isLoading={isFetching} />
+        <VulnerabilitiesList vulnerabilities={data ? data.vulnerability : []} isLoading={isFetching} />
       </Container>
     </>
   );

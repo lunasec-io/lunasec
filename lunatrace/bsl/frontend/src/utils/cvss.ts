@@ -23,9 +23,9 @@ function selectCvssSeverityFromList(severities: Vulnerability_Severity[]) {
   return severities[0];
 }
 
-export function getCvssVectorFromSeverities(severities: Vulnerability_Severity[]): CvssScore {
+export function getCvssVectorFromSeverities(severities: Vulnerability_Severity[]): CvssScore | null {
   if (severities.length === 0) {
-    throw new Error('there are no severities ');
+    return null;
   }
   const severity = selectCvssSeverityFromList(severities);
   return parseCvssVector(severity.score);

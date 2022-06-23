@@ -1,32 +1,69 @@
-query SearchVulnerabilities($search: String!, $namespace: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerabilities_order_by!] = {}, $limit: Int!) {
-    vulnerabilities(where: {_or: [{name: {_ilike: $search}}, {description: {_ilike: $search}}, {vulnerability_packages: {name: {_ilike: $search}}}], namespace: $namespace}, order_by: $order_by, limit: $limit) {
-        id
-        namespace
+query SearchVulnerabilities($search: String!, $source: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerability_order_by!] = {}, $limit: Int!) {
+  vulnerability(where: {_and: [{severities: {id: {_is_null: false}}}, {affected: {id: {_is_null: false}}}, {_or: [{source_id: {_ilike: $search}}, {summary: {_ilike: $search}}, {source: $source}, {affected: {package: {name: {_ilike: $search}}}}]}]}, limit: $limit, order_by: $order_by) {
+    affected {
+      database_specific
+      ecosystem_specific
+      id
+      package {
         name
-        created_at
-        cvss_exploitability_score
-        cvss_impact_score
-        cvss_inferred
-        cvss_score
-        cvss_version
-        data_source
-        description
-        record_source
-        severity
-        slug
-        topic_id
-        urls
-        related_vulnerabilities {
-            vulnerability {
-                id
-                name
-                namespace
-            }
-        }
-        vulnerability_packages {
-            name
-            id
-            slug
-        }
+        id
+      }
+      affected_range_events {
+        database_specific
+        event
+        id
+        type
+        version
+      }
+      version_constraint
     }
+    database_specific
+    details
+    equivalents {
+      equivalent_vulnerability {
+        id
+        source
+        source_id
+        summary
+        severities {
+          id
+          type
+          score
+          source
+        }
+      }
+    }
+    findings(where: {latest_default_build: {}}) {
+      id
+      build_id
+      default_branch_build {
+        id
+        project {
+          name
+          id
+        }
+        build_number
+        created_at
+        project_id
+      }
+    }
+    references {
+      id
+      type
+      url
+    }
+    severities {
+      id
+      score
+      source
+      type
+    }
+    source
+    source_id
+    summary
+    withdrawn
+    published
+    modified
+    id
+  }
 }

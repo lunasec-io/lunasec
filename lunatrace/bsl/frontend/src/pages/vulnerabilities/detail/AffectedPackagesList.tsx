@@ -53,8 +53,8 @@ export const AffectedPackagesList: React.FC<{ relatedVulns: VulnInfoDetails['equ
                       >
                         <td>{relatedVuln.source}</td>
                         <td>{relatedVuln.source_id}</td>
-                        <td>{severity.cvss3OverallSeverityText}</td>
-                        <td>{severity.overallScore}</td>
+                        <td>{severity ? severity.cvss3OverallSeverityText : 'unknown'}</td>
+                        <td>{severity ? severity.overallScore : 'unknown'}</td>
                       </tr>
                     </OverlayTrigger>
                   );
