@@ -135,13 +135,14 @@ const mapGrypeMatchToGraphqlFinding =
       locations: formatPsqlStringArray(locations),
       language: artifact.language,
       purl: artifact.purl,
-      severity: vulnerability.severity,
+      severity: vulnerability.severity || 'Unknown',
       virtual_path: artifact.metadata ? artifact.metadata.VirtualPath : null,
       matcher: details.matcher,
       dedupe_slug: pkg_slug + locations.sort().join(':'),
-      fix_state: vulnerability.fix?.state || null,
+      fix_state: vulnerability.fix?.state || 'unknown',
       fix_versions: graphqlFixVersions,
       build_id: buildId,
+      vulnerability_id: vulnerability.id,
     };
   };
 

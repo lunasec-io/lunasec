@@ -10523,7 +10523,6 @@ type vulnerability {
     """filter the rows returned"""
     where: vulnerability_severity_bool_exp
   ): [vulnerability_severity!]!
-  severity: String
   source: String!
   source_id: String!
   summary: String
@@ -11272,7 +11271,6 @@ input vulnerability_bool_exp {
   published: timestamptz_comparison_exp
   references: vulnerability_reference_bool_exp
   severities: vulnerability_severity_bool_exp
-  severity: String_comparison_exp
   source: String_comparison_exp
   source_id: String_comparison_exp
   summary: String_comparison_exp
@@ -11641,7 +11639,6 @@ input vulnerability_insert_input {
   published: timestamptz
   references: vulnerability_reference_arr_rel_insert_input
   severities: vulnerability_severity_arr_rel_insert_input
-  severity: String
   source: String
   source_id: String
   summary: String
@@ -11697,7 +11694,6 @@ input vulnerability_order_by {
   published: order_by
   references_aggregate: vulnerability_reference_aggregate_order_by
   severities_aggregate: vulnerability_severity_aggregate_order_by
-  severity: order_by
   source: order_by
   source_id: order_by
   summary: order_by
@@ -12112,9 +12108,6 @@ enum vulnerability_select_column {
   published
 
   """column name"""
-  severity
-
-  """column name"""
   source
 
   """column name"""
@@ -12140,7 +12133,6 @@ input vulnerability_set_input {
   id: uuid
   modified: timestamptz
   published: timestamptz
-  severity: String
   source: String
   source_id: String
   summary: String
@@ -12348,9 +12340,6 @@ enum vulnerability_update_column {
 
   """column name"""
   published
-
-  """column name"""
-  severity
 
   """column name"""
   source
