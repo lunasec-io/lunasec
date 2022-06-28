@@ -8224,7 +8224,6 @@ export type Vulnerability = {
   references: Array<Vulnerability_Reference>;
   /** An array relationship */
   severities: Array<Vulnerability_Severity>;
-  severity?: Maybe<Scalars['String']>;
   source: Scalars['String'];
   source_id: Scalars['String'];
   summary?: Maybe<Scalars['String']>;
@@ -8925,7 +8924,6 @@ export type Vulnerability_Bool_Exp = {
   published?: InputMaybe<Timestamptz_Comparison_Exp>;
   references?: InputMaybe<Vulnerability_Reference_Bool_Exp>;
   severities?: InputMaybe<Vulnerability_Severity_Bool_Exp>;
-  severity?: InputMaybe<String_Comparison_Exp>;
   source?: InputMaybe<String_Comparison_Exp>;
   source_id?: InputMaybe<String_Comparison_Exp>;
   summary?: InputMaybe<String_Comparison_Exp>;
@@ -9217,7 +9215,6 @@ export type Vulnerability_Insert_Input = {
   published?: InputMaybe<Scalars['timestamptz']>;
   references?: InputMaybe<Vulnerability_Reference_Arr_Rel_Insert_Input>;
   severities?: InputMaybe<Vulnerability_Severity_Arr_Rel_Insert_Input>;
-  severity?: InputMaybe<Scalars['String']>;
   source?: InputMaybe<Scalars['String']>;
   source_id?: InputMaybe<Scalars['String']>;
   summary?: InputMaybe<Scalars['String']>;
@@ -9264,7 +9261,6 @@ export type Vulnerability_Order_By = {
   published?: InputMaybe<Order_By>;
   references_aggregate?: InputMaybe<Vulnerability_Reference_Aggregate_Order_By>;
   severities_aggregate?: InputMaybe<Vulnerability_Severity_Aggregate_Order_By>;
-  severity?: InputMaybe<Order_By>;
   source?: InputMaybe<Order_By>;
   source_id?: InputMaybe<Order_By>;
   summary?: InputMaybe<Order_By>;
@@ -9592,8 +9588,6 @@ export enum Vulnerability_Select_Column {
   /** column name */
   Published = 'published',
   /** column name */
-  Severity = 'severity',
-  /** column name */
   Source = 'source',
   /** column name */
   SourceId = 'source_id',
@@ -9613,7 +9607,6 @@ export type Vulnerability_Set_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   modified?: InputMaybe<Scalars['timestamptz']>;
   published?: InputMaybe<Scalars['timestamptz']>;
-  severity?: InputMaybe<Scalars['String']>;
   source?: InputMaybe<Scalars['String']>;
   source_id?: InputMaybe<Scalars['String']>;
   summary?: InputMaybe<Scalars['String']>;
@@ -9778,8 +9771,6 @@ export enum Vulnerability_Update_Column {
   Modified = 'modified',
   /** column name */
   Published = 'published',
-  /** column name */
-  Severity = 'severity',
   /** column name */
   Source = 'source',
   /** column name */
