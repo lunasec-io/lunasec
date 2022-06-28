@@ -167,6 +167,9 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                   </thead>
                   <tbody>
                     {vuln.affected.map((affected) => {
+                      const fixedEvents = affected.affected_range_events.filter((event) => event.type === 'fixed');
+                      const fixVersions = fixedEvents.map((event) => event.version);
+                      const isFixed = fixedEvents.length > 0;
                       return (
                         <tr key={affected.id}>
                           <td className="lighter">
@@ -175,8 +178,8 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                             {/*  TODO: Make these show full name in a tooltip when truncated*/}
                           </td>
                           <td>{affected.version_constraint}</td>
-                          <td>{false}</td>
-                          <td>{false}</td>
+                          <td>{isFixed ? 'fixed' : 'not fixed'}</td>
+                          <td>{fixVersions.join(', ')}</td>
                         </tr>
                       );
                     })}
