@@ -15,6 +15,9 @@ import { groupByPackage, severityOrder } from '@lunatrace/lunatrace-common/build
 import React, { ChangeEvent, useState } from 'react';
 import { Col, Dropdown, Row } from 'react-bootstrap';
 
+import { getCvssVectorFromSeverities } from '../../../utils/cvss';
+import { toTitleCase } from '../../../utils/string-utils';
+
 import { VulnerablePackageListItem } from './VulnerablePackageListItem';
 import { Finding } from './VulnerablePackageListItem/types';
 import { QuickViewProps } from './types';
@@ -32,10 +35,22 @@ export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = 
   quickView,
   setIgnoreFindings,
 }) => {
-  const [severityFilter, setSeverityFilter] = useState(severityOrder.indexOf('Critical'));
-  const prettySeverity = severityOrder[severityFilter] === 'Unknown' ? 'None' : severityOrder[severityFilter];
+  const [severityFilter, setSeverityFilter] = useState(severityOrder.indexOf('critical'));
+  const prettySeverity =
+    severityOrder[severityFilter] === 'unknown' ? 'None' : toTitleCase(severityOrder[severityFilter]);
 
-  const vulnerablePkgs = groupByPackage(project_id, findings);
+  const findingsWithSeverities = findings.map((finding) => {
+    const severity = getCvssVectorFromSeverities(finding.vulnerability.severities);
+    if (!severity) {
+      return finding;
+    }
+    return {
+      ...finding,
+      severity: severity.cvss3OverallSeverityText,
+    };
+  });
+
+  const vulnerablePkgs = groupByPackage(project_id, findingsWithSeverities);
   const filteredVulnerablePkgs = vulnerablePkgs.filter((pkg) => severityOrder.indexOf(pkg.severity) >= severityFilter);
 
   const pkgCards = filteredVulnerablePkgs.map((pkg) => {
@@ -70,7 +85,7 @@ export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = 
                       onClick={() => setSeverityFilter(severityIndex)}
                       key={severityIndex}
                     >
-                      {severityName === 'Unknown' ? 'None' : severityName}
+                      {severityName === 'unknown' ? 'None' : toTitleCase(severityName)}
                     </Dropdown.Item>
                   );
                 })

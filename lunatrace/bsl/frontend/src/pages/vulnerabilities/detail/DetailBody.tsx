@@ -16,10 +16,11 @@ import { Card, Col, Container, Modal, OverlayTrigger, Row, Spinner, Table, Toolt
 import { ExternalLink } from 'react-feather';
 import { NavLink, useNavigate } from 'react-router-dom';
 
-import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
+import { formatPackageManagerUrlForPackage } from '../../../utils/advisory';
 import { getCvssVectorFromSeverities } from '../../../utils/cvss';
 import { prettyDate } from '../../../utils/pretty-date';
 import { toTitleCase } from '../../../utils/string-utils';
+import { SourceLink } from '../SourceLink';
 import { VulnInfoDetails } from '../types';
 
 import { AffectedPackagesList } from './AffectedPackagesList';
@@ -35,8 +36,6 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
   sideBySideView = false,
   vuln,
 }) => {
-  const navigate = useNavigate();
-
   const severity = getCvssVectorFromSeverities(vuln.severities);
 
   return (
@@ -53,10 +52,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
             )}
 
             <h5>
-              <a className="text-lg" href={''}>
-                <ExternalLink size="1em" className="mb-1 me-1" />
-                {vuln.source}
-              </a>
+              <SourceLink source={vuln.source} sourceId={vuln.source_id} />
             </h5>
           </Col>
           <hr />
@@ -168,18 +164,52 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                   <tbody>
                     {vuln.affected.map((affected) => {
                       const fixedEvents = affected.affected_range_events.filter((event) => event.type === 'fixed');
-                      const fixVersions = fixedEvents.map((event) => event.version);
+                      const getFixVersions = () => {
+                        const fixVersions = fixedEvents.map((event) => event.version);
+                        if (fixVersions.length === 0) {
+                          return 'none';
+                        }
+                        return fixVersions.join(', ');
+                      };
                       const isFixed = fixedEvents.length > 0;
+
+                      const getPackageColumn = () => {
+                        const packageName = affected.package?.name;
+                        const nameOverflow = packageName && packageName.length > 41 ? '...' : '';
+                        const formattedPackageName = packageName?.substring(0, 40) || '';
+                        const formattedName = formattedPackageName + nameOverflow;
+
+                        const packageManager = affected.package?.package_manager;
+                        if (packageName && packageManager) {
+                          const packageManagerLink = formatPackageManagerUrlForPackage(packageManager, packageName);
+                          if (packageManagerLink === null) {
+                            return <>{formattedName}</>;
+                          }
+                          return (
+                            <>
+                              {formattedName} -
+                              <a
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                href={packageManagerLink}
+                                className="m-1"
+                              >
+                                <ExternalLink size="1em" className="mb-1 me-1" />
+                                {packageManager}
+                              </a>
+                            </>
+                          );
+                        }
+                        return <>{formattedName}</>;
+                      };
+
                       return (
                         <tr key={affected.id}>
-                          <td className="lighter">
-                            {affected.package?.name?.substring(0, 40)}
-                            {affected.package?.name && affected.package.name.length > 41 ? '...' : ''}
-                            {/*  TODO: Make these show full name in a tooltip when truncated*/}
-                          </td>
-                          <td>{affected.version_constraint}</td>
+                          <td className="lighter">{getPackageColumn()}</td>
+                          <td>{'TODO' || '>= 0.0.0'}</td>
                           <td>{isFixed ? 'fixed' : 'not fixed'}</td>
-                          <td>{fixVersions.join(', ')}</td>
+                          <td>{getFixVersions()}</td>
                         </tr>
                       );
                     })}

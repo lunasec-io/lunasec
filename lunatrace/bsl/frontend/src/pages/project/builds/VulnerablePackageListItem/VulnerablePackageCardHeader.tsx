@@ -15,6 +15,9 @@ import { filterFindingsByIgnored, VulnerablePackage } from '@lunatrace/lunatrace
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 
+import { getCvssVectorFromSeverities } from '../../../../utils/cvss';
+import { toTitleCase } from '../../../../utils/string-utils';
+
 import { Finding } from './types';
 
 interface VulnerablePackageCardHeaderProps {
@@ -25,6 +28,12 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
   const filteredFindings = filterFindingsByIgnored(pkg.findings);
   const allFindingsAreIgnored = filteredFindings.length === 0;
   const headerClassNames = allFindingsAreIgnored ? 'text-decoration-line-through' : '';
+
+  const sortedSeverities = filteredFindings
+    .map((finding) => getCvssVectorFromSeverities(finding.vulnerability.severities))
+    .filter((severity) => !!severity)
+    .sort((a, b) => (a && b ? b.overallScore - a.overallScore : 0));
+  const mostSevereSeverity = sortedSeverities.length > 0 ? sortedSeverities[0] : null;
   return (
     <Card.Header>
       <Container fluid>
@@ -41,21 +50,26 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
           </Col>
           <Col sm={{ span: 6 }}>
             <div style={{ float: 'right', textAlign: 'right' }}>
-              <Card.Title>
-                <span className="text-right darker"> Severity: </span>
-                <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
-                  <h4 className={`p-1 ${pkg.severity}`} style={{ display: 'inline' }}>
-                    {pkg.severity}
-                  </h4>
-                </div>
-              </Card.Title>
-              {/*{pkg.cvss_score ? (*/}
-              {/*  <Card.Subtitle>*/}
-              {/*    {' '}*/}
-              {/*    <span className="darker">CVSS: </span>*/}
-              {/*    {pkg.cvss_score}*/}
-              {/*  </Card.Subtitle>*/}
-              {/*) : null}*/}
+              {mostSevereSeverity ? (
+                <>
+                  <Card.Title>
+                    <span className="text-right darker"> Severity: </span>
+                    <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
+                      <h4
+                        className={`p-1 ${mostSevereSeverity.cvss3OverallSeverityText}`}
+                        style={{ display: 'inline' }}
+                      >
+                        {toTitleCase(mostSevereSeverity.cvss3OverallSeverityText)}
+                      </h4>
+                    </div>
+                  </Card.Title>
+                  <Card.Subtitle>
+                    {' '}
+                    <span className="darker">CVSS: </span>
+                    {mostSevereSeverity.overallScore}
+                  </Card.Subtitle>
+                </>
+              ) : null}
             </div>
           </Col>
         </Row>

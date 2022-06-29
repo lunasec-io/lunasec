@@ -16,10 +16,12 @@ package scan
 
 import (
 	"fmt"
+	"github.com/Khan/genqlient/graphql"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/grypefx/store/gqlstorefx"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/httputil"
 	"net/http"
 	"path"
 
-	"github.com/Khan/genqlient/graphql"
 	"github.com/adrg/xdg"
 	"github.com/anchore/grype/grype"
 	"github.com/anchore/grype/grype/db"
@@ -33,9 +35,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 
-	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/grypefx/store/gqlstorefx"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/grypefx/store/multistorefx"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/httputil"
 )
 
 type RegistryCredentials struct {

@@ -17,6 +17,7 @@ package gqlstorefx
 import (
 	"context"
 	"errors"
+	"github.com/rs/zerolog/log"
 	"strings"
 	"time"
 
@@ -63,8 +64,23 @@ func (g *gqlStore) GetVulnerability(namespace, name string) ([]v3.Vulnerability,
 	}
 	formattedNamespace := strings.ReplaceAll(namespace, githubNamespacePrefix, "")
 
-	vulns, err := gql.GetVulnerability(context.TODO(), g.d.GQLClient, name, mapNamespace(formattedNamespace))
+	packageManager, err := mapNamespace(formattedNamespace)
 	if err != nil {
+		log.Error().
+			Err(err).
+			Str("name", name).
+			Str("namespace", namespace).
+			Msg("unable to get package manager")
+		return nil, err
+	}
+
+	vulns, err := gql.GetVulnerability(context.TODO(), g.d.GQLClient, name, packageManager)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("name", name).
+			Str("namespace", namespace).
+			Msg("unable to get vulnerability from database")
 		return nil, err
 	}
 	return mapVulns(vulns.Vulnerability)
