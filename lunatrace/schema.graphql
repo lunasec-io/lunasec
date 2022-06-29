@@ -151,6 +151,23 @@ input affected_range_type_comparison_exp {
   _nin: [affected_range_type!]
 }
 
+scalar bigint
+
+"""
+Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'.
+"""
+input bigint_comparison_exp {
+  _eq: bigint
+  _gt: bigint
+  _gte: bigint
+  _in: [bigint!]
+  _is_null: Boolean
+  _lt: bigint
+  _lte: bigint
+  _neq: bigint
+  _nin: [bigint!]
+}
+
 """
 columns and relationships of "builds"
 """
@@ -158,6 +175,7 @@ type builds {
   agent_access_token: uuid!
   build_number: Int
   created_at: timestamp!
+  existing_github_check_id: bigint
   existing_github_review_id: String
 
   """An array relationship"""
@@ -282,6 +300,7 @@ input builds_arr_rel_insert_input {
 """aggregate avg on columns"""
 type builds_avg_fields {
   build_number: Float
+  existing_github_check_id: Float
 }
 
 """
@@ -289,6 +308,7 @@ order by avg() on columns of table "builds"
 """
 input builds_avg_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 """
@@ -301,6 +321,7 @@ input builds_bool_exp {
   agent_access_token: uuid_comparison_exp
   build_number: Int_comparison_exp
   created_at: timestamp_comparison_exp
+  existing_github_check_id: bigint_comparison_exp
   existing_github_review_id: String_comparison_exp
   findings: findings_bool_exp
   git_branch: String_comparison_exp
@@ -335,6 +356,7 @@ input type for incrementing numeric columns in table "builds"
 """
 input builds_inc_input {
   build_number: Int
+  existing_github_check_id: bigint
 }
 
 """
@@ -344,6 +366,7 @@ input builds_insert_input {
   agent_access_token: uuid
   build_number: Int
   created_at: timestamp
+  existing_github_check_id: bigint
   existing_github_review_id: String
   findings: findings_arr_rel_insert_input
   git_branch: String
@@ -364,6 +387,7 @@ type builds_max_fields {
   agent_access_token: uuid
   build_number: Int
   created_at: timestamp
+  existing_github_check_id: bigint
   existing_github_review_id: String
   git_branch: String
   git_hash: String
@@ -381,6 +405,7 @@ input builds_max_order_by {
   agent_access_token: order_by
   build_number: order_by
   created_at: order_by
+  existing_github_check_id: order_by
   existing_github_review_id: order_by
   git_branch: order_by
   git_hash: order_by
@@ -396,6 +421,7 @@ type builds_min_fields {
   agent_access_token: uuid
   build_number: Int
   created_at: timestamp
+  existing_github_check_id: bigint
   existing_github_review_id: String
   git_branch: String
   git_hash: String
@@ -413,6 +439,7 @@ input builds_min_order_by {
   agent_access_token: order_by
   build_number: order_by
   created_at: order_by
+  existing_github_check_id: order_by
   existing_github_review_id: order_by
   git_branch: order_by
   git_hash: order_by
@@ -458,6 +485,7 @@ input builds_order_by {
   agent_access_token: order_by
   build_number: order_by
   created_at: order_by
+  existing_github_check_id: order_by
   existing_github_review_id: order_by
   findings_aggregate: findings_aggregate_order_by
   git_branch: order_by
@@ -490,6 +518,9 @@ enum builds_select_column {
 
   """column name"""
   created_at
+
+  """column name"""
+  existing_github_check_id
 
   """column name"""
   existing_github_review_id
@@ -526,6 +557,7 @@ input builds_set_input {
   agent_access_token: uuid
   build_number: Int
   created_at: timestamp
+  existing_github_check_id: bigint
   existing_github_review_id: String
   git_branch: String
   git_hash: String
@@ -555,6 +587,7 @@ input builds_source_type_comparison_exp {
 """aggregate stddev on columns"""
 type builds_stddev_fields {
   build_number: Float
+  existing_github_check_id: Float
 }
 
 """
@@ -562,11 +595,13 @@ order by stddev() on columns of table "builds"
 """
 input builds_stddev_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 """aggregate stddev_pop on columns"""
 type builds_stddev_pop_fields {
   build_number: Float
+  existing_github_check_id: Float
 }
 
 """
@@ -574,11 +609,13 @@ order by stddev_pop() on columns of table "builds"
 """
 input builds_stddev_pop_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 """aggregate stddev_samp on columns"""
 type builds_stddev_samp_fields {
   build_number: Float
+  existing_github_check_id: Float
 }
 
 """
@@ -586,11 +623,13 @@ order by stddev_samp() on columns of table "builds"
 """
 input builds_stddev_samp_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 """aggregate sum on columns"""
 type builds_sum_fields {
   build_number: Int
+  existing_github_check_id: bigint
 }
 
 """
@@ -598,6 +637,7 @@ order by sum() on columns of table "builds"
 """
 input builds_sum_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 """
@@ -612,6 +652,9 @@ enum builds_update_column {
 
   """column name"""
   created_at
+
+  """column name"""
+  existing_github_check_id
 
   """column name"""
   existing_github_review_id
@@ -638,6 +681,7 @@ enum builds_update_column {
 """aggregate var_pop on columns"""
 type builds_var_pop_fields {
   build_number: Float
+  existing_github_check_id: Float
 }
 
 """
@@ -645,11 +689,13 @@ order by var_pop() on columns of table "builds"
 """
 input builds_var_pop_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 """aggregate var_samp on columns"""
 type builds_var_samp_fields {
   build_number: Float
+  existing_github_check_id: Float
 }
 
 """
@@ -657,11 +703,13 @@ order by var_samp() on columns of table "builds"
 """
 input builds_var_samp_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 """aggregate variance on columns"""
 type builds_variance_fields {
   build_number: Float
+  existing_github_check_id: Float
 }
 
 """
@@ -669,6 +717,7 @@ order by variance() on columns of table "builds"
 """
 input builds_variance_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 scalar date
@@ -8903,6 +8952,7 @@ type settings {
 
   """An object relationship"""
   organization: organizations
+  pr_check_enabled: Boolean
   pr_feedback_disabled: Boolean
 
   """An object relationship"""
@@ -8919,6 +8969,7 @@ input settings_bool_exp {
   created_at: timestamp_comparison_exp
   id: uuid_comparison_exp
   organization: organizations_bool_exp
+  pr_check_enabled: Boolean_comparison_exp
   pr_feedback_disabled: Boolean_comparison_exp
   project: projects_bool_exp
 }
@@ -8928,6 +8979,7 @@ input settings_order_by {
   created_at: order_by
   id: order_by
   organization: organizations_order_by
+  pr_check_enabled: order_by
   pr_feedback_disabled: order_by
   project: projects_order_by
 }
@@ -8941,6 +8993,9 @@ enum settings_select_column {
 
   """column name"""
   id
+
+  """column name"""
+  pr_check_enabled
 
   """column name"""
   pr_feedback_disabled

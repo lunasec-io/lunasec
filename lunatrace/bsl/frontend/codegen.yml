@@ -24,6 +24,7 @@ generates:
             timestamptz: string
             uuid: string
             UUID: string
+            bigint: number
 
       - "typescript-operations"
       - "typescript-rtk-query":
