@@ -59,6 +59,7 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                 summary
                 source
                 source_id
+                cvss_score
                 severities {
                     id
                     source

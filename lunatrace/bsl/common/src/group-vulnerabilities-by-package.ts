@@ -34,6 +34,8 @@ export function groupByPackage<F extends Finding>(project_id: string, findings: 
 }
 
 function createNewVulnPackage<F extends Finding>(project_id: string, finding: F): VulnerablePackage<F> {
+  // TODO (cthompson) getCvssVectorFromSeverities should be moved into common
+  // const severity = getCvssVectorFromSeverities(finding.vulnerability.severities);
   return {
     created_at: finding.created_at, // might be better to sort and show the first date
     purl: finding.purl,
@@ -44,7 +46,7 @@ function createNewVulnPackage<F extends Finding>(project_id: string, finding: F)
     type: finding.type,
     guides: finding.vulnerability.guide_vulnerabilities?.map((tv) => tv.guide) || [],
     package_name: finding.package_name,
-    cvss_score: null, //finding.vulnerability.namespace === 'nvd' ? finding.vulnerability.cvss_score || null : null,
+    cvss_score: finding.vulnerability.cvss_score || 0,
     fix_state: finding.fix_state || null,
     fix_versions: finding.fix_versions || [],
     findings: [finding],

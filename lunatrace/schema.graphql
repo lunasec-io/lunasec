@@ -10585,7 +10585,6 @@ type vulnerability_affected {
   """An object relationship"""
   package: package
   package_id: uuid
-  version_constraint: String
 
   """An object relationship"""
   vulnerability: vulnerability
@@ -10631,7 +10630,6 @@ input vulnerability_affected_bool_exp {
   id: uuid_comparison_exp
   package: package_bool_exp
   package_id: uuid_comparison_exp
-  version_constraint: String_comparison_exp
   vulnerability: vulnerability_bool_exp
   vulnerability_id: uuid_comparison_exp
 }
@@ -10682,7 +10680,6 @@ input vulnerability_affected_insert_input {
   id: uuid
   package: package_obj_rel_insert_input
   package_id: uuid
-  version_constraint: String
   vulnerability: vulnerability_obj_rel_insert_input
   vulnerability_id: uuid
 }
@@ -10693,7 +10690,6 @@ order by max() on columns of table "vulnerability.affected"
 input vulnerability_affected_max_order_by {
   id: order_by
   package_id: order_by
-  version_constraint: order_by
   vulnerability_id: order_by
 }
 
@@ -10703,7 +10699,6 @@ order by min() on columns of table "vulnerability.affected"
 input vulnerability_affected_min_order_by {
   id: order_by
   package_id: order_by
-  version_constraint: order_by
   vulnerability_id: order_by
 }
 
@@ -10746,7 +10741,6 @@ input vulnerability_affected_order_by {
   id: order_by
   package: package_order_by
   package_id: order_by
-  version_constraint: order_by
   vulnerability: vulnerability_order_by
   vulnerability_id: order_by
 }
@@ -11004,9 +10998,6 @@ enum vulnerability_affected_select_column {
   package_id
 
   """column name"""
-  version_constraint
-
-  """column name"""
   vulnerability_id
 }
 
@@ -11018,7 +11009,6 @@ input vulnerability_affected_set_input {
   ecosystem_specific: jsonb
   id: uuid
   package_id: uuid
-  version_constraint: String
   vulnerability_id: uuid
 }
 
@@ -11037,9 +11027,6 @@ enum vulnerability_affected_update_column {
 
   """column name"""
   package_id
-
-  """column name"""
-  version_constraint
 
   """column name"""
   vulnerability_id

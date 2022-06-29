@@ -13,6 +13,7 @@
  */
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
+import { ExternalLink } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 
 import { CvssInferredWarning } from '../../components/CvssInferredWarning';
@@ -21,6 +22,7 @@ import { getCvssVectorFromSeverities } from '../../utils/cvss';
 import { prettyDate } from '../../utils/pretty-date';
 import { toTitleCase } from '../../utils/string-utils';
 
+import { SourceLink } from './SourceLink';
 import { VulnInfo } from './types';
 
 interface VulnerabilityListItemProps {
@@ -63,14 +65,7 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
                   <h3>{vuln.source_id}</h3>
                 </Card.Title>
                 <Card.Subtitle>
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    href={formatAdvisoryUrlForSource(vuln.source, vuln.source_id) || ''}
-                  >
-                    {vuln.source} ↪
-                  </a>
+                  <SourceLink source={vuln.source} sourceId={vuln.source_id} />
                 </Card.Subtitle>
               </Col>
               <Col sm={{ span: 6 }} className="mt-xs-2 mt-sm-0">
