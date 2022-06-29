@@ -12,15 +12,17 @@
 package main
 
 import (
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/cmd/lpt/vulnerability"
 	"net/http"
+
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/cmd/lpt/vulnerability"
 
 	"github.com/Khan/genqlient/graphql"
 	"go.uber.org/fx"
 
+	clifx2 "github.com/ajvpot/clifx"
+
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/cmd/lpt/ingest"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/cmd/lpt/license"
-	clifx2 "github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/clifx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/license/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/license/scanner/packagejson"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/metadata/fetcher/npm"
