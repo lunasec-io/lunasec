@@ -10,6 +10,7 @@ require (
 	github.com/Joker/jade v1.1.3
 	github.com/Khan/genqlient v0.4.0
 	github.com/adrg/xdg v0.4.0
+	github.com/ajvpot/clifx v0.0.0-20220628211936-9cd4c559b7a3
 	github.com/anchore/grype v0.36.1
 	github.com/anchore/stereoscope v0.0.0-20220406160859-c03a18a6b270
 	github.com/anchore/syft v0.46.0
@@ -30,17 +31,21 @@ require (
 	github.com/prashantv/gostub v1.1.0
 	github.com/prometheus/procfs v0.7.3
 	github.com/rs/cors v1.8.2
-	github.com/rs/zerolog v1.26.1
+	github.com/rs/zerolog v1.27.0
+	github.com/schollz/progressbar/v3 v3.8.6
 	github.com/spf13/viper v1.11.0
 	github.com/stretchr/testify v1.7.1
-	github.com/urfave/cli/v2 v2.6.0
+	github.com/urfave/cli/v2 v2.10.3
+	github.com/vektah/gqlparser/v2 v2.4.1
 	go.uber.org/config v1.4.0
 	go.uber.org/fx v1.17.1
+	go.uber.org/multierr v1.7.0
 	go.uber.org/zap v1.21.0
 	gocloud.dev v0.24.1-0.20211119014450-028788aaaa4c
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
+	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d
 	gopkg.in/square/go-jose.v2 v2.6.0
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -88,7 +93,7 @@ require (
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
 	github.com/containerd/containerd v1.5.10 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.10.1 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/cyberphone/json-canonicalization v0.0.0-20210823021906-dc406ceaf94b // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dimchansky/utfbom v1.1.1 // indirect
@@ -213,7 +218,6 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/sassoftware/relic v0.0.0-20210427151427-dfb082b79b74 // indirect
-	github.com/schollz/progressbar/v3 v3.8.6 // indirect
 	github.com/scylladb/go-set v1.0.3-0.20200225121959-cc7b2070d91e // indirect
 	github.com/secure-systems-lab/go-securesystemslib v0.3.1 // indirect
 	github.com/sergi/go-diff v1.2.0 // indirect
@@ -236,20 +240,18 @@ require (
 	github.com/titanous/rocacheck v0.0.0-20171023193734-afe73141d399 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/vbatts/tar-split v0.11.2 // indirect
-	github.com/vektah/gqlparser/v2 v2.4.1 // indirect
 	github.com/vifraa/gopom v0.1.0 // indirect
 	github.com/wagoodman/go-partybus v0.0.0-20210627031916-db1f5573bbc5 // indirect
 	github.com/wagoodman/go-progress v0.0.0-20200807221327-51d465df1451 // indirect
 	github.com/xanzy/go-gitlab v0.62.0 // indirect
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
+	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	go.mongodb.org/mongo-driver v1.8.3 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	go.opentelemetry.io/otel/trace v1.3.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/dig v1.14.0 // indirect
-	go.uber.org/multierr v1.7.0 // indirect
-	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d // indirect
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 // indirect
 	golang.org/x/net v0.0.0-20220412020605-290c469a71a5 // indirect
