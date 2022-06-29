@@ -24,15 +24,17 @@ select_permissions:
   - role: service
     permission:
       columns:
-        - pr_feedback_disabled
         - created_at
         - id
+        - pr_check_enabled
+        - pr_feedback_disabled
       filter: {}
   - role: user
     permission:
       columns:
-        - id
         - created_at
+        - id
+        - pr_check_enabled
         - pr_feedback_disabled
       filter:
         _or:
@@ -49,6 +51,7 @@ update_permissions:
   - role: user
     permission:
       columns:
+        - pr_check_enabled
         - pr_feedback_disabled
       filter:
         _or:

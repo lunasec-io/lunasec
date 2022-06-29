@@ -16,7 +16,7 @@ import zlib from 'zlib';
 
 import validate from 'validator';
 
-import { commentOnPrIfExists } from '../../../github/actions/pr-comment-generator';
+import { interactWithPR } from '../../../github/actions/pr-comment-generator';
 import { hasura } from '../../../hasura-api';
 import { InsertedScan, performSnapshotScanAndCollectReport } from '../../../models/scan';
 import { S3ObjectMetadata } from '../../../types/s3';
@@ -99,7 +99,7 @@ export async function scanSnapshotActivity(msg: S3ObjectMetadata): Promise<Maybe
     }
 
     try {
-      await commentOnPrIfExists(buildId, scanResp);
+      await interactWithPR(buildId, scanResp);
     } catch (e) {
       log.error('commenting on github pr failed, continuing.. ', {
         error: e,

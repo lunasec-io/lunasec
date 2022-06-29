@@ -12,6 +12,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   _text: string;
+  bigint: number;
   builds_source_type: 'cli'|'gui'|'pr';
   date: string;
   fix_state_enum: 'fixed'|'not-fixed'|'unknown';
@@ -122,11 +123,25 @@ export type _Text_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['_text']>>;
 };
 
+/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
+export type Bigint_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['bigint']>;
+  _gt?: InputMaybe<Scalars['bigint']>;
+  _gte?: InputMaybe<Scalars['bigint']>;
+  _in?: InputMaybe<Array<Scalars['bigint']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['bigint']>;
+  _lte?: InputMaybe<Scalars['bigint']>;
+  _neq?: InputMaybe<Scalars['bigint']>;
+  _nin?: InputMaybe<Array<Scalars['bigint']>>;
+};
+
 /** columns and relationships of "builds" */
 export type Builds = {
   __typename?: 'builds';
   build_number?: Maybe<Scalars['Int']>;
   created_at: Scalars['timestamp'];
+  existing_github_check_id?: Maybe<Scalars['bigint']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
@@ -250,11 +265,13 @@ export type Builds_Aggregate_Order_By = {
 export type Builds_Avg_Fields = {
   __typename?: 'builds_avg_fields';
   build_number?: Maybe<Scalars['Float']>;
+  existing_github_check_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "builds" */
 export type Builds_Avg_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  existing_github_check_id?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "builds". All fields are combined with a logical 'AND'. */
@@ -264,6 +281,7 @@ export type Builds_Bool_Exp = {
   _or?: InputMaybe<Array<Builds_Bool_Exp>>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  existing_github_check_id?: InputMaybe<Bigint_Comparison_Exp>;
   existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
   findings?: InputMaybe<Findings_Bool_Exp>;
   git_branch?: InputMaybe<String_Comparison_Exp>;
@@ -284,6 +302,7 @@ export type Builds_Max_Fields = {
   __typename?: 'builds_max_fields';
   build_number?: Maybe<Scalars['Int']>;
   created_at?: Maybe<Scalars['timestamp']>;
+  existing_github_check_id?: Maybe<Scalars['bigint']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
   git_hash?: Maybe<Scalars['String']>;
@@ -298,6 +317,7 @@ export type Builds_Max_Fields = {
 export type Builds_Max_Order_By = {
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  existing_github_check_id?: InputMaybe<Order_By>;
   existing_github_review_id?: InputMaybe<Order_By>;
   git_branch?: InputMaybe<Order_By>;
   git_hash?: InputMaybe<Order_By>;
@@ -313,6 +333,7 @@ export type Builds_Min_Fields = {
   __typename?: 'builds_min_fields';
   build_number?: Maybe<Scalars['Int']>;
   created_at?: Maybe<Scalars['timestamp']>;
+  existing_github_check_id?: Maybe<Scalars['bigint']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
   git_hash?: Maybe<Scalars['String']>;
@@ -327,6 +348,7 @@ export type Builds_Min_Fields = {
 export type Builds_Min_Order_By = {
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  existing_github_check_id?: InputMaybe<Order_By>;
   existing_github_review_id?: InputMaybe<Order_By>;
   git_branch?: InputMaybe<Order_By>;
   git_hash?: InputMaybe<Order_By>;
@@ -350,6 +372,7 @@ export type Builds_Mutation_Response = {
 export type Builds_Order_By = {
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  existing_github_check_id?: InputMaybe<Order_By>;
   existing_github_review_id?: InputMaybe<Order_By>;
   findings_aggregate?: InputMaybe<Findings_Aggregate_Order_By>;
   git_branch?: InputMaybe<Order_By>;
@@ -376,6 +399,8 @@ export enum Builds_Select_Column {
   BuildNumber = 'build_number',
   /** column name */
   CreatedAt = 'created_at',
+  /** column name */
+  ExistingGithubCheckId = 'existing_github_check_id',
   /** column name */
   ExistingGithubReviewId = 'existing_github_review_id',
   /** column name */
@@ -418,77 +443,91 @@ export type Builds_Source_Type_Comparison_Exp = {
 export type Builds_Stddev_Fields = {
   __typename?: 'builds_stddev_fields';
   build_number?: Maybe<Scalars['Float']>;
+  existing_github_check_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev() on columns of table "builds" */
 export type Builds_Stddev_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  existing_github_check_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Builds_Stddev_Pop_Fields = {
   __typename?: 'builds_stddev_pop_fields';
   build_number?: Maybe<Scalars['Float']>;
+  existing_github_check_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "builds" */
 export type Builds_Stddev_Pop_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  existing_github_check_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Builds_Stddev_Samp_Fields = {
   __typename?: 'builds_stddev_samp_fields';
   build_number?: Maybe<Scalars['Float']>;
+  existing_github_check_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_samp() on columns of table "builds" */
 export type Builds_Stddev_Samp_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  existing_github_check_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Builds_Sum_Fields = {
   __typename?: 'builds_sum_fields';
   build_number?: Maybe<Scalars['Int']>;
+  existing_github_check_id?: Maybe<Scalars['bigint']>;
 };
 
 /** order by sum() on columns of table "builds" */
 export type Builds_Sum_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  existing_github_check_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_pop on columns */
 export type Builds_Var_Pop_Fields = {
   __typename?: 'builds_var_pop_fields';
   build_number?: Maybe<Scalars['Float']>;
+  existing_github_check_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by var_pop() on columns of table "builds" */
 export type Builds_Var_Pop_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  existing_github_check_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Builds_Var_Samp_Fields = {
   __typename?: 'builds_var_samp_fields';
   build_number?: Maybe<Scalars['Float']>;
+  existing_github_check_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by var_samp() on columns of table "builds" */
 export type Builds_Var_Samp_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  existing_github_check_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Builds_Variance_Fields = {
   __typename?: 'builds_variance_fields';
   build_number?: Maybe<Scalars['Float']>;
+  existing_github_check_id?: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "builds" */
 export type Builds_Variance_Order_By = {
   build_number?: InputMaybe<Order_By>;
+  existing_github_check_id?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
@@ -3995,6 +4034,7 @@ export type Settings = {
   id: Scalars['uuid'];
   /** An object relationship */
   organization?: Maybe<Organizations>;
+  pr_check_enabled?: Maybe<Scalars['Boolean']>;
   pr_feedback_disabled?: Maybe<Scalars['Boolean']>;
   /** An object relationship */
   project?: Maybe<Projects>;
@@ -4008,6 +4048,7 @@ export type Settings_Bool_Exp = {
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   organization?: InputMaybe<Organizations_Bool_Exp>;
+  pr_check_enabled?: InputMaybe<Boolean_Comparison_Exp>;
   pr_feedback_disabled?: InputMaybe<Boolean_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
 };
@@ -4026,6 +4067,7 @@ export type Settings_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   organization?: InputMaybe<Organizations_Order_By>;
+  pr_check_enabled?: InputMaybe<Order_By>;
   pr_feedback_disabled?: InputMaybe<Order_By>;
   project?: InputMaybe<Projects_Order_By>;
 };
@@ -4042,11 +4084,14 @@ export enum Settings_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  PrCheckEnabled = 'pr_check_enabled',
+  /** column name */
   PrFeedbackDisabled = 'pr_feedback_disabled'
 }
 
 /** input type for updating data in table "settings" */
 export type Settings_Set_Input = {
+  pr_check_enabled?: InputMaybe<Scalars['Boolean']>;
   pr_feedback_disabled?: InputMaybe<Scalars['Boolean']>;
 };
 
