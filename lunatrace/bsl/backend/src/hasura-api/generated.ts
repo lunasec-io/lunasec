@@ -8336,7 +8336,6 @@ export type Vulnerability_Affected = {
   /** An object relationship */
   package?: Maybe<Package>;
   package_id?: Maybe<Scalars['uuid']>;
-  version_constraint?: Maybe<Scalars['String']>;
   /** An object relationship */
   vulnerability?: Maybe<Vulnerability>;
   vulnerability_id?: Maybe<Scalars['uuid']>;
@@ -8406,7 +8405,6 @@ export type Vulnerability_Affected_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   package?: InputMaybe<Package_Bool_Exp>;
   package_id?: InputMaybe<Uuid_Comparison_Exp>;
-  version_constraint?: InputMaybe<String_Comparison_Exp>;
   vulnerability?: InputMaybe<Vulnerability_Bool_Exp>;
   vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
@@ -8446,7 +8444,6 @@ export type Vulnerability_Affected_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   package?: InputMaybe<Package_Obj_Rel_Insert_Input>;
   package_id?: InputMaybe<Scalars['uuid']>;
-  version_constraint?: InputMaybe<Scalars['String']>;
   vulnerability?: InputMaybe<Vulnerability_Obj_Rel_Insert_Input>;
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
@@ -8455,7 +8452,6 @@ export type Vulnerability_Affected_Insert_Input = {
 export type Vulnerability_Affected_Max_Order_By = {
   id?: InputMaybe<Order_By>;
   package_id?: InputMaybe<Order_By>;
-  version_constraint?: InputMaybe<Order_By>;
   vulnerability_id?: InputMaybe<Order_By>;
 };
 
@@ -8463,7 +8459,6 @@ export type Vulnerability_Affected_Max_Order_By = {
 export type Vulnerability_Affected_Min_Order_By = {
   id?: InputMaybe<Order_By>;
   package_id?: InputMaybe<Order_By>;
-  version_constraint?: InputMaybe<Order_By>;
   vulnerability_id?: InputMaybe<Order_By>;
 };
 
@@ -8499,7 +8494,6 @@ export type Vulnerability_Affected_Order_By = {
   id?: InputMaybe<Order_By>;
   package?: InputMaybe<Package_Order_By>;
   package_id?: InputMaybe<Order_By>;
-  version_constraint?: InputMaybe<Order_By>;
   vulnerability?: InputMaybe<Vulnerability_Order_By>;
   vulnerability_id?: InputMaybe<Order_By>;
 };
@@ -8707,8 +8701,6 @@ export enum Vulnerability_Affected_Select_Column {
   /** column name */
   PackageId = 'package_id',
   /** column name */
-  VersionConstraint = 'version_constraint',
-  /** column name */
   VulnerabilityId = 'vulnerability_id'
 }
 
@@ -8718,7 +8710,6 @@ export type Vulnerability_Affected_Set_Input = {
   ecosystem_specific?: InputMaybe<Scalars['jsonb']>;
   id?: InputMaybe<Scalars['uuid']>;
   package_id?: InputMaybe<Scalars['uuid']>;
-  version_constraint?: InputMaybe<Scalars['String']>;
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -8732,8 +8723,6 @@ export enum Vulnerability_Affected_Update_Column {
   Id = 'id',
   /** column name */
   PackageId = 'package_id',
-  /** column name */
-  VersionConstraint = 'version_constraint',
   /** column name */
   VulnerabilityId = 'vulnerability_id'
 }

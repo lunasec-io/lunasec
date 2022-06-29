@@ -15,7 +15,6 @@ query SearchVulnerabilities($search: String!, $source: String_comparison_exp = {
         type
         version
       }
-      version_constraint
     }
     database_specific
     details

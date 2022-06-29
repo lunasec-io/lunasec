@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-export const severityOrder = ['Unknown', 'Negligible', 'Low', 'Medium', 'High', 'Critical'];
+export const severityOrder = ['unknown', 'negligible', 'low', 'medium', 'high', 'critical'];
 
 export interface Finding {
   created_at: string;
@@ -22,6 +22,7 @@ export interface Finding {
   language: string;
   type: string;
   vulnerability: {
+    cvss_score?: number | null;
     source: string;
     guide_vulnerabilities?: Array<{
       guide: Guide;

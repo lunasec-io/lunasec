@@ -1120,19 +1120,65 @@ func (v *GetVulnerabilityVulnerability) GetSource_id() string { return v.Source_
 //
 // columns and relationships of "vulnerability.affected"
 type GetVulnerabilityVulnerabilityAffectedVulnerability_affected struct {
-	Version_constraint *string `json:"version_constraint"`
+	// An array relationship
+	Affected_range_events []*GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event `json:"affected_range_events"`
+	// An array relationship
+	Affected_versions []*GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version `json:"affected_versions"`
 	// An object relationship
 	Package *GetVulnerabilityVulnerabilityAffectedVulnerability_affectedPackage `json:"package"`
 }
 
-// GetVersion_constraint returns GetVulnerabilityVulnerabilityAffectedVulnerability_affected.Version_constraint, and is useful for accessing the field via an interface.
-func (v *GetVulnerabilityVulnerabilityAffectedVulnerability_affected) GetVersion_constraint() *string {
-	return v.Version_constraint
+// GetAffected_range_events returns GetVulnerabilityVulnerabilityAffectedVulnerability_affected.Affected_range_events, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityVulnerabilityAffectedVulnerability_affected) GetAffected_range_events() []*GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event {
+	return v.Affected_range_events
+}
+
+// GetAffected_versions returns GetVulnerabilityVulnerabilityAffectedVulnerability_affected.Affected_versions, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityVulnerabilityAffectedVulnerability_affected) GetAffected_versions() []*GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version {
+	return v.Affected_versions
 }
 
 // GetPackage returns GetVulnerabilityVulnerabilityAffectedVulnerability_affected.Package, and is useful for accessing the field via an interface.
 func (v *GetVulnerabilityVulnerabilityAffectedVulnerability_affected) GetPackage() *GetVulnerabilityVulnerabilityAffectedVulnerability_affectedPackage {
 	return v.Package
+}
+
+// GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event includes the requested fields of the GraphQL type vulnerability_affected_range_event.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "vulnerability.affected_range_event"
+type GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event struct {
+	Type    types.AffectedRangeType `json:"type"`
+	Event   string                  `json:"event"`
+	Version string                  `json:"version"`
+}
+
+// GetType returns GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event.Type, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event) GetType() types.AffectedRangeType {
+	return v.Type
+}
+
+// GetEvent returns GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event.Event, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event) GetEvent() string {
+	return v.Event
+}
+
+// GetVersion returns GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event.Version, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event) GetVersion() string {
+	return v.Version
+}
+
+// GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version includes the requested fields of the GraphQL type vulnerability_affected_version.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "vulnerability.affected_version"
+type GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version struct {
+	Version string `json:"version"`
+}
+
+// GetVersion returns GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version.Version, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version) GetVersion() string {
+	return v.Version
 }
 
 // GetVulnerabilityVulnerabilityAffectedVulnerability_affectedPackage includes the requested fields of the GraphQL type package.
@@ -5543,7 +5589,6 @@ type Vulnerability_affected_bool_exp struct {
 	Id                    *Uuid_comparison_exp                         `json:"id,omitempty"`
 	Package               *Package_bool_exp                            `json:"package,omitempty"`
 	Package_id            *Uuid_comparison_exp                         `json:"package_id,omitempty"`
-	Version_constraint    *String_comparison_exp                       `json:"version_constraint,omitempty"`
 	Vulnerability         *Vulnerability_bool_exp                      `json:"vulnerability,omitempty"`
 	Vulnerability_id      *Uuid_comparison_exp                         `json:"vulnerability_id,omitempty"`
 }
@@ -5586,11 +5631,6 @@ func (v *Vulnerability_affected_bool_exp) GetPackage() *Package_bool_exp { retur
 // GetPackage_id returns Vulnerability_affected_bool_exp.Package_id, and is useful for accessing the field via an interface.
 func (v *Vulnerability_affected_bool_exp) GetPackage_id() *Uuid_comparison_exp { return v.Package_id }
 
-// GetVersion_constraint returns Vulnerability_affected_bool_exp.Version_constraint, and is useful for accessing the field via an interface.
-func (v *Vulnerability_affected_bool_exp) GetVersion_constraint() *String_comparison_exp {
-	return v.Version_constraint
-}
-
 // GetVulnerability returns Vulnerability_affected_bool_exp.Vulnerability, and is useful for accessing the field via an interface.
 func (v *Vulnerability_affected_bool_exp) GetVulnerability() *Vulnerability_bool_exp {
 	return v.Vulnerability
@@ -5620,7 +5660,6 @@ type Vulnerability_affected_insert_input struct {
 	Id                    *uuid.UUID                                               `json:"id,omitempty"`
 	Package               *Package_obj_rel_insert_input                            `json:"package,omitempty"`
 	Package_id            *uuid.UUID                                               `json:"package_id,omitempty"`
-	Version_constraint    *string                                                  `json:"version_constraint,omitempty"`
 	Vulnerability         *Vulnerability_obj_rel_insert_input                      `json:"vulnerability,omitempty"`
 	Vulnerability_id      *uuid.UUID                                               `json:"vulnerability_id,omitempty"`
 }
@@ -5655,11 +5694,6 @@ func (v *Vulnerability_affected_insert_input) GetPackage() *Package_obj_rel_inse
 
 // GetPackage_id returns Vulnerability_affected_insert_input.Package_id, and is useful for accessing the field via an interface.
 func (v *Vulnerability_affected_insert_input) GetPackage_id() *uuid.UUID { return v.Package_id }
-
-// GetVersion_constraint returns Vulnerability_affected_insert_input.Version_constraint, and is useful for accessing the field via an interface.
-func (v *Vulnerability_affected_insert_input) GetVersion_constraint() *string {
-	return v.Version_constraint
-}
 
 // GetVulnerability returns Vulnerability_affected_insert_input.Vulnerability, and is useful for accessing the field via an interface.
 func (v *Vulnerability_affected_insert_input) GetVulnerability() *Vulnerability_obj_rel_insert_input {
@@ -5892,8 +5926,6 @@ const (
 	// column name
 	Vulnerability_affected_update_columnPackageId Vulnerability_affected_update_column = "package_id"
 	// column name
-	Vulnerability_affected_update_columnVersionConstraint Vulnerability_affected_update_column = "version_constraint"
-	// column name
 	Vulnerability_affected_update_columnVulnerabilityId Vulnerability_affected_update_column = "vulnerability_id"
 )
 
@@ -6059,7 +6091,6 @@ type Vulnerability_bool_exp struct {
 	Published               *Timestamptz_comparison_exp        `json:"published,omitempty"`
 	References              *Vulnerability_reference_bool_exp  `json:"references,omitempty"`
 	Severities              *Vulnerability_severity_bool_exp   `json:"severities,omitempty"`
-	Severity                *String_comparison_exp             `json:"severity,omitempty"`
 	Source                  *String_comparison_exp             `json:"source,omitempty"`
 	Source_id               *String_comparison_exp             `json:"source_id,omitempty"`
 	Summary                 *String_comparison_exp             `json:"summary,omitempty"`
@@ -6129,9 +6160,6 @@ func (v *Vulnerability_bool_exp) GetReferences() *Vulnerability_reference_bool_e
 func (v *Vulnerability_bool_exp) GetSeverities() *Vulnerability_severity_bool_exp {
 	return v.Severities
 }
-
-// GetSeverity returns Vulnerability_bool_exp.Severity, and is useful for accessing the field via an interface.
-func (v *Vulnerability_bool_exp) GetSeverity() *String_comparison_exp { return v.Severity }
 
 // GetSource returns Vulnerability_bool_exp.Source, and is useful for accessing the field via an interface.
 func (v *Vulnerability_bool_exp) GetSource() *String_comparison_exp { return v.Source }
@@ -6421,7 +6449,6 @@ type Vulnerability_insert_input struct {
 	Published             *time.Time                                     `json:"published,omitempty"`
 	References            *Vulnerability_reference_arr_rel_insert_input  `json:"references,omitempty"`
 	Severities            *Vulnerability_severity_arr_rel_insert_input   `json:"severities,omitempty"`
-	Severity              *string                                        `json:"severity,omitempty"`
 	Source                *string                                        `json:"source,omitempty"`
 	Source_id             *string                                        `json:"source_id,omitempty"`
 	Summary               *string                                        `json:"summary,omitempty"`
@@ -6481,9 +6508,6 @@ func (v *Vulnerability_insert_input) GetReferences() *Vulnerability_reference_ar
 func (v *Vulnerability_insert_input) GetSeverities() *Vulnerability_severity_arr_rel_insert_input {
 	return v.Severities
 }
-
-// GetSeverity returns Vulnerability_insert_input.Severity, and is useful for accessing the field via an interface.
-func (v *Vulnerability_insert_input) GetSeverity() *string { return v.Severity }
 
 // GetSource returns Vulnerability_insert_input.Source, and is useful for accessing the field via an interface.
 func (v *Vulnerability_insert_input) GetSource() *string { return v.Source }
@@ -6974,8 +6998,6 @@ const (
 	// column name
 	Vulnerability_update_columnPublished Vulnerability_update_column = "published"
 	// column name
-	Vulnerability_update_columnSeverity Vulnerability_update_column = "severity"
-	// column name
 	Vulnerability_update_columnSource Vulnerability_update_column = "source"
 	// column name
 	Vulnerability_update_columnSourceId Vulnerability_update_column = "source_id"
@@ -7173,7 +7195,14 @@ query GetVulnerability ($package_name: String!, $package_manager: package_manage
 	vulnerability(where: {affected:{package:{name:{_eq:$package_name},package_manager:{_eq:$package_manager}}}}) {
 		id
 		affected {
-			version_constraint
+			affected_range_events {
+				type
+				event
+				version
+			}
+			affected_versions {
+				version
+			}
 			package {
 				name
 				package_manager

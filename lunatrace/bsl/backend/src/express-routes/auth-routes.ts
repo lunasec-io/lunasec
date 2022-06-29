@@ -67,6 +67,9 @@ function parseRequestTokenHeader(headerName: string, req: Request): MaybeError<s
 }
 
 function generateErrorResponse(res: Response, errorMessage: string, statusCode = 500) {
+  log.error('failed to authorize cli', {
+    errorMessage,
+  });
   res.status(statusCode);
   res.send(errorResponse(errorMessage));
 }
@@ -82,7 +85,11 @@ export async function cliAuthorizer(req: Request, res: Response): Promise<void> 
 
   const hasuraRes = await hasura.GetAuthDataFromProjectToken({ access_token: parsedRequest.res });
   if (!hasuraRes.project_access_tokens?.[0]) {
-    return generateErrorResponse(res, 'Invalid Access Token specified in X-LunaTrace-Access-Token header', 401);
+    return generateErrorResponse(
+      res,
+      `Invalid Access Token specified in X-LunaTrace-Access-Token header: ${parsedRequest.res}`,
+      401
+    );
   }
   const projectData = hasuraRes.project_access_tokens[0];
   const builds = projectData.project.builds.map((b) => b.id as string);
