@@ -16,14 +16,21 @@ package gqlstorefx
 
 import (
 	"fmt"
+	"net/url"
+	"sort"
+	"strings"
+
 	v3 "github.com/anchore/grype/grype/db/v3"
 	"github.com/blang/semver/v4"
+	"github.com/rs/zerolog/log"
+
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/vulnerability/advisory"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
-	"sort"
-	"strings"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
+
+const LunaTracePackageScheme = "lunatrace-package"
 
 // map grype namespace to packagemanager
 func mapNamespace(namespace string) (types.PackageManager, error) {
@@ -90,6 +97,8 @@ introduced:
 				continue introduced
 			}
 		}
+		// we didn't find a fixed event, emit an unmatched upper range
+		ranges = append(ranges, fmt.Sprintf(">= %s", introducedEvent.Version.String()))
 	}
 	return ranges
 }
@@ -114,10 +123,13 @@ func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, err
 	out := make([]v3.Vulnerability, 0)
 	for _, ov := range ovs {
 		for _, ova := range ov.Affected {
-			versionConstraint := mapVersionConstraint(ova.Affected_versions, ova.Affected_range_events)
-			if versionConstraint == "" {
-				continue
-			}
+			constraints := util.Map(ova.Affected_versions, func(av *gql.GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version) string {
+				return fmt.Sprintf("= %s", av.Version)
+			})
+
+			constraints = append(constraints, eventsToRanges(ova.Affected_range_events)...)
+
+			log.Info().Str("pkg", ova.Package.Name).Str("constraint", strings.Join(constraints, " || ")).Msg("generated constraint")
 
 			out = append(out, v3.Vulnerability{
 				ID:          ov.Id.String(),
@@ -136,10 +148,19 @@ func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, err
 	return out, nil
 }
 
-func mapURLs(urls []*gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) []string {
-	out := make([]string, len(urls))
-	for i, ou := range urls {
-		out[i] = ou.Url
-	}
-	return out
+func mapURLs(v *gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerability) []string {
+	return append(
+		util.Map(v.References,
+			func(ou *gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference) string {
+				return ou.Url
+			},
+		),
+		util.Dedup(
+			util.Map(v.Affected,
+				func(a *gql.GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affected) string {
+					return (&url.URL{Scheme: LunaTracePackageScheme, Host: a.Package.Id.String()}).String()
+				},
+			),
+		)...,
+	)
 }
