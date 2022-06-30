@@ -27,6 +27,7 @@ generates:
             affected_range_type: "'git'|'semver'|'ecosystem'"
             reference_type: "'advisory'|'article'|'fix'|'git'|'package'|'report'|'web'"
             package_manager: string
+            bigint: number
 
       - "typescript-operations"
       - "typescript-rtk-query":
