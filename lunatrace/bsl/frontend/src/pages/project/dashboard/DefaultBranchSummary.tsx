@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { countCriticalVulnerabilities, filterFindingsByIgnored } from '@lunatrace/lunatrace-common/build/main';
+import { filterFindingsByIgnored } from '@lunatrace/lunatrace-common/build/main';
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +20,7 @@ import { ConditionallyRender } from '../../../components/utils/ConditionallyRend
 import { LinkInNewTab } from '../../../components/utils/LinkInNewTab';
 import { branchLink, branchName, commitLink } from '../../../utils/build-display-helpers';
 import { prettyDate } from '../../../utils/pretty-date';
+import { countCriticalVulnerabilities } from '../builds/BuildListItem';
 import { SourceIcon } from '../builds/SourceIcon';
 import { ProjectInfo } from '../types';
 

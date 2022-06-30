@@ -11,12 +11,14 @@
  * limitations under the License.
  *
  */
-import { countCriticalVulnerabilities, filterFindingsByIgnored } from '@lunatrace/lunatrace-common';
+import { filterFindingsByIgnored } from '@lunatrace/lunatrace-common';
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 
+import { Vulnerability_Severity } from '../../../api/generated';
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { branchLink, branchName, commitLink } from '../../../utils/build-display-helpers';
+import { getCvssVectorFromSeverities } from '../../../utils/cvss';
 import { prettyDate } from '../../../utils/pretty-date';
 import { BuildInfo, ProjectInfo } from '../types';
 
@@ -26,6 +28,29 @@ interface BuildListItemProps {
   build: BuildInfo;
   project: ProjectInfo;
   onClick: (_e: unknown) => void;
+}
+
+interface FindingForCounting {
+  vulnerability: {
+    severities: Vulnerability_Severity[];
+  };
+  purl: string;
+}
+
+export function countCriticalVulnerabilities(findings: FindingForCounting[]): number {
+  const criticalPackagePurls = new Set<string>();
+  findings.forEach((finding) => {
+    if (!finding.vulnerability) {
+      return;
+    }
+
+    const severity = getCvssVectorFromSeverities(finding.vulnerability.severities);
+    // TODO (cthompson) getCvssVectorFromSeverities needs to be moved into the common folder
+    if (severity && severity.cvss3OverallSeverityText === 'critical' && finding.purl) {
+      criticalPackagePurls.add(finding.purl);
+    }
+  });
+  return criticalPackagePurls.size;
 }
 
 export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ build, project, onClick }) => {
