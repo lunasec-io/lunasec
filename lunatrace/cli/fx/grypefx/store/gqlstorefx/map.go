@@ -20,10 +20,8 @@ import (
 	"sort"
 	"strings"
 
-	v3 "github.com/anchore/grype/grype/db/v3"
 	"github.com/blang/semver/v4"
-	"github.com/rs/zerolog/log"
-
+	v3 "github.com/lunasec-io/grype/grype/db/v3"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/vulnerability/advisory"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
@@ -123,20 +121,12 @@ func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, err
 	out := make([]v3.Vulnerability, 0)
 	for _, ov := range ovs {
 		for _, ova := range ov.Affected {
-			constraints := util.Map(ova.Affected_versions, func(av *gql.GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version) string {
-				return fmt.Sprintf("= %s", av.Version)
-			})
-
-			constraints = append(constraints, eventsToRanges(ova.Affected_range_events)...)
-
-			log.Info().Str("pkg", ova.Package.Name).Str("constraint", strings.Join(constraints, " || ")).Msg("generated constraint")
-
 			out = append(out, v3.Vulnerability{
 				ID:          ov.Id.String(),
 				PackageName: ova.Package.Name,
 				Namespace:   mapPackageManager(ova.Package.Package_manager),
 				// CVE-2019-17542,ffmpeg,nvd,"< 2.8.16 || >= 3.2, < 3.2.15 || >= 3.4, < 3.4.7 || >= 4.0, < 4.0.5 || >= 4.1, < 4.1.5"
-				VersionConstraint: versionConstraint,
+				VersionConstraint: mapVersionConstraint(ova.Affected_versions, ova.Affected_range_events),
 				VersionFormat:     "semver",
 				// todo do we need to provide cpes no unless we WANT bad matching
 				CPEs: nil,

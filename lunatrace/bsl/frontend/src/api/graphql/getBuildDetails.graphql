@@ -66,6 +66,17 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                     type
                     score
                 }
+                affected {
+                    package {
+                        name
+                        package_manager
+                    }
+                    affected_range_events {
+                        type
+                        event
+                        version
+                    }
+                }
                 guide_vulnerabilities {
                     guide {
                         id
