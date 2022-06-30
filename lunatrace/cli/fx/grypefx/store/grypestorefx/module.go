@@ -15,8 +15,8 @@
 package grypestorefx
 
 import (
-	"github.com/anchore/grype/grype/db"
-	v3 "github.com/anchore/grype/grype/db/v3"
+	"github.com/lunasec-io/grype/grype/db"
+	v3 "github.com/lunasec-io/grype/grype/db/v3"
 	"github.com/rs/zerolog/log"
 )
 

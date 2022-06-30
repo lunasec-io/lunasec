@@ -109,6 +109,7 @@ interface FindingForCounting {
 export function countCriticalVulnerabilities(findings: FindingForCounting[]): number {
   const criticalPackagePurls = new Set<string>();
   findings.forEach((finding) => {
+    // TODO (cthompson) getCvssVectorFromSeverities needs to be moved into the common folder
     if (finding.severity === 'Critical' && finding.purl) {
       criticalPackagePurls.add(finding.purl);
     }

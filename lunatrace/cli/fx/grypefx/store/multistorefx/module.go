@@ -17,11 +17,26 @@ package multistorefx
 import (
 	"errors"
 
-	v3 "github.com/anchore/grype/grype/db/v3"
+	v3 "github.com/lunasec-io/grype/grype/db/v3"
 )
 
 type multiStore struct {
 	stores []v3.StoreReader
+}
+
+func (m *multiStore) DiffStore(s v3.StoreReader) (*[]v3.Diff, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (m *multiStore) GetAllVulnerabilities() (*[]v3.Vulnerability, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (m *multiStore) GetAllVulnerabilityMetadata() (*[]v3.VulnerabilityMetadata, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (m *multiStore) GetID() (*v3.ID, error) {

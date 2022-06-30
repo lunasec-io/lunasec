@@ -55,9 +55,9 @@ const VulnerabilityAccordionHeader: React.FunctionComponent<VulnerabilityAccordi
   severityFilter,
 }) => {
   const getSeverityDescription = () => {
-    const appliedSecurityFilter = shouldFilterFindings && severityOrder[severityFilter] !== 'Unknown';
+    const appliedSecurityFilter = shouldFilterFindings && severityOrder[severityFilter] !== 'unknown';
     if (appliedSecurityFilter) {
-      const extraSeverityInfo = severityFilter < severityOrder.indexOf('Critical') ? ' (or higher) ' : ' ';
+      const extraSeverityInfo = severityFilter < severityOrder.indexOf('critical') ? ' (or higher) ' : ' ';
       return severityOrder[severityFilter] + extraSeverityInfo;
     }
     return '';

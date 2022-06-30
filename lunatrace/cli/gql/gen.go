@@ -7192,7 +7192,7 @@ func GetVulnerability(
 		OpName: "GetVulnerability",
 		Query: `
 query GetVulnerability ($package_name: String!, $package_manager: package_manager!) {
-	vulnerability(where: {affected:{package:{name:{_eq:$package_name},package_manager:{_eq:$package_manager}}}}) {
+	vulnerability(where: {affected:{package:{name:{_eq:$package_name},package_manager:{_eq:$package_manager}}},withdrawn:{_is_null:true}}) {
 		id
 		affected {
 			affected_range_events {
