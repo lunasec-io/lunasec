@@ -121,3 +121,30 @@ select_permissions:
                   kratos_id:
                     _eq: X-Hasura-User-Id
       allow_aggregations: true
+update_permissions:
+  - role: service
+    permission:
+      columns:
+        - id
+        - created_at
+        - updated_at
+        - vulnerability_id
+        - vulnerability_package_id
+        - package_version_id
+        - scan_id
+        - build_id
+        - fix_state
+        - fix_versions
+        - package_name
+        - version
+        - version_matcher
+        - type
+        - locations
+        - language
+        - purl
+        - virtual_path
+        - matcher
+        - dedupe_slug
+        - severity
+      filter: {}
+      check: null

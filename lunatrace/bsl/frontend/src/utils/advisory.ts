@@ -11,6 +11,10 @@
  * limitations under the License.
  *
  */
+import semver from 'semver';
+
+import { Vulnerability_Affected } from '../api/generated';
+
 export function formatAdvisoryUrlForSource(source: string, sourceId: string) {
   if (source === 'ghsa') {
     return `https://github.com/advisories/${sourceId}`;
@@ -41,4 +45,67 @@ export function formatPackageManagerUrlForPackage(packageManager: string, packag
     return null;
   }
   return packageManagerUrlFormat[packageManager as PackageManagerType](packageName);
+}
+
+export function getAffectedVersionConstraint(affected: {
+  affected_range_events: Array<{
+    event: string;
+    version: string;
+  }>;
+  affected_versions: Array<{
+    version: string;
+  }>;
+}): string {
+  const affectedVersions = affected.affected_versions.map((version) => `= ${version.version}`);
+  const sortedAffectedVersionEvents = affected.affected_range_events
+    .filter((event) => semver.clean(event.version))
+    .sort((a, b) => (semver.gt(a.version, b.version) ? 1 : -1));
+
+  const affectedVersionRanges: string[] = [];
+
+  for (let i = 0; i < sortedAffectedVersionEvents.length; i++) {
+    const startEvent = sortedAffectedVersionEvents[i];
+    if (startEvent.event === 'fixed') {
+      // if we have run into a 'fixed' event, then we say that everything before this event
+      // is vulnerable.
+      affectedVersionRanges.push(`< ${startEvent.version}`);
+    }
+
+    // keep scanning the versions until we are at an introduced event
+    if (startEvent.event !== 'introduced') {
+      continue;
+    }
+
+    let versionRange = `>= ${startEvent.version}`;
+    for (let j = i; j < sortedAffectedVersionEvents.length; j++) {
+      const endEvent = sortedAffectedVersionEvents[j];
+
+      // keep looking for a corresponding 'fix' event
+      if (endEvent.event !== 'fixed') {
+        continue;
+      }
+      versionRange += `, < ${endEvent.version}`;
+
+      // we have found the corresponding fix event for the introduced event, skip to this index on the next
+      // search for a version range.
+      i = j;
+      break;
+    }
+    affectedVersionRanges.push(versionRange);
+  }
+  return [...affectedVersions, ...affectedVersionRanges].join(' || ');
+}
+
+export function getFixedVersions(affected: {
+  affected_range_events: Array<{
+    event: string;
+    version: string;
+  }>;
+}) {
+  return affected.affected_range_events
+    .filter((event) => event.event === 'fixed')
+    .filter((event) => semver.clean(event.version))
+    .sort((a, b) => (semver.gt(a.version, b.version) ? 1 : -1))
+    .map((event) => event.version)
+    .join(', ');
 }

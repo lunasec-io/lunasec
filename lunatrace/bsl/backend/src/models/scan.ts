@@ -17,7 +17,9 @@ import { Readable } from 'stream';
 import { hasura } from '../hasura-api';
 import {
   Findings_Arr_Rel_Insert_Input,
+  Findings_Constraint,
   Findings_Insert_Input,
+  Findings_Update_Column,
   InsertScanMutation,
   Scans_Insert_Input,
 } from '../hasura-api/generated';
@@ -149,9 +151,16 @@ const mapGrypeMatchToGraphqlFinding =
 function mapGrypeMatchesToGraphqlFindings(buildId: string, matches: Match[]): Findings_Arr_Rel_Insert_Input {
   const parseMatchTo = mapGrypeMatchToGraphqlFinding(buildId);
   return {
-    // TODO
-    // on_conflict: {
-    // },
+    on_conflict: {
+      constraint: Findings_Constraint.FindingsDedupeSlugBuildIdKey,
+      update_columns: [
+        Findings_Update_Column.DedupeSlug,
+        Findings_Update_Column.BuildId,
+        Findings_Update_Column.Version,
+        Findings_Update_Column.VirtualPath,
+        Findings_Update_Column.Severity,
+      ],
+    },
     data: matches.map(parseMatchTo).filter((e) => e !== null) as Findings_Insert_Input[],
   };
 }
