@@ -166,6 +166,23 @@ input affected_range_type_comparison_exp {
   _nin: [affected_range_type!]
 }
 
+scalar bigint
+
+"""
+Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'.
+"""
+input bigint_comparison_exp {
+  _eq: bigint
+  _gt: bigint
+  _gte: bigint
+  _in: [bigint!]
+  _is_null: Boolean
+  _lt: bigint
+  _lte: bigint
+  _neq: bigint
+  _nin: [bigint!]
+}
+
 """
 columns and relationships of "builds"
 """
@@ -173,6 +190,7 @@ type builds {
   agent_access_token: uuid!
   build_number: Int
   created_at: timestamp!
+  existing_github_check_id: bigint
   existing_github_review_id: String
 
   """An array relationship"""
@@ -297,6 +315,7 @@ input builds_arr_rel_insert_input {
 """aggregate avg on columns"""
 type builds_avg_fields {
   build_number: Float
+  existing_github_check_id: Float
 }
 
 """
@@ -304,6 +323,7 @@ order by avg() on columns of table "builds"
 """
 input builds_avg_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 """
@@ -316,6 +336,7 @@ input builds_bool_exp {
   agent_access_token: uuid_comparison_exp
   build_number: Int_comparison_exp
   created_at: timestamp_comparison_exp
+  existing_github_check_id: bigint_comparison_exp
   existing_github_review_id: String_comparison_exp
   findings: findings_bool_exp
   git_branch: String_comparison_exp
@@ -350,6 +371,7 @@ input type for incrementing numeric columns in table "builds"
 """
 input builds_inc_input {
   build_number: Int
+  existing_github_check_id: bigint
 }
 
 """
@@ -359,6 +381,7 @@ input builds_insert_input {
   agent_access_token: uuid
   build_number: Int
   created_at: timestamp
+  existing_github_check_id: bigint
   existing_github_review_id: String
   findings: findings_arr_rel_insert_input
   git_branch: String
@@ -379,6 +402,7 @@ type builds_max_fields {
   agent_access_token: uuid
   build_number: Int
   created_at: timestamp
+  existing_github_check_id: bigint
   existing_github_review_id: String
   git_branch: String
   git_hash: String
@@ -396,6 +420,7 @@ input builds_max_order_by {
   agent_access_token: order_by
   build_number: order_by
   created_at: order_by
+  existing_github_check_id: order_by
   existing_github_review_id: order_by
   git_branch: order_by
   git_hash: order_by
@@ -411,6 +436,7 @@ type builds_min_fields {
   agent_access_token: uuid
   build_number: Int
   created_at: timestamp
+  existing_github_check_id: bigint
   existing_github_review_id: String
   git_branch: String
   git_hash: String
@@ -428,6 +454,7 @@ input builds_min_order_by {
   agent_access_token: order_by
   build_number: order_by
   created_at: order_by
+  existing_github_check_id: order_by
   existing_github_review_id: order_by
   git_branch: order_by
   git_hash: order_by
@@ -473,6 +500,7 @@ input builds_order_by {
   agent_access_token: order_by
   build_number: order_by
   created_at: order_by
+  existing_github_check_id: order_by
   existing_github_review_id: order_by
   findings_aggregate: findings_aggregate_order_by
   git_branch: order_by
@@ -505,6 +533,9 @@ enum builds_select_column {
 
   """column name"""
   created_at
+
+  """column name"""
+  existing_github_check_id
 
   """column name"""
   existing_github_review_id
@@ -541,6 +572,7 @@ input builds_set_input {
   agent_access_token: uuid
   build_number: Int
   created_at: timestamp
+  existing_github_check_id: bigint
   existing_github_review_id: String
   git_branch: String
   git_hash: String
@@ -570,6 +602,7 @@ input builds_source_type_comparison_exp {
 """aggregate stddev on columns"""
 type builds_stddev_fields {
   build_number: Float
+  existing_github_check_id: Float
 }
 
 """
@@ -577,11 +610,13 @@ order by stddev() on columns of table "builds"
 """
 input builds_stddev_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 """aggregate stddev_pop on columns"""
 type builds_stddev_pop_fields {
   build_number: Float
+  existing_github_check_id: Float
 }
 
 """
@@ -589,11 +624,13 @@ order by stddev_pop() on columns of table "builds"
 """
 input builds_stddev_pop_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 """aggregate stddev_samp on columns"""
 type builds_stddev_samp_fields {
   build_number: Float
+  existing_github_check_id: Float
 }
 
 """
@@ -601,11 +638,13 @@ order by stddev_samp() on columns of table "builds"
 """
 input builds_stddev_samp_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 """aggregate sum on columns"""
 type builds_sum_fields {
   build_number: Int
+  existing_github_check_id: bigint
 }
 
 """
@@ -613,6 +652,7 @@ order by sum() on columns of table "builds"
 """
 input builds_sum_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 """
@@ -627,6 +667,9 @@ enum builds_update_column {
 
   """column name"""
   created_at
+
+  """column name"""
+  existing_github_check_id
 
   """column name"""
   existing_github_review_id
@@ -653,6 +696,7 @@ enum builds_update_column {
 """aggregate var_pop on columns"""
 type builds_var_pop_fields {
   build_number: Float
+  existing_github_check_id: Float
 }
 
 """
@@ -660,11 +704,13 @@ order by var_pop() on columns of table "builds"
 """
 input builds_var_pop_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 """aggregate var_samp on columns"""
 type builds_var_samp_fields {
   build_number: Float
+  existing_github_check_id: Float
 }
 
 """
@@ -672,11 +718,13 @@ order by var_samp() on columns of table "builds"
 """
 input builds_var_samp_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 """aggregate variance on columns"""
 type builds_variance_fields {
   build_number: Float
+  existing_github_check_id: Float
 }
 
 """
@@ -684,6 +732,7 @@ order by variance() on columns of table "builds"
 """
 input builds_variance_order_by {
   build_number: order_by
+  existing_github_check_id: order_by
 }
 
 scalar date
@@ -814,13 +863,6 @@ input default_branch_builds_bool_exp {
 }
 
 """
-input type for incrementing numeric columns in table "default_branch_builds"
-"""
-input default_branch_builds_inc_input {
-  build_number: Int
-}
-
-"""
 input type for inserting data into table "default_branch_builds"
 """
 input default_branch_builds_insert_input {
@@ -869,17 +911,6 @@ input default_branch_builds_min_order_by {
   project_id: order_by
   pull_request_id: order_by
   s3_url: order_by
-}
-
-"""
-response of any mutation on the table "default_branch_builds"
-"""
-type default_branch_builds_mutation_response {
-  """number of rows affected by the mutation"""
-  affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [default_branch_builds!]!
 }
 
 """
@@ -943,22 +974,6 @@ enum default_branch_builds_select_column {
 
   """column name"""
   source_type
-}
-
-"""
-input type for updating data in table "default_branch_builds"
-"""
-input default_branch_builds_set_input {
-  build_number: Int
-  created_at: timestamp
-  existing_github_review_id: String
-  git_branch: String
-  git_hash: String
-  git_remote: String
-  project_id: uuid
-  pull_request_id: String
-  s3_url: String
-  source_type: builds_source_type
 }
 
 """
@@ -1068,6 +1083,9 @@ input type for inserting array relation for remote table "findings"
 """
 input findings_arr_rel_insert_input {
   data: [findings_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: findings_on_conflict
 }
 
 """
@@ -1104,6 +1122,17 @@ input findings_bool_exp {
   vulnerability_id: uuid_comparison_exp
   vulnerability_package: vulnerability_packages_bool_exp
   vulnerability_package_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "findings"
+"""
+enum findings_constraint {
+  """unique or primary key constraint"""
+  findings_dedupe_slug_build_id_key
+
+  """unique or primary key constraint"""
+  findings_pkey
 }
 
 """
@@ -1196,6 +1225,15 @@ type findings_mutation_response {
   returning: [findings!]!
 }
 
+"""
+on_conflict condition type for table "findings"
+"""
+input findings_on_conflict {
+  constraint: findings_constraint!
+  update_columns: [findings_update_column!]! = []
+  where: findings_bool_exp
+}
+
 """Ordering options when selecting data from "findings"."""
 input findings_order_by {
   build: builds_order_by
@@ -1227,10 +1265,110 @@ input findings_order_by {
   vulnerability_package_id: order_by
 }
 
+"""primary key columns input for table: findings"""
+input findings_pk_columns_input {
+  id: uuid!
+}
+
 """
 select columns of table "findings"
 """
 enum findings_select_column {
+  """column name"""
+  build_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  dedupe_slug
+
+  """column name"""
+  fix_state
+
+  """column name"""
+  fix_versions
+
+  """column name"""
+  id
+
+  """column name"""
+  language
+
+  """column name"""
+  locations
+
+  """column name"""
+  matcher
+
+  """column name"""
+  package_name
+
+  """column name"""
+  package_version_id
+
+  """column name"""
+  purl
+
+  """column name"""
+  scan_id
+
+  """column name"""
+  severity
+
+  """column name"""
+  type
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  version
+
+  """column name"""
+  version_matcher
+
+  """column name"""
+  virtual_path
+
+  """column name"""
+  vulnerability_id
+
+  """column name"""
+  vulnerability_package_id
+}
+
+"""
+input type for updating data in table "findings"
+"""
+input findings_set_input {
+  build_id: uuid
+  created_at: timestamp
+  dedupe_slug: String
+  fix_state: fix_state_enum
+  fix_versions: _text
+  id: uuid
+  language: String
+  locations: _text
+  matcher: String
+  package_name: String
+  package_version_id: uuid
+  purl: String
+  scan_id: uuid
+  severity: severity_enum
+  type: String
+  updated_at: timestamptz
+  version: String
+  version_matcher: String
+  virtual_path: String
+  vulnerability_id: uuid
+  vulnerability_package_id: uuid
+}
+
+"""
+update columns of table "findings"
+"""
+enum findings_update_column {
   """column name"""
   build_id
 
@@ -2367,8 +2505,8 @@ type ignored_vulnerabilities {
   project_id: uuid!
 
   """An object relationship"""
-  vulnerability: vulnerability
-  vulnerability_id: uuid
+  vulnerability: vulnerability!
+  vulnerability_id: uuid!
 }
 
 """
@@ -2906,27 +3044,14 @@ type mutation_root {
   ): builds
 
   """
-  insert data into the table: "default_branch_builds"
-  """
-  insert_default_branch_builds(
-    """the rows to be inserted"""
-    objects: [default_branch_builds_insert_input!]!
-  ): default_branch_builds_mutation_response
-
-  """
-  insert a single row into the table: "default_branch_builds"
-  """
-  insert_default_branch_builds_one(
-    """the row to be inserted"""
-    object: default_branch_builds_insert_input!
-  ): default_branch_builds
-
-  """
   insert data into the table: "findings"
   """
   insert_findings(
     """the rows to be inserted"""
     objects: [findings_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: findings_on_conflict
   ): findings_mutation_response
 
   """
@@ -2935,6 +3060,9 @@ type mutation_root {
   insert_findings_one(
     """the row to be inserted"""
     object: findings_insert_input!
+
+    """upsert condition"""
+    on_conflict: findings_on_conflict
   ): findings
 
   """
@@ -3594,18 +3722,24 @@ type mutation_root {
   ): builds
 
   """
-  update data of the table: "default_branch_builds"
+  update data of the table: "findings"
   """
-  update_default_branch_builds(
-    """increments the numeric columns with given value of the filtered values"""
-    _inc: default_branch_builds_inc_input
-
+  update_findings(
     """sets the columns of the filtered rows to the given values"""
-    _set: default_branch_builds_set_input
+    _set: findings_set_input
 
     """filter the rows which have to be updated"""
-    where: default_branch_builds_bool_exp!
-  ): default_branch_builds_mutation_response
+    where: findings_bool_exp!
+  ): findings_mutation_response
+
+  """
+  update single row of the table: "findings"
+  """
+  update_findings_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: findings_set_input
+    pk_columns: findings_pk_columns_input!
+  ): findings
 
   """
   update data of the table: "github_repositories"
@@ -8775,6 +8909,7 @@ type settings {
 
   """An object relationship"""
   organization: organizations
+  pr_check_enabled: Boolean
   pr_feedback_disabled: Boolean
 
   """An object relationship"""
@@ -8791,6 +8926,7 @@ input settings_bool_exp {
   created_at: timestamp_comparison_exp
   id: uuid_comparison_exp
   organization: organizations_bool_exp
+  pr_check_enabled: Boolean_comparison_exp
   pr_feedback_disabled: Boolean_comparison_exp
   project: projects_bool_exp
 }
@@ -8800,6 +8936,7 @@ input settings_order_by {
   created_at: order_by
   id: order_by
   organization: organizations_order_by
+  pr_check_enabled: order_by
   pr_feedback_disabled: order_by
   project: projects_order_by
 }
@@ -8813,6 +8950,9 @@ enum settings_select_column {
 
   """column name"""
   id
+
+  """column name"""
+  pr_check_enabled
 
   """column name"""
   pr_feedback_disabled

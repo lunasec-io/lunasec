@@ -16,7 +16,11 @@ import { Card, Col, Container, Modal, OverlayTrigger, Row, Spinner, Table, Toolt
 import { ExternalLink } from 'react-feather';
 import { NavLink, useNavigate } from 'react-router-dom';
 
-import { formatPackageManagerUrlForPackage } from '../../../utils/advisory';
+import {
+  formatPackageManagerUrlForPackage,
+  getAffectedVersionConstraint,
+  getFixedVersions,
+} from '../../../utils/advisory';
 import { getCvssVectorFromSeverities } from '../../../utils/cvss';
 import { prettyDate } from '../../../utils/pretty-date';
 import { toTitleCase } from '../../../utils/string-utils';
@@ -30,6 +34,49 @@ interface VulnerabilityDetailBodyProps {
   isEmbedded?: boolean;
   sideBySideView?: boolean;
 }
+
+interface VulnerableProjectsList {
+  vuln: VulnInfoDetails;
+}
+
+const VulnerableProjectsList: React.FunctionComponent<VulnerableProjectsList> = ({ vuln }) => {
+  const projects = vuln.findings.map((f) => {
+    const projectName = f.default_branch_build?.project?.name;
+    const projectId = f.default_branch_build?.project_id;
+    const buildId = f.default_branch_build?.id;
+    const buildDate = f.default_branch_build?.created_at;
+
+    if (!projectName || !projectId || !buildId || !buildDate) {
+      console.error('missing data to show project vulnerable', projectName, projectId, buildId);
+      return null;
+    }
+
+    const buildLink = `/project/${projectId}/build/${buildId}`;
+    return (
+      <div key={f.id as string}>
+        <h3>
+          {' '}
+          <NavLink key={f.id as string} to={buildLink}>
+            {projectName}
+          </NavLink>
+          <span className="darker" style={{ fontSize: '.9rem' }}>
+            {' '}
+            - as of: {prettyDate(new Date(buildDate), false)}
+          </span>
+        </h3>
+      </div>
+    );
+  });
+  return (
+    <div className="mb-3">
+      <h4>
+        Your Projects Vulnerable: <span className="lighter">{vuln.findings.length}</span>{' '}
+      </h4>
+
+      <div className="overflow-auto">{projects}</div>
+    </div>
+  );
+};
 
 export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetailBodyProps> = ({
   isEmbedded = false,
@@ -94,37 +141,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                   <span>No CVSS score</span>
                 )}
                 <hr />
-                <h4 className="">
-                  Your Projects Vulnerable: <span className="lighter">{vuln.findings.length}</span>{' '}
-                </h4>
-
-                {vuln.findings.map((f) => {
-                  const projectName = f.default_branch_build?.project?.name;
-                  const projectId = f.default_branch_build?.project_id;
-                  const buildId = f.default_branch_build?.id;
-                  const buildDate = f.default_branch_build?.created_at;
-
-                  if (!projectName || !projectId || !buildId || !buildDate) {
-                    console.error('missing data to show project vulnerable', projectName, projectId, buildId);
-                    return null;
-                  }
-
-                  const buildLink = `/project/${projectId}/build/${buildId}`;
-                  return (
-                    <div key={f.id as string}>
-                      <h3>
-                        {' '}
-                        <NavLink key={f.id as string} to={buildLink}>
-                          {projectName}
-                        </NavLink>
-                        <span className="darker" style={{ fontSize: '.9rem' }}>
-                          {' '}
-                          - as of: {prettyDate(new Date(buildDate), false)}
-                        </span>
-                      </h3>
-                    </div>
-                  );
-                })}
+                <VulnerableProjectsList vuln={vuln} />
               </Modal.Body>
             </Card>
           </Col>
@@ -163,16 +180,6 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                   </thead>
                   <tbody>
                     {vuln.affected.map((affected) => {
-                      const fixedEvents = affected.affected_range_events.filter((event) => event.type === 'fixed');
-                      const getFixVersions = () => {
-                        const fixVersions = fixedEvents.map((event) => event.version);
-                        if (fixVersions.length === 0) {
-                          return 'none';
-                        }
-                        return fixVersions.join(', ');
-                      };
-                      const isFixed = fixedEvents.length > 0;
-
                       const getPackageColumn = () => {
                         const packageName = affected.package?.name;
                         const nameOverflow = packageName && packageName.length > 41 ? '...' : '';
@@ -204,12 +211,14 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                         return <>{formattedName}</>;
                       };
 
+                      const fixedVersions = getFixedVersions(affected);
+
                       return (
                         <tr key={affected.id}>
                           <td className="lighter">{getPackageColumn()}</td>
-                          <td>{'TODO' || '>= 0.0.0'}</td>
-                          <td>{isFixed ? 'fixed' : 'not fixed'}</td>
-                          <td>{getFixVersions()}</td>
+                          <td>{getAffectedVersionConstraint(affected) || '>= 0.0.0'}</td>
+                          <td>{fixedVersions.length > 0 ? 'fixed' : 'not fixed'}</td>
+                          <td>{fixedVersions}</td>
                         </tr>
                       );
                     })}
