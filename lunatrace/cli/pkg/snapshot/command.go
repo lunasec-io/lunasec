@@ -19,7 +19,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/anchore/grype/grype"
+	"github.com/lunasec-io/grype/grype"
 	"github.com/urfave/cli/v2"
 	"io"
 	"io/ioutil"
@@ -28,10 +28,10 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/anchore/grype/grype/presenter/models"
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/lunasec-io/grype/grype/presenter/models"
 	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
 
@@ -310,51 +310,6 @@ func FileCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err error) {
 	return
 }
 
-type grypeLogger struct{}
-
-func (g grypeLogger) Errorf(format string, args ...interface{}) {
-	log.Error().Msg(fmt.Sprintf(format, args))
-}
-
-func (g grypeLogger) Error(args ...interface{}) {
-	log.Error().Msg(fmt.Sprintf("%v", args))
-}
-
-func (g grypeLogger) Warnf(format string, args ...interface{}) {
-	log.Warn().Msg(fmt.Sprintf(format, args))
-}
-
-func (g grypeLogger) Warn(args ...interface{}) {
-	log.Warn().Msg(fmt.Sprintf("%v", args))
-}
-
-func (g grypeLogger) Infof(format string, args ...interface{}) {
-	log.Info().Msg(fmt.Sprintf(format, args))
-}
-
-func (g grypeLogger) Info(args ...interface{}) {
-	log.Info().Msg(fmt.Sprintf("%v", args))
-}
-
-func (g grypeLogger) Debugf(format string, args ...interface{}) {
-	log.Debug().Msg(fmt.Sprintf(format, args))
-}
-
-func (g grypeLogger) Debug(args ...interface{}) {
-	log.Debug().Msg(fmt.Sprintf("%v", args))
-}
-
-type Logger interface {
-	Errorf(format string, args ...interface{})
-	Error(args ...interface{})
-	Warnf(format string, args ...interface{})
-	Warn(args ...interface{})
-	Infof(format string, args ...interface{})
-	Info(args ...interface{})
-	Debugf(format string, args ...interface{})
-	Debug(args ...interface{})
-}
-
 func ScanCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err error) {
 	var (
 		sbomFile         *os.File
@@ -364,7 +319,7 @@ func ScanCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err error) {
 	printToStdout := c.Bool("stdout")
 	readFromStdin := c.Bool("stdin")
 
-	logger := grypeLogger{}
+	logger := &types.ZerologLogger{}
 
 	grype.SetLogger(logger)
 

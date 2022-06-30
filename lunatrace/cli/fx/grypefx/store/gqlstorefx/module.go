@@ -22,8 +22,8 @@ import (
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
-	"github.com/anchore/grype/grype/db/v3"
 	"github.com/google/uuid"
+	"github.com/lunasec-io/grype/grype/db/v3"
 	"go.uber.org/fx"
 
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
@@ -40,6 +40,21 @@ type StoreDeps struct {
 // gqlStore is a vulnerability store for Grype that is backed by the LunaTrace GraphQL database.
 type gqlStore struct {
 	d StoreDeps
+}
+
+func (g *gqlStore) DiffStore(s v3.StoreReader) (*[]v3.Diff, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (g *gqlStore) GetAllVulnerabilities() (*[]v3.Vulnerability, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (g *gqlStore) GetAllVulnerabilityMetadata() (*[]v3.VulnerabilityMetadata, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 // GetID returns info about the state of the graphql db. It is considered to be always up to date and has a special

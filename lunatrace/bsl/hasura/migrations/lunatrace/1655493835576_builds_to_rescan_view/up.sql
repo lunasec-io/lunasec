@@ -10,10 +10,14 @@ CREATE VIEW public.latest_builds AS
 SELECT latest_builds.*
 FROM (SELECT DISTINCT project_id
       FROM public.builds) project_groups
-         JOIN LATERAL ( SELECT *
-                        FROM public.builds builds_inner
-                        WHERE builds_inner.project_id = project_groups.project_id
-                        ORDER BY builds_inner.build_number DESC
-                        LIMIT 10) latest_builds ON true
-UNION SELECT * FROM public.latest_default_builds
+         JOIN LATERAL (
+    SELECT *
+    FROM public.builds builds_inner
+    WHERE builds_inner.project_id = project_groups.project_id
+    ORDER BY builds_inner.build_number DESC
+    LIMIT 10
+    ) latest_builds ON true
+UNION
+SELECT *
+FROM public.latest_default_builds
 ORDER BY project_id, build_number;

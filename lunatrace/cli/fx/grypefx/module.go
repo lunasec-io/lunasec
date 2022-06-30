@@ -15,9 +15,9 @@
 package grypefx
 
 import (
-	"github.com/anchore/grype/grype/db"
-	v3 "github.com/anchore/grype/grype/db/v3"
-	"github.com/anchore/grype/grype/vulnerability"
+	"github.com/lunasec-io/grype/grype/db"
+	v3 "github.com/lunasec-io/grype/grype/db/v3"
+	"github.com/lunasec-io/grype/grype/vulnerability"
 )
 
 func LoadVulnerabilityDB(store v3.StoreReader) (vulnerability.Provider, vulnerability.MetadataProvider, *db.Status, error) {
