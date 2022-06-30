@@ -17,7 +17,7 @@ package multistorefx
 import (
 	"errors"
 
-	v3 "github.com/lunasec-io/grype/grype/db/v3"
+	v3 "github.com/anchore/grype/grype/db/v3"
 )
 
 type multiStore struct {

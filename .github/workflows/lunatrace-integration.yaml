@@ -8,6 +8,9 @@ on:
     paths:
       - '.github/**'
       - 'lunatrace/**'
+  push:
+    branches:
+      - master
 
 
 jobs:
@@ -107,6 +110,7 @@ jobs:
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v4
+        if: ${{ github.event.issue.pull_request }}
         with:
           commit-message: Update generated files
           committer: GitHub <noreply@github.com>

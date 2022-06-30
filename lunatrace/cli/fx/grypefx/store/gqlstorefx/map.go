@@ -20,8 +20,8 @@ import (
 	"sort"
 	"strings"
 
+	v3 "github.com/anchore/grype/grype/db/v3"
 	"github.com/blang/semver/v4"
-	v3 "github.com/lunasec-io/grype/grype/db/v3"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/vulnerability/advisory"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"

@@ -19,7 +19,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/lunasec-io/grype/grype"
+	"github.com/anchore/grype/grype"
 	"github.com/urfave/cli/v2"
 	"io"
 	"io/ioutil"
@@ -28,10 +28,10 @@ import (
 	"path"
 	"path/filepath"
 
+	"github.com/anchore/grype/grype/presenter/models"
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
-	"github.com/lunasec-io/grype/grype/presenter/models"
 	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
 
