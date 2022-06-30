@@ -22,8 +22,8 @@ import (
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
+	"github.com/anchore/grype/grype/db/v3"
 	"github.com/google/uuid"
-	"github.com/lunasec-io/grype/grype/db/v3"
 	"go.uber.org/fx"
 
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"

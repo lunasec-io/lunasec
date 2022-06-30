@@ -18,7 +18,8 @@ import (
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/clifx"
+	"github.com/ajvpot/clifx"
+
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/license/scanner"
 )
 
