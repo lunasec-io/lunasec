@@ -34,8 +34,6 @@ export function groupByPackage<F extends Finding>(project_id: string, findings: 
 }
 
 function createNewVulnPackage<F extends Finding>(project_id: string, finding: F): VulnerablePackage<F> {
-  // TODO (cthompson) getCvssVectorFromSeverities should be moved into common
-  // const severity = getCvssVectorFromSeverities(finding.vulnerability.severities);
   return {
     created_at: finding.created_at, // might be better to sort and show the first date
     purl: finding.purl,
@@ -56,28 +54,18 @@ function createNewVulnPackage<F extends Finding>(project_id: string, finding: F)
 
 function mergeExistingFindingIntoPackage<F extends Finding>(vulnPackage: VulnerablePackage<F>, finding: F): void {
   // add the finding to the finding list if its not a dupe
-  // const existingSlugs = vulnPackage.findings.map((f) => f.vulnerability.slug);
-  // const newSlug = finding.vulnerability.slug;
-  // if (!existingSlugs.includes(newSlug)) {
-  //   vulnPackage.findings.push(finding);
-  // }
+  const existingSlugs = vulnPackage.findings.map((f) => f.vulnerability.id);
+  const newSlug = finding.vulnerability.id;
+  if (!existingSlugs.includes(newSlug)) {
+    vulnPackage.findings.push(finding);
+  }
+
   // add any new locations
   finding.locations.forEach((l) => {
     if (!vulnPackage.locations.includes(l)) {
       vulnPackage.locations = [...vulnPackage.locations, l];
     }
   });
-  // set the highest CVSS score to the package score
-  // try {
-  //   if (
-  //     finding.vulnerability.namespace === 'nvd' &&
-  //     Number(finding.vulnerability.cvss_score) > Number(vulnPackage.cvss_score)
-  //   ) {
-  //     vulnPackage.cvss_score = finding.vulnerability.cvss_score || null;
-  //   }
-  // } catch {
-  //   console.error('failed converting cvss to number');
-  // }
   // Add any fix versions/state
   if (finding.fix_state === 'fixed') {
     vulnPackage.fix_state = finding.fix_state;
