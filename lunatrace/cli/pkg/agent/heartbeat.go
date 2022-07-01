@@ -15,10 +15,9 @@
 package agent
 
 import (
-	"github.com/rs/zerolog/log"
-
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/deprecated"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	"github.com/rs/zerolog/log"
 )
 
 func PerformAgentHeartbeat(appConfig types.LunaTraceAgentConfig) (err error) {

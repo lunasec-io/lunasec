@@ -17522,6 +17522,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/npm@npm:~7.19.0":
+  version: 7.19.0
+  resolution: "@types/npm@npm:7.19.0"
+  dependencies:
+    "@types/node": "*"
+  checksum: db88dc44318a8a70cf92a06db72da3228685c8d01c00eb8edacd1abc21e7204d2e1661a9e2befb31522e35838abcfbc7a651afbc2a20f660e703f994ce617079
+  languageName: node
+  linkType: hard
+
 "@types/parse-json@npm:^4.0.0":
   version: 4.0.0
   resolution: "@types/parse-json@npm:4.0.0"
@@ -38428,6 +38437,7 @@ __metadata:
     "@types/jwk-to-pem": ~2.0.1
     "@types/markdown-table": 2.0.0
     "@types/node": ^14.0.0
+    "@types/npm": ~7.19.0
     "@types/semver": ^7.3.9
     "@types/uuid": ^8.3.4
     "@types/validator": ^13.7.1
@@ -38475,6 +38485,7 @@ __metadata:
     source-map-support: ^0.5.16
     sqlite: ^4.0.23
     sqlite3: ^5.0.2
+    tmp-promise: ~3.0.3
     ts-jest: ^27.1.3
     ts-node: ^10.4.0
     ts-node-dev: ^1.1.8
@@ -51381,6 +51392,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tmp-promise@npm:~3.0.3":
+  version: 3.0.3
+  resolution: "tmp-promise@npm:3.0.3"
+  dependencies:
+    tmp: ^0.2.0
+  checksum: f854f5307dcee6455927ec3da9398f139897faf715c5c6dcee6d9471ae85136983ea06662eba2edf2533bdcb0fca66d16648e79e14381e30c7fb20be9c1aa62c
+  languageName: node
+  linkType: hard
+
 "tmp@npm:0.1.0":
   version: 0.1.0
   resolution: "tmp@npm:0.1.0"
@@ -51399,7 +51419,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tmp@npm:~0.2.1":
+"tmp@npm:^0.2.0, tmp@npm:~0.2.1":
   version: 0.2.1
   resolution: "tmp@npm:0.2.1"
   dependencies:

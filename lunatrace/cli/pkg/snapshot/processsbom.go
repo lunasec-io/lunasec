@@ -48,6 +48,7 @@ func processSbom(
 
 	printToStdout := c.Bool("stdout")
 	outputFile := c.String("output")
+	// TODO: Should we be exiting here?  Is this why we sometimes get empty sboms?
 	err = outputSbom(sbomModel, printToStdout, outputFile)
 
 	skipUpload := c.Bool("skip-upload")
