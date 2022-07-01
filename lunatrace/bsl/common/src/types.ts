@@ -22,6 +22,7 @@ export interface Finding {
   language: string;
   type: string;
   vulnerability: {
+    id: string;
     cvss_score?: number | null;
     source: string;
     guide_vulnerabilities?: Array<{
