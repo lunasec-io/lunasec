@@ -5,6 +5,8 @@
 - "!include package_release.yaml"
 - "!include package_release_dependency.yaml"
 - "!include package_release_license.yaml"
+- "!include public_build_dependency.yaml"
+- "!include public_build_dependency_relationship.yaml"
 - "!include public_builds.yaml"
 - "!include public_default_branch_builds.yaml"
 - "!include public_findings.yaml"
