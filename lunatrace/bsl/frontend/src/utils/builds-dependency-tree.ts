@@ -11,13 +11,14 @@
  * limitations under the License.
  *
  */
-/* example query on builds
+/* example query on builds to get these dependencies
     build_dependencies {
           id
           root_range
           version
           release_id
           sub_dependencies {
+            range
             to_dependency
             from_dependency
           }
@@ -25,40 +26,40 @@
  */
 
 import semver from 'semver';
+
 // This is just what we need someone to give us to build the tree
-// We extend this type with generics so if they give us more, we will give back more data
+// We extend this type with generics below so if they give us more data, we will give back more data
 export interface BuildDependencyPartial {
   id: string;
   root_range: string | null;
-  version: string;
-  release: {
-    package: {
-      name: string;
-    };
-  };
   sub_dependency_relationships: Array<{
     range: string;
     to_dependency: string;
-    from_dependency: string;
   }>;
 }
 
 // Recursive type to model the recursive tree we are building.  Simply adds the field "dependents" which points down to more nodes.
 type BuildDependencyTreeNode<D> = D & {
-  rangeRequested: string;
+  rangeRequested: string; // since each node corresponds to one depender, we can add the range it was requested with
   dependents: Array<BuildDependencyTreeNode<D>>;
 };
 
 export type DependencyChain<D> = Array<BuildDependencyTreeNode<D>>;
 
-// hasura doesn't allow us to fetch recursive stuff, so we build the tree ourselves on the client
-// Note that the same dependency could appear multiple times in this tree if multiple things depend on it
+/**
+ *  hasura and graphql doesn't allow us to fetch recursive stuff, so we build the tree ourselves on the client
+ *  Note that the same dependency could appear multiple times in this tree if multiple things depend on it
+ * @class DependencyTree
+ * @public tree A tree of all dependenices, starting as an array of the root level dependencies. Preserves types.
+ * @public flatDeps The original set of dependencies that was passed in. Preserves types.
+ */
 export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
   public tree: Array<BuildDependencyTreeNode<BuildDependency>>;
 
   constructor(public flatDeps: BuildDependency[]) {
     // define an internal recursive function that builds each node
     // it's in here because this has access to the class generic and the flatDeps
+    // recursive stuff is always a little hairy but this is really quite dead simple
     function recursivelyBuildNode(
       dep: BuildDependency,
       rangeRequested: string
@@ -95,18 +96,25 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     ): void {
       if (currentNode.id === depId) {
         chains.push(currentChain);
+        // This was what we were looking for, abandon this chain
         return;
       }
-
+      // if we aren't at the bottom of the chain yet, keep looking through transitives for our dependency
       currentNode.dependents.forEach((dep) => findInstanceRecur(dep, [...currentChain, currentNode]));
     }
-    // Start at the root nodes and walk every path, looking for ones that lead to the dependency
+    // Start at the root nodes and walk every path using the above function, looking for ones that lead to the dependency
     this.tree.forEach((rootDep) => {
       findInstanceRecur(rootDep, []);
     });
     return chains;
   }
 
+  /**
+   * Finds a dependency out of the list of deps using its id
+   * @param depId
+   * @private
+   * @throws Error
+   */
   private lookupDepById(depId: string) {
     const dep = this.flatDeps.find((d) => d.id === depId);
     if (!dep) {
@@ -117,8 +125,14 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     return dep;
   }
 
-  // Note that this wont show ranges of different versions of the package in the tree, just ranges that resolved to the exact version/release.
-  // ex: if you had react 4.1.1 and react 5.1.1 in your tree, this would output something like `['>4.0.0, '4.1.1'] and not '>5.0.0' because that's resolved as a different package in the package-lock
+  /**
+   * Gets all the ranges that a package was requested with
+   *   Note that this wont show ranges of different versions of the package in the tree, just ranges that resolved to the exact version/release.
+   *   ex: if you had react 4.1.1 and react 5.1.1 in your tree, this would output something like `['>4.0.0, '4.1.1'] and not '>5.0.0' because that's resolved as a different package in the package-lock
+   * @param depId
+   * @throws Error
+   */
+
   public getRangesRequestedOfPackage(depId: string): string[] {
     const ranges: string[] = [];
 
@@ -139,16 +153,26 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     return ranges;
   }
 
-  public determinePackageTriviallyUpdatable(toVersion: string, depId: string) {
-    // I think coercing like this is a good idea because it will make things like `1.2.3-hotfix` appear valid against the ranges, and a lot of patches might be like that
-    const coercedVersion = semver.coerce(toVersion);
-    if (!semver.valid(coercedVersion) || !coercedVersion) {
-      throw new Error('Invalid version specified when checking ');
-    }
+  /**
+   * See if we can update a package to a fixed version(s) without violating semver
+   * @param toVersions Since there might be multiple fix versions for a vulnerability, take a list of possible ones we could update to in `toVersions`
+   * @param depId
+   */
+  public determinePackageTriviallyUpdatable(toVersions: string[], depId: string): boolean {
+    return toVersions.some((toVersion) => {
+      // I think coercing like this is a good idea because it will make things like `1.2.3-hotfix` appear valid against the ranges, and a lot of patches might be like that
+      // Maybe it will do that automatically, need to test. Awful docs for this library.
+      const coercedVersion = semver.coerce(toVersion);
+      if (!semver.valid(coercedVersion) || !coercedVersion) {
+        throw new Error(
+          'Invalid version specified when checking if updatable, probably bad OSV data from the vulnerability data source fixes field'
+        );
+      }
 
-    const ranges = this.getRangesRequestedOfPackage(depId);
-    return ranges.every((range) => {
-      semver.satisfies(coercedVersion, range);
+      const ranges = this.getRangesRequestedOfPackage(depId);
+      return ranges.every((range) => {
+        semver.satisfies(coercedVersion, range);
+      });
     });
   }
 }
