@@ -63,6 +63,18 @@ select_permissions:
         - upstream_data
         - version
       filter: {}
+  - role: user
+    permission:
+      columns:
+        - fetched_time
+        - id
+        - observed_time
+        - package_id
+        - publishing_maintainer_id
+        - release_time
+        - upstream_data
+        - version
+      filter: {}
 update_permissions:
   - role: service
     permission:

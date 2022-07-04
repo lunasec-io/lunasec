@@ -8,6 +8,23 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
         id
         source_type
         project_id
+        build_dependencies {
+            id
+            root_range
+            version
+            release {
+                package {
+                    name
+                }
+            }
+            sub_dependency_relationships {
+                range
+                to_dependency
+                from_dependency
+
+            }
+
+        }
         project {
             name
             ignored_vulnerabilities {
