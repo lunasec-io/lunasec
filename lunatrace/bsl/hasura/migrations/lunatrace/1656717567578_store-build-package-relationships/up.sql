@@ -4,7 +4,8 @@ CREATE TABLE public."build_dependency"
     "root_range"       text                               NULL,
     "build_id"   UUID                                  NOT NULL REFERENCES public.builds (id) ON DELETE CASCADE,
     "version"    text                                  NOT NULL,
-    "release_id" UUID REFERENCES "package"."release" ("id") ON DELETE CASCADE
+    "release_id" UUID REFERENCES "package"."release" ("id") ON DELETE CASCADE,
+    "dev" boolean DEFAULT FALSE
 );
 
 CREATE TABLE public."build_dependency_relationship"
