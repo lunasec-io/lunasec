@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { filterFindingsByIgnored, VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
+import { filterFindingsNotIgnored, VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
 import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
@@ -23,7 +23,7 @@ interface VulnerablePackageCardHeaderProps {
 }
 
 export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePackageCardHeaderProps> = ({ pkg }) => {
-  const filteredFindings = filterFindingsByIgnored(pkg.findings);
+  const filteredFindings = filterFindingsNotIgnored(pkg.findings);
   const allFindingsAreIgnored = filteredFindings.length === 0;
   const headerClassNames = allFindingsAreIgnored ? 'text-decoration-line-through' : '';
 

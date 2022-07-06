@@ -32,6 +32,12 @@ export const BuildDetailsHeader: React.FC<{ build: BuildDetailInfo }> = ({ build
   const lastScannedDate = firstScan ? prettyDate(new Date(firstScan.created_at as string)) : 'Never';
   const uploadDate = prettyDate(new Date(build.created_at as string));
 
+  const showPrettyTarget = () => {
+    if (build.source_type === 'pr' || build.source_type === 'default_branch') {
+      return 'Repo Root';
+    }
+    return firstScan.target;
+  };
   // const githubUrl = gitUrlToLink(build);
 
   const branch = branchName(build);
@@ -55,17 +61,17 @@ export const BuildDetailsHeader: React.FC<{ build: BuildDetailInfo }> = ({ build
         </Col>
       </Row>
       <Row>
-        <Col xs="12" sm={{ order: 'last', span: 5, offset: 4 }}>
-          <h6 style={{ textAlign: 'right' }}>
+        <Col xs="12" sm={{ order: 'last', span: 6 }} className="text-sm-end">
+          <h6>
             <span className="darker"> Last scanned:</span> {lastScannedDate}
           </h6>
-          <h6 style={{ textAlign: 'right' }}>
+          <h6>
             <span className="darker">
               Scanned {build.scans_aggregate.aggregate?.count} time
               {build.scans_aggregate.aggregate?.count !== 1 ? 's' : ''}
             </span>
           </h6>
-          <h6 style={{ textAlign: 'right' }}>
+          <h6>
             <span className="darker">
               <a
                 href={'#'}
@@ -81,7 +87,7 @@ export const BuildDetailsHeader: React.FC<{ build: BuildDetailInfo }> = ({ build
             </span>
           </h6>
         </Col>
-        <Col xs="12" sm="3">
+        <Col xs="12" sm="6">
           <div className="build-git-info">
             <h6>
               <span className="darker">Trigger: </span>
@@ -105,7 +111,7 @@ export const BuildDetailsHeader: React.FC<{ build: BuildDetailInfo }> = ({ build
               </h6>
             </ConditionallyRender>
             <h6>
-              <span className="darker text-capitalize">{firstScan.source_type}:</span> {firstScan.target}
+              <span className="darker text-capitalize">{firstScan.source_type}:</span> {showPrettyTarget()}
             </h6>
           </div>
         </Col>
