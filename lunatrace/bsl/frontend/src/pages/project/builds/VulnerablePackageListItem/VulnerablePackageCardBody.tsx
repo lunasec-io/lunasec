@@ -18,7 +18,7 @@ import { Accordion, Card, Col, Container, Row, Table } from 'react-bootstrap';
 import { ChevronDown, ChevronUp } from 'react-feather';
 
 import { ConditionallyRender } from '../../../../components/utils/ConditionallyRender';
-import { pluralizeIfMultiple, toTitleCase } from '../../../../utils/string-utils';
+import { pluralizeIfMultiple } from '../../../../utils/string-utils';
 import { QuickViewProps } from '../types';
 
 import { GuideBlurb } from './GuideBlurb';
@@ -141,7 +141,7 @@ const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ pkg }) =
           <h5>
             {' '}
             <span className="darker">Language: </span>
-            {toTitleCase(pkg.language)}
+            <div className="text-capitalize">{pkg.language}</div>
           </h5>
         </Col>
       </Row>

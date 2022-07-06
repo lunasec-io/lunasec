@@ -11,14 +11,11 @@
  * limitations under the License.
  *
  */
+import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
-import { ExternalLink } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 
-import { CvssInferredWarning } from '../../components/CvssInferredWarning';
-import { formatAdvisoryUrlForSource } from '../../utils/advisory';
-import { getCvssVectorFromSeverities } from '../../utils/cvss';
 import { prettyDate } from '../../utils/pretty-date';
 import { toTitleCase } from '../../utils/string-utils';
 

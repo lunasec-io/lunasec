@@ -11,12 +11,11 @@
  * limitations under the License.
  *
  */
+import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
 import { Card, Col, OverlayTrigger, Row, Table, Tooltip } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-import { CvssInferredWarning } from '../../../components/CvssInferredWarning';
-import { getCvssVectorFromSeverities } from '../../../utils/cvss';
 import { VulnInfoDetails } from '../types';
 
 export const AffectedPackagesList: React.FC<{ relatedVulns: VulnInfoDetails['equivalents'] }> = ({ relatedVulns }) => {
