@@ -35,48 +35,66 @@ insert_permissions:
     permission:
       check: {}
       columns:
-        - custom_registry
-        - description
-        - fetched_time
         - id
-        - name
         - package_manager
+        - custom_registry
+        - name
+        - description
         - upstream_data
-      backend_only: false
+        - last_failed_fetch
+        - last_successful_fetch
 select_permissions:
   - role: service
     permission:
       columns:
-        - custom_registry
-        - description
-        - fetched_time
         - id
-        - name
         - package_manager
+        - custom_registry
+        - name
+        - description
         - upstream_data
+        - last_failed_fetch
+        - last_successful_fetch
       filter: {}
+      allow_aggregations: true
   - role: user
     permission:
       columns:
         - custom_registry
         - description
-        - fetched_time
         - id
+        - last_failed_fetch
+        - last_successful_fetch
         - name
         - package_manager
-        - synced
         - upstream_data
-      filter: {}
+      filter:
+        _or:
+          - releases:
+              build_dependency_relationships:
+                build:
+                  project:
+                    organization:
+                      organization_users:
+                        user_id:
+                          _eq: X-Hasura-Real-User-Id
+          - last_successful_fetch:
+              _is_null: false
 update_permissions:
   - role: service
     permission:
       columns:
+        - upstream_data
         - custom_registry
         - description
-        - fetched_time
-        - id
         - name
+        - last_failed_fetch
+        - last_successful_fetch
         - package_manager
-        - upstream_data
+        - id
       filter: {}
-      check: {}
+      check: null
+delete_permissions:
+  - role: service
+    permission:
+      filter: {}
