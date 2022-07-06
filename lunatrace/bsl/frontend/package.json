@@ -60,7 +60,7 @@
     "unist-util-visit": "~4.1.0",
     "use-react-router-breadcrumbs": "^3.0.2",
     "uuid": "^8.3.2",
-    "vuln-vects": "~1.0.0",
+    "vuln-vects": "~1.1.0",
     "watch": "^1.0.2"
   },
   "devDependencies": {

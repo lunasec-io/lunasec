@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
 import { Card, Col, Container, Modal, OverlayTrigger, Row, Spinner, Table, Tooltip } from 'react-bootstrap';
 import { ExternalLink } from 'react-feather';
@@ -21,9 +22,7 @@ import {
   getAffectedVersionConstraint,
   getFixedVersions,
 } from '../../../utils/advisory';
-import { getCvssVectorFromSeverities } from '../../../utils/cvss';
 import { prettyDate } from '../../../utils/pretty-date';
-import { toTitleCase } from '../../../utils/string-utils';
 import { SourceLink } from '../SourceLink';
 import { VulnInfoDetails } from '../types';
 
@@ -110,8 +109,11 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                   <span className="darker "> Severity: </span>
                   <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
                     {severity ? (
-                      <h4 className={`${severity.cvss3OverallSeverityText}`} style={{ display: 'inline' }}>
-                        {toTitleCase(severity.cvss3OverallSeverityText)}
+                      <h4
+                        className={`${severity.cvss3OverallSeverityText} text-capitalize`}
+                        style={{ display: 'inline' }}
+                      >
+                        {severity.cvss3OverallSeverityText}
                       </h4>
                     ) : (
                       <h4 style={{ display: 'inline' }}>unknown</h4>

@@ -14,7 +14,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "json-colorizer": "^2.2.2"
+    "json-colorizer": "^2.2.2",
+    "vuln-vects": "~1.1.0"
   },
   "devDependencies": {
     "@types/jest": "~27.4.1",

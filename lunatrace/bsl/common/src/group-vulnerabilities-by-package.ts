@@ -54,9 +54,9 @@ function createNewVulnPackage<F extends Finding>(project_id: string, finding: F)
 
 function mergeExistingFindingIntoPackage<F extends Finding>(vulnPackage: VulnerablePackage<F>, finding: F): void {
   // add the finding to the finding list if its not a dupe
-  const existingSlugs = vulnPackage.findings.map((f) => f.vulnerability.id);
-  const newSlug = finding.vulnerability.id;
-  if (!existingSlugs.includes(newSlug)) {
+  const existingVulnerabilityIds = vulnPackage.findings.map((f) => f.vulnerability.id);
+  const newVulnerabilityId = finding.vulnerability.id;
+  if (!existingVulnerabilityIds.includes(newVulnerabilityId)) {
     vulnPackage.findings.push(finding);
   }
 

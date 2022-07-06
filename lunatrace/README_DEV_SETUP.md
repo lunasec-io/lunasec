@@ -109,7 +109,7 @@ it up, so if you accidentally have problems after you can run `sudo docker-compo
 
 We use Hasura to manage the database. Migrations for Kratos and Hasura will be applied automatically in dev.
 
-#### Hasura:
+#### Hasura
 
 You should be able to pull up the Hasura console either
 by running `hasura console` or going to `http://localhost:9695/`. This will show you the GraphQL server and an admin
@@ -122,6 +122,15 @@ To set up the frontend, pull the theme submodule and compile the CSS:
 cd bsl/frontend
 yarn run sass:pull
 yarn run sass:build
+```
+
+#### Vulnerabilities
+
+```shell
+git clone https://github.com/github/advisory-database.git /tmp/advisory-database
+
+cd bsl/ingest-worker
+go run cmd/lpt/main.go vulnerability ingest --source ghsa /tmp/advisory-database
 ```
 
 ### Re-run everything
