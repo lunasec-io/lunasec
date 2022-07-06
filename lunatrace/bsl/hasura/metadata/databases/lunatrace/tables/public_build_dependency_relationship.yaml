@@ -2,50 +2,68 @@ table:
   schema: public
   name: build_dependency_relationship
 object_relationships:
-  - name: dependency
+  - name: build
     using:
-      foreign_key_constraint_on: to_dependency
-  - name: depender
+      foreign_key_constraint_on: build_id
+  - name: depended_by_release
     using:
-      foreign_key_constraint_on: from_dependency
+      foreign_key_constraint_on: depended_by_release_id
+  - name: release
+    using:
+      foreign_key_constraint_on: release_id
 insert_permissions:
   - role: service
     permission:
       check: {}
       columns:
+        - labels
         - range
-        - from_dependency
-        - to_dependency
+        - version
+        - build_id
+        - depended_by_release_id
+        - id
+        - release_id
       backend_only: false
 select_permissions:
   - role: service
     permission:
       columns:
+        - labels
         - range
-        - from_dependency
-        - to_dependency
+        - version
+        - build_id
+        - depended_by_release_id
+        - id
+        - release_id
       filter: {}
   - role: user
     permission:
       columns:
+        - labels
         - range
-        - from_dependency
-        - to_dependency
+        - version
+        - build_id
+        - depended_by_release_id
+        - id
+        - release_id
       filter:
-        depender:
-          build:
-            project:
-              organization:
-                organization_users:
-                  user_id:
-                    _eq: X-Hasura-Real-User-Id
+        build:
+          project:
+            organization:
+              organization_users:
+                user_id:
+                  _eq: X-Hasura-Real-User-Id
 update_permissions:
   - role: service
     permission:
       columns:
+        - labels
         - range
-        - from_dependency
-        - to_dependency
+        - version
+        - build_id
+        - depended_by_release_id
+        - id
+        - release_id
       filter: {}
       check: {}
 delete_permissions:
