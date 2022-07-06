@@ -2,27 +2,6 @@ table:
   schema: public
   name: vulnerabilities
 array_relationships:
-  - name: findings
-    using:
-      foreign_key_constraint_on:
-        column: vulnerability_id
-        table:
-          schema: public
-          name: findings
-  - name: guide_vulnerabilities
-    using:
-      foreign_key_constraint_on:
-        column: vulnerability_id
-        table:
-          schema: public
-          name: guide_vulnerabilities
-  - name: ignored_vulnerabilities
-    using:
-      foreign_key_constraint_on:
-        column: vulnerability_id
-        table:
-          schema: public
-          name: ignored_vulnerabilities
   - name: related_vulnerabilities
     using:
       foreign_key_constraint_on:

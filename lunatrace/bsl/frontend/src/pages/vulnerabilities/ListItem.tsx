@@ -11,13 +11,15 @@
  * limitations under the License.
  *
  */
+import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-import { CvssInferredWarning } from '../../components/CvssInferredWarning';
 import { prettyDate } from '../../utils/pretty-date';
+import { toTitleCase } from '../../utils/string-utils';
 
+import { SourceLink } from './SourceLink';
 import { VulnInfo } from './types';
 
 interface VulnerabilityListItemProps {
@@ -25,19 +27,22 @@ interface VulnerabilityListItemProps {
 }
 
 export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListItemProps> = ({ vuln }) => {
-  const packageNamesString = vuln.vulnerability_packages.map((p) => p.name).join(', ');
+  const packageNamesString = vuln.affected
+    .filter((p) => !!p.package)
+    .map((p) => p.package?.name)
+    .join(', ');
   const navigate = useNavigate();
+
+  const severity = getCvssVectorFromSeverities(vuln.severities);
+
   const renderCvssScore = () => {
-    if (!vuln.cvss_score) {
+    if (!severity) {
       return null;
     }
     return (
       <>
         <span>
-          CVSS:{' '}
-          <h3>
-            {vuln.cvss_score} <CvssInferredWarning inferred={vuln.cvss_inferred || false} />
-          </h3>
+          CVSS: <h3>{severity.overallScore}</h3>
         </span>
       </>
     );
@@ -54,17 +59,10 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
             <Row>
               <Col sm="6">
                 <Card.Title>
-                  <h3>{vuln.name}</h3>
+                  <h3>{vuln.source_id}</h3>
                 </Card.Title>
                 <Card.Subtitle>
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    href={vuln.data_source || ''}
-                  >
-                    {vuln.namespace} ↪
-                  </a>
+                  <SourceLink source={vuln.source} sourceId={vuln.source_id} />
                 </Card.Subtitle>
               </Col>
               <Col sm={{ span: 6 }} className="mt-xs-2 mt-sm-0">
@@ -72,14 +70,17 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
                   <Card.Title className="text-right">
                     <span className="darker h4"> Severity: </span>
                     <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
-                      <h4 className={` ${vuln.severity}`} style={{ display: 'inline' }}>
-                        {vuln.severity}
+                      <h4
+                        className={severity ? `${severity.cvss3OverallSeverityText}` : ''}
+                        style={{ display: 'inline' }}
+                      >
+                        {severity ? toTitleCase(severity.cvss3OverallSeverityText) : 'unknown'}
                       </h4>
                     </div>
                   </Card.Title>
                   <Card.Subtitle className="text-right">
                     <span className="darker">Indexed on: </span>
-                    {prettyDate(new Date(vuln.created_at))}
+                    {prettyDate(new Date(vuln.published))}
                   </Card.Subtitle>
                 </div>
               </Col>
@@ -107,12 +108,12 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
               </Col>
             </Row>
 
-            {vuln.description ? (
+            {vuln.summary ? (
               <Row>
                 <Col xs="12">
-                  Description:
+                  Summary:
                   <p>
-                    <strong>{vuln.description}</strong>
+                    <strong>{vuln.summary}</strong>
                   </p>
                 </Col>
               </Row>

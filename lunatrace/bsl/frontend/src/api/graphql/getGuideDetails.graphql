@@ -11,8 +11,8 @@ query GetGuideDetails( $id: uuid!) {
         guide_vulnerabilities {
             vulnerability {
                 id
-                name
-                namespace
+                source
+                source_id
             }
         }
         related_guides {

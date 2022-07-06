@@ -20,7 +20,6 @@ import api from '../../../api';
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { branchLink, branchName, commitLink } from '../../../utils/build-display-helpers';
 import { prettyDate } from '../../../utils/pretty-date';
-import { capitalizeFirstLetter } from '../../../utils/string-utils';
 
 import { SourceIcon } from './SourceIcon';
 import { BuildDetailInfo } from './types';
@@ -112,7 +111,7 @@ export const BuildDetailsHeader: React.FC<{ build: BuildDetailInfo }> = ({ build
               </h6>
             </ConditionallyRender>
             <h6>
-              <span className="darker">{capitalizeFirstLetter(firstScan.source_type)}:</span> {showPrettyTarget()}
+              <span className="darker text-capitalize">{firstScan.source_type}:</span> {showPrettyTarget()}
             </h6>
           </div>
         </Col>

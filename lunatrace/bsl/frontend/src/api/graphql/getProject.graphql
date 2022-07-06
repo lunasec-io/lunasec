@@ -45,6 +45,12 @@ query GetProject($project_id: uuid!, $build_limit: Int = 10) {
                 severity
                 locations
                 vulnerability {
+                    severities {
+                        id
+                        source
+                        type
+                        score
+                    }
                     ignored_vulnerabilities(where: {project_id: {_eq: $project_id}}) {
                         locations
                     }
@@ -113,12 +119,15 @@ query GetProject($project_id: uuid!, $build_limit: Int = 10) {
                 vulnerability_package_id
                 vulnerability {
                     id
-                    slug
-                    description
-                    cvss_score
-                    cvss_inferred
-                    name
-                    namespace
+                    summary
+                    source
+                    source_id
+                    severities {
+                        id
+                        source
+                        type
+                        score
+                    }
                     guide_vulnerabilities {
                         guide {
                             id
@@ -138,7 +147,6 @@ query GetProject($project_id: uuid!, $build_limit: Int = 10) {
                             }
                         }
                     }
-                    data_source
                     ignored_vulnerabilities(where: {project_id: {_eq: $project_id}}) {
                         creator_id
                         id

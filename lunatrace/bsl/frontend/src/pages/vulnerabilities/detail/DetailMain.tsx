@@ -31,14 +31,14 @@ export const VulnerabilityDetailMain: React.FC = () => {
   if (!data) {
     return <Spinner animation="border" />;
   }
-  const vuln = data.vulnerabilities_by_pk;
+  const vuln = data.vulnerability_by_pk;
   if (!vuln) {
     return <p>Vulnerability with that ID not found.</p>;
   }
 
   return (
     <>
-      <Helmet title={vuln.name} />
+      <Helmet title={vuln.source_id} />
       <VulnerabilityDetailBody vuln={vuln} />
     </>
   );

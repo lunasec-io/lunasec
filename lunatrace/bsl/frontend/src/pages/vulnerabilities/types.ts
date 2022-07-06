@@ -13,8 +13,8 @@
  */
 import { GetVulnerabilityDetailsQuery, SearchVulnerabilitiesQuery } from '../../api/generated';
 
-export type VulnInfo = SearchVulnerabilitiesQuery['vulnerabilities'][number];
+export type VulnInfo = SearchVulnerabilitiesQuery['vulnerability'][number];
 
-export type VulnInfoDetails = NonNullable<GetVulnerabilityDetailsQuery['vulnerabilities_by_pk']>;
+export type VulnInfoDetails = NonNullable<GetVulnerabilityDetailsQuery['vulnerability_by_pk']>;
 
-export type Order = 'cvss' | 'date' | 'severity' | 'none';
+export type Order = 'cvss' | 'date' | 'none';

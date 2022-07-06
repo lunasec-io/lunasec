@@ -23,13 +23,7 @@ mutation InsertScan($scan: scans_insert_input!, $build_id: uuid!) {
       vulnerability_package_id
       vulnerability {
         id
-        slug
-        description
-        cvss_score
-        cvss_inferred
-        name
-        namespace
-        data_source
+        source
         ignored_vulnerabilities(where: { project: {builds: {id: {_eq: $build_id}}}}) {
           creator_id
           id
