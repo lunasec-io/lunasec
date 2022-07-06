@@ -5,9 +5,9 @@ object_relationships:
   - name: build
     using:
       foreign_key_constraint_on: build_id
-  - name: depended_by_release
+  - name: depended_by_relationship
     using:
-      foreign_key_constraint_on: depended_by_release_id
+      foreign_key_constraint_on: depended_by_relationship_id
   - name: release
     using:
       foreign_key_constraint_on: release_id
@@ -19,7 +19,7 @@ insert_permissions:
         - labels
         - range
         - build_id
-        - depended_by_release_id
+        - depended_by_relationship_id
         - id
         - release_id
       backend_only: false
@@ -30,7 +30,7 @@ select_permissions:
         - labels
         - range
         - build_id
-        - depended_by_release_id
+        - depended_by_relationship_id
         - id
         - release_id
       filter: {}
@@ -40,7 +40,7 @@ select_permissions:
         - labels
         - range
         - build_id
-        - depended_by_release_id
+        - depended_by_relationship_id
         - id
         - release_id
       filter:
@@ -57,7 +57,7 @@ update_permissions:
         - labels
         - range
         - build_id
-        - depended_by_release_id
+        - depended_by_relationship_id
         - id
         - release_id
       filter: {}

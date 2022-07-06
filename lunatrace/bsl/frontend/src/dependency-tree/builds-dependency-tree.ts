@@ -12,35 +12,50 @@
  *
  */
 /* example query on builds to get these dependencies
-    build_dependencies {
-          id
-          root_range
-          version
-          release_id
-          sub_dependencies {
-            range
-            to_dependency
-            from_dependency
+build_dependency_relationships {
+      depended_by_release_id
+      range
+      labels
+
+      release {
+        id
+        fetched_time
+        version
+        package {
+          name
+          last_successful_fetch
+          package_manager
+          vulnerabilities {
+            affected_range_events {
+              event
+              type
+              version
+              id
+              database_specific
+            }
           }
         }
+      }
+    }
  */
 
 import semver from 'semver';
 
+import { RawDependencyRelationship } from './types';
 // This is just what we need someone to give us to build the tree
 // We extend this type with generics below so if they give us more data, we will give back more data
 export interface BuildDependencyPartial {
   id: string;
-  root_range: string | null;
-  sub_dependency_relationships: Array<{
-    range: string;
-    to_dependency: string;
-  }>;
+  dependend_by_relationship_id: string;
+  // root_range: string | null;
+  // sub_dependency_relationships: Array<{
+  //   range: string;
+  //   to_dependency: string;
+  // }>;
 }
 
 // Recursive type to model the recursive tree we are building.  Simply adds the field "dependents" which points down to more nodes.
 type BuildDependencyTreeNode<D> = D & {
-  rangeRequested: string; // since each node corresponds to one depender, we can add the range it was requested with
   dependents: Array<BuildDependencyTreeNode<D>>;
 };
 
@@ -58,29 +73,23 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
 
   constructor(public flatDeps: BuildDependency[]) {
     // define an internal recursive function that builds each node
-    // it's in here because this has access to the class generic and the flatDeps
+    // it's in the constructor because this has access to the class generic and the flatDeps
     // recursive stuff is always a little hairy but this is really quite dead simple
-    function recursivelyBuildNode(
-      dep: BuildDependency,
-      rangeRequested: string
-    ): BuildDependencyTreeNode<BuildDependency> {
-      const dependents = dep.sub_dependency_relationships.map((relationship) => {
-        const subDep = flatDeps.find((d) => d.id === relationship.to_dependency);
-        if (!subDep) {
-          throw new Error(
-            `Failed to build a dependency relationship from a parent to a child, the child is missing. Parent dep was ${dep}`
-          );
-        }
-        return recursivelyBuildNode(subDep, relationship.range);
-      });
-      return { ...dep, rangeRequested, dependents };
+    function recursivelyBuildNode(dep: BuildDependency): BuildDependencyTreeNode<BuildDependency> {
+      // Find every dep that points back at this dep
+      const unbuiltDependents = flatDeps.filter(
+        (potentialDependent) => potentialDependent.dependend_by_relationship_id === dep.id
+      );
+      // For each dependent, populate its own dependents recursively
+      const dependents = unbuiltDependents.map(recursivelyBuildNode);
+      return { ...dep, dependents };
     }
     // start with the root dependencies
     const rootDeps = flatDeps.filter(function filterRoots(d) {
-      d.root_range !== null;
+      d.dependend_by_relationship_id === null;
     });
     // kick off the tree build
-    this.tree = rootDeps.map((rootDep) => recursivelyBuildNode(rootDep, rootDep.root_range as string));
+    this.tree = rootDeps.map((rootDep) => recursivelyBuildNode(rootDep));
   }
 
   // Can show us why a dependency is installed
