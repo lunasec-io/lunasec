@@ -11,8 +11,7 @@
  * limitations under the License.
  *
  */
-import { filterFindingsByIgnored } from '@lunatrace/lunatrace-common/build/main';
-import { countCriticalVulnerabilities } from '@lunatrace/lunatrace-common/build/main/cvss';
+import { countCriticalVulnerabilities, filterFindingsByNotIgnored } from '@lunatrace/lunatrace-common/build/main';
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -51,7 +50,7 @@ export const DefaultBranchSummary: React.FC<DefaultBranchSummaryProps> = ({ proj
   const uploadDate = prettyDate(new Date(build.created_at as string));
   const lastScannedDate = build.scans[0] ? prettyDate(new Date(build.scans[0].created_at as string)) : 'Never';
 
-  const filteredFindings = filterFindingsByIgnored(build.findings);
+  const filteredFindings = filterFindingsNotIgnored(build.findings);
   const vulnerablePackageCount = countCriticalVulnerabilities(filteredFindings);
 
   const branch = branchName(build);
