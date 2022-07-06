@@ -75,6 +75,7 @@ export const VulnerabilitiesMain: React.FunctionComponent = () => {
       <Helmet title="Vulnerabilities Index" />
       <Container>
         <VulnerabilitiesControls
+          isFetching={isFetching}
           submitFilter={submitFilter}
           submitSearch={submitSearch}
           submitOrder={setOrderBy}
