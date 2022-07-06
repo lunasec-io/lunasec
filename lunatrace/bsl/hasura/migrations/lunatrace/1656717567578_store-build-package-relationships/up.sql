@@ -3,7 +3,6 @@ CREATE TABLE "build_dependency_relationship"
 (
     "id"                  UUID PRIMARY KEY DEFAULT public.gen_random_uuid(),
     "build_id"            UUID                                      NOT NULL REFERENCES public.builds (id) ON DELETE CASCADE,
-    "version"             text  NOT NULL,
     "release_id"          UUID NOT NULL REFERENCES "package"."release" ("id") ON DELETE CASCADE,
     "labels"              jsonb NOT NULL,
     "depended_by_release_id" UUID NULL REFERENCES "package"."release" ("id") ON DELETE CASCADE, -- if this is null its a root dep

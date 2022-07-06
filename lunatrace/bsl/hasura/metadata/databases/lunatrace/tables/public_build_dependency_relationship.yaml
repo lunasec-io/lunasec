@@ -18,7 +18,6 @@ insert_permissions:
       columns:
         - labels
         - range
-        - version
         - build_id
         - depended_by_release_id
         - id
@@ -30,7 +29,6 @@ select_permissions:
       columns:
         - labels
         - range
-        - version
         - build_id
         - depended_by_release_id
         - id
@@ -41,7 +39,6 @@ select_permissions:
       columns:
         - labels
         - range
-        - version
         - build_id
         - depended_by_release_id
         - id
@@ -59,7 +56,6 @@ update_permissions:
       columns:
         - labels
         - range
-        - version
         - build_id
         - depended_by_release_id
         - id
