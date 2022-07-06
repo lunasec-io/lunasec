@@ -27,7 +27,7 @@ export const VulnerabilitiesList: React.FunctionComponent<VulnerabilityListProps
 }) => {
   const vulnCards = vulnerabilities.map((vuln) => {
     return (
-      <Row key={vuln.slug}>
+      <Row key={vuln.id}>
         <VulnerabilityListItem vuln={vuln} />
       </Row>
     );

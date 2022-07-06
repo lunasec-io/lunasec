@@ -17,6 +17,7 @@ package gqlstorefx
 import (
 	"context"
 	"errors"
+	"github.com/rs/zerolog/log"
 	"strings"
 	"time"
 
@@ -41,6 +42,21 @@ type gqlStore struct {
 	d StoreDeps
 }
 
+func (g *gqlStore) DiffStore(s v3.StoreReader) (*[]v3.Diff, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (g *gqlStore) GetAllVulnerabilities() (*[]v3.Vulnerability, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (g *gqlStore) GetAllVulnerabilityMetadata() (*[]v3.VulnerabilityMetadata, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 // GetID returns info about the state of the graphql db. It is considered to be always up to date and has a special
 // schema version number to differentiate it from Grype's native data.
 func (g *gqlStore) GetID() (*v3.ID, error) {
@@ -52,6 +68,10 @@ func (g *gqlStore) GetID() (*v3.ID, error) {
 
 // GetVulnerability retrieves one or more vulnerabilities given a namespace and package name.
 func (g *gqlStore) GetVulnerability(namespace, name string) ([]v3.Vulnerability, error) {
+
+	// TODO (cthompson) this will be problematic in the future if want to have different namespaces outside of github
+	// the mapNamespace function should return an error if it can not find the namespace
+
 	// ignore vulnerabilities that do not come from github advisories
 	githubNamespacePrefix := "github:"
 	if !strings.HasPrefix(namespace, githubNamespacePrefix) {
@@ -59,8 +79,23 @@ func (g *gqlStore) GetVulnerability(namespace, name string) ([]v3.Vulnerability,
 	}
 	formattedNamespace := strings.ReplaceAll(namespace, githubNamespacePrefix, "")
 
-	vulns, err := gql.GetVulnerability(context.TODO(), g.d.GQLClient, name, mapNamespace(formattedNamespace))
+	packageManager, err := mapNamespace(formattedNamespace)
 	if err != nil {
+		log.Error().
+			Err(err).
+			Str("name", name).
+			Str("namespace", namespace).
+			Msg("unable to get package manager")
+		return nil, err
+	}
+
+	vulns, err := gql.GetVulnerability(context.TODO(), g.d.GQLClient, name, packageManager)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("name", name).
+			Str("namespace", namespace).
+			Msg("unable to get vulnerability from database")
 		return nil, err
 	}
 	return mapVulns(vulns.Vulnerability)

@@ -18,7 +18,7 @@ import { Accordion, Card, Col, Container, Row, Table } from 'react-bootstrap';
 import { ChevronDown, ChevronUp } from 'react-feather';
 
 import { ConditionallyRender } from '../../../../components/utils/ConditionallyRender';
-import { capitalizeFirstLetter, pluralizeIfMultiple } from '../../../../utils/string-utils';
+import { pluralizeIfMultiple } from '../../../../utils/string-utils';
 import { QuickViewProps } from '../types';
 
 import { GuideBlurb } from './GuideBlurb';
@@ -55,9 +55,9 @@ const VulnerabilityAccordionHeader: React.FunctionComponent<VulnerabilityAccordi
   severityFilter,
 }) => {
   const getSeverityDescription = () => {
-    const appliedSecurityFilter = shouldFilterFindings && severityOrder[severityFilter] !== 'Unknown';
+    const appliedSecurityFilter = shouldFilterFindings && severityOrder[severityFilter] !== 'unknown';
     if (appliedSecurityFilter) {
-      const extraSeverityInfo = severityFilter < severityOrder.indexOf('Critical') ? ' (or higher) ' : ' ';
+      const extraSeverityInfo = severityFilter < severityOrder.indexOf('critical') ? ' (or higher) ' : ' ';
       return severityOrder[severityFilter] + extraSeverityInfo;
     }
     return '';
@@ -141,7 +141,7 @@ const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ pkg }) =
           <h5>
             {' '}
             <span className="darker">Language: </span>
-            {capitalizeFirstLetter(pkg.language)}
+            <div className="text-capitalize">{pkg.language}</div>
           </h5>
         </Col>
       </Row>

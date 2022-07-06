@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { countCriticalVulnerabilities, filterFindingsNotIgnored } from '@lunatrace/lunatrace-common';
+import { countCriticalVulnerabilities, filterFindingsByNotIgnored } from '@lunatrace/lunatrace-common';
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 

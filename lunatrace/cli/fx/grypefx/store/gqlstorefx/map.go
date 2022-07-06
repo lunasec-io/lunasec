@@ -22,19 +22,23 @@ import (
 
 	v3 "github.com/anchore/grype/grype/db/v3"
 	"github.com/blang/semver/v4"
-	"github.com/rs/zerolog/log"
-
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/license-worker/pkg/vulnerability/advisory"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/advisory"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
-
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 )
 
 const LunaTracePackageScheme = "lunatrace-package"
 
 // map grype namespace to packagemanager
-func mapNamespace(namespace string) types.PackageManager {
+func mapNamespace(namespace string) (types.PackageManager, error) {
+	// TODO (cthompson) how do we want to handle mappings of grype namespaces to package managers?
+	// for internal packages, how do we handle this relationship?
+
+	// for java, we assume that maven is the package manager that is being used
+	if namespace == "java" {
+		namespace = "maven"
+	}
 	return advisory.MapStringToPackageManager(namespace)
 }
 
@@ -56,7 +60,11 @@ func eventsToRanges(gqlevts []*gql.GetVulnerabilityVulnerabilityAffectedVulnerab
 	for i, gqlevt := range gqlevts {
 		ver, err := semver.ParseTolerant(gqlevt.Version)
 		if err != nil {
-			fmt.Println("todo change me to a log statement failed to parse a version")
+			// TODO (cthompson) there are so many invalid semver versions, we can't do anything about this for now
+			//log.Error().
+			//	Err(err).
+			//	Str("version", *gqlevt.Version).
+			//	Msg("unable to parse affected range semver version")
 			continue
 		}
 		evts[i] = versionEvent{
@@ -83,7 +91,7 @@ introduced:
 			// find fixed
 			if fixedEvent.Event == "fixed" {
 				// emit a range
-				ranges = append(ranges, fmt.Sprintf(">= %s <= %s", introducedEvent.Version.String(), fixedEvent.Version.String()))
+				ranges = append(ranges, fmt.Sprintf(">= %s, <= %s", introducedEvent.Version.String(), fixedEvent.Version.String()))
 				continue introduced
 			}
 		}
@@ -93,24 +101,32 @@ introduced:
 	return ranges
 }
 
+func mapVersionConstraint(
+	affectedVersions []*gql.GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version,
+	rangeEvents []*gql.GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event,
+) string {
+	constraints := make([]string, 0)
+	for _, av := range affectedVersions {
+		constraints = append(constraints, fmt.Sprintf("= %s", av.Version))
+	}
+
+	if rangeEvents != nil {
+		constraints = append(constraints, eventsToRanges(rangeEvents)...)
+	}
+
+	return strings.Join(constraints, " || ")
+}
+
 func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, error) {
 	out := make([]v3.Vulnerability, 0)
 	for _, ov := range ovs {
 		for _, ova := range ov.Affected {
-			constraints := util.Map(ova.Affected_versions, func(av *gql.GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version) string {
-				return fmt.Sprintf("= %s", av.Version)
-			})
-
-			constraints = append(constraints, eventsToRanges(ova.Affected_range_events)...)
-
-			log.Info().Str("pkg", ova.Package.Name).Str("constraint", strings.Join(constraints, " || ")).Msg("generated constraint")
-
 			out = append(out, v3.Vulnerability{
 				ID:          ov.Id.String(),
 				PackageName: ova.Package.Name,
 				Namespace:   mapPackageManager(ova.Package.Package_manager),
 				// CVE-2019-17542,ffmpeg,nvd,"< 2.8.16 || >= 3.2, < 3.2.15 || >= 3.4, < 3.4.7 || >= 4.0, < 4.0.5 || >= 4.1, < 4.1.5"
-				VersionConstraint: strings.Join(constraints, " || "),
+				VersionConstraint: mapVersionConstraint(ova.Affected_versions, ova.Affected_range_events),
 				VersionFormat:     "semver",
 				// todo do we need to provide cpes no unless we WANT bad matching
 				CPEs: nil,

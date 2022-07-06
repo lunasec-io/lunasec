@@ -40,25 +40,25 @@ insert_permissions:
     permission:
       check: {}
       columns:
-        - fix_versions
-        - locations
+        - build_id
+        - created_at
         - dedupe_slug
+        - fix_state
+        - fix_versions
+        - id
         - language
+        - locations
         - matcher
         - package_name
+        - package_version_id
         - purl
+        - scan_id
+        - severity
         - type
+        - updated_at
         - version
         - version_matcher
         - virtual_path
-        - created_at
-        - updated_at
-        - fix_state
-        - severity
-        - build_id
-        - id
-        - package_version_id
-        - scan_id
         - vulnerability_id
         - vulnerability_package_id
       backend_only: false
@@ -66,25 +66,25 @@ select_permissions:
   - role: service
     permission:
       columns:
-        - fix_versions
-        - locations
+        - build_id
+        - created_at
         - dedupe_slug
+        - fix_state
+        - fix_versions
+        - id
         - language
+        - locations
         - matcher
         - package_name
+        - package_version_id
         - purl
+        - scan_id
+        - severity
         - type
+        - updated_at
         - version
         - version_matcher
         - virtual_path
-        - created_at
-        - updated_at
-        - fix_state
-        - severity
-        - build_id
-        - id
-        - package_version_id
-        - scan_id
         - vulnerability_id
         - vulnerability_package_id
       filter: {}
@@ -125,26 +125,26 @@ update_permissions:
   - role: service
     permission:
       columns:
-        - fix_versions
-        - locations
-        - dedupe_slug
-        - language
-        - matcher
-        - package_name
-        - purl
-        - type
-        - version
-        - version_matcher
-        - virtual_path
+        - id
         - created_at
         - updated_at
-        - fix_state
-        - severity
-        - build_id
-        - id
-        - package_version_id
-        - scan_id
         - vulnerability_id
         - vulnerability_package_id
+        - package_version_id
+        - scan_id
+        - build_id
+        - fix_state
+        - fix_versions
+        - package_name
+        - version
+        - version_matcher
+        - type
+        - locations
+        - language
+        - purl
+        - virtual_path
+        - matcher
+        - dedupe_slug
+        - severity
       filter: {}
       check: null

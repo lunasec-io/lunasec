@@ -11,16 +11,14 @@
  * limitations under the License.
  *
  */
+import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
 import { Card, Col, OverlayTrigger, Row, Table, Tooltip } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-import { CvssInferredWarning } from '../../../components/CvssInferredWarning';
 import { VulnInfoDetails } from '../types';
 
-export const AffectedPackagesList: React.FC<{ relatedVulns: VulnInfoDetails['related_vulnerabilities'] }> = ({
-  relatedVulns,
-}) => {
+export const AffectedPackagesList: React.FC<{ relatedVulns: VulnInfoDetails['equivalents'] }> = ({ relatedVulns }) => {
   const navigate = useNavigate();
 
   return (
@@ -39,24 +37,23 @@ export const AffectedPackagesList: React.FC<{ relatedVulns: VulnInfoDetails['rel
                 </tr>
               </thead>
               <tbody>
-                {relatedVulns.map(({ vulnerability: relatedVuln }) => {
+                {relatedVulns.map(({ equivalent_vulnerability: relatedVuln }) => {
+                  const severity = getCvssVectorFromSeverities(relatedVuln.severities);
+
                   return (
                     <OverlayTrigger
                       placement="bottom"
-                      overlay={<Tooltip className="wide-tooltip"> {relatedVuln.description}</Tooltip>}
+                      overlay={<Tooltip className="wide-tooltip"> {relatedVuln.summary}</Tooltip>}
                       key={relatedVuln.id}
                     >
                       <tr
                         style={{ cursor: 'pointer' }}
                         onClick={() => navigate(`/vulnerabilities/${relatedVuln.id as string}`)}
                       >
-                        <td>{relatedVuln.namespace}</td>
-                        <td>{relatedVuln.name}</td>
-                        <td>{relatedVuln.severity}</td>
-                        <td>
-                          {relatedVuln.cvss_score}{' '}
-                          <CvssInferredWarning inferred={relatedVuln.cvss_inferred || false} placement="top" />
-                        </td>
+                        <td>{relatedVuln.source}</td>
+                        <td>{relatedVuln.source_id}</td>
+                        <td>{severity ? severity.cvss3OverallSeverityText : 'unknown'}</td>
+                        <td>{severity ? severity.overallScore : 'unknown'}</td>
                       </tr>
                     </OverlayTrigger>
                   );

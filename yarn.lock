@@ -14490,6 +14490,7 @@ __metadata:
     ts-node: ^10.4.0
     ts-node-dev: ^1.1.8
     typescript: ~4.5.5
+    vuln-vects: ~1.1.0
   languageName: unknown
   linkType: soft
 
@@ -17804,6 +17805,13 @@ __metadata:
   version: 7.3.9
   resolution: "@types/semver@npm:7.3.9"
   checksum: 60bfcfdfa7f937be2c6f4b37ddb6714fb0f27b05fe4cbdfdd596a97d35ed95d13ee410efdd88e72a66449d0384220bf20055ab7d6b5df10de4990fbd20e5cbe0
+  languageName: node
+  linkType: hard
+
+"@types/semver@npm:~7.3.10":
+  version: 7.3.10
+  resolution: "@types/semver@npm:7.3.10"
+  checksum: 7047c2822b1759b2b950f39cfcf261f2b9dca47b4b55bdebba0905a8553631f1531eb0f59264ffe4834d1198c8331c8e0010a4cd742f4e0b60abbf399d134364
   languageName: node
   linkType: hard
 
@@ -30265,6 +30273,7 @@ __metadata:
     "@types/react-redux": ^7.1.22
     "@types/react-router": ^5.1.18
     "@types/react-router-bootstrap": ^0.24.5
+    "@types/semver": ~7.3.10
     "@types/semver-sort": ^0.0.1
     "@types/testing-library__react": ^10.2.0
     "@types/uuid": ^8.3.4
@@ -30320,6 +30329,7 @@ __metadata:
     remark-remove-comments: ~0.2.0
     sass: ^1.49.0
     sass-loader: ^12.4.0
+    semver: ~7.3.7
     stream-browserify: ~3.0.0
     stream-http: ~3.2.0
     typescript: ~4.5.5
@@ -30328,6 +30338,7 @@ __metadata:
     url: ~0.11.0
     use-react-router-breadcrumbs: ^3.0.2
     uuid: ^8.3.2
+    vuln-vects: ~1.1.0
     watch: ^1.0.2
     webpack: ~5.72.0
   languageName: unknown
@@ -48616,7 +48627,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.7":
+"semver@npm:^7.3.7, semver@npm:~7.3.7":
   version: 7.3.7
   resolution: "semver@npm:7.3.7"
   dependencies:
@@ -53859,6 +53870,13 @@ __metadata:
     "@vue/server-renderer": 3.2.31
     "@vue/shared": 3.2.31
   checksum: 2d66b563e60ce01ff4872f425b1acaf9a9f9d36f48eb986c89962d9b324c6bf566868503811462317052273b53056bbc58be3ceb06ea39dff174bb0fa62db3a2
+  languageName: node
+  linkType: hard
+
+"vuln-vects@npm:~1.1.0":
+  version: 1.1.0
+  resolution: "vuln-vects@npm:1.1.0"
+  checksum: 217548f717924f124543d691efe7ed534b0ef7009a35d63d44e9105d39a9ffdc2227f72342dcb4e5684d2a03cd5c5ae178f51298cd6b4332cdc2b0c2d7388895
   languageName: node
   linkType: hard
 
