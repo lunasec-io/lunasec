@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { countCriticalVulnerabilities, filterFindingsByIgnored } from '@lunatrace/lunatrace-common';
+import { countCriticalVulnerabilities, filterFindingsNotIgnored } from '@lunatrace/lunatrace-common';
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 
@@ -32,7 +32,7 @@ export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ bui
   const uploadDate = prettyDate(new Date(build.created_at as string));
   const lastScannedDate = build.scans[0] ? prettyDate(new Date(build.scans[0].created_at as string)) : 'Never';
 
-  const filteredFindings = filterFindingsByIgnored(build.findings);
+  const filteredFindings = filterFindingsNotIgnored(build.findings);
   const vulnerablePackageCount = countCriticalVulnerabilities(filteredFindings);
 
   const branch = branchName(build);
