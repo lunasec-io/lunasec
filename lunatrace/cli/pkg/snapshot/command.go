@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/anchore/grype/grype"
 	"github.com/urfave/cli/v2"
 	"io"
 	"io/ioutil"
@@ -317,6 +318,10 @@ func ScanCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err error) {
 
 	printToStdout := c.Bool("stdout")
 	readFromStdin := c.Bool("stdin")
+
+	logger := &types.ZerologLogger{}
+
+	grype.SetLogger(logger)
 
 	if readFromStdin {
 		sbomFile, err = util.GetFileFromStdin("sbom.json")

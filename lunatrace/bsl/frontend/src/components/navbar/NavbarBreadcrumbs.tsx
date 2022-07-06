@@ -96,11 +96,11 @@ const VulnBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponent
   if (!data) {
     return null;
   }
-  const vuln = data.vulnerabilities_by_pk;
+  const vuln = data.vulnerability_by_pk;
   if (!vuln) {
     return null;
   }
-  return <span>{vuln.name}</span>;
+  return <span>{vuln.source_id}</span>;
 };
 
 const OrganizationBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {

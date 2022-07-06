@@ -70,12 +70,6 @@ export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesCon
             <AlignLeft className="feather align-middle mt-n1" /> Sort
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            <Dropdown.Item
-              active={order === 'severity'}
-              onClick={(e) => submitOrder(order !== 'severity' ? 'severity' : 'none')}
-            >
-              Severity <ChevronDown />
-            </Dropdown.Item>
             <Dropdown.Item active={order === 'cvss'} onClick={(e) => submitOrder(order !== 'cvss' ? 'cvss' : 'none')}>
               CVSS Score <ChevronDown />
             </Dropdown.Item>

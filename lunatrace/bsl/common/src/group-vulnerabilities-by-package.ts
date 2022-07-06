@@ -44,7 +44,7 @@ function createNewVulnPackage<F extends Finding>(project_id: string, finding: F)
     type: finding.type,
     guides: finding.vulnerability.guide_vulnerabilities?.map((tv) => tv.guide) || [],
     package_name: finding.package_name,
-    cvss_score: finding.vulnerability.namespace === 'nvd' ? finding.vulnerability.cvss_score || null : null,
+    cvss_score: finding.vulnerability.cvss_score || 0,
     fix_state: finding.fix_state || null,
     fix_versions: finding.fix_versions || [],
     findings: [finding],
@@ -54,28 +54,18 @@ function createNewVulnPackage<F extends Finding>(project_id: string, finding: F)
 
 function mergeExistingFindingIntoPackage<F extends Finding>(vulnPackage: VulnerablePackage<F>, finding: F): void {
   // add the finding to the finding list if its not a dupe
-  const existingSlugs = vulnPackage.findings.map((f) => f.vulnerability.slug);
-  const newSlug = finding.vulnerability.slug;
-  if (!existingSlugs.includes(newSlug)) {
+  const existingVulnerabilityIds = vulnPackage.findings.map((f) => f.vulnerability.id);
+  const newVulnerabilityId = finding.vulnerability.id;
+  if (!existingVulnerabilityIds.includes(newVulnerabilityId)) {
     vulnPackage.findings.push(finding);
   }
+
   // add any new locations
   finding.locations.forEach((l) => {
     if (!vulnPackage.locations.includes(l)) {
       vulnPackage.locations = [...vulnPackage.locations, l];
     }
   });
-  // set the highest CVSS score to the package score
-  try {
-    if (
-      finding.vulnerability.namespace === 'nvd' &&
-      Number(finding.vulnerability.cvss_score) > Number(vulnPackage.cvss_score)
-    ) {
-      vulnPackage.cvss_score = finding.vulnerability.cvss_score || null;
-    }
-  } catch {
-    console.error('failed converting cvss to number');
-  }
   // Add any fix versions/state
   if (finding.fix_state === 'fixed') {
     vulnPackage.fix_state = finding.fix_state;
@@ -97,19 +87,4 @@ function mergeExistingFindingIntoPackage<F extends Finding>(vulnPackage: Vulnera
       }
     });
   }
-}
-
-interface FindingForCounting {
-  severity: string;
-  purl: string;
-}
-
-export function countCriticalVulnerabilities(findings: FindingForCounting[]): number {
-  const criticalPackagePurls = new Set<string>();
-  findings.forEach((finding) => {
-    if (finding.severity === 'Critical' && finding.purl) {
-      criticalPackagePurls.add(finding.purl);
-    }
-  });
-  return criticalPackagePurls.size;
 }
