@@ -67,7 +67,7 @@ function parseRequestTokenHeader(headerName: string, req: Request): MaybeError<s
 }
 
 function generateErrorResponse(res: Response, errorMessage: string, statusCode = 500) {
-  log.error('failed to authorize cli', {
+  log.error('failed to authorize', {
     errorMessage,
   });
   res.status(statusCode);

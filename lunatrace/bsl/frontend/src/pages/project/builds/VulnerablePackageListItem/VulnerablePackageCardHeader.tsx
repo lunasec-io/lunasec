@@ -12,11 +12,9 @@
  *
  */
 import { filterFindingsByIgnored, VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
+import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
-
-import { getCvssVectorFromSeverities } from '../../../../utils/cvss';
-import { toTitleCase } from '../../../../utils/string-utils';
 
 import { Finding } from './types';
 
@@ -29,11 +27,15 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
   const allFindingsAreIgnored = filteredFindings.length === 0;
   const headerClassNames = allFindingsAreIgnored ? 'text-decoration-line-through' : '';
 
+  // From the list of severities for a given vulnerability, determine which one is the most severe
+  // and display this score. Most often, there will only be one score, but in the case there are multiple,
+  // we need to choose one to show.
   const sortedSeverities = filteredFindings
     .map((finding) => getCvssVectorFromSeverities(finding.vulnerability.severities))
     .filter((severity) => !!severity)
     .sort((a, b) => (a && b ? b.overallScore - a.overallScore : 0));
   const mostSevereSeverity = sortedSeverities.length > 0 ? sortedSeverities[0] : null;
+
   return (
     <Card.Header>
       <Container fluid>
@@ -56,10 +58,10 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
                     <span className="text-right darker"> Severity: </span>
                     <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
                       <h4
-                        className={`p-1 ${mostSevereSeverity.cvss3OverallSeverityText}`}
+                        className={`p-1 ${mostSevereSeverity.cvss3OverallSeverityText} text-capitalize`}
                         style={{ display: 'inline' }}
                       >
-                        {toTitleCase(mostSevereSeverity.cvss3OverallSeverityText)}
+                        {mostSevereSeverity.cvss3OverallSeverityText}
                       </h4>
                     </div>
                   </Card.Title>

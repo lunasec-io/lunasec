@@ -121,3 +121,16 @@ export interface Tool {
   name: string;
   link: string;
 }
+
+export type VulnerabilitySeverity = {
+  score: string;
+  source: string;
+  type: string;
+};
+
+export interface FindingForCounting {
+  vulnerability: {
+    severities: VulnerabilitySeverity[];
+  };
+  purl: string;
+}
