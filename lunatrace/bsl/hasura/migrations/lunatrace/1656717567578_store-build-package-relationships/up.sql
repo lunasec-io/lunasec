@@ -1,18 +1,18 @@
 
-CREATE TABLE "build_dependency_relationship"
+CREATE TABLE public."build_dependency_relationship"
 (
     "id"                  UUID PRIMARY KEY DEFAULT public.gen_random_uuid(),
     "build_id"            UUID                                      NOT NULL REFERENCES public.builds (id) ON DELETE CASCADE,
     "release_id"          UUID NOT NULL REFERENCES "package"."release" ("id") ON DELETE CASCADE,
     "labels"              jsonb NOT NULL,
-    "depended_by_release_id" UUID NULL REFERENCES "package"."release" ("id") ON DELETE CASCADE, -- if this is null its a root dep
+    "depended_by_relationship_id" UUID NULL REFERENCES "public"."build_dependency_relationship" ("id") ON DELETE CASCADE, -- points to another node on this graph.  if this is null its a root dep
     "range"               text  NOT NULL
 );
 
 CREATE INDEX ON "build_dependency_relationship" ("build_id");
 
 CREATE INDEX ON "build_dependency_relationship" ("release_id");
-CREATE INDEX ON "build_dependency_relationship" ("depended_by_release_id");
+CREATE INDEX ON "build_dependency_relationship" ("depended_by_relationship_id");
 
 
 -- Keep track of when we last tried to sync a package from npm
