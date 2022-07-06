@@ -1,24 +1,28 @@
-CREATE TABLE public."build_dependency"
+
+CREATE TABLE "build_dependency_relationship"
 (
-    id           uuid DEFAULT public.gen_random_uuid() NOT NULL PRIMARY KEY,
-    "root_range"       text                               NULL,
-    "build_id"   UUID                                  NOT NULL REFERENCES public.builds (id) ON DELETE CASCADE,
-    "version"    text                                  NOT NULL,
-    "release_id" UUID REFERENCES "package"."release" ("id") ON DELETE CASCADE,
-    "dev" boolean DEFAULT FALSE
+    "id"                  UUID PRIMARY KEY DEFAULT public.gen_random_uuid(),
+    "build_id"            UUID                                      NOT NULL REFERENCES public.builds (id) ON DELETE CASCADE,
+    "version"             text  NOT NULL,
+    "release_id"          UUID NOT NULL REFERENCES "package"."release" ("id") ON DELETE CASCADE,
+    "labels"              jsonb NOT NULL,
+    "depended_by_release_id" UUID NULL REFERENCES "package"."release" ("id") ON DELETE CASCADE, -- if this is null its a root dep
+    "range"               text  NOT NULL
 );
 
-CREATE TABLE public."build_dependency_relationship"
-(
-    "from_dependency" UUID REFERENCES "build_dependency" ("id") ON DELETE CASCADE,
-    "to_dependency"   UUID REFERENCES "build_dependency" ("id") ON DELETE CASCADE,
-    "range"           text
-);
+CREATE INDEX ON "build_dependency_relationship" ("build_id");
+
+CREATE INDEX ON "build_dependency_relationship" ("release_id");
+CREATE INDEX ON "build_dependency_relationship" ("depended_by_release_id");
 
 
-CREATE INDEX ON "build_dependency" ("build_id");
+-- Keep track of when we last tried to sync a package from npm
+-- this is useful in the case of lazily stubbed packages coming in from people's manifests/projects that may NOT be in the public manager or otherwise be fake news
+ALTER TABLE package.package
+    ADD COLUMN last_failed_fetch timestamptz DEFAULT NULL;
+ALTER TABLE package.package
+    ADD COLUMN last_successful_fetch timestamptz DEFAULT NULL;
+ALTER TABLE package.package DROP COLUMN fetched_time;
 
-CREATE INDEX ON "build_dependency" ("release_id");
-
-ALTER TABLE package.package ADD COLUMN synced boolean DEFAULT false;
+CREATE INDEX package_last_fetch ON package.package (last_successful_fetch);
 
