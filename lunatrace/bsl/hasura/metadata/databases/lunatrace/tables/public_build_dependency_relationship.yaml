@@ -1,0 +1,68 @@
+table:
+  schema: public
+  name: build_dependency_relationship
+object_relationships:
+  - name: build
+    using:
+      foreign_key_constraint_on: build_id
+  - name: depended_by_relationship
+    using:
+      foreign_key_constraint_on: depended_by_relationship_id
+  - name: release
+    using:
+      foreign_key_constraint_on: release_id
+insert_permissions:
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - labels
+        - range
+        - build_id
+        - depended_by_relationship_id
+        - id
+        - release_id
+      backend_only: false
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - labels
+        - range
+        - build_id
+        - depended_by_relationship_id
+        - id
+        - release_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - labels
+        - range
+        - build_id
+        - depended_by_relationship_id
+        - id
+        - release_id
+      filter:
+        build:
+          project:
+            organization:
+              organization_users:
+                user_id:
+                  _eq: X-Hasura-Real-User-Id
+update_permissions:
+  - role: service
+    permission:
+      columns:
+        - labels
+        - range
+        - build_id
+        - depended_by_relationship_id
+        - id
+        - release_id
+      filter: {}
+      check: {}
+delete_permissions:
+  - role: service
+    permission:
+      filter: {}
