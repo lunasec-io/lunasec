@@ -165,9 +165,104 @@ export type Bigint_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['bigint']>>;
 };
 
+/** columns and relationships of "build_dependency_relationship" */
+export type Build_Dependency_Relationship = {
+  __typename?: 'build_dependency_relationship';
+  /** An object relationship */
+  build: Builds;
+  build_id: Scalars['uuid'];
+  /** An object relationship */
+  depended_by_relationship?: Maybe<Build_Dependency_Relationship>;
+  depended_by_relationship_id?: Maybe<Scalars['uuid']>;
+  id: Scalars['uuid'];
+  labels: Scalars['jsonb'];
+  range: Scalars['String'];
+  /** An object relationship */
+  release: Package_Release;
+  release_id: Scalars['uuid'];
+};
+
+
+/** columns and relationships of "build_dependency_relationship" */
+export type Build_Dependency_RelationshipLabelsArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** order by aggregate values of table "build_dependency_relationship" */
+export type Build_Dependency_Relationship_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Build_Dependency_Relationship_Max_Order_By>;
+  min?: InputMaybe<Build_Dependency_Relationship_Min_Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "build_dependency_relationship". All fields are combined with a logical 'AND'. */
+export type Build_Dependency_Relationship_Bool_Exp = {
+  _and?: InputMaybe<Array<Build_Dependency_Relationship_Bool_Exp>>;
+  _not?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+  _or?: InputMaybe<Array<Build_Dependency_Relationship_Bool_Exp>>;
+  build?: InputMaybe<Builds_Bool_Exp>;
+  build_id?: InputMaybe<Uuid_Comparison_Exp>;
+  depended_by_relationship?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+  depended_by_relationship_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  labels?: InputMaybe<Jsonb_Comparison_Exp>;
+  range?: InputMaybe<String_Comparison_Exp>;
+  release?: InputMaybe<Package_Release_Bool_Exp>;
+  release_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** order by max() on columns of table "build_dependency_relationship" */
+export type Build_Dependency_Relationship_Max_Order_By = {
+  build_id?: InputMaybe<Order_By>;
+  depended_by_relationship_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+  release_id?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "build_dependency_relationship" */
+export type Build_Dependency_Relationship_Min_Order_By = {
+  build_id?: InputMaybe<Order_By>;
+  depended_by_relationship_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+  release_id?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "build_dependency_relationship". */
+export type Build_Dependency_Relationship_Order_By = {
+  build?: InputMaybe<Builds_Order_By>;
+  build_id?: InputMaybe<Order_By>;
+  depended_by_relationship?: InputMaybe<Build_Dependency_Relationship_Order_By>;
+  depended_by_relationship_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  labels?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+  release?: InputMaybe<Package_Release_Order_By>;
+  release_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "build_dependency_relationship" */
+export enum Build_Dependency_Relationship_Select_Column {
+  /** column name */
+  BuildId = 'build_id',
+  /** column name */
+  DependedByRelationshipId = 'depended_by_relationship_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Labels = 'labels',
+  /** column name */
+  Range = 'range',
+  /** column name */
+  ReleaseId = 'release_id'
+}
+
 /** columns and relationships of "builds" */
 export type Builds = {
   __typename?: 'builds';
+  /** An array relationship */
+  build_dependency_relationships: Array<Build_Dependency_Relationship>;
   build_number?: Maybe<Scalars['Int']>;
   created_at: Scalars['timestamp'];
   existing_github_check_id?: Maybe<Scalars['bigint']>;
@@ -193,6 +288,16 @@ export type Builds = {
   /** An aggregate relationship */
   scans_aggregate: Scans_Aggregate;
   source_type: Scalars['builds_source_type'];
+};
+
+
+/** columns and relationships of "builds" */
+export type BuildsBuild_Dependency_RelationshipsArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
 };
 
 
@@ -308,6 +413,7 @@ export type Builds_Bool_Exp = {
   _and?: InputMaybe<Array<Builds_Bool_Exp>>;
   _not?: InputMaybe<Builds_Bool_Exp>;
   _or?: InputMaybe<Array<Builds_Bool_Exp>>;
+  build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   existing_github_check_id?: InputMaybe<Bigint_Comparison_Exp>;
@@ -399,6 +505,7 @@ export type Builds_Mutation_Response = {
 
 /** Ordering options when selecting data from "builds". */
 export type Builds_Order_By = {
+  build_dependency_relationships_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   existing_github_check_id?: InputMaybe<Order_By>;
@@ -2748,13 +2855,38 @@ export type Package = {
   __typename?: 'package';
   custom_registry: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  fetched_time?: Maybe<Scalars['timestamptz']>;
   id: Scalars['uuid'];
+  last_failed_fetch?: Maybe<Scalars['timestamptz']>;
+  last_successful_fetch?: Maybe<Scalars['timestamptz']>;
   name: Scalars['String'];
   package_manager: Scalars['package_manager'];
+  /** An array relationship */
+  releases: Array<Package_Release>;
+  /** An aggregate relationship */
+  releases_aggregate: Package_Release_Aggregate;
   upstream_data?: Maybe<Scalars['jsonb']>;
   /** An array relationship */
   vulnerabilities: Array<Vulnerability_Affected>;
+};
+
+
+/** columns and relationships of "package.package" */
+export type PackageReleasesArgs = {
+  distinct_on?: InputMaybe<Array<Package_Release_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Package_Release_Order_By>>;
+  where?: InputMaybe<Package_Release_Bool_Exp>;
+};
+
+
+/** columns and relationships of "package.package" */
+export type PackageReleases_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Package_Release_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Package_Release_Order_By>>;
+  where?: InputMaybe<Package_Release_Bool_Exp>;
 };
 
 
@@ -2780,10 +2912,12 @@ export type Package_Bool_Exp = {
   _or?: InputMaybe<Array<Package_Bool_Exp>>;
   custom_registry?: InputMaybe<String_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
-  fetched_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  last_failed_fetch?: InputMaybe<Timestamptz_Comparison_Exp>;
+  last_successful_fetch?: InputMaybe<Timestamptz_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   package_manager?: InputMaybe<Package_Manager_Comparison_Exp>;
+  releases?: InputMaybe<Package_Release_Bool_Exp>;
   upstream_data?: InputMaybe<Jsonb_Comparison_Exp>;
   vulnerabilities?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
 };
@@ -2805,13 +2939,174 @@ export type Package_Manager_Comparison_Exp = {
 export type Package_Order_By = {
   custom_registry?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
-  fetched_time?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  last_failed_fetch?: InputMaybe<Order_By>;
+  last_successful_fetch?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   package_manager?: InputMaybe<Order_By>;
+  releases_aggregate?: InputMaybe<Package_Release_Aggregate_Order_By>;
   upstream_data?: InputMaybe<Order_By>;
   vulnerabilities_aggregate?: InputMaybe<Vulnerability_Affected_Aggregate_Order_By>;
 };
+
+/** columns and relationships of "package.release" */
+export type Package_Release = {
+  __typename?: 'package_release';
+  /** An array relationship */
+  build_dependency_relationships: Array<Build_Dependency_Relationship>;
+  fetched_time?: Maybe<Scalars['timestamptz']>;
+  id: Scalars['uuid'];
+  observed_time: Scalars['timestamptz'];
+  /** An object relationship */
+  package?: Maybe<Package>;
+  package_id?: Maybe<Scalars['uuid']>;
+  publishing_maintainer_id?: Maybe<Scalars['uuid']>;
+  release_time?: Maybe<Scalars['timestamptz']>;
+  upstream_data?: Maybe<Scalars['jsonb']>;
+  version: Scalars['String'];
+};
+
+
+/** columns and relationships of "package.release" */
+export type Package_ReleaseBuild_Dependency_RelationshipsArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+};
+
+
+/** columns and relationships of "package.release" */
+export type Package_ReleaseUpstream_DataArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "package.release" */
+export type Package_Release_Aggregate = {
+  __typename?: 'package_release_aggregate';
+  aggregate?: Maybe<Package_Release_Aggregate_Fields>;
+  nodes: Array<Package_Release>;
+};
+
+/** aggregate fields of "package.release" */
+export type Package_Release_Aggregate_Fields = {
+  __typename?: 'package_release_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Package_Release_Max_Fields>;
+  min?: Maybe<Package_Release_Min_Fields>;
+};
+
+
+/** aggregate fields of "package.release" */
+export type Package_Release_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Package_Release_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "package.release" */
+export type Package_Release_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Package_Release_Max_Order_By>;
+  min?: InputMaybe<Package_Release_Min_Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "package.release". All fields are combined with a logical 'AND'. */
+export type Package_Release_Bool_Exp = {
+  _and?: InputMaybe<Array<Package_Release_Bool_Exp>>;
+  _not?: InputMaybe<Package_Release_Bool_Exp>;
+  _or?: InputMaybe<Array<Package_Release_Bool_Exp>>;
+  build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+  fetched_time?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  observed_time?: InputMaybe<Timestamptz_Comparison_Exp>;
+  package?: InputMaybe<Package_Bool_Exp>;
+  package_id?: InputMaybe<Uuid_Comparison_Exp>;
+  publishing_maintainer_id?: InputMaybe<Uuid_Comparison_Exp>;
+  release_time?: InputMaybe<Timestamptz_Comparison_Exp>;
+  upstream_data?: InputMaybe<Jsonb_Comparison_Exp>;
+  version?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Package_Release_Max_Fields = {
+  __typename?: 'package_release_max_fields';
+  fetched_time?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  observed_time?: Maybe<Scalars['timestamptz']>;
+  package_id?: Maybe<Scalars['uuid']>;
+  publishing_maintainer_id?: Maybe<Scalars['uuid']>;
+  release_time?: Maybe<Scalars['timestamptz']>;
+  version?: Maybe<Scalars['String']>;
+};
+
+/** order by max() on columns of table "package.release" */
+export type Package_Release_Max_Order_By = {
+  fetched_time?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  observed_time?: InputMaybe<Order_By>;
+  package_id?: InputMaybe<Order_By>;
+  publishing_maintainer_id?: InputMaybe<Order_By>;
+  release_time?: InputMaybe<Order_By>;
+  version?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Package_Release_Min_Fields = {
+  __typename?: 'package_release_min_fields';
+  fetched_time?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  observed_time?: Maybe<Scalars['timestamptz']>;
+  package_id?: Maybe<Scalars['uuid']>;
+  publishing_maintainer_id?: Maybe<Scalars['uuid']>;
+  release_time?: Maybe<Scalars['timestamptz']>;
+  version?: Maybe<Scalars['String']>;
+};
+
+/** order by min() on columns of table "package.release" */
+export type Package_Release_Min_Order_By = {
+  fetched_time?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  observed_time?: InputMaybe<Order_By>;
+  package_id?: InputMaybe<Order_By>;
+  publishing_maintainer_id?: InputMaybe<Order_By>;
+  release_time?: InputMaybe<Order_By>;
+  version?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "package.release". */
+export type Package_Release_Order_By = {
+  build_dependency_relationships_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
+  fetched_time?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  observed_time?: InputMaybe<Order_By>;
+  package?: InputMaybe<Package_Order_By>;
+  package_id?: InputMaybe<Order_By>;
+  publishing_maintainer_id?: InputMaybe<Order_By>;
+  release_time?: InputMaybe<Order_By>;
+  upstream_data?: InputMaybe<Order_By>;
+  version?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "package.release" */
+export enum Package_Release_Select_Column {
+  /** column name */
+  FetchedTime = 'fetched_time',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ObservedTime = 'observed_time',
+  /** column name */
+  PackageId = 'package_id',
+  /** column name */
+  PublishingMaintainerId = 'publishing_maintainer_id',
+  /** column name */
+  ReleaseTime = 'release_time',
+  /** column name */
+  UpstreamData = 'upstream_data',
+  /** column name */
+  Version = 'version'
+}
 
 /** select columns of table "package.package" */
 export enum Package_Select_Column {
@@ -2820,9 +3115,11 @@ export enum Package_Select_Column {
   /** column name */
   Description = 'description',
   /** column name */
-  FetchedTime = 'fetched_time',
-  /** column name */
   Id = 'id',
+  /** column name */
+  LastFailedFetch = 'last_failed_fetch',
+  /** column name */
+  LastSuccessfulFetch = 'last_successful_fetch',
   /** column name */
   Name = 'name',
   /** column name */
@@ -3338,6 +3635,10 @@ export enum Projects_Update_Column {
 export type Query_Root = {
   __typename?: 'query_root';
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
+  /** fetch data from the table: "build_dependency_relationship" */
+  build_dependency_relationship: Array<Build_Dependency_Relationship>;
+  /** fetch data from the table: "build_dependency_relationship" using primary key columns */
+  build_dependency_relationship_by_pk?: Maybe<Build_Dependency_Relationship>;
   /** An array relationship */
   builds: Array<Builds>;
   /** An aggregate relationship */
@@ -3399,6 +3700,12 @@ export type Query_Root = {
   package: Array<Package>;
   /** fetch data from the table: "package.package" using primary key columns */
   package_by_pk?: Maybe<Package>;
+  /** fetch data from the table: "package.release" */
+  package_release: Array<Package_Release>;
+  /** fetch aggregated fields from the table: "package.release" */
+  package_release_aggregate: Package_Release_Aggregate;
+  /** fetch data from the table: "package.release" using primary key columns */
+  package_release_by_pk?: Maybe<Package_Release>;
   /** An array relationship */
   package_versions: Array<Package_Versions>;
   /** fetch data from the table: "package_versions" using primary key columns */
@@ -3475,6 +3782,20 @@ export type Query_Root = {
 
 export type Query_RootAuthenticatedRepoCloneUrlArgs = {
   repoGithubId: Scalars['Int'];
+};
+
+
+export type Query_RootBuild_Dependency_RelationshipArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+};
+
+
+export type Query_RootBuild_Dependency_Relationship_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -3696,6 +4017,29 @@ export type Query_RootPackageArgs = {
 
 
 export type Query_RootPackage_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootPackage_ReleaseArgs = {
+  distinct_on?: InputMaybe<Array<Package_Release_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Package_Release_Order_By>>;
+  where?: InputMaybe<Package_Release_Bool_Exp>;
+};
+
+
+export type Query_RootPackage_Release_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Package_Release_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Package_Release_Order_By>>;
+  where?: InputMaybe<Package_Release_Bool_Exp>;
+};
+
+
+export type Query_RootPackage_Release_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -4407,6 +4751,10 @@ export type Severity_Enum_Comparison_Exp = {
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
+  /** fetch data from the table: "build_dependency_relationship" */
+  build_dependency_relationship: Array<Build_Dependency_Relationship>;
+  /** fetch data from the table: "build_dependency_relationship" using primary key columns */
+  build_dependency_relationship_by_pk?: Maybe<Build_Dependency_Relationship>;
   /** An array relationship */
   builds: Array<Builds>;
   /** An aggregate relationship */
@@ -4467,6 +4815,12 @@ export type Subscription_Root = {
   package: Array<Package>;
   /** fetch data from the table: "package.package" using primary key columns */
   package_by_pk?: Maybe<Package>;
+  /** fetch data from the table: "package.release" */
+  package_release: Array<Package_Release>;
+  /** fetch aggregated fields from the table: "package.release" */
+  package_release_aggregate: Package_Release_Aggregate;
+  /** fetch data from the table: "package.release" using primary key columns */
+  package_release_by_pk?: Maybe<Package_Release>;
   /** An array relationship */
   package_versions: Array<Package_Versions>;
   /** fetch data from the table: "package_versions" using primary key columns */
@@ -4535,6 +4889,20 @@ export type Subscription_Root = {
   vulnerability_severity: Array<Vulnerability_Severity>;
   /** fetch data from the table: "vulnerability.severity" using primary key columns */
   vulnerability_severity_by_pk?: Maybe<Vulnerability_Severity>;
+};
+
+
+export type Subscription_RootBuild_Dependency_RelationshipArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+};
+
+
+export type Subscription_RootBuild_Dependency_Relationship_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -4756,6 +5124,29 @@ export type Subscription_RootPackageArgs = {
 
 
 export type Subscription_RootPackage_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootPackage_ReleaseArgs = {
+  distinct_on?: InputMaybe<Array<Package_Release_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Package_Release_Order_By>>;
+  where?: InputMaybe<Package_Release_Bool_Exp>;
+};
+
+
+export type Subscription_RootPackage_Release_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Package_Release_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Package_Release_Order_By>>;
+  where?: InputMaybe<Package_Release_Bool_Exp>;
+};
+
+
+export type Subscription_RootPackage_Release_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -6111,7 +6502,7 @@ export type GetBuildDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildDetailsQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, source_type: any, project_id?: any | null, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerability', id: any, summary?: string | null, source: string, source_id: string, cvss_score?: number | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, source: string, type: string, score: string }>, affected: Array<{ __typename?: 'vulnerability_affected', package?: { __typename?: 'package', name: string, package_manager: any } | null, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', type: any, event: string, version: string }> }>, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, severity: any, summary: string, created_at: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> } | null };
+export type GetBuildDetailsQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, source_type: any, project_id?: any | null, build_dependency_relationships: Array<{ __typename?: 'build_dependency_relationship', depended_by_relationship_id?: any | null, range: string, labels: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package?: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, vulnerabilities: Array<{ __typename?: 'vulnerability_affected', affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', event: string, type: any, version: string, id: any, database_specific?: any | null }> }> } | null } }>, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, package_version_id?: any | null, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability_package_id?: any | null, vulnerability: { __typename?: 'vulnerability', id: any, summary?: string | null, source: string, source_id: string, cvss_score?: number | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, source: string, type: string, score: string }>, affected: Array<{ __typename?: 'vulnerability_affected', package?: { __typename?: 'package', name: string, package_manager: any } | null, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', type: any, event: string, version: string }> }>, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, severity: any, summary: string, created_at: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> } | null };
 
 export type GetCurrentUserInfoQueryVariables = Exact<{
   kratos_id: Scalars['uuid'];
@@ -6291,6 +6682,30 @@ export const GetBuildDetailsDocument = `
     id
     source_type
     project_id
+    build_dependency_relationships {
+      depended_by_relationship_id
+      range
+      labels
+      release {
+        id
+        fetched_time
+        version
+        package {
+          name
+          last_successful_fetch
+          package_manager
+          vulnerabilities {
+            affected_range_events {
+              event
+              type
+              version
+              id
+              database_specific
+            }
+          }
+        }
+      }
+    }
     project {
       name
       ignored_vulnerabilities {
