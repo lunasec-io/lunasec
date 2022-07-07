@@ -27,6 +27,36 @@ export async function pullRequestHandler(event: EmitterWebhookEvent<'pull_reques
 
     log.info('snapshotting repository for pull request');
 
+    // TODO (cthompson) we need to start the github PR check here, and then in pr-comment-generator.ts, that is where
+    // we update the check to say that it is finished.
+
+    // logger.info('updating check status', {
+    //   owner,
+    //   repo,
+    //   insertedCheckId,
+    // });
+    //
+    // // Otherwise just update the existing review on the PR.  Very similar to above but we update instead
+    // const githubReviewResponse = await octokit.rest.checks.update({
+    //   owner,
+    //   repo,
+    //   check_run_id: insertedCheckId || previousReviewId,
+    //   conclusion: scanReport.findings.length ? 'neutral' : 'success',
+    //   completed_at: new Date().toISOString(),
+    //   ...checkData,
+    // });
+
+    // const existing_github_check_id = githubReviewResponse.data.id;
+    //
+    // if (!existing_github_check_id) {
+    //   return logger.error('Failed to generate a check, github responded ', {
+    //     githubReviewResponse,
+    //   });
+    // }
+    // logger.info('successfully updated the check');
+    // // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
+    // await hasura.UpdateBuildExistingCheckId({ id: buildId, existing_github_check_id });
+
     const res = await queueRepositoryForSnapshot(event.payload.installation.id, {
       cloneUrl: event.payload.repository.clone_url,
       gitBranch: event.payload.pull_request.head.ref, // TODO make this the human readable branch name, not the ref

@@ -10,6 +10,7 @@ query GetProject($project_id: uuid!, $build_limit: Int = 10) {
         settings {
             id
             pr_feedback_disabled
+            pr_check_enabled
         }
         organization {
             name
