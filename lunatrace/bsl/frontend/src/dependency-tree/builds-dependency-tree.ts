@@ -93,30 +93,31 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
   }
 
   // Can show us why a dependency is installed
-  public showDependencyChainsOfPackage(
-    depId: string,
-    prependToExistingChain: string[] = []
-  ): DependencyChain<BuildDependency>[] {
-    const chains: DependencyChain<BuildDependency>[] = [];
-    // walk tree recursively, finding all paths that contain a given item and putting them in the array
-    function findInstanceRecur(
-      currentNode: BuildDependencyTreeNode<BuildDependency>,
-      currentChain: DependencyChain<BuildDependency>
-    ): void {
-      if (currentNode.id === depId) {
-        chains.push(currentChain);
-        // This was what we were looking for, abandon this chain
-        return;
-      }
-      // if we aren't at the bottom of the chain yet, keep looking through transitives for our dependency
-      currentNode.dependents.forEach((dep) => findInstanceRecur(dep, [...currentChain, currentNode]));
-    }
-    // Start at the root nodes and walk every path using the above function, looking for ones that lead to the dependency
-    this.tree.forEach((rootDep) => {
-      findInstanceRecur(rootDep, []);
-    });
-    return chains;
-  }
+  // TODO: commented o until we need it and schema is solidified
+  // public showDependencyChainsOfPackage(
+  //   depId: string,
+  //   prependToExistingChain: string[] = []
+  // ): DependencyChain<BuildDependency>[] {
+  //   const chains: DependencyChain<BuildDependency>[] = [];
+  //   // walk tree recursively, finding all paths that contain a given item and putting them in the array
+  //   function findInstanceRecur(
+  //     currentNode: BuildDependencyTreeNode<BuildDependency>,
+  //     currentChain: DependencyChain<BuildDependency>
+  //   ): void {
+  //     if (currentNode.id === depId) {
+  //       chains.push(currentChain);
+  //       // This was what we were looking for, abandon this chain
+  //       return;
+  //     }
+  //     // if we aren't at the bottom of the chain yet, keep looking through transitives for our dependency
+  //     currentNode.dependents.forEach((dep) => findInstanceRecur(dep, [...currentChain, currentNode]));
+  //   }
+  //   // Start at the root nodes and walk every path using the above function, looking for ones that lead to the dependency
+  //   this.tree.forEach((rootDep) => {
+  //     findInstanceRecur(rootDep, []);
+  //   });
+  //   return chains;
+  // }
 
   /**
    * Finds a dependency out of the list of deps using its id
@@ -142,46 +143,46 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
    * @throws Error
    */
 
-  public getRangesRequestedOfPackage(depId: string): string[] {
-    const ranges: string[] = [];
-
-    // find the dep and see if it was required directly by the project
-    const dep = this.lookupDepById(depId);
-    if (dep.root_range) {
-      ranges.push(dep.root_range);
-    }
-
-    // go through all the deps and look for transitive dependencies on this dep
-    this.flatDeps.forEach((d) => {
-      // pick out what relationships in the tree point to this package
-      const relationship = d.sub_dependency_relationships.find((r) => r.to_dependency === depId);
-      if (relationship) {
-        ranges.push(relationship.range);
-      }
-    });
-    return ranges;
-  }
+  // public getRangesRequestedOfPackage(depId: string): string[] {
+  //   const ranges: string[] = [];
+  //
+  //   // find the dep and see if it was required directly by the project
+  //   const dep = this.lookupDepById(depId);
+  //   if (dep.root_range) {
+  //     ranges.push(dep.root_range);
+  //   }
+  //
+  //   // go through all the deps and look for transitive dependencies on this dep
+  //   this.flatDeps.forEach((d) => {
+  //     // pick out what relationships in the tree point to this package
+  //     const relationship = d.sub_dependency_relationships.find((r) => r.to_dependency === depId);
+  //     if (relationship) {
+  //       ranges.push(relationship.range);
+  //     }
+  //   });
+  //   return ranges;
+  // }
 
   /**
    * See if we can update a package to a fixed version(s) without violating semver
    * @param toVersions Since there might be multiple fix versions for a vulnerability, take a list of possible ones we could update to in `toVersions`
    * @param depId
    */
-  public determinePackageTriviallyUpdatable(toVersions: string[], depId: string): boolean {
-    return toVersions.some((toVersion) => {
-      // I think coercing like this is a good idea because it will make things like `1.2.3-hotfix` appear valid against the ranges, and a lot of patches might be like that
-      // Maybe it will do that automatically, need to test. Awful docs for this library.
-      const coercedVersion = semver.coerce(toVersion);
-      if (!semver.valid(coercedVersion) || !coercedVersion) {
-        throw new Error(
-          'Invalid version specified when checking if updatable, probably bad OSV data from the vulnerability data source fixes field'
-        );
-      }
-
-      const ranges = this.getRangesRequestedOfPackage(depId);
-      return ranges.every((range) => {
-        semver.satisfies(coercedVersion, range);
-      });
-    });
-  }
+  // public determinePackageTriviallyUpdatable(toVersions: string[], depId: string): boolean {
+  //   return toVersions.some((toVersion) => {
+  //     // I think coercing like this is a good idea because it will make things like `1.2.3-hotfix` appear valid against the ranges, and a lot of patches might be like that
+  //     // Maybe it will do that automatically, need to test. Awful docs for this library.
+  //     const coercedVersion = semver.coerce(toVersion);
+  //     if (!semver.valid(coercedVersion) || !coercedVersion) {
+  //       throw new Error(
+  //         'Invalid version specified when checking if updatable, probably bad OSV data from the vulnerability data source fixes field'
+  //       );
+  //     }
+  //
+  //     const ranges = this.getRangesRequestedOfPackage(depId);
+  //     return ranges.every((range) => {
+  //       semver.satisfies(coercedVersion, range);
+  //     });
+  //   });
+  // }
 }
