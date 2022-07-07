@@ -47,6 +47,14 @@ import { RawDependencyRelationship } from './types';
 export interface BuildDependencyPartial {
   id: string;
   dependend_by_relationship_id: string;
+  range: string;
+  release_id: string;
+  package: {
+    vulnerabilities: Array<{
+      id: string;
+    }>;
+  };
+
   // root_range: string | null;
   // sub_dependency_relationships: Array<{
   //   range: string;
@@ -184,5 +192,13 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
   //       semver.satisfies(coercedVersion, range);
   //     });
   //   });
-  // }
+
+  /**
+   * since vulns are still coming in from grype for the moment, we need to look through the tree, find what they apply to, and then determine if an update will fix it.
+   * In the future we will just build this info right into the tree, most likely
+   * @param vulnId
+   */
+  public determineVulnTriviallyUpdatable(vulnId: string) {
+    BuildDependencyTreeNode = [];
+  }
 }
