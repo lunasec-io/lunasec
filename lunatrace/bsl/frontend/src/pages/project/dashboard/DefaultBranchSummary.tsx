@@ -11,7 +11,8 @@
  * limitations under the License.
  *
  */
-import { countCriticalVulnerabilities, filterFindingsByNotIgnored } from '@lunatrace/lunatrace-common/build/main';
+import { filterFindingsNotIgnored } from '@lunatrace/lunatrace-common/build/main';
+import { countCriticalVulnerabilities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
