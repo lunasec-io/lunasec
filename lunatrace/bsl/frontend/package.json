@@ -10,6 +10,7 @@
     "@ory/themes": "~0.0.101",
     "@reduxjs/toolkit": "^1.7.1",
     "@rtk-query/graphql-request-base-query": "^2.0.0",
+    "@snyk/dep-graph": "~2.3.0",
     "@types/semver": "~7.3.10",
     "axios": "^0.26.0",
     "bootstrap": "5.1.3",
