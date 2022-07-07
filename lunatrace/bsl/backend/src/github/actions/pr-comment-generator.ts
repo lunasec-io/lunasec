@@ -81,13 +81,18 @@ async function executePRComment(
   pullRequestId: string,
   previousReviewId: string | null
 ) {
+  const logger = log.child('execute-pr-comment', {
+    buildId,
+    projectId,
+    pullRequestId,
+    installationId,
+  });
+
+  logger.info('commenting on pr');
+
   const githubClient = await generateGithubGraphqlClient(installationId);
   if (githubClient.error) {
-    log.error(`unable to create github client`, {
-      projectId,
-      installationId,
-      pullRequestId,
-    });
+    logger.error(`unable to create github client`);
     return;
   }
   const github = githubClient.res;
@@ -100,10 +105,12 @@ async function executePRComment(
     });
     const existing_github_review_id = githubReviewResponse.addPullRequestReview?.pullRequestReview?.id;
     if (!existing_github_review_id) {
-      return log.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
+      return logger.error('Failed to generate a review on pr', {
+        githubReviewResponse,
+      });
     }
 
-    log.info('review created');
+    logger.info('review created');
 
     await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
     return;
@@ -117,9 +124,9 @@ async function executePRComment(
   const existing_github_review_id = githubReviewResponse.updatePullRequestReview?.pullRequestReview?.id;
 
   if (!existing_github_review_id) {
-    return log.error('Failed to generate a review on pr, github responded ', githubReviewResponse);
+    return logger.error('Failed to generate a review on pr');
   }
-  log.info('successfully updated the PR review');
+  logger.info('successfully updated the PR review');
   // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
   await hasura.UpdateBuildExistingReviewId({ id: buildId, existing_github_review_id });
   return;
@@ -135,7 +142,14 @@ async function executePRCheck(
   pullRequestId: string,
   previousReviewId: string | null
 ) {
-  log.info('starting check flow');
+  const logger = log.child('execute-pr-check', {
+    buildId,
+    pullRequestId,
+    previousReviewId,
+  });
+
+  logger.info('starting check flow');
+
   const authToken = await getInstallationAccessToken(installationId);
 
   if (authToken.error) {
@@ -149,7 +163,7 @@ async function executePRCheck(
   const octokit = new Octokit({ auth: authToken.res });
 
   if (!buildLookup.builds_by_pk?.git_hash) {
-    log.error("can't comment because git hash is missing");
+    logger.error("can't comment because git hash is missing");
   }
 
   const checkData = {
@@ -166,42 +180,35 @@ async function executePRCheck(
     },
   };
 
-  let inserted_check_id;
+  const owner = buildLookup.builds_by_pk?.project?.organization?.name || '';
+  const repo = buildLookup.builds_by_pk?.project?.name || '';
+
   // This is the first build on this pr so make a new comment
-  if (!previousReviewId) {
-    const githubReviewResponse = await octokit.rest.checks.create({
-      owner: buildLookup.builds_by_pk?.project?.organization?.name || '',
-      repo: buildLookup.builds_by_pk?.project?.name || '',
-      status: 'in_progress',
-      ...checkData,
-    });
+  logger.info('creating new check', {
+    owner,
+    repo,
+  });
 
-    inserted_check_id = githubReviewResponse.data.id;
-    log.info('check created');
-  }
-
-  // Otherwise just update the existing review on the PR.  Very similar to above but we update instead
-  const githubReviewResponse = await octokit.rest.checks.update({
-    owner: buildLookup.builds_by_pk?.project?.organization?.name || '',
-    repo: buildLookup.builds_by_pk?.project?.name || '',
-    check_run_id: inserted_check_id || buildLookup.builds_by_pk?.existing_github_check_id,
+  const githubReviewResponse = await octokit.rest.checks.create({
+    owner,
+    repo,
+    status: 'completed',
     conclusion: scanReport.findings.length ? 'neutral' : 'success',
     completed_at: new Date().toISOString(),
     ...checkData,
   });
 
-  const existing_github_check_id = githubReviewResponse.data.id;
-
-  if (!existing_github_check_id) {
-    return log.error('Failed to generate a check, github responded ', githubReviewResponse);
-  }
-  log.info('successfully updated the check');
-  // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
-  await hasura.UpdateBuildExistingCheckId({ id: buildId, existing_github_check_id });
+  logger.info('check created', {
+    checkId: githubReviewResponse.data.id,
+  });
   return;
 }
 
 export async function interactWithPR(buildId: string, scanReport: InsertedScan) {
+  const logger = log.child('interact-with-pr', {
+    buildId,
+  });
+
   const buildLookup = await hasura.GetBuild({
     build_id: buildId,
   });
@@ -212,23 +219,21 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
     !buildLookup.builds_by_pk.project.organization ||
     !buildLookup.builds_by_pk.project.settings
   ) {
-    log.error(`unable to get required scan notify information for buildId: ${buildId}`);
+    logger.error('unable to get required scan notify information for buildId');
     return;
   }
 
   const pullRequestId = buildLookup.builds_by_pk.pull_request_id;
 
   if (!pullRequestId) {
-    log.info(`pull request id is not defined, skipping comment because this build did not come from a PR`, {
-      buildId,
-    });
+    logger.info('pull request id is not defined, skipping comment because this build did not come from a PR');
     return;
   }
 
   const installationId = buildLookup.builds_by_pk?.project?.organization?.installation_id;
   if (!installationId) {
-    log.error(
-      `github installation id is not defined for the organization linked to build: ${buildId}, skipping github PR comment`
+    logger.error(
+      'github installation id is not defined for the organization linked to build, skipping github PR comment'
     );
     return;
   }
@@ -238,7 +243,7 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
   const body = generatePullRequestCommentFromReport(projectId, scanReport);
 
   if (body === null) {
-    log.error(`generated scan report is null`, {
+    logger.error(`generated scan report is null`, {
       projectId,
       pullRequestId,
     });
@@ -247,10 +252,12 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
   // Check if a previous build already commented on the PR. Could probably query github for this but its hard and rate limits exist so we just check our own db
   const previousReviewId = await findPreviousReviewId(pullRequestId);
 
-  log.info('Starting PR Comment Submission flow');
-  log.info('found previous review id of ', previousReviewId);
+  logger.info('Starting PR Comment Submission flow');
+  logger.info('found previous review id', {
+    previousReviewId,
+  });
 
-  if (!buildLookup.builds_by_pk.project.settings.pr_feedback_disabled) {
+  if (buildLookup.builds_by_pk.project.settings.pr_check_enabled) {
     await executePRCheck(
       buildLookup,
       scanReport,
@@ -262,7 +269,7 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
       previousReviewId
     );
   }
-  if (buildLookup.builds_by_pk.project.settings.pr_check_enabled) {
+  if (!buildLookup.builds_by_pk.project.settings.pr_feedback_disabled) {
     await executePRComment(
       buildLookup,
       scanReport,

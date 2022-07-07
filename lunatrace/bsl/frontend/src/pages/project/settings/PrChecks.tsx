@@ -17,39 +17,33 @@ import { Col, Form, Row } from 'react-bootstrap';
 import api from '../../../api';
 import { ProjectInfo } from '../types';
 
-interface SettingsPRCommentsProps {
+interface SettingsPRChecksProps {
   project: ProjectInfo;
 }
 
-export const SettingsPrComments: React.FC<SettingsPRCommentsProps> = ({ project }) => {
+export const SettingsPrChecks: React.FC<SettingsPRChecksProps> = ({ project }) => {
   if (!project.github_repository) {
     return null;
   }
 
   const [updateSettings, { isLoading }] = api.useUpdateSettingsMutation();
 
-  // Unset flags in settings are NULL, and the "default value" is false if it has been set
-  // This way if the value is falsy we know it is in the default position
-  const pr_feedback_enabled = project.settings.pr_feedback_disabled !== true;
+  const pr_check_enabled = !!project.settings.pr_check_enabled;
 
-  // Allows us to show the change before it syncs to the server. A bit easier than dealing with manually editing the store cache
-  // to show optimistic updates
-  const [checked, setChecked] = useState<boolean>(pr_feedback_enabled || false);
+  const [checked, setChecked] = useState<boolean>(pr_check_enabled || true);
 
-  // We have specified that updateSettings will bust the ProjectDetails cache, so we expect project to be refetched and
-  // then we sync the state from its settings
   useEffect(() => {
-    setChecked(pr_feedback_enabled);
+    setChecked(pr_check_enabled);
   }, [project]);
 
   return (
     <>
       <Row>
         <Col md="4">
-          <h3>Pull Request Feedback</h3>
+          <h3>Pull Request Check</h3>
         </Col>
         <Col md>
-          <p>Whether LunaTrace will automatically submit feedback on your PRs.</p>
+          <p>Whether LunaTrace will run as a check on your PRs.</p>
         </Col>
       </Row>
       <Row>
@@ -57,12 +51,12 @@ export const SettingsPrComments: React.FC<SettingsPRCommentsProps> = ({ project 
           <Form.Switch
             className="form-switch-md"
             id="pr-reviews-switch"
-            label={checked ? 'PR Comments Enabled' : 'PR Comments Disabled'}
+            label={checked ? 'PR Checks Enabled' : 'PR Checks Disabled'}
             checked={checked}
             disabled={isLoading}
             onChange={(e) => {
               setChecked(!checked);
-              void updateSettings({ id: project.settings_id, settings: { pr_feedback_disabled: !e.target.checked } });
+              void updateSettings({ id: project.settings_id, settings: { pr_check_enabled: e.target.checked } });
             }}
           />
         </Form>
