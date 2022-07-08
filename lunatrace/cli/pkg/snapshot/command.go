@@ -20,6 +20,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/anchore/grype/grype"
+	"github.com/anchore/grype/grype/db"
 	"github.com/urfave/cli/v2"
 	"io"
 	"io/ioutil"
@@ -359,7 +360,20 @@ func ScanCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err error) {
 		return
 	}
 
-	findingsDocument, err = scan.GrypeSbomScanFromFile(sbomFile.Name())
+	multiStore, err := scan.GetVulnerabilityStore(appConfig)
+	if err != nil {
+		log.Error().Err(err).Msg("unable to create vulnerability store")
+		return
+	}
+
+	vulnerabilityProvider := db.NewVulnerabilityProvider(multiStore)
+	vulnerabilityMetadataProvider := db.NewVulnerabilityMetadataProvider(multiStore)
+
+	findingsDocument, err = scan.GrypeSbomScanFromFile(
+		vulnerabilityProvider,
+		vulnerabilityMetadataProvider,
+		sbomFile.Name(),
+	)
 	if err != nil {
 		return
 	}
