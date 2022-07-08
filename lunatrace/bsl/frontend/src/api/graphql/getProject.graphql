@@ -20,9 +20,6 @@ query GetProject($project_id: uuid!, $build_limit: Int = 10) {
             github_id
             default_branch
             traits
-            authenticated_clone_url {
-                url
-            }
         }
         project_access_tokens {
             id

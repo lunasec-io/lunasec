@@ -12,6 +12,7 @@
 package main
 
 import (
+	"github.com/rs/zerolog/log"
 	"net/http"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/lpt/vulnerability"
@@ -38,12 +39,22 @@ func main() {
 		lunatracefx.Module,
 		// todo make a module
 		fx.Provide(func(appConfig types.LunaTraceConfig, hc *http.Client) graphql.Client {
+			if appConfig.GraphqlServer.Url == "" {
+				log.Error().Msg("graphql server url is not defined")
+				return nil
+			}
+
+			if appConfig.GraphqlServer.Secret == "" {
+				log.Error().Msg("graphql server secret is not defined")
+				return nil
+			}
+
 			lhc := hc
 			lhc.Transport = &gql.HeadersTransport{Headers: map[string]string{
-				"X-Hasura-Admin-Secret": "myadminsecretkey",
+				"X-Hasura-Admin-Secret": appConfig.GraphqlServer.Secret,
 				"X-Hasura-Role":         "service",
 			}}
-			return graphql.NewClient("http://localhost:8080/v1/graphql", lhc)
+			return graphql.NewClient(appConfig.GraphqlServer.Url, lhc)
 		}),
 		fx.Supply(&clifx2.AppConfig{
 			Name:    "lpt",
