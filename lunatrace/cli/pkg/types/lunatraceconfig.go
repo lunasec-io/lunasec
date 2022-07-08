@@ -15,7 +15,8 @@
 package types
 
 type LunaTraceGraphqlServer struct {
-	Url string `yaml:"url"`
+	Url    string `yaml:"url"`
+	Secret string `yaml:"secret"`
 }
 
 type LunaTraceExpressServer struct {
