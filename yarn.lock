@@ -443,6 +443,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/assets@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/assets@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  checksum: 95a89b47ffeb1fad8cc6aa0502dbb71a4081d57f1f7340d014efbe11002ce66f343befede194ded16b6774815eaa7cc359fd37c51d4e7afa59f34e804b4a6e60
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-acmpca@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/aws-acmpca@npm:1.145.0"
@@ -492,6 +507,19 @@ __metadata:
     "@aws-cdk/core": 1.156.1
     constructs: ^3.3.69
   checksum: 06ce903573e7b5c1aa84862e14db6679a6f1670e666c7008ccedfa8c5c91faa0dc0a406dfbfbffecb57334fc014c840d5f8ae8a27b083ebaf9e9159fa8ab8c49
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/aws-acmpca@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-acmpca@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: 7b717e14056ad7eadb61763070b34f0c678d60237dc13925b0d70095cdaacee2a3c94cb14a1a466fb41742399bdce38ad68fc3aff5412e75805bee61dda9b38d
   languageName: node
   linkType: hard
 
@@ -719,6 +747,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/aws-applicationautoscaling@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-applicationautoscaling@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-autoscaling-common": 1.163.0
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-autoscaling-common": 1.163.0
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: 716f9d86b8002b766639eb1e5ff0c6ef7cfc4e00d466334d411e3f7fee81745b5140a24eb4511d49fa83627bfb5f670985c55735561aea9c1baa7f7ddb93c465
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-autoscaling-common@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/aws-autoscaling-common@npm:1.145.0"
@@ -776,6 +823,21 @@ __metadata:
     "@aws-cdk/core": 1.156.1
     constructs: ^3.3.69
   checksum: 6bf574f5179f6d5a2c55571699011f620671e1ba4cb4ec85f820d53007783d687435cdbdee4ab2eb204e0a34165ce04438fdb8e38c1195e6c50aa84008d4c157
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/aws-autoscaling-common@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-autoscaling-common@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: 1dd88f6278ca666670f1e75d4abe9ea3bbef8cd1d14302c4f573c556a3fc45e8b73985a8de02813551f3919cabea05e578c70f26ce154c4c56c9c6f7901a0b52
   languageName: node
   linkType: hard
 
@@ -1087,6 +1149,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/aws-certificatemanager@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-certificatemanager@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-acmpca": 1.163.0
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-lambda": 1.163.0
+    "@aws-cdk/aws-route53": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-acmpca": 1.163.0
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-lambda": 1.163.0
+    "@aws-cdk/aws-route53": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: 11fb1e6676aa03526e085dec110e9bfff96ec7f16c11907d5dadff3e388d2c4e48678da9ef31a130a261069eb5fbed3378e8340d4652b16f7a384bc78238d70e
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-cloudformation@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/aws-cloudformation@npm:1.145.0"
@@ -1176,6 +1261,29 @@ __metadata:
     "@aws-cdk/cx-api": 1.156.1
     constructs: ^3.3.69
   checksum: 2d4c313c0507a091003b7fe704836eb991aa62407f479d7a0511f40cd2d91dcd67fb6f57a63b8f0bdeb3d6722ea21aca50da98feaa278b2db3c03f87bc2f48a0
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/aws-cloudformation@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-cloudformation@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-lambda": 1.163.0
+    "@aws-cdk/aws-s3": 1.163.0
+    "@aws-cdk/aws-sns": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-lambda": 1.163.0
+    "@aws-cdk/aws-s3": 1.163.0
+    "@aws-cdk/aws-sns": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  checksum: e49a828757ab33d068b5485dabd410de57767b9859404a2ba4a2db68f4d3ff0ca880b2564523f3b204253502dddd17fe4e2ee5ce445202168c4155c24ad6440c
   languageName: node
   linkType: hard
 
@@ -1402,6 +1510,21 @@ __metadata:
     "@aws-cdk/core": 1.156.1
     constructs: ^3.3.69
   checksum: 982d5020f4efb41f21f6deff9aa0fd86f1fbf4d861dc5c48ccc888eff77a702125352f327523ae6178270c678573f3ff10c12d8c29a919650a03d69eb6ba50a3
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/aws-cloudwatch@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-cloudwatch@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: 0af94289dc9a9bc4ac67057c8cd35cb170e58c7342825ad443208a7c93f7d6a152e357248eee41b388e3fafb4a7f6b6ed3e7be78ee2133d2a9767a6aad9a6a47
   languageName: node
   linkType: hard
 
@@ -1660,6 +1783,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/aws-codeguruprofiler@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-codeguruprofiler@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: 6d2c58c5d8914c47a555164eaf3c4fdbeaff8e608d0d7c58f07280698731c1715cdb45bba2284f6216c148e41996ffb95ce85642b87e18df117ef97ca3f3d0b4
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-codepipeline@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/aws-codepipeline@npm:1.145.0"
@@ -1778,6 +1916,19 @@ __metadata:
     "@aws-cdk/core": 1.156.1
     constructs: ^3.3.69
   checksum: 6ce7ff505f3c942127bc4f32ca13bb0b90e7752bf81e3bae6908aa673683861af5498d90247cce752e6c15571efb298262c8c3c4c5478a6c808218d54daf981f
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/aws-codestarnotifications@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-codestarnotifications@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: 5b5283964709be88362f02b259aafd58f52cddaf6e96d5b40929825083a4c189da15c827b7ca1e4c0fcc8b942dc230f3e4a9a8bd57299b74fa8c631f125c381a
   languageName: node
   linkType: hard
 
@@ -2063,6 +2214,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/aws-ec2@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-ec2@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/aws-logs": 1.163.0
+    "@aws-cdk/aws-s3": 1.163.0
+    "@aws-cdk/aws-s3-assets": 1.163.0
+    "@aws-cdk/aws-ssm": 1.163.0
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    "@aws-cdk/region-info": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/aws-logs": 1.163.0
+    "@aws-cdk/aws-s3": 1.163.0
+    "@aws-cdk/aws-s3-assets": 1.163.0
+    "@aws-cdk/aws-ssm": 1.163.0
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    "@aws-cdk/region-info": 1.163.0
+    constructs: ^3.3.69
+  checksum: cfa003d6658eff9fc0f471791d65319d4ffd4b0c4cb9085def25f8610247d35287a4051b3cb41ad49788729a380e9f801e7ab84e9fc1f360e342a2366de64c97
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-ecr-assets@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/aws-ecr-assets@npm:1.145.0"
@@ -2155,6 +2339,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/aws-ecr-assets@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-ecr-assets@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/assets": 1.163.0
+    "@aws-cdk/aws-ecr": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-s3": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/assets": 1.163.0
+    "@aws-cdk/aws-ecr": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-s3": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  checksum: 5cef6eb48d9aaa3b929b8e3af39e7f3643fdf46e7f7eafa3c074c3b45daf1aac029f1abae04c81c98f08b82c0d344b7f98be83615565ef1f9b8886512b036fcf
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-ecr@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/aws-ecr@npm:1.145.0"
@@ -2228,6 +2435,25 @@ __metadata:
     "@aws-cdk/core": 1.156.1
     constructs: ^3.3.69
   checksum: 7d71f9ef9b913b627871c9e7b5b7c3b7f60c729054bc6d17b3e11cef773b83f57c4ed74d2cfeb3c28779d048fab438d3e5843eef1bc010e3988b7e191ee23a93
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/aws-ecr@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-ecr@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-events": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-events": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: dd16715459a66935343306887b0ea78e789ece22baff6cb15079f5b6f31250dd138fa23034db9891ec95d30872af3b5d82fa8ee80b62a551616b42a2492e41e5
   languageName: node
   linkType: hard
 
@@ -2649,6 +2875,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/aws-efs@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-efs@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-ec2": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-ec2": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  checksum: 5b91fe551fe2a1b4e574d06ac8f67b90b35a8350602054f7b55cea2a1ef77e54f12bff554a04fbb64001396a69160e1f5e21c79a5507ece3a05c15db7d1efe08
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-elasticloadbalancing@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/aws-elasticloadbalancing@npm:1.145.0"
@@ -2853,6 +3102,39 @@ __metadata:
     "@aws-cdk/region-info": 1.156.1
     constructs: ^3.3.69
   checksum: 9d91f636cf5753687fe2f6100aa3db109775da400c3323828d283b0c074eafc9c1efd287bf4370219e1bb4b00ce799aa358c1fc3a883836163690afe3d943786
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/aws-elasticloadbalancingv2@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-elasticloadbalancingv2@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-certificatemanager": 1.163.0
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-ec2": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-lambda": 1.163.0
+    "@aws-cdk/aws-route53": 1.163.0
+    "@aws-cdk/aws-s3": 1.163.0
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    "@aws-cdk/region-info": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-certificatemanager": 1.163.0
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-ec2": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-lambda": 1.163.0
+    "@aws-cdk/aws-route53": 1.163.0
+    "@aws-cdk/aws-s3": 1.163.0
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    "@aws-cdk/region-info": 1.163.0
+    constructs: ^3.3.69
+  checksum: 2b0d6a475fc75606c1eb8f473877e0691c5f324a47cff7193f5b0511ea6822bd3017cfbaf3f0f42cf908c279209642e40e81aab3aa88bfbe3aa9de98b1205344
   languageName: node
   linkType: hard
 
@@ -3094,6 +3376,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/aws-events@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-events@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: f4fcbce4d2b1b25b8c6d734f15ea40ebf4f28cbc0dc04c7bc77a94a16434b998f9629a8641cb0a90d91baa8b6b36ae0a8cedb95d5ed480de90ddef6c34155e6f
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-globalaccelerator@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/aws-globalaccelerator@npm:1.145.0"
@@ -3253,6 +3550,22 @@ __metadata:
     "@aws-cdk/region-info": 1.156.1
     constructs: ^3.3.69
   checksum: 963445a1809120bdac3052690f9bcc0461c9da911bb76c3ed43dfefc03b53b42565a2db7bd25699587a72be1c9288295f7da31c896d9efa474da6bbfca3ac8e5
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/aws-iam@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-iam@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    "@aws-cdk/region-info": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/region-info": 1.163.0
+    constructs: ^3.3.69
+  checksum: 5e79c6bef4e3a9e106a8b5f3ee0875b292e4b442e5a8e93c7afa415d5658684b1881b3a7b6f0f3a7551b689491b674493c399e2e06f214502832d058c2301bae
   languageName: node
   linkType: hard
 
@@ -3589,6 +3902,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/aws-kms@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-kms@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  checksum: 6dfd7ec231492374d832303fb3516402d04f0c64b807b2fe5bc6c8be8b433beddb14164d1dbfca5a586ccc0d3d1765c84401d0c93b06d02c40ed106f7a27e4b8
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-lambda-event-sources@npm:1.146.0":
   version: 1.146.0
   resolution: "@aws-cdk/aws-lambda-event-sources@npm:1.146.0"
@@ -3854,6 +4186,55 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/aws-lambda@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-lambda@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-applicationautoscaling": 1.163.0
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-codeguruprofiler": 1.163.0
+    "@aws-cdk/aws-ec2": 1.163.0
+    "@aws-cdk/aws-ecr": 1.163.0
+    "@aws-cdk/aws-ecr-assets": 1.163.0
+    "@aws-cdk/aws-efs": 1.163.0
+    "@aws-cdk/aws-events": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/aws-logs": 1.163.0
+    "@aws-cdk/aws-s3": 1.163.0
+    "@aws-cdk/aws-s3-assets": 1.163.0
+    "@aws-cdk/aws-signer": 1.163.0
+    "@aws-cdk/aws-sns": 1.163.0
+    "@aws-cdk/aws-sqs": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    "@aws-cdk/region-info": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-applicationautoscaling": 1.163.0
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-codeguruprofiler": 1.163.0
+    "@aws-cdk/aws-ec2": 1.163.0
+    "@aws-cdk/aws-ecr": 1.163.0
+    "@aws-cdk/aws-ecr-assets": 1.163.0
+    "@aws-cdk/aws-efs": 1.163.0
+    "@aws-cdk/aws-events": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/aws-logs": 1.163.0
+    "@aws-cdk/aws-s3": 1.163.0
+    "@aws-cdk/aws-s3-assets": 1.163.0
+    "@aws-cdk/aws-signer": 1.163.0
+    "@aws-cdk/aws-sns": 1.163.0
+    "@aws-cdk/aws-sqs": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    "@aws-cdk/region-info": 1.163.0
+    constructs: ^3.3.69
+  checksum: c9d4ed62ef9393d244bd7029e90d2df2a0a8365b7a53acfc8afca60d7b6f725de830fe2feab24cf3580c9308b95bac344e855d4a680649bce302095717617b00
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-logs@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/aws-logs@npm:1.145.0"
@@ -3943,6 +4324,29 @@ __metadata:
     "@aws-cdk/cx-api": 1.156.1
     constructs: ^3.3.69
   checksum: acda83599edbe8c504e136e7e19e0f2b2d9e0a0fff948f8332b3a62328c79de88c713b8c7262a6456b3b29a240c5666329102f1bd03a211026ee14dcf53c6c9b
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/aws-logs@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-logs@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/aws-s3-assets": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/aws-s3-assets": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  checksum: b21859b753800795c2168be7914f677ce63c8f7e219f993faf7cbb1b69ecedc84f1da411042914dac469ec1ca65ab51911ef9656a6e5a655d0511d46f7e1a4a6
   languageName: node
   linkType: hard
 
@@ -4222,6 +4626,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/aws-route53@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-route53@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-ec2": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-logs": 1.163.0
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/custom-resources": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-ec2": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-logs": 1.163.0
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/custom-resources": 1.163.0
+    constructs: ^3.3.69
+  checksum: 2640750459fce8b69a1add20c270bcd046224c76e04dc3608e920427b3378288af83e1bf48e53aa134e0014c7cdb3cb3b383daec3e0819efe3a25482f81c3448
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-s3-assets@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/aws-s3-assets@npm:1.145.0"
@@ -4311,6 +4738,29 @@ __metadata:
     "@aws-cdk/cx-api": 1.156.1
     constructs: ^3.3.69
   checksum: e4e6f06a969004a7c7b43890ee3cb38e51ad10f98f54bbce535f51800402664ae3e6fdcab5e647f323ca68cd2fe3eb81f243bda8ad5b72106b557c938da58bec
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/aws-s3-assets@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-s3-assets@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/assets": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/aws-s3": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/assets": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/aws-s3": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  checksum: 1b68a852048b0ac0dcb73d58adb239a7c1caefa627ff9386a13805906c048fffc33a8a079ad653d6cb0dd26ec905023fa0670c14e59acdb20d40f1c53f8ee47f
   languageName: node
   linkType: hard
 
@@ -4509,6 +4959,27 @@ __metadata:
     "@aws-cdk/cx-api": 1.156.1
     constructs: ^3.3.69
   checksum: b8bff6074c81e0699cfc0efad0f49f42b74e487737787b0f1c5e428bb9905d46fce6816c0ecd63d810daffcbdcd39a7e46c3fad9f94611e549e5b71e7050c6ae
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/aws-s3@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-s3@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-events": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-events": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    constructs: ^3.3.69
+  checksum: 470005664ad0da16348f51be8327c210e4367eec2b7dbd8fc22396a44b0ca8b3c13e63937420ac986ea51ede89b0a345cde19470534d85231e2b46583b0262ed
   languageName: node
   linkType: hard
 
@@ -4753,6 +5224,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/aws-servicediscovery@npm:~1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-servicediscovery@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-ec2": 1.163.0
+    "@aws-cdk/aws-elasticloadbalancingv2": 1.163.0
+    "@aws-cdk/aws-route53": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-ec2": 1.163.0
+    "@aws-cdk/aws-elasticloadbalancingv2": 1.163.0
+    "@aws-cdk/aws-route53": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: 7f2ea121683db3355b67bbabf73c65859b019d0c51e4b376246e1c1b6eddb360340c43637f6703cc79f59ddfb75313e0afb4aa5935d8c99d5ef4556f12ba3473
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-signer@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/aws-signer@npm:1.145.0"
@@ -4802,6 +5292,19 @@ __metadata:
     "@aws-cdk/core": 1.156.1
     constructs: ^3.3.69
   checksum: ae39cfdef5e418948a2d487decc62b64e4783aa6598b06559dbd6bebfb55c7ea4769c7f83e3e9203229b284ae44193a5bd57900aa2ed8c3ffe0bd1e9eaca1ae3
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/aws-signer@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-signer@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: 0b661ff92549f5e0a1cb079ef1dd3cff84bdebfd2f1693f160b334b94f7d2020e0b04cf32feca9cb437827823ced4a7014205ea32744541ffce85ef4ffbaac55
   languageName: node
   linkType: hard
 
@@ -4997,6 +5500,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/aws-sns@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-sns@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-codestarnotifications": 1.163.0
+    "@aws-cdk/aws-events": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/aws-sqs": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-codestarnotifications": 1.163.0
+    "@aws-cdk/aws-events": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/aws-sqs": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: 1d3e4ed59b9df27974345645ecbe574262c2a8916aa88e3b6b6234d04a76c35fb51a8a3e5ebb13b897e07c2bc724481d23c45bc74eb3cd88e55697879ecea064
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-sqs@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/aws-sqs@npm:1.145.0"
@@ -5073,6 +5601,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/aws-sqs@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-sqs@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-cloudwatch": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: 75652b2850ae62a787eb9ecb66495897e92cc872861eecf890592a94ce0087864780fc87709c3dd3d4226d5d64999d4c4637a1c9c0eaf7de1daa1d60ad7f8d8b
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-ssm@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/aws-ssm@npm:1.145.0"
@@ -5146,6 +5693,25 @@ __metadata:
     "@aws-cdk/core": 1.156.1
     constructs: ^3.3.69
   checksum: 86aa7afed196b7d5ffaa1b483aec7bde9832bc6b8b706cec063cfa5b5a7d54b4840d77f729d6d6807fcdfb794586bf734c61bc24eaf602397d6f31066ebc1e30
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/aws-ssm@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/aws-ssm@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-kms": 1.163.0
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: 3c87a5a66221468816ca21b9609e33cd6416ce2a4b92acd3db7d087ed78c75fffe45ac9b13a6c67c045ac402788c56f15d80620c62f193998f5d39c02d7f867b
   languageName: node
   linkType: hard
 
@@ -5324,6 +5890,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/cloud-assembly-schema@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/cloud-assembly-schema@npm:1.163.0"
+  dependencies:
+    jsonschema: ^1.4.1
+    semver: ^7.3.7
+  checksum: 14b2eb4604c6493c7a84e83f98a36a2a5b8438f2a2d631ae66e262a251b78ae3c8660c436044680483bc11422e21786b42cc64d83a1047dc919586f69fe52657
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/cloudformation-diff@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/cloudformation-diff@npm:1.145.0"
@@ -5453,6 +6029,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/core@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/core@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    "@aws-cdk/region-info": 1.163.0
+    "@balena/dockerignore": ^1.0.2
+    constructs: ^3.3.69
+    fs-extra: ^9.1.0
+    ignore: ^5.2.0
+    minimatch: ^3.1.2
+  peerDependencies:
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    "@aws-cdk/cx-api": 1.163.0
+    "@aws-cdk/region-info": 1.163.0
+    constructs: ^3.3.69
+  checksum: 93f94de5c0b1a2c59e773766a29ce537f371ed3baba18a1292fe671bb82fd0fb633cbaec3be760bf1907397d46a737ebee10e4b55056fb24f0bd485f69287812
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/custom-resources@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/custom-resources@npm:1.145.0"
@@ -5553,6 +6150,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/custom-resources@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/custom-resources@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/aws-cloudformation": 1.163.0
+    "@aws-cdk/aws-ec2": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-lambda": 1.163.0
+    "@aws-cdk/aws-logs": 1.163.0
+    "@aws-cdk/aws-sns": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-cloudformation": 1.163.0
+    "@aws-cdk/aws-ec2": 1.163.0
+    "@aws-cdk/aws-iam": 1.163.0
+    "@aws-cdk/aws-lambda": 1.163.0
+    "@aws-cdk/aws-logs": 1.163.0
+    "@aws-cdk/aws-sns": 1.163.0
+    "@aws-cdk/core": 1.163.0
+    constructs: ^3.3.69
+  checksum: d0c83089dcce4dc43ff181601d4e094569212ec48e822cc9d20b7b769500164c045089c36ac51f6f1cdb653c380c6bc48dafc3d475d9b94e02e3263699d06f54
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/cx-api@npm:1.145.0":
   version: 1.145.0
   resolution: "@aws-cdk/cx-api@npm:1.145.0"
@@ -5598,6 +6220,18 @@ __metadata:
   peerDependencies:
     "@aws-cdk/cloud-assembly-schema": 1.156.1
   checksum: 7df912b0c39d456d97324a1b5c5685e7bc35a01a3f8038e493501be4d1716b36dbb2c3882077f13e209ea81cf6cea80a36653659909de62999fd7cbb4c634a99
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/cx-api@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/cx-api@npm:1.163.0"
+  dependencies:
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+    semver: ^7.3.7
+  peerDependencies:
+    "@aws-cdk/cloud-assembly-schema": 1.163.0
+  checksum: 0334408c6ac125f4d6e47c5bf5d69e8da7549485a8e56848642f513086d8901a08865fdac264aceb79a3bc0b15df994308b1351d9f40f0b9024682841327d079
   languageName: node
   linkType: hard
 
@@ -5656,6 +6290,13 @@ __metadata:
   version: 1.156.1
   resolution: "@aws-cdk/region-info@npm:1.156.1"
   checksum: a5d50c267cadc38f65c0aad76360eee7aeaa096ce20237d8879d23733ccfc8c56196be74c9ef52546ebd4af61b3d0b78236485de0b8077c8abbe5e12bec5dd2e
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/region-info@npm:1.163.0":
+  version: 1.163.0
+  resolution: "@aws-cdk/region-info@npm:1.163.0"
+  checksum: c428a5d2c59b4c93cc17dfb02ec2cc88e9b84e04fdd31ea0bfbfd0e920c3b627231dea96056e0150fe0363224070ba2f00d8ea1aa768cd19180f6bb75bb8284a
   languageName: node
   linkType: hard
 
@@ -36842,6 +37483,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jsonschema@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "jsonschema@npm:1.4.1"
+  checksum: 1ef02a6cd9bc32241ec86bbf1300bdbc3b5f2d8df6eb795517cf7d1cd9909e7beba1e54fdf73990fd66be98a182bda9add9607296b0cb00b1348212988e424b2
+  languageName: node
+  linkType: hard
+
 "jsonwebtoken@npm:^8.1.0, jsonwebtoken@npm:^8.5.1, jsonwebtoken@npm:~8.5.1":
   version: 8.5.1
   resolution: "jsonwebtoken@npm:8.5.1"
@@ -38372,6 +39020,7 @@ __metadata:
     "@aws-cdk/aws-s3-deployment": 1.156.1
     "@aws-cdk/aws-s3-notifications": 1.156.1
     "@aws-cdk/aws-secretsmanager": 1.156.1
+    "@aws-cdk/aws-servicediscovery": ~1.163.0
     "@aws-cdk/aws-sqs": 1.156.1
     "@aws-cdk/aws-ssm": 1.156.1
     "@aws-cdk/core": 1.156.1
