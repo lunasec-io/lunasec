@@ -26,6 +26,10 @@ export interface GetRepoCloneUrlWithAuthReturn {
 export async function getRepoCloneUrlWithAuth(
   repoGithubId: number
 ): Promise<MaybeError<GetRepoCloneUrlWithAuthReturn>> {
+  const logger = log.child('repo-clone-url-with-auth', {
+    repoGithubId,
+  });
+
   const cloneRepoInfo = await catchError(
     hasura.GetCloneRepoInfoFromRepoId({
       repo_github_id: repoGithubId,
@@ -34,13 +38,13 @@ export async function getRepoCloneUrlWithAuth(
 
   if (threwError(cloneRepoInfo)) {
     const msg = 'unable to get clone repo info from git url';
-    log.error(msg);
+    logger.error(msg);
     return newError(msg);
   }
 
   if (cloneRepoInfo.github_repositories.length === 0) {
     const msg = 'no projects were found with provided git url';
-    log.error(msg);
+    logger.error(msg);
     return newError(msg);
   }
 
@@ -50,7 +54,7 @@ export async function getRepoCloneUrlWithAuth(
 
   if (!gitRepo.project || !gitRepo.project.organization) {
     const msg = 'project or organization is not defined for git repo';
-    log.error(msg, {
+    logger.error(msg, {
       gitRepo,
     });
     return newError(msg);
@@ -60,7 +64,7 @@ export async function getRepoCloneUrlWithAuth(
 
   if (!installationId) {
     const msg = 'installation id is not defined for git repo';
-    log.error(msg, {
+    logger.error(msg, {
       gitRepo,
     });
     return newError(msg);
@@ -70,7 +74,7 @@ export async function getRepoCloneUrlWithAuth(
 
   if (installationToken.error) {
     const msg = 'unable to get installation token';
-    log.error(msg, {
+    logger.error(msg, {
       error: installationToken.msg,
     });
     return newError(msg);
