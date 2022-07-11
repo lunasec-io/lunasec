@@ -52,6 +52,46 @@ func (v *Affected_range_type_comparison_exp) GetNeq() *types.AffectedRangeType {
 // GetNin returns Affected_range_type_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Affected_range_type_comparison_exp) GetNin() []types.AffectedRangeType { return v.Nin }
 
+// Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'.
+type Bigint_comparison_exp struct {
+	Eq      *int64  `json:"_eq,omitempty"`
+	Gt      *int64  `json:"_gt,omitempty"`
+	Gte     *int64  `json:"_gte,omitempty"`
+	In      []int64 `json:"_in,omitempty"`
+	Is_null *bool   `json:"_is_null,omitempty"`
+	Lt      *int64  `json:"_lt,omitempty"`
+	Lte     *int64  `json:"_lte,omitempty"`
+	Neq     *int64  `json:"_neq,omitempty"`
+	Nin     []int64 `json:"_nin,omitempty"`
+}
+
+// GetEq returns Bigint_comparison_exp.Eq, and is useful for accessing the field via an interface.
+func (v *Bigint_comparison_exp) GetEq() *int64 { return v.Eq }
+
+// GetGt returns Bigint_comparison_exp.Gt, and is useful for accessing the field via an interface.
+func (v *Bigint_comparison_exp) GetGt() *int64 { return v.Gt }
+
+// GetGte returns Bigint_comparison_exp.Gte, and is useful for accessing the field via an interface.
+func (v *Bigint_comparison_exp) GetGte() *int64 { return v.Gte }
+
+// GetIn returns Bigint_comparison_exp.In, and is useful for accessing the field via an interface.
+func (v *Bigint_comparison_exp) GetIn() []int64 { return v.In }
+
+// GetIs_null returns Bigint_comparison_exp.Is_null, and is useful for accessing the field via an interface.
+func (v *Bigint_comparison_exp) GetIs_null() *bool { return v.Is_null }
+
+// GetLt returns Bigint_comparison_exp.Lt, and is useful for accessing the field via an interface.
+func (v *Bigint_comparison_exp) GetLt() *int64 { return v.Lt }
+
+// GetLte returns Bigint_comparison_exp.Lte, and is useful for accessing the field via an interface.
+func (v *Bigint_comparison_exp) GetLte() *int64 { return v.Lte }
+
+// GetNeq returns Bigint_comparison_exp.Neq, and is useful for accessing the field via an interface.
+func (v *Bigint_comparison_exp) GetNeq() *int64 { return v.Neq }
+
+// GetNin returns Bigint_comparison_exp.Nin, and is useful for accessing the field via an interface.
+func (v *Bigint_comparison_exp) GetNin() []int64 { return v.Nin }
+
 // Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
 type Boolean_comparison_exp struct {
 	Eq      *bool  `json:"_eq,omitempty"`
@@ -92,6 +132,204 @@ func (v *Boolean_comparison_exp) GetNeq() *bool { return v.Neq }
 // GetNin returns Boolean_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Boolean_comparison_exp) GetNin() []bool { return v.Nin }
 
+// input type for inserting array relation for remote table "build_dependency_relationship"
+type Build_dependency_relationship_arr_rel_insert_input struct {
+	Data []*Build_dependency_relationship_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Build_dependency_relationship_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Build_dependency_relationship_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_arr_rel_insert_input) GetData() []*Build_dependency_relationship_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Build_dependency_relationship_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_arr_rel_insert_input) GetOn_conflict() *Build_dependency_relationship_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "build_dependency_relationship". All fields are combined with a logical 'AND'.
+type Build_dependency_relationship_bool_exp struct {
+	And                         []*Build_dependency_relationship_bool_exp `json:"_and,omitempty"`
+	Not                         *Build_dependency_relationship_bool_exp   `json:"_not,omitempty"`
+	Or                          []*Build_dependency_relationship_bool_exp `json:"_or,omitempty"`
+	Build                       *Builds_bool_exp                          `json:"build,omitempty"`
+	Build_id                    *Uuid_comparison_exp                      `json:"build_id,omitempty"`
+	Depended_by_relationship    *Build_dependency_relationship_bool_exp   `json:"depended_by_relationship,omitempty"`
+	Depended_by_relationship_id *Uuid_comparison_exp                      `json:"depended_by_relationship_id,omitempty"`
+	Id                          *Uuid_comparison_exp                      `json:"id,omitempty"`
+	Labels                      *Jsonb_comparison_exp                     `json:"labels,omitempty"`
+	Range                       *String_comparison_exp                    `json:"range,omitempty"`
+	Release                     *Package_release_bool_exp                 `json:"release,omitempty"`
+	Release_id                  *Uuid_comparison_exp                      `json:"release_id,omitempty"`
+}
+
+// GetAnd returns Build_dependency_relationship_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_bool_exp) GetAnd() []*Build_dependency_relationship_bool_exp {
+	return v.And
+}
+
+// GetNot returns Build_dependency_relationship_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_bool_exp) GetNot() *Build_dependency_relationship_bool_exp {
+	return v.Not
+}
+
+// GetOr returns Build_dependency_relationship_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_bool_exp) GetOr() []*Build_dependency_relationship_bool_exp {
+	return v.Or
+}
+
+// GetBuild returns Build_dependency_relationship_bool_exp.Build, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_bool_exp) GetBuild() *Builds_bool_exp { return v.Build }
+
+// GetBuild_id returns Build_dependency_relationship_bool_exp.Build_id, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_bool_exp) GetBuild_id() *Uuid_comparison_exp {
+	return v.Build_id
+}
+
+// GetDepended_by_relationship returns Build_dependency_relationship_bool_exp.Depended_by_relationship, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_bool_exp) GetDepended_by_relationship() *Build_dependency_relationship_bool_exp {
+	return v.Depended_by_relationship
+}
+
+// GetDepended_by_relationship_id returns Build_dependency_relationship_bool_exp.Depended_by_relationship_id, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_bool_exp) GetDepended_by_relationship_id() *Uuid_comparison_exp {
+	return v.Depended_by_relationship_id
+}
+
+// GetId returns Build_dependency_relationship_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetLabels returns Build_dependency_relationship_bool_exp.Labels, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_bool_exp) GetLabels() *Jsonb_comparison_exp { return v.Labels }
+
+// GetRange returns Build_dependency_relationship_bool_exp.Range, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_bool_exp) GetRange() *String_comparison_exp { return v.Range }
+
+// GetRelease returns Build_dependency_relationship_bool_exp.Release, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_bool_exp) GetRelease() *Package_release_bool_exp {
+	return v.Release
+}
+
+// GetRelease_id returns Build_dependency_relationship_bool_exp.Release_id, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_bool_exp) GetRelease_id() *Uuid_comparison_exp {
+	return v.Release_id
+}
+
+// unique or primary key constraints on table "build_dependency_relationship"
+type Build_dependency_relationship_constraint string
+
+const (
+	// unique or primary key constraint
+	Build_dependency_relationship_constraintBuildDependencyRelationshipPkey Build_dependency_relationship_constraint = "build_dependency_relationship_pkey"
+)
+
+// input type for inserting data into table "build_dependency_relationship"
+type Build_dependency_relationship_insert_input struct {
+	Build                       *Builds_obj_rel_insert_input                        `json:"build,omitempty"`
+	Build_id                    *uuid.UUID                                          `json:"build_id,omitempty"`
+	Depended_by_relationship    *Build_dependency_relationship_obj_rel_insert_input `json:"depended_by_relationship,omitempty"`
+	Depended_by_relationship_id *uuid.UUID                                          `json:"depended_by_relationship_id,omitempty"`
+	Id                          *uuid.UUID                                          `json:"id,omitempty"`
+	Labels                      *json.RawMessage                                    `json:"labels,omitempty"`
+	Range                       *string                                             `json:"range,omitempty"`
+	Release                     *Package_release_obj_rel_insert_input               `json:"release,omitempty"`
+	Release_id                  *uuid.UUID                                          `json:"release_id,omitempty"`
+}
+
+// GetBuild returns Build_dependency_relationship_insert_input.Build, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_insert_input) GetBuild() *Builds_obj_rel_insert_input {
+	return v.Build
+}
+
+// GetBuild_id returns Build_dependency_relationship_insert_input.Build_id, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_insert_input) GetBuild_id() *uuid.UUID { return v.Build_id }
+
+// GetDepended_by_relationship returns Build_dependency_relationship_insert_input.Depended_by_relationship, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_insert_input) GetDepended_by_relationship() *Build_dependency_relationship_obj_rel_insert_input {
+	return v.Depended_by_relationship
+}
+
+// GetDepended_by_relationship_id returns Build_dependency_relationship_insert_input.Depended_by_relationship_id, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_insert_input) GetDepended_by_relationship_id() *uuid.UUID {
+	return v.Depended_by_relationship_id
+}
+
+// GetId returns Build_dependency_relationship_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetLabels returns Build_dependency_relationship_insert_input.Labels, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_insert_input) GetLabels() *json.RawMessage { return v.Labels }
+
+// GetRange returns Build_dependency_relationship_insert_input.Range, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_insert_input) GetRange() *string { return v.Range }
+
+// GetRelease returns Build_dependency_relationship_insert_input.Release, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_insert_input) GetRelease() *Package_release_obj_rel_insert_input {
+	return v.Release
+}
+
+// GetRelease_id returns Build_dependency_relationship_insert_input.Release_id, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_insert_input) GetRelease_id() *uuid.UUID { return v.Release_id }
+
+// input type for inserting object relation for remote table "build_dependency_relationship"
+type Build_dependency_relationship_obj_rel_insert_input struct {
+	Data *Build_dependency_relationship_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Build_dependency_relationship_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Build_dependency_relationship_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_obj_rel_insert_input) GetData() *Build_dependency_relationship_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Build_dependency_relationship_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_obj_rel_insert_input) GetOn_conflict() *Build_dependency_relationship_on_conflict {
+	return v.On_conflict
+}
+
+// on_conflict condition type for table "build_dependency_relationship"
+type Build_dependency_relationship_on_conflict struct {
+	Constraint     Build_dependency_relationship_constraint      `json:"constraint,omitempty"`
+	Update_columns []Build_dependency_relationship_update_column `json:"update_columns,omitempty"`
+	Where          *Build_dependency_relationship_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Build_dependency_relationship_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_on_conflict) GetConstraint() Build_dependency_relationship_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Build_dependency_relationship_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_on_conflict) GetUpdate_columns() []Build_dependency_relationship_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Build_dependency_relationship_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_on_conflict) GetWhere() *Build_dependency_relationship_bool_exp {
+	return v.Where
+}
+
+// update columns of table "build_dependency_relationship"
+type Build_dependency_relationship_update_column string
+
+const (
+	// column name
+	Build_dependency_relationship_update_columnBuildId Build_dependency_relationship_update_column = "build_id"
+	// column name
+	Build_dependency_relationship_update_columnDependedByRelationshipId Build_dependency_relationship_update_column = "depended_by_relationship_id"
+	// column name
+	Build_dependency_relationship_update_columnId Build_dependency_relationship_update_column = "id"
+	// column name
+	Build_dependency_relationship_update_columnLabels Build_dependency_relationship_update_column = "labels"
+	// column name
+	Build_dependency_relationship_update_columnRange Build_dependency_relationship_update_column = "range"
+	// column name
+	Build_dependency_relationship_update_columnReleaseId Build_dependency_relationship_update_column = "release_id"
+)
+
 // input type for inserting array relation for remote table "builds"
 type Builds_arr_rel_insert_input struct {
 	Data []*Builds_insert_input `json:"data,omitempty"`
@@ -107,25 +345,27 @@ func (v *Builds_arr_rel_insert_input) GetOn_conflict() *Builds_on_conflict { ret
 
 // Boolean expression to filter rows from the table "builds". All fields are combined with a logical 'AND'.
 type Builds_bool_exp struct {
-	And                       []*Builds_bool_exp                 `json:"_and,omitempty"`
-	Not                       *Builds_bool_exp                   `json:"_not,omitempty"`
-	Or                        []*Builds_bool_exp                 `json:"_or,omitempty"`
-	Agent_access_token        *Uuid_comparison_exp               `json:"agent_access_token,omitempty"`
-	Build_number              *Int_comparison_exp                `json:"build_number,omitempty"`
-	Created_at                *Timestamp_comparison_exp          `json:"created_at,omitempty"`
-	Existing_github_review_id *String_comparison_exp             `json:"existing_github_review_id,omitempty"`
-	Findings                  *Findings_bool_exp                 `json:"findings,omitempty"`
-	Git_branch                *String_comparison_exp             `json:"git_branch,omitempty"`
-	Git_hash                  *String_comparison_exp             `json:"git_hash,omitempty"`
-	Git_remote                *String_comparison_exp             `json:"git_remote,omitempty"`
-	Id                        *Uuid_comparison_exp               `json:"id,omitempty"`
-	Manifests                 *Manifests_bool_exp                `json:"manifests,omitempty"`
-	Project                   *Projects_bool_exp                 `json:"project,omitempty"`
-	Project_id                *Uuid_comparison_exp               `json:"project_id,omitempty"`
-	Pull_request_id           *String_comparison_exp             `json:"pull_request_id,omitempty"`
-	S3_url                    *String_comparison_exp             `json:"s3_url,omitempty"`
-	Scans                     *Scans_bool_exp                    `json:"scans,omitempty"`
-	Source_type               *Builds_source_type_comparison_exp `json:"source_type,omitempty"`
+	And                            []*Builds_bool_exp                      `json:"_and,omitempty"`
+	Not                            *Builds_bool_exp                        `json:"_not,omitempty"`
+	Or                             []*Builds_bool_exp                      `json:"_or,omitempty"`
+	Agent_access_token             *Uuid_comparison_exp                    `json:"agent_access_token,omitempty"`
+	Build_dependency_relationships *Build_dependency_relationship_bool_exp `json:"build_dependency_relationships,omitempty"`
+	Build_number                   *Int_comparison_exp                     `json:"build_number,omitempty"`
+	Created_at                     *Timestamp_comparison_exp               `json:"created_at,omitempty"`
+	Existing_github_check_id       *Bigint_comparison_exp                  `json:"existing_github_check_id,omitempty"`
+	Existing_github_review_id      *String_comparison_exp                  `json:"existing_github_review_id,omitempty"`
+	Findings                       *Findings_bool_exp                      `json:"findings,omitempty"`
+	Git_branch                     *String_comparison_exp                  `json:"git_branch,omitempty"`
+	Git_hash                       *String_comparison_exp                  `json:"git_hash,omitempty"`
+	Git_remote                     *String_comparison_exp                  `json:"git_remote,omitempty"`
+	Id                             *Uuid_comparison_exp                    `json:"id,omitempty"`
+	Manifests                      *Manifests_bool_exp                     `json:"manifests,omitempty"`
+	Project                        *Projects_bool_exp                      `json:"project,omitempty"`
+	Project_id                     *Uuid_comparison_exp                    `json:"project_id,omitempty"`
+	Pull_request_id                *String_comparison_exp                  `json:"pull_request_id,omitempty"`
+	S3_url                         *String_comparison_exp                  `json:"s3_url,omitempty"`
+	Scans                          *Scans_bool_exp                         `json:"scans,omitempty"`
+	Source_type                    *Builds_source_type_comparison_exp      `json:"source_type,omitempty"`
 }
 
 // GetAnd returns Builds_bool_exp.And, and is useful for accessing the field via an interface.
@@ -140,11 +380,21 @@ func (v *Builds_bool_exp) GetOr() []*Builds_bool_exp { return v.Or }
 // GetAgent_access_token returns Builds_bool_exp.Agent_access_token, and is useful for accessing the field via an interface.
 func (v *Builds_bool_exp) GetAgent_access_token() *Uuid_comparison_exp { return v.Agent_access_token }
 
+// GetBuild_dependency_relationships returns Builds_bool_exp.Build_dependency_relationships, and is useful for accessing the field via an interface.
+func (v *Builds_bool_exp) GetBuild_dependency_relationships() *Build_dependency_relationship_bool_exp {
+	return v.Build_dependency_relationships
+}
+
 // GetBuild_number returns Builds_bool_exp.Build_number, and is useful for accessing the field via an interface.
 func (v *Builds_bool_exp) GetBuild_number() *Int_comparison_exp { return v.Build_number }
 
 // GetCreated_at returns Builds_bool_exp.Created_at, and is useful for accessing the field via an interface.
 func (v *Builds_bool_exp) GetCreated_at() *Timestamp_comparison_exp { return v.Created_at }
+
+// GetExisting_github_check_id returns Builds_bool_exp.Existing_github_check_id, and is useful for accessing the field via an interface.
+func (v *Builds_bool_exp) GetExisting_github_check_id() *Bigint_comparison_exp {
+	return v.Existing_github_check_id
+}
 
 // GetExisting_github_review_id returns Builds_bool_exp.Existing_github_review_id, and is useful for accessing the field via an interface.
 func (v *Builds_bool_exp) GetExisting_github_review_id() *String_comparison_exp {
@@ -201,32 +451,42 @@ const (
 
 // input type for inserting data into table "builds"
 type Builds_insert_input struct {
-	Agent_access_token        *uuid.UUID                      `json:"agent_access_token,omitempty"`
-	Build_number              *int                            `json:"build_number,omitempty"`
-	Created_at                *time.Time                      `json:"created_at,omitempty"`
-	Existing_github_review_id *string                         `json:"existing_github_review_id,omitempty"`
-	Findings                  *Findings_arr_rel_insert_input  `json:"findings,omitempty"`
-	Git_branch                *string                         `json:"git_branch,omitempty"`
-	Git_hash                  *string                         `json:"git_hash,omitempty"`
-	Git_remote                *string                         `json:"git_remote,omitempty"`
-	Id                        *uuid.UUID                      `json:"id,omitempty"`
-	Manifests                 *Manifests_arr_rel_insert_input `json:"manifests,omitempty"`
-	Project                   *Projects_obj_rel_insert_input  `json:"project,omitempty"`
-	Project_id                *uuid.UUID                      `json:"project_id,omitempty"`
-	Pull_request_id           *string                         `json:"pull_request_id,omitempty"`
-	S3_url                    *string                         `json:"s3_url,omitempty"`
-	Scans                     *Scans_arr_rel_insert_input     `json:"scans,omitempty"`
-	Source_type               *string                         `json:"source_type,omitempty"`
+	Agent_access_token             *uuid.UUID                                          `json:"agent_access_token,omitempty"`
+	Build_dependency_relationships *Build_dependency_relationship_arr_rel_insert_input `json:"build_dependency_relationships,omitempty"`
+	Build_number                   *int                                                `json:"build_number,omitempty"`
+	Created_at                     *time.Time                                          `json:"created_at,omitempty"`
+	Existing_github_check_id       *int64                                              `json:"existing_github_check_id,omitempty"`
+	Existing_github_review_id      *string                                             `json:"existing_github_review_id,omitempty"`
+	Findings                       *Findings_arr_rel_insert_input                      `json:"findings,omitempty"`
+	Git_branch                     *string                                             `json:"git_branch,omitempty"`
+	Git_hash                       *string                                             `json:"git_hash,omitempty"`
+	Git_remote                     *string                                             `json:"git_remote,omitempty"`
+	Id                             *uuid.UUID                                          `json:"id,omitempty"`
+	Manifests                      *Manifests_arr_rel_insert_input                     `json:"manifests,omitempty"`
+	Project                        *Projects_obj_rel_insert_input                      `json:"project,omitempty"`
+	Project_id                     *uuid.UUID                                          `json:"project_id,omitempty"`
+	Pull_request_id                *string                                             `json:"pull_request_id,omitempty"`
+	S3_url                         *string                                             `json:"s3_url,omitempty"`
+	Scans                          *Scans_arr_rel_insert_input                         `json:"scans,omitempty"`
+	Source_type                    *string                                             `json:"source_type,omitempty"`
 }
 
 // GetAgent_access_token returns Builds_insert_input.Agent_access_token, and is useful for accessing the field via an interface.
 func (v *Builds_insert_input) GetAgent_access_token() *uuid.UUID { return v.Agent_access_token }
+
+// GetBuild_dependency_relationships returns Builds_insert_input.Build_dependency_relationships, and is useful for accessing the field via an interface.
+func (v *Builds_insert_input) GetBuild_dependency_relationships() *Build_dependency_relationship_arr_rel_insert_input {
+	return v.Build_dependency_relationships
+}
 
 // GetBuild_number returns Builds_insert_input.Build_number, and is useful for accessing the field via an interface.
 func (v *Builds_insert_input) GetBuild_number() *int { return v.Build_number }
 
 // GetCreated_at returns Builds_insert_input.Created_at, and is useful for accessing the field via an interface.
 func (v *Builds_insert_input) GetCreated_at() *time.Time { return v.Created_at }
+
+// GetExisting_github_check_id returns Builds_insert_input.Existing_github_check_id, and is useful for accessing the field via an interface.
+func (v *Builds_insert_input) GetExisting_github_check_id() *int64 { return v.Existing_github_check_id }
 
 // GetExisting_github_review_id returns Builds_insert_input.Existing_github_review_id, and is useful for accessing the field via an interface.
 func (v *Builds_insert_input) GetExisting_github_review_id() *string {
@@ -348,6 +608,8 @@ const (
 	Builds_update_columnBuildNumber Builds_update_column = "build_number"
 	// column name
 	Builds_update_columnCreatedAt Builds_update_column = "created_at"
+	// column name
+	Builds_update_columnExistingGithubCheckId Builds_update_column = "existing_github_check_id"
 	// column name
 	Builds_update_columnExistingGithubReviewId Builds_update_column = "existing_github_review_id"
 	// column name
@@ -591,10 +853,15 @@ func (v *DeleteBuildResponse) GetDelete_builds_by_pk() *DeleteBuildDelete_builds
 // input type for inserting array relation for remote table "findings"
 type Findings_arr_rel_insert_input struct {
 	Data []*Findings_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Findings_on_conflict `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Findings_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
 func (v *Findings_arr_rel_insert_input) GetData() []*Findings_insert_input { return v.Data }
+
+// GetOn_conflict returns Findings_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Findings_arr_rel_insert_input) GetOn_conflict() *Findings_on_conflict { return v.On_conflict }
 
 // Boolean expression to filter rows from the table "findings". All fields are combined with a logical 'AND'.
 type Findings_bool_exp struct {
@@ -726,6 +993,16 @@ func (v *Findings_bool_exp) GetVulnerability_package_id() *Uuid_comparison_exp {
 	return v.Vulnerability_package_id
 }
 
+// unique or primary key constraints on table "findings"
+type Findings_constraint string
+
+const (
+	// unique or primary key constraint
+	Findings_constraintFindingsDedupeSlugBuildIdKey Findings_constraint = "findings_dedupe_slug_build_id_key"
+	// unique or primary key constraint
+	Findings_constraintFindingsPkey Findings_constraint = "findings_pkey"
+)
+
 // input type for inserting data into table "findings"
 type Findings_insert_input struct {
 	Build                    *Builds_obj_rel_insert_input                 `json:"build,omitempty"`
@@ -847,6 +1124,70 @@ func (v *Findings_insert_input) GetVulnerability_package() *Vulnerability_packag
 func (v *Findings_insert_input) GetVulnerability_package_id() *uuid.UUID {
 	return v.Vulnerability_package_id
 }
+
+// on_conflict condition type for table "findings"
+type Findings_on_conflict struct {
+	Constraint     Findings_constraint      `json:"constraint,omitempty"`
+	Update_columns []Findings_update_column `json:"update_columns,omitempty"`
+	Where          *Findings_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Findings_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Findings_on_conflict) GetConstraint() Findings_constraint { return v.Constraint }
+
+// GetUpdate_columns returns Findings_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Findings_on_conflict) GetUpdate_columns() []Findings_update_column { return v.Update_columns }
+
+// GetWhere returns Findings_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Findings_on_conflict) GetWhere() *Findings_bool_exp { return v.Where }
+
+// update columns of table "findings"
+type Findings_update_column string
+
+const (
+	// column name
+	Findings_update_columnBuildId Findings_update_column = "build_id"
+	// column name
+	Findings_update_columnCreatedAt Findings_update_column = "created_at"
+	// column name
+	Findings_update_columnDedupeSlug Findings_update_column = "dedupe_slug"
+	// column name
+	Findings_update_columnFixState Findings_update_column = "fix_state"
+	// column name
+	Findings_update_columnFixVersions Findings_update_column = "fix_versions"
+	// column name
+	Findings_update_columnId Findings_update_column = "id"
+	// column name
+	Findings_update_columnLanguage Findings_update_column = "language"
+	// column name
+	Findings_update_columnLocations Findings_update_column = "locations"
+	// column name
+	Findings_update_columnMatcher Findings_update_column = "matcher"
+	// column name
+	Findings_update_columnPackageName Findings_update_column = "package_name"
+	// column name
+	Findings_update_columnPackageVersionId Findings_update_column = "package_version_id"
+	// column name
+	Findings_update_columnPurl Findings_update_column = "purl"
+	// column name
+	Findings_update_columnScanId Findings_update_column = "scan_id"
+	// column name
+	Findings_update_columnSeverity Findings_update_column = "severity"
+	// column name
+	Findings_update_columnType Findings_update_column = "type"
+	// column name
+	Findings_update_columnUpdatedAt Findings_update_column = "updated_at"
+	// column name
+	Findings_update_columnVersion Findings_update_column = "version"
+	// column name
+	Findings_update_columnVersionMatcher Findings_update_column = "version_matcher"
+	// column name
+	Findings_update_columnVirtualPath Findings_update_column = "virtual_path"
+	// column name
+	Findings_update_columnVulnerabilityId Findings_update_column = "vulnerability_id"
+	// column name
+	Findings_update_columnVulnerabilityPackageId Findings_update_column = "vulnerability_package_id"
+)
 
 // Boolean expression to compare columns of type "fix_state_enum". All fields are combined with logical 'AND'.
 type Fix_state_enum_comparison_exp struct {
@@ -2851,11 +3192,13 @@ const (
 //
 // columns and relationships of "package.package"
 type PackageFetchTimePackage struct {
-	Fetched_time *time.Time `json:"fetched_time"`
+	Last_successful_fetch *time.Time `json:"last_successful_fetch"`
 }
 
-// GetFetched_time returns PackageFetchTimePackage.Fetched_time, and is useful for accessing the field via an interface.
-func (v *PackageFetchTimePackage) GetFetched_time() *time.Time { return v.Fetched_time }
+// GetLast_successful_fetch returns PackageFetchTimePackage.Last_successful_fetch, and is useful for accessing the field via an interface.
+func (v *PackageFetchTimePackage) GetLast_successful_fetch() *time.Time {
+	return v.Last_successful_fetch
+}
 
 // PackageFetchTimeResponse is returned by PackageFetchTime on success.
 type PackageFetchTimeResponse struct {
@@ -2868,19 +3211,20 @@ func (v *PackageFetchTimeResponse) GetPackage() []*PackageFetchTimePackage { ret
 
 // Boolean expression to filter rows from the table "package.package". All fields are combined with a logical 'AND'.
 type Package_bool_exp struct {
-	And                 []*Package_bool_exp                  `json:"_and,omitempty"`
-	Not                 *Package_bool_exp                    `json:"_not,omitempty"`
-	Or                  []*Package_bool_exp                  `json:"_or,omitempty"`
-	Custom_registry     *String_comparison_exp               `json:"custom_registry,omitempty"`
-	Description         *String_comparison_exp               `json:"description,omitempty"`
-	Fetched_time        *Timestamptz_comparison_exp          `json:"fetched_time,omitempty"`
-	Id                  *Uuid_comparison_exp                 `json:"id,omitempty"`
-	Name                *String_comparison_exp               `json:"name,omitempty"`
-	Package_maintainers *Package_package_maintainer_bool_exp `json:"package_maintainers,omitempty"`
-	Package_manager     *Package_manager_comparison_exp      `json:"package_manager,omitempty"`
-	Releases            *Package_release_bool_exp            `json:"releases,omitempty"`
-	Upstream_data       *Jsonb_comparison_exp                `json:"upstream_data,omitempty"`
-	Vulnerabilities     *Vulnerability_affected_bool_exp     `json:"vulnerabilities,omitempty"`
+	And                   []*Package_bool_exp                  `json:"_and,omitempty"`
+	Not                   *Package_bool_exp                    `json:"_not,omitempty"`
+	Or                    []*Package_bool_exp                  `json:"_or,omitempty"`
+	Custom_registry       *String_comparison_exp               `json:"custom_registry,omitempty"`
+	Description           *String_comparison_exp               `json:"description,omitempty"`
+	Id                    *Uuid_comparison_exp                 `json:"id,omitempty"`
+	Last_failed_fetch     *Timestamptz_comparison_exp          `json:"last_failed_fetch,omitempty"`
+	Last_successful_fetch *Timestamptz_comparison_exp          `json:"last_successful_fetch,omitempty"`
+	Name                  *String_comparison_exp               `json:"name,omitempty"`
+	Package_maintainers   *Package_package_maintainer_bool_exp `json:"package_maintainers,omitempty"`
+	Package_manager       *Package_manager_comparison_exp      `json:"package_manager,omitempty"`
+	Releases              *Package_release_bool_exp            `json:"releases,omitempty"`
+	Upstream_data         *Jsonb_comparison_exp                `json:"upstream_data,omitempty"`
+	Vulnerabilities       *Vulnerability_affected_bool_exp     `json:"vulnerabilities,omitempty"`
 }
 
 // GetAnd returns Package_bool_exp.And, and is useful for accessing the field via an interface.
@@ -2898,11 +3242,18 @@ func (v *Package_bool_exp) GetCustom_registry() *String_comparison_exp { return 
 // GetDescription returns Package_bool_exp.Description, and is useful for accessing the field via an interface.
 func (v *Package_bool_exp) GetDescription() *String_comparison_exp { return v.Description }
 
-// GetFetched_time returns Package_bool_exp.Fetched_time, and is useful for accessing the field via an interface.
-func (v *Package_bool_exp) GetFetched_time() *Timestamptz_comparison_exp { return v.Fetched_time }
-
 // GetId returns Package_bool_exp.Id, and is useful for accessing the field via an interface.
 func (v *Package_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetLast_failed_fetch returns Package_bool_exp.Last_failed_fetch, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetLast_failed_fetch() *Timestamptz_comparison_exp {
+	return v.Last_failed_fetch
+}
+
+// GetLast_successful_fetch returns Package_bool_exp.Last_successful_fetch, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetLast_successful_fetch() *Timestamptz_comparison_exp {
+	return v.Last_successful_fetch
+}
 
 // GetName returns Package_bool_exp.Name, and is useful for accessing the field via an interface.
 func (v *Package_bool_exp) GetName() *String_comparison_exp { return v.Name }
@@ -2940,16 +3291,17 @@ const (
 
 // input type for inserting data into table "package.package"
 type Package_insert_input struct {
-	Custom_registry     *string                                          `json:"custom_registry,omitempty"`
-	Description         *string                                          `json:"description,omitempty"`
-	Fetched_time        *time.Time                                       `json:"fetched_time,omitempty"`
-	Id                  *uuid.UUID                                       `json:"id,omitempty"`
-	Name                *string                                          `json:"name,omitempty"`
-	Package_maintainers *Package_package_maintainer_arr_rel_insert_input `json:"package_maintainers,omitempty"`
-	Package_manager     *types.PackageManager                            `json:"package_manager,omitempty"`
-	Releases            *Package_release_arr_rel_insert_input            `json:"releases,omitempty"`
-	Upstream_data       *json.RawMessage                                 `json:"upstream_data,omitempty"`
-	Vulnerabilities     *Vulnerability_affected_arr_rel_insert_input     `json:"vulnerabilities,omitempty"`
+	Custom_registry       *string                                          `json:"custom_registry,omitempty"`
+	Description           *string                                          `json:"description,omitempty"`
+	Id                    *uuid.UUID                                       `json:"id,omitempty"`
+	Last_failed_fetch     *time.Time                                       `json:"last_failed_fetch,omitempty"`
+	Last_successful_fetch *time.Time                                       `json:"last_successful_fetch,omitempty"`
+	Name                  *string                                          `json:"name,omitempty"`
+	Package_maintainers   *Package_package_maintainer_arr_rel_insert_input `json:"package_maintainers,omitempty"`
+	Package_manager       *types.PackageManager                            `json:"package_manager,omitempty"`
+	Releases              *Package_release_arr_rel_insert_input            `json:"releases,omitempty"`
+	Upstream_data         *json.RawMessage                                 `json:"upstream_data,omitempty"`
+	Vulnerabilities       *Vulnerability_affected_arr_rel_insert_input     `json:"vulnerabilities,omitempty"`
 }
 
 // GetCustom_registry returns Package_insert_input.Custom_registry, and is useful for accessing the field via an interface.
@@ -2958,11 +3310,14 @@ func (v *Package_insert_input) GetCustom_registry() *string { return v.Custom_re
 // GetDescription returns Package_insert_input.Description, and is useful for accessing the field via an interface.
 func (v *Package_insert_input) GetDescription() *string { return v.Description }
 
-// GetFetched_time returns Package_insert_input.Fetched_time, and is useful for accessing the field via an interface.
-func (v *Package_insert_input) GetFetched_time() *time.Time { return v.Fetched_time }
-
 // GetId returns Package_insert_input.Id, and is useful for accessing the field via an interface.
 func (v *Package_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetLast_failed_fetch returns Package_insert_input.Last_failed_fetch, and is useful for accessing the field via an interface.
+func (v *Package_insert_input) GetLast_failed_fetch() *time.Time { return v.Last_failed_fetch }
+
+// GetLast_successful_fetch returns Package_insert_input.Last_successful_fetch, and is useful for accessing the field via an interface.
+func (v *Package_insert_input) GetLast_successful_fetch() *time.Time { return v.Last_successful_fetch }
 
 // GetName returns Package_insert_input.Name, and is useful for accessing the field via an interface.
 func (v *Package_insert_input) GetName() *string { return v.Name }
@@ -3443,25 +3798,26 @@ func (v *Package_release_arr_rel_insert_input) GetOn_conflict() *Package_release
 
 // Boolean expression to filter rows from the table "package.release". All fields are combined with a logical 'AND'.
 type Package_release_bool_exp struct {
-	And                      []*Package_release_bool_exp          `json:"_and,omitempty"`
-	Not                      *Package_release_bool_exp            `json:"_not,omitempty"`
-	Or                       []*Package_release_bool_exp          `json:"_or,omitempty"`
-	Blob_hash                *String_comparison_exp               `json:"blob_hash,omitempty"`
-	Fetched_time             *Timestamptz_comparison_exp          `json:"fetched_time,omitempty"`
-	Id                       *Uuid_comparison_exp                 `json:"id,omitempty"`
-	Mirrored_blob_url        *String_comparison_exp               `json:"mirrored_blob_url,omitempty"`
-	Observed_time            *Timestamptz_comparison_exp          `json:"observed_time,omitempty"`
-	Package                  *Package_bool_exp                    `json:"package,omitempty"`
-	Package_id               *Uuid_comparison_exp                 `json:"package_id,omitempty"`
-	Publishing_maintainer    *Package_maintainer_bool_exp         `json:"publishing_maintainer,omitempty"`
-	Publishing_maintainer_id *Uuid_comparison_exp                 `json:"publishing_maintainer_id,omitempty"`
-	Release_dependencies     *Package_release_dependency_bool_exp `json:"release_dependencies,omitempty"`
-	Release_dependents       *Package_release_dependency_bool_exp `json:"release_dependents,omitempty"`
-	Release_licenses         *Package_release_license_bool_exp    `json:"release_licenses,omitempty"`
-	Release_time             *Timestamptz_comparison_exp          `json:"release_time,omitempty"`
-	Upstream_blob_url        *String_comparison_exp               `json:"upstream_blob_url,omitempty"`
-	Upstream_data            *Jsonb_comparison_exp                `json:"upstream_data,omitempty"`
-	Version                  *String_comparison_exp               `json:"version,omitempty"`
+	And                            []*Package_release_bool_exp             `json:"_and,omitempty"`
+	Not                            *Package_release_bool_exp               `json:"_not,omitempty"`
+	Or                             []*Package_release_bool_exp             `json:"_or,omitempty"`
+	Blob_hash                      *String_comparison_exp                  `json:"blob_hash,omitempty"`
+	Build_dependency_relationships *Build_dependency_relationship_bool_exp `json:"build_dependency_relationships,omitempty"`
+	Fetched_time                   *Timestamptz_comparison_exp             `json:"fetched_time,omitempty"`
+	Id                             *Uuid_comparison_exp                    `json:"id,omitempty"`
+	Mirrored_blob_url              *String_comparison_exp                  `json:"mirrored_blob_url,omitempty"`
+	Observed_time                  *Timestamptz_comparison_exp             `json:"observed_time,omitempty"`
+	Package                        *Package_bool_exp                       `json:"package,omitempty"`
+	Package_id                     *Uuid_comparison_exp                    `json:"package_id,omitempty"`
+	Publishing_maintainer          *Package_maintainer_bool_exp            `json:"publishing_maintainer,omitempty"`
+	Publishing_maintainer_id       *Uuid_comparison_exp                    `json:"publishing_maintainer_id,omitempty"`
+	Release_dependencies           *Package_release_dependency_bool_exp    `json:"release_dependencies,omitempty"`
+	Release_dependents             *Package_release_dependency_bool_exp    `json:"release_dependents,omitempty"`
+	Release_licenses               *Package_release_license_bool_exp       `json:"release_licenses,omitempty"`
+	Release_time                   *Timestamptz_comparison_exp             `json:"release_time,omitempty"`
+	Upstream_blob_url              *String_comparison_exp                  `json:"upstream_blob_url,omitempty"`
+	Upstream_data                  *Jsonb_comparison_exp                   `json:"upstream_data,omitempty"`
+	Version                        *String_comparison_exp                  `json:"version,omitempty"`
 }
 
 // GetAnd returns Package_release_bool_exp.And, and is useful for accessing the field via an interface.
@@ -3475,6 +3831,11 @@ func (v *Package_release_bool_exp) GetOr() []*Package_release_bool_exp { return 
 
 // GetBlob_hash returns Package_release_bool_exp.Blob_hash, and is useful for accessing the field via an interface.
 func (v *Package_release_bool_exp) GetBlob_hash() *String_comparison_exp { return v.Blob_hash }
+
+// GetBuild_dependency_relationships returns Package_release_bool_exp.Build_dependency_relationships, and is useful for accessing the field via an interface.
+func (v *Package_release_bool_exp) GetBuild_dependency_relationships() *Build_dependency_relationship_bool_exp {
+	return v.Build_dependency_relationships
+}
 
 // GetFetched_time returns Package_release_bool_exp.Fetched_time, and is useful for accessing the field via an interface.
 func (v *Package_release_bool_exp) GetFetched_time() *Timestamptz_comparison_exp {
@@ -3746,26 +4107,32 @@ const (
 
 // input type for inserting data into table "package.release"
 type Package_release_insert_input struct {
-	Blob_hash                *string                                          `json:"blob_hash,omitempty"`
-	Fetched_time             *time.Time                                       `json:"fetched_time,omitempty"`
-	Id                       *uuid.UUID                                       `json:"id,omitempty"`
-	Mirrored_blob_url        *string                                          `json:"mirrored_blob_url,omitempty"`
-	Observed_time            *time.Time                                       `json:"observed_time,omitempty"`
-	Package                  *Package_obj_rel_insert_input                    `json:"package,omitempty"`
-	Package_id               *uuid.UUID                                       `json:"package_id,omitempty"`
-	Publishing_maintainer    *Package_maintainer_obj_rel_insert_input         `json:"publishing_maintainer,omitempty"`
-	Publishing_maintainer_id *uuid.UUID                                       `json:"publishing_maintainer_id,omitempty"`
-	Release_dependencies     *Package_release_dependency_arr_rel_insert_input `json:"release_dependencies,omitempty"`
-	Release_dependents       *Package_release_dependency_arr_rel_insert_input `json:"release_dependents,omitempty"`
-	Release_licenses         *Package_release_license_arr_rel_insert_input    `json:"release_licenses,omitempty"`
-	Release_time             *time.Time                                       `json:"release_time,omitempty"`
-	Upstream_blob_url        *string                                          `json:"upstream_blob_url,omitempty"`
-	Upstream_data            *json.RawMessage                                 `json:"upstream_data,omitempty"`
-	Version                  *string                                          `json:"version,omitempty"`
+	Blob_hash                      *string                                             `json:"blob_hash,omitempty"`
+	Build_dependency_relationships *Build_dependency_relationship_arr_rel_insert_input `json:"build_dependency_relationships,omitempty"`
+	Fetched_time                   *time.Time                                          `json:"fetched_time,omitempty"`
+	Id                             *uuid.UUID                                          `json:"id,omitempty"`
+	Mirrored_blob_url              *string                                             `json:"mirrored_blob_url,omitempty"`
+	Observed_time                  *time.Time                                          `json:"observed_time,omitempty"`
+	Package                        *Package_obj_rel_insert_input                       `json:"package,omitempty"`
+	Package_id                     *uuid.UUID                                          `json:"package_id,omitempty"`
+	Publishing_maintainer          *Package_maintainer_obj_rel_insert_input            `json:"publishing_maintainer,omitempty"`
+	Publishing_maintainer_id       *uuid.UUID                                          `json:"publishing_maintainer_id,omitempty"`
+	Release_dependencies           *Package_release_dependency_arr_rel_insert_input    `json:"release_dependencies,omitempty"`
+	Release_dependents             *Package_release_dependency_arr_rel_insert_input    `json:"release_dependents,omitempty"`
+	Release_licenses               *Package_release_license_arr_rel_insert_input       `json:"release_licenses,omitempty"`
+	Release_time                   *time.Time                                          `json:"release_time,omitempty"`
+	Upstream_blob_url              *string                                             `json:"upstream_blob_url,omitempty"`
+	Upstream_data                  *json.RawMessage                                    `json:"upstream_data,omitempty"`
+	Version                        *string                                             `json:"version,omitempty"`
 }
 
 // GetBlob_hash returns Package_release_insert_input.Blob_hash, and is useful for accessing the field via an interface.
 func (v *Package_release_insert_input) GetBlob_hash() *string { return v.Blob_hash }
+
+// GetBuild_dependency_relationships returns Package_release_insert_input.Build_dependency_relationships, and is useful for accessing the field via an interface.
+func (v *Package_release_insert_input) GetBuild_dependency_relationships() *Build_dependency_relationship_arr_rel_insert_input {
+	return v.Build_dependency_relationships
+}
 
 // GetFetched_time returns Package_release_insert_input.Fetched_time, and is useful for accessing the field via an interface.
 func (v *Package_release_insert_input) GetFetched_time() *time.Time { return v.Fetched_time }
@@ -4043,9 +4410,11 @@ const (
 	// column name
 	Package_update_columnDescription Package_update_column = "description"
 	// column name
-	Package_update_columnFetchedTime Package_update_column = "fetched_time"
-	// column name
 	Package_update_columnId Package_update_column = "id"
+	// column name
+	Package_update_columnLastFailedFetch Package_update_column = "last_failed_fetch"
+	// column name
+	Package_update_columnLastSuccessfulFetch Package_update_column = "last_successful_fetch"
 	// column name
 	Package_update_columnName Package_update_column = "name"
 	// column name
@@ -4784,6 +5153,7 @@ type Settings_bool_exp struct {
 	Created_at           *Timestamp_comparison_exp `json:"created_at,omitempty"`
 	Id                   *Uuid_comparison_exp      `json:"id,omitempty"`
 	Organization         *Organizations_bool_exp   `json:"organization,omitempty"`
+	Pr_check_enabled     *Boolean_comparison_exp   `json:"pr_check_enabled,omitempty"`
 	Pr_feedback_disabled *Boolean_comparison_exp   `json:"pr_feedback_disabled,omitempty"`
 	Project              *Projects_bool_exp        `json:"project,omitempty"`
 }
@@ -4805,6 +5175,9 @@ func (v *Settings_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
 
 // GetOrganization returns Settings_bool_exp.Organization, and is useful for accessing the field via an interface.
 func (v *Settings_bool_exp) GetOrganization() *Organizations_bool_exp { return v.Organization }
+
+// GetPr_check_enabled returns Settings_bool_exp.Pr_check_enabled, and is useful for accessing the field via an interface.
+func (v *Settings_bool_exp) GetPr_check_enabled() *Boolean_comparison_exp { return v.Pr_check_enabled }
 
 // GetPr_feedback_disabled returns Settings_bool_exp.Pr_feedback_disabled, and is useful for accessing the field via an interface.
 func (v *Settings_bool_exp) GetPr_feedback_disabled() *Boolean_comparison_exp {
@@ -5127,9 +5500,10 @@ func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_de
 //
 // columns and relationships of "package.package"
 type UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage struct {
-	Id           uuid.UUID  `json:"id"`
-	Name         string     `json:"name"`
-	Fetched_time *time.Time `json:"fetched_time"`
+	Id                    uuid.UUID  `json:"id"`
+	Name                  string     `json:"name"`
+	Last_successful_fetch *time.Time `json:"last_successful_fetch"`
+	Last_failed_fetch     *time.Time `json:"last_failed_fetch"`
 }
 
 // GetId returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage.Id, and is useful for accessing the field via an interface.
@@ -5142,9 +5516,14 @@ func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_de
 	return v.Name
 }
 
-// GetFetched_time returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage.Fetched_time, and is useful for accessing the field via an interface.
-func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage) GetFetched_time() *time.Time {
-	return v.Fetched_time
+// GetLast_successful_fetch returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage.Last_successful_fetch, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage) GetLast_successful_fetch() *time.Time {
+	return v.Last_successful_fetch
+}
+
+// GetLast_failed_fetch returns UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage.Last_failed_fetch, and is useful for accessing the field via an interface.
+func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage) GetLast_failed_fetch() *time.Time {
+	return v.Last_failed_fetch
 }
 
 // UpsertPackageResponse is returned by UpsertPackage on success.
@@ -5589,6 +5968,7 @@ type Vulnerability_affected_bool_exp struct {
 	Id                    *Uuid_comparison_exp                         `json:"id,omitempty"`
 	Package               *Package_bool_exp                            `json:"package,omitempty"`
 	Package_id            *Uuid_comparison_exp                         `json:"package_id,omitempty"`
+	Ranges                *Vulnerability_range_bool_exp                `json:"ranges,omitempty"`
 	Vulnerability         *Vulnerability_bool_exp                      `json:"vulnerability,omitempty"`
 	Vulnerability_id      *Uuid_comparison_exp                         `json:"vulnerability_id,omitempty"`
 }
@@ -5631,6 +6011,9 @@ func (v *Vulnerability_affected_bool_exp) GetPackage() *Package_bool_exp { retur
 // GetPackage_id returns Vulnerability_affected_bool_exp.Package_id, and is useful for accessing the field via an interface.
 func (v *Vulnerability_affected_bool_exp) GetPackage_id() *Uuid_comparison_exp { return v.Package_id }
 
+// GetRanges returns Vulnerability_affected_bool_exp.Ranges, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_bool_exp) GetRanges() *Vulnerability_range_bool_exp { return v.Ranges }
+
 // GetVulnerability returns Vulnerability_affected_bool_exp.Vulnerability, and is useful for accessing the field via an interface.
 func (v *Vulnerability_affected_bool_exp) GetVulnerability() *Vulnerability_bool_exp {
 	return v.Vulnerability
@@ -5660,6 +6043,7 @@ type Vulnerability_affected_insert_input struct {
 	Id                    *uuid.UUID                                               `json:"id,omitempty"`
 	Package               *Package_obj_rel_insert_input                            `json:"package,omitempty"`
 	Package_id            *uuid.UUID                                               `json:"package_id,omitempty"`
+	Ranges                *Vulnerability_range_arr_rel_insert_input                `json:"ranges,omitempty"`
 	Vulnerability         *Vulnerability_obj_rel_insert_input                      `json:"vulnerability,omitempty"`
 	Vulnerability_id      *uuid.UUID                                               `json:"vulnerability_id,omitempty"`
 }
@@ -5694,6 +6078,11 @@ func (v *Vulnerability_affected_insert_input) GetPackage() *Package_obj_rel_inse
 
 // GetPackage_id returns Vulnerability_affected_insert_input.Package_id, and is useful for accessing the field via an interface.
 func (v *Vulnerability_affected_insert_input) GetPackage_id() *uuid.UUID { return v.Package_id }
+
+// GetRanges returns Vulnerability_affected_insert_input.Ranges, and is useful for accessing the field via an interface.
+func (v *Vulnerability_affected_insert_input) GetRanges() *Vulnerability_range_arr_rel_insert_input {
+	return v.Ranges
+}
 
 // GetVulnerability returns Vulnerability_affected_insert_input.Vulnerability, and is useful for accessing the field via an interface.
 func (v *Vulnerability_affected_insert_input) GetVulnerability() *Vulnerability_obj_rel_insert_input {
@@ -6090,6 +6479,7 @@ type Vulnerability_bool_exp struct {
 	Modified                *Timestamptz_comparison_exp        `json:"modified,omitempty"`
 	Published               *Timestamptz_comparison_exp        `json:"published,omitempty"`
 	References              *Vulnerability_reference_bool_exp  `json:"references,omitempty"`
+	Reviewed_by_source      *Boolean_comparison_exp            `json:"reviewed_by_source,omitempty"`
 	Severities              *Vulnerability_severity_bool_exp   `json:"severities,omitempty"`
 	Source                  *String_comparison_exp             `json:"source,omitempty"`
 	Source_id               *String_comparison_exp             `json:"source_id,omitempty"`
@@ -6154,6 +6544,11 @@ func (v *Vulnerability_bool_exp) GetPublished() *Timestamptz_comparison_exp { re
 // GetReferences returns Vulnerability_bool_exp.References, and is useful for accessing the field via an interface.
 func (v *Vulnerability_bool_exp) GetReferences() *Vulnerability_reference_bool_exp {
 	return v.References
+}
+
+// GetReviewed_by_source returns Vulnerability_bool_exp.Reviewed_by_source, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetReviewed_by_source() *Boolean_comparison_exp {
+	return v.Reviewed_by_source
 }
 
 // GetSeverities returns Vulnerability_bool_exp.Severities, and is useful for accessing the field via an interface.
@@ -6448,6 +6843,7 @@ type Vulnerability_insert_input struct {
 	Modified              *time.Time                                     `json:"modified,omitempty"`
 	Published             *time.Time                                     `json:"published,omitempty"`
 	References            *Vulnerability_reference_arr_rel_insert_input  `json:"references,omitempty"`
+	Reviewed_by_source    *bool                                          `json:"reviewed_by_source,omitempty"`
 	Severities            *Vulnerability_severity_arr_rel_insert_input   `json:"severities,omitempty"`
 	Source                *string                                        `json:"source,omitempty"`
 	Source_id             *string                                        `json:"source_id,omitempty"`
@@ -6503,6 +6899,9 @@ func (v *Vulnerability_insert_input) GetPublished() *time.Time { return v.Publis
 func (v *Vulnerability_insert_input) GetReferences() *Vulnerability_reference_arr_rel_insert_input {
 	return v.References
 }
+
+// GetReviewed_by_source returns Vulnerability_insert_input.Reviewed_by_source, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetReviewed_by_source() *bool { return v.Reviewed_by_source }
 
 // GetSeverities returns Vulnerability_insert_input.Severities, and is useful for accessing the field via an interface.
 func (v *Vulnerability_insert_input) GetSeverities() *Vulnerability_severity_arr_rel_insert_input {
@@ -6707,6 +7106,131 @@ type Vulnerability_packages_update_column string
 const (
 	// column name
 	Vulnerability_packages_update_columnSlug Vulnerability_packages_update_column = "slug"
+)
+
+// input type for inserting array relation for remote table "vulnerability.range"
+type Vulnerability_range_arr_rel_insert_input struct {
+	Data []*Vulnerability_range_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Vulnerability_range_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Vulnerability_range_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_arr_rel_insert_input) GetData() []*Vulnerability_range_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Vulnerability_range_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_arr_rel_insert_input) GetOn_conflict() *Vulnerability_range_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "vulnerability.range". All fields are combined with a logical 'AND'.
+type Vulnerability_range_bool_exp struct {
+	And         []*Vulnerability_range_bool_exp  `json:"_and,omitempty"`
+	Not         *Vulnerability_range_bool_exp    `json:"_not,omitempty"`
+	Or          []*Vulnerability_range_bool_exp  `json:"_or,omitempty"`
+	Affected    *Vulnerability_affected_bool_exp `json:"affected,omitempty"`
+	Affected_id *Uuid_comparison_exp             `json:"affected_id,omitempty"`
+	Fixed       *String_comparison_exp           `json:"fixed,omitempty"`
+	Id          *Uuid_comparison_exp             `json:"id,omitempty"`
+	Introduced  *String_comparison_exp           `json:"introduced,omitempty"`
+}
+
+// GetAnd returns Vulnerability_range_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_bool_exp) GetAnd() []*Vulnerability_range_bool_exp { return v.And }
+
+// GetNot returns Vulnerability_range_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_bool_exp) GetNot() *Vulnerability_range_bool_exp { return v.Not }
+
+// GetOr returns Vulnerability_range_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_bool_exp) GetOr() []*Vulnerability_range_bool_exp { return v.Or }
+
+// GetAffected returns Vulnerability_range_bool_exp.Affected, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_bool_exp) GetAffected() *Vulnerability_affected_bool_exp {
+	return v.Affected
+}
+
+// GetAffected_id returns Vulnerability_range_bool_exp.Affected_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_bool_exp) GetAffected_id() *Uuid_comparison_exp { return v.Affected_id }
+
+// GetFixed returns Vulnerability_range_bool_exp.Fixed, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_bool_exp) GetFixed() *String_comparison_exp { return v.Fixed }
+
+// GetId returns Vulnerability_range_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetIntroduced returns Vulnerability_range_bool_exp.Introduced, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_bool_exp) GetIntroduced() *String_comparison_exp { return v.Introduced }
+
+// unique or primary key constraints on table "vulnerability.range"
+type Vulnerability_range_constraint string
+
+const (
+	// unique or primary key constraint
+	Vulnerability_range_constraintRangePkey Vulnerability_range_constraint = "range_pkey"
+	// unique or primary key constraint
+	Vulnerability_range_constraintRangeUniq Vulnerability_range_constraint = "range_uniq"
+)
+
+// input type for inserting data into table "vulnerability.range"
+type Vulnerability_range_insert_input struct {
+	Affected    *Vulnerability_affected_obj_rel_insert_input `json:"affected,omitempty"`
+	Affected_id *uuid.UUID                                   `json:"affected_id,omitempty"`
+	Fixed       *string                                      `json:"fixed,omitempty"`
+	Id          *uuid.UUID                                   `json:"id,omitempty"`
+	Introduced  *string                                      `json:"introduced,omitempty"`
+}
+
+// GetAffected returns Vulnerability_range_insert_input.Affected, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_insert_input) GetAffected() *Vulnerability_affected_obj_rel_insert_input {
+	return v.Affected
+}
+
+// GetAffected_id returns Vulnerability_range_insert_input.Affected_id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_insert_input) GetAffected_id() *uuid.UUID { return v.Affected_id }
+
+// GetFixed returns Vulnerability_range_insert_input.Fixed, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_insert_input) GetFixed() *string { return v.Fixed }
+
+// GetId returns Vulnerability_range_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetIntroduced returns Vulnerability_range_insert_input.Introduced, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_insert_input) GetIntroduced() *string { return v.Introduced }
+
+// on_conflict condition type for table "vulnerability.range"
+type Vulnerability_range_on_conflict struct {
+	Constraint     Vulnerability_range_constraint      `json:"constraint,omitempty"`
+	Update_columns []Vulnerability_range_update_column `json:"update_columns,omitempty"`
+	Where          *Vulnerability_range_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Vulnerability_range_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_on_conflict) GetConstraint() Vulnerability_range_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Vulnerability_range_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_on_conflict) GetUpdate_columns() []Vulnerability_range_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Vulnerability_range_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_on_conflict) GetWhere() *Vulnerability_range_bool_exp { return v.Where }
+
+// update columns of table "vulnerability.range"
+type Vulnerability_range_update_column string
+
+const (
+	// column name
+	Vulnerability_range_update_columnAffectedId Vulnerability_range_update_column = "affected_id"
+	// column name
+	Vulnerability_range_update_columnFixed Vulnerability_range_update_column = "fixed"
+	// column name
+	Vulnerability_range_update_columnId Vulnerability_range_update_column = "id"
+	// column name
+	Vulnerability_range_update_columnIntroduced Vulnerability_range_update_column = "introduced"
 )
 
 // input type for inserting array relation for remote table "vulnerability.reference"
@@ -6997,6 +7521,8 @@ const (
 	Vulnerability_update_columnModified Vulnerability_update_column = "modified"
 	// column name
 	Vulnerability_update_columnPublished Vulnerability_update_column = "published"
+	// column name
+	Vulnerability_update_columnReviewedBySource Vulnerability_update_column = "reviewed_by_source"
 	// column name
 	Vulnerability_update_columnSource Vulnerability_update_column = "source"
 	// column name
@@ -7338,8 +7864,8 @@ func PackageFetchTime(
 		OpName: "PackageFetchTime",
 		Query: `
 query PackageFetchTime ($package_manager: package_manager, $custom_registry: String, $name: String) {
-	package(where: {custom_registry:{_eq:$custom_registry},name:{_eq:$name},package_manager:{_eq:$package_manager},fetched_time:{_is_null:false}}, limit: 1) {
-		fetched_time
+	package(where: {custom_registry:{_eq:$custom_registry},name:{_eq:$name},package_manager:{_eq:$package_manager},last_successful_fetch:{_is_null:false}}, limit: 1) {
+		last_successful_fetch
 	}
 }
 `,
@@ -7416,7 +7942,8 @@ mutation UpsertPackage ($object: package_insert_input!, $on_conflict: package_on
 				dependency_package {
 					id
 					name
-					fetched_time
+					last_successful_fetch
+					last_failed_fetch
 				}
 			}
 		}
