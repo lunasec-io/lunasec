@@ -18,11 +18,12 @@ import zlib from 'zlib';
 import { LunaTraceAssetType } from '../types/cli';
 import { log } from '../utils/log';
 
-function importAssetArgs(
+function snapshotAssetArgs(
   assetType: LunaTraceAssetType,
   assetName: string,
   gitBranch: string,
-  gitCommit: string | undefined
+  gitCommit?: string,
+  workspace?: string
 ) {
   const baseCmdArgs = [
     '--debug',
@@ -39,35 +40,60 @@ function importAssetArgs(
     baseCmdArgs.push('--git-commit', gitCommit);
   }
 
-  baseCmdArgs.push(assetType);
-
   if (assetType === 'file') {
-    return [...baseCmdArgs, '--stdin', assetName];
+    return [...baseCmdArgs, assetType, '--stdin', assetName];
   }
   if (assetType === 'repository') {
-    return [...baseCmdArgs, assetName];
+    if (workspace === undefined) {
+      log.error('asset is of type repository, but no workspace directory provided', {
+        assetName,
+      });
+      return null;
+    }
+
+    return [...baseCmdArgs, '--workspace', workspace, assetType, assetName];
   }
-  throw new Error(`unknown asset type: ${assetType}`);
+  log.error('unknown asset type', {
+    assetType,
+    assetName,
+  });
+  return null;
 }
 
 export function generateSbomFromAsset(
   assetType: LunaTraceAssetType,
   assetName: string,
   gitBranch: string,
-  gitCommit: string | undefined,
-  options?: { inputStream?: Readable }
+  gitCommit?: string,
+  options?: { inputStream?: Readable; workspace?: string }
 ) {
-  const cmdArgs = importAssetArgs(assetType, assetName, gitBranch, gitCommit);
+  const cmdArgs = snapshotAssetArgs(assetType, assetName, gitBranch, gitCommit, options?.workspace);
+  if (cmdArgs === null) {
+    return null;
+  }
+
+  const logger = log.child('generate-sbom-from-asset', {
+    assetType,
+    assetName,
+    gitBranch,
+    gitCommit,
+  });
 
   const lunatraceCli = spawn('lunatrace', cmdArgs);
-  log.info('lunatrace spawned at pid', lunatraceCli.pid);
+  logger.info('lunatrace spawned at pid', {
+    pid: lunatraceCli.pid,
+  });
 
   lunatraceCli.stderr.on('data', (data) => {
-    log.info(`stderr: ${data}`);
+    logger.info(`lunatrace cli stderr`, {
+      data,
+    });
   });
 
   lunatraceCli.on('error', (error) => {
-    log.error(`error: ${error.message}`);
+    logger.error('lunatrace cli error', {
+      error: error.message,
+    });
     // todo: might get gobbled?
     // throw error;
   });
@@ -78,24 +104,26 @@ export function generateSbomFromAsset(
     inputStream.on('data', (chunk) => lunatraceCli.stdin.write(chunk));
     inputStream.on('end', () => {
       lunatraceCli.stdin.end(() => {
-        log.info('closing stdin');
+        logger.info('closing stdin');
       });
       inputStream.destroy();
     });
     inputStream.on('error', (e) => {
       // throw e;
-      log.error(e);
+      logger.error('error closing input stream', e);
     });
   }
 
   lunatraceCli.stdout.on('data', (chunk) => {
-    log.info('lunatrace cli emitted stdout: ', chunk.toString().length);
+    logger.info('lunatrace cli emitted stdout', {
+      stdout: chunk.toString().length,
+    });
   });
 
   lunatraceCli.stdout.on('close', () => {
-    log.info('lunatrace outstream ended');
+    logger.info('lunatrace outstream ended');
   });
-  lunatraceCli.on('close', () => log.info('LunaTrace process closed'));
+  lunatraceCli.on('close', () => logger.info('lunatrace process closed'));
   // gzip the sbom stream
   return lunatraceCli.stdout.pipe(zlib.createGzip());
 }

@@ -170,14 +170,18 @@ func RepositoryCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err err
 
 	dirname := util.RepoNameToDirname(path.Clean(parsedRepo.Path))
 
-	repoTmpDir, err := os.MkdirTemp("", dirname)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Msg("unable to create temporary directory")
-		return
+	repoDir := snapshotOptions.Workspace
+	if repoDir == "" {
+		// if a provided workspace directory has not been provided, then create a new temporary directory
+		repoDir, err = os.MkdirTemp("", dirname)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Msg("unable to create temporary directory")
+			return
+		}
+		defer util.CleanupTmpFileDirectory(repoDir)
 	}
-	defer util.CleanupTmpFileDirectory(repoTmpDir)
 
 	log.Info().
 		Str("url", parsedRepo.String()).
@@ -187,7 +191,7 @@ func RepositoryCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err err
 
 	cloneOptions := getGitCloneOptions(parsedRepo.String(), snapshotOptions, progressBuffer)
 
-	repo, err := git.PlainClone(repoTmpDir, false, cloneOptions)
+	repo, err := git.PlainClone(repoDir, false, cloneOptions)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -232,7 +236,7 @@ func RepositoryCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err err
 		Str("commit", repoMeta.CommitHash).
 		Msg("collected repo information")
 
-	collectedSbom, err := getSbomFromDirectory(repoTmpDir, snapshotOptions.Excluded)
+	collectedSbom, err := getSbomFromDirectory(repoDir, snapshotOptions.Excluded)
 	if err != nil {
 		log.Error().
 			Err(err).
