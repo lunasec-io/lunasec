@@ -198,7 +198,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
    * In the future we will just build this info right into the tree, most likely
    * @param vulnId
    */
-  public determineVulnTriviallyUpdatable(vulnId: string) {
-    BuildDependencyTreeNode = [];
-  }
+  // public determineVulnTriviallyUpdatable(vulnId: string) {
+  //   BuildDependencyTreeNode = [];
+  // }
 }
