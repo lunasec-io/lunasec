@@ -11,6 +11,13 @@
  * limitations under the License.
  *
  */
+import fs from 'fs';
+import * as os from 'os';
+import path from 'path';
+
+import { LunaLogger } from '@lunatrace/logger';
+import { buildDepTreeFromFiles } from 'snyk-nodejs-lockfile-parser';
+
 import { getRepoCloneUrlWithAuth } from '../../../github/actions/get-repo-clone-url-with-auth';
 import { hasura } from '../../../hasura-api';
 import { InsertBuildMutation } from '../../../hasura-api/generated';
@@ -21,6 +28,41 @@ import { MaybeError } from '../../../types/util';
 import { newError, newResult } from '../../../utils/errors';
 import { log } from '../../../utils/log';
 import { catchError, threwError, Try } from '../../../utils/try';
+
+const appPrefix = 'lunatrace';
+
+function performSnapshotOnRepository(logger: LunaLogger, cloneUrl: string, gitBranch: string, gitCommit?: string) {
+  let tmpDir = '';
+  try {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), appPrefix));
+    // the rest of your app goes here
+    const gzippedSbom = generateSbomFromAsset('repository', cloneUrl, gitBranch, gitCommit, {
+      workspace: tmpDir,
+    });
+    if (gzippedSbom === null) {
+      return newError('unable to generate sbom for asset');
+    }
+    return newResult(gzippedSbom);
+  } catch (e) {
+    logger.error('error occurred while generating an sbom for an asset', {
+      tmpDir,
+      error: e,
+    });
+    return newError(`caught error while performing snapshot: ${e}`);
+  } finally {
+    try {
+      if (tmpDir) {
+        fs.rmSync(tmpDir, { recursive: true });
+      }
+    } catch (e) {
+      logger.error('error occurred while removing temp folder', {
+        tmpDir,
+        error: e,
+      });
+    }
+  }
+  return newError('did not perform snapshot successfully');
+}
 
 export async function snapshotRepositoryActivity(req: SnapshotForRepositoryRequest): Promise<MaybeError<undefined>> {
   const logger = log.child('repo-snapshot', {
@@ -40,8 +82,10 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
   const repoClone = cloneUrlWithAuth.res;
 
   logger.info('generating SBOM for repository');
-
-  const gzippedSbom = generateSbomFromAsset('repository', repoClone.cloneUrl, req.gitBranch, req.gitCommit);
+  const gzippedSbom = performSnapshotOnRepository(logger, repoClone.cloneUrl, req.gitBranch, req.gitCommit);
+  if (gzippedSbom.error) {
+    return gzippedSbom;
+  }
 
   logger.info('Creating a new build for repository', {
     gitUrl: repoClone.projectId,
@@ -90,7 +134,7 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
     buildId,
   });
 
-  const s3UploadRes = await catchError(uploadSbomToS3(req.installationId.toString(), buildId, gzippedSbom));
+  const s3UploadRes = await catchError(uploadSbomToS3(req.installationId.toString(), buildId, gzippedSbom.res));
   if (threwError(s3UploadRes)) {
     logger.error('unable to upload sbom to s3', {
       buildId,

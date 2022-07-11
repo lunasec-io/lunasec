@@ -226,7 +226,7 @@ export interface Source {
   target: string;
 }
 
-export function parseJsonToGrypeScanReport(json: string): GrypeScanReport {
+export function parseJsonToGrypeScanReport(json: string): GrypeScanReport | null {
   // disable all type reflection/checking for now as it is too fragile
   try {
     return JSON.parse(json) as GrypeScanReport;
@@ -235,7 +235,7 @@ export function parseJsonToGrypeScanReport(json: string): GrypeScanReport {
       error: e,
       json
     });
-    throw e;
+    return null;
   }
 }
 
