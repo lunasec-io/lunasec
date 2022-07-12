@@ -123,6 +123,7 @@ export function generateSbomFromAsset(
   lunatraceCli.stdout.on('close', () => {
     logger.info('lunatrace outstream ended');
   });
+
   lunatraceCli.on('close', () => logger.info('lunatrace process closed'));
   // gzip the sbom stream
   return lunatraceCli.stdout.pipe(zlib.createGzip());
