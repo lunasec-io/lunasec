@@ -16,7 +16,6 @@ import * as os from 'os';
 import path from 'path';
 
 import { LunaLogger } from '@lunatrace/logger';
-import { buildDepTreeFromFiles } from 'snyk-nodejs-lockfile-parser';
 
 import { getRepoCloneUrlWithAuth } from '../../../github/actions/get-repo-clone-url-with-auth';
 import { hasura } from '../../../hasura-api';
@@ -26,37 +25,38 @@ import { uploadSbomToS3 } from '../../../snapshot/generate-snapshot';
 import { SnapshotForRepositoryRequest } from '../../../types/sqs';
 import { MaybeError } from '../../../types/util';
 import { newError, newResult } from '../../../utils/errors';
+import { walk } from '../../../utils/fs';
 import { log } from '../../../utils/log';
 import { catchError, threwError, Try } from '../../../utils/try';
 
 const appPrefix = 'lunatrace';
 
 function performSnapshotOnRepository(logger: LunaLogger, cloneUrl: string, gitBranch: string, gitCommit?: string) {
-  let tmpDir = '';
+  let repoDir = '';
   try {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), appPrefix));
+    repoDir = fs.mkdtempSync(path.join(os.tmpdir(), appPrefix));
     // the rest of your app goes here
-    const gzippedSbom = generateSbomFromAsset('repository', cloneUrl, gitBranch, gitCommit, {
-      workspace: tmpDir,
+    const sbom = generateSbomFromAsset('repository', cloneUrl, gitBranch, gitCommit, {
+      workspace: repoDir,
     });
-    if (gzippedSbom === null) {
+    if (sbom === null) {
       return newError('unable to generate sbom for asset');
     }
-    return newResult(gzippedSbom);
+    return newResult(sbom);
   } catch (e) {
     logger.error('error occurred while generating an sbom for an asset', {
-      tmpDir,
+      tmpDir: repoDir,
       error: e,
     });
     return newError(`caught error while performing snapshot: ${e}`);
   } finally {
     try {
-      if (tmpDir) {
-        fs.rmSync(tmpDir, { recursive: true });
+      if (repoDir) {
+        fs.rmSync(repoDir, { recursive: true });
       }
     } catch (e) {
       logger.error('error occurred while removing temp folder', {
-        tmpDir,
+        tmpDir: repoDir,
         error: e,
       });
     }
@@ -82,10 +82,11 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
   const repoClone = cloneUrlWithAuth.res;
 
   logger.info('generating SBOM for repository');
-  const gzippedSbom = performSnapshotOnRepository(logger, repoClone.cloneUrl, req.gitBranch, req.gitCommit);
-  if (gzippedSbom.error) {
-    return gzippedSbom;
+  const snapshotResult = performSnapshotOnRepository(logger, repoClone.cloneUrl, req.gitBranch, req.gitCommit);
+  if (snapshotResult.error) {
+    return snapshotResult;
   }
+  const gzippedSbom = snapshotResult.res;
 
   logger.info('Creating a new build for repository', {
     gitUrl: repoClone.projectId,
@@ -134,7 +135,7 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
     buildId,
   });
 
-  const s3UploadRes = await catchError(uploadSbomToS3(req.installationId.toString(), buildId, gzippedSbom.res));
+  const s3UploadRes = await catchError(uploadSbomToS3(req.installationId.toString(), buildId, gzippedSbom));
   if (threwError(s3UploadRes)) {
     logger.error('unable to upload sbom to s3', {
       buildId,
