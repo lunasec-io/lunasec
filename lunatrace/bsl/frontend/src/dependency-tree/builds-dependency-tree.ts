@@ -140,6 +140,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
   }
 
   // only useful if you need the nodes in tree form.  Otherwise, use flatDeps
+  // todo: not currently used, delete if unused
   public collectAllTreeNodes(): TreeNode<BuildDependency>[] {
     const allDepNodes: TreeNode<BuildDependency>[] = [];
     function recurseNode(dep: TreeNode<BuildDependency>) {
