@@ -26438,6 +26438,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"deep-copy@npm:~1.4.2":
+  version: 1.4.2
+  resolution: "deep-copy@npm:1.4.2"
+  checksum: 24ba7db4a9d44800c68659dae0068b681c43be0512c75e700710c3d18776e4c41f7dbd83eed6370bcfc1594c60f84d8798f4058f965ab457ea0232db821f0a4e
+  languageName: node
+  linkType: hard
+
 "deep-diff@npm:^1.0.2":
   version: 1.0.2
   resolution: "deep-diff@npm:1.0.2"
@@ -30323,6 +30330,7 @@ __metadata:
     compare-versions: 4.1.3
     crypto-browserify: ~3.12.0
     debounce: ~1.2.1
+    deep-copy: ~1.4.2
     graphql-request: ^4.0.0
     graphqurl: ^1.0.1
     hastscript: ~7.0.2
