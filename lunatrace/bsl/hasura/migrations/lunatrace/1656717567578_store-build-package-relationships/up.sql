@@ -6,7 +6,8 @@ CREATE TABLE public."build_dependency_relationship"
     "release_id"          UUID NOT NULL REFERENCES "package"."release" ("id") ON DELETE CASCADE,
     "labels"              jsonb NOT NULL,
     "depended_by_relationship_id" UUID NULL REFERENCES "public"."build_dependency_relationship" ("id") ON DELETE CASCADE, -- points to another node on this graph.  if this is null its a root dep
-    "range"               text  NOT NULL
+    "range"               text  NOT NULL,
+    project_path text NOT NULL
 );
 
 CREATE INDEX ON "build_dependency_relationship" ("build_id");
