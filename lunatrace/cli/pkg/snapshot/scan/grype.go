@@ -15,10 +15,12 @@
 package scan
 
 import (
+	"errors"
 	"fmt"
 	"github.com/Khan/genqlient/graphql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/grypefx/store/gqlstorefx"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/httputil"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"net/http"
 	"path"
 
@@ -139,12 +141,11 @@ func validateDBLoad(loadErr error, status *db.Status) error {
 	return nil
 }
 
-func GrypeSbomScanFromFile(filename string) (document models.Document, err error) {
-	multiStore, err := getVulnStore()
-	if err != nil {
-		return
-	}
-
+func GrypeSbomScanFromFile(
+	vulnerabilityProvider *db.VulnerabilityProvider,
+	vulnerabilityMetadataProvider *db.VulnerabilityMetadataProvider,
+	filename string,
+) (document models.Document, err error) {
 	log.Debug().Msg("gathering packages")
 	providerConfig := pkg.ProviderConfig{
 		//RegistryOptions: appConfig.Registry.ToOptions(),
@@ -159,10 +160,10 @@ func GrypeSbomScanFromFile(filename string) (document models.Document, err error
 
 	log.Debug().Msg("finding vulnerabilities")
 	matchers := matcher.NewDefaultMatchers(matcher.Config{})
-	matches := grype.FindVulnerabilitiesForPackage(db.NewVulnerabilityProvider(multiStore), context.Distro, matchers, packages)
+	matches := grype.FindVulnerabilitiesForPackage(vulnerabilityProvider, context.Distro, matchers, packages)
 	log.Debug().Msg("done looking for vulnerabilities")
 
-	document, err = models.NewDocument(packages, context, matches, nil, db.NewVulnerabilityMetadataProvider(multiStore), appConfig, &db.Status{Location: "online"})
+	document, err = models.NewDocument(packages, context, matches, nil, vulnerabilityMetadataProvider, appConfig, &db.Status{Location: "online"})
 	if err != nil {
 		log.Error().Err(err).Msg("unable to create sbom model")
 		return
@@ -170,7 +171,7 @@ func GrypeSbomScanFromFile(filename string) (document models.Document, err error
 	return
 }
 
-func getVulnStore() (v3.StoreReader, error) {
+func GetVulnerabilityStore(appConfig types.LunaTraceConfig) (v3.StoreReader, error) {
 	//log.Debug().Msg("loading grype store")
 	//grypeStore, dbStatus, err := grypestorefx.LoadVulnerabilityDB(appConfig.DB.ToCuratorConfig(), appConfig.DB.AutoUpdate)
 	//if err = validateDBLoad(err, dbStatus); err != nil {
@@ -179,11 +180,16 @@ func getVulnStore() (v3.StoreReader, error) {
 	//}
 	//log.Debug().Msg("finished loading grype store")
 
+	if appConfig.GraphqlServer.Secret == "" {
+		return nil, errors.New("graphql server secret is not defined")
+	}
+
 	log.Debug().Msg("loading gql store")
 	gqlStore, err := gqlstorefx.NewGraphQLStore(gqlstorefx.StoreDeps{
-		GQLClient: graphql.NewClient("http://localhost:8080/v1/graphql", &http.Client{
+		GQLClient: graphql.NewClient(appConfig.GraphqlServer.Url, &http.Client{
 			Transport: &httputil.HeadersTransport{Headers: map[string]string{
-				"x-hasura-admin-secret": "myadminsecretkey", "x-hasura-role": "service",
+				"x-hasura-admin-secret": appConfig.GraphqlServer.Secret,
+				"x-hasura-role":         "service",
 			}},
 		}),
 	})
