@@ -1,0 +1,9 @@
+# This config file is committed because it contains the sensible defaults needed for dev. You may want to change it or override it with env vars for doing production stuff
+
+lunatrace:
+  app:
+    stage: development
+  gateway:
+    graphql_server:
+      url: http://localhost:4455/v1/graphql
+      secret: myadminsecretkey
