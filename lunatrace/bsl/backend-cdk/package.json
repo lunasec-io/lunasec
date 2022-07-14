@@ -10,7 +10,8 @@
     "cdk": "cdk",
     "dev:cdk:deploy": "DEVELOPMENT=true DEV_USER=$USER cdk deploy --all",
     "prod:cdk:deploy:all": "DATADOG_API_KEY=$(aws secretsmanager get-secret-value --secret-id lunatrace-DatadogAPIKey | jq -r .SecretString) cdk deploy --all",
-    "prod:cdk:deploy": "echo 'deploying...' && rm cdk.out/*.tar || true && yarn run prod:cdk:deploy:all"
+    "prod:cdk:deploy:cleanup": "rm cdk.out/*.tar || true && sudo docker rmi lunatrace-backend:latest || true && sudo docker rmi lunatrace-frontend:latest || true",
+    "prod:cdk:deploy": "echo 'deploying...' && yarn run prod:cdk:deploy:cleanup && yarn run prod:cdk:deploy:all"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.156.1",
@@ -46,5 +47,8 @@
     "ts-jest": "^26.2.0",
     "ts-node": "^10.4.0",
     "typescript": "~3.9.7"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-servicediscovery": "~1.163.0"
   }
 }

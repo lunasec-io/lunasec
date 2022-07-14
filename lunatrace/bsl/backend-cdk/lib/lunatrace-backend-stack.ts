@@ -23,7 +23,6 @@ import {
   DeploymentControllerType,
   Secret as EcsSecret,
   FargateTaskDefinition,
-  LogDriver,
 } from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { ApplicationProtocol, ListenerCondition, SslPolicy } from '@aws-cdk/aws-elasticloadbalancingv2';
@@ -31,6 +30,7 @@ import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 import { HostedZone } from '@aws-cdk/aws-route53';
 import { Bucket } from '@aws-cdk/aws-s3';
 import { Secret } from '@aws-cdk/aws-secretsmanager';
+import { DnsRecordType, PrivateDnsNamespace } from '@aws-cdk/aws-servicediscovery';
 import * as cdk from '@aws-cdk/core';
 import { Duration } from '@aws-cdk/core';
 
@@ -55,6 +55,11 @@ export class LunatraceBackendStack extends cdk.Stack {
       vpcId: props.vpcId,
     });
 
+    const namespace = new PrivateDnsNamespace(this, 'ServiceDiscoveryNamespace', {
+      name: 'services',
+      vpc,
+    });
+
     const dbSecurityGroup = SecurityGroup.fromSecurityGroupId(
       this,
       'DatabaseClusterSecurityGroup',
@@ -66,6 +71,11 @@ export class LunatraceBackendStack extends cdk.Stack {
       securityGroupName: 'LunaTrace VPC database connection',
     });
     dbSecurityGroup.addIngressRule(vpcDbSecurityGroup, Port.tcp(5432), 'LunaTrace VPC database connection');
+
+    const servicesSecurityGroup = new SecurityGroup(this, 'ServicesSecurityGroup', {
+      vpc,
+      allowAllOutbound: true,
+    });
 
     const oryConfigBucket = Bucket.fromBucketArn(this, 'OryConfig', props.oathkeeperConfigBucketArn);
     const oathkeeperJwksFile = 'lunatrace-oathkeeper.2022-05-13.jwks.json';
@@ -320,7 +330,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       sslPolicy: SslPolicy.RECOMMENDED,
       domainName: props.domainName,
       taskDefinition: taskDef,
-      securityGroups: [vpcDbSecurityGroup],
+      securityGroups: [vpcDbSecurityGroup, servicesSecurityGroup],
       circuitBreaker: {
         rollback: true,
       },
@@ -329,7 +339,18 @@ export class LunatraceBackendStack extends cdk.Stack {
       deploymentController: {
         type: DeploymentControllerType.ECS,
       },
+      cloudMapOptions: {
+        name: 'backend',
+        cloudMapNamespace: namespace,
+        dnsRecordType: DnsRecordType.A,
+      },
     });
+
+    loadBalancedFargateService.service.connections.allowFrom(
+      servicesSecurityGroup,
+      Port.tcp(8080),
+      'Allow connections to Hasura from the services security group'
+    );
 
     loadBalancedFargateService.listener.addTargets('LunaTraceApiTargets', {
       priority: 10,
@@ -373,6 +394,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       hasuraAdminSecret,
       backendStaticSecret,
       datadogApiKeyArn: props.datadogApiKeyArn,
+      servicesSecurityGroup,
     });
   }
 }
