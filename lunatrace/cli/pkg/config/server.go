@@ -19,7 +19,8 @@ import "github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 func defaultLunaTraceGatewayConfig() types.LunaTraceGateway {
 	return types.LunaTraceGateway{
 		GraphqlServer: types.LunaTraceGraphqlServer{
-			Url: `${LUNATRACE_GRAPHQL_SERVER_URL:"https://lunatrace.lunasec.io/api/cli/v1/graphql"}`,
+			Url:    `${LUNATRACE_GRAPHQL_SERVER_URL:"https://lunatrace.lunasec.io/api/cli/v1/graphql"}`,
+			Secret: `${LUNATRACE_GRAPHQL_SERVER_SECRET:""}`,
 		},
 	}
 }
