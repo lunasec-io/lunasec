@@ -8,7 +8,7 @@
     /* Options around generated files */
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "inlineSourceMap": true,
     "inlineSources": true,
     "removeComments": false,
