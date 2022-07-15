@@ -1,0 +1,7 @@
+{
+  "name": "vulnerable-repo",
+  "packageManager": "yarn@3.2.1",
+  "dependencies": {
+    "react-native": "0.59.0"
+  }
+}

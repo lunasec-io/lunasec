@@ -184,10 +184,272 @@ input bigint_comparison_exp {
 }
 
 """
+columns and relationships of "build_dependency_relationship"
+"""
+type build_dependency_relationship {
+  """An object relationship"""
+  build: builds!
+  build_id: uuid!
+
+  """An object relationship"""
+  depended_by_relationship: build_dependency_relationship
+  depended_by_relationship_id: uuid
+  id: uuid!
+  labels(
+    """JSON select path"""
+    path: String
+  ): jsonb!
+  range: String!
+
+  """An object relationship"""
+  release: package_release!
+  release_id: uuid!
+}
+
+"""
+order by aggregate values of table "build_dependency_relationship"
+"""
+input build_dependency_relationship_aggregate_order_by {
+  count: order_by
+  max: build_dependency_relationship_max_order_by
+  min: build_dependency_relationship_min_order_by
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input build_dependency_relationship_append_input {
+  labels: jsonb
+}
+
+"""
+input type for inserting array relation for remote table "build_dependency_relationship"
+"""
+input build_dependency_relationship_arr_rel_insert_input {
+  data: [build_dependency_relationship_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: build_dependency_relationship_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "build_dependency_relationship". All fields are combined with a logical 'AND'.
+"""
+input build_dependency_relationship_bool_exp {
+  _and: [build_dependency_relationship_bool_exp!]
+  _not: build_dependency_relationship_bool_exp
+  _or: [build_dependency_relationship_bool_exp!]
+  build: builds_bool_exp
+  build_id: uuid_comparison_exp
+  depended_by_relationship: build_dependency_relationship_bool_exp
+  depended_by_relationship_id: uuid_comparison_exp
+  id: uuid_comparison_exp
+  labels: jsonb_comparison_exp
+  range: String_comparison_exp
+  release: package_release_bool_exp
+  release_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "build_dependency_relationship"
+"""
+enum build_dependency_relationship_constraint {
+  """unique or primary key constraint"""
+  build_dependency_relationship_pkey
+}
+
+"""
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input build_dependency_relationship_delete_at_path_input {
+  labels: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input build_dependency_relationship_delete_elem_input {
+  labels: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input build_dependency_relationship_delete_key_input {
+  labels: String
+}
+
+"""
+input type for inserting data into table "build_dependency_relationship"
+"""
+input build_dependency_relationship_insert_input {
+  build: builds_obj_rel_insert_input
+  build_id: uuid
+  depended_by_relationship: build_dependency_relationship_obj_rel_insert_input
+  depended_by_relationship_id: uuid
+  id: uuid
+  labels: jsonb
+  range: String
+  release: package_release_obj_rel_insert_input
+  release_id: uuid
+}
+
+"""
+order by max() on columns of table "build_dependency_relationship"
+"""
+input build_dependency_relationship_max_order_by {
+  build_id: order_by
+  depended_by_relationship_id: order_by
+  id: order_by
+  range: order_by
+  release_id: order_by
+}
+
+"""
+order by min() on columns of table "build_dependency_relationship"
+"""
+input build_dependency_relationship_min_order_by {
+  build_id: order_by
+  depended_by_relationship_id: order_by
+  id: order_by
+  range: order_by
+  release_id: order_by
+}
+
+"""
+response of any mutation on the table "build_dependency_relationship"
+"""
+type build_dependency_relationship_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [build_dependency_relationship!]!
+}
+
+"""
+input type for inserting object relation for remote table "build_dependency_relationship"
+"""
+input build_dependency_relationship_obj_rel_insert_input {
+  data: build_dependency_relationship_insert_input!
+
+  """upsert condition"""
+  on_conflict: build_dependency_relationship_on_conflict
+}
+
+"""
+on_conflict condition type for table "build_dependency_relationship"
+"""
+input build_dependency_relationship_on_conflict {
+  constraint: build_dependency_relationship_constraint!
+  update_columns: [build_dependency_relationship_update_column!]! = []
+  where: build_dependency_relationship_bool_exp
+}
+
+"""
+Ordering options when selecting data from "build_dependency_relationship".
+"""
+input build_dependency_relationship_order_by {
+  build: builds_order_by
+  build_id: order_by
+  depended_by_relationship: build_dependency_relationship_order_by
+  depended_by_relationship_id: order_by
+  id: order_by
+  labels: order_by
+  range: order_by
+  release: package_release_order_by
+  release_id: order_by
+}
+
+"""primary key columns input for table: build_dependency_relationship"""
+input build_dependency_relationship_pk_columns_input {
+  id: uuid!
+}
+
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input build_dependency_relationship_prepend_input {
+  labels: jsonb
+}
+
+"""
+select columns of table "build_dependency_relationship"
+"""
+enum build_dependency_relationship_select_column {
+  """column name"""
+  build_id
+
+  """column name"""
+  depended_by_relationship_id
+
+  """column name"""
+  id
+
+  """column name"""
+  labels
+
+  """column name"""
+  range
+
+  """column name"""
+  release_id
+}
+
+"""
+input type for updating data in table "build_dependency_relationship"
+"""
+input build_dependency_relationship_set_input {
+  build_id: uuid
+  depended_by_relationship_id: uuid
+  id: uuid
+  labels: jsonb
+  range: String
+  release_id: uuid
+}
+
+"""
+update columns of table "build_dependency_relationship"
+"""
+enum build_dependency_relationship_update_column {
+  """column name"""
+  build_id
+
+  """column name"""
+  depended_by_relationship_id
+
+  """column name"""
+  id
+
+  """column name"""
+  labels
+
+  """column name"""
+  range
+
+  """column name"""
+  release_id
+}
+
+"""
 columns and relationships of "builds"
 """
 type builds {
   agent_access_token: uuid!
+
+  """An array relationship"""
+  build_dependency_relationships(
+    """distinct select on columns"""
+    distinct_on: [build_dependency_relationship_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [build_dependency_relationship_order_by!]
+
+    """filter the rows returned"""
+    where: build_dependency_relationship_bool_exp
+  ): [build_dependency_relationship!]!
   build_number: Int
   created_at: timestamp!
   existing_github_check_id: bigint
@@ -334,6 +596,7 @@ input builds_bool_exp {
   _not: builds_bool_exp
   _or: [builds_bool_exp!]
   agent_access_token: uuid_comparison_exp
+  build_dependency_relationships: build_dependency_relationship_bool_exp
   build_number: Int_comparison_exp
   created_at: timestamp_comparison_exp
   existing_github_check_id: bigint_comparison_exp
@@ -379,6 +642,7 @@ input type for inserting data into table "builds"
 """
 input builds_insert_input {
   agent_access_token: uuid
+  build_dependency_relationships: build_dependency_relationship_arr_rel_insert_input
   build_number: Int
   created_at: timestamp
   existing_github_check_id: bigint
@@ -498,6 +762,7 @@ input builds_on_conflict {
 """Ordering options when selecting data from "builds"."""
 input builds_order_by {
   agent_access_token: order_by
+  build_dependency_relationships_aggregate: build_dependency_relationship_aggregate_order_by
   build_number: order_by
   created_at: order_by
   existing_github_check_id: order_by
@@ -2983,6 +3248,19 @@ enum manifests_update_column {
 """mutation root"""
 type mutation_root {
   """
+  delete data from the table: "build_dependency_relationship"
+  """
+  delete_build_dependency_relationship(
+    """filter the rows which have to be deleted"""
+    where: build_dependency_relationship_bool_exp!
+  ): build_dependency_relationship_mutation_response
+
+  """
+  delete single row from the table: "build_dependency_relationship"
+  """
+  delete_build_dependency_relationship_by_pk(id: uuid!): build_dependency_relationship
+
+  """
   delete data from the table: "builds"
   """
   delete_builds(
@@ -3020,6 +3298,41 @@ type mutation_root {
   delete single row from the table: "manifests"
   """
   delete_manifests_by_pk(id: uuid!): manifests
+
+  """
+  delete data from the table: "package.package"
+  """
+  delete_package(
+    """filter the rows which have to be deleted"""
+    where: package_bool_exp!
+  ): package_mutation_response
+
+  """
+  delete single row from the table: "package.package"
+  """
+  delete_package_by_pk(id: uuid!): package
+
+  """
+  insert data into the table: "build_dependency_relationship"
+  """
+  insert_build_dependency_relationship(
+    """the rows to be inserted"""
+    objects: [build_dependency_relationship_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: build_dependency_relationship_on_conflict
+  ): build_dependency_relationship_mutation_response
+
+  """
+  insert a single row into the table: "build_dependency_relationship"
+  """
+  insert_build_dependency_relationship_one(
+    """the row to be inserted"""
+    object: build_dependency_relationship_insert_input!
+
+    """upsert condition"""
+    on_conflict: build_dependency_relationship_on_conflict
+  ): build_dependency_relationship
 
   """
   insert data into the table: "builds"
@@ -3694,6 +4007,68 @@ type mutation_root {
 
   """ get s3 presigned url for manifest upload, used only by the frontend """
   presignManifestUpload(project_id: uuid!): PresignedUrlResponse
+
+  """
+  update data of the table: "build_dependency_relationship"
+  """
+  update_build_dependency_relationship(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: build_dependency_relationship_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: build_dependency_relationship_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: build_dependency_relationship_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: build_dependency_relationship_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: build_dependency_relationship_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: build_dependency_relationship_set_input
+
+    """filter the rows which have to be updated"""
+    where: build_dependency_relationship_bool_exp!
+  ): build_dependency_relationship_mutation_response
+
+  """
+  update single row of the table: "build_dependency_relationship"
+  """
+  update_build_dependency_relationship_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: build_dependency_relationship_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: build_dependency_relationship_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: build_dependency_relationship_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: build_dependency_relationship_delete_key_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: build_dependency_relationship_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: build_dependency_relationship_set_input
+    pk_columns: build_dependency_relationship_pk_columns_input!
+  ): build_dependency_relationship
 
   """
   update data of the table: "builds"
@@ -5293,8 +5668,9 @@ columns and relationships of "package.package"
 type package {
   custom_registry: String!
   description: String
-  fetched_time: timestamptz
   id: uuid!
+  last_failed_fetch: timestamptz
+  last_successful_fetch: timestamptz
   name: String!
 
   """An array relationship"""
@@ -5357,6 +5733,23 @@ type package {
   ): [vulnerability_affected!]!
 }
 
+"""
+aggregated selection of "package.package"
+"""
+type package_aggregate {
+  aggregate: package_aggregate_fields
+  nodes: [package!]!
+}
+
+"""
+aggregate fields of "package.package"
+"""
+type package_aggregate_fields {
+  count(columns: [package_select_column!], distinct: Boolean): Int!
+  max: package_max_fields
+  min: package_min_fields
+}
+
 """append existing jsonb value of filtered columns with new jsonb value"""
 input package_append_input {
   upstream_data: jsonb
@@ -5371,8 +5764,9 @@ input package_bool_exp {
   _or: [package_bool_exp!]
   custom_registry: String_comparison_exp
   description: String_comparison_exp
-  fetched_time: timestamptz_comparison_exp
   id: uuid_comparison_exp
+  last_failed_fetch: timestamptz_comparison_exp
+  last_successful_fetch: timestamptz_comparison_exp
   name: String_comparison_exp
   package_maintainers: package_package_maintainer_bool_exp
   package_manager: package_manager_comparison_exp
@@ -5419,8 +5813,9 @@ input type for inserting data into table "package.package"
 input package_insert_input {
   custom_registry: String
   description: String
-  fetched_time: timestamptz
   id: uuid
+  last_failed_fetch: timestamptz
+  last_successful_fetch: timestamptz
   name: String
   package_maintainers: package_package_maintainer_arr_rel_insert_input
   package_manager: package_manager
@@ -5749,6 +6144,26 @@ input package_manager_comparison_exp {
   _nin: [package_manager!]
 }
 
+"""aggregate max on columns"""
+type package_max_fields {
+  custom_registry: String
+  description: String
+  id: uuid
+  last_failed_fetch: timestamptz
+  last_successful_fetch: timestamptz
+  name: String
+}
+
+"""aggregate min on columns"""
+type package_min_fields {
+  custom_registry: String
+  description: String
+  id: uuid
+  last_failed_fetch: timestamptz
+  last_successful_fetch: timestamptz
+  name: String
+}
+
 """
 response of any mutation on the table "package.package"
 """
@@ -5783,8 +6198,9 @@ input package_on_conflict {
 input package_order_by {
   custom_registry: order_by
   description: order_by
-  fetched_time: order_by
   id: order_by
+  last_failed_fetch: order_by
+  last_successful_fetch: order_by
   name: order_by
   package_maintainers_aggregate: package_package_maintainer_aggregate_order_by
   package_manager: order_by
@@ -5947,6 +6363,24 @@ columns and relationships of "package.release"
 """
 type package_release {
   blob_hash: String
+
+  """An array relationship"""
+  build_dependency_relationships(
+    """distinct select on columns"""
+    distinct_on: [build_dependency_relationship_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [build_dependency_relationship_order_by!]
+
+    """filter the rows returned"""
+    where: build_dependency_relationship_bool_exp
+  ): [build_dependency_relationship!]!
   fetched_time: timestamptz
   id: uuid!
   mirrored_blob_url: String
@@ -6054,6 +6488,7 @@ input package_release_bool_exp {
   _not: package_release_bool_exp
   _or: [package_release_bool_exp!]
   blob_hash: String_comparison_exp
+  build_dependency_relationships: build_dependency_relationship_bool_exp
   fetched_time: timestamptz_comparison_exp
   id: uuid_comparison_exp
   mirrored_blob_url: String_comparison_exp
@@ -6313,6 +6748,7 @@ input type for inserting data into table "package.release"
 """
 input package_release_insert_input {
   blob_hash: String
+  build_dependency_relationships: build_dependency_relationship_arr_rel_insert_input
   fetched_time: timestamptz
   id: uuid
   mirrored_blob_url: String
@@ -6614,6 +7050,7 @@ input package_release_on_conflict {
 """Ordering options when selecting data from "package.release"."""
 input package_release_order_by {
   blob_hash: order_by
+  build_dependency_relationships_aggregate: build_dependency_relationship_aggregate_order_by
   fetched_time: order_by
   id: order_by
   mirrored_blob_url: order_by
@@ -6745,10 +7182,13 @@ enum package_select_column {
   description
 
   """column name"""
-  fetched_time
+  id
 
   """column name"""
-  id
+  last_failed_fetch
+
+  """column name"""
+  last_successful_fetch
 
   """column name"""
   name
@@ -6766,8 +7206,9 @@ input type for updating data in table "package.package"
 input package_set_input {
   custom_registry: String
   description: String
-  fetched_time: timestamptz
   id: uuid
+  last_failed_fetch: timestamptz
+  last_successful_fetch: timestamptz
   name: String
   package_manager: package_manager
   upstream_data: jsonb
@@ -6784,10 +7225,13 @@ enum package_update_column {
   description
 
   """column name"""
-  fetched_time
+  id
 
   """column name"""
-  id
+  last_failed_fetch
+
+  """column name"""
+  last_successful_fetch
 
   """column name"""
   name
@@ -7502,6 +7946,31 @@ enum projects_update_column {
 type query_root {
   authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
 
+  """
+  fetch data from the table: "build_dependency_relationship"
+  """
+  build_dependency_relationship(
+    """distinct select on columns"""
+    distinct_on: [build_dependency_relationship_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [build_dependency_relationship_order_by!]
+
+    """filter the rows returned"""
+    where: build_dependency_relationship_bool_exp
+  ): [build_dependency_relationship!]!
+
+  """
+  fetch data from the table: "build_dependency_relationship" using primary key columns
+  """
+  build_dependency_relationship_by_pk(id: uuid!): build_dependency_relationship
+
   """An array relationship"""
   builds(
     """distinct select on columns"""
@@ -7849,6 +8318,26 @@ type query_root {
     """filter the rows returned"""
     where: package_bool_exp
   ): [package!]!
+
+  """
+  fetch aggregated fields from the table: "package.package"
+  """
+  package_aggregate(
+    """distinct select on columns"""
+    distinct_on: [package_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_order_by!]
+
+    """filter the rows returned"""
+    where: package_bool_exp
+  ): package_aggregate!
 
   """fetch data from the table: "package.package" using primary key columns"""
   package_by_pk(id: uuid!): package
@@ -8976,6 +9465,31 @@ input severity_enum_comparison_exp {
 }
 
 type subscription_root {
+  """
+  fetch data from the table: "build_dependency_relationship"
+  """
+  build_dependency_relationship(
+    """distinct select on columns"""
+    distinct_on: [build_dependency_relationship_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [build_dependency_relationship_order_by!]
+
+    """filter the rows returned"""
+    where: build_dependency_relationship_bool_exp
+  ): [build_dependency_relationship!]!
+
+  """
+  fetch data from the table: "build_dependency_relationship" using primary key columns
+  """
+  build_dependency_relationship_by_pk(id: uuid!): build_dependency_relationship
+
   """An array relationship"""
   builds(
     """distinct select on columns"""
@@ -9322,6 +9836,26 @@ type subscription_root {
     """filter the rows returned"""
     where: package_bool_exp
   ): [package!]!
+
+  """
+  fetch aggregated fields from the table: "package.package"
+  """
+  package_aggregate(
+    """distinct select on columns"""
+    distinct_on: [package_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [package_order_by!]
+
+    """filter the rows returned"""
+    where: package_bool_exp
+  ): package_aggregate!
 
   """fetch data from the table: "package.package" using primary key columns"""
   package_by_pk(id: uuid!): package

@@ -11,6 +11,18 @@
  * limitations under the License.
  *
  */
-export function snapshotPinnedDependenciesTest() {
-  return true;
-}
+import { expect } from '@jest/globals';
+
+import { snapshotPinnedDependencies } from '../snapshot/package-tree';
+
+jest.setTimeout(100000);
+
+describe('buildDepTreeFromFiles for yarn2', () => {
+  it('should be able to parse very big yarn.lock files', async () => {
+    try {
+      await snapshotPinnedDependencies('bfe13208-7b39-4f53-b8c0-46850e81457f', './src/fixtures/large-repo');
+    } catch (e) {
+      console.error(e);
+    }
+  });
+});
