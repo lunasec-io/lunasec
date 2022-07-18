@@ -153,9 +153,9 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string; forHome
     return (
       <span>
         <FilePlus className="me-1 mb-1" />
-        Click here or drap-and-drop a manifest file or compressed project to manually submit a build.
+        Click here or drap-and-drop a manifest file to manually submit a build.
         <br />
-        (ex: package-lock.json, my-project.jar, my-project.zip)
+        (ex: package-lock.json)
       </span>
     );
   };

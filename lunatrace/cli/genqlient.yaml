@@ -11,6 +11,8 @@ use_struct_references: true
 optional: pointer
 
 bindings:
+  bigint:
+    type: int64
   DateTime:
     type: time.Time
   timestamp:
