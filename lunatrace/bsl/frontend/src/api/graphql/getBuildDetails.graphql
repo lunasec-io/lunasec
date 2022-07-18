@@ -21,6 +21,7 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                     last_successful_fetch
                     package_manager
                     vulnerabilities {
+                        id
                         affected_range_events {
                             event
                             type

@@ -12,6 +12,7 @@
 package main
 
 import (
+	ingest "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/lpt/package-injest"
 	"github.com/rs/zerolog/log"
 	"net/http"
 
@@ -22,7 +23,6 @@ import (
 
 	clifx2 "github.com/ajvpot/clifx"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/lpt/ingest"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/lpt/license"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/license/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/license/scanner/packagejson"
@@ -57,6 +57,7 @@ func main() {
 			return graphql.NewClient(appConfig.GraphqlServer.Url, lhc)
 		}),
 		fx.Supply(&clifx2.AppConfig{
+			// TODO: This does more than just packages now, this folder should not be called LPT or this config. Also, nobody will know what lpt is at first look
 			Name:    "lpt",
 			Usage:   "LunaTrace Package Tool",
 			Version: "0.0.1",
