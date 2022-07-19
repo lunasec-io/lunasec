@@ -14,6 +14,7 @@
 import fs from 'fs';
 import * as os from 'os';
 import path from 'path';
+import util from 'util';
 
 import { LunaLogger } from '@lunatrace/logger';
 
@@ -22,13 +23,15 @@ import { hasura } from '../../../hasura-api';
 import { InsertBuildMutation } from '../../../hasura-api/generated';
 import { generateSbomFromAsset } from '../../../snapshot/call-cli';
 import { uploadSbomToS3 } from '../../../snapshot/generate-snapshot';
-import { snapshotPinnedDependencies } from '../../../snapshot/package-tree';
+import { snapshotPinnedDependencies } from '../../../snapshot/node-package-tree';
 import { SnapshotForRepositoryRequest } from '../../../types/sqs';
 import { MaybeError } from '../../../types/util';
 import { newError, newResult } from '../../../utils/errors';
 import { log } from '../../../utils/log';
 import { catchError, threwError, Try } from '../../../utils/try';
 
+const mkdTemp = util.promisify(fs.mkdtemp);
+const rmDir = util.promisify(fs.rmdir);
 const appPrefix = 'lunatrace';
 
 async function performSnapshotOnRepository(
@@ -40,7 +43,7 @@ async function performSnapshotOnRepository(
 ) {
   let repoDir = '';
   try {
-    repoDir = fs.mkdtempSync(path.join(os.tmpdir(), appPrefix));
+    repoDir = await mkdTemp(path.join(os.tmpdir(), appPrefix));
     // the rest of your app goes here
     const sbom = generateSbomFromAsset('repository', cloneUrl, gitBranch, gitCommit, {
       workspace: repoDir,
@@ -50,7 +53,6 @@ async function performSnapshotOnRepository(
     }
 
     await snapshotPinnedDependencies(buildId, repoDir);
-
     return newResult(sbom);
   } catch (e) {
     logger.error('error occurred while snapshotting an asset', {
@@ -61,7 +63,7 @@ async function performSnapshotOnRepository(
   } finally {
     try {
       if (repoDir) {
-        fs.rmSync(repoDir, { recursive: true });
+        await rmDir(repoDir, { recursive: true });
       }
     } catch (e) {
       logger.error('error occurred while removing temp folder', {

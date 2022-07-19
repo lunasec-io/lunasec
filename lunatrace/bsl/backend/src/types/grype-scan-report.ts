@@ -226,14 +226,14 @@ export interface Source {
   target: string;
 }
 
-export function parseJsonToGrypeScanReport(json: string): GrypeScanReport | null {
+export function parseJsonToGrypeScanReport(jsonBlob: string): GrypeScanReport | null {
   // disable all type reflection/checking for now as it is too fragile
   try {
-    return JSON.parse(json) as GrypeScanReport;
+    return JSON.parse(jsonBlob) as GrypeScanReport;
   } catch (e) {
     log.error('unable to parse scan report json', {
       error: e,
-      json
+      json: jsonBlob
     });
     return null;
   }
