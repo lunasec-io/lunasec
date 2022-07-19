@@ -27,18 +27,20 @@ import {
   Package_Release_Update_Column,
   Package_Update_Column,
 } from '../hasura-api/generated';
-import { walk } from '../utils/fs';
+import { findFilesMatchingFilter } from '../utils/filesystem-utils';
 import { log } from '../utils/log';
 import { notEmpty } from '../utils/predicates';
 
 export async function collectPackageTreesFromDirectory(repoDir: string) {
-  const lockFileRegex = new RegExp('package-lock\\.json|yarn\\.lock');
-  const lockFilePaths = walk(repoDir, (path, name) => lockFileRegex.test(name));
+  const lockFilePaths = await findFilesMatchingFilter(repoDir, (_directory, entryName) => {
+    return /package-lock\.json|yarn\.lock/.test(entryName);
+  });
 
-  return await Promise.all(
-    Array.from(lockFilePaths, async (lockFilePath) => {
-      const { dir, base } = path.parse(lockFilePath);
-      return await buildDepTreeFromFiles(dir, 'package.json', base, true);
+  console.log('matched lockfile folders', lockFilePaths);
+  return Promise.all(
+    lockFilePaths.map((filePath) => {
+      const { dir, base } = path.parse(filePath);
+      return buildDepTreeFromFiles(dir, 'package.json', base, true);
     })
   );
 }
