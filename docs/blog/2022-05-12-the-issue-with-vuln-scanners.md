@@ -23,8 +23,6 @@ authors: [forrest]
   ~
 -->
 
-![False Positive Vulnerabilities](https://www.lunasec.io/docs/img/false-positives.png)
-
 ## False Positives Everywhere
 
 As a web developer, I've learned to ignore vulnerability scan results and that's a **big** problem.
