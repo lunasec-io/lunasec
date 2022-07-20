@@ -1,6 +1,8 @@
 name: Lint Documentation
 on:
   pull_request:
+    branches:
+      - '**'
     paths:
       - 'docs/**.md'
       - '.github/**'
@@ -17,5 +19,4 @@ jobs:
           # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
-          files:
-            - 'docs/**.md'
+          files: 'docs/'
