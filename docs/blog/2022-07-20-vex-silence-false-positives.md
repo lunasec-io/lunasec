@@ -30,7 +30,7 @@ As we highlighted in our post on False Positives in Vulnerability Scanning, the 
 
 ### The Problem: False Positives
 
-npm audit is a good tool for checking your javascript dependencies against known vulnerabilities. However, it commonly results in alerts for vulnerabilities that are inaccessible at runtime or otherwise irrelevant.[^1] This combined with the fact that npm audit is run after install by default can result in users ignoring the output because the signal to noise ratio is not high enough.[^2]
+npm audit is a good tool for checking your javascript dependencies against known vulnerabilities. However, it commonly results in alerts for vulnerabilities that are inaccessible at runtime or otherwise irrelevant.[^1] This combined with the fact that npm audit is run after install by default can result in users ignoring the output because the Signal to Noise Ratio is not high enough.[^2]
 
 
 ### A Solution: VEX
@@ -81,7 +81,7 @@ At the time of writing, I am aware of these tools which support VEX:
 
 While the NTIA’s standard defines the minimum data elements, there is not a standard for how VEX should be transmitted or exchanged. Dissemination of VEX is a critical part of making the standard effective for vulnerability response.
 
-LunaTrace is building a global database and tooling to automatically generate VEX documents through analysis to increase the Signal to Noise ratio of your Vulnerability Assessment tool. Contact us to learn more.
+LunaTrace is building a global database and tooling to automatically generate VEX documents through analysis to increase the Signal to Noise Ratio of your Vulnerability Assessment tool. Contact us to learn more.
 
 
 <!-- Footnotes themselves at the bottom. -->
