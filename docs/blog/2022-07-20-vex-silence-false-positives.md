@@ -82,3 +82,22 @@ At the time of writing, I am aware of these tools which support VEX:
 While the NTIA’s standard defines the minimum data elements, there is not a standard for how VEX should be transmitted or exchanged. Dissemination of VEX is a critical part of making the standard effective for vulnerability response.
 
 LunaTrace is building a global database and tooling to automatically generate VEX documents through analysis to increase the Signal to Noise ratio of your Vulnerability Assessment tool. Contact us to learn more.
+
+
+<!-- Footnotes themselves at the bottom. -->
+## Resources
+
+[^1]:
+     [https://overreacted.io/npm-audit-broken-by-design/](https://overreacted.io/npm-audit-broken-by-design/)
+
+[^2]:
+     [https://www.voitanos.io/blog/don-t-be-alarmed-by-vulnerabilities-after-running-npm-install/](https://www.voitanos.io/blog/don-t-be-alarmed-by-vulnerabilities-after-running-npm-install/)
+
+[^3]:
+     [https://www.cisa.gov/sites/default/files/publications/VEX_Use_Cases_April2022.pdf](https://www.cisa.gov/sites/default/files/publications/VEX_Use_Cases_April2022.pdf)
+
+[^4]:
+     [https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto#L592-L650](https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto#L592-L650)
+
+[^5]:
+     [https://docs.oasis-open.org/csaf/csaf/v2.0/csd01/csaf-v2.0-csd01.html#45-profile-5-vex](https://docs.oasis-open.org/csaf/csaf/v2.0/csd01/csaf-v2.0-csd01.html#45-profile-5-vex)
