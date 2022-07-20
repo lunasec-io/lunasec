@@ -1,0 +1,239 @@
+---
+title: "Bun: A Complete Overhaul of the JavaScript Ecosystem"
+description: A security expert's analysis of the malicious code added to ctx and Phpass, Python and PHP dependencies, that turned them into malware by sending environment variables and credentials to a third party attacker.
+slug: bun-first-look
+date: 2022-07-20
+keywords: [bun, JavaScript, package-manager]
+tags: [malware, dependencies]
+authors: [forrest]
+---
+
+<!--
+  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
+  ~
+  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+  ~ (the "License"); you may not use this file except in compliance with the
+  ~ License. You may obtain a copy of the License at
+  ~
+  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
+  ~
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
+
+## What is Bun? Bun is everything
+It's about darn time someone went head-to-head with the JavaScript ecosystem. Someone who knew what they were doing, and had a vision for how good things *could* be.
+
+As far as I can tell, [Bun](https://github.com/oven-sh/bun) started as a JavaScript webserver and scope-creeped it's way into being a complete
+rewrite of the JavaScript ecosystem.
+
+
+<div style={{textAlign: 'center'}}>
+
+![bun logo](/img/bun.png)
+
+</div>
+
+<!--truncate-->
+
+
+In order of things I'm desperate for, Bun is a:
+* JavaScript/TypeScript runtime that claims to be faster than Node or Deno
+* Package manager that's about a bajillion times faster than NPM or Yarn
+* Browser Bundler - complete with tsx, jsx, css, svg..etc support. Replacement for everything from `webpack` to `react-scripts`, and, you guessed it, extremely fast
+* Really fast web server (express replacement)
+* Sqlite client
+* Bread
+
+Bun seems to pick the straightforward approach to every one of these problems, and focuses on
+solving them simply and really, *really* efficiently. No extra tricks or clever caching, just really fast code written in a fast, low-level language.
+
+Bun is still very new and probably not ready for your harrowing, real-world production use-case. It's moving fast, though,
+and I wouldn't be surprised if it was a major player in the next couple of years.
+
+## What's wrong with the way things are?
+
+If you write production JS or TS for work, you probably know that not everything is roses. For the most part, things work well for Open Source tools
+and small projects, but when it comes to commercial and enterprise use cases, it falls over. Going the traditional, vanilla way just doesn't cut it, and companies try all kinds of things to make things work in an enterprise environment.
+
+For example, TypeScript solves a lot of obvious problems for any project with more than one developer, so you bring that in and transpile down every time you want to run something. Thanks Microsoft.
+NPM gets way too slow for big projects and monorepos (it was absurdly slow for us) so companies may switch to Yarn. Thanks Facebook. And so on.  And in the end, you have a big pile of cobbled together stuff
+that is *just* performant enough to squeeze by.
+
+:::info
+By the way, eslinting our full monorepo just now took 79 seconds. Yeesh. We had to set up a whole thing that only lints changed files. More sticks and glue.
+:::
+
+Overall there have been quite a few attempts to speed up parts of
+the toolchain for people who need it, like `Yarn 3` with its wild "plug'n'play" Node module virtualization speed hacks to beat NPM, or fastify with its JSON Schema based request parser slightly beating out `Express`.
+Most of the tools have the same problem, and it's that they're written by JS devs, for JS devs. And that means they're written in JavaScript. And JavaScript... is slow.
+
+A few speed-critical tools written in faster languages are starting to get popular. Every company with large React apps plagued by minute-long `WebPack` builds has probably already switched to
+`esbuild`, written in Go. Likewise, some eslint competitors in other languages are emerging, like Rome, which has now been rewritten in Rust.
+
+Bun is the natural continuation of that trend, but starting from the bottom. It's a ground-up, batteries included rewrite of the entire JavaScript ecosystem in a low level language, and so far it seems to be getting it right.
+
+
+## The interpreter
+If Bun was just a rewrite of all the secondary JavaScript tools, I'd be excited enough. But it's also a replacement for Node.
+
+Bun takes a
+stab at making the interpreter itself faster. It's written
+in [Zig](https://ziglang.org/) and [uses Apple's JavaScriptCore](https://news.ycombinator.com/item?id=28702322) similarly to how Node uses v8.
+If you haven't heard of it, Zig is a newish low-level language emerging into the space where C++ dominates.
+I haven't used it, and I'm not a low level developer, so I'll leave that to other bloggers. For the purposes of this post,
+all you need to know is that it's fast. As for JavaScriptCore, it fills the same role as v8, except that it's written by Apple instead
+of Google. It's used by Safari and a lot of other Apple projects.
+
+Anyway, [the Jury is still out](https://techsparx.com/Nodejs/bun/1st-trial.html) on exactly
+how *much* faster Bun is than Node, but it claims to be much faster in some cases. For those of you that weren't doing JS during
+the [io.js fiasco](https://thenextweb.com/news/Node-js-and-io-js-are-settling-their-differences-merging-back-together),
+know that a fork with a simple increase in interpreter speed has been enough to shake the entire ecosystem in the past.
+Bun also starts much faster than Node. Around 7ms for me, which makes it around 10x faster than starting Node. This makes it a great fit for serverless environments
+and things at the edge.
+
+This time, speed isn't the only difference. Bun also adds a lot of standard-library functions that
+are nice to have. `Bun.write()`, for instance, is a new function for writing files that returns a promise and claims to be faster
+by using more appropriate system calls. No more calling `util.promisify(fs.writefile)` just to get a function you can `await`.
+It also finally has `fetch` and `websocket` built in. Nice.
+
+While we're on the topic of Node APIs, Bun currently supports around 90% of Node's existing APIs. Node is huge and can do some
+things almost nobody knows about [(`new AsyncLocalStorage()` anyone?)](https://github.com/lunasec-io/lunasec/blob/813d0abe1587a86bd7f89eea2b9e847f208b65d3/lunatrace/bsl/logger/src/index.ts#L80), so that's pretty impressive. Can you run *every*
+package you find on NPM? No, but it does seem to work most of the time.
+
+
+
+### TypeScript
+By the way, TypeScript is a first class citizen with Bun. Simply call `bun my-ts-file.ts`. It just works. This is similar to Deno's support for TS.
+Template out a new project with Bun or add `bun-types` to your tsconfig and your IDE autocomplete will work fine for those new functions!
+
+I'm not sure if Bun is also a complete rewrite of the TypeScript compiler, but it appears to be. At this point I'm not surprised. Some more advanced TypeScript
+configuration and features are still unsupported, such as decorators and the `extends` feature in tsconfig for merging multiple configs together.
+
+## The package manager
+
+Among the most exciting of its talents, Bun is a drop-in replacement for NPM. It's really, really fast, and that's about what I have to say about it.
+It works how you would expect.
+
+> On Linux, bun install tends to install packages 20x - 100x faster than npm install. On macOS, it’s more like 4x - 80x.
+
+I can confirm, it's faster with no cache, it's faster with a full cache, it's just faster.
+
+This isn't the first time someone has tried to speed up NPM. You might be familiar with Yarn's Plug-n-Play and how it completely ditches the `node_modules` folder to try to get
+faster installs.  It does *work* but in practice,
+it's really hard to get working, and requires a lot of polyfilling and escape-hatches. We bit-the-bullet to use it, but I probably wouldn't recommend it or use it again.
+
+Bun works the way NPM does, just faster. It uses its own lockfile format, but node_modules and the package.json look normal.
+
+Now, Bun [doesn't have](https://github.com/oven-sh/bun/issues/533) workspace support yet, meaning it won't work for a lot of the big monorepos
+that could really benefit from it (ahem, us). That said, Bun development seems to be moving at a lightning pace. Workspace support is mentioned on the roadmap as of a couple of weeks ago.
+
+:::info
+Note that you don't have to switch entirely to Bun to use the package manager.  The same goes for the transpiler or the interpreter.
+You can choose just the part you need and leave the rest.  I imagine a _lot_ of people switching to this package manager in the near future without taking all of Bun.
+Perhaps some more people will learn about the project that way.
+:::
+
+## The Transpiler / Bundler
+
+Bun includes a transpiler for web browsers, to compete with webpack and esbuild. By the way, the parser in Bun is a Zig port
+of esbuild's parser. Neat.
+
+It already supports quite an impressive array of file types. Css, SVG, tsx, jsx, ts. They're all supported. Advanced options like CSS in JS appear to work fine.
+
+Since Bun includes a project scaffolder with a few built in templates, I simply called:
+
+```shell
+bun create react my-app
+```
+
+Then I ran `bun dev` and I had a react app running in my browser. I guess we can add `react-scripts` to the list of tools that Bun replaces.
+
+Changing the file extensions from `jsx` to `tsx` worked right away. Importing SVGs worked great. There also appears to be HMR support in dev mode,
+which has become a must-have for frontend devs coming from webpack.
+
+### What's missing from the transpiler?
+A lot of things you probably need for production, unfortunately. Minification is the biggest one I see still on the roadmap that real-world users will need.
+Having a large plugin ecosystem is kind of critical for a bundler to support different file formats. For instance, .vue files and .scss are still on the roadmap.
+Just about everyone and their grandma uses .scss, so that's a deal-breaker.
+
+## Other features - Web server and sqlite client
+
+Bun also adds some things you'd usually think of as frameworks to the standard library. Personally, I'm less excited about these more library type features. There are a lot of very good options available in Node for http servers.
+
+Bun's webserver looks pretty bare-bones. Express still works fine for most of the community, even if it is a bit behind the times. (They just added promise support this year).
+Bun's server appears to be very similar to a Cloudflare Worker. Maybe Bun's creator will circle back around to more work on the webserver once every other problem in the entire JavaScript world is fixed.
+
+As for the new SQLite adapter, I guess the normal way to do sqlite in Node is a bit confusing. Most people combine the older `sqlite3` package with the `sqlite` wrapper to add promise support,
+but it's not that bad. Bun's solution looks a bit cleaner, and I won't even bother checking if it's faster.
+
+
+## The problem communicating all this value
+
+I'm concerned it's going to be a little hard to communicate all this value to the community. Bun is like a complete ecosystem replacement, and that's a big shift. I hope that people will get it.
+
+Bun is still very new and currently has no complete documentation. A [very long readme](https://github.com/oven-sh/bun#readme) is the main source of truth
+right now. It's not that hard to throw a docusaurus site together (like the one you're reading right now) and generate typedoc from the TypeScript types which already has thorough inline comments, so I imagine this will be coming soon.
+
+## Other alternatives
+### Deno
+You can probably skip this part if you don't know what Deno is or don't care. Personally, I'm way more excited about Bun than Deno.
+
+[Deno](https://deno.land/), written by the original creator of Node, does claim to resolve some outstanding issues.
+It makes es-modules the default, adds first-party TypeScript support (no need to transpile NPM modules before publishing), and so on. In my opinion
+it introduces other serious shortcomings along the way. The elephant in the room is that Deno has made enough breaking changes to package resolution and syntax that **it isn't
+compatible with the existing NPM ecosystem.** This means that Deno needs to be a completely new ecosystem of libraries. There has been a bit of development with some early library support,
+but I'd say that clout can only get you so much buy-in, especially when so much momentum is involved.  There are a few other things in Deno that strike me as half-baked, like the [lack of a package.json](https://deno.land/manual/examples/manage_dependencies),
+both from a module resolution perspective, and also because without a manifest file, there is nowhere to write extensible metadata about your package. Even GoLang has added `pom.xml` for this reason.
+
+Also, I just want to point at that the sandboxing / permission system in Deno is the right idea but isn't fine-grained enough. It lives at the top level of the entire project, not at the package level, meaning a big app ends up needing all permissions and you're back to square one.
+As a security company, we were disappointed in its potential to protect large, real world apps from supply-chain attacks. Bun isn't claiming to solve this problem either (yet), I just wanted to vent.
+
+I should probably write a whole post about this, but the short answer is:
+
+### Bun has way more potential to take-off
+
+And here's why:
+* It supports libraries from the existing NPM ecosystem and whatever code you already wrote (well, it's getting there). You don't even have to change your package.json.
+* It solves *major* outstanding ecosystem issues (especially ones big companies have), unifying the solutions into one framework.
+* It works in a way people already understand, just faster. No understanding new paradigms or shifting your thinking.
+* You can take it peace-meal, meaning you can *just* use the package manager if that's what's slowing down your dev, or just use the bundler if your webpack is too slow.
+* It's faster, in almost every dimension. This is huge and can't be underestimated. We know from io.js that people **will** jump-ship for speed.
+
+### Rome
+As mentioned above, [Rome](https://rome.tools/#about-rome) is a linter. Rome's maintainers have just put in the work to rewrite it for speed in Rust instead of JS, and not 79 seconds too soon. (Yes, that's really how long our eslint takes.)
+Looking at the [roadmap](https://rome.tools/#development-status), it also aims to be a bundler, documentation generator, minifier, type checker, test framework, etc. Those parts
+aren't done yet, and in that way Bun is a bit further along. Rome at least hasn't rewritten the core of Node itself, so I guess the scope-creep explosion is slightly more contained.
+
+I think the core takeaway here is that the problem with the Node ecosystem has been sighted, and there are multiple attempts underway to rewrite it in a unified
+and highly performant framework.
+
+## Conglomeration in the Open Source World
+I just want to zoom out for a second and talk about how this kind of Open Source conglomeration is a common trend. Here are a couple of examples.
+
+Many Node developers will be familiar with the rise of `Jest` versus the `Mocha` testing framework.
+Mocha was the original go-to test runner.  It can run tests and has a nice syntax, but to do anything more
+complicated or even have assertions, you have to pull in many other modules and plugins. The community figured out
+what they needed through collaboration, in the form of plugins.
+In short, it requires
+more domain knowledge for the developer to pull in more libraries.
+
+Then Facebook wrote Jest, the batteries included testing framework. It borrows from Mocha's syntax and family of libraries, unifying them into one framework. Jest can do everything from faking times to instrumenting and mocking `require`. You can extend it, but I've actually *never* needed to. Much of the proof-of-concept and design work happened with Mocha, Jest just needed to unify it and make it easier to access. Many people still use and swear by Mocha, but Jest is very popular.
+
+There are quite a few examples like this in the Open Source world. There's a big blob of first-of-their-kind solutions, and when it gets to be too much, they all get pulled into one thing by enterprising developers.
+Linux's still divisive systemd comes to mind. Today, systemd manages almost everything
+on most Linux distros. Maybe Bun will sweep the JavaScript world in the same way.
+
+I realize that conglomeration and consolidation can seem negative from an Open Source perspective, but we have to keep in mind that one of the main complaints I hear
+about JS is that there are *too many libraries* just to do simple things. When every one of those libraries has its own maintainer, that's another avenue for an expired
+email domain to become a supply-chain attack. That's just the unfortunate truth. It's also more confusing for developers new to the language who need to learn more names and
+look in more places. In the end, I don't think that many people are going to argue that adding more commonly used features to the standard library and consolidating dev-tools under one banner
+is a step backwards.
+
+## Conclusion
+As of July 2022, Bun is still not quite ready for the workplace, but I strongly recommend you install it and take it for a spin. It's dead-simple to try out.
+I think it would be a great fit for a small side-project or maybe a small internal dashboard at your company.
+
+It's hard to say what the next few years will bring for JavaScript, but I've got both eyes on Bun.
+
