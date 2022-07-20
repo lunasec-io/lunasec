@@ -35,16 +35,11 @@ npm audit is a good tool for checking your javascript dependencies against known
 
 ### A Solution: VEX
 
-The NTIA is developing a standard containing the minimum information for exchanging security advisories in a machine readable format called VEX[^3]. Besides being a clever bit of wordplay, VEX documents enable consumers to enhance the accuracy of their vulnerability assessment tools.
+The NTIA is developing a standard containing the minimum information for exchanging security advisories in a machine readable format called VEX.[^3] Besides being a clever bit of wordplay, VEX documents enable consumers to enhance the accuracy of their vulnerability assessment tools.
 
-
-    **vex**  /veks/
-
-
-    _verb_
-
-
-    make (someone) feel annoyed, frustrated, or worried, especially with trivial matters.
+> **vex**  /veks/ • _verb_
+> 
+> make (someone) feel annoyed, frustrated, or worried, especially with trivial matters.
 
 VEX documents contain a list of vulnerabilities and their status in a product. These statuses can be unknown, affected, or not affected. They can contain partial or full results of a vulnerability assessment. Multiple sources may issue VEX documents. VEX documents are usually associated with an SBOM, but can be distributed separately.
 
