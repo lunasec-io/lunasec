@@ -16,7 +16,9 @@ import process from 'process';
 import { hasura } from '../hasura-api';
 import {
   Guide_Related_Guides_Constraint,
+  Guide_Related_Guides_Update_Column,
   Guide_Vulnerabilities_Constraint,
+  Guide_Vulnerabilities_Update_Column,
   Guides_Insert_Input,
 } from '../hasura-api/generated';
 import { log } from '../utils/log';
@@ -62,7 +64,6 @@ async function buildGuideWithRelations(guide: Guide): Promise<Guides_Insert_Inpu
 function convertGuidesToHasuraFormat(guide: Guide): Guides_Insert_Input {
   return {
     guide_unique_id: guide.guide_unique_id,
-
     body: guide.body,
     title: guide.metadata.name,
     metadata: guide.metadata,
@@ -87,7 +88,10 @@ async function buildGuideVulnerabilities(
     return false;
   }
   return {
-    on_conflict: { constraint: Guide_Vulnerabilities_Constraint.GuideVulnerabilitiesUnique, update_columns: [] },
+    on_conflict: {
+      constraint: Guide_Vulnerabilities_Constraint.GuideVulnerabilitiesUnique,
+      update_columns: [Guide_Vulnerabilities_Update_Column.VulnerabilityId],
+    },
     data: vulns.map((vuln) => {
       return {
         vulnerability_id: vuln.id,
@@ -99,7 +103,10 @@ async function buildGuideVulnerabilities(
 // builds the self join table
 function buildRelatedGuides(relatedNames: Guide['metadata']['relatedGuides']): Guides_Insert_Input['related_guides'] {
   return {
-    on_conflict: { constraint: Guide_Related_Guides_Constraint.GuideRelatedGuidesUnique, update_columns: [] },
+    on_conflict: {
+      constraint: Guide_Related_Guides_Constraint.GuideRelatedGuidesUnique,
+      update_columns: [Guide_Related_Guides_Update_Column.ToGuideUniqueId],
+    },
     data: relatedNames.map((r) => {
       return {
         to_guide_unique_id: r,
