@@ -1,9 +1,9 @@
 ---
 title: "Bun: A Complete Overhaul of the JavaScript Ecosystem"
-description: A security expert's analysis of the malicious code added to ctx and Phpass, Python and PHP dependencies, that turned them into malware by sending environment variables and credentials to a third party attacker.
+description: A first look at Bun, the new framework trying to replace node and just about everything else too.
 slug: bun-first-look
 date: 2022-07-20
-keywords: [bun, JavaScript, package-manager]
+keywords: [bun, JavaScript, package-manager, npm, node, deno]
 tags: [malware, dependencies]
 authors: [forrest]
 ---
@@ -41,7 +41,8 @@ rewrite of the JavaScript ecosystem.
 In order of things I'm desperate for, Bun is a:
 * JavaScript/TypeScript runtime that claims to be faster than Node or Deno
 * Package manager that's about a bajillion times faster than NPM or Yarn
-* Browser Bundler - complete with tsx, jsx, css, svg..etc support. Replacement for everything from `webpack` to `react-scripts`, and, you guessed it, extremely fast
+* Browser Bundler - complete with tsx, jsx, css, svg, .etc support. Replacement for everything from `webpack` to
+`react-scripts`, and, you guessed it, extremely fast
 * Really fast web server (express replacement)
 * Sqlite client
 * Bread
@@ -124,7 +125,9 @@ This isn't the first time someone has tried to speed up NPM. You might be famili
 faster installs.  It does *work* but in practice,
 it's really hard to get working, and requires a lot of polyfilling and escape-hatches. We bit-the-bullet to use it, but I probably wouldn't recommend it or use it again.
 
-Bun works the way NPM does, just faster. It uses its own lockfile format, but node_modules and the package.json look normal.
+Bun works the way NPM does, just faster. It uses its own lockfile format, but node_modules and the package.json look
+normal. A developer with a good understanding of filesystem calls combined with low-level access and a
+fast language makes for a really quick solution, without any fancy tricks.
 
 Now, Bun [doesn't have](https://github.com/oven-sh/bun/issues/533) workspace support yet, meaning it won't work for a lot of the big monorepos
 that could really benefit from it (ahem, us). That said, Bun development seems to be moving at a lightning pace. Workspace support is mentioned on the roadmap as of a couple of weeks ago.
@@ -140,7 +143,8 @@ Perhaps some more people will learn about the project that way.
 Bun includes a transpiler for web browsers, to compete with webpack and esbuild. By the way, the parser in Bun is a Zig port
 of esbuild's parser. Neat.
 
-It already supports quite an impressive array of file types. Css, SVG, tsx, jsx, ts. They're all supported. Advanced options like CSS in JS appear to work fine.
+It already supports quite an impressive array of file types. Css, Svg, Tsx, Jsx, Ts. They're all supported. Advanced
+options like CSS in JS appear to work fine.
 
 Since Bun includes a project scaffolder with a few built in templates, I simply called:
 
@@ -156,7 +160,10 @@ which has become a must-have for frontend devs coming from webpack.
 ### What's missing from the transpiler?
 A lot of things you probably need for production, unfortunately. Minification is the biggest one I see still on the roadmap that real-world users will need.
 Having a large plugin ecosystem is kind of critical for a bundler to support different file formats. For instance, .vue files and .scss are still on the roadmap.
-Just about everyone and their grandma uses .scss, so that's a deal-breaker.
+Just about everyone and their grandma uses .scss, so that's a deal-breaker. I'm not sure how pluggable Bun's
+bundler is at the moment, but it seems that the focus is mainly on building solutions directing into the framework,
+rather than
+relying on a lot of other Open Source packages for solutions.
 
 ## Other features - Web server and sqlite client
 
@@ -164,6 +171,8 @@ Bun also adds some things you'd usually think of as frameworks to the standard l
 
 Bun's webserver looks pretty bare-bones. Express still works fine for most of the community, even if it is a bit behind the times. (They just added promise support this year).
 Bun's server appears to be very similar to a Cloudflare Worker. Maybe Bun's creator will circle back around to more work on the webserver once every other problem in the entire JavaScript world is fixed.
+It's worth noting that clever system calls can make Bun's webserver [twice as fast in some cases](https://twitter.
+com/jarredsumner/status/1506182333459693571), particularly when working with files.
 
 As for the new SQLite adapter, I guess the normal way to do sqlite in Node is a bit confusing. Most people combine the older `sqlite3` package with the `sqlite` wrapper to add promise support,
 but it's not that bad. Bun's solution looks a bit cleaner, and I won't even bother checking if it's faster.
@@ -182,15 +191,23 @@ You can probably skip this part if you don't know what Deno is or don't care. Pe
 
 [Deno](https://deno.land/), written by the original creator of Node, does claim to resolve some outstanding issues.
 It makes es-modules the default, adds first-party TypeScript support (no need to transpile NPM modules before publishing), and so on. In my opinion
-it introduces other serious shortcomings along the way. The elephant in the room is that Deno has made enough breaking changes to package resolution and syntax that **it isn't
-compatible with the existing NPM ecosystem.** This means that Deno needs to be a completely new ecosystem of libraries. There has been a bit of development with some early library support,
-but I'd say that clout can only get you so much buy-in, especially when so much momentum is involved.  There are a few other things in Deno that strike me as half-baked, like the [lack of a package.json](https://deno.land/manual/examples/manage_dependencies),
-both from a module resolution perspective, and also because without a manifest file, there is nowhere to write extensible metadata about your package. Even GoLang has added `pom.xml` for this reason.
+it introduces other serious shortcomings along the way.
 
-Also, I just want to point at that the sandboxing / permission system in Deno is the right idea but isn't fine-grained enough. It lives at the top level of the entire project, not at the package level, meaning a big app ends up needing all permissions and you're back to square one.
+The elephant in the room is that Deno has made enough breaking changes to package resolution and syntax that **it isn't
+compatible with the existing NPM ecosystem.** This means that Deno needs to be a completely new ecosystem of libraries. There has been a bit of development with some early library support,
+but I'd say that clout can only get you so much buy-in, especially when so much momentum is involved. There are also
+some workarounds, like [CDNs that transpile NPM packages into Deno packages](https://deno.land/manual@v1.15.2/npm_nodejs/cdns#esmsh), but that doesn't smell very good to me.
+
+There are a
+few other things in Deno that strike me as half-baked, like the [lack of a package.json](https://deno.land/manual/examples/manage_dependencies),
+both from a module resolution perspective, and also because without a manifest file, there is nowhere to write
+extensible metadata about your package. Even GoLang has added `go.mod` for this reason.
+
+Also, I just want to point at that the [sandboxing / permission system](https://deno.land/manual/getting_started/permissions#:~:text=Deno%20is%20secure%20by%20default,or%20a%20runtime%20permission%20prompt.) in Deno is the right idea but isn't
+fine-grained enough. It lives at the top level of the entire project, not at the package level, meaning a big app ends up needing all permissions and you're back to square one.
 As a security company, we were disappointed in its potential to protect large, real world apps from supply-chain attacks. Bun isn't claiming to solve this problem either (yet), I just wanted to vent.
 
-I should probably write a whole post about this, but the short answer is:
+I should probably write a whole post about my problems with Deno, but the short answer is:
 
 ### Bun has way more potential to take-off
 
