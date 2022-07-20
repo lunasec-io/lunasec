@@ -171,8 +171,7 @@ Bun also adds some things you'd usually think of as frameworks to the standard l
 
 Bun's webserver looks pretty bare-bones. Express still works fine for most of the community, even if it is a bit behind the times. (They just added promise support this year).
 Bun's server appears to be very similar to a Cloudflare Worker. Maybe Bun's creator will circle back around to more work on the webserver once every other problem in the entire JavaScript world is fixed.
-It's worth noting that clever system calls can make Bun's webserver [twice as fast in some cases](https://twitter.
-com/jarredsumner/status/1506182333459693571), particularly when working with files.
+It's worth noting that clever system calls can make Bun's webserver [twice as fast in some cases](https://twitter.com/jarredsumner/status/1506182333459693571), particularly when working with files.
 
 As for the new SQLite adapter, I guess the normal way to do sqlite in Node is a bit confusing. Most people combine the older `sqlite3` package with the `sqlite` wrapper to add promise support,
 but it's not that bad. Bun's solution looks a bit cleaner, and I won't even bother checking if it's faster.
