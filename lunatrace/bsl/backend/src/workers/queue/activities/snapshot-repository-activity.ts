@@ -60,7 +60,6 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
         },
       })
   );
-
   if (threwError(insertBuildResponse)) {
     const msg = 'failed to insert a new build';
     logger.error(msg, {
