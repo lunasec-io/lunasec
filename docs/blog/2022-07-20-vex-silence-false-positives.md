@@ -35,7 +35,7 @@ npm audit is a good tool for checking your javascript dependencies against known
 
 ### A Solution: VEX
 
-The NTIA is developing a standard containing the minimum information for exchanging security advisories in a machine readable format called VEX[^3]. Besides being a clever bit of wordplay, VEX documents enable consumers to enhance the accuracy (precision??) of their vulnerability assessment tools.
+The NTIA is developing a standard containing the minimum information for exchanging security advisories in a machine readable format called VEX[^3]. Besides being a clever bit of wordplay, VEX documents enable consumers to enhance the accuracy of their vulnerability assessment tools.
 
 
     **vex**  /veks/
