@@ -24,24 +24,24 @@ authors: [alex]
 
 ## VEX: Permanently Silence False Positives with Vulnerability EXchange
 
-As we highlighted in our post on False Positives in Vulnerability Scanning, the output of vulnerability assessment tools like npm audit can be cumbersome because they lack context. VEX (Vulnerability EXchange) is a new standard developed by the NTIA to exchange information about which vulnerabilities are actually exploitable in a product.
+As we highlighted in our post on False Positives in Vulnerability Scanning[^1], the output of vulnerability assessment tools like `npm audit` can be cumbersome because they lack context. VEX (Vulnerability EXchange) is a new standard developed by the NTIA to exchange information about which vulnerabilities are actually exploitable in a product.
 
 <!--truncate-->
 
 ### The Problem: False Positives
 
-npm audit is a good tool for checking your javascript dependencies against known vulnerabilities. However, it commonly results in alerts for vulnerabilities that are inaccessible at runtime or otherwise irrelevant.[^1] This combined with the fact that npm audit is run after install by default can result in users ignoring the output because the Signal to Noise Ratio is not high enough.[^2]
+`npm audit` and other tools like it are good tools for checking your dependencies against known vulnerabilities. However, it commonly results in alerts for vulnerabilities that are inaccessible at runtime or otherwise irrelevant.[^2] This combined with the fact that `npm audit` is run after install by default can result in users ignoring the output because the Signal to Noise Ratio is not high enough.[^3]
 
 
 ### A Solution: VEX
 
-The NTIA is developing a standard containing the minimum information for exchanging security advisories in a machine readable format called VEX.[^3] Besides being a clever bit of wordplay, VEX documents enable consumers to enhance the accuracy of their vulnerability assessment tools.
+The NTIA is developing a standard containing the minimum information for exchanging security advisories in a machine readable format called VEX[^4]. Besides being a clever bit of wordplay, VEX documents enable consumers to enhance the accuracy of their vulnerability assessment tools.
 
-> **vex**  /veks/ • _verb_
-> 
-> make (someone) feel annoyed, frustrated, or worried, especially with trivial matters.
+>  **vex**  /veks/ • _verb_
 
-VEX documents contain a list of vulnerabilities and their status in a product. These statuses can be unknown, affected, or not affected. They can contain partial or full results of a vulnerability assessment. Multiple sources may issue VEX documents. VEX documents are usually associated with an SBOM, but can be distributed separately.
+>  make (someone) feel annoyed, frustrated, or worried, especially with trivial matters.
+
+VEX documents contain a list of vulnerabilities and their status in a product. These statuses can be unknown, affected, or not affected. They can contain partial or full results from a vulnerability assessment. Multiple sources may issue VEX documents. VEX documents are usually associated with an SBOM, but can be distributed separately.
 
 
 ### Use Cases
@@ -51,12 +51,12 @@ The NTIA standard focuses on how security teams of software suppliers can use VE
 
 #### Software Suppliers: Inform Customers
 
-Software Suppliers can publish VEX documents with their SBOMs to communicate the results of their security assessment of their product programmatically. Consumers can cross reference this document with their own assessment to remove false positives and confirm presence of specific vulnerabilities.
+Software Suppliers can publish VEX documents with their SBOMs to communicate the results of security assessments of their products programmatically. Consumers can cross reference this document with their own assessment to remove false positives and confirm the presence of specific vulnerabilities.
 
 
 #### Security Engineers/End Users: Reduce Alert Fatigue
 
-If Security Engineers and End Users have access to VEX documents, they can use them to make more informed decisions about which software to patch. This will reduce Alert Fatigue from false positives and lead to more effective utilization of time.
+If Security Engineers and End Users have access to VEX documents, they can use them to make more informed decisions about which software to patch. This will reduce Alert Fatigue[^5] from false positives and lead to more effective utilization of time.
 
 
 #### Security Researchers/Products: Publish Assessments
@@ -66,13 +66,13 @@ VEX documents can be issued by any source. Security Researchers may start publis
 
 ### So how do I get started?
 
-VEX is still in the early stages of development. There are currently two implementations of the standard. CycloneDX v1.4 has added a VulnerabilityAnalysis field[^4] and CSAF supports VEX content as an additional “profile”.[^5] 
+VEX is still in the early stages of development. There are currently two implementations of the standard. CycloneDX v1.4 has added a VulnerabilityAnalysis field[^6] and CSAF supports VEX content as an additional “profile”.[^7] 
 
-At the time of writing, I am aware of these tools which support VEX:
+At the time of writing, we are aware of these tools which support VEX:
 
 
 
-* LunaTrace by LunaSec
+* LunaTrace by [LunaSec](https://www.lunasec.io/)
 * [Daggerboard](https://github.com/nyph-infosec/daggerboard/blob/main/README.md)
 * [Dependency-Track](https://dependencytrack.org/)
 
@@ -88,16 +88,22 @@ LunaTrace is building a global database and tooling to automatically generate VE
 ## Resources
 
 [^1]:
-     [https://overreacted.io/npm-audit-broken-by-design/](https://overreacted.io/npm-audit-broken-by-design/)
+     [https://www.lunasec.io/docs/blog/the-issue-with-vuln-scanners/](https://www.lunasec.io/docs/blog/the-issue-with-vuln-scanners/)
 
 [^2]:
-     [https://www.voitanos.io/blog/don-t-be-alarmed-by-vulnerabilities-after-running-npm-install/](https://www.voitanos.io/blog/don-t-be-alarmed-by-vulnerabilities-after-running-npm-install/)
+     [https://overreacted.io/npm-audit-broken-by-design/](https://overreacted.io/npm-audit-broken-by-design/)
 
 [^3]:
-     [https://www.cisa.gov/sites/default/files/publications/VEX_Use_Cases_April2022.pdf](https://www.cisa.gov/sites/default/files/publications/VEX_Use_Cases_April2022.pdf)
+     [https://www.voitanos.io/blog/don-t-be-alarmed-by-vulnerabilities-after-running-npm-install/](https://www.voitanos.io/blog/don-t-be-alarmed-by-vulnerabilities-after-running-npm-install/)
 
 [^4]:
-     [https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto#L592-L650](https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto#L592-L650)
+     [https://www.cisa.gov/sites/default/files/publications/VEX_Use_Cases_April2022.pdf](https://www.cisa.gov/sites/default/files/publications/VEX_Use_Cases_April2022.pdf)
 
 [^5]:
+     [https://en.wikipedia.org/wiki/Alarm_fatigue](https://en.wikipedia.org/wiki/Alarm_fatigue)
+
+[^6]:
+     [https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto#L592-L650](https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto#L592-L650)
+
+[^7]:
      [https://docs.oasis-open.org/csaf/csaf/v2.0/csd01/csaf-v2.0-csd01.html#45-profile-5-vex](https://docs.oasis-open.org/csaf/csaf/v2.0/csd01/csaf-v2.0-csd01.html#45-profile-5-vex)
