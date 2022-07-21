@@ -4,7 +4,7 @@ on:
     branches:
       - '**'
     paths:
-      - 'docs/blog/**'
+      #- 'docs/blog/**'
       - '.github/**'
 
 jobs:
@@ -21,4 +21,4 @@ jobs:
         with:
           files: "docs/blog"
           fail_on_error: false
-          reporter: local
+          #reporter: local
