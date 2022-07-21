@@ -15,6 +15,7 @@
 package scan
 
 import (
+	"errors"
 	"fmt"
 	"github.com/Khan/genqlient/graphql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/grypefx/store/gqlstorefx"

@@ -31,7 +31,7 @@ import { log } from '../../../utils/log';
 import { catchError, threwError, Try } from '../../../utils/try';
 
 const mkdTemp = util.promisify(fs.mkdtemp);
-const rmDir = util.promisify(fs.rmdir);
+const rmDir = util.promisify(fs.rm);
 const appPrefix = 'lunatrace';
 
 async function performSnapshotOnRepository(
