@@ -4,7 +4,7 @@ on:
     branches:
       - '**'
     paths:
-      - 'docs/**'
+      #- 'docs/blog/**'
       - '.github/**'
 
 jobs:
@@ -19,6 +19,6 @@ jobs:
           # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
-          files: 'docs'
+          files: "docs/blog"
           fail_on_error: false
-          vale_flags: "--glob='*.{md,mdx}'"
+          #reporter: local
