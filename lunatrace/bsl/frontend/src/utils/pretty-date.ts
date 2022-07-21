@@ -30,6 +30,7 @@ export function prettyDate(date: Date, showTime = true) {
   const monthOptions: Intl.DateTimeFormatOptions = {
     month: 'long',
     day: 'numeric',
+    year: 'numeric',
   };
 
   const hourOptions: Intl.DateTimeFormatOptions = {
@@ -37,11 +38,11 @@ export function prettyDate(date: Date, showTime = true) {
     minute: 'numeric',
     hour12: true,
   };
-  const monthDay = date.toLocaleString('en-US', monthOptions);
+  const prettyDateString = date.toLocaleString('en-US', monthOptions);
   const hrMin = date.toLocaleString('en-US', hourOptions);
   // time is over a two days old
   if (secondsSince >= 2 * secPerDay) {
-    return `${monthDay} ${showTime ? `at ${hrMin}` : ''}`;
+    return `${prettyDateString} ${showTime ? `at ${hrMin}` : ''}`;
   }
 
   // time is over a day old
