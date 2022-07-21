@@ -75,9 +75,8 @@ async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Pr
   return scanReport;
 }
 
-export async function scanSnapshotActivity(msg: S3ObjectMetadata): Promise<MaybeError<undefined>> {
+export async function scanSnapshotActivity(buildId: string, msg: S3ObjectMetadata): Promise<MaybeError<undefined>> {
   const { key, region, bucketName } = msg;
-  const buildId = key.split('/').pop();
   return await log.provideFields({ key, region, bucketName }, async () => {
     if (!buildId || !validate.isUUID(buildId)) {
       log.error('invalid build uuid from s3 object at key ', {
