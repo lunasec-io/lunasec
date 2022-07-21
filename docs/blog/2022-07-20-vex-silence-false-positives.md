@@ -2,7 +2,7 @@
 title: "VEX: Permanently Silence False Positives with Vulnerability EXchange"
 description: "VEX (Vulnerability EXchange) is a new standard developed by the NTIA to exchange information about which vulnerabilities are actually exploitable in a product."
 slug: vex-silence-false-positives
-date: 2022-05-25T01:37
+date: 2022-07-20T01:37
 keywords: [vex, sbom, "false positive", vulnerability]
 tags: [malware, dependencies, vulnerability, sbom, vex]
 authors: [alex]
