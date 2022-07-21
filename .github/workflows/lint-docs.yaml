@@ -21,3 +21,4 @@ jobs:
         with:
           files: "docs/blog"
           fail_on_error: false
+          reporter: local
