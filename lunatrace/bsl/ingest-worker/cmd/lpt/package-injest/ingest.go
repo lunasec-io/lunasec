@@ -31,7 +31,7 @@ type Params struct {
 func NewCommand(p Params) clifx.CommandResult {
 	return clifx.CommandResult{
 		Command: &cli.Command{
-			Name:  "ingest",
+			Name:  "package-ingest",
 			Usage: "[packages...]",
 			Action: func(ctx *cli.Context) error {
 				packageName := ctx.Args().First()
