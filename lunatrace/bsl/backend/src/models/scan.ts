@@ -53,7 +53,10 @@ export async function performSnapshotScanAndCollectReport(
     build_id: buildId,
   });
   if (!insertRes.insert_scans_one) {
-    throw new Error(`Failed to insert scan into hasura, resp: ${JSON.stringify(insertRes)}`);
+    log.error('failed to insert scan into hasura', {
+      insertRes,
+    });
+    throw new Error('Failed to insert scan into hasura');
   }
   return insertRes.insert_scans_one;
 }
