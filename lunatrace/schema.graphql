@@ -6,11 +6,11 @@ schema {
 
 """whether this query should be cached (Hasura Cloud only)"""
 directive @cached(
-  """measured in seconds"""
-  ttl: Int! = 60
-
   """refresh the cache entry"""
   refresh: Boolean! = false
+
+  """measured in seconds"""
+  ttl: Int! = 60
 ) on QUERY
 
 type AuthenticatedRepoCloneUrlOutput {
@@ -3313,19 +3313,6 @@ type mutation_root {
   delete_package_by_pk(id: uuid!): package
 
   """
-  delete data from the table: "vulnerability.range"
-  """
-  delete_vulnerability_range(
-    """filter the rows which have to be deleted"""
-    where: vulnerability_range_bool_exp!
-  ): vulnerability_range_mutation_response
-
-  """
-  delete single row from the table: "vulnerability.range"
-  """
-  delete_vulnerability_range_by_pk(id: uuid!): vulnerability_range
-
-  """
   insert data into the table: "build_dependency_relationship"
   """
   insert_build_dependency_relationship(
@@ -3951,28 +3938,6 @@ type mutation_root {
     """upsert condition"""
     on_conflict: vulnerability_packages_on_conflict
   ): vulnerability_packages
-
-  """
-  insert data into the table: "vulnerability.range"
-  """
-  insert_vulnerability_range(
-    """the rows to be inserted"""
-    objects: [vulnerability_range_insert_input!]!
-
-    """upsert condition"""
-    on_conflict: vulnerability_range_on_conflict
-  ): vulnerability_range_mutation_response
-
-  """
-  insert a single row into the table: "vulnerability.range"
-  """
-  insert_vulnerability_range_one(
-    """the row to be inserted"""
-    object: vulnerability_range_insert_input!
-
-    """upsert condition"""
-    on_conflict: vulnerability_range_on_conflict
-  ): vulnerability_range
 
   """
   insert data into the table: "vulnerability.reference"
@@ -5027,26 +4992,6 @@ type mutation_root {
     _set: vulnerability_packages_set_input
     pk_columns: vulnerability_packages_pk_columns_input!
   ): vulnerability_packages
-
-  """
-  update data of the table: "vulnerability.range"
-  """
-  update_vulnerability_range(
-    """sets the columns of the filtered rows to the given values"""
-    _set: vulnerability_range_set_input
-
-    """filter the rows which have to be updated"""
-    where: vulnerability_range_bool_exp!
-  ): vulnerability_range_mutation_response
-
-  """
-  update single row of the table: "vulnerability.range"
-  """
-  update_vulnerability_range_by_pk(
-    """sets the columns of the filtered rows to the given values"""
-    _set: vulnerability_range_set_input
-    pk_columns: vulnerability_range_pk_columns_input!
-  ): vulnerability_range
 
   """
   update data of the table: "vulnerability.reference"
@@ -8929,31 +8874,6 @@ type query_root {
   vulnerability_packages_by_pk(id: uuid!): vulnerability_packages
 
   """
-  fetch data from the table: "vulnerability.range"
-  """
-  vulnerability_range(
-    """distinct select on columns"""
-    distinct_on: [vulnerability_range_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [vulnerability_range_order_by!]
-
-    """filter the rows returned"""
-    where: vulnerability_range_bool_exp
-  ): [vulnerability_range!]!
-
-  """
-  fetch data from the table: "vulnerability.range" using primary key columns
-  """
-  vulnerability_range_by_pk(id: uuid!): vulnerability_range
-
-  """
   fetch data from the table: "vulnerability.reference"
   """
   vulnerability_reference(
@@ -10468,31 +10388,6 @@ type subscription_root {
   vulnerability_packages_by_pk(id: uuid!): vulnerability_packages
 
   """
-  fetch data from the table: "vulnerability.range"
-  """
-  vulnerability_range(
-    """distinct select on columns"""
-    distinct_on: [vulnerability_range_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [vulnerability_range_order_by!]
-
-    """filter the rows returned"""
-    where: vulnerability_range_bool_exp
-  ): [vulnerability_range!]!
-
-  """
-  fetch data from the table: "vulnerability.range" using primary key columns
-  """
-  vulnerability_range_by_pk(id: uuid!): vulnerability_range
-
-  """
   fetch data from the table: "vulnerability.reference"
   """
   vulnerability_reference(
@@ -11284,7 +11179,6 @@ type vulnerability {
     """filter the rows returned"""
     where: vulnerability_reference_bool_exp
   ): [vulnerability_reference!]!
-  reviewed_by_source: Boolean
 
   """An array relationship"""
   severities(
@@ -11366,24 +11260,6 @@ type vulnerability_affected {
   package: package
   package_id: uuid
 
-  """An array relationship"""
-  ranges(
-    """distinct select on columns"""
-    distinct_on: [vulnerability_range_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [vulnerability_range_order_by!]
-
-    """filter the rows returned"""
-    where: vulnerability_range_bool_exp
-  ): [vulnerability_range!]!
-
   """An object relationship"""
   vulnerability: vulnerability
   vulnerability_id: uuid
@@ -11428,7 +11304,6 @@ input vulnerability_affected_bool_exp {
   id: uuid_comparison_exp
   package: package_bool_exp
   package_id: uuid_comparison_exp
-  ranges: vulnerability_range_bool_exp
   vulnerability: vulnerability_bool_exp
   vulnerability_id: uuid_comparison_exp
 }
@@ -11479,7 +11354,6 @@ input vulnerability_affected_insert_input {
   id: uuid
   package: package_obj_rel_insert_input
   package_id: uuid
-  ranges: vulnerability_range_arr_rel_insert_input
   vulnerability: vulnerability_obj_rel_insert_input
   vulnerability_id: uuid
 }
@@ -11541,7 +11415,6 @@ input vulnerability_affected_order_by {
   id: order_by
   package: package_order_by
   package_id: order_by
-  ranges_aggregate: vulnerability_range_aggregate_order_by
   vulnerability: vulnerability_order_by
   vulnerability_id: order_by
 }
@@ -12058,7 +11931,6 @@ input vulnerability_bool_exp {
   modified: timestamptz_comparison_exp
   published: timestamptz_comparison_exp
   references: vulnerability_reference_bool_exp
-  reviewed_by_source: Boolean_comparison_exp
   severities: vulnerability_severity_bool_exp
   source: String_comparison_exp
   source_id: String_comparison_exp
@@ -12427,7 +12299,6 @@ input vulnerability_insert_input {
   modified: timestamptz
   published: timestamptz
   references: vulnerability_reference_arr_rel_insert_input
-  reviewed_by_source: Boolean
   severities: vulnerability_severity_arr_rel_insert_input
   source: String
   source_id: String
@@ -12483,7 +12354,6 @@ input vulnerability_order_by {
   modified: order_by
   published: order_by
   references_aggregate: vulnerability_reference_aggregate_order_by
-  reviewed_by_source: order_by
   severities_aggregate: vulnerability_severity_aggregate_order_by
   source: order_by
   source_id: order_by
@@ -12713,171 +12583,6 @@ input vulnerability_prepend_input {
 }
 
 """
-columns and relationships of "vulnerability.range"
-"""
-type vulnerability_range {
-  """An object relationship"""
-  affected: vulnerability_affected!
-  affected_id: uuid!
-  fixed: String
-  id: uuid!
-  introduced: String
-}
-
-"""
-order by aggregate values of table "vulnerability.range"
-"""
-input vulnerability_range_aggregate_order_by {
-  count: order_by
-  max: vulnerability_range_max_order_by
-  min: vulnerability_range_min_order_by
-}
-
-"""
-input type for inserting array relation for remote table "vulnerability.range"
-"""
-input vulnerability_range_arr_rel_insert_input {
-  data: [vulnerability_range_insert_input!]!
-
-  """upsert condition"""
-  on_conflict: vulnerability_range_on_conflict
-}
-
-"""
-Boolean expression to filter rows from the table "vulnerability.range". All fields are combined with a logical 'AND'.
-"""
-input vulnerability_range_bool_exp {
-  _and: [vulnerability_range_bool_exp!]
-  _not: vulnerability_range_bool_exp
-  _or: [vulnerability_range_bool_exp!]
-  affected: vulnerability_affected_bool_exp
-  affected_id: uuid_comparison_exp
-  fixed: String_comparison_exp
-  id: uuid_comparison_exp
-  introduced: String_comparison_exp
-}
-
-"""
-unique or primary key constraints on table "vulnerability.range"
-"""
-enum vulnerability_range_constraint {
-  """unique or primary key constraint"""
-  range_pkey
-
-  """unique or primary key constraint"""
-  range_uniq
-}
-
-"""
-input type for inserting data into table "vulnerability.range"
-"""
-input vulnerability_range_insert_input {
-  affected: vulnerability_affected_obj_rel_insert_input
-  affected_id: uuid
-  fixed: String
-  id: uuid
-  introduced: String
-}
-
-"""
-order by max() on columns of table "vulnerability.range"
-"""
-input vulnerability_range_max_order_by {
-  affected_id: order_by
-  fixed: order_by
-  id: order_by
-  introduced: order_by
-}
-
-"""
-order by min() on columns of table "vulnerability.range"
-"""
-input vulnerability_range_min_order_by {
-  affected_id: order_by
-  fixed: order_by
-  id: order_by
-  introduced: order_by
-}
-
-"""
-response of any mutation on the table "vulnerability.range"
-"""
-type vulnerability_range_mutation_response {
-  """number of rows affected by the mutation"""
-  affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [vulnerability_range!]!
-}
-
-"""
-on_conflict condition type for table "vulnerability.range"
-"""
-input vulnerability_range_on_conflict {
-  constraint: vulnerability_range_constraint!
-  update_columns: [vulnerability_range_update_column!]! = []
-  where: vulnerability_range_bool_exp
-}
-
-"""Ordering options when selecting data from "vulnerability.range"."""
-input vulnerability_range_order_by {
-  affected: vulnerability_affected_order_by
-  affected_id: order_by
-  fixed: order_by
-  id: order_by
-  introduced: order_by
-}
-
-"""primary key columns input for table: vulnerability_range"""
-input vulnerability_range_pk_columns_input {
-  id: uuid!
-}
-
-"""
-select columns of table "vulnerability.range"
-"""
-enum vulnerability_range_select_column {
-  """column name"""
-  affected_id
-
-  """column name"""
-  fixed
-
-  """column name"""
-  id
-
-  """column name"""
-  introduced
-}
-
-"""
-input type for updating data in table "vulnerability.range"
-"""
-input vulnerability_range_set_input {
-  affected_id: uuid
-  fixed: String
-  id: uuid
-  introduced: String
-}
-
-"""
-update columns of table "vulnerability.range"
-"""
-enum vulnerability_range_update_column {
-  """column name"""
-  affected_id
-
-  """column name"""
-  fixed
-
-  """column name"""
-  id
-
-  """column name"""
-  introduced
-}
-
-"""
 columns and relationships of "vulnerability.reference"
 """
 type vulnerability_reference {
@@ -13064,9 +12769,6 @@ enum vulnerability_select_column {
   published
 
   """column name"""
-  reviewed_by_source
-
-  """column name"""
   source
 
   """column name"""
@@ -13092,7 +12794,6 @@ input vulnerability_set_input {
   id: uuid
   modified: timestamptz
   published: timestamptz
-  reviewed_by_source: Boolean
   source: String
   source_id: String
   summary: String
@@ -13302,9 +13003,6 @@ enum vulnerability_update_column {
   published
 
   """column name"""
-  reviewed_by_source
-
-  """column name"""
   source
 
   """column name"""
@@ -13449,4 +13147,3 @@ enum webhook_cache_update_column {
   """column name"""
   sqs_message_id
 }
-

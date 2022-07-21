@@ -17,11 +17,11 @@ import { Helmet } from 'react-helmet-async';
 import { FiAlertOctagon, FiInfo, FiTag, FiTerminal } from 'react-icons/fi';
 import { NavLink } from 'react-router-dom';
 
+import { Markdown } from '../../components/Markdown';
 import { ConditionallyRender } from '../../components/utils/ConditionallyRender';
 import { LinkInNewTab } from '../../components/utils/LinkInNewTab';
 import { prettyDate } from '../../utils/pretty-date';
 
-import { GuideBody } from './GuideBody';
 import { GuideDetailsData } from './types';
 
 const packageFixedString = (fixed: boolean | undefined) => {
@@ -183,7 +183,7 @@ export const GuideDetails: React.FC<{ guide: GuideDetailsData }> = ({ guide }) =
             </Card>
           </Col>
         </Row>
-        <GuideBody markdown={guide.body}></GuideBody>
+        <Markdown markdown={guide.body} className="guide-body"></Markdown>
       </Container>
     </>
   );
