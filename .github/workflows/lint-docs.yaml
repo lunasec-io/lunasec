@@ -21,4 +21,4 @@ jobs:
         with:
           files: 'docs'
           fail_on_error: false
-          vale_flags: "--glob='*.{md,mdx}'"
+          vale_flags: "--glob='**.{md,mdx}'"
