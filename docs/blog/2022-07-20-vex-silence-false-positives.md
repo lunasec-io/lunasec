@@ -22,7 +22,7 @@ authors: [alex]
   ~
 -->
 
-## VEX: Permanently Silence False Positives with Vulnerability EXchange
+## What is VEX?
 
 As we highlighted in our post on False Positives in Vulnerability Scanning[^1], the output of vulnerability assessment tools like `npm audit` can be cumbersome because they lack context. VEX (Vulnerability EXchange) is a new standard developed by the NTIA to exchange information about which vulnerabilities are actually exploitable in a product.
 
