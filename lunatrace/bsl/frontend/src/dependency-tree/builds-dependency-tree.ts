@@ -47,19 +47,31 @@ import { RawDependencyRelationship } from './types';
 export interface BuildDependencyPartial {
   id: string;
   dependend_by_relationship_id: string;
-  // root_range: string | null;
-  // sub_dependency_relationships: Array<{
-  //   range: string;
-  //   to_dependency: string;
-  // }>;
+  range: string;
+  release_id: string;
+  release: {
+    version: string;
+  };
+  package: {
+    vulnerabilities: Array<Vulnerability>;
+  };
+}
+
+interface Vulnerability {
+  id: string;
+  ranges: Array<{
+    introduced: string;
+    fixed: string;
+  }>;
+  triviallyUpdatable?: boolean; // We add this by determining something can be updated to a non-vulnerable version without violating semver
 }
 
 // Recursive type to model the recursive tree we are building.  Simply adds the field "dependents" which points down to more nodes.
-type BuildDependencyTreeNode<D> = D & {
-  dependents: Array<BuildDependencyTreeNode<D>>;
+type TreeNode<D> = D & {
+  dependents: Array<TreeNode<D>>;
 };
 
-export type DependencyChain<D> = Array<BuildDependencyTreeNode<D>>;
+// export type DependencyChain<D> = Array<TreeNode<D>>;
 
 /**
  *  hasura and graphql doesn't allow us to fetch recursive stuff, so we build the tree ourselves on the client
@@ -69,20 +81,43 @@ export type DependencyChain<D> = Array<BuildDependencyTreeNode<D>>;
  * @public flatDeps The original set of dependencies that was passed in. Preserves types.
  */
 export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
-  public tree: Array<BuildDependencyTreeNode<BuildDependency>>;
+  public readonly tree: Array<TreeNode<BuildDependency>>;
+  public readonly flatVulns: Array<Vulnerability>;
+  constructor(public readonly flatDeps: Array<BuildDependency>) {
+    // Go and clean out all the vulnerabilities that don't apply to this version since the DB doesn't know how to do that yet
+    this.flatVulns = [];
+    flatDeps.forEach((dep) => {
+      dep.package.vulnerabilities = dep.package.vulnerabilities.filter((vuln) => {
+        const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
+        const isVulnerable = semver.satisfies(dep.release.version, vulnerableRange);
+        return isVulnerable;
+      });
+      // Mark the vulns that can be trivially updated
+      dep.package.vulnerabilities.forEach((vuln) => {
+        vuln.triviallyUpdatable = this.checkVulnTriviallyUpdatable(dep.range, vuln);
+        // Also add it ot the flat vuln list for easy access
+        this.flatVulns.push(vuln);
+      });
+    });
 
-  constructor(public flatDeps: BuildDependency[]) {
     // define an internal recursive function that builds each node
     // it's in the constructor because this has access to the class generic and the flatDeps
     // recursive stuff is always a little hairy but this is really quite dead simple
-    function recursivelyBuildNode(dep: BuildDependency): BuildDependencyTreeNode<BuildDependency> {
+    const cycleCheckIds: Array<string> = [];
+    function recursivelyBuildNode(dep: BuildDependency): TreeNode<BuildDependency> {
+      // Check for cycles, just in case
+      if (cycleCheckIds.includes(dep.id)) {
+        throw new Error('Dependency cycle detected!');
+      }
+      cycleCheckIds.push(dep.id);
       // Find every dep that points back at this dep
       const unbuiltDependents = flatDeps.filter(
         (potentialDependent) => potentialDependent.dependend_by_relationship_id === dep.id
       );
-      // For each dependent, populate its own dependents recursively
+      // For each dependent, add it to our list of dependents and populate its own dependents recursively
       const dependents = unbuiltDependents.map(recursivelyBuildNode);
-      return { ...dep, dependents };
+      const builtNode = Object.freeze({ ...dep, dependents });
+      return builtNode;
     }
     // start with the root dependencies
     const rootDeps = flatDeps.filter(function filterRoots(d) {
@@ -92,8 +127,68 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     this.tree = rootDeps.map((rootDep) => recursivelyBuildNode(rootDep));
   }
 
+  private checkVulnTriviallyUpdatable(requestedRange: string, vuln: Vulnerability): boolean {
+    const fixedVersions: string[] = [];
+    vuln.ranges.forEach((range) => {
+      if (range.fixed) {
+        fixedVersions.push(range.fixed);
+      }
+    });
+    return fixedVersions.some((fixVersion) => {
+      return semver.satisfies(requestedRange, fixVersion);
+    });
+  }
+
+  // only useful if you need the nodes in tree form.  Otherwise, use flatDeps
+  // todo: not currently used, delete if unused
+  public collectAllTreeNodes(): TreeNode<BuildDependency>[] {
+    const allDepNodes: TreeNode<BuildDependency>[] = [];
+    function recurseNode(dep: TreeNode<BuildDependency>) {
+      allDepNodes.push(dep);
+      dep.dependents.forEach(recurseNode);
+    }
+    this.tree.forEach(recurseNode);
+    return allDepNodes;
+  }
+
+  public convertRangesToSemverRange(ranges: Array<{ introduced: string; fixed: string }>): semver.Range {
+    const vulnerableRanges: string[] = [];
+    ranges.forEach((range) => {
+      if (range.introduced && range.fixed) {
+        vulnerableRanges.push(`>=${range.introduced} <${range.fixed}`);
+      } else if (range.introduced) {
+        vulnerableRanges.push(`>=${range.introduced}`);
+      }
+    });
+    const vulnerableRangesString = vulnerableRanges.join(' || '); // Just put them all in one big range and let semver figure it out
+    const semverRange = new semver.Range(vulnerableRangesString);
+    return semverRange;
+  }
+
+  // This will no longer be needed once the UI is only using this tree to show vulnerabilities
+  // for now, since grype is still in the loop, we need to cross reference information out of this tree using vuln ids
+  public checkIfVulnInstancesTriviallyUpdatable(vulnId: string): 'all' | 'partial' | 'none' | 'not-found' {
+    const vulns = this.flatVulns.filter((v) => v.id === vulnId);
+    if (vulns.length === 0) {
+      console.warn(
+        `failed to find a vuln with id ${vulnId} in the tree. 
+        It may be that the tree determined this vulnerability did not apply and it was removed. 
+         Grype must have thought differently`
+      );
+      return 'not-found';
+    }
+    const vulnsUpdatable = vulns.filter((vuln) => vuln.triviallyUpdatable);
+    if (vulnsUpdatable.length === vulns.length) {
+      return 'all';
+    }
+    if (vulnsUpdatable.length === 0) {
+      return 'none';
+    }
+    return 'partial';
+  }
+
   // Can show us why a dependency is installed
-  // TODO: commented o until we need it and schema is solidified
+  // TODO: commented out until we need it and schema is solidified
   // public showDependencyChainsOfPackage(
   //   depId: string,
   //   prependToExistingChain: string[] = []
@@ -117,72 +212,5 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
   //     findInstanceRecur(rootDep, []);
   //   });
   //   return chains;
-  // }
-
-  /**
-   * Finds a dependency out of the list of deps using its id
-   * @param depId
-   * @private
-   * @throws Error
-   */
-  private lookupDepById(depId: string) {
-    const dep = this.flatDeps.find((d) => d.id === depId);
-    if (!dep) {
-      throw new Error(
-        `Couldnt find dependency during lookup, make sure DependencyTree was constructed with this dep included: ${depId}`
-      );
-    }
-    return dep;
-  }
-
-  /**
-   * Gets all the ranges that a package was requested with
-   *   Note that this wont show ranges of different versions of the package in the tree, just ranges that resolved to the exact version/release.
-   *   ex: if you had react 4.1.1 and react 5.1.1 in your tree, this would output something like `['>4.0.0, '4.1.1'] and not '>5.0.0' because that's resolved as a different package in the package-lock
-   * @param depId
-   * @throws Error
-   */
-
-  // public getRangesRequestedOfPackage(depId: string): string[] {
-  //   const ranges: string[] = [];
-  //
-  //   // find the dep and see if it was required directly by the project
-  //   const dep = this.lookupDepById(depId);
-  //   if (dep.root_range) {
-  //     ranges.push(dep.root_range);
-  //   }
-  //
-  //   // go through all the deps and look for transitive dependencies on this dep
-  //   this.flatDeps.forEach((d) => {
-  //     // pick out what relationships in the tree point to this package
-  //     const relationship = d.sub_dependency_relationships.find((r) => r.to_dependency === depId);
-  //     if (relationship) {
-  //       ranges.push(relationship.range);
-  //     }
-  //   });
-  //   return ranges;
-  // }
-
-  /**
-   * See if we can update a package to a fixed version(s) without violating semver
-   * @param toVersions Since there might be multiple fix versions for a vulnerability, take a list of possible ones we could update to in `toVersions`
-   * @param depId
-   */
-  // public determinePackageTriviallyUpdatable(toVersions: string[], depId: string): boolean {
-  //   return toVersions.some((toVersion) => {
-  //     // I think coercing like this is a good idea because it will make things like `1.2.3-hotfix` appear valid against the ranges, and a lot of patches might be like that
-  //     // Maybe it will do that automatically, need to test. Awful docs for this library.
-  //     const coercedVersion = semver.coerce(toVersion);
-  //     if (!semver.valid(coercedVersion) || !coercedVersion) {
-  //       throw new Error(
-  //         'Invalid version specified when checking if updatable, probably bad OSV data from the vulnerability data source fixes field'
-  //       );
-  //     }
-  //
-  //     const ranges = this.getRangesRequestedOfPackage(depId);
-  //     return ranges.every((range) => {
-  //       semver.satisfies(coercedVersion, range);
-  //     });
-  //   });
   // }
 }

@@ -51,8 +51,8 @@ func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]s
 	}
 	for _, pkg := range checkRes.Package {
 		fmt.Println(pkg)
-		if pkg.Fetched_time != nil &&
-			pkg.Fetched_time.After(time.Now().AddDate(0, 0, -refetchDays)) {
+		if pkg.Last_successful_fetch != nil &&
+			pkg.Last_successful_fetch.After(time.Now().AddDate(0, 0, -refetchDays)) {
 			// bail out early
 			fmt.Println("bail out because we already have package")
 			return nil, nil
@@ -79,8 +79,8 @@ func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]s
 	for _, rel := range res.Insert_package_one.Releases {
 		for _, dep := range rel.Release_dependencies {
 			if dep.Dependency_package == nil ||
-				dep.Dependency_package.Fetched_time == nil ||
-				dep.Dependency_package.Fetched_time.Before(time.Now().AddDate(0, 0, -refetchDays)) {
+				dep.Dependency_package.Last_successful_fetch == nil ||
+				dep.Dependency_package.Last_successful_fetch.Before(time.Now().AddDate(0, 0, -refetchDays)) {
 				needToCheck[dep.Dependency_package.Name] = struct{}{}
 			}
 		}

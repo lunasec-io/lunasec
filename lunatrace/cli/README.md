@@ -21,6 +21,12 @@ vulnerabilities and then identify what running servers contain a vulnerable appl
 ### Log4Shell
 The Log4Shell CLI can be found [here](cmd/log4shell/README.md).
 
+### Generating graphql types/client
+```shell 
+yarn run gq http://localhost:8080/v1/graphql -H "X-Hasura-Admin-Secret: myadminsecretkey" -H "X-Hasura-Role: service" --introspect > ../schema.graphql
+
+
+```
 
 ### LunaTrace
 This cli command can be placed in your CI to collect application SBOMs.
@@ -40,3 +46,4 @@ make lunatrace-agent
 ```shell
 goreleaser release --rm-dist
 ```
+

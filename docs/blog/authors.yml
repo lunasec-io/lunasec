@@ -5,7 +5,7 @@ free:
   image_url: https://github.com/freeqaz.png
 chris:
   name: Chris Thompson
-  title: Developer at Lunasec
+  title: Developer at LunaSec
   url: https://github.com/breadchris
   image_url: https://github.com/breadchris.png
 forrest:
@@ -15,10 +15,11 @@ forrest:
   image_url: https://github.com/factoidforrest.png
 gabe:
   name: Gabe Martino
-  title: Developer at Lunasec
+  title: Developer at LunaSec
   url: https://github.com/g00b
   image_url: https://github.com/g00b.png
 alex:
   name: Alex Vanderpot
-  title: Developer at Lunasec
+  title: Security Engineer at LunaSec
   url: https://github.com/ajvpot
+  image_url: https://github.com/ajvpot.png

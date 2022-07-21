@@ -25,10 +25,10 @@ var npmV types.PackageManager = types.NPM
 // Map converts a fetcher.PackageMetadata into the struct required by GraphQL codegen.
 func Map(p *metadata.PackageMetadata) (*gql.Package_insert_input, error) {
 	r := &gql.Package_insert_input{
-		Custom_registry: util.Ptr(""),
-		Description:     util.Ptr(p.Description),
-		Name:            util.Ptr(p.Name),
-		Fetched_time:    util.Ptr(time.Now()),
+		Custom_registry:       util.Ptr(""),
+		Description:           util.Ptr(p.Description),
+		Name:                  util.Ptr(p.Name),
+		Last_successful_fetch: util.Ptr(time.Now()),
 		Package_maintainers: &gql.Package_package_maintainer_arr_rel_insert_input{
 			Data:        mapMaintainers(p.Maintainers),
 			On_conflict: gql.PackageMaintainerOnConflict,
