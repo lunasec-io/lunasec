@@ -20,6 +20,5 @@ jobs:
           # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
-          files: 'docs/blog'
+          files: "['docs/blog', 'docs/pages']"
           fail_on_error: false
-          vale_flags: 'docs/pages'
