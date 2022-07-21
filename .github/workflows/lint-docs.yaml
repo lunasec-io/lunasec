@@ -20,3 +20,4 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
           files: 'docs/'
+          fail_on_error: false
