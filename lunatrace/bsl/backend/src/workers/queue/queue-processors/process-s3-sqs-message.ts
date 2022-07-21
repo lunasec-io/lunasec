@@ -42,8 +42,16 @@ export async function processS3SqsMessage(
       region: record.awsRegion,
     };
 
+    const buildId = s3Record.key.split('/').pop();
+
     if (s3Record.bucketName === bucketConfig.sbomBucket) {
-      return log.provideFields({ source: 'process-sbom-message' }, () => scanSnapshotActivity(s3Record));
+      if (!buildId) {
+        return newError('unable to get buildId from s3 key when processing ');
+      }
+
+      return log.provideFields({ source: 'process-sbom-message', buildId }, () =>
+        scanSnapshotActivity(buildId, s3Record)
+      );
     } else if (s3Record.bucketName === bucketConfig.manifestBucket) {
       return log.provideFields({ source: 'process-manifest-message' }, () => snapshotManifestActivity(s3Record));
     } else {
