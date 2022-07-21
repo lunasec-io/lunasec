@@ -82,11 +82,12 @@ async function buildGuideVulnerabilities(
   cves: Guide['metadata']['cves']
 ): Promise<Guides_Insert_Input['guide_vulnerabilities'] | false> {
   const vulnQuery = await hasura.GetVulnerabilitiesByCve({ cves });
-  const vulns = vulnQuery.vulnerabilities;
+  const vulns = vulnQuery.vulnerability;
   if (!vulns) {
     log.error({ vulnQuery }, 'Error fetching vulnerability IDs');
     return false;
   }
+  log.info('fetched vulnerabilities from hasura', { vulns });
   return {
     on_conflict: {
       constraint: Guide_Vulnerabilities_Constraint.GuideVulnerabilitiesUnique,
