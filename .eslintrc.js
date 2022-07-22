@@ -66,7 +66,8 @@ module.exports = {
       'lunatrace/bsl/backend/tsconfig.json',
       'lunatrace/dev-cli/tsconfig.json',
       'lunatrace/bsl/common/tsconfig.json',
-      'lunatrace/bsl/logger/tsconfig.json'
+      'lunatrace/bsl/logger/tsconfig.json',
+      'docs/tsconfig.json'
     ]
   },
   plugins: [
