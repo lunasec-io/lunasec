@@ -100,7 +100,7 @@ func main() {
 			{
 				Name:        "snapshot",
 				Usage:       "Create a snapshot of an asset for a project.",
-				Flags:       constants.InventoryCliFlags,
+				Flags:       constants.SnapshotCliFlags,
 				Subcommands: assetSnapshotCmds,
 			},
 			{

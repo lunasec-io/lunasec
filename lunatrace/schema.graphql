@@ -6,11 +6,11 @@ schema {
 
 """whether this query should be cached (Hasura Cloud only)"""
 directive @cached(
-  """measured in seconds"""
-  ttl: Int! = 60
-
   """refresh the cache entry"""
   refresh: Boolean! = false
+
+  """measured in seconds"""
+  ttl: Int! = 60
 ) on QUERY
 
 type AuthenticatedRepoCloneUrlOutput {
@@ -199,6 +199,7 @@ type build_dependency_relationship {
     """JSON select path"""
     path: String
   ): jsonb!
+  project_path: String!
   range: String!
 
   """An object relationship"""
@@ -243,6 +244,7 @@ input build_dependency_relationship_bool_exp {
   depended_by_relationship_id: uuid_comparison_exp
   id: uuid_comparison_exp
   labels: jsonb_comparison_exp
+  project_path: String_comparison_exp
   range: String_comparison_exp
   release: package_release_bool_exp
   release_id: uuid_comparison_exp
@@ -287,6 +289,7 @@ input build_dependency_relationship_insert_input {
   depended_by_relationship_id: uuid
   id: uuid
   labels: jsonb
+  project_path: String
   range: String
   release: package_release_obj_rel_insert_input
   release_id: uuid
@@ -299,6 +302,7 @@ input build_dependency_relationship_max_order_by {
   build_id: order_by
   depended_by_relationship_id: order_by
   id: order_by
+  project_path: order_by
   range: order_by
   release_id: order_by
 }
@@ -310,6 +314,7 @@ input build_dependency_relationship_min_order_by {
   build_id: order_by
   depended_by_relationship_id: order_by
   id: order_by
+  project_path: order_by
   range: order_by
   release_id: order_by
 }
@@ -354,6 +359,7 @@ input build_dependency_relationship_order_by {
   depended_by_relationship_id: order_by
   id: order_by
   labels: order_by
+  project_path: order_by
   range: order_by
   release: package_release_order_by
   release_id: order_by
@@ -386,6 +392,9 @@ enum build_dependency_relationship_select_column {
   labels
 
   """column name"""
+  project_path
+
+  """column name"""
   range
 
   """column name"""
@@ -400,6 +409,7 @@ input build_dependency_relationship_set_input {
   depended_by_relationship_id: uuid
   id: uuid
   labels: jsonb
+  project_path: String
   range: String
   release_id: uuid
 }
@@ -419,6 +429,9 @@ enum build_dependency_relationship_update_column {
 
   """column name"""
   labels
+
+  """column name"""
+  project_path
 
   """column name"""
   range
@@ -13449,4 +13462,3 @@ enum webhook_cache_update_column {
   """column name"""
   sqs_message_id
 }
-

@@ -58,6 +58,14 @@ async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Pr
     sbomBucketInfo.region
   );
 
+  if (sbomLength === 0) {
+    log.error('sbom is empty', {
+      buildId,
+      sbomBucketInfo,
+    });
+    throw new Error('sbom is empty');
+  }
+
   const unZippedSbomStream = await decompressGzip(sbomStream, sbomLength);
 
   log.info(`updating manifest status to "scanning" if it existed`);
@@ -90,7 +98,7 @@ export async function scanSnapshotActivity(buildId: string, msg: S3ObjectMetadat
 
     const scanResp = await catchError(scanSnapshot(buildId, bucketInfo));
     if (threwError(scanResp)) {
-      log.error('Sbom Scanning Error:', { scanResp });
+      log.error('scan snapshot failed', { scanResp });
       await hasura.UpdateManifestStatusIfExists({
         status: 'error',
         message: String(scanResp.message),
