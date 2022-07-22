@@ -186,6 +186,7 @@ func RepositoryCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err err
 
 	log.Info().
 		Str("url", parsedRepo.String()).
+		Str("repoDir", repoDir).
 		Msg("cloning repository")
 
 	progressBuffer := bytes.NewBufferString("")

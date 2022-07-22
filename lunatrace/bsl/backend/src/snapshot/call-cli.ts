@@ -86,7 +86,7 @@ export function generateSbomFromAsset(
 
   lunatraceCli.stderr.on('data', (data) => {
     logger.info(`lunatrace cli stderr`, {
-      data,
+      data: data.toString(),
     });
   });
 

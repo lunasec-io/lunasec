@@ -36,6 +36,7 @@ const appPrefix = 'lunatrace';
 
 async function performSnapshotOnRepository(
   logger: LunaLogger,
+  installationId: string,
   buildId: string,
   cloneUrl: string,
   gitBranch: string,
@@ -52,8 +53,26 @@ async function performSnapshotOnRepository(
       return newError('unable to generate sbom for asset');
     }
 
-    await snapshotPinnedDependencies(buildId, repoDir);
-    return newResult(sbom);
+    logger.info('uploading snapshot results to s3', {
+      installationId,
+      buildId,
+    });
+
+    const s3UploadRes = await catchError(uploadSbomToS3(installationId, buildId, sbom));
+    if (threwError(s3UploadRes)) {
+      logger.error('unable to upload sbom to s3', {
+        buildId,
+        message: s3UploadRes.message,
+      });
+      return newError(s3UploadRes.message);
+    }
+
+    logger.info('snapshotting pinned dependencies', {
+      buildId,
+      repoDir,
+    });
+
+    return await snapshotPinnedDependencies(buildId, repoDir);
   } catch (e) {
     logger.error('error occurred while snapshotting an asset', {
       tmpDir: repoDir,
@@ -157,32 +176,13 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
     return buildId;
   }
 
-  logger.info('generating SBOM for repository');
-  const snapshotResult = await performSnapshotOnRepository(
+  logger.info('creating snapshot for repository');
+  return await performSnapshotOnRepository(
     logger,
+    req.installationId.toString(),
     buildId.res,
     repoClone.cloneUrl,
     req.gitBranch,
     req.gitCommit
   );
-  if (snapshotResult.error) {
-    return snapshotResult;
-  }
-  const gzippedSbom = snapshotResult.res;
-
-  logger.info('uploading snapshot results to s3', {
-    installationId: req.installationId.toString(),
-    buildId,
-  });
-
-  const s3UploadRes = await catchError(uploadSbomToS3(req.installationId.toString(), buildId.res, gzippedSbom));
-  if (threwError(s3UploadRes)) {
-    logger.error('unable to upload sbom to s3', {
-      buildId,
-      message: s3UploadRes.message,
-    });
-    return newError(s3UploadRes.message);
-  }
-
-  return newResult(undefined);
 }
