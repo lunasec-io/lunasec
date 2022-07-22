@@ -44,9 +44,7 @@ export async function performSnapshotScanAndCollectReport(
     throw new Error(`grype report was not able to be parsed`);
   }
 
-  logger.info('parsing scan results into report', {
-    typedRawGrypeReport,
-  });
+  logger.info('parsing scan results into report');
   const scan = mapGrypeScanToGraphql(typedRawGrypeReport, buildId);
 
   logger.info('inserting scan results in hasura', {

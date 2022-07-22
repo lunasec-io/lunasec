@@ -27,11 +27,8 @@ export async function findFilesMatchingFilter(rootDir: string, filter: FilterFun
   const matchingFilePaths = new Array<string>();
 
   async function recurseFolders(directoryName: string) {
-    console.error('walking folder ', directoryName);
     const contents = await readDir(directoryName, { withFileTypes: true });
-    console.log('contents are ', contents);
     for (const entry of contents) {
-      console.log('inspecting entry ', entry.name);
       const entryPath = path.join(directoryName, entry.name);
 
       if (entry.isFile() && filter(directoryName, entry.name)) {

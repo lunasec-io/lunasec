@@ -27,20 +27,30 @@ import {
   Package_Release_Update_Column,
   Package_Update_Column,
 } from '../hasura-api/generated';
+import { newError, newResult } from '../utils/errors';
 import { findFilesMatchingFilter } from '../utils/filesystem-utils';
 import { log } from '../utils/log';
 import { notEmpty } from '../utils/predicates';
+import { catchError, threwError } from '../utils/try';
 
-export async function collectPackageTreesFromDirectory(repoDir: string) {
+interface CollectedPackageTree {
+  lockFile: string;
+  pkgTree: PkgTree;
+}
+
+export async function collectPackageTreesFromDirectory(repoDir: string): Promise<CollectedPackageTree[]> {
   const lockFilePaths = await findFilesMatchingFilter(repoDir, (_directory, entryName) => {
     return /package-lock\.json|yarn\.lock/.test(entryName);
   });
 
-  console.log('matched lockfile folders', lockFilePaths);
   return Promise.all(
-    lockFilePaths.map((filePath) => {
-      const { dir, base } = path.parse(filePath);
-      return buildDepTreeFromFiles(dir, 'package.json', base, true);
+    lockFilePaths.map(async (lockFile) => {
+      const { dir, base } = path.parse(lockFile);
+      const pkgTree = await buildDepTreeFromFiles(dir, 'package.json', base, true);
+      return {
+        lockFile,
+        pkgTree,
+      };
     })
   );
 }
@@ -77,9 +87,9 @@ function flattenPkgTree(pkgTree: PkgTree) {
 
 function mapPackageTreeToBuildDependencyRelationships(
   buildId: string,
-  pkgTree: PkgTree
+  collectedPackageTree: CollectedPackageTree
 ): Build_Dependency_Relationship_Insert_Input[] {
-  const flattenedDependencies = flattenPkgTree(pkgTree);
+  const flattenedDependencies = flattenPkgTree(collectedPackageTree.pkgTree);
   return flattenedDependencies
     .map((entry): Build_Dependency_Relationship_Insert_Input | null => {
       const { id, dependency, parentId } = entry;
@@ -99,6 +109,7 @@ function mapPackageTreeToBuildDependencyRelationships(
         id,
         build_id: buildId,
         depended_by_relationship_id: parentId,
+        project_path: collectedPackageTree.lockFile,
         release: {
           data: {
             version: dependency.version,
@@ -142,6 +153,7 @@ export async function snapshotPinnedDependencies(buildId: string, repoDir: strin
     count: buildDependencyRelationships.length,
   });
 
+  // TODO (cthompson) chunks are used to prevent a large insert. A single SQL insert would be more performant/reliable.
   const chunkSize = 5000;
   for (let i = 0; i < buildDependencyRelationships.length; i += 1) {
     if (i % chunkSize !== 0) {
@@ -153,15 +165,27 @@ export async function snapshotPinnedDependencies(buildId: string, repoDir: strin
       chunkSize: chunk.length,
     });
 
-    const resp = await hasura.InsertBuildDependencyRelationships({
-      objects: chunk,
-      on_conflict: {
-        constraint: Build_Dependency_Relationship_Constraint.BuildDependencyRelationshipPkey,
-        update_columns: [Build_Dependency_Relationship_Update_Column.Id],
-      },
-    });
+    const resp = await catchError(
+      hasura.InsertBuildDependencyRelationships({
+        objects: chunk,
+        on_conflict: {
+          constraint: Build_Dependency_Relationship_Constraint.BuildDependencyRelationshipPkey,
+          update_columns: [Build_Dependency_Relationship_Update_Column.Id],
+        },
+      })
+    );
+    if (threwError(resp)) {
+      log.error('failed to insert build dependency relationships', {
+        idx: i,
+        chunkSize,
+      });
+      return newError(resp.message);
+    }
     log.info('inserted build dependency relationships', {
       resp,
+      idx: i,
+      chunkSize,
     });
   }
+  return newResult(undefined);
 }
