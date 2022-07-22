@@ -9,21 +9,21 @@ export default function ContactForm({hideLabel, hideNotes}) {
                 action='https://lunasec.us20.list-manage.com/subscribe/post?u=6e2679c8b83c1b6f20ec7a702&amp;id=92f2f231ea'
                 fields={[
                     {
-                        name: 'NAME',
-                        placeholder: 'Name',
-                        type: 'text',
-                        required: true
-                    },
-                    {
                         name: 'EMAIL',
                         placeholder: 'Email',
                         type: 'email',
                         required: true
                     },
+                    {
+                        name: 'NAME',
+                        placeholder: 'Name (optional)',
+                        type: 'text',
+                        required: false
+                    },
                     !hideNotes ?
                         {
                             name: 'NOTES',
-                            placeholder: 'Notes',
+                            placeholder: 'Notes (optional)',
                             type: 'text',
                             required: false
                         } : null,
