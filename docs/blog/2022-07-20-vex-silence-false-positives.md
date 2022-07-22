@@ -93,22 +93,22 @@ LunaTrace is building a global database and tooling to automatically generate VE
 ## Notes
 
 [^1]:
-[False Positives in Vulnerability Scanning: Why We Think We Can Do Better | LunaSec](https://www.lunasec.io/docs/blog/the-issue-with-vuln-scanners/)
+[https://www.lunasec.io/docs/blog/the-issue-with-vuln-scanners/](https://www.lunasec.io/docs/blog/the-issue-with-vuln-scanners/)
 
 [^2]:
-[npm audit: Broken by Design](https://overreacted.io/npm-audit-broken-by-design/) - Dan Abramov
+[https://overreacted.io/npm-audit-broken-by-design/](https://overreacted.io/npm-audit-broken-by-design/)
 
 [^3]:
-[Don't be alarmed by vulnerabilities after running NPM Install](https://www.voitanos.io/blog/don-t-be-alarmed-by-vulnerabilities-after-running-npm-install/) - voitanos.io
+[https://www.voitanos.io/blog/don-t-be-alarmed-by-vulnerabilities-after-running-npm-install/](https://www.voitanos.io/blog/don-t-be-alarmed-by-vulnerabilities-after-running-npm-install/)
 
 [^4]:
-[Vulnerability Exploitability eXchange (VEX) – Use Cases](https://www.cisa.gov/sites/default/files/publications/VEX_Use_Cases_April2022.pdf) - cisa.gov
+[https://www.cisa.gov/sites/default/files/publications/VEX_Use_Cases_April2022.pdf](https://www.cisa.gov/sites/default/files/publications/VEX_Use_Cases_April2022.pdf)
 
 [^5]:
-[Alarm fatigue - Wikipedia](https://en.wikipedia.org/wiki/Alarm_fatigue)
+[https://en.wikipedia.org/wiki/Alarm_fatigue](https://en.wikipedia.org/wiki/Alarm_fatigue)
 
 [^6]:
-[CycloneDX v1.4 Protobuf Spec L529-L650](https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto#L592-L650)
+[https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto#L592-L650](https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto#L592-L650)
 
 [^7]:
-[Common Security Advisory Framework Version 2.0](https://docs.oasis-open.org/csaf/csaf/v2.0/csd01/csaf-v2.0-csd01.html#45-profile-5-vex)
+[https://docs.oasis-open.org/csaf/csaf/v2.0/csd01/csaf-v2.0-csd01.html#45-profile-5-vex](https://docs.oasis-open.org/csaf/csaf/v2.0/csd01/csaf-v2.0-csd01.html#45-profile-5-vex)

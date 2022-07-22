@@ -1,7 +1,7 @@
 import React from 'react';
 import Mailchimp from 'react-mailchimp-form'
 
-export default function MyComponent() {
+export default function ContactForm() {
     return (
         <div className='contact-form-wrapper'>
             <label className='contact-form-label'>Subscribe for updates</label>
@@ -26,7 +26,7 @@ export default function MyComponent() {
                         type: 'text',
                         required: false
                     }
-                ]}
+                ].filter(n => n)}
                 messages ={
                     {
                         sending: "Sending...",
