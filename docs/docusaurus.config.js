@@ -157,9 +157,9 @@ module.exports = {
       //... other Algolia params
     },
     announcementBar: {
-      id: 'star_us',
+      id: 'mailing_list',
       content:
-        '<a href="/docs/pages/mailing-list" style="font-size: 15px; text-decoration: none">Sign up for our mailing list to get the latest security news and product updates.</a>',
+        '<a href="/docs/pages/mailing-list" style="font-size: 15px; text-decoration: none">Subscribe to our mailing list to get the latest security news and product updates.</a>',
       backgroundColor: '#9ec6ef',
       textColor: '#091E42',
       isCloseable: true,
