@@ -56,6 +56,9 @@ export async function createBuildAndGenerateSbom(
   const gzippedSbom = generateSbomFromAsset('file', assetName, 'master', undefined, {
     inputStream: fileStream,
   });
+  if (gzippedSbom === null) {
+    throw new Error('unable to generate sbom for asset');
+  }
 
   await uploadSbomToS3(orgId, buildId, gzippedSbom);
   return buildId;

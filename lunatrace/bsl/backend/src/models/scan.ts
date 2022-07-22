@@ -32,20 +32,22 @@ export async function performSnapshotScanAndCollectReport(
   sbomStream: Readable,
   buildId: string
 ): Promise<InsertedScan> {
-  const rawGrypeReport = await runLunaTraceScan(sbomStream);
-  log.info('finished running lunatrace scan on sbom', {
+  const logger = log.child('perform-snapshot-and-collect-report', {
     buildId,
   });
+
+  const rawGrypeReport = await runLunaTraceScan(sbomStream);
+  logger.info('finished running lunatrace scan on sbom');
 
   const typedRawGrypeReport = parseJsonToGrypeScanReport(rawGrypeReport);
-  log.info('parsing scan results into report', {
-    buildId,
-    typedRawGrypeReport,
-  });
+  if (typedRawGrypeReport === null) {
+    throw new Error(`grype report was not able to be parsed`);
+  }
+
+  logger.info('parsing scan results into report');
   const scan = mapGrypeScanToGraphql(typedRawGrypeReport, buildId);
 
-  log.info('inserting scan results in hasura', {
-    buildId,
+  logger.info('inserting scan results in hasura', {
     findingsCount: scan.findings ? scan.findings.data.length : 0,
   });
   const insertRes = await hasura.InsertScan({
@@ -53,7 +55,7 @@ export async function performSnapshotScanAndCollectReport(
     build_id: buildId,
   });
   if (!insertRes.insert_scans_one) {
-    log.error('failed to insert scan into hasura', {
+    logger.error('failed to insert scan into hasura', {
       insertRes,
     });
     throw new Error('Failed to insert scan into hasura');
@@ -71,8 +73,8 @@ export async function runLunaTraceScan(sbomStream: Readable): Promise<string> {
       outputBuffers.push(Buffer.from(chunk));
     });
     lunatraceCli.stderr.on('data', (errorChunk) => {
-      log.info('lunatrace cli stderr', {
-        log: errorChunk.toString(),
+      log.warn('lunatrace cli stderr', {
+        output: errorChunk.toString(),
       });
     });
     lunatraceCli.on('close', (code) => {
@@ -119,12 +121,16 @@ const mapGrypeMatchToGraphqlFinding =
     const { vulnerability, artifact } = match;
     const details = match.matchDetails[0];
 
-    log.info('match details', {
-      vuln_id: vulnerability.id,
-      vuln_namespace: vulnerability.namespace,
-      artifact_name: match.artifact.name,
-    });
+    // log.debug('match details', {
+    //   vuln_id: vulnerability.id,
+    //   vuln_namespace: vulnerability.namespace,
+    //   artifact_name: match.artifact.name,
+    // });
 
+    // TODO (cthompson) we no longer need to use a slug here to dedup findings, we can create a unique
+    // constraint on (vulnerability_id, package_id, locations)
+    // To achieve this, we need to insert the package_id instead of just the package_name. Also,
+    // is it possible to make a unique constraint with an array?
     const vuln_slug = vulnerability.id + ':' + vulnerability.namespace;
     const pkg_slug = vuln_slug + ':' + match.artifact.name;
 
@@ -153,6 +159,17 @@ const mapGrypeMatchToGraphqlFinding =
 
 function mapGrypeMatchesToGraphqlFindings(buildId: string, matches: Match[]): Findings_Arr_Rel_Insert_Input {
   const parseMatchTo = mapGrypeMatchToGraphqlFinding(buildId);
+  const formattedMatches = matches.map(parseMatchTo).filter((e) => e !== null) as Findings_Insert_Input[];
+  const dedupedMatchLookup = formattedMatches.reduce((dedupedMatches, match) => {
+    if (!match.dedupe_slug || dedupedMatches[match.dedupe_slug] !== undefined) {
+      return dedupedMatches;
+    }
+    return {
+      ...dedupedMatches,
+      [match.dedupe_slug]: match,
+    };
+  }, {} as Record<string, Findings_Insert_Input>);
+
   return {
     on_conflict: {
       constraint: Findings_Constraint.FindingsDedupeSlugBuildIdKey,
@@ -164,6 +181,6 @@ function mapGrypeMatchesToGraphqlFindings(buildId: string, matches: Match[]): Fi
         Findings_Update_Column.Severity,
       ],
     },
-    data: matches.map(parseMatchTo).filter((e) => e !== null) as Findings_Insert_Input[],
+    data: Object.values(dedupedMatchLookup),
   };
 }

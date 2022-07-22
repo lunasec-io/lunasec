@@ -15,7 +15,6 @@
 package scan
 
 import (
-	"errors"
 	"fmt"
 	"github.com/Khan/genqlient/graphql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/grypefx/store/gqlstorefx"
@@ -179,10 +178,6 @@ func GetVulnerabilityStore(appConfig types.LunaTraceConfig) (v3.StoreReader, err
 	//	return nil, err
 	//}
 	//log.Debug().Msg("finished loading grype store")
-
-	if appConfig.GraphqlServer.Secret == "" {
-		return nil, errors.New("graphql server secret is not defined")
-	}
 
 	log.Debug().Msg("loading gql store")
 	gqlStore, err := gqlstorefx.NewGraphQLStore(gqlstorefx.StoreDeps{

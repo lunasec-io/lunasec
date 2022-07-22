@@ -168,10 +168,221 @@ export type Bigint_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['bigint']>>;
 };
 
+/** columns and relationships of "build_dependency_relationship" */
+export type Build_Dependency_Relationship = {
+  __typename?: 'build_dependency_relationship';
+  /** An object relationship */
+  build: Builds;
+  build_id: Scalars['uuid'];
+  /** An object relationship */
+  depended_by_relationship?: Maybe<Build_Dependency_Relationship>;
+  depended_by_relationship_id?: Maybe<Scalars['uuid']>;
+  id: Scalars['uuid'];
+  labels: Scalars['jsonb'];
+  project_path: Scalars['String'];
+  range: Scalars['String'];
+  /** An object relationship */
+  release: Package_Release;
+  release_id: Scalars['uuid'];
+};
+
+
+/** columns and relationships of "build_dependency_relationship" */
+export type Build_Dependency_RelationshipLabelsArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** order by aggregate values of table "build_dependency_relationship" */
+export type Build_Dependency_Relationship_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Build_Dependency_Relationship_Max_Order_By>;
+  min?: InputMaybe<Build_Dependency_Relationship_Min_Order_By>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Build_Dependency_Relationship_Append_Input = {
+  labels?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** input type for inserting array relation for remote table "build_dependency_relationship" */
+export type Build_Dependency_Relationship_Arr_Rel_Insert_Input = {
+  data: Array<Build_Dependency_Relationship_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Build_Dependency_Relationship_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "build_dependency_relationship". All fields are combined with a logical 'AND'. */
+export type Build_Dependency_Relationship_Bool_Exp = {
+  _and?: InputMaybe<Array<Build_Dependency_Relationship_Bool_Exp>>;
+  _not?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+  _or?: InputMaybe<Array<Build_Dependency_Relationship_Bool_Exp>>;
+  build?: InputMaybe<Builds_Bool_Exp>;
+  build_id?: InputMaybe<Uuid_Comparison_Exp>;
+  depended_by_relationship?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+  depended_by_relationship_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  labels?: InputMaybe<Jsonb_Comparison_Exp>;
+  project_path?: InputMaybe<String_Comparison_Exp>;
+  range?: InputMaybe<String_Comparison_Exp>;
+  release?: InputMaybe<Package_Release_Bool_Exp>;
+  release_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "build_dependency_relationship" */
+export enum Build_Dependency_Relationship_Constraint {
+  /** unique or primary key constraint */
+  BuildDependencyRelationshipPkey = 'build_dependency_relationship_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Build_Dependency_Relationship_Delete_At_Path_Input = {
+  labels?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Build_Dependency_Relationship_Delete_Elem_Input = {
+  labels?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Build_Dependency_Relationship_Delete_Key_Input = {
+  labels?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "build_dependency_relationship" */
+export type Build_Dependency_Relationship_Insert_Input = {
+  build?: InputMaybe<Builds_Obj_Rel_Insert_Input>;
+  build_id?: InputMaybe<Scalars['uuid']>;
+  depended_by_relationship?: InputMaybe<Build_Dependency_Relationship_Obj_Rel_Insert_Input>;
+  depended_by_relationship_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  labels?: InputMaybe<Scalars['jsonb']>;
+  project_path?: InputMaybe<Scalars['String']>;
+  range?: InputMaybe<Scalars['String']>;
+  release?: InputMaybe<Package_Release_Obj_Rel_Insert_Input>;
+  release_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** order by max() on columns of table "build_dependency_relationship" */
+export type Build_Dependency_Relationship_Max_Order_By = {
+  build_id?: InputMaybe<Order_By>;
+  depended_by_relationship_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project_path?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+  release_id?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "build_dependency_relationship" */
+export type Build_Dependency_Relationship_Min_Order_By = {
+  build_id?: InputMaybe<Order_By>;
+  depended_by_relationship_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project_path?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+  release_id?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "build_dependency_relationship" */
+export type Build_Dependency_Relationship_Mutation_Response = {
+  __typename?: 'build_dependency_relationship_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Build_Dependency_Relationship>;
+};
+
+/** input type for inserting object relation for remote table "build_dependency_relationship" */
+export type Build_Dependency_Relationship_Obj_Rel_Insert_Input = {
+  data: Build_Dependency_Relationship_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Build_Dependency_Relationship_On_Conflict>;
+};
+
+/** on_conflict condition type for table "build_dependency_relationship" */
+export type Build_Dependency_Relationship_On_Conflict = {
+  constraint: Build_Dependency_Relationship_Constraint;
+  update_columns?: Array<Build_Dependency_Relationship_Update_Column>;
+  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "build_dependency_relationship". */
+export type Build_Dependency_Relationship_Order_By = {
+  build?: InputMaybe<Builds_Order_By>;
+  build_id?: InputMaybe<Order_By>;
+  depended_by_relationship?: InputMaybe<Build_Dependency_Relationship_Order_By>;
+  depended_by_relationship_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  labels?: InputMaybe<Order_By>;
+  project_path?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+  release?: InputMaybe<Package_Release_Order_By>;
+  release_id?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: build_dependency_relationship */
+export type Build_Dependency_Relationship_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Build_Dependency_Relationship_Prepend_Input = {
+  labels?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "build_dependency_relationship" */
+export enum Build_Dependency_Relationship_Select_Column {
+  /** column name */
+  BuildId = 'build_id',
+  /** column name */
+  DependedByRelationshipId = 'depended_by_relationship_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Labels = 'labels',
+  /** column name */
+  ProjectPath = 'project_path',
+  /** column name */
+  Range = 'range',
+  /** column name */
+  ReleaseId = 'release_id'
+}
+
+/** input type for updating data in table "build_dependency_relationship" */
+export type Build_Dependency_Relationship_Set_Input = {
+  build_id?: InputMaybe<Scalars['uuid']>;
+  depended_by_relationship_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  labels?: InputMaybe<Scalars['jsonb']>;
+  project_path?: InputMaybe<Scalars['String']>;
+  range?: InputMaybe<Scalars['String']>;
+  release_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** update columns of table "build_dependency_relationship" */
+export enum Build_Dependency_Relationship_Update_Column {
+  /** column name */
+  BuildId = 'build_id',
+  /** column name */
+  DependedByRelationshipId = 'depended_by_relationship_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Labels = 'labels',
+  /** column name */
+  ProjectPath = 'project_path',
+  /** column name */
+  Range = 'range',
+  /** column name */
+  ReleaseId = 'release_id'
+}
+
 /** columns and relationships of "builds" */
 export type Builds = {
   __typename?: 'builds';
   agent_access_token: Scalars['uuid'];
+  /** An array relationship */
+  build_dependency_relationships: Array<Build_Dependency_Relationship>;
   build_number?: Maybe<Scalars['Int']>;
   created_at: Scalars['timestamp'];
   existing_github_check_id?: Maybe<Scalars['bigint']>;
@@ -193,6 +404,16 @@ export type Builds = {
   /** An array relationship */
   scans: Array<Scans>;
   source_type: Scalars['builds_source_type'];
+};
+
+
+/** columns and relationships of "builds" */
+export type BuildsBuild_Dependency_RelationshipsArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
 };
 
 
@@ -296,6 +517,7 @@ export type Builds_Bool_Exp = {
   _not?: InputMaybe<Builds_Bool_Exp>;
   _or?: InputMaybe<Array<Builds_Bool_Exp>>;
   agent_access_token?: InputMaybe<Uuid_Comparison_Exp>;
+  build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   existing_github_check_id?: InputMaybe<Bigint_Comparison_Exp>;
@@ -333,6 +555,7 @@ export type Builds_Inc_Input = {
 /** input type for inserting data into table "builds" */
 export type Builds_Insert_Input = {
   agent_access_token?: InputMaybe<Scalars['uuid']>;
+  build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Arr_Rel_Insert_Input>;
   build_number?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   existing_github_check_id?: InputMaybe<Scalars['bigint']>;
@@ -443,6 +666,7 @@ export type Builds_On_Conflict = {
 /** Ordering options when selecting data from "builds". */
 export type Builds_Order_By = {
   agent_access_token?: InputMaybe<Order_By>;
+  build_dependency_relationships_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   existing_github_check_id?: InputMaybe<Order_By>;
@@ -2462,6 +2686,10 @@ export enum Manifests_Update_Column {
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
+  /** delete data from the table: "build_dependency_relationship" */
+  delete_build_dependency_relationship?: Maybe<Build_Dependency_Relationship_Mutation_Response>;
+  /** delete single row from the table: "build_dependency_relationship" */
+  delete_build_dependency_relationship_by_pk?: Maybe<Build_Dependency_Relationship>;
   /** delete data from the table: "builds" */
   delete_builds?: Maybe<Builds_Mutation_Response>;
   /** delete single row from the table: "builds" */
@@ -2474,6 +2702,18 @@ export type Mutation_Root = {
   delete_manifests?: Maybe<Manifests_Mutation_Response>;
   /** delete single row from the table: "manifests" */
   delete_manifests_by_pk?: Maybe<Manifests>;
+  /** delete data from the table: "package.package" */
+  delete_package?: Maybe<Package_Mutation_Response>;
+  /** delete single row from the table: "package.package" */
+  delete_package_by_pk?: Maybe<Package>;
+  /** delete data from the table: "vulnerability.range" */
+  delete_vulnerability_range?: Maybe<Vulnerability_Range_Mutation_Response>;
+  /** delete single row from the table: "vulnerability.range" */
+  delete_vulnerability_range_by_pk?: Maybe<Vulnerability_Range>;
+  /** insert data into the table: "build_dependency_relationship" */
+  insert_build_dependency_relationship?: Maybe<Build_Dependency_Relationship_Mutation_Response>;
+  /** insert a single row into the table: "build_dependency_relationship" */
+  insert_build_dependency_relationship_one?: Maybe<Build_Dependency_Relationship>;
   /** insert data into the table: "builds" */
   insert_builds?: Maybe<Builds_Mutation_Response>;
   /** insert a single row into the table: "builds" */
@@ -2584,6 +2824,10 @@ export type Mutation_Root = {
   insert_vulnerability_packages?: Maybe<Vulnerability_Packages_Mutation_Response>;
   /** insert a single row into the table: "vulnerability_packages" */
   insert_vulnerability_packages_one?: Maybe<Vulnerability_Packages>;
+  /** insert data into the table: "vulnerability.range" */
+  insert_vulnerability_range?: Maybe<Vulnerability_Range_Mutation_Response>;
+  /** insert a single row into the table: "vulnerability.range" */
+  insert_vulnerability_range_one?: Maybe<Vulnerability_Range>;
   /** insert data into the table: "vulnerability.reference" */
   insert_vulnerability_reference?: Maybe<Vulnerability_Reference_Mutation_Response>;
   /** insert a single row into the table: "vulnerability.reference" */
@@ -2598,6 +2842,10 @@ export type Mutation_Root = {
   insert_webhook_cache_one?: Maybe<Webhook_Cache>;
   /**  get s3 presigned url for manifest upload, used only by the frontend  */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
+  /** update data of the table: "build_dependency_relationship" */
+  update_build_dependency_relationship?: Maybe<Build_Dependency_Relationship_Mutation_Response>;
+  /** update single row of the table: "build_dependency_relationship" */
+  update_build_dependency_relationship_by_pk?: Maybe<Build_Dependency_Relationship>;
   /** update data of the table: "builds" */
   update_builds?: Maybe<Builds_Mutation_Response>;
   /** update single row of the table: "builds" */
@@ -2704,6 +2952,10 @@ export type Mutation_Root = {
   update_vulnerability_packages?: Maybe<Vulnerability_Packages_Mutation_Response>;
   /** update single row of the table: "vulnerability_packages" */
   update_vulnerability_packages_by_pk?: Maybe<Vulnerability_Packages>;
+  /** update data of the table: "vulnerability.range" */
+  update_vulnerability_range?: Maybe<Vulnerability_Range_Mutation_Response>;
+  /** update single row of the table: "vulnerability.range" */
+  update_vulnerability_range_by_pk?: Maybe<Vulnerability_Range>;
   /** update data of the table: "vulnerability.reference" */
   update_vulnerability_reference?: Maybe<Vulnerability_Reference_Mutation_Response>;
   /** update single row of the table: "vulnerability.reference" */
@@ -2716,6 +2968,18 @@ export type Mutation_Root = {
   update_webhook_cache?: Maybe<Webhook_Cache_Mutation_Response>;
   /** update single row of the table: "webhook_cache" */
   update_webhook_cache_by_pk?: Maybe<Webhook_Cache>;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Build_Dependency_RelationshipArgs = {
+  where: Build_Dependency_Relationship_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Build_Dependency_Relationship_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -2752,6 +3016,44 @@ export type Mutation_RootDelete_ManifestsArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Manifests_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_PackageArgs = {
+  where: Package_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Package_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Vulnerability_RangeArgs = {
+  where: Vulnerability_Range_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Vulnerability_Range_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Build_Dependency_RelationshipArgs = {
+  objects: Array<Build_Dependency_Relationship_Insert_Input>;
+  on_conflict?: InputMaybe<Build_Dependency_Relationship_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Build_Dependency_Relationship_OneArgs = {
+  object: Build_Dependency_Relationship_Insert_Input;
+  on_conflict?: InputMaybe<Build_Dependency_Relationship_On_Conflict>;
 };
 
 
@@ -3141,6 +3443,20 @@ export type Mutation_RootInsert_Vulnerability_Packages_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_Vulnerability_RangeArgs = {
+  objects: Array<Vulnerability_Range_Insert_Input>;
+  on_conflict?: InputMaybe<Vulnerability_Range_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Vulnerability_Range_OneArgs = {
+  object: Vulnerability_Range_Insert_Input;
+  on_conflict?: InputMaybe<Vulnerability_Range_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_Vulnerability_ReferenceArgs = {
   objects: Array<Vulnerability_Reference_Insert_Input>;
   on_conflict?: InputMaybe<Vulnerability_Reference_On_Conflict>;
@@ -3185,6 +3501,30 @@ export type Mutation_RootInsert_Webhook_Cache_OneArgs = {
 /** mutation root */
 export type Mutation_RootPresignManifestUploadArgs = {
   project_id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Build_Dependency_RelationshipArgs = {
+  _append?: InputMaybe<Build_Dependency_Relationship_Append_Input>;
+  _delete_at_path?: InputMaybe<Build_Dependency_Relationship_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Build_Dependency_Relationship_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Build_Dependency_Relationship_Delete_Key_Input>;
+  _prepend?: InputMaybe<Build_Dependency_Relationship_Prepend_Input>;
+  _set?: InputMaybe<Build_Dependency_Relationship_Set_Input>;
+  where: Build_Dependency_Relationship_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Build_Dependency_Relationship_By_PkArgs = {
+  _append?: InputMaybe<Build_Dependency_Relationship_Append_Input>;
+  _delete_at_path?: InputMaybe<Build_Dependency_Relationship_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Build_Dependency_Relationship_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Build_Dependency_Relationship_Delete_Key_Input>;
+  _prepend?: InputMaybe<Build_Dependency_Relationship_Prepend_Input>;
+  _set?: InputMaybe<Build_Dependency_Relationship_Set_Input>;
+  pk_columns: Build_Dependency_Relationship_Pk_Columns_Input;
 };
 
 
@@ -3652,6 +3992,20 @@ export type Mutation_RootUpdate_Vulnerability_PackagesArgs = {
 export type Mutation_RootUpdate_Vulnerability_Packages_By_PkArgs = {
   _set?: InputMaybe<Vulnerability_Packages_Set_Input>;
   pk_columns: Vulnerability_Packages_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Vulnerability_RangeArgs = {
+  _set?: InputMaybe<Vulnerability_Range_Set_Input>;
+  where: Vulnerability_Range_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Vulnerability_Range_By_PkArgs = {
+  _set?: InputMaybe<Vulnerability_Range_Set_Input>;
+  pk_columns: Vulnerability_Range_Pk_Columns_Input;
 };
 
 
@@ -4215,8 +4569,9 @@ export type Package = {
   __typename?: 'package';
   custom_registry: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  fetched_time?: Maybe<Scalars['timestamptz']>;
   id: Scalars['uuid'];
+  last_failed_fetch?: Maybe<Scalars['timestamptz']>;
+  last_successful_fetch?: Maybe<Scalars['timestamptz']>;
   name: Scalars['String'];
   /** An array relationship */
   package_maintainers: Array<Package_Package_Maintainer>;
@@ -4264,6 +4619,28 @@ export type PackageVulnerabilitiesArgs = {
   where?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
 };
 
+/** aggregated selection of "package.package" */
+export type Package_Aggregate = {
+  __typename?: 'package_aggregate';
+  aggregate?: Maybe<Package_Aggregate_Fields>;
+  nodes: Array<Package>;
+};
+
+/** aggregate fields of "package.package" */
+export type Package_Aggregate_Fields = {
+  __typename?: 'package_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Package_Max_Fields>;
+  min?: Maybe<Package_Min_Fields>;
+};
+
+
+/** aggregate fields of "package.package" */
+export type Package_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Package_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type Package_Append_Input = {
   upstream_data?: InputMaybe<Scalars['jsonb']>;
@@ -4276,8 +4653,9 @@ export type Package_Bool_Exp = {
   _or?: InputMaybe<Array<Package_Bool_Exp>>;
   custom_registry?: InputMaybe<String_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
-  fetched_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  last_failed_fetch?: InputMaybe<Timestamptz_Comparison_Exp>;
+  last_successful_fetch?: InputMaybe<Timestamptz_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   package_maintainers?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
   package_manager?: InputMaybe<Package_Manager_Comparison_Exp>;
@@ -4313,8 +4691,9 @@ export type Package_Delete_Key_Input = {
 export type Package_Insert_Input = {
   custom_registry?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
-  fetched_time?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
+  last_failed_fetch?: InputMaybe<Scalars['timestamptz']>;
+  last_successful_fetch?: InputMaybe<Scalars['timestamptz']>;
   name?: InputMaybe<Scalars['String']>;
   package_maintainers?: InputMaybe<Package_Package_Maintainer_Arr_Rel_Insert_Input>;
   package_manager?: InputMaybe<Scalars['package_manager']>;
@@ -4571,6 +4950,28 @@ export type Package_Manager_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['package_manager']>>;
 };
 
+/** aggregate max on columns */
+export type Package_Max_Fields = {
+  __typename?: 'package_max_fields';
+  custom_registry?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  last_failed_fetch?: Maybe<Scalars['timestamptz']>;
+  last_successful_fetch?: Maybe<Scalars['timestamptz']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Package_Min_Fields = {
+  __typename?: 'package_min_fields';
+  custom_registry?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  last_failed_fetch?: Maybe<Scalars['timestamptz']>;
+  last_successful_fetch?: Maybe<Scalars['timestamptz']>;
+  name?: Maybe<Scalars['String']>;
+};
+
 /** response of any mutation on the table "package.package" */
 export type Package_Mutation_Response = {
   __typename?: 'package_mutation_response';
@@ -4598,8 +4999,9 @@ export type Package_On_Conflict = {
 export type Package_Order_By = {
   custom_registry?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
-  fetched_time?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  last_failed_fetch?: InputMaybe<Order_By>;
+  last_successful_fetch?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   package_maintainers_aggregate?: InputMaybe<Package_Package_Maintainer_Aggregate_Order_By>;
   package_manager?: InputMaybe<Order_By>;
@@ -4730,6 +5132,8 @@ export type Package_Prepend_Input = {
 export type Package_Release = {
   __typename?: 'package_release';
   blob_hash?: Maybe<Scalars['String']>;
+  /** An array relationship */
+  build_dependency_relationships: Array<Build_Dependency_Relationship>;
   fetched_time?: Maybe<Scalars['timestamptz']>;
   id: Scalars['uuid'];
   mirrored_blob_url?: Maybe<Scalars['String']>;
@@ -4750,6 +5154,16 @@ export type Package_Release = {
   upstream_blob_url?: Maybe<Scalars['String']>;
   upstream_data?: Maybe<Scalars['jsonb']>;
   version: Scalars['String'];
+};
+
+
+/** columns and relationships of "package.release" */
+export type Package_ReleaseBuild_Dependency_RelationshipsArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
 };
 
 
@@ -4813,6 +5227,7 @@ export type Package_Release_Bool_Exp = {
   _not?: InputMaybe<Package_Release_Bool_Exp>;
   _or?: InputMaybe<Array<Package_Release_Bool_Exp>>;
   blob_hash?: InputMaybe<String_Comparison_Exp>;
+  build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   fetched_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   mirrored_blob_url?: InputMaybe<String_Comparison_Exp>;
@@ -5020,6 +5435,7 @@ export enum Package_Release_Dependency_Update_Column {
 /** input type for inserting data into table "package.release" */
 export type Package_Release_Insert_Input = {
   blob_hash?: InputMaybe<Scalars['String']>;
+  build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Arr_Rel_Insert_Input>;
   fetched_time?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
   mirrored_blob_url?: InputMaybe<Scalars['String']>;
@@ -5270,6 +5686,7 @@ export type Package_Release_On_Conflict = {
 /** Ordering options when selecting data from "package.release". */
 export type Package_Release_Order_By = {
   blob_hash?: InputMaybe<Order_By>;
+  build_dependency_relationships_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
   fetched_time?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   mirrored_blob_url?: InputMaybe<Order_By>;
@@ -5371,9 +5788,11 @@ export enum Package_Select_Column {
   /** column name */
   Description = 'description',
   /** column name */
-  FetchedTime = 'fetched_time',
-  /** column name */
   Id = 'id',
+  /** column name */
+  LastFailedFetch = 'last_failed_fetch',
+  /** column name */
+  LastSuccessfulFetch = 'last_successful_fetch',
   /** column name */
   Name = 'name',
   /** column name */
@@ -5386,8 +5805,9 @@ export enum Package_Select_Column {
 export type Package_Set_Input = {
   custom_registry?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
-  fetched_time?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
+  last_failed_fetch?: InputMaybe<Scalars['timestamptz']>;
+  last_successful_fetch?: InputMaybe<Scalars['timestamptz']>;
   name?: InputMaybe<Scalars['String']>;
   package_manager?: InputMaybe<Scalars['package_manager']>;
   upstream_data?: InputMaybe<Scalars['jsonb']>;
@@ -5400,9 +5820,11 @@ export enum Package_Update_Column {
   /** column name */
   Description = 'description',
   /** column name */
-  FetchedTime = 'fetched_time',
-  /** column name */
   Id = 'id',
+  /** column name */
+  LastFailedFetch = 'last_failed_fetch',
+  /** column name */
+  LastSuccessfulFetch = 'last_successful_fetch',
   /** column name */
   Name = 'name',
   /** column name */
@@ -5972,6 +6394,10 @@ export enum Projects_Update_Column {
 export type Query_Root = {
   __typename?: 'query_root';
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
+  /** fetch data from the table: "build_dependency_relationship" */
+  build_dependency_relationship: Array<Build_Dependency_Relationship>;
+  /** fetch data from the table: "build_dependency_relationship" using primary key columns */
+  build_dependency_relationship_by_pk?: Maybe<Build_Dependency_Relationship>;
   /** An array relationship */
   builds: Array<Builds>;
   /** An aggregate relationship */
@@ -6027,6 +6453,8 @@ export type Query_Root = {
   organizations_by_pk?: Maybe<Organizations>;
   /** fetch data from the table: "package.package" */
   package: Array<Package>;
+  /** fetch aggregated fields from the table: "package.package" */
+  package_aggregate: Package_Aggregate;
   /** fetch data from the table: "package.package" using primary key columns */
   package_by_pk?: Maybe<Package>;
   /** fetch data from the table: "package.license" */
@@ -6116,6 +6544,10 @@ export type Query_Root = {
   vulnerability_packages: Array<Vulnerability_Packages>;
   /** fetch data from the table: "vulnerability_packages" using primary key columns */
   vulnerability_packages_by_pk?: Maybe<Vulnerability_Packages>;
+  /** fetch data from the table: "vulnerability.range" */
+  vulnerability_range: Array<Vulnerability_Range>;
+  /** fetch data from the table: "vulnerability.range" using primary key columns */
+  vulnerability_range_by_pk?: Maybe<Vulnerability_Range>;
   /** fetch data from the table: "vulnerability.reference" */
   vulnerability_reference: Array<Vulnerability_Reference>;
   /** fetch data from the table: "vulnerability.reference" using primary key columns */
@@ -6133,6 +6565,20 @@ export type Query_Root = {
 
 export type Query_RootAuthenticatedRepoCloneUrlArgs = {
   repoGithubId: Scalars['Int'];
+};
+
+
+export type Query_RootBuild_Dependency_RelationshipArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+};
+
+
+export type Query_RootBuild_Dependency_Relationship_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -6327,6 +6773,15 @@ export type Query_RootOrganizations_By_PkArgs = {
 
 
 export type Query_RootPackageArgs = {
+  distinct_on?: InputMaybe<Array<Package_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Package_Order_By>>;
+  where?: InputMaybe<Package_Bool_Exp>;
+};
+
+
+export type Query_RootPackage_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Package_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -6649,6 +7104,20 @@ export type Query_RootVulnerability_PackagesArgs = {
 
 
 export type Query_RootVulnerability_Packages_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootVulnerability_RangeArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Range_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Range_Order_By>>;
+  where?: InputMaybe<Vulnerability_Range_Bool_Exp>;
+};
+
+
+export type Query_RootVulnerability_Range_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -7111,6 +7580,10 @@ export type Severity_Enum_Comparison_Exp = {
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
+  /** fetch data from the table: "build_dependency_relationship" */
+  build_dependency_relationship: Array<Build_Dependency_Relationship>;
+  /** fetch data from the table: "build_dependency_relationship" using primary key columns */
+  build_dependency_relationship_by_pk?: Maybe<Build_Dependency_Relationship>;
   /** An array relationship */
   builds: Array<Builds>;
   /** An aggregate relationship */
@@ -7165,6 +7638,8 @@ export type Subscription_Root = {
   organizations_by_pk?: Maybe<Organizations>;
   /** fetch data from the table: "package.package" */
   package: Array<Package>;
+  /** fetch aggregated fields from the table: "package.package" */
+  package_aggregate: Package_Aggregate;
   /** fetch data from the table: "package.package" using primary key columns */
   package_by_pk?: Maybe<Package>;
   /** fetch data from the table: "package.license" */
@@ -7251,6 +7726,10 @@ export type Subscription_Root = {
   vulnerability_packages: Array<Vulnerability_Packages>;
   /** fetch data from the table: "vulnerability_packages" using primary key columns */
   vulnerability_packages_by_pk?: Maybe<Vulnerability_Packages>;
+  /** fetch data from the table: "vulnerability.range" */
+  vulnerability_range: Array<Vulnerability_Range>;
+  /** fetch data from the table: "vulnerability.range" using primary key columns */
+  vulnerability_range_by_pk?: Maybe<Vulnerability_Range>;
   /** fetch data from the table: "vulnerability.reference" */
   vulnerability_reference: Array<Vulnerability_Reference>;
   /** fetch data from the table: "vulnerability.reference" using primary key columns */
@@ -7263,6 +7742,20 @@ export type Subscription_Root = {
   webhook_cache: Array<Webhook_Cache>;
   /** fetch data from the table: "webhook_cache" using primary key columns */
   webhook_cache_by_pk?: Maybe<Webhook_Cache>;
+};
+
+
+export type Subscription_RootBuild_Dependency_RelationshipArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+};
+
+
+export type Subscription_RootBuild_Dependency_Relationship_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -7457,6 +7950,15 @@ export type Subscription_RootOrganizations_By_PkArgs = {
 
 
 export type Subscription_RootPackageArgs = {
+  distinct_on?: InputMaybe<Array<Package_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Package_Order_By>>;
+  where?: InputMaybe<Package_Bool_Exp>;
+};
+
+
+export type Subscription_RootPackage_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Package_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -7768,6 +8270,20 @@ export type Subscription_RootVulnerability_PackagesArgs = {
 
 
 export type Subscription_RootVulnerability_Packages_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootVulnerability_RangeArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Range_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Range_Order_By>>;
+  where?: InputMaybe<Vulnerability_Range_Bool_Exp>;
+};
+
+
+export type Subscription_RootVulnerability_Range_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -8330,6 +8846,7 @@ export type Vulnerability = {
   published?: Maybe<Scalars['timestamptz']>;
   /** An array relationship */
   references: Array<Vulnerability_Reference>;
+  reviewed_by_source?: Maybe<Scalars['Boolean']>;
   /** An array relationship */
   severities: Array<Vulnerability_Severity>;
   source: Scalars['String'];
@@ -8444,6 +8961,8 @@ export type Vulnerability_Affected = {
   /** An object relationship */
   package?: Maybe<Package>;
   package_id?: Maybe<Scalars['uuid']>;
+  /** An array relationship */
+  ranges: Array<Vulnerability_Range>;
   /** An object relationship */
   vulnerability?: Maybe<Vulnerability>;
   vulnerability_id?: Maybe<Scalars['uuid']>;
@@ -8481,6 +9000,16 @@ export type Vulnerability_AffectedEcosystem_SpecificArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
 
+
+/** columns and relationships of "vulnerability.affected" */
+export type Vulnerability_AffectedRangesArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Range_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Range_Order_By>>;
+  where?: InputMaybe<Vulnerability_Range_Bool_Exp>;
+};
+
 /** order by aggregate values of table "vulnerability.affected" */
 export type Vulnerability_Affected_Aggregate_Order_By = {
   count?: InputMaybe<Order_By>;
@@ -8513,6 +9042,7 @@ export type Vulnerability_Affected_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   package?: InputMaybe<Package_Bool_Exp>;
   package_id?: InputMaybe<Uuid_Comparison_Exp>;
+  ranges?: InputMaybe<Vulnerability_Range_Bool_Exp>;
   vulnerability?: InputMaybe<Vulnerability_Bool_Exp>;
   vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
@@ -8552,6 +9082,7 @@ export type Vulnerability_Affected_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   package?: InputMaybe<Package_Obj_Rel_Insert_Input>;
   package_id?: InputMaybe<Scalars['uuid']>;
+  ranges?: InputMaybe<Vulnerability_Range_Arr_Rel_Insert_Input>;
   vulnerability?: InputMaybe<Vulnerability_Obj_Rel_Insert_Input>;
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
@@ -8602,6 +9133,7 @@ export type Vulnerability_Affected_Order_By = {
   id?: InputMaybe<Order_By>;
   package?: InputMaybe<Package_Order_By>;
   package_id?: InputMaybe<Order_By>;
+  ranges_aggregate?: InputMaybe<Vulnerability_Range_Aggregate_Order_By>;
   vulnerability?: InputMaybe<Vulnerability_Order_By>;
   vulnerability_id?: InputMaybe<Order_By>;
 };
@@ -9020,6 +9552,7 @@ export type Vulnerability_Bool_Exp = {
   modified?: InputMaybe<Timestamptz_Comparison_Exp>;
   published?: InputMaybe<Timestamptz_Comparison_Exp>;
   references?: InputMaybe<Vulnerability_Reference_Bool_Exp>;
+  reviewed_by_source?: InputMaybe<Boolean_Comparison_Exp>;
   severities?: InputMaybe<Vulnerability_Severity_Bool_Exp>;
   source?: InputMaybe<String_Comparison_Exp>;
   source_id?: InputMaybe<String_Comparison_Exp>;
@@ -9311,6 +9844,7 @@ export type Vulnerability_Insert_Input = {
   modified?: InputMaybe<Scalars['timestamptz']>;
   published?: InputMaybe<Scalars['timestamptz']>;
   references?: InputMaybe<Vulnerability_Reference_Arr_Rel_Insert_Input>;
+  reviewed_by_source?: InputMaybe<Scalars['Boolean']>;
   severities?: InputMaybe<Vulnerability_Severity_Arr_Rel_Insert_Input>;
   source?: InputMaybe<Scalars['String']>;
   source_id?: InputMaybe<Scalars['String']>;
@@ -9357,6 +9891,7 @@ export type Vulnerability_Order_By = {
   modified?: InputMaybe<Order_By>;
   published?: InputMaybe<Order_By>;
   references_aggregate?: InputMaybe<Vulnerability_Reference_Aggregate_Order_By>;
+  reviewed_by_source?: InputMaybe<Order_By>;
   severities_aggregate?: InputMaybe<Vulnerability_Severity_Aggregate_Order_By>;
   source?: InputMaybe<Order_By>;
   source_id?: InputMaybe<Order_By>;
@@ -9540,6 +10075,138 @@ export type Vulnerability_Prepend_Input = {
   upstream_data?: InputMaybe<Scalars['jsonb']>;
 };
 
+/** columns and relationships of "vulnerability.range" */
+export type Vulnerability_Range = {
+  __typename?: 'vulnerability_range';
+  /** An object relationship */
+  affected: Vulnerability_Affected;
+  affected_id: Scalars['uuid'];
+  fixed?: Maybe<Scalars['String']>;
+  id: Scalars['uuid'];
+  introduced?: Maybe<Scalars['String']>;
+};
+
+/** order by aggregate values of table "vulnerability.range" */
+export type Vulnerability_Range_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Vulnerability_Range_Max_Order_By>;
+  min?: InputMaybe<Vulnerability_Range_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "vulnerability.range" */
+export type Vulnerability_Range_Arr_Rel_Insert_Input = {
+  data: Array<Vulnerability_Range_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Vulnerability_Range_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "vulnerability.range". All fields are combined with a logical 'AND'. */
+export type Vulnerability_Range_Bool_Exp = {
+  _and?: InputMaybe<Array<Vulnerability_Range_Bool_Exp>>;
+  _not?: InputMaybe<Vulnerability_Range_Bool_Exp>;
+  _or?: InputMaybe<Array<Vulnerability_Range_Bool_Exp>>;
+  affected?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
+  affected_id?: InputMaybe<Uuid_Comparison_Exp>;
+  fixed?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  introduced?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "vulnerability.range" */
+export enum Vulnerability_Range_Constraint {
+  /** unique or primary key constraint */
+  RangePkey = 'range_pkey',
+  /** unique or primary key constraint */
+  RangeUniq = 'range_uniq'
+}
+
+/** input type for inserting data into table "vulnerability.range" */
+export type Vulnerability_Range_Insert_Input = {
+  affected?: InputMaybe<Vulnerability_Affected_Obj_Rel_Insert_Input>;
+  affected_id?: InputMaybe<Scalars['uuid']>;
+  fixed?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  introduced?: InputMaybe<Scalars['String']>;
+};
+
+/** order by max() on columns of table "vulnerability.range" */
+export type Vulnerability_Range_Max_Order_By = {
+  affected_id?: InputMaybe<Order_By>;
+  fixed?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  introduced?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "vulnerability.range" */
+export type Vulnerability_Range_Min_Order_By = {
+  affected_id?: InputMaybe<Order_By>;
+  fixed?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  introduced?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "vulnerability.range" */
+export type Vulnerability_Range_Mutation_Response = {
+  __typename?: 'vulnerability_range_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Vulnerability_Range>;
+};
+
+/** on_conflict condition type for table "vulnerability.range" */
+export type Vulnerability_Range_On_Conflict = {
+  constraint: Vulnerability_Range_Constraint;
+  update_columns?: Array<Vulnerability_Range_Update_Column>;
+  where?: InputMaybe<Vulnerability_Range_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "vulnerability.range". */
+export type Vulnerability_Range_Order_By = {
+  affected?: InputMaybe<Vulnerability_Affected_Order_By>;
+  affected_id?: InputMaybe<Order_By>;
+  fixed?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  introduced?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: vulnerability_range */
+export type Vulnerability_Range_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "vulnerability.range" */
+export enum Vulnerability_Range_Select_Column {
+  /** column name */
+  AffectedId = 'affected_id',
+  /** column name */
+  Fixed = 'fixed',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Introduced = 'introduced'
+}
+
+/** input type for updating data in table "vulnerability.range" */
+export type Vulnerability_Range_Set_Input = {
+  affected_id?: InputMaybe<Scalars['uuid']>;
+  fixed?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  introduced?: InputMaybe<Scalars['String']>;
+};
+
+/** update columns of table "vulnerability.range" */
+export enum Vulnerability_Range_Update_Column {
+  /** column name */
+  AffectedId = 'affected_id',
+  /** column name */
+  Fixed = 'fixed',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Introduced = 'introduced'
+}
+
 /** columns and relationships of "vulnerability.reference" */
 export type Vulnerability_Reference = {
   __typename?: 'vulnerability_reference';
@@ -9685,6 +10352,8 @@ export enum Vulnerability_Select_Column {
   /** column name */
   Published = 'published',
   /** column name */
+  ReviewedBySource = 'reviewed_by_source',
+  /** column name */
   Source = 'source',
   /** column name */
   SourceId = 'source_id',
@@ -9704,6 +10373,7 @@ export type Vulnerability_Set_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   modified?: InputMaybe<Scalars['timestamptz']>;
   published?: InputMaybe<Scalars['timestamptz']>;
+  reviewed_by_source?: InputMaybe<Scalars['Boolean']>;
   source?: InputMaybe<Scalars['String']>;
   source_id?: InputMaybe<Scalars['String']>;
   summary?: InputMaybe<Scalars['String']>;
@@ -9868,6 +10538,8 @@ export enum Vulnerability_Update_Column {
   Modified = 'modified',
   /** column name */
   Published = 'published',
+  /** column name */
+  ReviewedBySource = 'reviewed_by_source',
   /** column name */
   Source = 'source',
   /** column name */
@@ -10109,6 +10781,14 @@ export type GetUserFromIdentityQueryVariables = Exact<{
 
 
 export type GetUserFromIdentityQuery = { __typename?: 'query_root', identities_by_pk?: { __typename?: 'identities', user?: { __typename?: 'users', id: any } | null } | null };
+
+export type InsertBuildDependencyRelationshipsMutationVariables = Exact<{
+  objects: Array<Build_Dependency_Relationship_Insert_Input> | Build_Dependency_Relationship_Insert_Input;
+  on_conflict: Build_Dependency_Relationship_On_Conflict;
+}>;
+
+
+export type InsertBuildDependencyRelationshipsMutation = { __typename?: 'mutation_root', insert_build_dependency_relationship?: { __typename?: 'build_dependency_relationship_mutation_response', affected_rows: number } | null };
 
 export type InsertBuildMutationVariables = Exact<{
   build: Builds_Insert_Input;
@@ -10408,6 +11088,16 @@ export const GetUserFromIdentityDocument = gql`
   }
 }
     `;
+export const InsertBuildDependencyRelationshipsDocument = gql`
+    mutation InsertBuildDependencyRelationships($objects: [build_dependency_relationship_insert_input!]!, $on_conflict: build_dependency_relationship_on_conflict!) {
+  insert_build_dependency_relationship(
+    objects: $objects
+    on_conflict: $on_conflict
+  ) {
+    affected_rows
+  }
+}
+    `;
 export const InsertBuildDocument = gql`
     mutation InsertBuild($build: builds_insert_input!) {
   insert_builds_one(object: $build) {
@@ -10639,6 +11329,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetUserFromIdentity(variables: GetUserFromIdentityQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserFromIdentityQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserFromIdentityQuery>(GetUserFromIdentityDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserFromIdentity', 'query');
+    },
+    InsertBuildDependencyRelationships(variables: InsertBuildDependencyRelationshipsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildDependencyRelationshipsMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildDependencyRelationshipsMutation>(InsertBuildDependencyRelationshipsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuildDependencyRelationships', 'mutation');
     },
     InsertBuild(variables: InsertBuildMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildMutation>(InsertBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuild', 'mutation');
