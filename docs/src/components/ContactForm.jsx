@@ -1,5 +1,5 @@
 import React from 'react';
-import Mailchimp from 'react-mailchimp-form'
+import Mailchimp from './Mailchimp';
 
 export default function ContactForm({hideLabel, hideNotes}) {
     return (
