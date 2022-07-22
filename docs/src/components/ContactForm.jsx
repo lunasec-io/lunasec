@@ -1,10 +1,10 @@
 import React from 'react';
 import Mailchimp from 'react-mailchimp-form'
 
-export default function MyComponent() {
+export default function ContactForm({hideLabel, hideNotes}) {
     return (
         <div className='contact-form-wrapper'>
-            <label className='contact-form-label'>Subscribe for updates</label>
+            {!hideLabel ? <label className='contact-form-label'>Subscribe for updates</label> : null}
             <Mailchimp
                 action='https://lunasec.us20.list-manage.com/subscribe/post?u=6e2679c8b83c1b6f20ec7a702&amp;id=92f2f231ea'
                 fields={[
@@ -20,14 +20,15 @@ export default function MyComponent() {
                         type: 'email',
                         required: true
                     },
-                    {
-                        name: 'NOTES',
-                        placeholder: 'Notes',
-                        type: 'text',
-                        required: false
-                    }
-                ]}
-                messages ={
+                    !hideNotes ?
+                        {
+                            name: 'NOTES',
+                            placeholder: 'Notes',
+                            type: 'text',
+                            required: false
+                        } : null,
+                ].filter(n => n)}
+                messages={
                     {
                         sending: "Sending...",
                         success: "Thank you for subscribing!",

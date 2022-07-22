@@ -50,7 +50,7 @@ files that wouldn't usually be committed to git. Scanning a container gives Luna
 ### Roadmap
 Lunatrace is built on an open source foundation, and we are rapidly adding features to make LunaTrace a complete
 supply chain control center. Features such as:
-* Much better false-positive elimination / quieter reports
+* Much better false-positive elimination / quieter reports3
 * VEX in addition to SBOM support
 * License Checking
 * Live Instance Tracking
