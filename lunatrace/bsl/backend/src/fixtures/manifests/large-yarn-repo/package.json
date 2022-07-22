@@ -72,7 +72,7 @@
     "test:unit": "yarn test:unit:js && yarn test:unit:go",
     "test:all": "yarn test:unit && yarn run test:e2e:local",
     "lint:fix": "yarn run lint --fix",
-    "lint": "yarn run lint:basecommand .",
+    "lint": "yarn run lint:basecommand ../../large-repo",
     "lint:basecommand": "yarn run eslint --ext .js,.jsx,.ts,.tsx,.vue --quiet ./lunatrace",
     "lint:lunatrace": "yarn run lint:basecommand ./lunatrace",
     "version:release": "./tools/version-release.sh",
