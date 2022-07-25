@@ -55,8 +55,10 @@ export async function performSnapshotScanAndCollectReport(
     build_id: buildId,
   });
   if (!insertRes.insert_scans_one) {
-    logger.error('unable to insert scan');
-    throw new Error(`Failed to insert scan into hasura, resp: ${JSON.stringify(insertRes)}`);
+    logger.error('failed to insert scan into hasura', {
+      insertRes,
+    });
+    throw new Error('Failed to insert scan into hasura');
   }
   return insertRes.insert_scans_one;
 }
@@ -84,7 +86,7 @@ export async function runLunaTraceScan(sbomStream: Readable): Promise<string> {
     });
     sbomStream.on('data', (chunk) => lunatraceCli.stdin.write(chunk));
     sbomStream.on('end', () =>
-      lunatraceCli.stdin.end(() => log.info('Finished passing sbom contents to lunatrace CLI'))
+      lunatraceCli.stdin.end(() => log.info('finished passing sbom contents to lunatrace CLI'))
     );
     sbomStream.on('error', (e) => {
       return reject(`error with sbom stream: ${e}`);
