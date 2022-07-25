@@ -48,7 +48,7 @@ var ScanCliFlags = []cli.Flag{
 	},
 }
 
-var InventoryCliFlags = []cli.Flag{
+var SnapshotCliFlags = []cli.Flag{
 	&cli.StringSliceFlag{
 		Name:  "exclude",
 		Usage: "Excluded dirs from scanning.",
@@ -80,6 +80,10 @@ var InventoryCliFlags = []cli.Flag{
 	&cli.StringFlag{
 		Name:  "git-remote",
 		Usage: "Manually specify a git remote.",
+	},
+	&cli.StringFlag{
+		Name:  "workspace",
+		Usage: "Perform all actions within a provided workspace directory. If provided, cleanup of this directory will be deferred to the caller.",
 	},
 }
 

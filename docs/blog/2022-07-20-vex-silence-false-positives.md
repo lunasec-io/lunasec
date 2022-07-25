@@ -24,9 +24,10 @@ authors: [alex]
 
 ## What is VEX?
 
-As we highlighted in our post on False Positives in Vulnerability Scanning[^1], the output of vulnerability assessment tools like `npm audit` can be cumbersome because they lack context. VEX (Vulnerability EXchange) is a new standard developed by the NTIA to exchange information about which vulnerabilities are actually exploitable in a product.
+As we highlighted in our post on False Positives in Vulnerability Scanning,[^1] output of vulnerability assessment tools like `npm audit` can be cumbersome because it lacks context. VEX (Vulnerability EXchange) is a new standard developed by the NTIA to exchange information about which vulnerabilities are actually exploitable in a product.
 
 <!--truncate-->
+
 
 ### The Problem: False Positives
 
@@ -41,7 +42,11 @@ The NTIA is developing a standard containing the minimum information for exchang
 
 >  make (someone) feel annoyed, frustrated, or worried, especially with trivial matters.
 
-VEX documents contain a list of vulnerabilities and their status in a product. These statuses can be unknown, affected, or not affected. They can contain partial or full results from a vulnerability assessment. Multiple sources may issue VEX documents. VEX documents are usually associated with an SBOM, but can be distributed separately.
+VEX documents contain a list of vulnerabilities and their status in a product. These statuses can be unknown, affected, or not affected.
+
+For example, [this VEX document](https://github.com/CycloneDX/bom-examples/blob/master/VEX/CISA-Use-Cases/Case-1/vex-affected.json) describes that CVE-2021-44228 is exploitable in the application “DEF” and the vendor will not release a fix. [This VEX document](https://github.com/CycloneDX/bom-examples/blob/master/VEX/CISA-Use-Cases/Case-1/vex-not_affected.json) describes that Log4Shell is not exploitable in the application “ABC” because the code is not present.
+
+VEX documents have some other interesting properties: they can contain partial or full results from a vulnerability assessment; multiple sources may issue VEX documents; and VEX documents are usually associated with an SBOM, but can be distributed separately.
 
 
 ### Use Cases
@@ -66,7 +71,7 @@ VEX documents can be issued by any source. Security Researchers may start publis
 
 ### So how do I get started?
 
-VEX is still in the early stages of development. There are currently two implementations of the standard. CycloneDX v1.4 has added a VulnerabilityAnalysis field[^6] and CSAF supports VEX content as an additional “profile”.[^7] 
+VEX is still in the early stages of development. There are currently two implementations of the standard. CycloneDX v1.4 has added a VulnerabilityAnalysis field[^6] and CSAF supports VEX content as an additional “profile”.[^7]
 
 At the time of writing, we are aware of these tools which support VEX:
 
@@ -85,25 +90,18 @@ LunaTrace is building a global database and tooling to automatically generate VE
 
 
 <!-- Footnotes themselves at the bottom. -->
-## Resources
+## Notes
 
-[^1]:
-     [https://www.lunasec.io/docs/blog/the-issue-with-vuln-scanners/](https://www.lunasec.io/docs/blog/the-issue-with-vuln-scanners/)
+[^1]: [False Positives in Vulnerability Scanning: Why We Think We Can Do Better | LunaSec](https://www.lunasec.io/docs/blog/the-issue-with-vuln-scanners/)
 
-[^2]:
-     [https://overreacted.io/npm-audit-broken-by-design/](https://overreacted.io/npm-audit-broken-by-design/)
+[^2]: [npm audit: Broken by Design](https://overreacted.io/npm-audit-broken-by-design/) - Dan Abramov
 
-[^3]:
-     [https://www.voitanos.io/blog/don-t-be-alarmed-by-vulnerabilities-after-running-npm-install/](https://www.voitanos.io/blog/don-t-be-alarmed-by-vulnerabilities-after-running-npm-install/)
+[^3]: [Don't be alarmed by vulnerabilities after running NPM Install](https://www.voitanos.io/blog/don-t-be-alarmed-by-vulnerabilities-after-running-npm-install/) - voitanos.io
 
-[^4]:
-     [https://www.cisa.gov/sites/default/files/publications/VEX_Use_Cases_April2022.pdf](https://www.cisa.gov/sites/default/files/publications/VEX_Use_Cases_April2022.pdf)
+[^4]: [Vulnerability Exploitability eXchange (VEX) – Use Cases](https://www.cisa.gov/sites/default/files/publications/VEX_Use_Cases_April2022.pdf) - cisa.gov
 
-[^5]:
-     [https://en.wikipedia.org/wiki/Alarm_fatigue](https://en.wikipedia.org/wiki/Alarm_fatigue)
+[^5]: [Alarm fatigue - Wikipedia](https://en.wikipedia.org/wiki/Alarm_fatigue)
 
-[^6]:
-     [https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto#L592-L650](https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto#L592-L650)
+[^6]: [CycloneDX v1.4 Protobuf Spec L529-L650](https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto#L592-L650)
 
-[^7]:
-     [https://docs.oasis-open.org/csaf/csaf/v2.0/csd01/csaf-v2.0-csd01.html#45-profile-5-vex](https://docs.oasis-open.org/csaf/csaf/v2.0/csd01/csaf-v2.0-csd01.html#45-profile-5-vex)
+[^7]: [Common Security Advisory Framework Version 2.0](https://docs.oasis-open.org/csaf/csaf/v2.0/csd01/csaf-v2.0-csd01.html#45-profile-5-vex)
