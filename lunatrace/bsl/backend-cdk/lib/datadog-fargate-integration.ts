@@ -112,6 +112,10 @@ export class DatadogFargateIntegration extends cdk.Construct {
       ECS_FARGATE: 'true',
       DD_LOGS_ENABLED: 'true',
       DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: 'true',
+      DD_ENABLE_PAYLOADS_EVENTS: 'false',
+      DD_ENABLE_PAYLOADS_SERIES: 'false',
+      DD_ENABLE_PAYLOADS_SERVICE_CHECKS: 'false',
+      DD_ENABLE_PAYLOADS_SKETCHES: 'false',
     };
 
     const datadogApiKey = Secret.fromSecretCompleteArn(this, 'DatadogApiKeySecret', props.datadogApiKeyArn);

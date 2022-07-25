@@ -48,9 +48,7 @@ function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gz
 }
 
 async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<InsertedScan> {
-  log.info('scanning snapshot', {
-    sbomBucketInfo,
-  });
+  log.info('scanning snapshot');
 
   const [sbomStream, sbomLength] = await aws.getFileFromS3(
     sbomBucketInfo.key,
@@ -83,9 +81,8 @@ async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Pr
   return scanReport;
 }
 
-export async function scanSnapshotActivity(msg: S3ObjectMetadata): Promise<MaybeError<undefined>> {
+export async function scanSnapshotActivity(buildId: string, msg: S3ObjectMetadata): Promise<MaybeError<undefined>> {
   const { key, region, bucketName } = msg;
-  const buildId = key.split('/').pop();
   return await log.provideFields({ key, region, bucketName }, async () => {
     if (!buildId || !validate.isUUID(buildId)) {
       log.error('invalid build uuid from s3 object at key ', {
