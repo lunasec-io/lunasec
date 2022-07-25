@@ -152,7 +152,7 @@ class QueueWorker {
       const allJobs = Promise.all(data.Messages.map((m) => this.processQueueMessage(queueUrl, m)));
 
       const timeoutPromise = new Promise((resolve) => {
-        setTimeout(() => resolve('job_timeout'), 2 * 60 * 1000);
+        setTimeout(() => resolve('job_timeout'), 5 * 60 * 1000);
       });
 
       const result = await Promise.race([allJobs, timeoutPromise]);
