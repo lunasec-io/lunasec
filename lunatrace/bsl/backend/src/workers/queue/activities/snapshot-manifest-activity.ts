@@ -13,32 +13,13 @@
  */
 // This handler is currently only triggered when someone drags and drops a file on the frontend
 import { hasura } from '../../../hasura-api';
-import { createBuildAndGenerateSbom } from '../../../snapshot/generate-snapshot';
+import { createBuildAndGenerateSbomFromManifest } from '../../../snapshot/generate-snapshot';
 import { S3ObjectMetadata } from '../../../types/s3';
 import { SbomBucketInfo } from '../../../types/scan';
 import { MaybeError } from '../../../types/util';
 import { newError, newResult } from '../../../utils/errors';
 import { log } from '../../../utils/log';
 import { catchError, threwError } from '../../../utils/try';
-
-async function attemptGenerateManifestSbom(bucketInfo: SbomBucketInfo) {
-  // let hasura know we are starting the process, so it ends up in the UI.  Also will throw if there is no manifest
-  const hasuraRes = await hasura.UpdateManifest({ key_eq: bucketInfo.key, set_status: 'sbom-processing' });
-  const manifest = hasuraRes.update_manifests?.returning[0];
-  if (!manifest) {
-    throw new Error('Failed to find manifest matching SBOM, exiting');
-  }
-
-  const buildId = await createBuildAndGenerateSbom(
-    manifest.project.organization_id,
-    manifest.project_id,
-    manifest.filename,
-    bucketInfo
-  );
-
-  // update the manifest status
-  await hasura.UpdateManifest({ key_eq: bucketInfo.key, set_status: 'sbom-generated', build_id: buildId });
-}
 
 export async function snapshotManifestActivity(message: S3ObjectMetadata): Promise<MaybeError<undefined>> {
   const { key, bucketName, region } = message;
@@ -49,22 +30,46 @@ export async function snapshotManifestActivity(message: S3ObjectMetadata): Promi
     region,
   };
 
-  return await log.provideFields({ ...bucketInfo }, async () => {
+  // let hasura know we are starting the process, so it ends up in the UI.  Also will throw if there is no manifest
+  const hasuraRes = await hasura.UpdateManifest({ key_eq: bucketInfo.key, set_status: 'sbom-processing' });
+  const manifest = hasuraRes.update_manifests?.returning[0];
+  if (!manifest) {
+    throw new Error('Failed to find manifest matching SBOM, exiting');
+  }
+
+  // Create a new build
+  const { insert_builds_one } = await hasura.InsertBuild({
+    build: { project_id: manifest.project_id, source_type: 'gui' },
+  });
+  log.info('hasura returned when inserting build ', insert_builds_one);
+  if (!insert_builds_one || !insert_builds_one.id) {
+    throw new Error('Failed to insert a new build');
+  }
+  const buildId = insert_builds_one.id as string;
+
+  return await log.provideFields({ ...bucketInfo, buildId }, async () => {
     try {
-      await attemptGenerateManifestSbom(bucketInfo);
+      await createBuildAndGenerateSbomFromManifest(
+        manifest.project.organization_id,
+        buildId,
+        manifest.filename,
+        bucketInfo
+      );
       return newResult(undefined);
     } catch (e) {
-      log.error('Unable to generate SBOM from Manifest', e);
+      log.error('Unable to generate SBOM from Manifest', {
+        error: e,
+      });
       // last ditch attempt to write an error to show in the UX..may or may not work depending on what the issue is
       const res = await catchError(hasura.UpdateManifest({ key_eq: key, set_status: 'error', message: String(e) }));
       if (threwError(res)) {
         log.error('unable to update manifest to reflect that an error occured', {
           key,
-          error: e,
+          error: res.message,
         });
+        return newError(res.message);
       }
-
-      return newError(threwError(e) ? e.message : String(e));
+      return newError(String(e));
     }
   });
 }

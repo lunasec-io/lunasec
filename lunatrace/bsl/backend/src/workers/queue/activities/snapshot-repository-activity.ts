@@ -148,7 +148,7 @@ async function createNewBuild(logger: LunaLogger, buildInfo: NewBuildInfo): Prom
 }
 
 export async function snapshotRepositoryActivity(req: SnapshotForRepositoryRequest): Promise<MaybeError<undefined>> {
-  const logger = log.child('repo-snapshot', {
+  const logger = log.child('repo-snapshot-setup', {
     record: req,
   });
 
@@ -176,9 +176,11 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
     return buildId;
   }
 
-  logger.info('creating snapshot for repository');
+  const buildLogger = logger.child('repo-snapshot', { buildId: buildId.res });
+
+  buildLogger.info('creating snapshot for repository');
   return await performSnapshotOnRepository(
-    logger,
+    buildLogger,
     req.installationId.toString(),
     buildId.res,
     repoClone.cloneUrl,
