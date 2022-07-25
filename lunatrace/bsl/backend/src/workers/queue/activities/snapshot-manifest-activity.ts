@@ -15,21 +15,12 @@
 import { hasura } from '../../../hasura-api';
 import { createBuildAndGenerateSbomFromManifest } from '../../../snapshot/generate-snapshot';
 import { S3ObjectMetadata } from '../../../types/s3';
-import { SbomBucketInfo } from '../../../types/scan';
 import { MaybeError } from '../../../types/util';
 import { newError, newResult } from '../../../utils/errors';
 import { log } from '../../../utils/log';
 import { catchError, threwError } from '../../../utils/try';
 
-export async function snapshotManifestActivity(message: S3ObjectMetadata): Promise<MaybeError<undefined>> {
-  const { key, bucketName, region } = message;
-
-  const bucketInfo: SbomBucketInfo = {
-    key,
-    bucketName,
-    region,
-  };
-
+export async function snapshotManifestActivity(bucketInfo: S3ObjectMetadata): Promise<MaybeError<undefined>> {
   // let hasura know we are starting the process, so it ends up in the UI.  Also will throw if there is no manifest
   const hasuraRes = await hasura.UpdateManifest({ key_eq: bucketInfo.key, set_status: 'sbom-processing' });
   const manifest = hasuraRes.update_manifests?.returning[0];
@@ -47,7 +38,7 @@ export async function snapshotManifestActivity(message: S3ObjectMetadata): Promi
   }
   const buildId = insert_builds_one.id as string;
 
-  return await log.provideFields({ ...bucketInfo, buildId }, async () => {
+  return await log.provideFields({ buildId }, async () => {
     try {
       await createBuildAndGenerateSbomFromManifest(
         manifest.project.organization_id,
@@ -61,10 +52,12 @@ export async function snapshotManifestActivity(message: S3ObjectMetadata): Promi
         error: e,
       });
       // last ditch attempt to write an error to show in the UX..may or may not work depending on what the issue is
-      const res = await catchError(hasura.UpdateManifest({ key_eq: key, set_status: 'error', message: String(e) }));
+      const res = await catchError(
+        hasura.UpdateManifest({ key_eq: bucketInfo.key, set_status: 'error', message: String(e) })
+      );
       if (threwError(res)) {
         log.error('unable to update manifest to reflect that an error occured', {
-          key,
+          key: bucketInfo.key,
           error: res.message,
         });
         return newError(res.message);
