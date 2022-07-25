@@ -99,7 +99,7 @@ class QueueWorker {
       const errors = results.filter((result) => result.error);
 
       if (errors.length > 0) {
-        log.error('Errors found during SQS job:', { errors });
+        log.error('unable to process queue message', { errors });
         // TODO: (freeqaz) Handle this case by changing the visibility timeout back instead of just swallowing this.
         return newError('errors found during SQS job');
       }
@@ -117,10 +117,15 @@ class QueueWorker {
 
     const queueName = this.queueConfig.queueName;
     await log.provideFields({ source: queueName }, async () => {
-      // read loop
+      let counter = 0;
+
       // eslint-disable-next-line no-constant-condition
       while (true) {
-        log.info('Checking queue for messages...');
+        if (counter % 30 === 0) {
+          log.info('Checking queue for messages...');
+        }
+        counter += 1;
+
         try {
           await this.readDataFromQueue(queueUrl);
         } catch (err) {
@@ -147,7 +152,7 @@ class QueueWorker {
       const allJobs = Promise.all(data.Messages.map((m) => this.processQueueMessage(queueUrl, m)));
 
       const timeoutPromise = new Promise((resolve) => {
-        setTimeout(() => resolve('job_timeout'), 2 * 60 * 1000);
+        setTimeout(() => resolve('job_timeout'), 5 * 60 * 1000);
       });
 
       const result = await Promise.race([allJobs, timeoutPromise]);

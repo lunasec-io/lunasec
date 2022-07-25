@@ -72,7 +72,7 @@
     "test:unit": "yarn test:unit:js && yarn test:unit:go",
     "test:all": "yarn test:unit && yarn run test:e2e:local",
     "lint:fix": "yarn run lint --fix",
-    "lint": "yarn run lint:basecommand .",
+    "lint": "yarn run lint:basecommand ../../large-repo",
     "lint:basecommand": "yarn run eslint --ext .js,.jsx,.ts,.tsx,.vue --quiet ./lunatrace",
     "lint:lunatrace": "yarn run lint:basecommand ./lunatrace",
     "version:release": "./tools/version-release.sh",
@@ -116,7 +116,6 @@
   "packageManager": "yarn@3.2.1",
   "dependencies": {
     "jest-environment-jsdom": "~28.0.2",
-    "jsonp": "~0.2.1",
     "node-gyp": "~9.0.0",
     "nodejs-lockfile-parser": "https://github.com/lunasec-io/nodejs-lockfile-parser.git#29796168562d3a837611b1936ded8c2b7965d4eb"
   }
