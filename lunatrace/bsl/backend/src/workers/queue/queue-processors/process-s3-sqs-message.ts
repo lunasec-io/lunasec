@@ -42,11 +42,11 @@ export async function processS3SqsMessage(
       region: record.awsRegion,
     };
 
-    const buildId = s3Record.key.split('/').pop();
-
     if (s3Record.bucketName === bucketConfig.sbomBucket) {
+      const buildId = s3Record.key.split('/').pop();
+
       if (!buildId) {
-        return newError('unable to get buildId from s3 key when processing ');
+        return newError(`unable to get buildId from s3 key when processing ${s3Record}`);
       }
 
       return log.provideFields({ source: 'process-sbom-message', buildId }, () =>
