@@ -48,15 +48,21 @@ function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gz
 }
 
 async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<InsertedScan> {
-  log.info('scanning snapshot', {
-    sbomBucketInfo,
-  });
+  log.info('scanning snapshot');
 
   const [sbomStream, sbomLength] = await aws.getFileFromS3(
     sbomBucketInfo.key,
     sbomBucketInfo.bucketName,
     sbomBucketInfo.region
   );
+
+  if (sbomLength === 0) {
+    log.error('sbom is empty', {
+      buildId,
+      sbomBucketInfo,
+    });
+    throw new Error('sbom is empty');
+  }
 
   const unZippedSbomStream = await decompressGzip(sbomStream, sbomLength);
 
@@ -75,9 +81,8 @@ async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Pr
   return scanReport;
 }
 
-export async function scanSnapshotActivity(msg: S3ObjectMetadata): Promise<MaybeError<undefined>> {
+export async function scanSnapshotActivity(buildId: string, msg: S3ObjectMetadata): Promise<MaybeError<undefined>> {
   const { key, region, bucketName } = msg;
-  const buildId = key.split('/').pop();
   return await log.provideFields({ key, region, bucketName }, async () => {
     if (!buildId || !validate.isUUID(buildId)) {
       log.error('invalid build uuid from s3 object at key ', {
@@ -91,7 +96,7 @@ export async function scanSnapshotActivity(msg: S3ObjectMetadata): Promise<Maybe
 
     const scanResp = await catchError(scanSnapshot(buildId, bucketInfo));
     if (threwError(scanResp)) {
-      log.error('Sbom Scanning Error:', { scanResp });
+      log.error('scan snapshot failed', { scanResp });
       await hasura.UpdateManifestStatusIfExists({
         status: 'error',
         message: String(scanResp.message),

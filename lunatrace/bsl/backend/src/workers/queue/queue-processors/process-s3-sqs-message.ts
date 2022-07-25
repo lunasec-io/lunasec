@@ -43,9 +43,19 @@ export async function processS3SqsMessage(
     };
 
     if (s3Record.bucketName === bucketConfig.sbomBucket) {
-      return log.provideFields({ source: 'process-sbom-message' }, () => scanSnapshotActivity(s3Record));
+      const buildId = s3Record.key.split('/').pop();
+
+      if (!buildId) {
+        return newError(`unable to get buildId from s3 key when processing ${s3Record}`);
+      }
+
+      return log.provideFields({ source: 'process-sbom-message', buildId, ...s3Record }, () =>
+        scanSnapshotActivity(buildId, s3Record)
+      );
     } else if (s3Record.bucketName === bucketConfig.manifestBucket) {
-      return log.provideFields({ source: 'process-manifest-message' }, () => snapshotManifestActivity(s3Record));
+      return log.provideFields({ source: 'process-manifest-message', ...s3Record }, () =>
+        snapshotManifestActivity(s3Record)
+      );
     } else {
       return newError(`unknown event from s3 bucket: ${s3Record.bucketName}`);
     }

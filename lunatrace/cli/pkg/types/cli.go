@@ -29,6 +29,7 @@ type SnapshotOptions struct {
 	GitBranch     string   `cli:"git-branch"`
 	GitCommit     string   `cli:"git-commit"`
 	GitRemote     string   `cli:"git-remote"`
+	Workspace     string   `cli:"workspace"`
 }
 
 func NewSnapshotOptions(c *cli.Context) SnapshotOptions {
@@ -41,6 +42,7 @@ func NewSnapshotOptions(c *cli.Context) SnapshotOptions {
 		GitBranch:     c.String("git-branch"),
 		GitCommit:     c.String("git-commit"),
 		GitRemote:     c.String("git-remote"),
+		Workspace:     c.String("workspace"),
 	}
 }
 
