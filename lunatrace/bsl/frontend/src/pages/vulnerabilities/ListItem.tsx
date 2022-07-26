@@ -79,7 +79,7 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
                     </div>
                   </Card.Title>
                   <Card.Subtitle className="text-right">
-                    <span className="darker">Indexed on: </span>
+                    <span className="darker">Added on: </span>
                     {prettyDate(new Date(vuln.published))}
                   </Card.Subtitle>
                 </div>
