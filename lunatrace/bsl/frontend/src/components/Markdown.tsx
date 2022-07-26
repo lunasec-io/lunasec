@@ -27,9 +27,9 @@ import remarkGfm from 'remark-gfm';
 // @ts-ignore
 import remarkRemoveComments from 'remark-remove-comments';
 
-export const GuideBody: React.FC<{ markdown: string }> = ({ markdown }) => {
+export const Markdown: React.FC<{ markdown: string; className?: string }> = ({ markdown, className = '' }) => {
   return (
-    <div className={'guide-body'}>
+    <div className={className}>
       <ReactMarkdown
         rehypePlugins={[rehypePrism]}
         remarkPlugins={[remarkGfm, remarkRemoveComments]} //, remarkDirective, admonitionPlugin]}
