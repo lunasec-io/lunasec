@@ -49,6 +49,7 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-servicediscovery": "~1.163.0"
+    "@aws-cdk/aws-servicediscovery": "~1.163.0",
+    "@aws-cdk/cx-api": "~2.33.0"
   }
 }
