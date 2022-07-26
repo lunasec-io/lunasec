@@ -38,7 +38,6 @@
 - "!include vulnerability_affected_version.yaml"
 - "!include vulnerability_credit.yaml"
 - "!include vulnerability_equivalent.yaml"
-- "!include vulnerability_range.yaml"
 - "!include vulnerability_reference.yaml"
 - "!include vulnerability_severity.yaml"
 - "!include vulnerability_vulnerability.yaml"
