@@ -10758,7 +10758,7 @@ export type GetVulnerabilitiesByCveQueryVariables = Exact<{
 }>;
 
 
-export type GetVulnerabilitiesByCveQuery = { __typename?: 'query_root', vulnerabilities: Array<{ __typename?: 'vulnerabilities', id: any }> };
+export type GetVulnerabilitiesByCveQuery = { __typename?: 'query_root', vulnerability: Array<{ __typename?: 'vulnerability', id: any }> };
 
 export type GetWebhookCacheByDeliveryIdQueryVariables = Exact<{
   delivery_id: Scalars['uuid'];
@@ -11047,7 +11047,7 @@ export const GetUsersProjectsDocument = gql`
     `;
 export const GetVulnerabilitiesByCveDocument = gql`
     query GetVulnerabilitiesByCve($cves: [String!]) {
-  vulnerabilities(where: {name: {_in: $cves}}) {
+  vulnerability(where: {source_id: {_in: $cves}}) {
     id
   }
 }
