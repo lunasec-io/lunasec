@@ -22,6 +22,7 @@ import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
 import { Construct } from '@aws-cdk/core';
 
+import { QueueProcessingFargateService } from './aws/queue-processing-fargate-service';
 import { addDatadogToTaskDefinition, datadogLogDriverForService } from './datadog-fargate-integration';
 import { getContainerTarballPath } from './util';
 import { WorkerStorageStackState } from './worker-storage-stack';
@@ -135,38 +136,35 @@ export class WorkerStack extends cdk.Stack {
     ];
 
     queueServices.forEach((queueService) => {
-      const queueFargateService = new ecsPatterns.QueueProcessingFargateService(
-        context,
-        queueService.name + 'Service',
-        {
-          cluster: fargateCluster,
-          image: workerContainerImage,
-          memoryLimitMiB: 2048,
-          queue: queueService.queue, // will pass queue_name env var automatically
-          assignPublicIp: true,
-          enableLogging: true,
-          logDriver: datadogLogDriverForService('lunatrace', queueService.name),
-          environment: {
-            ...processQueueCommonEnvVars,
-            ...(queueService.visibility ? { QUEUE_VISIBILITY: queueService.visibility.toString() } : {}),
-          },
-          securityGroups: [servicesSecurityGroup],
-          secrets: processQueueCommonSecrets,
-          containerName: queueService.name + 'Container',
-          circuitBreaker: {
-            rollback: true,
-          },
-          // healthCheck: {
-          //   // stub command to just see if the container is actually running
-          //   command: ['CMD-SHELL', 'ls || exit 1'],
-          //   startPeriod: Duration.seconds(5),
-          // },
-          minScalingCapacity: 2,
-          deploymentController: {
-            type: DeploymentControllerType.ECS,
-          },
-        }
-      );
+      const queueFargateService = new QueueProcessingFargateService(context, queueService.name + 'Service', {
+        cluster: fargateCluster,
+        image: workerContainerImage,
+        memoryLimitMiB: 2048,
+        queue: queueService.queue, // will pass queue_name env var automatically
+        assignPublicIp: true,
+        enableLogging: true,
+        ephemeralStorageGiB: 200,
+        logDriver: datadogLogDriverForService('lunatrace', queueService.name),
+        environment: {
+          ...processQueueCommonEnvVars,
+          ...(queueService.visibility ? { QUEUE_VISIBILITY: queueService.visibility.toString() } : {}),
+        },
+        securityGroups: [servicesSecurityGroup],
+        secrets: processQueueCommonSecrets,
+        containerName: queueService.name + 'Container',
+        circuitBreaker: {
+          rollback: true,
+        },
+        // healthCheck: {
+        //   // stub command to just see if the container is actually running
+        //   command: ['CMD-SHELL', 'ls || exit 1'],
+        //   startPeriod: Duration.seconds(5),
+        // },
+        minScalingCapacity: 2,
+        deploymentController: {
+          type: DeploymentControllerType.ECS,
+        },
+      });
 
       addDatadogToTaskDefinition(context, queueFargateService.taskDefinition, datadogApiKeyArn);
 
@@ -207,6 +205,5 @@ export class WorkerStack extends cdk.Stack {
     //     },
     //   },
     // });
-    // storageStack.grypeDatabaseBucket.grantWrite(updateVulnerabilitiesJob.taskDefinition.taskRole);
   }
 }
