@@ -46,6 +46,8 @@ interface QueueService {
   queue: Queue;
   // number of seconds that a queue message is "visible" or accessible to a queue
   visibility?: number;
+  ram?: number;
+  cpu?: number;
 }
 
 export class WorkerStack extends cdk.Stack {
@@ -113,11 +115,15 @@ export class WorkerStack extends cdk.Stack {
       GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
     };
 
+    const gb = 1024;
+
     const queueServices: QueueService[] = [
       {
         name: 'ProcessRepositoryQueue',
         queue: repositoryQueue,
         visibility: 600,
+        ram: 8 * gb,
+        cpu: 4 * gb,
       },
       {
         name: 'ProcessWebhookQueue',
@@ -139,7 +145,8 @@ export class WorkerStack extends cdk.Stack {
       const queueFargateService = new QueueProcessingFargateService(context, queueService.name + 'Service', {
         cluster: fargateCluster,
         image: workerContainerImage,
-        memoryLimitMiB: 2048,
+        cpu: queueService.cpu,
+        memoryLimitMiB: queueService.ram || 2 * gb,
         queue: queueService.queue, // will pass queue_name env var automatically
         assignPublicIp: true,
         enableLogging: true,

@@ -25,7 +25,7 @@ import { generateSbomFromAsset } from '../../../snapshot/call-cli';
 import { uploadSbomToS3 } from '../../../snapshot/generate-snapshot';
 import { snapshotPinnedDependencies } from '../../../snapshot/node-package-tree';
 import { SnapshotForRepositoryRequest } from '../../../types/sqs';
-import { MaybeError } from '../../../types/util';
+import { MaybeError, MaybeErrorVoid } from '../../../types/util';
 import { newError, newResult } from '../../../utils/errors';
 import { log } from '../../../utils/log';
 import { catchError, threwError, Try } from '../../../utils/try';
@@ -35,13 +35,13 @@ const rmDir = util.promisify(fs.rm);
 const appPrefix = 'lunatrace';
 
 async function performSnapshotOnRepository(
-  logger: LunaLogger,
   installationId: string,
   buildId: string,
   cloneUrl: string,
   gitBranch: string,
   gitCommit?: string
-) {
+): Promise<MaybeErrorVoid> {
+  log.info('creating snapshot for repository');
   let repoDir = '';
   try {
     repoDir = await mkdTemp(path.join(os.tmpdir(), appPrefix));
@@ -53,28 +53,36 @@ async function performSnapshotOnRepository(
       return newError('unable to generate sbom for asset');
     }
 
-    logger.info('uploading snapshot results to s3', {
+    log.info('uploading snapshot results to s3', {
       installationId,
-      buildId,
     });
 
     const s3UploadRes = await catchError(uploadSbomToS3(installationId, buildId, sbom));
     if (threwError(s3UploadRes)) {
-      logger.error('unable to upload sbom to s3', {
-        buildId,
+      log.error('unable to upload sbom to s3', {
         message: s3UploadRes.message,
       });
       return newError(s3UploadRes.message);
     }
 
-    logger.info('snapshotting pinned dependencies', {
-      buildId,
+    log.info('snapshotting pinned dependencies', {
       repoDir,
     });
 
-    return await snapshotPinnedDependencies(buildId, repoDir);
+    const pinnedDepsError = await snapshotPinnedDependencies(buildId, repoDir);
+    if (pinnedDepsError.error) {
+      log.error('failed to snapshot pinned dependencies', {
+        repoDir,
+      });
+      return newError(pinnedDepsError.msg);
+    }
+
+    log.info('completed snapshotting pinned dependencies', {
+      repoDir,
+    });
+    return newResult(undefined);
   } catch (e) {
-    logger.error('error occurred while snapshotting an asset', {
+    log.error('error occurred while snapshotting an asset', {
       tmpDir: repoDir,
       error: e,
     });
@@ -85,7 +93,7 @@ async function performSnapshotOnRepository(
         await rmDir(repoDir, { recursive: true });
       }
     } catch (e) {
-      logger.error('error occurred while removing temp folder', {
+      log.error('error occurred while removing temp folder', {
         tmpDir: repoDir,
         error: e,
       });
@@ -176,15 +184,13 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
     return buildId;
   }
 
-  const buildLogger = logger.child('repo-snapshot', { buildId: buildId.res });
-
-  buildLogger.info('creating snapshot for repository');
-  return await performSnapshotOnRepository(
-    buildLogger,
-    req.installationId.toString(),
-    buildId.res,
-    repoClone.cloneUrl,
-    req.gitBranch,
-    req.gitCommit
-  );
+  return await log.provideFields({ buildId: buildId.res, record: req }, async () => {
+    return performSnapshotOnRepository(
+      req.installationId.toString(),
+      buildId.res,
+      repoClone.cloneUrl,
+      req.gitBranch,
+      req.gitCommit
+    );
+  });
 }
