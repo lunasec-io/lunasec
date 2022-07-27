@@ -34,7 +34,8 @@ function testAllTreeTypes() {
   manifestFixtureDirs.forEach((fixtureName) => {
     const fixturePath = path.resolve(__dirname, '../fixtures/manifests', fixtureName);
     it(`should snapshot ${fixtureName}`, async () => {
-      await snapshotPinnedDependencies('bfe13208-7b39-4f53-b8c0-46850e81457f', fixturePath);
+      // build id doesnt matter, this never hits the DB
+      await snapshotPinnedDependencies('7f73f7ca-19f0-4e6a-92d5-e1deddd1319a', fixturePath);
       expect(hasura.InsertBuildDependencyRelationships).toBeCalled();
     });
   });

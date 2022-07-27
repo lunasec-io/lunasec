@@ -56,7 +56,7 @@
     "remark-remove-comments": "~0.2.0",
     "sass-loader": "^12.4.0",
     "semver": "~7.3.7",
-    "typescript": "~4.5.5",
+    "typescript": "^4.7.4",
     "unified": "~10.1.2",
     "unist-util-visit": "~4.1.0",
     "use-react-router-breadcrumbs": "^3.0.2",

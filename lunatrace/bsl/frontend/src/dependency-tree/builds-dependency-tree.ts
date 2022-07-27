@@ -46,22 +46,22 @@ import { RawDependencyRelationship } from './types';
 // We extend this type with generics below so if they give us more data, we will give back more data
 export interface BuildDependencyPartial {
   id: string;
-  dependend_by_relationship_id: string;
+  dependend_by_relationship_id?: string;
   range: string;
   release_id: string;
   release: {
     version: string;
-  };
-  package: {
-    vulnerabilities: Array<Vulnerability>;
+    package: {
+      vulnerabilities: Array<Vulnerability>;
+    };
   };
 }
 
 interface Vulnerability {
   id: string;
   ranges: Array<{
-    introduced: string;
-    fixed: string;
+    introduced?: string | null;
+    fixed?: string | null;
   }>;
   triviallyUpdatable?: boolean; // We add this by determining something can be updated to a non-vulnerable version without violating semver
 }
@@ -83,44 +83,51 @@ type TreeNode<D> = D & {
 export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
   public readonly tree: Array<TreeNode<BuildDependency>>;
   public readonly flatVulns: Array<Vulnerability>;
-  constructor(public readonly flatDeps: Array<BuildDependency>) {
-    // Go and clean out all the vulnerabilities that don't apply to this version since the DB doesn't know how to do that yet
+  public flatDeps: Array<BuildDependency>;
+  constructor(sourceDeps: Array<BuildDependency>) {
     this.flatVulns = [];
-    flatDeps.forEach((dep) => {
-      dep.package.vulnerabilities = dep.package.vulnerabilities.filter((vuln) => {
-        const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
-        const isVulnerable = semver.satisfies(dep.release.version, vulnerableRange);
-        return isVulnerable;
-      });
+    // Go and clean out all the vulnerabilities that don't apply to this version since the DB doesn't know how to do that yet
+    this.flatDeps = sourceDeps.map((sourceDep) => {
+      const dep = structuredClone(sourceDep);
+      Object.defineProperty(
+        dep.release.package,
+        'vulnerabilities',
+        dep.release.package.vulnerabilities.filter((vuln) => {
+          const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
+          const isVulnerable = semver.satisfies(dep.release.version, vulnerableRange);
+          return isVulnerable;
+        })
+      );
       // Mark the vulns that can be trivially updated
-      dep.package.vulnerabilities.forEach((vuln) => {
-        vuln.triviallyUpdatable = this.checkVulnTriviallyUpdatable(dep.range, vuln);
+      dep.release.package.vulnerabilities.forEach((vuln) => {
+        Object.defineProperty(vuln, 'triviallyUpdatable', this.checkVulnTriviallyUpdatable(dep.range, vuln));
         // Also add it ot the flat vuln list for easy access
         this.flatVulns.push(vuln);
       });
+      return dep;
     });
 
     // define an internal recursive function that builds each node
     // it's in the constructor because this has access to the class generic and the flatDeps
     // recursive stuff is always a little hairy but this is really quite dead simple
     const cycleCheckIds: Array<string> = [];
-    function recursivelyBuildNode(dep: BuildDependency): TreeNode<BuildDependency> {
+    const recursivelyBuildNode = (dep: BuildDependency): TreeNode<BuildDependency> => {
       // Check for cycles, just in case
       if (cycleCheckIds.includes(dep.id)) {
         throw new Error('Dependency cycle detected!');
       }
       cycleCheckIds.push(dep.id);
       // Find every dep that points back at this dep
-      const unbuiltDependents = flatDeps.filter(
+      const unbuiltDependents = this.flatDeps.filter(
         (potentialDependent) => potentialDependent.dependend_by_relationship_id === dep.id
       );
       // For each dependent, add it to our list of dependents and populate its own dependents recursively
       const dependents = unbuiltDependents.map(recursivelyBuildNode);
-      const builtNode = Object.freeze({ ...dep, dependents });
+      const builtNode = { ...dep, dependents };
       return builtNode;
-    }
+    };
     // start with the root dependencies
-    const rootDeps = flatDeps.filter(function filterRoots(d) {
+    const rootDeps = this.flatDeps.filter(function filterRoots(d) {
       d.dependend_by_relationship_id === null;
     });
     // kick off the tree build
@@ -139,7 +146,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     });
   }
 
-  // only useful if you need the nodes in tree form.  Otherwise, use flatDeps
+  // only useful if you need the nodes flattened but also with tree links.  Otherwise, use flatDeps
   // todo: not currently used, delete if unused
   public collectAllTreeNodes(): TreeNode<BuildDependency>[] {
     const allDepNodes: TreeNode<BuildDependency>[] = [];
@@ -151,7 +158,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     return allDepNodes;
   }
 
-  public convertRangesToSemverRange(ranges: Array<{ introduced: string; fixed: string }>): semver.Range {
+  public convertRangesToSemverRange(ranges: Vulnerability['ranges']): semver.Range {
     const vulnerableRanges: string[] = [];
     ranges.forEach((range) => {
       if (range.introduced && range.fixed) {
