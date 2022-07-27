@@ -23,7 +23,8 @@
     "generate": "yarn run generate:github-calls && yarn run generate:hasura-calls && yarn run generate:custom-calls",
     "dev:graphql:watch": "yarn run generate:hasura-calls && watch 'yarn run generate:hasura-calls' ./src/hasura-api/graphql",
     "compile": "tsc -p tsconfig.json && cp src/graphql-yoga/schema.graphql build/graphql-yoga/schema.graphql",
-    "compile:watch": "tsc -p tsconfig.json -w"
+    "compile:watch": "tsc -p tsconfig.json -w",
+    "script:tree": "yarn run ts-node-dev ./src/manual-scripts/insert-tree.ts"
   },
   "dependencies": {
     "@aws-sdk/abort-controller": "^3.53.0",
@@ -74,7 +75,7 @@
     "jwks-rsa": "^2.0.5",
     "jwt-decode": "^3.1.2",
     "markdown-table": "2.0.0",
-    "nodejs-lockfile-parser": "https://github.com/lunasec-io/nodejs-lockfile-parser.git#9d3ed4f74eb62aa090bd5c8dd656b572fe26ac3b",
+    "nodejs-lockfile-parser": "https://github.com/lunasec-io/nodejs-lockfile-parser.git#bf0dbead44646809ba2eab007017015c314be8d8",
     "nodemon": "^2.0.15",
     "octokit": "^1.7.1",
     "pg": "^8.7.1",

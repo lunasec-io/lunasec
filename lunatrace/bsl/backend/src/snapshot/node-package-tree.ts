@@ -43,9 +43,12 @@ export async function collectPackageTreesFromDirectory(repoDir: string): Promise
     return /package-lock\.json|yarn\.lock/.test(entryName);
   });
 
+  const nonDependencyLockFilePaths = lockFilePaths.filter((p) => !/\/node_modules\//.test(p));
+
   return Promise.all(
-    lockFilePaths.map(async (lockFile) => {
+    nonDependencyLockFilePaths.map(async (lockFile) => {
       const { dir, base } = path.parse(lockFile);
+      console.log('building tree from ', dir, ' with lockfile', base);
       const pkgTree = await buildDepTreeFromFiles(dir, 'package.json', base, true);
       return {
         lockFile,
@@ -96,7 +99,6 @@ function mapPackageTreeToBuildDependencyRelationships(
       if (!dependency.version || !dependency.name) {
         return null;
       }
-
       return {
         /*
          TODO (cthompson) we are generating the ids for the database here. This avoids a roundtrip from the server
@@ -178,6 +180,7 @@ export async function snapshotPinnedDependencies(buildId: string, repoDir: strin
       log.error('failed to insert build dependency relationships', {
         idx: i,
         chunkSize,
+        resp: resp.message.substring(0, 200),
       });
       return newError(resp.message);
     }
