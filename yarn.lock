@@ -31463,7 +31463,7 @@ __metadata:
     semver: ~7.3.7
     stream-browserify: ~3.0.0
     stream-http: ~3.2.0
-    typescript: ~4.5.5
+    typescript: ^4.7.4
     unified: ~10.1.2
     unist-util-visit: ~4.1.0
     url: ~0.11.0
@@ -39750,7 +39750,7 @@ __metadata:
     lerna: ^4.0.0
     lint-staged: ^12.1.2
     node-gyp: ~9.0.0
-    nodejs-lockfile-parser: "https://github.com/lunasec-io/nodejs-lockfile-parser.git#29796168562d3a837611b1936ded8c2b7965d4eb"
+    nodejs-lockfile-parser: "https://github.com/lunasec-io/nodejs-lockfile-parser.git#3c31d00d3495b01056ad480344d62868772f47ae"
     prettier: ^2.5.0
     rimraf: ^3.0.2
     tslint-config-prettier: ^1.18.0
@@ -39900,7 +39900,7 @@ __metadata:
     jwks-rsa: ^2.0.5
     jwt-decode: ^3.1.2
     markdown-table: 2.0.0
-    nodejs-lockfile-parser: "https://github.com/lunasec-io/nodejs-lockfile-parser.git#9d3ed4f74eb62aa090bd5c8dd656b572fe26ac3b"
+    nodejs-lockfile-parser: "https://github.com/lunasec-io/nodejs-lockfile-parser.git#bf0dbead44646809ba2eab007017015c314be8d8"
     nodemon: ^2.0.15
     octokit: ^1.7.1
     pg: ^8.7.1
@@ -42283,9 +42283,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodejs-lockfile-parser@https://github.com/lunasec-io/nodejs-lockfile-parser.git#29796168562d3a837611b1936ded8c2b7965d4eb":
-  version: 0.0.0
-  resolution: "nodejs-lockfile-parser@https://github.com/lunasec-io/nodejs-lockfile-parser.git#commit=29796168562d3a837611b1936ded8c2b7965d4eb"
+"nodejs-lockfile-parser@https://github.com/lunasec-io/nodejs-lockfile-parser.git#3c31d00d3495b01056ad480344d62868772f47ae":
+  version: 1.0.0
+  resolution: "nodejs-lockfile-parser@https://github.com/lunasec-io/nodejs-lockfile-parser.git#commit=3c31d00d3495b01056ad480344d62868772f47ae"
   dependencies:
     "@snyk/dep-graph": ^2.3.0
     "@snyk/graphlib": 2.1.9-patch.3
@@ -42303,13 +42303,13 @@ __metadata:
     uuid: ^8.3.0
   bin:
     parse-nodejs-lockfile: ./bin/index.js
-  checksum: 2164f0e116cbc12f4904dcb87fac1467300b521eddf283323d09ad61befff0667d859c6820665f8f68e7f0347cc35b3b2f82bd541737effe8bb1266ea82ce5e2
+  checksum: d8c35ad75ff2822fe7343066489fd87612baa0649878d318a04843ab694b0cd8d9de7b55c32e0933571ae8d5fa4f500e8b77c04de3e03e8fed0b9572dd058b92
   languageName: node
   linkType: hard
 
-"nodejs-lockfile-parser@https://github.com/lunasec-io/nodejs-lockfile-parser.git#9d3ed4f74eb62aa090bd5c8dd656b572fe26ac3b":
-  version: 0.0.0
-  resolution: "nodejs-lockfile-parser@https://github.com/lunasec-io/nodejs-lockfile-parser.git#commit=9d3ed4f74eb62aa090bd5c8dd656b572fe26ac3b"
+"nodejs-lockfile-parser@https://github.com/lunasec-io/nodejs-lockfile-parser.git#bf0dbead44646809ba2eab007017015c314be8d8":
+  version: 1.0.0
+  resolution: "nodejs-lockfile-parser@https://github.com/lunasec-io/nodejs-lockfile-parser.git#commit=bf0dbead44646809ba2eab007017015c314be8d8"
   dependencies:
     "@snyk/dep-graph": ^2.3.0
     "@snyk/graphlib": 2.1.9-patch.3
@@ -42327,7 +42327,7 @@ __metadata:
     uuid: ^8.3.0
   bin:
     parse-nodejs-lockfile: ./bin/index.js
-  checksum: 29d324e6ad72f9337ce4dc2317eb58f034655376a7c2d888f059f8949c5ffc23fd9b5ea0e0559e0019b47b52793b3c2c02786db04ab14e9fe04eb164e2c6e715
+  checksum: 53ae8a7f81049c0fb6340a77f71749828ba575cd4a197baa3b102635af9d635882cca5e39f9f321e9c7cfd3151d6cfd6421baa0f29234b9b7d19f55fa93a47c5
   languageName: node
   linkType: hard
 
@@ -54006,6 +54006,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:^4.7.4":
+  version: 4.7.4
+  resolution: "typescript@npm:4.7.4"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 5750181b1cd7e6482c4195825547e70f944114fb47e58e4aa7553e62f11b3f3173766aef9c281783edfd881f7b8299cf35e3ca8caebe73d8464528c907a164df
+  languageName: node
+  linkType: hard
+
 "typescript@npm:~3.9.7":
   version: 3.9.10
   resolution: "typescript@npm:3.9.10"
@@ -54033,6 +54043,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 506f4c919dc8aeaafa92068c997f1d213b9df4d9756d0fae1a1e7ab66b585ab3498050e236113a1c9e57ee08c21ec6814ca7a7f61378c058d79af50a4b1f5a5e
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>":
+  version: 4.7.4
+  resolution: "typescript@patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=7ad353"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 9096d8f6c16cb80ef3bf96fcbbd055bf1c4a43bd14f3b7be45a9fbe7ada46ec977f604d5feed3263b4f2aa7d4c7477ce5f9cd87de0d6feedec69a983f3a4f93e
   languageName: node
   linkType: hard
 
