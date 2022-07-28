@@ -17,6 +17,7 @@ import { Card, Col, Container, Modal, OverlayTrigger, Row, Spinner, Table, Toolt
 import { ExternalLink } from 'react-feather';
 import { NavLink, useNavigate } from 'react-router-dom';
 
+import { Markdown } from '../../../components/Markdown';
 import {
   formatPackageManagerUrlForPackage,
   getAffectedVersionConstraint,
@@ -149,18 +150,12 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
           </Col>
           <Col md={sideBySideView ? '12' : '8'} xs="12">
             <Card>
-              <Modal.Header>
-                <Modal.Title className="darker">Description</Modal.Title>
-              </Modal.Header>
+              <Card.Header>
+                <Modal.Title className="darker d-inline">Summary: </Modal.Title>
+                <span className="lighter">{vuln.summary}</span>
+              </Card.Header>
               <Modal.Body>
-                <p className="lighter">{vuln.summary}</p>
-                <hr />
-                <p>Relevant links:</p>
-                {vuln.references.map((r) => (
-                  <p key={r.id}>
-                    {r.type}: <a href={r.url}> {r.url}</a>
-                  </p>
-                ))}
+                <Markdown markdown={vuln.details || ''}></Markdown>
               </Modal.Body>
             </Card>
           </Col>
@@ -231,6 +226,30 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
           </Col>
         </Row>
         {vuln.equivalents.length < 1 ? null : <AffectedPackagesList relatedVulns={vuln.equivalents} />}
+        <Row>
+          <Col>
+            <Card>
+              <Card.Body>
+                <Card.Title>Links</Card.Title>
+                {vuln.references.map((r) => {
+                  const url = new URL(r.url);
+                  return (
+                    <p key={r.id}>
+                      {/*TODO: make this type an icon, the types are "'advisory'|'article'|'fix'|'git'|'package'|'report'|'web'"*/}
+                      <span className="text-capitalize">{r.type}</span>:{' '}
+                      <NavLink className="text-clear darker" to={r.url}>
+                        {' '}
+                        {url.protocol}
+                        <span className="lighter font-weight-bold">{url.host}</span>
+                        {url.pathname}
+                      </NavLink>
+                    </p>
+                  );
+                })}
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
       </Container>
     </>
   );
