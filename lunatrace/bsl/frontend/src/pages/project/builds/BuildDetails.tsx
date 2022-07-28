@@ -95,6 +95,7 @@ export const BuildDetails: React.FunctionComponent = () => {
             <VulnerablePackageList
               project_id={build.project_id}
               findings={filteredFindings}
+              depTree={depTree}
               quickView={{ vulnQuickViewId, setVulnQuickViewId }}
               setIgnoreFindings={setIgnoreFindings}
             />

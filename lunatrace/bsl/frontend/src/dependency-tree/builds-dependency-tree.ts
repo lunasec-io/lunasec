@@ -86,25 +86,22 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
   public flatDeps: Array<BuildDependency>;
   constructor(sourceDeps: Array<BuildDependency>) {
     this.flatVulns = [];
+    // This is a hack to clone this object and unfreeze it, surprisingly tricky in JS
+    this.flatDeps = JSON.parse(JSON.stringify(sourceDeps));
     // Go and clean out all the vulnerabilities that don't apply to this version since the DB doesn't know how to do that yet
-    this.flatDeps = sourceDeps.map((sourceDep) => {
-      const dep = structuredClone(sourceDep);
-      Object.defineProperty(
-        dep.release.package,
-        'vulnerabilities',
-        dep.release.package.vulnerabilities.filter((vuln) => {
-          const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
-          const isVulnerable = semver.satisfies(dep.release.version, vulnerableRange);
-          return isVulnerable;
-        })
-      );
+    this.flatDeps.forEach((dep) => {
+      dep.release.package.vulnerabilities = dep.release.package.vulnerabilities.filter((vuln) => {
+        const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
+        const isVulnerable = semver.satisfies(dep.release.version, vulnerableRange);
+        return isVulnerable;
+      });
+
       // Mark the vulns that can be trivially updated
       dep.release.package.vulnerabilities.forEach((vuln) => {
-        Object.defineProperty(vuln, 'triviallyUpdatable', this.checkVulnTriviallyUpdatable(dep.range, vuln));
+        vuln.triviallyUpdatable = this.checkVulnTriviallyUpdatable(dep.range, vuln);
         // Also add it ot the flat vuln list for easy access
         this.flatVulns.push(vuln);
       });
-      return dep;
     });
 
     // define an internal recursive function that builds each node
