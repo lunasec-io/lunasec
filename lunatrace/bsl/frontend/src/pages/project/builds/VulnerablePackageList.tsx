@@ -16,16 +16,18 @@ import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/m
 import React, { ChangeEvent, useState } from 'react';
 import { Col, Dropdown, Row } from 'react-bootstrap';
 
+import { DependencyTree } from '../../../dependency-tree/builds-dependency-tree';
 import { toTitleCase } from '../../../utils/string-utils';
 
 import { VulnerablePackageListItem } from './VulnerablePackageListItem';
 import { Finding } from './VulnerablePackageListItem/types';
-import { QuickViewProps } from './types';
+import { BuildDetailInfo, DepTree, QuickViewProps } from './types';
 
 interface FindingListProps {
   findings: Finding[];
   project_id: string;
   quickView: QuickViewProps;
+  depTree: DepTree | null;
   setIgnoreFindings: (ignored: boolean) => void;
 }
 
