@@ -12,6 +12,7 @@
  *
  */
 import { GetBuildDetailsQuery } from '../../../api/generated';
+import { DependencyTree } from '../../../dependency-tree/builds-dependency-tree';
 
 export type BuildDetailInfo = NonNullable<GetBuildDetailsQuery['builds_by_pk']>;
 
@@ -19,3 +20,5 @@ export interface QuickViewProps {
   setVulnQuickViewId: (vulnId: string) => void;
   vulnQuickViewId: string | null;
 }
+
+export type DepTree = DependencyTree<BuildDetailInfo['build_dependency_relationships'][number]>;
