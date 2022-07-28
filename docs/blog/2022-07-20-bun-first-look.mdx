@@ -96,21 +96,35 @@ and things at the edge.
 
 This time, speed isn't the only difference. Bun also adds a lot of standard-library functions that
 are nice to have. `Bun.write()`, for instance, is a new function for writing files that returns a promise and claims to be faster
-by using more appropriate system calls. No more calling `util.promisify(fs.writefile)` just to get a function you can `await`.
-It also finally has `fetch` and `websocket` built in. Nice.
+by using more appropriate system calls.
 
 While we're on the topic of Node APIs, Bun currently supports around 90% of Node's existing APIs. Node is huge and can do some
 things almost nobody knows about [(`new AsyncLocalStorage()` anyone?)](https://github.com/lunasec-io/lunasec/blob/813d0abe1587a86bd7f89eea2b9e847f208b65d3/lunatrace/bsl/logger/src/index.ts#L80), so that's pretty impressive. Can you run *every*
 package you find on NPM? No, but it does seem to work most of the time.
 
 
-
 ### TypeScript
 By the way, TypeScript is a first class citizen with Bun. Simply call `bun my-ts-file.ts`. It just works. This is similar to Deno's support for TS.
 Template out a new project with Bun or add `bun-types` to your tsconfig and your IDE autocomplete will work fine for those new functions!
 
-I'm not sure if Bun is also a complete rewrite of the TypeScript compiler, but it appears to be. At this point I'm not surprised. Some more advanced TypeScript
+One of the project's original goals was to be a faster and more capable typescript compiler, although that's now
+more of a footnote in the long list of capabilities. For now, some more advanced TypeScript
 configuration and features are still unsupported, such as decorators and the `extends` feature in tsconfig for merging multiple configs together.
+
+### The Macro System
+I've been yearning for macros in TypeScript for quite a while now, so it should come as no surprise that Bun has
+them. For anyone not familiar, macros are code that runs at **compile** time to output some other runtime code, like
+little code generators. This little feature could enable a world of things missing from TypeScript, like type
+reflection, or the ability to natively read and understand types from other languages, like GraphQL. This could
+replace a lot of what is currently accomplished by clunkier codegen. *Very* exciting.
+
+For the moment Bun can use JSX and TSX in a novel way to "render" macros at compile time.
+In a way, that makes sense, since JSX *is* a templater of JS. You can see the hierarchy of JSX really shining in
+[this example](https://github.com/oven-sh/bun/blob/main/examples/macros/matchInFile.tsx) that generates an array of strings.
+This is subject to change and not necessarily stable, but darn if it isn't a little genius and something I've been
+waiting a long time for. Macros are then imported using a special import flag that looks like `import { mysteryBox }
+from
+"macro:./mystery-box";` which tells the compiler to interpret them at compile time.
 
 ## The package manager
 
@@ -121,13 +135,21 @@ It works how you would expect.
 
 I can confirm, it's faster with no cache, it's faster with a full cache, it's just faster.
 
+### Bun compared to other npm alternatives
 This isn't the first time someone has tried to speed up NPM. You might be familiar with Yarn's Plug-n-Play and how it completely ditches the `node_modules` folder to try to get
 faster installs.  It does *work* but in practice,
 it's really hard to get working, and requires a lot of polyfilling and escape-hatches. We bit-the-bullet to use it, but I probably wouldn't recommend it or use it again.
 
-Bun works the way NPM does, just faster. It uses its own lockfile format, but node_modules and the package.json look
+`Pnpm` is another rising NPM alternative that makes some smart optimizations while still being written in TypeScript. In
+pnpm, `node_modules` are symlinked from a
+global cache, and each package completes its installation in its own time without waiting for others to finish the
+current step.
+
+Bun works the way NPM does, just faster. It uses its own lockfile format, but `node_modules` and the `package.json` look
 normal. A developer with a good understanding of filesystem calls combined with low-level access and a
-fast language makes for a really quick solution, without any fancy tricks.
+fast language makes for a really quick solution, without any fancy tricks. The more similar it works to classic NPM,
+the more likely that you can switch over without any bugs or polyfills. Ease of switching over
+from existing tooling was clearly taken into account, and that goes for the rest of the project, too.
 
 Now, Bun [doesn't have](https://github.com/oven-sh/bun/issues/533) workspace support yet, meaning it won't work for a lot of the big monorepos
 that could really benefit from it (ahem, us). That said, Bun development seems to be moving at a lightning pace. Workspace support is mentioned on the roadmap as of a couple of weeks ago.
@@ -183,6 +205,7 @@ I'm concerned it's going to be a little hard to communicate all this value to th
 
 Bun is still very new and currently has no complete documentation. A [very long readme](https://github.com/oven-sh/bun#readme) is the main source of truth
 right now. It's not that hard to throw a docusaurus site together (like the one you're reading right now) and generate typedoc from the TypeScript types which already has thorough inline comments, so I imagine this will be coming soon.
+Maybe they are waiting until they can do it in something written entirely in Bun.
 
 ## Other alternatives
 ### Deno
@@ -235,7 +258,10 @@ what they needed through collaboration, in the form of plugins.
 In short, it requires
 more domain knowledge for the developer to pull in more libraries.
 
-Then Facebook wrote Jest, the batteries included testing framework. It borrows from Mocha's syntax and family of libraries, unifying them into one framework. Jest can do everything from faking times to instrumenting and mocking `require`. You can extend it, but I've actually *never* needed to. Much of the proof-of-concept and design work happened with Mocha, Jest just needed to unify it and make it easier to access. Many people still use and swear by Mocha, but Jest is very popular.
+Then Facebook wrote Jest, the batteries included testing framework. It borrows from Mocha's syntax and family of
+libraries, unifying them into one framework. Jest can do everything from faking times to instrumenting and mocking
+`require`. You can extend it, but I've only had to do that once. Much of the proof-of-concept and design work happened
+with Mocha, Jest just needed to unify it and make it easier to access. Many people still use and swear by Mocha, but Jest is very popular.
 
 There are quite a few examples like this in the Open Source world. There's a big blob of first-of-their-kind solutions, and when it gets to be too much, they all get pulled into one thing by enterprising developers.
 Linux's still divisive systemd comes to mind. Today, systemd manages almost everything
@@ -253,3 +279,5 @@ I think it would be a great fit for a small side-project or maybe a small intern
 
 It's hard to say what the next few years will bring for JavaScript, but I've got both eyes on Bun.
 
+Edit: Shortly after this post was published, Bun creator Jarred Sumner [filed an issue](https://github.com/oven-sh/bun/issues/798) talking about the next
+priorities for Bun and where he would like the most help.
