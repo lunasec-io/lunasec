@@ -54,14 +54,14 @@ function testAllTreeTypes() {
         const expectedDepLength =
           Object.keys(packageJson.dependencies).length + Object.keys(packageJson.devDependencies).length;
 
-        it('tree should have correct number of root level dependencies', async () => {
+        it(`tree should have ${expectedDepLength} root level dependencies`, async () => {
           const [tree] = await collectPackageTreesFromDirectory(fixturePath);
 
           const outputRootDepCount = Object.keys(tree.pkgTree.dependencies).length;
           expect(outputRootDepCount).toEqual(expectedDepLength);
         });
 
-        it('should call hasura with the correct number of root level dependencies', async () => {
+        it(`should call hasura with ${expectedDepLength} root level dependencies`, async () => {
           await snapshotPinnedDependencies('7f73f7ca-19f0-4e6a-92d5-e1deddd1319a', fixturePath);
           const hasuraCallArgs = hasura.InsertBuildDependencyRelationships.mock.calls[0];
           const objectsInserted = hasuraCallArgs[0].objects;
