@@ -46,13 +46,15 @@ import { RawDependencyRelationship } from './types';
 // We extend this type with generics below so if they give us more data, we will give back more data
 export interface BuildDependencyPartial {
   id: string;
-  dependend_by_relationship_id?: string;
+  depended_by_relationship_id?: string;
   range: string;
   release_id: string;
   release: {
     version: string;
     package: {
       vulnerabilities: Array<Vulnerability>;
+      name: string;
+      package_manager: string;
     };
   };
 }
@@ -71,7 +73,7 @@ type TreeNode<D> = D & {
   dependents: Array<TreeNode<D>>;
 };
 
-// export type DependencyChain<D> = Array<TreeNode<D>>;
+export type DependencyChain<D> = Array<TreeNode<D>>;
 
 /**
  *  hasura and graphql doesn't allow us to fetch recursive stuff, so we build the tree ourselves on the client
@@ -88,6 +90,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     this.flatVulns = [];
     // This is a hack to clone this object and unfreeze it, surprisingly tricky in JS
     this.flatDeps = JSON.parse(JSON.stringify(sourceDeps));
+    console.log('sanitized flat deps to ', this.flatDeps);
     // Go and clean out all the vulnerabilities that don't apply to this version since the DB doesn't know how to do that yet
     this.flatDeps.forEach((dep) => {
       dep.release.package.vulnerabilities = dep.release.package.vulnerabilities.filter((vuln) => {
@@ -99,7 +102,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
       // Mark the vulns that can be trivially updated
       dep.release.package.vulnerabilities.forEach((vuln) => {
         vuln.triviallyUpdatable = this.checkVulnTriviallyUpdatable(dep.range, vuln);
-        // Also add it ot the flat vuln list for easy access
+        // Also add it to the flat vuln list for easy access
         this.flatVulns.push(vuln);
       });
     });
@@ -116,19 +119,23 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
       cycleCheckIds.push(dep.id);
       // Find every dep that points back at this dep
       const unbuiltDependents = this.flatDeps.filter(
-        (potentialDependent) => potentialDependent.dependend_by_relationship_id === dep.id
+        (potentialDependent) => potentialDependent.depended_by_relationship_id === dep.id
       );
       // For each dependent, add it to our list of dependents and populate its own dependents recursively
       const dependents = unbuiltDependents.map(recursivelyBuildNode);
       const builtNode = { ...dep, dependents };
       return builtNode;
     };
+    console.log('flat deps before filter are ', this.flatDeps);
     // start with the root dependencies
-    const rootDeps = this.flatDeps.filter(function filterRoots(d) {
-      d.dependend_by_relationship_id === null;
+    const rootDeps = this.flatDeps.filter((d) => {
+      console.log(d.depended_by_relationship_id);
+      return d.depended_by_relationship_id === null;
     });
+    console.log('found root deps ', rootDeps);
     // kick off the tree build
     this.tree = rootDeps.map((rootDep) => recursivelyBuildNode(rootDep));
+    console.log(this.tree.length, ' root deps in tree');
   }
 
   private checkVulnTriviallyUpdatable(requestedRange: string, vuln: Vulnerability): boolean {
@@ -192,29 +199,29 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
   }
 
   // Can show us why a dependency is installed
-  // TODO: commented out until we need it and schema is solidified
-  // public showDependencyChainsOfPackage(
-  //   depId: string,
-  //   prependToExistingChain: string[] = []
-  // ): DependencyChain<BuildDependency>[] {
-  //   const chains: DependencyChain<BuildDependency>[] = [];
-  //   // walk tree recursively, finding all paths that contain a given item and putting them in the array
-  //   function findInstanceRecur(
-  //     currentNode: BuildDependencyTreeNode<BuildDependency>,
-  //     currentChain: DependencyChain<BuildDependency>
-  //   ): void {
-  //     if (currentNode.id === depId) {
-  //       chains.push(currentChain);
-  //       // This was what we were looking for, abandon this chain
-  //       return;
-  //     }
-  //     // if we aren't at the bottom of the chain yet, keep looking through transitives for our dependency
-  //     currentNode.dependents.forEach((dep) => findInstanceRecur(dep, [...currentChain, currentNode]));
-  //   }
-  //   // Start at the root nodes and walk every path using the above function, looking for ones that lead to the dependency
-  //   this.tree.forEach((rootDep) => {
-  //     findInstanceRecur(rootDep, []);
-  //   });
-  //   return chains;
-  // }
+  // for now works from name and version of package, since we are collating the grype legacy system against this tree
+  public showDependencyChainsOfPackage(
+    packageName: string,
+    packageVersion: string
+  ): DependencyChain<BuildDependency>[] {
+    const chains: DependencyChain<BuildDependency>[] = [];
+    // walk tree recursively, finding all paths that contain a given item and putting them in the array
+    function findInstanceRecur(
+      currentNode: TreeNode<BuildDependency>,
+      currentChain: DependencyChain<BuildDependency>
+    ): void {
+      if (currentNode.release.package.name === packageName && currentNode.release.version === packageVersion) {
+        chains.push(currentChain);
+        // This was what we were looking for, add it to the list and stop walking the tree
+        return;
+      }
+      // if we aren't at the bottom of the chain yet, keep looking through transitives for our dependency
+      currentNode.dependents.forEach((dep) => findInstanceRecur(dep, [...currentChain, currentNode]));
+    }
+    // Start at the root nodes and walk every path using the above function, looking for ones that lead to the dependency
+    this.tree.forEach((rootDep) => {
+      findInstanceRecur(rootDep, []);
+    });
+    return chains;
+  }
 }
