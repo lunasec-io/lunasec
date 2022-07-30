@@ -21,32 +21,59 @@ tags: [security, appsec, devsecops, cicd, sdlc]
 authors: [chris]
 ---
 
-## Taking Action on Security for Your Company
+## Security is Everything
 
-For companies in the growth phase, it can be difficult to understand what exactly to prioritize as your security team is either non-existant or newly forming. Often times security comes in the form of a penetration tests which is helpful, but only provides point in time awareness of issues vs. proactive defense against threats based on sound security decisions. 
+If you're thinking about security for your company, but you don't know where to start, then you've come to right place.
 
-Let's take a look at action items your team can use to imbue security to your company's beating heart.
+Security spans the entirety of your company, all the way from how you onboard employees to the dependencies you import, but adding security comes at a cost: More secure systems are often more complicated to use.
+
+Given that tradeoff, which areas of security should you focus on first?
+
+We'll be answering that question today, based on our conversations with hundreds of companies, and we'll be offering our advice about how you can balance between security and usability as you grow.
 
 <!--truncate-->
 
-Application security is very challenging to get right at any size company. For starters, there are simply not enough cybersecurity talent to defend the world's infrastructure.
+## What is Security vs Usability?
+
+The easiest way to answer this question is with a real-world example:
+
+When my colleague lived in downtown San Francisco, he would always make sure to the door to his car at night and make sure that he nothing inside that might tempt a thief to break his window.
+
+But, when I lived in the country, I would leave my car unlocked and even with the keys in the ignition!
+
+I certainly saved a lot of time not having to hunt around for my keys every time I needed to get groceries, but it's immediately obvious that my car wasn't as "secure" as his.
+
+But, while I was able to skip out on security for years without any repercussions, my colleague made sure to lock his car every night because, the few times he forgot, somebody would rummage through his car and make a mess if he didn't. 
+
+That's the important thing to remember with security: There is never a one-size-fits-all solution because every company's risk level is different.
+
+### You will always be vulnerable
+
+Reality is cruel: To be 100% secure is impossible and a sufficiently motivated attacker will almost always be able to get what they want from your company.
+
+And not only are you never going to be totally secure, but, even if you wanted to be, there is simply not enough cybersecurity talent to defend the world's infrastructure.
 
 > Together, the Cybersecurity Workforce Estimate and Cybersecurity Workforce Gap
 suggest the global cybersecurity workforce needs to grow 65% to effectively defend
 organizations’ critical assets. 
 [ISC2 Cybersecurity Workforce Study](https://www.isc2.org//-/media/ISC2/Research/2021/ISC2-Cybersecurity-Workforce-Study-2021.ashx)
 
-Without a surplus of talent, it is critical for security teams to have a carefully thought out plan for protecting their assets. With cybersecurity being a relatively new discipline of study, there are few examples, guides, and/or resources for how to approach organizing your team. One of the best resources you can review is the [OWASP SAMM model](https://owaspsamm.org/model/). This model is an amazing resource which provides both a high level view and insightful details about how your company should be tackling specific security concerns in each area of security.
+That's why, regardless of the size of your company, it's critical for security teams to have a carefully thought out plan to prioritize which assets they need to protect the most.
 
-In this post, the security checkpoints identified by the OWASP SAMM model for "Maturity Level 1" will be presented in such a way that clear action can be taken on them by you and your company. In other words, clear _action items_ will be presented and relevant resources such has open source or commerical tools will be linked to kick start your own journey to building a security team at your company.
+### OWASP SAMM
 
-> Disclosure: We are the developers of the supply chain defense tool LunaTrace which is mentioned a number of times in this post as a possible solution you can choose. We firmly stand by this tool as one that will provide you value. While its metion is a shameless plug, if you are looking for answers to security questions raised in this post, we are here to help solve your problems.
+One of the best resources available is the [OWASP SAMM model](https://owaspsamm.org/model/), but, while it's extremely in depth about many areas of security, it's also complicated and not the best place place to start for smaller teams.
+
+We're going to be taking OWASP SAMM and breaking into clear _action items_ along with relevant resources such has Open Source and Commerical tools to kick start your own journey to adding security to your company.
+
+> Disclosure: We are the developers of the supply chain defense tool LunaTrace. It's an easy way to add security to your code (for free) in 1-2 minutes just by adding our [GitHub App](https://github.com/marketplace/lunatrace-by-lunasec/) to your projects.
 
 ## Governance
+
 ### [Strategy and Metrics](https://owaspsamm.org/model/governance/strategy-and-metrics/)
 > Identify objectives and means of measuring effectiveness of the security program.
 
-Like any organized and healthy team, a strategy and quantifiable metrics are needed to understand how effectively a team is at addressing the problem space. Unfortunately in security, measurable metrics are far too often promised in automated tools, but under deliver in [actual value](https://www.lunasec.io/docs/blog/the-issue-with-vuln-scanners/) to an organization.
+Like any organized and healthy team, a strategy and quantifiable metrics are needed to understand how effectively a team is at addressing the problem space. Unfortunately, in security, measurable metrics are often promised in automated tools, but far too often under deliver in [actual value](https://www.lunasec.io/docs/blog/the-issue-with-vuln-scanners/) to an organization.
 
 **Action**: To address metrics that are potential over-fitted for security, having a conversation with leadership about _risk tolerance_, or what bad scenarios are actually _really bad_ for the company, is a great way to focus on things that matter. 
 
@@ -202,8 +229,14 @@ A project will hopefully have outlined how to handle data in the "Security Requi
 **Action**: Make sure legacy services are decommissioned properly and no data is being processed by them. As compliance requirements change for a company, old, forgotten services will be some of the first targets an attacker will set their sights on.
 
 ### Conclusion
-As your company rapidly grows, it will be difficult for the security team to keep pace. The best advice we can offer is simple: "uphold the bottom line". The terms "data breach", "cryptolocker", and "critical vulnerability" have flooded the news and have been very successful at distracting from the things that matter. Security companies make their money off of fear, and in turn and not incentivize to really _calm_ the fear that a company might have about security. 
+As your company rapidly grows it will be difficult for the security team to keep pace. The best advice we can offer is simple: "uphold the bottom line". 
 
-We believe that every company is capable of running their own successful, security team. An important first step to making that happen is help companies dispel the snake oil that is far too often sold in the security space.
+The terms "data breach", "cryptolocker", and "critical vulnerability" have flooded the news and have been very successful at distracting from the things that matter. Security companies make their money off of fear and in turn are not given an incentivize to actually help _calm_ any anxiety about security. 
 
-We hope this post helps you along your journey for taking action on security at your company :)
+We believe that every company is capable of running their own successful security team. An important first step to making that happen is help companies dispel the snake oil that is far too often sold in the security space.
+
+We hope this post helps you along your journey for taking action on security at your company. If you'd like to say thanks, we have a few ways that you can help us out below! :)
+
+## How to help us
+
+- 
