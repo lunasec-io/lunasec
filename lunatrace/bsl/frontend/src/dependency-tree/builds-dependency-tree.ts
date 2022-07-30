@@ -90,7 +90,6 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     this.flatVulns = [];
     // This is a hack to clone this object and unfreeze it, surprisingly tricky in JS
     this.flatDeps = JSON.parse(JSON.stringify(sourceDeps));
-    console.log('sanitized flat deps to ', this.flatDeps);
     // Go and clean out all the vulnerabilities that don't apply to this version since the DB doesn't know how to do that yet
     this.flatDeps.forEach((dep) => {
       dep.release.package.vulnerabilities = dep.release.package.vulnerabilities.filter((vuln) => {
@@ -126,16 +125,14 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
       const builtNode = { ...dep, dependents };
       return builtNode;
     };
-    console.log('flat deps before filter are ', this.flatDeps);
     // start with the root dependencies
     const rootDeps = this.flatDeps.filter((d) => {
-      console.log(d.depended_by_relationship_id);
       return d.depended_by_relationship_id === null;
     });
-    console.log('found root deps ', rootDeps);
     // kick off the tree build
     this.tree = rootDeps.map((rootDep) => recursivelyBuildNode(rootDep));
     console.log(this.tree.length, ' root deps in tree');
+    console.log(this.flatDeps.length, ' total deps in tree');
   }
 
   private checkVulnTriviallyUpdatable(requestedRange: string, vuln: Vulnerability): boolean {
