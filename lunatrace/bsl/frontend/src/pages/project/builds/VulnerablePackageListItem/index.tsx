@@ -18,7 +18,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import api from '../../../../api';
 import { ConfirmationDailog } from '../../../../components/ConfirmationDialog';
-import { QuickViewProps } from '../types';
+import { DepTree, QuickViewProps } from '../types';
 
 import { VulnerablePackageCardBody } from './VulnerablePackageCardBody';
 import { VulnerablePackageCardHeader } from './VulnerablePackageCardHeader';
@@ -27,12 +27,14 @@ import { Finding } from './types';
 interface FindingListItemProps {
   pkg: VulnerablePackage<Finding>;
   severityFilter: number;
+  depTree: DepTree | null;
   quickView: QuickViewProps;
 }
 
 export const VulnerablePackageListItem: React.FunctionComponent<FindingListItemProps> = ({
   pkg,
   severityFilter,
+  depTree,
   quickView,
 }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -88,7 +90,7 @@ export const VulnerablePackageListItem: React.FunctionComponent<FindingListItemP
     <>
       <Card className="vulnpkg-card">
         {getIgnoreState()}
-        <VulnerablePackageCardHeader pkg={pkg} />
+        <VulnerablePackageCardHeader pkg={pkg} depTree={depTree} />
         <VulnerablePackageCardBody pkg={pkg} severityFilter={severityFilter} quickView={quickView} />
       </Card>
       <ConfirmationDailog

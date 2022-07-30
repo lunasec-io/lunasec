@@ -16,13 +16,19 @@ import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/m
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 
+import { DepTree } from '../types';
+
 import { Finding } from './types';
 
 interface VulnerablePackageCardHeaderProps {
   pkg: VulnerablePackage<Finding>;
+  depTree: DepTree | null;
 }
 
-export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePackageCardHeaderProps> = ({ pkg }) => {
+export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePackageCardHeaderProps> = ({
+  pkg,
+  depTree,
+}) => {
   const filteredFindings = filterFindingsNotIgnored(pkg.findings);
   const allFindingsAreIgnored = filteredFindings.length === 0;
   const headerClassNames = allFindingsAreIgnored ? 'text-decoration-line-through' : '';
@@ -36,6 +42,8 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
     .sort((a, b) => (a && b ? b.overallScore - a.overallScore : 0));
   const mostSevereSeverity = sortedSeverities.length > 0 ? sortedSeverities[0] : null;
 
+  const chains = depTree?.showDependencyChainsOfPackage(pkg.package_name, pkg.version);
+  console.log('chains are', chains);
   return (
     <Card.Header>
       <Container fluid>

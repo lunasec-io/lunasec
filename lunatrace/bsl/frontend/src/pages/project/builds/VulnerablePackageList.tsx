@@ -35,6 +35,7 @@ export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = 
   project_id,
   findings,
   quickView,
+  depTree,
   setIgnoreFindings,
 }) => {
   const [severityFilter, setSeverityFilter] = useState(severityOrder.indexOf('critical'));
@@ -57,7 +58,7 @@ export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = 
   const pkgCards = filteredVulnerablePkgs.map((pkg) => {
     return (
       <Row key={pkg.purl}>
-        <VulnerablePackageListItem severityFilter={severityFilter} pkg={pkg} quickView={quickView} />
+        <VulnerablePackageListItem severityFilter={severityFilter} pkg={pkg} quickView={quickView} depTree={depTree} />
       </Row>
     );
   });

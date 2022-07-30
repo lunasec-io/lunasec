@@ -178,7 +178,7 @@ export const VulnerablePackageCardBody: React.FunctionComponent<VulnerablePackag
       <Container fluid>
         <PackageDetails pkg={pkg} />
         <Row>
-          <Accordion>
+          <Accordion defaultActiveKey={filteredFindings.length > 2 ? 'nonexistant' : '0'}>
             <Accordion.Item eventKey="0">
               <VulnerabilityAccordionHeader
                 filteredFindingsCount={filteredFindings.length}
