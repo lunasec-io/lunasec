@@ -1,4 +1,4 @@
-// TODO: this is currently broken due to some strange PNP/Typescript incompatibility, I believe
+// TODO: We are not building backend in here because of a PNP bug
 // It works if you compile ONLY the backend first by CDing into it
 // the issue is with @envelop/types which is a subdep of graphql yoga
 {
