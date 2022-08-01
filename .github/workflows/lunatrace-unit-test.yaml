@@ -27,7 +27,7 @@ on:
     branches: [master]
 
 jobs:
-  check-deps:
+  unit-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,6 +36,8 @@ jobs:
         with:
           node-version: '16'
 
+      - run: yarn install
+      
       - name: backend-tests
         working-directory: 'lunatrace/bsl/backend'
         run: yarn run test:jest
