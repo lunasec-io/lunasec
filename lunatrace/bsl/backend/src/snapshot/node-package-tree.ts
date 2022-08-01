@@ -145,8 +145,9 @@ export async function snapshotPinnedDependencies(buildId: string, repoDir: strin
     .map((pkgTree) => mapPackageTreeToBuildDependencyRelationships(buildId, pkgTree))
     .flat();
 
-  log.info('generated package tree for pinned dependencies', {
+  log.info('generated package tree for node dependencies', {
     count: buildDependencyRelationships.length,
+    repoDir,
   });
 
   // TODO (cthompson) chunks are used to prevent a large insert. A single SQL insert would be more performant/reliable.

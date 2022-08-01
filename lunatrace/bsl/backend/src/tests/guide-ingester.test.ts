@@ -13,7 +13,7 @@
  */
 
 import { readGuidesFromFolder } from '../guide-ingester/read-guides-from-folder';
-describe('guide injester', () => {
+describe('guide ingester', () => {
   it('parses guides from disk', () => {
     const guides = readGuidesFromFolder('./src/fixtures/guides');
     const guide = guides[0];
