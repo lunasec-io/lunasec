@@ -5139,8 +5139,8 @@ export type Package_Release = {
   mirrored_blob_url?: Maybe<Scalars['String']>;
   observed_time: Scalars['timestamptz'];
   /** An object relationship */
-  package?: Maybe<Package>;
-  package_id?: Maybe<Scalars['uuid']>;
+  package: Package;
+  package_id: Scalars['uuid'];
   /** An object relationship */
   publishing_maintainer?: Maybe<Package_Maintainer>;
   publishing_maintainer_id?: Maybe<Scalars['uuid']>;
