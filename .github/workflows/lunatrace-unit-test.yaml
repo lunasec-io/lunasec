@@ -37,5 +37,5 @@ jobs:
           node-version: '16'
 
       - name: backend-tests
-        working-directory: 'src/lunatrace/bsl/backend'
+        working-directory: 'lunatrace/bsl/backend'
         run: yarn run test:jest
