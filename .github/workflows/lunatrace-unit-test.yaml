@@ -38,6 +38,8 @@ jobs:
 
       - run: yarn install
 
+      - run: yarn run compile:bsl
+
       - run: yarn --version
 
       - name: backend-tests
