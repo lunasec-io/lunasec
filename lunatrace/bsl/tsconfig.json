@@ -1,9 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "incremental": true,
+    "target": "es2017",
     "module": "commonjs",
+    "baseUrl": "./",
     "moduleResolution": "node",
-    "outDir": "build",
+    "jsx": "react", /* Compiles JSX as React calls by default */
+    "composite": true, /* Required for our project with many Typescript bundles */
 
     /* Options around generated files */
     "declaration": true,
@@ -17,9 +20,8 @@
     "strict": true /* Enable all strict type-checking options. */,
     "esModuleInterop": true,  /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
     "resolveJsonModule": true /* Include modules imported with .json extension. */,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
 
     /* Strict Type-Checking Options */
     "noImplicitAny": true /* Raise error on expressions and declarations with an implied 'any' type. */,
@@ -30,8 +32,8 @@
     "alwaysStrict": true /* Parse in strict mode and emit "use strict" for each source file. */,
 
     /* Additional Checks */
-    //    "noUnusedLocals": true /* Report errors on unused locals. */,
-    //    "noUnusedParameters": true /* Report errors on unused parameters. */,
+//    "noUnusedLocals": true /* Report errors on unused locals. */,
+//    "noUnusedParameters": true /* Report errors on unused parameters. */,
     "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
     "noFallthroughCasesInSwitch": true /* Report errors for fallthrough cases in switch statement. */,
 
@@ -43,16 +45,8 @@
 
     /* Experimental Options */
     "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
-    "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */
-  },
-  "include": [
-    "./src/**/*.tsx",
-    "./src/**/*.ts",
-    "src/__tests__",
-    "./src/**/*"
-  ],
-  "references": [
-    {"path": "../common"},
-    {"path": "../logger"}
-  ]
+    "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
+
+    "typeRoots": ["node_modules/@types", "src/types"]
+  }
 }

@@ -11182,56 +11182,56 @@ __metadata:
   linkType: hard
 
 "@envelop/core@npm:^2.0.0":
-  version: 2.3.1
-  resolution: "@envelop/core@npm:2.3.1"
+  version: 2.4.1
+  resolution: "@envelop/core@npm:2.4.1"
   dependencies:
-    "@envelop/types": 2.2.0
+    "@envelop/types": 2.3.0
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: 1695b864f320d2cb70a69f2050b624f5096bbb627b33454d936fc0d7eec2b646c3abcfa876aaed2eeb74bb12946f5ca6e319bcad9916f2436bdbb43ecd4364e5
+  checksum: 101435f8897d0d31648ccc5eccc7b4f7c2cbab0d6b476b6324b597745114d0b6aa0311a56d150a4203620a9004de3ab324f019f280244df0905d326e5580ccf1
   languageName: node
   linkType: hard
 
 "@envelop/disable-introspection@npm:^3.0.0":
-  version: 3.3.1
-  resolution: "@envelop/disable-introspection@npm:3.3.1"
+  version: 3.4.1
+  resolution: "@envelop/disable-introspection@npm:3.4.1"
   peerDependencies:
-    "@envelop/core": ^2.3.1
+    "@envelop/core": ^2.4.1
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: 1287836a00b49ecdaf5d8bfd8814956eeed393111837e869995ba436e18128cc8a64a9913a5b3434781200acf4abd98b9c74dc6f4709f0bde861e2a660bf0da5
+  checksum: 49a56d477d0a91620171c722f412ce084a44bbe4c5de700a705c869945557064b8705496f2fed06a39c3b233310d754321bc521cadb8987d009b0352f093342e
   languageName: node
   linkType: hard
 
 "@envelop/parser-cache@npm:^4.0.0":
-  version: 4.3.1
-  resolution: "@envelop/parser-cache@npm:4.3.1"
+  version: 4.5.1
+  resolution: "@envelop/parser-cache@npm:4.5.1"
   dependencies:
-    tiny-lru: 7.0.6
+    lru-cache: ^6.0.0
   peerDependencies:
-    "@envelop/core": ^2.3.1
+    "@envelop/core": ^2.4.1
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: c418b2a448ab9d2fd7e54c614af5fc294db541d21f30d7c5f474ca6072f2545d4c9617cf9da64a7ffa6f3b7f2fb536b8d692f04d8b33fdc8cae97f0f410a71ad
+  checksum: dfa0777eff982800dbb45f7aca8bff52c4b051be5ae5c086d97e73f5cc561979989282632ee86b835b6b4af9cc5a061326f83d9a603a8977cd78a03fad7b79fd
   languageName: node
   linkType: hard
 
-"@envelop/types@npm:2.2.0":
-  version: 2.2.0
-  resolution: "@envelop/types@npm:2.2.0"
+"@envelop/types@npm:2.3.0":
+  version: 2.1.0
+  resolution: "@envelop/types@npm:2.1.0"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: 52f9d1635f310be46a6e1ee28cbde398b8a1dba7a2f11f89175103c8871f67f51a44e72abf6d7766862aa73538d33e7c71ab54868c129f4a2d054d1096aeb3fc
+  checksum: 5d2c766617d38967233e4b89f5940624328940a17c8daa82c18f082b51230cccb4c5a9a7373ece53684a940fc7b1ec60c2e99a698ec72e036d0f2b78f49c3535
   languageName: node
   linkType: hard
 
 "@envelop/validation-cache@npm:^4.0.0":
-  version: 4.3.1
-  resolution: "@envelop/validation-cache@npm:4.3.1"
+  version: 4.5.1
+  resolution: "@envelop/validation-cache@npm:4.5.1"
   dependencies:
-    tiny-lru: 7.0.6
+    lru-cache: ^6.0.0
   peerDependencies:
-    "@envelop/core": ^2.3.1
+    "@envelop/core": ^2.4.1
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: 0baaca6c71cbc10fd011ec3e7630f544861db9968b4d82833f1cf2bd35a4fe736a08712175619689893ec0fe838a89fe9a556d0ff77ad4beb8b4554799e4236f
+  checksum: fe29d9db41e816d7458f679716f98f457bc21cccf67a8ea60a83a7736f27e3dbc7f1af275858e5cc3cc63d885ebade1334a80bbd00c963b34c7775af4a9926a8
   languageName: node
   linkType: hard
 
@@ -11877,6 +11877,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@graphql-tools/merge@npm:8.3.1":
+  version: 8.3.1
+  resolution: "@graphql-tools/merge@npm:8.3.1"
+  dependencies:
+    "@graphql-tools/utils": 8.9.0
+    tslib: ^2.4.0
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 16af6be2249f4f500a4c2f5d3db2e0efd56ad69b5e10499649c6fc979c257af12e131112304a16699654b54daab37a80737e0538478bc45a0053b9bc859a7ac1
+  languageName: node
+  linkType: hard
+
 "@graphql-tools/merge@npm:^8.2.1, @graphql-tools/merge@npm:^8.2.3":
   version: 8.2.3
   resolution: "@graphql-tools/merge@npm:8.2.3"
@@ -11943,7 +11955,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/schema@npm:8.3.10, @graphql-tools/schema@npm:^8.3.1, @graphql-tools/schema@npm:~8.3.9":
+"@graphql-tools/schema@npm:8.3.10, @graphql-tools/schema@npm:~8.3.9":
   version: 8.3.10
   resolution: "@graphql-tools/schema@npm:8.3.10"
   dependencies:
@@ -11968,6 +11980,20 @@ __metadata:
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
   checksum: af5bd339ae9556800efd08776e39e0623b8b02b776518666617b1188be18594e25f9c1354866ea6e5e31f7c27f88f6f467d6de670df1097718c816f13413829f
+  languageName: node
+  linkType: hard
+
+"@graphql-tools/schema@npm:^8.3.1":
+  version: 8.5.1
+  resolution: "@graphql-tools/schema@npm:8.5.1"
+  dependencies:
+    "@graphql-tools/merge": 8.3.1
+    "@graphql-tools/utils": 8.9.0
+    tslib: ^2.4.0
+    value-or-promise: 1.0.11
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 91363cd4371e347af40ef66f7d903b5d4f5998bfaec9214768e6a795136ef6372f9f225e05e18daacd929e23695811f15e791c6cbe082bf5b5d03b16b1f874f8
   languageName: node
   linkType: hard
 
@@ -12011,7 +12037,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/utils@npm:8.6.9, @graphql-tools/utils@npm:^8.6.0":
+"@graphql-tools/utils@npm:8.6.9":
   version: 8.6.9
   resolution: "@graphql-tools/utils@npm:8.6.9"
   dependencies:
@@ -12019,6 +12045,17 @@ __metadata:
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
   checksum: 73b9569a9c2409f86a6a9005f19026cfab6d136bf884dfbff436996a47fb0561ae24d3f6bb2abcfd600197aab85d6dfc177b9a0cbaba23905ba0c7591ef12110
+  languageName: node
+  linkType: hard
+
+"@graphql-tools/utils@npm:8.9.0, @graphql-tools/utils@npm:^8.6.0":
+  version: 8.9.0
+  resolution: "@graphql-tools/utils@npm:8.9.0"
+  dependencies:
+    tslib: ^2.4.0
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 8d1d8a11722e211dc8723cd3fd7a97fa5401ab22146e4240a0f9d45547792476c34814ff914524578beec961db7b0ff23a6ddff8fe059764537e594cff35c906
   languageName: node
   linkType: hard
 
@@ -39921,6 +39958,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"lunatrace-bsl@workspace:lunatrace/bsl":
+  version: 0.0.0-use.local
+  resolution: "lunatrace-bsl@workspace:lunatrace/bsl"
+  dependencies:
+    "@types/node": ^14.0.0
+    typescript: ~4.5.4
+  languageName: unknown
+  linkType: soft
+
 "lunr@npm:^2.3.9":
   version: 2.3.9
   resolution: "lunr@npm:2.3.9"
@@ -52975,13 +53021,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tiny-lru@npm:7.0.6":
-  version: 7.0.6
-  resolution: "tiny-lru@npm:7.0.6"
-  checksum: 36a786a9111a3a358a698c9404783ad3f5396f6ed891672ffa4cd7dec4617abb8dfed6af7611bbaf8a3942a9475534c8b80f9bd58d7efa9aa594f395c9805f09
-  languageName: node
-  linkType: hard
-
 "tiny-warning@npm:^1.0.0, tiny-warning@npm:^1.0.2, tiny-warning@npm:^1.0.3":
   version: 1.0.3
   resolution: "tiny-warning@npm:1.0.3"
@@ -53698,6 +53737,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tslib@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "tslib@npm:2.4.0"
+  checksum: 8c4aa6a3c5a754bf76aefc38026134180c053b7bd2f81338cb5e5ebf96fefa0f417bff221592bf801077f5bf990562f6264fecbc42cd3309b33872cb6fc3b113
+  languageName: node
+  linkType: hard
+
 "tslint-config-prettier@npm:^1.18.0":
   version: 1.18.0
   resolution: "tslint-config-prettier@npm:1.18.0"
@@ -54199,9 +54245,9 @@ __metadata:
   linkType: hard
 
 "undici@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "undici@npm:5.0.0"
-  checksum: 98bb9914aa0647840ce6fd518ac828b7760df8d9b747680d11260fcb4f50af0029b0513e5600bf0d3a812d9e3f8d9d787bbcbcee7b9e75aa5f7de6f9b0212898
+  version: 5.8.0
+  resolution: "undici@npm:5.8.0"
+  checksum: 7b486ad064da00628d3906e140b86223023cd3494c811da8d7aa1375c2392fe6a6ac421af236c056fd3d3136bba3a91b99e0505dde071dd946070946eb0718b8
   languageName: node
   linkType: hard
 

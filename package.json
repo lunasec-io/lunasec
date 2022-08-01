@@ -105,6 +105,7 @@
       "./lunatrace/bsl/backend",
       "./lunadefend/js/internal-infrastructure/s3-redirect-generator",
       "./lunadefend/js/internal-infrastructure/metrics-server-backend",
+      "./lunatrace/bsl",
       "./lunatrace/bsl/backend",
       "./lunatrace/bsl/backend-cdk",
       "./lunatrace/bsl/common",

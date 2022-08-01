@@ -1,11 +1,14 @@
 //this is currently broken due to some strange PNP/Typescript incompatibility, I believe
 
 {
+  "buildOptions": {
+    "incremental": true
+  },
   "files": [],
   "references": [
+    { "path": "common" },
     { "path": "backend" },
     { "path": "frontend"},
-    { "path": "common" },
     { "path": "logger" }
   ]
 }
