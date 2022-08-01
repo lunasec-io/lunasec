@@ -39,9 +39,9 @@ jobs:
       - run: yarn install
 
       # Due to a strange bug with PNP, backend needs to be compiled by itself to populate the build folder
-      - name: precompile-backend
-        working-directory: 'lunatrace/bsl/backend'
-        run: 'yarn run compile'
+#      - name: precompile-backend
+#        working-directory: 'lunatrace/bsl/backend'
+#        run: 'yarn run compile'
 
       - run: yarn run compile:bsl
 
