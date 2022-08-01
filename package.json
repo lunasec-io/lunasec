@@ -113,7 +113,7 @@
       "./lunatrace/dev-cli"
     ]
   },
-  "packageManager": "yarn@3.2.1",
+  "packageManager": "yarn@3.2.2",
   "dependencies": {
     "jest-environment-jsdom": "~28.0.2",
     "jsonp": "~0.2.1",
