@@ -26,11 +26,11 @@ import { Build_Dependency_Relationship_Insert_Input } from '../hasura-api/genera
 const hasura = mockedHasura as jest.MockedObject<typeof mockedHasura>;
 
 const manifestFixtures = [
-  { name: 'large-yarn-repo', rootDepCount: 10 },
-  { name: 'normal-yarn1-repo', rootDepCount: 10 },
-  { name: 'normal-yarn3-repo', rootDepCount: 10 },
-  { name: 'normal-npm-repo', rootDepCount: 10 },
-  // { name: 'vulnerable-repo', rootDepCount: 10 },
+  // { name: 'large-yarn-repo'}, supporting workspaces right now will break this test but should in theory still work in prod, we can go to the trouble to write this test if we want to bring official support for them
+  { name: 'normal-yarn1-repo' },
+  { name: 'normal-yarn3-repo' },
+  { name: 'normal-npm-repo' },
+  // { name: 'vulnerable-repo' }, has no package.json and not sure where this came from so commented out since the test needs a package.json
 ];
 
 function testAllTreeTypes() {

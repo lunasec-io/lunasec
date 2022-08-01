@@ -1,4 +1,4 @@
-name: LunaTrace Integration Test
+name: LunaTrace Hasura Migrate and Regenerate
 
 # This workflow posts hasura changes as a comment.
 on:
@@ -80,7 +80,7 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
-          
+
       - run: docker-compose logs
         working-directory: lunatrace/bsl
 
