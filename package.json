@@ -119,5 +119,9 @@
     "jsonp": "~0.2.1",
     "node-gyp": "~9.0.0",
     "nodejs-lockfile-parser": "https://github.com/lunasec-io/nodejs-lockfile-parser.git#3c31d00d3495b01056ad480344d62868772f47ae"
+  },
+  "resolutions": {
+    "snyk-nodejs-lockfile-parser": "portal:/home/forrest/code/nodejs-lockfile-parser",
+    "snyk-nodejs-lockfile-parser-lunatrace-fork": "portal:/home/forrest/code/nodejs-lockfile-parser"
   }
 }
