@@ -48,6 +48,19 @@ function testAllTreeTypes() {
         expect(trees.length).toEqual(1);
       });
 
+      it('should have no null ranges', async () => {
+        await snapshotPinnedDependencies('7f73f7ca-19f0-4e6a-92d5-e1deddd1319a', fixturePath);
+        const hasuraCallArgs = hasura.InsertBuildDependencyRelationships.mock.calls[0];
+        const objectsInserted = hasuraCallArgs[0].objects;
+
+        (objectsInserted as Array<Build_Dependency_Relationship_Insert_Input>).forEach((dep) => {
+          if (!dep.range) {
+            console.log('encountered dep with null range: ', util.inspect(dep, { depth: Infinity }));
+          }
+          expect(dep.range).toBeTruthy();
+        });
+      });
+
       describe('root dependency counts', () => {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         const packageJson = require(path.join(fixturePath, 'package.json'));

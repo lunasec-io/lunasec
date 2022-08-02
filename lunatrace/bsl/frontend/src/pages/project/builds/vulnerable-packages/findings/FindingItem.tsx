@@ -20,12 +20,10 @@ import { XSquare } from 'react-feather';
 import { useParams } from 'react-router-dom';
 import semver from 'semver';
 
-import api from '../../../../api';
-import { ConfirmationDailog } from '../../../../components/ConfirmationDialog';
-import { ConditionallyRender } from '../../../../components/utils/ConditionallyRender';
-import { toTitleCase } from '../../../../utils/string-utils';
-
-import { Finding } from './types';
+import api from '../../../../../api';
+import { ConfirmationDailog } from '../../../../../components/ConfirmationDialog';
+import { toTitleCase } from '../../../../../utils/string-utils';
+import { Finding } from '../types';
 
 interface VulnerabilityTableItemProps {
   finding: Finding;
@@ -33,7 +31,7 @@ interface VulnerabilityTableItemProps {
   vulnQuickViewId: string | null;
 }
 
-export const VulnerabilityTableItem: React.FC<VulnerabilityTableItemProps> = ({
+export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({
   finding,
   setVulnQuickViewId,
   vulnQuickViewId,

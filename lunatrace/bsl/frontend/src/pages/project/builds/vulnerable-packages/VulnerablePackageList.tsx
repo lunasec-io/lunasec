@@ -11,17 +11,15 @@
  * limitations under the License.
  *
  */
-import { groupByPackage, severityOrder } from '@lunatrace/lunatrace-common/build/main';
-import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
+import { getCvssVectorFromSeverities, groupByPackage, severityOrder } from '@lunatrace/lunatrace-common';
 import React, { ChangeEvent, useState } from 'react';
 import { Col, Dropdown, Row } from 'react-bootstrap';
 
-import { DependencyTree } from '../../../dependency-tree/builds-dependency-tree';
-import { toTitleCase } from '../../../utils/string-utils';
+import { toTitleCase } from '../../../../utils/string-utils';
+import { DepTree, QuickViewProps } from '../types';
 
-import { VulnerablePackageListItem } from './VulnerablePackageListItem';
-import { Finding } from './VulnerablePackageListItem/types';
-import { BuildDetailInfo, DepTree, QuickViewProps } from './types';
+import { VulnerablePackageMain } from './VulnerablePackageMain';
+import { Finding } from './types';
 
 interface FindingListProps {
   findings: Finding[];
@@ -58,7 +56,7 @@ export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = 
   const pkgCards = filteredVulnerablePkgs.map((pkg) => {
     return (
       <Row key={pkg.purl}>
-        <VulnerablePackageListItem severityFilter={severityFilter} pkg={pkg} quickView={quickView} depTree={depTree} />
+        <VulnerablePackageMain severityFilter={severityFilter} pkg={pkg} quickView={quickView} depTree={depTree} />
       </Row>
     );
   });

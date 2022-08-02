@@ -20,18 +20,18 @@ import api from '../../../../api';
 import { ConfirmationDailog } from '../../../../components/ConfirmationDialog';
 import { DepTree, QuickViewProps } from '../types';
 
-import { VulnerablePackageCardBody } from './VulnerablePackageCardBody';
 import { VulnerablePackageCardHeader } from './VulnerablePackageCardHeader';
+import { PackageCardBody } from './body/PackageCardBody';
 import { Finding } from './types';
 
-interface FindingListItemProps {
+interface VulnerablePackageMainProps {
   pkg: VulnerablePackage<Finding>;
   severityFilter: number;
   depTree: DepTree | null;
   quickView: QuickViewProps;
 }
 
-export const VulnerablePackageListItem: React.FunctionComponent<FindingListItemProps> = ({
+export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMainProps> = ({
   pkg,
   severityFilter,
   depTree,
@@ -91,7 +91,7 @@ export const VulnerablePackageListItem: React.FunctionComponent<FindingListItemP
       <Card className="vulnpkg-card">
         {getIgnoreState()}
         <VulnerablePackageCardHeader pkg={pkg} depTree={depTree} />
-        <VulnerablePackageCardBody pkg={pkg} severityFilter={severityFilter} quickView={quickView} />
+        <PackageCardBody pkg={pkg} severityFilter={severityFilter} quickView={quickView} depTree={depTree} />
       </Card>
       <ConfirmationDailog
         title={`Ignore All Findings For This Package`}

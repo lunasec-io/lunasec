@@ -39919,7 +39919,6 @@ __metadata:
     jwks-rsa: ^2.0.5
     jwt-decode: ^3.1.2
     markdown-table: 2.0.0
-    nodejs-lockfile-parser: "https://github.com/lunasec-io/nodejs-lockfile-parser.git#bf0dbead44646809ba2eab007017015c314be8d8"
     nodemon: ^2.0.15
     octokit: ^1.7.1
     pg: ^8.7.1
@@ -39927,6 +39926,7 @@ __metadata:
     pm2: ^5.1.2
     semver: ^7.3.5
     slugify: ^1.6.5
+    snyk-nodejs-lockfile-parser-lunatrace-fork: "https://github.com/lunasec-io/nodejs-lockfile-parser.git#77edb331dca5815f11f9ae40aa3a09a8e67542af"
     source-map-support: ^0.5.16
     sqlite: ^4.0.23
     sqlite3: ^5.0.2
@@ -42330,30 +42330,6 @@ __metadata:
   bin:
     parse-nodejs-lockfile: ./bin/index.js
   checksum: d8c35ad75ff2822fe7343066489fd87612baa0649878d318a04843ab694b0cd8d9de7b55c32e0933571ae8d5fa4f500e8b77c04de3e03e8fed0b9572dd058b92
-  languageName: node
-  linkType: hard
-
-"nodejs-lockfile-parser@https://github.com/lunasec-io/nodejs-lockfile-parser.git#bf0dbead44646809ba2eab007017015c314be8d8":
-  version: 1.0.0
-  resolution: "nodejs-lockfile-parser@https://github.com/lunasec-io/nodejs-lockfile-parser.git#commit=bf0dbead44646809ba2eab007017015c314be8d8"
-  dependencies:
-    "@snyk/dep-graph": ^2.3.0
-    "@snyk/graphlib": 2.1.9-patch.3
-    "@yarnpkg/core": ^2.4.0
-    "@yarnpkg/lockfile": ^1.1.0
-    event-loop-spinner: ^2.0.0
-    js-yaml: ^4.1.0
-    lodash.clonedeep: ^4.5.0
-    lodash.flatmap: ^4.5.0
-    lodash.isempty: ^4.4.0
-    lodash.topairs: ^4.3.0
-    semver: ^7.3.5
-    snyk-config: ^4.0.0-rc.2
-    tslib: ^1.9.3
-    uuid: ^8.3.0
-  bin:
-    parse-nodejs-lockfile: ./bin/index.js
-  checksum: 53ae8a7f81049c0fb6340a77f71749828ba575cd4a197baa3b102635af9d635882cca5e39f9f321e9c7cfd3151d6cfd6421baa0f29234b9b7d19f55fa93a47c5
   languageName: node
   linkType: hard
 
@@ -50949,6 +50925,29 @@ __metadata:
   checksum: befb223a740dc2c3f9ac640d8f731d8982b713bc060d241206ccb2fa92b19a1a04f9d38a39a2ee18a16a567d826154380b4c944431b9e2e2675b1a5b50260c9b
   languageName: node
   linkType: hard
+
+"snyk-nodejs-lockfile-parser-lunatrace-fork@portal:/home/forrest/code/nodejs-lockfile-parser::locator=lunasec%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "snyk-nodejs-lockfile-parser-lunatrace-fork@portal:/home/forrest/code/nodejs-lockfile-parser::locator=lunasec%40workspace%3A."
+  dependencies:
+    "@snyk/dep-graph": ^2.3.0
+    "@snyk/graphlib": 2.1.9-patch.3
+    "@yarnpkg/core": ^2.4.0
+    "@yarnpkg/lockfile": ^1.1.0
+    event-loop-spinner: ^2.0.0
+    js-yaml: ^4.1.0
+    lodash.clonedeep: ^4.5.0
+    lodash.flatmap: ^4.5.0
+    lodash.isempty: ^4.4.0
+    lodash.topairs: ^4.3.0
+    semver: ^7.3.5
+    snyk-config: ^4.0.0-rc.2
+    tslib: ^1.9.3
+    uuid: ^8.3.0
+  bin:
+    parse-nodejs-lockfile: ./bin/index.js
+  languageName: node
+  linkType: soft
 
 "sockjs-client@npm:^1.5.0":
   version: 1.6.0

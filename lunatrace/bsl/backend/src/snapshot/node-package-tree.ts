@@ -14,8 +14,8 @@
 import { randomUUID } from 'crypto';
 import path from 'path';
 
-import { buildDepTreeFromFiles, PkgTree } from 'nodejs-lockfile-parser';
-import { DepTreeDep } from 'nodejs-lockfile-parser/dist/parsers';
+import { buildDepTreeFromFiles, PkgTree } from 'snyk-nodejs-lockfile-parser-lunatrace-fork';
+import { DepTreeDep } from 'snyk-nodejs-lockfile-parser-lunatrace-fork/dist/parsers';
 
 import { hasura } from '../hasura-api';
 import {

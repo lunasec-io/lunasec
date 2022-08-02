@@ -42,8 +42,6 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
     .sort((a, b) => (a && b ? b.overallScore - a.overallScore : 0));
   const mostSevereSeverity = sortedSeverities.length > 0 ? sortedSeverities[0] : null;
 
-  const chains = depTree?.showDependencyChainsOfPackage(pkg.package_name, pkg.version);
-  console.log('chains are', chains);
   return (
     <Card.Header>
       <Container fluid>
@@ -59,7 +57,7 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
             </Card.Subtitle>
           </Col>
           <Col sm={{ span: 6 }}>
-            <div style={{ float: 'right', textAlign: 'right' }}>
+            <div className="text-sm-end">
               {mostSevereSeverity ? (
                 <>
                   <Card.Title>
