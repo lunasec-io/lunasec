@@ -14,8 +14,8 @@
 import { randomUUID } from 'crypto';
 import path from 'path';
 
-import { buildDepTreeFromFiles, PkgTree } from 'nodejs-lockfile-parser';
-import { DepTreeDep } from 'nodejs-lockfile-parser/dist/parsers';
+import { buildDepTreeFromFiles, PkgTree } from 'snyk-nodejs-lockfile-parser-lunatrace-fork';
+import { DepTreeDep } from 'snyk-nodejs-lockfile-parser-lunatrace-fork/dist/parsers';
 
 import { hasura } from '../hasura-api';
 import {
@@ -43,9 +43,12 @@ export async function collectPackageTreesFromDirectory(repoDir: string): Promise
     return /package-lock\.json|yarn\.lock/.test(entryName);
   });
 
+  const nonDependencyLockFilePaths = lockFilePaths.filter((p) => !/\/node_modules\//.test(p));
+
   return Promise.all(
-    lockFilePaths.map(async (lockFile) => {
+    nonDependencyLockFilePaths.map(async (lockFile) => {
       const { dir, base } = path.parse(lockFile);
+      // Calls our fork of the snyk library
       const pkgTree = await buildDepTreeFromFiles(dir, 'package.json', base, true);
       return {
         lockFile,
@@ -58,31 +61,24 @@ export async function collectPackageTreesFromDirectory(repoDir: string): Promise
 interface FlattenedDependency {
   id: string;
   dependency: DepTreeDep;
-  parentId?: string;
-}
-
-function depDependencies(dep: DepTreeDep, parentId?: string): FlattenedDependency[] {
-  // if these are root dependencies then do not generate a parent identifier, there is none.
-  // this will help identify which are root level dependencies in the database.
-  const id = randomUUID();
-  return Object.values(dep.dependencies || []).map((d) => ({ id, dependency: d, parentId }));
+  parentId: string | null;
 }
 
 function flattenPkgTree(pkgTree: PkgTree) {
-  const stack = [...depDependencies(pkgTree)];
-  const res = [];
-  while (stack.length) {
-    // pop value from stack
-    const next = stack.pop();
-    if (!next) {
-      break;
-    }
+  const flatDeps: FlattenedDependency[] = [];
 
-    stack.push(...depDependencies(next.dependency, next.id));
-    res.push(next);
-  }
-  // reverse to restore input order
-  return res;
+  const recurseTree = (dep: DepTreeDep, parentId: string | null): void => {
+    const newId = randomUUID();
+    const newDep = { id: newId, dependency: dep, parentId };
+    flatDeps.push(newDep);
+    if (dep.dependencies) {
+      Object.values(dep.dependencies).forEach((subDep) => {
+        recurseTree(subDep, newId);
+      });
+    }
+  };
+  Object.values(pkgTree.dependencies).forEach((rootDep) => recurseTree(rootDep, null));
+  return flatDeps;
 }
 
 function mapPackageTreeToBuildDependencyRelationships(
@@ -96,9 +92,9 @@ function mapPackageTreeToBuildDependencyRelationships(
       if (!dependency.version || !dependency.name) {
         return null;
       }
-
       return {
         /*
+         TODO: (forrest) this will not happen before the heat death of the universe and we can delete the below comment
          TODO (cthompson) we are generating the ids for the database here. This avoids a roundtrip from the server
          so we can have an id on hand for `depended_by_relationship_id` but could result in an insertion error.
          What is the best way to recover from this? Theoretically, on error, we can
@@ -149,8 +145,9 @@ export async function snapshotPinnedDependencies(buildId: string, repoDir: strin
     .map((pkgTree) => mapPackageTreeToBuildDependencyRelationships(buildId, pkgTree))
     .flat();
 
-  log.info('generated package tree for pinned dependencies', {
+  log.info('generated package tree for node dependencies', {
     count: buildDependencyRelationships.length,
+    repoDir,
   });
 
   // TODO (cthompson) chunks are used to prevent a large insert. A single SQL insert would be more performant/reliable.
@@ -178,6 +175,7 @@ export async function snapshotPinnedDependencies(buildId: string, repoDir: strin
       log.error('failed to insert build dependency relationships', {
         idx: i,
         chunkSize,
+        resp: resp.message.substring(0, 200),
       });
       return newError(resp.message);
     }

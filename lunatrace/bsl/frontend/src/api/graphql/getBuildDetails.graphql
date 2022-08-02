@@ -12,6 +12,8 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
             depended_by_relationship_id
             range
             labels
+            id
+            release_id
             release {
                 id
                 fetched_time
@@ -22,12 +24,9 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                     package_manager
                     vulnerabilities {
                         id
-                        affected_range_events {
-                            event
-                            type
-                            version
-                            id
-                            database_specific
+                        ranges {
+                            introduced
+                            fixed
                         }
                     }
                 }

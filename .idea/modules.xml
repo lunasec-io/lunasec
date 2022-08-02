@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/lunasec-monorepo.iml" filepath="$PROJECT_DIR$/.idea/lunasec-monorepo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../nodejs-lockfile-parser/nodejs-lockfile-parser.iml" filepath="$PROJECT_DIR$/../nodejs-lockfile-parser/nodejs-lockfile-parser.iml" />
     </modules>
   </component>
 </project>
