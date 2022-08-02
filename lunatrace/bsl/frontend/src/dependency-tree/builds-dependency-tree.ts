@@ -106,7 +106,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
       });
     });
 
-    // define an internal recursive function that builds each node
+    // an internal recursive function that builds each node
     // it's in the constructor because this has access to the class generic and the flatDeps
     // recursive stuff is always a little hairy but this is really quite dead simple
     const cycleCheckIds: Array<string> = [];
@@ -208,6 +208,8 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
       currentChain: DependencyChain<BuildDependency>
     ): void {
       if (currentNode.release.package.name === packageName && currentNode.release.version === packageVersion) {
+        // Put our targetted dep on the end since its the end of the chain
+        currentChain.push(currentNode);
         chains.push(currentChain);
         // This was what we were looking for, add it to the list and stop walking the tree
         return;
