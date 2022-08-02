@@ -17,6 +17,7 @@ insert_permissions:
       check: {}
       columns:
         - labels
+        - project_path
         - range
         - build_id
         - depended_by_relationship_id
@@ -28,6 +29,7 @@ select_permissions:
     permission:
       columns:
         - labels
+        - project_path
         - range
         - build_id
         - depended_by_relationship_id
@@ -38,6 +40,7 @@ select_permissions:
     permission:
       columns:
         - labels
+        - project_path
         - range
         - build_id
         - depended_by_relationship_id
@@ -54,11 +57,12 @@ update_permissions:
   - role: service
     permission:
       columns:
-        - labels
-        - range
         - build_id
         - depended_by_relationship_id
         - id
+        - labels
+        - project_path
+        - range
         - release_id
       filter: {}
       check: {}

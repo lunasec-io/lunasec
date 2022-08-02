@@ -85,6 +85,33 @@ S3_MANIFEST_BUCKET=xxx
 QUEUE_NAME=xxx
 ```
 
+### Adding github app private key
+
+The github app private key needs to exist at `lunatrace/bsl/backend/github-app-dev.2022-03-09.private-key.pem`. Ask for this file or set up your own github app.
+
+### Setting up ory kratos
+
+Ory kratos needs the github app client id and secret at `lunatrace/bsl/ory/kratos/config.dev.yaml`. Ask for this file or set up your own with the format:
+```yaml
+serve:
+  public:
+    base_url: http://localhost:4455/api/kratos/
+
+selfservice:
+  methods:
+    password:
+      enabled: false
+    oidc:
+      enabled: true
+      config:
+        providers:
+          - id: github-app
+            provider: github-app
+            client_id: xxx
+            client_secret: xxx
+            mapper_url: file:///config/oidc.github.jsonnet
+```
+
 ### Running `tmuxp`
 
 From the `$REPO_ROOT/lunatrace/dev-cli` folder run `yarn run start` and you should see:

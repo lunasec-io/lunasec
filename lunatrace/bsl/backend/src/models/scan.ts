@@ -41,7 +41,11 @@ export async function performSnapshotScanAndCollectReport(
 
   const typedRawGrypeReport = parseJsonToGrypeScanReport(rawGrypeReport);
   if (typedRawGrypeReport === null) {
-    throw new Error(`grype report was not able to be parsed`);
+    const errorMsg = 'report was not able to be parsed';
+    logger.error(errorMsg, {
+      rawGrypeReport,
+    });
+    throw new Error(errorMsg);
   }
 
   logger.info('parsing scan results into report');
