@@ -35,21 +35,20 @@ If you use `sudo docker` then you'll need that shim script. If you have rootless
 just omit it though.
 
 
-## Hacky Deployment Steps
+## Deployment
 
-With backend running on your box do
+```shell
+ssh ec2-user@35.89.40.8
 
-`cd backend-cdk`
+cd lunasec
+git pull
+git checkout <branch to deploy>
 
-`./build-containers`
+# bring up the tmuxp, make sure everything is running, and then detach
 
-manually apply the metadata from your machine to the production hasura instance. For me connecting to the prod instance looks like:
-
-```bash
-HASURA_GRAPHQL_ENDPOINT=https://lunatrace.lunasec.io/api/hasura HASURA_GRAPHQL_ADMIN_SECRET="$(aws secretsmanager get-secret-value --secret-id lunatrace-HasuraAdminSecret | jq -r .SecretString)" hasura migrate apply
+cd lunatrace/bsl/backend-cdk
+yarn run cdk:deploy:prod
 ```
-
-`yarn run prod:cdk:deploy`
 
 watch the deployment in aws console -
 https://us-west-2.console.aws.amazon.com/ecs/v2/clusters/lunatrace-BackendStack-LunaTraceFargateClusterCF463AE0-eko30PlhvQ8T/services/lunatrace-BackendStack-Service9571FDD8-pRICa2elicKg/configuration?region=us-west-2
@@ -58,10 +57,7 @@ Watch the logs in the task, check health statuses of each container and make sur
 
 If anything goes wrong, go to the service and hit edit and roll the revision back to the previous number.
 
-
-
-
-followed by `hasura metadata apply` and `metadata reload`, also against the prod instance
+followed by `metadata reload`, also against the prod instance
 
 ### See production logs
 
