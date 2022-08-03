@@ -42,22 +42,20 @@ export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ p
         </Row>
       )}
       <Row>
-        <Col xs="12">
+        <Col xl={6} lg={12}>
           <h5>
             <span className="darker">Language: </span>
             <span className="text-capitalize">{pkg.language}</span>
           </h5>
-        </Col>
-      </Row>
-      <Row>
-        <Col xs="12" className="d-flex">
           <h5>
             <span className="darker">{pluralizeIfMultiple(pkg.locations.length, 'Path') + ': '}</span>
             <span className="lighter mx-1">{pkgLocations}</span>
           </h5>
         </Col>
+        <Col xl="auto" lg={12} className="justify-content-xl-end d-flex">
+          <TreeInfo pkg={pkg} depTree={depTree} />
+        </Col>
       </Row>
-      <TreeInfo pkg={pkg} depTree={depTree} />
     </div>
   );
 };

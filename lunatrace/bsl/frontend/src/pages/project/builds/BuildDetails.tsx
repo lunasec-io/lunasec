@@ -74,15 +74,10 @@ export const BuildDetails: React.FunctionComponent = () => {
 
     const filteredFindings = ignoreFindings ? filterFindingsNotIgnored(build.findings) : build.findings;
 
-    console.log('loaded dependency relationships ', build.build_dependency_relationships);
-
     const depTree = build.build_dependency_relationships
       ? new DependencyTree(build.build_dependency_relationships)
       : null;
 
-    if (depTree) {
-      console.log('nodes in tree is ', depTree.collectAllTreeNodes().length);
-    }
     // Responsible for showing or hiding the findings list when quick view is open.  D-none only applies on screens smaller than xxl(1400)
     // meaning that the findings list will be hidden on smaller screens when quick view is open.
     const packageListColClasses = classNames('d-xxl-block', { 'd-none': quickViewOpen });
