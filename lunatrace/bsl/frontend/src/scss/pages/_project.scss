@@ -22,7 +22,7 @@
 }
 
 .vuln-table-item.ignored {
-  background-color: $gray-100;
+  background-color: $gray-300;
 }
 
 .package-trees {
@@ -31,4 +31,8 @@
 
 .primary-color {
   color: $info;
+}
+
+.one-point-two-em {
+  font-size: 1.2em;
 }
