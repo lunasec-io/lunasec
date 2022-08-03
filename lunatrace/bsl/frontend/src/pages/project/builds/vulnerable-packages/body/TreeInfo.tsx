@@ -39,7 +39,7 @@ export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depTree 
   };
 
   const chains = depTree.showDependencyChainsOfPackage(pkg.package_name, pkg.version);
-  // Show the longest chains first, a hack to make expandable double chevrons show on deduped collapsed chains
+  // Show the longest chains first, a hack to make expandable double chevrons show on deduped collapsed chains. Also it looks nice
   chains.sort((a, b) => {
     return b.length - a.length;
   });
@@ -87,7 +87,9 @@ export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depTree 
                         <ChevronsRight size="1em" className="" />
                       </NavLink>
                     )}
-                    {!isLast && chain.length === visibleChain.length && <ChevronRight size="1em" className="" />}
+                    {!isLast && chain.length === visibleChain.length && (
+                      <ChevronRight size="1em" className={isExpanded ? 'mb-3' : ''} />
+                    )}
                   </React.Fragment>
                 );
               })}
