@@ -3776,10 +3776,6 @@ export type Query_Root = {
   vulnerability_packages: Array<Vulnerability_Packages>;
   /** fetch data from the table: "vulnerability_packages" using primary key columns */
   vulnerability_packages_by_pk?: Maybe<Vulnerability_Packages>;
-  /** fetch data from the table: "vulnerability.range" */
-  vulnerability_range: Array<Vulnerability_Range>;
-  /** fetch data from the table: "vulnerability.range" using primary key columns */
-  vulnerability_range_by_pk?: Maybe<Vulnerability_Range>;
   /** fetch data from the table: "vulnerability.reference" */
   vulnerability_reference: Array<Vulnerability_Reference>;
   /** fetch data from the table: "vulnerability.reference" using primary key columns */
@@ -4276,20 +4272,6 @@ export type Query_RootVulnerability_PackagesArgs = {
 
 
 export type Query_RootVulnerability_Packages_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootVulnerability_RangeArgs = {
-  distinct_on?: InputMaybe<Array<Vulnerability_Range_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Vulnerability_Range_Order_By>>;
-  where?: InputMaybe<Vulnerability_Range_Bool_Exp>;
-};
-
-
-export type Query_RootVulnerability_Range_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -4906,10 +4888,6 @@ export type Subscription_Root = {
   vulnerability_packages: Array<Vulnerability_Packages>;
   /** fetch data from the table: "vulnerability_packages" using primary key columns */
   vulnerability_packages_by_pk?: Maybe<Vulnerability_Packages>;
-  /** fetch data from the table: "vulnerability.range" */
-  vulnerability_range: Array<Vulnerability_Range>;
-  /** fetch data from the table: "vulnerability.range" using primary key columns */
-  vulnerability_range_by_pk?: Maybe<Vulnerability_Range>;
   /** fetch data from the table: "vulnerability.reference" */
   vulnerability_reference: Array<Vulnerability_Reference>;
   /** fetch data from the table: "vulnerability.reference" using primary key columns */
@@ -5394,20 +5372,6 @@ export type Subscription_RootVulnerability_Packages_By_PkArgs = {
 };
 
 
-export type Subscription_RootVulnerability_RangeArgs = {
-  distinct_on?: InputMaybe<Array<Vulnerability_Range_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Vulnerability_Range_Order_By>>;
-  where?: InputMaybe<Vulnerability_Range_Bool_Exp>;
-};
-
-
-export type Subscription_RootVulnerability_Range_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
 export type Subscription_RootVulnerability_ReferenceArgs = {
   distinct_on?: InputMaybe<Array<Vulnerability_Reference_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -5698,7 +5662,6 @@ export type Vulnerability = {
   published?: Maybe<Scalars['timestamptz']>;
   /** An array relationship */
   references: Array<Vulnerability_Reference>;
-  reviewed_by_source?: Maybe<Scalars['Boolean']>;
   /** An array relationship */
   severities: Array<Vulnerability_Severity>;
   source: Scalars['String'];
@@ -5823,8 +5786,6 @@ export type Vulnerability_Affected = {
   /** An object relationship */
   package?: Maybe<Package>;
   package_id?: Maybe<Scalars['uuid']>;
-  /** An array relationship */
-  ranges: Array<Vulnerability_Range>;
   /** An object relationship */
   vulnerability?: Maybe<Vulnerability>;
   vulnerability_id?: Maybe<Scalars['uuid']>;
@@ -5862,16 +5823,6 @@ export type Vulnerability_AffectedEcosystem_SpecificArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
 
-
-/** columns and relationships of "vulnerability.affected" */
-export type Vulnerability_AffectedRangesArgs = {
-  distinct_on?: InputMaybe<Array<Vulnerability_Range_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Vulnerability_Range_Order_By>>;
-  where?: InputMaybe<Vulnerability_Range_Bool_Exp>;
-};
-
 /** order by aggregate values of table "vulnerability.affected" */
 export type Vulnerability_Affected_Aggregate_Order_By = {
   count?: InputMaybe<Order_By>;
@@ -5891,7 +5842,6 @@ export type Vulnerability_Affected_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   package?: InputMaybe<Package_Bool_Exp>;
   package_id?: InputMaybe<Uuid_Comparison_Exp>;
-  ranges?: InputMaybe<Vulnerability_Range_Bool_Exp>;
   vulnerability?: InputMaybe<Vulnerability_Bool_Exp>;
   vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
@@ -5919,7 +5869,6 @@ export type Vulnerability_Affected_Order_By = {
   id?: InputMaybe<Order_By>;
   package?: InputMaybe<Package_Order_By>;
   package_id?: InputMaybe<Order_By>;
-  ranges_aggregate?: InputMaybe<Vulnerability_Range_Aggregate_Order_By>;
   vulnerability?: InputMaybe<Vulnerability_Order_By>;
   vulnerability_id?: InputMaybe<Order_By>;
 };
@@ -6110,7 +6059,6 @@ export type Vulnerability_Bool_Exp = {
   modified?: InputMaybe<Timestamptz_Comparison_Exp>;
   published?: InputMaybe<Timestamptz_Comparison_Exp>;
   references?: InputMaybe<Vulnerability_Reference_Bool_Exp>;
-  reviewed_by_source?: InputMaybe<Boolean_Comparison_Exp>;
   severities?: InputMaybe<Vulnerability_Severity_Bool_Exp>;
   source?: InputMaybe<String_Comparison_Exp>;
   source_id?: InputMaybe<String_Comparison_Exp>;
@@ -6256,7 +6204,6 @@ export type Vulnerability_Order_By = {
   modified?: InputMaybe<Order_By>;
   published?: InputMaybe<Order_By>;
   references_aggregate?: InputMaybe<Vulnerability_Reference_Aggregate_Order_By>;
-  reviewed_by_source?: InputMaybe<Order_By>;
   severities_aggregate?: InputMaybe<Vulnerability_Severity_Aggregate_Order_By>;
   source?: InputMaybe<Order_By>;
   source_id?: InputMaybe<Order_By>;
@@ -6379,73 +6326,6 @@ export enum Vulnerability_Packages_Select_Column {
   VulnSlug = 'vuln_slug'
 }
 
-/** columns and relationships of "vulnerability.range" */
-export type Vulnerability_Range = {
-  __typename?: 'vulnerability_range';
-  /** An object relationship */
-  affected: Vulnerability_Affected;
-  affected_id: Scalars['uuid'];
-  fixed?: Maybe<Scalars['String']>;
-  id: Scalars['uuid'];
-  introduced?: Maybe<Scalars['String']>;
-};
-
-/** order by aggregate values of table "vulnerability.range" */
-export type Vulnerability_Range_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Vulnerability_Range_Max_Order_By>;
-  min?: InputMaybe<Vulnerability_Range_Min_Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "vulnerability.range". All fields are combined with a logical 'AND'. */
-export type Vulnerability_Range_Bool_Exp = {
-  _and?: InputMaybe<Array<Vulnerability_Range_Bool_Exp>>;
-  _not?: InputMaybe<Vulnerability_Range_Bool_Exp>;
-  _or?: InputMaybe<Array<Vulnerability_Range_Bool_Exp>>;
-  affected?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
-  affected_id?: InputMaybe<Uuid_Comparison_Exp>;
-  fixed?: InputMaybe<String_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  introduced?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** order by max() on columns of table "vulnerability.range" */
-export type Vulnerability_Range_Max_Order_By = {
-  affected_id?: InputMaybe<Order_By>;
-  fixed?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  introduced?: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "vulnerability.range" */
-export type Vulnerability_Range_Min_Order_By = {
-  affected_id?: InputMaybe<Order_By>;
-  fixed?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  introduced?: InputMaybe<Order_By>;
-};
-
-/** Ordering options when selecting data from "vulnerability.range". */
-export type Vulnerability_Range_Order_By = {
-  affected?: InputMaybe<Vulnerability_Affected_Order_By>;
-  affected_id?: InputMaybe<Order_By>;
-  fixed?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  introduced?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "vulnerability.range" */
-export enum Vulnerability_Range_Select_Column {
-  /** column name */
-  AffectedId = 'affected_id',
-  /** column name */
-  Fixed = 'fixed',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Introduced = 'introduced'
-}
-
 /** columns and relationships of "vulnerability.reference" */
 export type Vulnerability_Reference = {
   __typename?: 'vulnerability_reference';
@@ -6525,8 +6405,6 @@ export enum Vulnerability_Select_Column {
   Modified = 'modified',
   /** column name */
   Published = 'published',
-  /** column name */
-  ReviewedBySource = 'reviewed_by_source',
   /** column name */
   Source = 'source',
   /** column name */
