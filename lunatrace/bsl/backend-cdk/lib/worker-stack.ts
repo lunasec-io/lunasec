@@ -15,7 +15,6 @@ import { inspect } from 'util';
 
 import { Port, SecurityGroup } from '@aws-cdk/aws-ec2';
 import { Cluster, ContainerImage, DeploymentControllerType, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
-import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import { Queue } from '@aws-cdk/aws-sqs';
@@ -23,8 +22,8 @@ import * as cdk from '@aws-cdk/core';
 import { Construct } from '@aws-cdk/core';
 
 import { QueueProcessingFargateService } from './aws/queue-processing-fargate-service';
+import { commonBuildProps } from './constants';
 import { addDatadogToTaskDefinition, datadogLogDriverForService } from './datadog-fargate-integration';
-import { getContainerTarballPath } from './util';
 import { WorkerStorageStackState } from './worker-storage-stack';
 
 interface WorkerStackProps extends cdk.StackProps {
@@ -89,9 +88,10 @@ export class WorkerStack extends cdk.Stack {
       throw new Error(`expected non-null storage stack queues: ${inspect(storageStack)}`);
     }
 
-    const workerContainerImage = ContainerImage.fromTarball(
-      getContainerTarballPath('lunatrace-backend-queue-processor.tar')
-    );
+    const workerContainerImage = ContainerImage.fromAsset('../backend', {
+      ...commonBuildProps,
+      target: 'backend-queue-processor',
+    });
 
     // common environment variables used by queue processors
     const processQueueCommonEnvVars: Record<string, string> = {
