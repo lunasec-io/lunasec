@@ -29,12 +29,14 @@ interface VulnerabilityTableItemProps {
   finding: Finding;
   setVulnQuickViewId: (vulnId: string) => void;
   vulnQuickViewId: string | null;
+  patchable: string | undefined;
 }
 
 export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({
   finding,
   setVulnQuickViewId,
   vulnQuickViewId,
+  patchable,
 }) => {
   const [insertVulnIgnore, insertVulnIgnoreState] = api.useInsertIgnoredVulnerabilitiesMutation();
   const { project_id } = useParams();
@@ -114,6 +116,7 @@ export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({
   const rowValues = [
     finding.vulnerability.source,
     finding.vulnerability.source_id,
+    patchable,
     severity ? toTitleCase(severity.cvss3OverallSeverityText) : 'unknown',
     severity ? severity.overallScore : 'unknown',
     fixVersions.length > 0 ? fixVersions[0] : 'none',

@@ -71,6 +71,7 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
                 quickView={quickView}
                 setShouldFilterFindings={setShouldFilterFindings}
                 findingsCount={pkg.findings.length}
+                depTree={depTree}
               />
             </Accordion.Item>
           </Accordion>
