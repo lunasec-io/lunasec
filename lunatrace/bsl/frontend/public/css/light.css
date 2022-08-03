@@ -17633,7 +17633,7 @@ pre[class*=language-] {
 }
 
 .vuln-table-item.ignored {
-  background-color: #156da5;
+  background-color: #dee6ed;
 }
 
 .package-trees {
@@ -17642,6 +17642,10 @@ pre[class*=language-] {
 
 .primary-color {
   color: #1F9BCF;
+}
+
+.one-point-two-em {
+  font-size: 1.2em;
 }
 
 .breadcrumb-navigation {

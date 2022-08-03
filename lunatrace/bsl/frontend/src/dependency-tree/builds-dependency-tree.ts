@@ -131,8 +131,6 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     });
     // kick off the tree build
     this.tree = rootDeps.map((rootDep) => recursivelyBuildNode(rootDep));
-    console.log(this.tree.length, ' root deps in tree');
-    console.log(this.flatDeps.length, ' total deps in tree');
   }
 
   private checkVulnTriviallyUpdatable(requestedRange: string, vuln: Vulnerability): boolean {
