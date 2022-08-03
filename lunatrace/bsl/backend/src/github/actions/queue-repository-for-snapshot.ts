@@ -21,7 +21,7 @@ import { log } from '../../utils/log';
 import { getSqsUrlFromName } from '../../utils/sqs';
 import { catchError, threwError } from '../../utils/try';
 
-export async function queueRepositoryForSnapshot(installationId: number, repo: SnapshotForRepositoryRequest) {
+export async function queueRepositoryForSnapshot(repo: SnapshotForRepositoryRequest) {
   const repoQueueConfig = getRepositoryQueueConfig();
   // TODO (cthompson) move this outside of this function, this should only need to be called once
   // note (forrest): I made this returned cached values so at least it is performant now, this is perfectly, 100% fine
@@ -50,7 +50,7 @@ export async function queueRepositoryForSnapshot(installationId: number, repo: S
       MessageAttributes: {
         installation_id: {
           DataType: 'Number',
-          StringValue: installationId.toString(),
+          StringValue: repo.installationId.toString(),
         },
       },
       QueueUrl: repositoryQueueUrl.res,
