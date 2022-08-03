@@ -13,27 +13,52 @@
  */
 import { Command } from 'commander';
 
+import { getRepoCloneUrlWithAuth } from '../github/actions/get-repo-clone-url-with-auth';
 import { SnapshotForRepositoryRequest } from '../types/sqs';
+import { log } from '../utils/log';
+import { threwError } from '../utils/try';
 import { snapshotRepositoryActivity } from '../workers/queue/activities/snapshot-repository-activity';
 
 const program = new Command();
 
 program.name('queue-activities');
 
+interface SnapshotRepositoryOptions {
+  branch: string;
+  commit?: string;
+  repoGithubId: string;
+  installId: string;
+  pullRequestId?: string;
+}
+
 program
   .command('snapshot-repository')
-  .argument('<repository>', 'repository to snapshot')
-  .option('branch', 'branch of repository to scan')
-  .option('branch', 'branch of repository to scan')
-  .action(async (repository) => {
+  .option('--branch', 'branch of repository to scan')
+  .option('--commit', 'commit of repository to scan')
+  .requiredOption('--repo-github-id', 'github id for the repository')
+  .requiredOption('--install-id', 'installation id')
+  .option('--pull-request-id', 'id of the pull request to run check on')
+  .action(async (options: SnapshotRepositoryOptions) => {
+    const parsedRepoGithubId = parseInt(options.repoGithubId);
+    const authUrl = await getRepoCloneUrlWithAuth(parsedRepoGithubId);
+
+    if (authUrl.error) {
+      log.error('unable to get auth url for repo', {
+        error: authUrl.msg,
+      });
+      return;
+    }
+
     const snapshotRequest: SnapshotForRepositoryRequest = {
-      cloneUrl: repository,
-      gitBranch: 'master',
-      gitCommit: 'asdf',
-      repoGithubId: 123,
-      installationId: 123,
+      cloneUrl: authUrl.res.cloneUrl,
+      gitBranch: options.branch,
+      gitCommit: options.commit,
+      repoGithubId: parsedRepoGithubId,
+      installationId: parseInt(options.installId),
       sourceType: 'cli',
-      pullRequestId: 'testid',
+      pullRequestId: options.pullRequestId,
     };
     await snapshotRepositoryActivity(snapshotRequest);
   });
+
+program.parse();
