@@ -58,7 +58,7 @@ npm install -g smee-client
 
 From `$REPO_ROOT/lunatrace/bsl/backend-cdk` folder, you'll need to run the following. Replace YOUR_USERNAME with your user.
 ```sh
-DEV_USER=YOUR_USERNAME yarn run dev:cdk:deploy
+DEV_USER=YOUR_USERNAME yarn run cdk:deploy:dev
 ```
 
 That will run a real AWS deployment of the "dev" resources required. Once it finished, you should see something like:
