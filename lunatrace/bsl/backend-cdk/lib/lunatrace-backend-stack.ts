@@ -152,7 +152,9 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     addDatadogToTaskDefinition(this, taskDef, props.datadogApiKeyArn);
 
-    const frontendContainerImage = ContainerImage.fromTarball(getContainerTarballPath('lunatrace-frontend.tar'));
+    const frontendContainerImage = ContainerImage.fromAsset('../frontend', {
+      ...commonBuildProps,
+    });
 
     const frontend = taskDef.addContainer('FrontendContainer', {
       image: frontendContainerImage,
@@ -228,7 +230,10 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
-    const backendContainerImage = ContainerImage.fromTarball(getContainerTarballPath('lunatrace-backend.tar'));
+    const backendContainerImage = ContainerImage.fromAsset('../backend', {
+      ...commonBuildProps,
+      target: 'backend-express-server',
+    });
 
     const backend = taskDef.addContainer('BackendContainer', {
       image: backendContainerImage,

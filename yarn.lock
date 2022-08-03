@@ -25348,6 +25348,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"commander@npm:~9.4.0":
+  version: 9.4.0
+  resolution: "commander@npm:9.4.0"
+  checksum: a322de584a6ccd1ea83c24f6a660e52d16ffbe2613fcfbb8d2cc68bc9dec637492456d754fe8bb5b039ad843ed8e04fb0b107e581a75f62cde9e1a0ab1546e09
+  languageName: node
+  linkType: hard
+
 "common-path-prefix@npm:^3.0.0":
   version: 3.0.0
   resolution: "common-path-prefix@npm:3.0.0"
@@ -39892,6 +39899,7 @@ __metadata:
     aws-sdk: ^2.1082.0
     axios: ^0.26.0
     bl: ~5.0.0
+    commander: ~9.4.0
     concurrently: ^7.0.0
     config: ^3.3.6
     cors: ^2.8.5

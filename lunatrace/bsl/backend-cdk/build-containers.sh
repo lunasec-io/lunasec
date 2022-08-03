@@ -1,5 +1,4 @@
 #!/bin/bash
-OUT_DIR=build
 
 saved_dir=$PWD
 
@@ -36,11 +35,11 @@ fi
 reset-dir
 echo "done"
 
-echo "starting container build. NOTE=You will be asked for your password "
+echo "starting container build"
 
 echo "building root docker file for repo"
 change-dir ../../..
-if ! sudo docker build . -f lunatrace/bsl/repo-bootstrap.dockerfile -t repo-bootstrap ; then
+if ! docker build . -f lunatrace/bsl/repo-bootstrap.dockerfile -t repo-bootstrap ; then
 	echo "unable to build repo-bootstrap"
 	exit 1
 fi
@@ -49,45 +48,9 @@ echo "done"
 
 echo "building lunatrace-cli"
 change-dir ../../..
-if ! sudo docker build . -f lunatrace/cli/docker/lunatrace.dockerfile -t lunatrace-cli ; then
+if ! docker build . -f lunatrace/cli/docker/lunatrace.dockerfile -t lunatrace-cli ; then
 	echo "unable to build lunatrace-cli"
 	exit 1
 fi
 reset-dir
 echo "done"
-
-echo "building docker file for frontend"
-change-dir ../frontend
-if ! sudo docker build . -t lunatrace-frontend ; then
-	echo "unable to build lunatrace-frontend"
-	exit 1
-fi
-reset-dir
-echo "done"
-
-echo "building docker file for backend express server"
-change-dir ../backend
-if ! sudo docker build --target backend-express-server . -t lunatrace-backend ; then
-	echo "unable to build lunatrace-backend"
-	exit 1
-fi
-reset-dir
-echo "done"
-
-echo "building docker file for backend queue processor"
-change-dir ../backend
-if ! sudo docker build --target backend-queue-processor . -t lunatrace-backend-queue-processor ; then
-	echo "unable to build lunatrace-backend-queue-processor"
-	exit 1
-fi
-reset-dir
-echo "done"
-
-echo "Saving docker containers to output dir: $OUT_DIR"
-
-mkdir -p $OUT_DIR
-sudo docker save -o $OUT_DIR/lunatrace-frontend.tar lunatrace-frontend
-sudo docker save -o $OUT_DIR/lunatrace-backend.tar lunatrace-backend
-sudo docker save -o $OUT_DIR/lunatrace-backend-queue-processor.tar lunatrace-backend-queue-processor
-
-sudo chown -R "$USER:$USER" build
