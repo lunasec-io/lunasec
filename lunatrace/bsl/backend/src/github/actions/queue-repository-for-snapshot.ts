@@ -24,7 +24,7 @@ import { catchError, threwError } from '../../utils/try';
 export async function queueRepositoryForSnapshot(installationId: number, repo: SnapshotForRepositoryRequest) {
   // TODO: We manually banned this org. Implement a real ban system in the future
   if (installationId === 27912909) {
-    return newError('Banned organization "ekmixon" attempted a snapshot, skipping');
+    return newError('Banned organization attempted a snapshot, skipping');
   }
 
   const repoQueueConfig = getRepositoryQueueConfig();
