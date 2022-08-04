@@ -11,7 +11,6 @@ mutation InsertScan($scan: scans_insert_input!, $build_id: uuid!) {
       language
       locations
       matcher
-      package_version_id
       purl
       severity
       type
@@ -20,7 +19,6 @@ mutation InsertScan($scan: scans_insert_input!, $build_id: uuid!) {
       version_matcher
       virtual_path
       vulnerability_id
-      vulnerability_package_id
       vulnerability {
         id
         source

@@ -23,18 +23,12 @@ object_relationships:
         insertion_order: null
         column_mapping:
           build_id: id
-  - name: package_version
-    using:
-      foreign_key_constraint_on: package_version_id
   - name: scan
     using:
       foreign_key_constraint_on: scan_id
   - name: vulnerability
     using:
       foreign_key_constraint_on: vulnerability_id
-  - name: vulnerability_package
-    using:
-      foreign_key_constraint_on: vulnerability_package_id
 insert_permissions:
   - role: service
     permission:
@@ -50,7 +44,6 @@ insert_permissions:
         - locations
         - matcher
         - package_name
-        - package_version_id
         - purl
         - scan_id
         - severity
@@ -60,7 +53,6 @@ insert_permissions:
         - version_matcher
         - virtual_path
         - vulnerability_id
-        - vulnerability_package_id
       backend_only: false
 select_permissions:
   - role: service
@@ -76,7 +68,6 @@ select_permissions:
         - locations
         - matcher
         - package_name
-        - package_version_id
         - purl
         - scan_id
         - severity
@@ -86,7 +77,6 @@ select_permissions:
         - version_matcher
         - virtual_path
         - vulnerability_id
-        - vulnerability_package_id
       filter: {}
   - role: user
     permission:
@@ -108,10 +98,8 @@ select_permissions:
         - severity
         - build_id
         - id
-        - package_version_id
         - scan_id
         - vulnerability_id
-        - vulnerability_package_id
       filter:
         build:
           project:
@@ -129,8 +117,6 @@ update_permissions:
         - created_at
         - updated_at
         - vulnerability_id
-        - vulnerability_package_id
-        - package_version_id
         - scan_id
         - build_id
         - fix_state

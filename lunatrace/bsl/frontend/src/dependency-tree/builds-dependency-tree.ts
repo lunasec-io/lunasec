@@ -84,7 +84,7 @@ export type DependencyChain<D> = Array<TreeNode<D>>;
  */
 export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
   public readonly tree: Array<TreeNode<BuildDependency>>;
-  public readonly flatVulns: Array<Vulnerability>;
+  public readonly flatVulns: Array<Vulnerability>; // may contain multiple copies of the same vuln from different deps
   public flatDeps: Array<BuildDependency>;
   constructor(sourceDeps: Array<BuildDependency>) {
     this.flatVulns = [];
@@ -92,11 +92,11 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     this.flatDeps = JSON.parse(JSON.stringify(sourceDeps));
     // Go and clean out all the vulnerabilities that don't apply to this version since the DB doesn't know how to do that yet
     this.flatDeps.forEach((dep) => {
-      dep.release.package.vulnerabilities = dep.release.package.vulnerabilities.filter((vuln) => {
-        const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
-        const isVulnerable = semver.satisfies(dep.release.version, vulnerableRange);
-        return isVulnerable;
-      });
+      // dep.release.package.vulnerabilities = dep.release.package.vulnerabilities.filter((vuln) => {
+      //   const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
+      //   const isVulnerable = semver.satisfies(dep.release.version, vulnerableRange);
+      //   return isVulnerable;
+      // });
 
       // Mark the vulns that can be trivially updated
       dep.release.package.vulnerabilities.forEach((vuln) => {
@@ -131,6 +131,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     });
     // kick off the tree build
     this.tree = rootDeps.map((rootDep) => recursivelyBuildNode(rootDep));
+    console.log('flatVulns are ', this.flatVulns);
   }
 
   private checkVulnTriviallyUpdatable(requestedRange: string, vuln: Vulnerability): boolean {
