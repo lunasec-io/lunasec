@@ -38,6 +38,7 @@ export interface StackInputsType {
   githubOauthAppLoginClientIdArn: string;
   kratosCookieSecretArn: string;
   kratosCipherSecretArn: string;
+  kratosSlackSecretArn: string;
   datadogApiKeyArn: string;
   vpcId: string;
 }
