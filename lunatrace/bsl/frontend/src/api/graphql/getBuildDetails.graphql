@@ -68,7 +68,6 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
             language
             locations
             matcher
-            package_version_id
             purl
             severity
             type
@@ -77,7 +76,6 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
             version_matcher
             virtual_path
             vulnerability_id
-            vulnerability_package_id
             vulnerability {
                 id
                 summary
