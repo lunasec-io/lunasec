@@ -206,6 +206,7 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const kratosCookieSecret = Secret.fromSecretCompleteArn(this, 'KratosCookieSecret', props.kratosCookieSecretArn);
     const kratosCipherSecret = Secret.fromSecretCompleteArn(this, 'KratosCipherSecret', props.kratosCipherSecretArn);
+    const kratosSlackSecret = Secret.fromSecretCompleteArn(this, 'KratosSlackSecret', props.kratosCipherSecretArn);
 
     const kratos = taskDef.addContainer('KratosContainer', {
       image: kratosContainerImage,
@@ -224,6 +225,7 @@ export class LunatraceBackendStack extends cdk.Stack {
           EcsSecret.fromSecretsManager(githubOauthAppLoginSecret),
         SECRETS_COOKIE: EcsSecret.fromSecretsManager(kratosCookieSecret),
         SECRETS_CIPHER: EcsSecret.fromSecretsManager(kratosCipherSecret),
+        SELFSERVICE_FLOWS_REGISTRATION_AFTER_OIDC_HOOKS_0_CONFIG_URL: EcsSecret.fromSecretsManager(kratosSlackSecret),
       },
       healthCheck: {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4434/health/ready || exit 1'],
