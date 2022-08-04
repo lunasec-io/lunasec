@@ -58,6 +58,9 @@ selfservice:
                 method: POST
                 body: file:///config/oidc.hook.jsonnet
 
+
+
+
 log:
   level: debug
   format: text
