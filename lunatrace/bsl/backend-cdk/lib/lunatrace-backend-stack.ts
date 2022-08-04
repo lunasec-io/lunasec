@@ -206,7 +206,7 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const kratosCookieSecret = Secret.fromSecretCompleteArn(this, 'KratosCookieSecret', props.kratosCookieSecretArn);
     const kratosCipherSecret = Secret.fromSecretCompleteArn(this, 'KratosCipherSecret', props.kratosCipherSecretArn);
-    const kratosSlackSecret = Secret.fromSecretCompleteArn(this, 'KratosSlackSecret', props.kratosCipherSecretArn);
+    const kratosSlackSecret = Secret.fromSecretCompleteArn(this, 'KratosSlackSecret', props.kratosSlackSecretArn);
 
     const kratos = taskDef.addContainer('KratosContainer', {
       image: kratosContainerImage,
