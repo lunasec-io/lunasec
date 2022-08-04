@@ -36,6 +36,12 @@ async function waitForGithubInstall(installationId: number, installationAuthToke
 
   const newRepos = await getGithubReposForInstallation(installationAuthToken, installationId);
 
+  // TODO: Fix this with proper UI in the future. Logging of this error happens at the route handler
+  if (newRepos.length > 200) {
+    throw new Error(
+      `Woops, you hit maximum number of installed repos. This is currently capped at 200 and you tried to install ${newRepos.length}. Please try again and select less repos. We will be fixing this issue soon.`
+    );
+  }
   const newRepoIds = newRepos.map((r) => r.repoId);
 
   // eslint-disable-next-line no-constant-condition
@@ -51,6 +57,7 @@ async function waitForGithubInstall(installationId: number, installationAuthToke
         'Unable to verify Github App was installed successfully. Contact support if this problem persists.'
       );
     }
+
     const insertedIds = existingRepos.map((r) => r.github_id);
 
     const missingFromHasura = newRepos.filter((r) => !insertedIds.includes(r.repoId));
