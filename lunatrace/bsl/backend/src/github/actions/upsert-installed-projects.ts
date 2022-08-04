@@ -41,6 +41,11 @@ export async function upsertInstalledProjects(
     })),
   });
 
+  // TODO: Fix this with proper UI in the future. Logging this will happen automatically at the handler level
+  if (githubRepos.length > 200) {
+    return newError(`Maximum repo count hit, aborting installed repo synchronization job ${installationId}`);
+  }
+
   const organizations = generateOrgsAndProjectsMutation(installationId, githubRepos);
   const orgMutationInputs = Object.values(organizations);
 
