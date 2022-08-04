@@ -22,7 +22,13 @@ import { getSqsUrlFromName } from '../../utils/sqs';
 import { catchError, threwError } from '../../utils/try';
 
 export async function queueRepositoryForSnapshot(installationId: number, repo: SnapshotForRepositoryRequest) {
+  // TODO: We manually banned this org. Implement a real ban system in the future
+  if (installationId === 27912909) {
+    return newError('Banned organization "ekmixon" attempted a snapshot, skipping');
+  }
+
   const repoQueueConfig = getRepositoryQueueConfig();
+
   // TODO (cthompson) move this outside of this function, this should only need to be called once
   // note (forrest): I made this returned cached values so at least it is performant now, this is perfectly, 100% fine
   const repositoryQueueUrl = await catchError(getSqsUrlFromName(repoQueueConfig.queueName));
