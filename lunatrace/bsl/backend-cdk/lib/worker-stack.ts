@@ -14,8 +14,14 @@
 import { inspect } from 'util';
 
 import { Port, SecurityGroup } from '@aws-cdk/aws-ec2';
-import { Cluster, ContainerImage, DeploymentControllerType, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
-import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns';
+import {
+  CapacityProviderStrategy,
+  Cluster,
+  ContainerImage,
+  DeploymentControllerType,
+  Secret as EcsSecret,
+} from '@aws-cdk/aws-ecs';
+import { ApplicationLoadBalancedFargateService, QueueProcessingFargateServiceProps } from '@aws-cdk/aws-ecs-patterns';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
@@ -40,13 +46,14 @@ interface WorkerStackProps extends cdk.StackProps {
   servicesSecurityGroup: SecurityGroup;
 }
 
-interface QueueService {
+interface QueueService extends Partial<QueueProcessingFargateServiceProps> {
   name: string;
   queue: Queue;
   // number of seconds that a queue message is "visible" or accessible to a queue
   visibility?: number;
   ram?: number;
   cpu?: number;
+  ephemeralStorageGiB?: number;
 }
 
 export class WorkerStack extends cdk.Stack {
@@ -117,6 +124,23 @@ export class WorkerStack extends cdk.Stack {
 
     const gb = 1024;
 
+    const capacityProviderStrategies: CapacityProviderStrategy[] = [
+      {
+        capacityProvider: 'FARGATE_SPOT',
+        weight: 2,
+      },
+      {
+        capacityProvider: 'FARGATE',
+        weight: 1,
+      },
+    ];
+
+    const scalingSteps = [
+      { upper: 0, change: -1 },
+      { lower: 50, change: +1 },
+      { lower: 200, change: +5 },
+    ];
+
     const queueServices: QueueService[] = [
       {
         name: 'ProcessRepositoryQueue',
@@ -124,6 +148,9 @@ export class WorkerStack extends cdk.Stack {
         visibility: 600,
         ram: 8 * gb,
         cpu: 4 * gb,
+        capacityProviderStrategies,
+        ephemeralStorageGiB: 200,
+        scalingSteps,
       },
       {
         name: 'ProcessWebhookQueue',
@@ -133,32 +160,37 @@ export class WorkerStack extends cdk.Stack {
         name: 'ProcessManifestQueue',
         queue: manifestQueue,
         visibility: 300,
+        capacityProviderStrategies,
+        scalingSteps,
       },
       {
         name: 'ProcessSbomQueue',
         queue: sbomQueue,
         visibility: 300,
+        capacityProviderStrategies,
+        scalingSteps,
       },
     ];
 
     queueServices.forEach((queueService) => {
-      const queueFargateService = new QueueProcessingFargateService(context, queueService.name + 'Service', {
+      const { name, visibility, queue, ...other } = queueService;
+
+      const queueFargateService = new QueueProcessingFargateService(context, name + 'Service', {
         cluster: fargateCluster,
         image: workerContainerImage,
         cpu: queueService.cpu,
         memoryLimitMiB: queueService.ram || 2 * gb,
-        queue: queueService.queue, // will pass queue_name env var automatically
+        queue: queue, // will pass queue_name env var automatically
         assignPublicIp: true,
         enableLogging: true,
-        ephemeralStorageGiB: 200,
-        logDriver: datadogLogDriverForService('lunatrace', queueService.name),
+        logDriver: datadogLogDriverForService('lunatrace', name),
         environment: {
           ...processQueueCommonEnvVars,
-          ...(queueService.visibility ? { QUEUE_VISIBILITY: queueService.visibility.toString() } : {}),
+          ...(visibility ? { QUEUE_VISIBILITY: visibility.toString() } : {}),
         },
         securityGroups: [servicesSecurityGroup],
         secrets: processQueueCommonSecrets,
-        containerName: queueService.name + 'Container',
+        containerName: name + 'Container',
         circuitBreaker: {
           rollback: true,
         },
@@ -168,9 +200,11 @@ export class WorkerStack extends cdk.Stack {
         //   startPeriod: Duration.seconds(5),
         // },
         minScalingCapacity: 2,
+        maxScalingCapacity: 20,
         deploymentController: {
           type: DeploymentControllerType.ECS,
         },
+        ...other,
       });
 
       addDatadogToTaskDefinition(context, queueFargateService.taskDefinition, datadogApiKeyArn);
