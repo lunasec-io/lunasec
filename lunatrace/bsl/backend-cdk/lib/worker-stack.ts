@@ -14,7 +14,13 @@
 import { inspect } from 'util';
 
 import { Port, SecurityGroup } from '@aws-cdk/aws-ec2';
-import { Cluster, ContainerImage, DeploymentControllerType, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
+import {
+  CapacityProviderStrategy,
+  Cluster,
+  ContainerImage,
+  DeploymentControllerType,
+  Secret as EcsSecret,
+} from '@aws-cdk/aws-ecs';
 import { ApplicationLoadBalancedFargateService, QueueProcessingFargateServiceProps } from '@aws-cdk/aws-ecs-patterns';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import { Queue } from '@aws-cdk/aws-sqs';
@@ -118,6 +124,23 @@ export class WorkerStack extends cdk.Stack {
 
     const gb = 1024;
 
+    const capacityProviderStrategies: CapacityProviderStrategy[] = [
+      {
+        capacityProvider: 'FARGATE_SPOT',
+        weight: 2,
+      },
+      {
+        capacityProvider: 'FARGATE',
+        weight: 1,
+      },
+    ];
+
+    const scalingSteps = [
+      { upper: 0, change: -1 },
+      { lower: 50, change: +1 },
+      { lower: 200, change: +5 },
+    ];
+
     const queueServices: QueueService[] = [
       {
         name: 'ProcessRepositoryQueue',
@@ -125,22 +148,9 @@ export class WorkerStack extends cdk.Stack {
         visibility: 600,
         ram: 8 * gb,
         cpu: 4 * gb,
-        capacityProviderStrategies: [
-          {
-            capacityProvider: 'FARGATE_SPOT',
-            weight: 2,
-          },
-          {
-            capacityProvider: 'FARGATE',
-            weight: 1,
-          },
-        ],
+        capacityProviderStrategies,
         ephemeralStorageGiB: 200,
-        scalingSteps: [
-          { upper: 0, change: -1 },
-          { lower: 50, change: +1 },
-          { lower: 200, change: +5 },
-        ],
+        scalingSteps,
       },
       {
         name: 'ProcessWebhookQueue',
@@ -150,11 +160,15 @@ export class WorkerStack extends cdk.Stack {
         name: 'ProcessManifestQueue',
         queue: manifestQueue,
         visibility: 300,
+        capacityProviderStrategies,
+        scalingSteps,
       },
       {
         name: 'ProcessSbomQueue',
         queue: sbomQueue,
         visibility: 300,
+        capacityProviderStrategies,
+        scalingSteps,
       },
     ];
 
