@@ -54,7 +54,7 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
         </thead>
         <tbody>
           {filteredFindings.map((f) => {
-            const patchable = depTree?.checkIfVulnInstancesTriviallyUpdatable(f.vulnerability_id);
+            const patchable = depTree?.checkIfVulnInstancesTriviallyUpdatable(f.vulnerability.id);
             return (
               <FindingItem
                 patchable={patchable}

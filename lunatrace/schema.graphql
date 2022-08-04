@@ -254,7 +254,9 @@ input build_dependency_relationship_bool_exp {
 unique or primary key constraints on table "build_dependency_relationship"
 """
 enum build_dependency_relationship_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   build_dependency_relationship_pkey
 }
 
@@ -632,13 +634,19 @@ input builds_bool_exp {
 unique or primary key constraints on table "builds"
 """
 enum builds_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "agent_access_token"
+  """
   builds_agent_access_token_key
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "project_id", "build_number"
+  """
   builds_build_number_project_id_key
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   builds_pkey
 }
 
@@ -688,6 +696,7 @@ type builds_max_fields {
   project_id: uuid
   pull_request_id: String
   s3_url: String
+  source_type: builds_source_type
 }
 
 """
@@ -706,6 +715,7 @@ input builds_max_order_by {
   project_id: order_by
   pull_request_id: order_by
   s3_url: order_by
+  source_type: order_by
 }
 
 """aggregate min on columns"""
@@ -722,6 +732,7 @@ type builds_min_fields {
   project_id: uuid
   pull_request_id: String
   s3_url: String
+  source_type: builds_source_type
 }
 
 """
@@ -740,6 +751,7 @@ input builds_min_order_by {
   project_id: order_by
   pull_request_id: order_by
   s3_url: order_by
+  source_type: order_by
 }
 
 """
@@ -1173,6 +1185,7 @@ input default_branch_builds_max_order_by {
   project_id: order_by
   pull_request_id: order_by
   s3_url: order_by
+  source_type: order_by
 }
 
 """
@@ -1189,6 +1202,7 @@ input default_branch_builds_min_order_by {
   project_id: order_by
   pull_request_id: order_by
   s3_url: order_by
+  source_type: order_by
 }
 
 """
@@ -1322,10 +1336,6 @@ type findings {
   locations: _text!
   matcher: String!
   package_name: String!
-
-  """An object relationship"""
-  package_version: package_versions
-  package_version_id: uuid
   purl: String!
 
   """An object relationship"""
@@ -1341,10 +1351,6 @@ type findings {
   """An object relationship"""
   vulnerability: vulnerability!
   vulnerability_id: uuid!
-
-  """An object relationship"""
-  vulnerability_package: vulnerability_packages
-  vulnerability_package_id: uuid
 }
 
 """
@@ -1385,8 +1391,6 @@ input findings_bool_exp {
   locations: _text_comparison_exp
   matcher: String_comparison_exp
   package_name: String_comparison_exp
-  package_version: package_versions_bool_exp
-  package_version_id: uuid_comparison_exp
   purl: String_comparison_exp
   scan: scans_bool_exp
   scan_id: uuid_comparison_exp
@@ -1398,18 +1402,20 @@ input findings_bool_exp {
   virtual_path: String_comparison_exp
   vulnerability: vulnerability_bool_exp
   vulnerability_id: uuid_comparison_exp
-  vulnerability_package: vulnerability_packages_bool_exp
-  vulnerability_package_id: uuid_comparison_exp
 }
 
 """
 unique or primary key constraints on table "findings"
 """
 enum findings_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "dedupe_slug", "build_id"
+  """
   findings_dedupe_slug_build_id_key
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   findings_pkey
 }
 
@@ -1429,8 +1435,6 @@ input findings_insert_input {
   locations: _text
   matcher: String
   package_name: String
-  package_version: package_versions_obj_rel_insert_input
-  package_version_id: uuid
   purl: String
   scan: scans_obj_rel_insert_input
   scan_id: uuid
@@ -1442,8 +1446,6 @@ input findings_insert_input {
   virtual_path: String
   vulnerability: vulnerability_obj_rel_insert_input
   vulnerability_id: uuid
-  vulnerability_package: vulnerability_packages_obj_rel_insert_input
-  vulnerability_package_id: uuid
 }
 
 """
@@ -1453,20 +1455,20 @@ input findings_max_order_by {
   build_id: order_by
   created_at: order_by
   dedupe_slug: order_by
+  fix_state: order_by
   id: order_by
   language: order_by
   matcher: order_by
   package_name: order_by
-  package_version_id: order_by
   purl: order_by
   scan_id: order_by
+  severity: order_by
   type: order_by
   updated_at: order_by
   version: order_by
   version_matcher: order_by
   virtual_path: order_by
   vulnerability_id: order_by
-  vulnerability_package_id: order_by
 }
 
 """
@@ -1476,20 +1478,20 @@ input findings_min_order_by {
   build_id: order_by
   created_at: order_by
   dedupe_slug: order_by
+  fix_state: order_by
   id: order_by
   language: order_by
   matcher: order_by
   package_name: order_by
-  package_version_id: order_by
   purl: order_by
   scan_id: order_by
+  severity: order_by
   type: order_by
   updated_at: order_by
   version: order_by
   version_matcher: order_by
   virtual_path: order_by
   vulnerability_id: order_by
-  vulnerability_package_id: order_by
 }
 
 """
@@ -1526,8 +1528,6 @@ input findings_order_by {
   locations: order_by
   matcher: order_by
   package_name: order_by
-  package_version: package_versions_order_by
-  package_version_id: order_by
   purl: order_by
   scan: scans_order_by
   scan_id: order_by
@@ -1539,8 +1539,6 @@ input findings_order_by {
   virtual_path: order_by
   vulnerability: vulnerability_order_by
   vulnerability_id: order_by
-  vulnerability_package: vulnerability_packages_order_by
-  vulnerability_package_id: order_by
 }
 
 """primary key columns input for table: findings"""
@@ -1583,9 +1581,6 @@ enum findings_select_column {
   package_name
 
   """column name"""
-  package_version_id
-
-  """column name"""
   purl
 
   """column name"""
@@ -1611,9 +1606,6 @@ enum findings_select_column {
 
   """column name"""
   vulnerability_id
-
-  """column name"""
-  vulnerability_package_id
 }
 
 """
@@ -1630,7 +1622,6 @@ input findings_set_input {
   locations: _text
   matcher: String
   package_name: String
-  package_version_id: uuid
   purl: String
   scan_id: uuid
   severity: severity_enum
@@ -1640,7 +1631,6 @@ input findings_set_input {
   version_matcher: String
   virtual_path: String
   vulnerability_id: uuid
-  vulnerability_package_id: uuid
 }
 
 """
@@ -1678,9 +1668,6 @@ enum findings_update_column {
   package_name
 
   """column name"""
-  package_version_id
-
-  """column name"""
   purl
 
   """column name"""
@@ -1706,9 +1693,6 @@ enum findings_update_column {
 
   """column name"""
   vulnerability_id
-
-  """column name"""
-  vulnerability_package_id
 }
 
 scalar fix_state_enum
@@ -1806,13 +1790,19 @@ input github_repositories_bool_exp {
 unique or primary key constraints on table "github_repositories"
 """
 enum github_repositories_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "github_id"
+  """
   github_repositories_github_id_key
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "github_node_id"
+  """
   github_repositories_github_node_id_key
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   github_repositories_pkey
 }
 
@@ -2082,10 +2072,14 @@ input guide_related_guides_bool_exp {
 unique or primary key constraints on table "guide_related_guides"
 """
 enum guide_related_guides_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   guide_related_guides_pkey
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "to_guide_unique_id", "from_guide_id"
+  """
   guide_related_guides_unique
 }
 
@@ -2239,10 +2233,14 @@ input guide_vulnerabilities_bool_exp {
 unique or primary key constraints on table "guide_vulnerabilities"
 """
 enum guide_vulnerabilities_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   guide_vulnerabilities_pkey
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "vulnerability_id", "guide_id"
+  """
   guide_vulnerabilities_unique
 }
 
@@ -2385,13 +2383,19 @@ input guides_bool_exp {
 unique or primary key constraints on table "guides"
 """
 enum guides_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "data_source_link"
+  """
   guides_data_source_link_key
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "guide_unique_id"
+  """
   guides_guide_unique_id_key
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   guides_pkey
 }
 
@@ -3085,10 +3089,14 @@ input manifests_bool_exp {
 unique or primary key constraints on table "manifests"
 """
 enum manifests_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   manifests_pkey
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "s3_url"
+  """
   manifests_s3_url_key
 }
 
@@ -3702,28 +3710,6 @@ type mutation_root {
   ): package_release
 
   """
-  insert data into the table: "package_versions"
-  """
-  insert_package_versions(
-    """the rows to be inserted"""
-    objects: [package_versions_insert_input!]!
-
-    """upsert condition"""
-    on_conflict: package_versions_on_conflict
-  ): package_versions_mutation_response
-
-  """
-  insert a single row into the table: "package_versions"
-  """
-  insert_package_versions_one(
-    """the row to be inserted"""
-    object: package_versions_insert_input!
-
-    """upsert condition"""
-    on_conflict: package_versions_on_conflict
-  ): package_versions
-
-  """
   insert data into the table: "projects"
   """
   insert_projects(
@@ -3788,28 +3774,6 @@ type mutation_root {
     """upsert condition"""
     on_conflict: users_on_conflict
   ): users
-
-  """
-  insert data into the table: "vulnerabilities"
-  """
-  insert_vulnerabilities(
-    """the rows to be inserted"""
-    objects: [vulnerabilities_insert_input!]!
-
-    """upsert condition"""
-    on_conflict: vulnerabilities_on_conflict
-  ): vulnerabilities_mutation_response
-
-  """
-  insert a single row into the table: "vulnerabilities"
-  """
-  insert_vulnerabilities_one(
-    """the row to be inserted"""
-    object: vulnerabilities_insert_input!
-
-    """upsert condition"""
-    on_conflict: vulnerabilities_on_conflict
-  ): vulnerabilities
 
   """
   insert data into the table: "vulnerability.vulnerability"
@@ -3942,28 +3906,6 @@ type mutation_root {
     """upsert condition"""
     on_conflict: vulnerability_on_conflict
   ): vulnerability
-
-  """
-  insert data into the table: "vulnerability_packages"
-  """
-  insert_vulnerability_packages(
-    """the rows to be inserted"""
-    objects: [vulnerability_packages_insert_input!]!
-
-    """upsert condition"""
-    on_conflict: vulnerability_packages_on_conflict
-  ): vulnerability_packages_mutation_response
-
-  """
-  insert a single row into the table: "vulnerability_packages"
-  """
-  insert_vulnerability_packages_one(
-    """the row to be inserted"""
-    object: vulnerability_packages_insert_input!
-
-    """upsert condition"""
-    on_conflict: vulnerability_packages_on_conflict
-  ): vulnerability_packages
 
   """
   insert data into the table: "vulnerability.range"
@@ -4631,26 +4573,6 @@ type mutation_root {
   ): package_release_license
 
   """
-  update data of the table: "package_versions"
-  """
-  update_package_versions(
-    """sets the columns of the filtered rows to the given values"""
-    _set: package_versions_set_input
-
-    """filter the rows which have to be updated"""
-    where: package_versions_bool_exp!
-  ): package_versions_mutation_response
-
-  """
-  update single row of the table: "package_versions"
-  """
-  update_package_versions_by_pk(
-    """sets the columns of the filtered rows to the given values"""
-    _set: package_versions_set_input
-    pk_columns: package_versions_pk_columns_input!
-  ): package_versions
-
-  """
   update data of the table: "projects"
   """
   update_projects(
@@ -4715,26 +4637,6 @@ type mutation_root {
     _set: users_set_input
     pk_columns: users_pk_columns_input!
   ): users
-
-  """
-  update data of the table: "vulnerabilities"
-  """
-  update_vulnerabilities(
-    """sets the columns of the filtered rows to the given values"""
-    _set: vulnerabilities_set_input
-
-    """filter the rows which have to be updated"""
-    where: vulnerabilities_bool_exp!
-  ): vulnerabilities_mutation_response
-
-  """
-  update single row of the table: "vulnerabilities"
-  """
-  update_vulnerabilities_by_pk(
-    """sets the columns of the filtered rows to the given values"""
-    _set: vulnerabilities_set_input
-    pk_columns: vulnerabilities_pk_columns_input!
-  ): vulnerabilities
 
   """
   update data of the table: "vulnerability.vulnerability"
@@ -5022,26 +4924,6 @@ type mutation_root {
   ): vulnerability_equivalent_mutation_response
 
   """
-  update data of the table: "vulnerability_packages"
-  """
-  update_vulnerability_packages(
-    """sets the columns of the filtered rows to the given values"""
-    _set: vulnerability_packages_set_input
-
-    """filter the rows which have to be updated"""
-    where: vulnerability_packages_bool_exp!
-  ): vulnerability_packages_mutation_response
-
-  """
-  update single row of the table: "vulnerability_packages"
-  """
-  update_vulnerability_packages_by_pk(
-    """sets the columns of the filtered rows to the given values"""
-    _set: vulnerability_packages_set_input
-    pk_columns: vulnerability_packages_pk_columns_input!
-  ): vulnerability_packages
-
-  """
   update data of the table: "vulnerability.range"
   """
   update_vulnerability_range(
@@ -5122,23 +5004,6 @@ type mutation_root {
   ): webhook_cache
 }
 
-scalar numeric
-
-"""
-Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'.
-"""
-input numeric_comparison_exp {
-  _eq: numeric
-  _gt: numeric
-  _gte: numeric
-  _in: [numeric!]
-  _is_null: Boolean
-  _lt: numeric
-  _lte: numeric
-  _neq: numeric
-  _nin: [numeric!]
-}
-
 """column ordering options"""
 enum order_by {
   """in ascending order, nulls last"""
@@ -5216,10 +5081,14 @@ input organization_user_bool_exp {
 unique or primary key constraints on table "organization_user"
 """
 enum organization_user_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   organization_user_pkey
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "user_id", "organization_id"
+  """
   organization_user_user_id_organization_id_key
 }
 
@@ -5244,6 +5113,7 @@ input organization_user_max_order_by {
   created_at: order_by
   id: order_by
   organization_id: order_by
+  role: order_by
   updated_at: order_by
   user_id: order_by
 }
@@ -5255,6 +5125,7 @@ input organization_user_min_order_by {
   created_at: order_by
   id: order_by
   organization_id: order_by
+  role: order_by
   updated_at: order_by
   user_id: order_by
 }
@@ -5501,13 +5372,19 @@ input organizations_bool_exp {
 unique or primary key constraints on table "organizations"
 """
 enum organizations_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "github_id"
+  """
   organizations_github_id_key
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "github_node_id"
+  """
   organizations_github_node_id_key
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   organizations_pkey
 }
 
@@ -5847,10 +5724,14 @@ input package_bool_exp {
 unique or primary key constraints on table "package.package"
 """
 enum package_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "name", "package_manager", "custom_registry"
+  """
   package_package_manager_custom_registry_name_idx
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   package_pkey
 }
 
@@ -5934,10 +5815,14 @@ input package_license_bool_exp {
 unique or primary key constraints on table "package.license"
 """
 enum package_license_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "name"
+  """
   license_name_idx
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   license_pkey
 }
 
@@ -6087,10 +5972,14 @@ input package_maintainer_bool_exp {
 unique or primary key constraints on table "package.maintainer"
 """
 enum package_maintainer_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "email", "package_manager"
+  """
   maintainer_package_manager_email_idx
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   maintainer_pkey
 }
 
@@ -6220,6 +6109,7 @@ type package_max_fields {
   last_failed_fetch: timestamptz
   last_successful_fetch: timestamptz
   name: String
+  package_manager: package_manager
 }
 
 """aggregate min on columns"""
@@ -6230,6 +6120,7 @@ type package_min_fields {
   last_failed_fetch: timestamptz
   last_successful_fetch: timestamptz
   name: String
+  package_manager: package_manager
 }
 
 """
@@ -6326,7 +6217,9 @@ input package_package_maintainer_bool_exp {
 unique or primary key constraints on table "package.package_maintainer"
 """
 enum package_package_maintainer_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "maintainer_id", "package_id"
+  """
   package_maintainer_package_id_maintainer_id_idx
 }
 
@@ -6578,10 +6471,14 @@ input package_release_bool_exp {
 unique or primary key constraints on table "package.release"
 """
 enum package_release_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "package_id", "version"
+  """
   release_package_id_version_idx
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   release_pkey
 }
 
@@ -6667,10 +6564,14 @@ input package_release_dependency_bool_exp {
 unique or primary key constraints on table "package.release_dependency"
 """
 enum package_release_dependency_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   release_dependency_pkey
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "package_version_query", "package_name", "release_id"
+  """
   release_dependency_release_id_package_name_package_version__idx
 }
 
@@ -6896,7 +6797,9 @@ input package_release_license_bool_exp {
 unique or primary key constraints on table "package.release_license"
 """
 enum package_release_license_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   release_license_pkey
 }
 
@@ -6942,6 +6845,7 @@ input package_release_license_max_order_by {
   license_id: order_by
   release_id: order_by
   scan_time: order_by
+  source: order_by
 }
 
 """
@@ -6952,6 +6856,7 @@ input package_release_license_min_order_by {
   license_id: order_by
   release_id: order_by
   scan_time: order_by
+  source: order_by
 }
 
 """
@@ -7312,216 +7217,6 @@ enum package_update_column {
 }
 
 """
-columns and relationships of "package_versions"
-"""
-type package_versions {
-  cpes: _text!
-
-  """An array relationship"""
-  findings(
-    """distinct select on columns"""
-    distinct_on: [findings_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [findings_order_by!]
-
-    """filter the rows returned"""
-    where: findings_bool_exp
-  ): [findings!]!
-  fix_state: String!
-  fixed_in_versions: _text!
-  id: uuid!
-  pkg_slug: String!
-  slug: String!
-  version_constraint: String!
-  version_format: String!
-
-  """An object relationship"""
-  vulnerability_package: vulnerability_packages!
-}
-
-"""
-order by aggregate values of table "package_versions"
-"""
-input package_versions_aggregate_order_by {
-  count: order_by
-  max: package_versions_max_order_by
-  min: package_versions_min_order_by
-}
-
-"""
-input type for inserting array relation for remote table "package_versions"
-"""
-input package_versions_arr_rel_insert_input {
-  data: [package_versions_insert_input!]!
-
-  """upsert condition"""
-  on_conflict: package_versions_on_conflict
-}
-
-"""
-Boolean expression to filter rows from the table "package_versions". All fields are combined with a logical 'AND'.
-"""
-input package_versions_bool_exp {
-  _and: [package_versions_bool_exp!]
-  _not: package_versions_bool_exp
-  _or: [package_versions_bool_exp!]
-  cpes: _text_comparison_exp
-  findings: findings_bool_exp
-  fix_state: String_comparison_exp
-  fixed_in_versions: _text_comparison_exp
-  id: uuid_comparison_exp
-  pkg_slug: String_comparison_exp
-  slug: String_comparison_exp
-  version_constraint: String_comparison_exp
-  version_format: String_comparison_exp
-  vulnerability_package: vulnerability_packages_bool_exp
-}
-
-"""
-unique or primary key constraints on table "package_versions"
-"""
-enum package_versions_constraint {
-  """unique or primary key constraint"""
-  package_versions_pkey
-
-  """unique or primary key constraint"""
-  package_versions_slug_key
-}
-
-"""
-input type for inserting data into table "package_versions"
-"""
-input package_versions_insert_input {
-  findings: findings_arr_rel_insert_input
-  slug: String
-  vulnerability_package: vulnerability_packages_obj_rel_insert_input
-}
-
-"""
-order by max() on columns of table "package_versions"
-"""
-input package_versions_max_order_by {
-  fix_state: order_by
-  id: order_by
-  pkg_slug: order_by
-  slug: order_by
-  version_constraint: order_by
-  version_format: order_by
-}
-
-"""
-order by min() on columns of table "package_versions"
-"""
-input package_versions_min_order_by {
-  fix_state: order_by
-  id: order_by
-  pkg_slug: order_by
-  slug: order_by
-  version_constraint: order_by
-  version_format: order_by
-}
-
-"""
-response of any mutation on the table "package_versions"
-"""
-type package_versions_mutation_response {
-  """number of rows affected by the mutation"""
-  affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [package_versions!]!
-}
-
-"""
-input type for inserting object relation for remote table "package_versions"
-"""
-input package_versions_obj_rel_insert_input {
-  data: package_versions_insert_input!
-
-  """upsert condition"""
-  on_conflict: package_versions_on_conflict
-}
-
-"""
-on_conflict condition type for table "package_versions"
-"""
-input package_versions_on_conflict {
-  constraint: package_versions_constraint!
-  update_columns: [package_versions_update_column!]! = []
-  where: package_versions_bool_exp
-}
-
-"""Ordering options when selecting data from "package_versions"."""
-input package_versions_order_by {
-  cpes: order_by
-  findings_aggregate: findings_aggregate_order_by
-  fix_state: order_by
-  fixed_in_versions: order_by
-  id: order_by
-  pkg_slug: order_by
-  slug: order_by
-  version_constraint: order_by
-  version_format: order_by
-  vulnerability_package: vulnerability_packages_order_by
-}
-
-"""primary key columns input for table: package_versions"""
-input package_versions_pk_columns_input {
-  id: uuid!
-}
-
-"""
-select columns of table "package_versions"
-"""
-enum package_versions_select_column {
-  """column name"""
-  cpes
-
-  """column name"""
-  fix_state
-
-  """column name"""
-  fixed_in_versions
-
-  """column name"""
-  id
-
-  """column name"""
-  pkg_slug
-
-  """column name"""
-  slug
-
-  """column name"""
-  version_constraint
-
-  """column name"""
-  version_format
-}
-
-"""
-input type for updating data in table "package_versions"
-"""
-input package_versions_set_input {
-  slug: String
-}
-
-"""
-update columns of table "package_versions"
-"""
-enum package_versions_update_column {
-  """column name"""
-  slug
-}
-
-"""
 columns and relationships of "project_access_tokens"
 """
 type project_access_tokens {
@@ -7829,10 +7524,14 @@ input projects_bool_exp {
 unique or primary key constraints on table "projects"
 """
 enum projects_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "name", "organization_id"
+  """
   projects_name_organization_id_key
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   projects_pkey
 }
 
@@ -8551,29 +8250,6 @@ type query_root {
   """
   package_release_license_by_pk(id: uuid!): package_release_license
 
-  """An array relationship"""
-  package_versions(
-    """distinct select on columns"""
-    distinct_on: [package_versions_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [package_versions_order_by!]
-
-    """filter the rows returned"""
-    where: package_versions_bool_exp
-  ): [package_versions!]!
-
-  """
-  fetch data from the table: "package_versions" using primary key columns
-  """
-  package_versions_by_pk(id: uuid!): package_versions
-
   """ get s3 presigned url for manifest upload, used by the CLI """
   presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
 
@@ -8638,29 +8314,6 @@ type query_root {
 
   """fetch data from the table: "projects" using primary key columns"""
   projects_by_pk(id: uuid!): projects
-
-  """An array relationship"""
-  related_vulnerabilities(
-    """distinct select on columns"""
-    distinct_on: [related_vulnerabilities_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [related_vulnerabilities_order_by!]
-
-    """filter the rows returned"""
-    where: related_vulnerabilities_bool_exp
-  ): [related_vulnerabilities!]!
-
-  """
-  fetch data from the table: "related_vulnerabilities" using primary key columns
-  """
-  related_vulnerabilities_by_pk(id: uuid!): related_vulnerabilities
   sbomUrl(buildId: uuid!): String
 
   """An array relationship"""
@@ -8729,49 +8382,6 @@ type query_root {
 
   """fetch data from the table: "users" using primary key columns"""
   users_by_pk(id: uuid!): users
-
-  """
-  fetch data from the table: "vulnerabilities"
-  """
-  vulnerabilities(
-    """distinct select on columns"""
-    distinct_on: [vulnerabilities_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [vulnerabilities_order_by!]
-
-    """filter the rows returned"""
-    where: vulnerabilities_bool_exp
-  ): [vulnerabilities!]!
-
-  """
-  fetch aggregated fields from the table: "vulnerabilities"
-  """
-  vulnerabilities_aggregate(
-    """distinct select on columns"""
-    distinct_on: [vulnerabilities_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [vulnerabilities_order_by!]
-
-    """filter the rows returned"""
-    where: vulnerabilities_bool_exp
-  ): vulnerabilities_aggregate!
-
-  """fetch data from the table: "vulnerabilities" using primary key columns"""
-  vulnerabilities_by_pk(id: uuid!): vulnerabilities
 
   """
   fetch data from the table: "vulnerability.vulnerability"
@@ -8918,29 +8528,6 @@ type query_root {
     where: vulnerability_equivalent_bool_exp
   ): [vulnerability_equivalent!]!
 
-  """An array relationship"""
-  vulnerability_packages(
-    """distinct select on columns"""
-    distinct_on: [vulnerability_packages_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [vulnerability_packages_order_by!]
-
-    """filter the rows returned"""
-    where: vulnerability_packages_bool_exp
-  ): [vulnerability_packages!]!
-
-  """
-  fetch data from the table: "vulnerability_packages" using primary key columns
-  """
-  vulnerability_packages_by_pk(id: uuid!): vulnerability_packages
-
   """
   fetch data from the table: "vulnerability.range"
   """
@@ -9057,88 +8644,6 @@ input reference_type_comparison_exp {
   _nin: [reference_type!]
 }
 
-"""join table for adding holding additional vulns on a finding"""
-type related_vulnerabilities {
-  id: uuid!
-
-  """An object relationship"""
-  parent: vulnerabilities!
-  related_vulnerability_slug: String!
-
-  """An object relationship"""
-  vulnerability: vulnerabilities!
-
-  """An object relationship"""
-  vulnerabilityByVulnerabilitySlug: vulnerabilities!
-  vulnerability_slug: String!
-}
-
-"""
-order by aggregate values of table "related_vulnerabilities"
-"""
-input related_vulnerabilities_aggregate_order_by {
-  count: order_by
-  max: related_vulnerabilities_max_order_by
-  min: related_vulnerabilities_min_order_by
-}
-
-"""
-Boolean expression to filter rows from the table "related_vulnerabilities". All fields are combined with a logical 'AND'.
-"""
-input related_vulnerabilities_bool_exp {
-  _and: [related_vulnerabilities_bool_exp!]
-  _not: related_vulnerabilities_bool_exp
-  _or: [related_vulnerabilities_bool_exp!]
-  id: uuid_comparison_exp
-  parent: vulnerabilities_bool_exp
-  related_vulnerability_slug: String_comparison_exp
-  vulnerability: vulnerabilities_bool_exp
-  vulnerabilityByVulnerabilitySlug: vulnerabilities_bool_exp
-  vulnerability_slug: String_comparison_exp
-}
-
-"""
-order by max() on columns of table "related_vulnerabilities"
-"""
-input related_vulnerabilities_max_order_by {
-  id: order_by
-  related_vulnerability_slug: order_by
-  vulnerability_slug: order_by
-}
-
-"""
-order by min() on columns of table "related_vulnerabilities"
-"""
-input related_vulnerabilities_min_order_by {
-  id: order_by
-  related_vulnerability_slug: order_by
-  vulnerability_slug: order_by
-}
-
-"""Ordering options when selecting data from "related_vulnerabilities"."""
-input related_vulnerabilities_order_by {
-  id: order_by
-  parent: vulnerabilities_order_by
-  related_vulnerability_slug: order_by
-  vulnerability: vulnerabilities_order_by
-  vulnerabilityByVulnerabilitySlug: vulnerabilities_order_by
-  vulnerability_slug: order_by
-}
-
-"""
-select columns of table "related_vulnerabilities"
-"""
-enum related_vulnerabilities_select_column {
-  """column name"""
-  id
-
-  """column name"""
-  related_vulnerability_slug
-
-  """column name"""
-  vulnerability_slug
-}
-
 """An individual time a scan was run on a build"""
 type scans {
   """An object relationship"""
@@ -9232,10 +8737,14 @@ input scans_bool_exp {
 unique or primary key constraints on table "scans"
 """
 enum scans_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   scans_pkey
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "scan_number", "build_id"
+  """
   scans_scan_number_build_id_key
 }
 
@@ -10095,29 +9604,6 @@ type subscription_root {
   package_release_license_by_pk(id: uuid!): package_release_license
 
   """An array relationship"""
-  package_versions(
-    """distinct select on columns"""
-    distinct_on: [package_versions_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [package_versions_order_by!]
-
-    """filter the rows returned"""
-    where: package_versions_bool_exp
-  ): [package_versions!]!
-
-  """
-  fetch data from the table: "package_versions" using primary key columns
-  """
-  package_versions_by_pk(id: uuid!): package_versions
-
-  """An array relationship"""
   project_access_tokens(
     """distinct select on columns"""
     distinct_on: [project_access_tokens_select_column!]
@@ -10178,29 +9664,6 @@ type subscription_root {
 
   """fetch data from the table: "projects" using primary key columns"""
   projects_by_pk(id: uuid!): projects
-
-  """An array relationship"""
-  related_vulnerabilities(
-    """distinct select on columns"""
-    distinct_on: [related_vulnerabilities_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [related_vulnerabilities_order_by!]
-
-    """filter the rows returned"""
-    where: related_vulnerabilities_bool_exp
-  ): [related_vulnerabilities!]!
-
-  """
-  fetch data from the table: "related_vulnerabilities" using primary key columns
-  """
-  related_vulnerabilities_by_pk(id: uuid!): related_vulnerabilities
 
   """An array relationship"""
   scans(
@@ -10268,49 +9731,6 @@ type subscription_root {
 
   """fetch data from the table: "users" using primary key columns"""
   users_by_pk(id: uuid!): users
-
-  """
-  fetch data from the table: "vulnerabilities"
-  """
-  vulnerabilities(
-    """distinct select on columns"""
-    distinct_on: [vulnerabilities_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [vulnerabilities_order_by!]
-
-    """filter the rows returned"""
-    where: vulnerabilities_bool_exp
-  ): [vulnerabilities!]!
-
-  """
-  fetch aggregated fields from the table: "vulnerabilities"
-  """
-  vulnerabilities_aggregate(
-    """distinct select on columns"""
-    distinct_on: [vulnerabilities_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [vulnerabilities_order_by!]
-
-    """filter the rows returned"""
-    where: vulnerabilities_bool_exp
-  ): vulnerabilities_aggregate!
-
-  """fetch data from the table: "vulnerabilities" using primary key columns"""
-  vulnerabilities_by_pk(id: uuid!): vulnerabilities
 
   """
   fetch data from the table: "vulnerability.vulnerability"
@@ -10456,29 +9876,6 @@ type subscription_root {
     """filter the rows returned"""
     where: vulnerability_equivalent_bool_exp
   ): [vulnerability_equivalent!]!
-
-  """An array relationship"""
-  vulnerability_packages(
-    """distinct select on columns"""
-    distinct_on: [vulnerability_packages_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [vulnerability_packages_order_by!]
-
-    """filter the rows returned"""
-    where: vulnerability_packages_bool_exp
-  ): [vulnerability_packages!]!
-
-  """
-  fetch data from the table: "vulnerability_packages" using primary key columns
-  """
-  vulnerability_packages_by_pk(id: uuid!): vulnerability_packages
 
   """
   fetch data from the table: "vulnerability.range"
@@ -10663,16 +10060,24 @@ input users_bool_exp {
 unique or primary key constraints on table "users"
 """
 enum users_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "github_id"
+  """
   users_github_id_key
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "github_node_id"
+  """
   users_github_node_id_key
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "kratos_id"
+  """
   users_kratos_id_unique
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   users_pkey
 }
 
@@ -10793,370 +10198,6 @@ input uuid_comparison_exp {
   _lte: uuid
   _neq: uuid
   _nin: [uuid!]
-}
-
-"""
-columns and relationships of "vulnerabilities"
-"""
-type vulnerabilities {
-  created_at: timestamp!
-  cvss_exploitability_score: numeric
-  cvss_impact_score: numeric
-  cvss_inferred: Boolean
-  cvss_score: numeric
-  cvss_version: String
-  data_source: String!
-  description: String
-  id: uuid!
-  name: String!
-  namespace: String!
-  record_source: String
-
-  """An array relationship"""
-  related_vulnerabilities(
-    """distinct select on columns"""
-    distinct_on: [related_vulnerabilities_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [related_vulnerabilities_order_by!]
-
-    """filter the rows returned"""
-    where: related_vulnerabilities_bool_exp
-  ): [related_vulnerabilities!]!
-
-  """An array relationship"""
-  reverse_related_vulnerabilities(
-    """distinct select on columns"""
-    distinct_on: [related_vulnerabilities_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [related_vulnerabilities_order_by!]
-
-    """filter the rows returned"""
-    where: related_vulnerabilities_bool_exp
-  ): [related_vulnerabilities!]!
-  severity: severity_enum!
-  slug: String!
-  topic_id: uuid
-  urls: _text
-
-  """An array relationship"""
-  vulnerability_packages(
-    """distinct select on columns"""
-    distinct_on: [vulnerability_packages_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [vulnerability_packages_order_by!]
-
-    """filter the rows returned"""
-    where: vulnerability_packages_bool_exp
-  ): [vulnerability_packages!]!
-}
-
-"""
-aggregated selection of "vulnerabilities"
-"""
-type vulnerabilities_aggregate {
-  aggregate: vulnerabilities_aggregate_fields
-  nodes: [vulnerabilities!]!
-}
-
-"""
-aggregate fields of "vulnerabilities"
-"""
-type vulnerabilities_aggregate_fields {
-  avg: vulnerabilities_avg_fields
-  count(columns: [vulnerabilities_select_column!], distinct: Boolean): Int!
-  max: vulnerabilities_max_fields
-  min: vulnerabilities_min_fields
-  stddev: vulnerabilities_stddev_fields
-  stddev_pop: vulnerabilities_stddev_pop_fields
-  stddev_samp: vulnerabilities_stddev_samp_fields
-  sum: vulnerabilities_sum_fields
-  var_pop: vulnerabilities_var_pop_fields
-  var_samp: vulnerabilities_var_samp_fields
-  variance: vulnerabilities_variance_fields
-}
-
-"""aggregate avg on columns"""
-type vulnerabilities_avg_fields {
-  cvss_exploitability_score: Float
-  cvss_impact_score: Float
-  cvss_score: Float
-}
-
-"""
-Boolean expression to filter rows from the table "vulnerabilities". All fields are combined with a logical 'AND'.
-"""
-input vulnerabilities_bool_exp {
-  _and: [vulnerabilities_bool_exp!]
-  _not: vulnerabilities_bool_exp
-  _or: [vulnerabilities_bool_exp!]
-  created_at: timestamp_comparison_exp
-  cvss_exploitability_score: numeric_comparison_exp
-  cvss_impact_score: numeric_comparison_exp
-  cvss_inferred: Boolean_comparison_exp
-  cvss_score: numeric_comparison_exp
-  cvss_version: String_comparison_exp
-  data_source: String_comparison_exp
-  description: String_comparison_exp
-  id: uuid_comparison_exp
-  name: String_comparison_exp
-  namespace: String_comparison_exp
-  record_source: String_comparison_exp
-  related_vulnerabilities: related_vulnerabilities_bool_exp
-  reverse_related_vulnerabilities: related_vulnerabilities_bool_exp
-  severity: severity_enum_comparison_exp
-  slug: String_comparison_exp
-  topic_id: uuid_comparison_exp
-  urls: _text_comparison_exp
-  vulnerability_packages: vulnerability_packages_bool_exp
-}
-
-"""
-unique or primary key constraints on table "vulnerabilities"
-"""
-enum vulnerabilities_constraint {
-  """unique or primary key constraint"""
-  vulnerabilities_pkey
-
-  """unique or primary key constraint"""
-  vulnerabilities_slug_key
-}
-
-"""
-input type for inserting data into table "vulnerabilities"
-"""
-input vulnerabilities_insert_input {
-  slug: String
-  vulnerability_packages: vulnerability_packages_arr_rel_insert_input
-}
-
-"""aggregate max on columns"""
-type vulnerabilities_max_fields {
-  created_at: timestamp
-  cvss_exploitability_score: numeric
-  cvss_impact_score: numeric
-  cvss_score: numeric
-  cvss_version: String
-  data_source: String
-  description: String
-  id: uuid
-  name: String
-  namespace: String
-  record_source: String
-  slug: String
-  topic_id: uuid
-}
-
-"""aggregate min on columns"""
-type vulnerabilities_min_fields {
-  created_at: timestamp
-  cvss_exploitability_score: numeric
-  cvss_impact_score: numeric
-  cvss_score: numeric
-  cvss_version: String
-  data_source: String
-  description: String
-  id: uuid
-  name: String
-  namespace: String
-  record_source: String
-  slug: String
-  topic_id: uuid
-}
-
-"""
-response of any mutation on the table "vulnerabilities"
-"""
-type vulnerabilities_mutation_response {
-  """number of rows affected by the mutation"""
-  affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [vulnerabilities!]!
-}
-
-"""
-input type for inserting object relation for remote table "vulnerabilities"
-"""
-input vulnerabilities_obj_rel_insert_input {
-  data: vulnerabilities_insert_input!
-
-  """upsert condition"""
-  on_conflict: vulnerabilities_on_conflict
-}
-
-"""
-on_conflict condition type for table "vulnerabilities"
-"""
-input vulnerabilities_on_conflict {
-  constraint: vulnerabilities_constraint!
-  update_columns: [vulnerabilities_update_column!]! = []
-  where: vulnerabilities_bool_exp
-}
-
-"""Ordering options when selecting data from "vulnerabilities"."""
-input vulnerabilities_order_by {
-  created_at: order_by
-  cvss_exploitability_score: order_by
-  cvss_impact_score: order_by
-  cvss_inferred: order_by
-  cvss_score: order_by
-  cvss_version: order_by
-  data_source: order_by
-  description: order_by
-  id: order_by
-  name: order_by
-  namespace: order_by
-  record_source: order_by
-  related_vulnerabilities_aggregate: related_vulnerabilities_aggregate_order_by
-  reverse_related_vulnerabilities_aggregate: related_vulnerabilities_aggregate_order_by
-  severity: order_by
-  slug: order_by
-  topic_id: order_by
-  urls: order_by
-  vulnerability_packages_aggregate: vulnerability_packages_aggregate_order_by
-}
-
-"""primary key columns input for table: vulnerabilities"""
-input vulnerabilities_pk_columns_input {
-  id: uuid!
-}
-
-"""
-select columns of table "vulnerabilities"
-"""
-enum vulnerabilities_select_column {
-  """column name"""
-  created_at
-
-  """column name"""
-  cvss_exploitability_score
-
-  """column name"""
-  cvss_impact_score
-
-  """column name"""
-  cvss_inferred
-
-  """column name"""
-  cvss_score
-
-  """column name"""
-  cvss_version
-
-  """column name"""
-  data_source
-
-  """column name"""
-  description
-
-  """column name"""
-  id
-
-  """column name"""
-  name
-
-  """column name"""
-  namespace
-
-  """column name"""
-  record_source
-
-  """column name"""
-  severity
-
-  """column name"""
-  slug
-
-  """column name"""
-  topic_id
-
-  """column name"""
-  urls
-}
-
-"""
-input type for updating data in table "vulnerabilities"
-"""
-input vulnerabilities_set_input {
-  slug: String
-}
-
-"""aggregate stddev on columns"""
-type vulnerabilities_stddev_fields {
-  cvss_exploitability_score: Float
-  cvss_impact_score: Float
-  cvss_score: Float
-}
-
-"""aggregate stddev_pop on columns"""
-type vulnerabilities_stddev_pop_fields {
-  cvss_exploitability_score: Float
-  cvss_impact_score: Float
-  cvss_score: Float
-}
-
-"""aggregate stddev_samp on columns"""
-type vulnerabilities_stddev_samp_fields {
-  cvss_exploitability_score: Float
-  cvss_impact_score: Float
-  cvss_score: Float
-}
-
-"""aggregate sum on columns"""
-type vulnerabilities_sum_fields {
-  cvss_exploitability_score: numeric
-  cvss_impact_score: numeric
-  cvss_score: numeric
-}
-
-"""
-update columns of table "vulnerabilities"
-"""
-enum vulnerabilities_update_column {
-  """column name"""
-  slug
-}
-
-"""aggregate var_pop on columns"""
-type vulnerabilities_var_pop_fields {
-  cvss_exploitability_score: Float
-  cvss_impact_score: Float
-  cvss_score: Float
-}
-
-"""aggregate var_samp on columns"""
-type vulnerabilities_var_samp_fields {
-  cvss_exploitability_score: Float
-  cvss_impact_score: Float
-  cvss_score: Float
-}
-
-"""aggregate variance on columns"""
-type vulnerabilities_variance_fields {
-  cvss_exploitability_score: Float
-  cvss_impact_score: Float
-  cvss_score: Float
 }
 
 """
@@ -11450,10 +10491,14 @@ input vulnerability_affected_bool_exp {
 unique or primary key constraints on table "vulnerability.affected"
 """
 enum vulnerability_affected_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   affected_pkey
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "vulnerability_id", "package_id"
+  """
   affected_vulnerability_id_package_id_idx
 }
 
@@ -11631,10 +10676,14 @@ input vulnerability_affected_range_event_bool_exp {
 unique or primary key constraints on table "vulnerability.affected_range_event"
 """
 enum vulnerability_affected_range_event_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "type", "affected_id", "event", "version"
+  """
   affected_range_event_affected_id_type_event_version_idx
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   affected_range_event_pkey
 }
 
@@ -11679,6 +10728,7 @@ input vulnerability_affected_range_event_max_order_by {
   affected_id: order_by
   event: order_by
   id: order_by
+  type: order_by
   version: order_by
 }
 
@@ -11689,6 +10739,7 @@ input vulnerability_affected_range_event_min_order_by {
   affected_id: order_by
   event: order_by
   id: order_by
+  type: order_by
   version: order_by
 }
 
@@ -11903,10 +10954,14 @@ input vulnerability_affected_version_bool_exp {
 unique or primary key constraints on table "vulnerability.affected_version"
 """
 enum vulnerability_affected_version_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "affected_id", "version"
+  """
   affected_version_affected_id_type_version
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   affected_version_pkey
 }
 
@@ -12084,10 +11139,14 @@ input vulnerability_bool_exp {
 unique or primary key constraints on table "vulnerability.vulnerability"
 """
 enum vulnerability_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   vulnerability_pkey
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "source", "source_id"
+  """
   vulnerability_source_source_id_idx
 }
 
@@ -12141,10 +11200,14 @@ input vulnerability_credit_bool_exp {
 unique or primary key constraints on table "vulnerability.credit"
 """
 enum vulnerability_credit_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   credit_pkey
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "name", "vulnerability_id"
+  """
   credit_vulnerability_id_name
 }
 
@@ -12329,7 +11392,9 @@ input vulnerability_equivalent_bool_exp {
 unique or primary key constraints on table "vulnerability.equivalent"
 """
 enum vulnerability_equivalent_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "a", "b"
+  """
   equivalent_a_b_idx
 }
 
@@ -12505,215 +11570,6 @@ input vulnerability_order_by {
   withdrawn: order_by
 }
 
-"""All of the package vulnerabilities belonging to a given vulnerability"""
-type vulnerability_packages {
-  advisories: String!
-
-  """An array relationship"""
-  findings(
-    """distinct select on columns"""
-    distinct_on: [findings_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [findings_order_by!]
-
-    """filter the rows returned"""
-    where: findings_bool_exp
-  ): [findings!]!
-  id: uuid!
-  name: String
-
-  """An array relationship"""
-  package_versions(
-    """distinct select on columns"""
-    distinct_on: [package_versions_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [package_versions_order_by!]
-
-    """filter the rows returned"""
-    where: package_versions_bool_exp
-  ): [package_versions!]!
-  slug: String!
-  vuln_slug: String!
-
-  """An object relationship"""
-  vulnerability: vulnerabilities!
-}
-
-"""
-order by aggregate values of table "vulnerability_packages"
-"""
-input vulnerability_packages_aggregate_order_by {
-  count: order_by
-  max: vulnerability_packages_max_order_by
-  min: vulnerability_packages_min_order_by
-}
-
-"""
-input type for inserting array relation for remote table "vulnerability_packages"
-"""
-input vulnerability_packages_arr_rel_insert_input {
-  data: [vulnerability_packages_insert_input!]!
-
-  """upsert condition"""
-  on_conflict: vulnerability_packages_on_conflict
-}
-
-"""
-Boolean expression to filter rows from the table "vulnerability_packages". All fields are combined with a logical 'AND'.
-"""
-input vulnerability_packages_bool_exp {
-  _and: [vulnerability_packages_bool_exp!]
-  _not: vulnerability_packages_bool_exp
-  _or: [vulnerability_packages_bool_exp!]
-  advisories: String_comparison_exp
-  findings: findings_bool_exp
-  id: uuid_comparison_exp
-  name: String_comparison_exp
-  package_versions: package_versions_bool_exp
-  slug: String_comparison_exp
-  vuln_slug: String_comparison_exp
-  vulnerability: vulnerabilities_bool_exp
-}
-
-"""
-unique or primary key constraints on table "vulnerability_packages"
-"""
-enum vulnerability_packages_constraint {
-  """unique or primary key constraint"""
-  vulnerability_packages_pkey
-
-  """unique or primary key constraint"""
-  vulnerability_packages_slug_key
-}
-
-"""
-input type for inserting data into table "vulnerability_packages"
-"""
-input vulnerability_packages_insert_input {
-  findings: findings_arr_rel_insert_input
-  package_versions: package_versions_arr_rel_insert_input
-  slug: String
-  vulnerability: vulnerabilities_obj_rel_insert_input
-}
-
-"""
-order by max() on columns of table "vulnerability_packages"
-"""
-input vulnerability_packages_max_order_by {
-  advisories: order_by
-  id: order_by
-  name: order_by
-  slug: order_by
-  vuln_slug: order_by
-}
-
-"""
-order by min() on columns of table "vulnerability_packages"
-"""
-input vulnerability_packages_min_order_by {
-  advisories: order_by
-  id: order_by
-  name: order_by
-  slug: order_by
-  vuln_slug: order_by
-}
-
-"""
-response of any mutation on the table "vulnerability_packages"
-"""
-type vulnerability_packages_mutation_response {
-  """number of rows affected by the mutation"""
-  affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [vulnerability_packages!]!
-}
-
-"""
-input type for inserting object relation for remote table "vulnerability_packages"
-"""
-input vulnerability_packages_obj_rel_insert_input {
-  data: vulnerability_packages_insert_input!
-
-  """upsert condition"""
-  on_conflict: vulnerability_packages_on_conflict
-}
-
-"""
-on_conflict condition type for table "vulnerability_packages"
-"""
-input vulnerability_packages_on_conflict {
-  constraint: vulnerability_packages_constraint!
-  update_columns: [vulnerability_packages_update_column!]! = []
-  where: vulnerability_packages_bool_exp
-}
-
-"""Ordering options when selecting data from "vulnerability_packages"."""
-input vulnerability_packages_order_by {
-  advisories: order_by
-  findings_aggregate: findings_aggregate_order_by
-  id: order_by
-  name: order_by
-  package_versions_aggregate: package_versions_aggregate_order_by
-  slug: order_by
-  vuln_slug: order_by
-  vulnerability: vulnerabilities_order_by
-}
-
-"""primary key columns input for table: vulnerability_packages"""
-input vulnerability_packages_pk_columns_input {
-  id: uuid!
-}
-
-"""
-select columns of table "vulnerability_packages"
-"""
-enum vulnerability_packages_select_column {
-  """column name"""
-  advisories
-
-  """column name"""
-  id
-
-  """column name"""
-  name
-
-  """column name"""
-  slug
-
-  """column name"""
-  vuln_slug
-}
-
-"""
-input type for updating data in table "vulnerability_packages"
-"""
-input vulnerability_packages_set_input {
-  slug: String
-}
-
-"""
-update columns of table "vulnerability_packages"
-"""
-enum vulnerability_packages_update_column {
-  """column name"""
-  slug
-}
-
 """primary key columns input for table: vulnerability"""
 input vulnerability_pk_columns_input {
   id: uuid!
@@ -12774,10 +11630,14 @@ input vulnerability_range_bool_exp {
 unique or primary key constraints on table "vulnerability.range"
 """
 enum vulnerability_range_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   range_pkey
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "affected_id", "fixed", "introduced"
+  """
   range_uniq
 }
 
@@ -12940,10 +11800,14 @@ input vulnerability_reference_bool_exp {
 unique or primary key constraints on table "vulnerability.reference"
 """
 enum vulnerability_reference_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   reference_pkey
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "type", "vulnerability_id", "url"
+  """
   reference_vulnerability_id_type_url_idx
 }
 
@@ -12963,6 +11827,7 @@ order by max() on columns of table "vulnerability.reference"
 """
 input vulnerability_reference_max_order_by {
   id: order_by
+  type: order_by
   url: order_by
   vulnerability_id: order_by
 }
@@ -12972,6 +11837,7 @@ order by min() on columns of table "vulnerability.reference"
 """
 input vulnerability_reference_min_order_by {
   id: order_by
+  type: order_by
   url: order_by
   vulnerability_id: order_by
 }
@@ -13165,10 +12031,14 @@ input vulnerability_severity_bool_exp {
 unique or primary key constraints on table "vulnerability.severity"
 """
 enum vulnerability_severity_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "id"
+  """
   severity_pkey
 
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "source", "type", "vulnerability_id"
+  """
   severity_vulnerability_id_source_type_idx
 }
 
@@ -13369,7 +12239,9 @@ input webhook_cache_bool_exp {
 unique or primary key constraints on table "webhook_cache"
 """
 enum webhook_cache_constraint {
-  """unique or primary key constraint"""
+  """
+  unique or primary key constraint on columns "delivery_id"
+  """
   webhook_cache_pkey
 }
 

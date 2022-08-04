@@ -74,7 +74,7 @@ services:
       POSTGRES_DB: lunatrace
 
   graphql-engine:
-    image: hasura/graphql-engine:v2.5.2.cli-migrations-v3
+    image: hasura/graphql-engine:v2.9.0.cli-migrations-v3
     ports:
     - "8080:8080"
     depends_on:
@@ -102,8 +102,8 @@ services:
       # TODO: ADD THIS TO THE CDK
       REMOTE_SCHEMA_URL: http://host.docker.internal:3002/graphql/v1
       # COMMENT OUT THESE DIRs IF HASURA WONT START DUE TO MIGRATION OR METADATA ISSUES
-      HASURA_GRAPHQL_METADATA_DIR: /hasura/metadata
-      HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura/migrations
+#      HASURA_GRAPHQL_METADATA_DIR: /hasura/metadata
+#      HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura/migrations
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
