@@ -64,28 +64,3 @@ select_permissions:
               _table:
                 schema: public
                 name: users
-event_triggers:
-  - name: signup
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-    retry_conf:
-      num_retries: 1
-      interval_sec: 10
-      timeout_sec: 60
-    webhook: https://hooks.slack.com/services/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
-    headers:
-      - value: application/json
-        name: Content-type
-    request_transform:
-      body:
-        action: transform
-        template: |-
-          {
-            "text": {{$body.event.data.new.traits.email}}
-          }
-      method: POST
-      version: 2
-      query_params: {}
-      template_engine: Kriti
