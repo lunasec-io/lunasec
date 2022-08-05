@@ -17,6 +17,7 @@ import { getRepoCloneUrlWithAuth } from '../github/actions/get-repo-clone-url-wi
 import { SnapshotForRepositoryRequest } from '../types/sqs';
 import { log } from '../utils/log';
 import { threwError } from '../utils/try';
+import { scanSnapshotActivity } from '../workers/queue/activities/scan-snapshot-activity';
 import { snapshotRepositoryActivity } from '../workers/queue/activities/snapshot-repository-activity';
 
 const program = new Command();
@@ -33,11 +34,11 @@ interface SnapshotRepositoryOptions {
 
 program
   .command('snapshot-repository')
-  .option('--branch', 'branch of repository to scan')
-  .option('--commit', 'commit of repository to scan')
-  .requiredOption('--repo-github-id', 'github id for the repository')
-  .requiredOption('--install-id', 'installation id')
-  .option('--pull-request-id', 'id of the pull request to run check on')
+  .requiredOption('--branch <string>', 'branch of repository to scan')
+  .option('--commit <string>', 'commit of repository to scan')
+  .requiredOption('--repo-github-id <number>', 'github id for the repository')
+  .requiredOption('--install-id <number>', 'installation id')
+  .option('--pull-request-id <number>', 'id of the pull request to run check on')
   .action(async (options: SnapshotRepositoryOptions) => {
     const parsedRepoGithubId = parseInt(options.repoGithubId);
     const authUrl = await getRepoCloneUrlWithAuth(parsedRepoGithubId);
@@ -59,6 +60,41 @@ program
       pullRequestId: options.pullRequestId,
     };
     await snapshotRepositoryActivity(snapshotRequest);
+  });
+
+program
+  .command('process-sbom')
+  .requiredOption('--s3-url <string>', 's3 url to where the sbom is')
+  .action(async (options) => {
+    const parsedS3Url = new URL(options.s3Url);
+    const hostParts = parsedS3Url.host.split('.');
+    if (hostParts.length !== 5) {
+      log.error('invalid host name for s3 url', {
+        s3Url: options.s3Url,
+      });
+      return;
+    }
+
+    const bucketName = hostParts[0];
+    const region = hostParts[2];
+    const key = parsedS3Url.pathname.substring(1);
+
+    const keyParts = key.split('/');
+    if (keyParts.length !== 6) {
+      log.error('invalid s3 key for s3 url', {
+        s3Url: options.s3Url,
+        key,
+      });
+      return;
+    }
+
+    const buildId = keyParts[5];
+
+    await scanSnapshotActivity(buildId, {
+      bucketName,
+      key,
+      region,
+    });
   });
 
 program.parse();
