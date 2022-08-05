@@ -51,7 +51,7 @@ export async function queueNewReposForSnapshot(
         repoGithubId: repo.repoId,
         sourceType: 'default_branch',
       };
-      return queueRepositoryForSnapshot(installationId, record);
+      return queueRepositoryForSnapshot(record);
     })
   );
 
