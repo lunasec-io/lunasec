@@ -25,7 +25,7 @@ function selectCvssSeverityFromList(severities: VulnerabilitySeverity[]) {
 
 function cleanSeverityScore(severityScore: string): string {
   // if there is a dangling slash at the end of the score, remove it
-  if (severityScore[severityScore.length - 1] === '/') {
+  if (severityScore.charAt(severityScore.length - 1) === '/') {
     return severityScore.substring(0, severityScore.length - 1);
   }
   return severityScore;
