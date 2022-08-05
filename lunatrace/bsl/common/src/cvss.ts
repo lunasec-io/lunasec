@@ -23,12 +23,28 @@ function selectCvssSeverityFromList(severities: VulnerabilitySeverity[]) {
   return severities[0];
 }
 
+function cleanSeverityScore(severityScore: string): string {
+  // if there is a dangling slash at the end of the score, remove it
+  if (severityScore.charAt(severityScore.length - 1) === '/') {
+    return severityScore.substring(0, severityScore.length - 1);
+  }
+  return severityScore;
+}
+
 export function getCvssVectorFromSeverities(severities: VulnerabilitySeverity[]): CvssScore | null {
   if (severities.length === 0) {
     return null;
   }
   const severity = selectCvssSeverityFromList(severities);
-  return parseCvssVector(severity.score);
+
+  const formattedScore = cleanSeverityScore(severity.score);
+  try {
+    return parseCvssVector(formattedScore);
+  } catch (e) {
+    // TODO (cthompson) should we defer to the caller to handle this error? It might get super tedious to do this.
+    console.error(e);
+    return null;
+  }
 }
 
 export function countCriticalVulnerabilities(findings: FindingForCounting[]): number {

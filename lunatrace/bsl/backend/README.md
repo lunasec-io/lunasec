@@ -21,29 +21,16 @@ Express server for trace backend.  Presigns upload URLs, runs grype tests, and s
 * auth with ORY
 * deployment with CDK
 
-### Running Lambda
+### Testing the queue
 
-#### Sqs Queue Payload
-Edit `fixtures/upload-sbom-payload.json` or `fixtures/scan-sbom-payload.json` to see the payloads
-
-#### Building lambda docker container
-Build lambda docker container
+#### Snapshotting a repository
+Go into the database in order to get `repo-github-id` and `install-id`
 ```shell
-sudo docker build -f lambda.dockerfile . -t lunasec/lunatrace-backend-lambda
+yarn test:queue snapshot-repository --branch main --repo-github-id 486437050 --install-id 26134064
 ```
 
-#### Running lambda docker container
-Run lambda docker container
+#### Scanning a snapshot
+The url comes from the `snapshot-repository` command in the logs.
 ```shell
-run docker run -p 9000:8080 lunasec/lunatrace-backend-lambda
-```
-
-or run lambda docker container with volume mount
-```shell
-sudo docker run -p 9000:8080 -v $(pwd)/build:/var/task -e HASURA_ADMIN_SECRET=myadminsecretkey lunasec/lunatrace-backend-lambda
-```
-
-#### Sending data to lambda
-```shell
-curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d @fixtures/upload-sbom-payload.json | jq .
+yarn test:queue process-sbom --s3-url https://lunatrace-breadchris-etlstorag-sbombucket8550fee8-ohmyu4hf5uec.s3.us-west-2.amazonaws.com/26134064/2022/7/4/17/c9acaaf4-d564-4643-8892-09a9cd1173ff
 ```

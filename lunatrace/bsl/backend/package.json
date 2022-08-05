@@ -13,7 +13,7 @@
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",
     "test:scan:upload": "yarn run ts-node --files ./src/tests/upload-scan.ts",
     "test:load": "yarn run ts-node --files ./src/tests/local-load-vulnerabilities-test.ts",
-    "test:queue": "yarn run ts-node --files ./src/tests/queue-activities.ts",
+    "test:queue": "GITHUB_APP_ID=\"179126\" GITHUB_APP_PRIVATE_KEY=\"$(cat github-app-dev.2022-03-09.private-key.pem | base64 -w0)\" yarn run ts-node --files src/manual-scripts/queue-activities.ts",
     "test:jest": "jest",
     "guides:update": "yarn run ts-node --files src/guide-ingester/cmd.ts ../../../guides",
     "test:deleted": "yarn run ts-node --files ./src/tests/deleted-vulns-scan.ts",

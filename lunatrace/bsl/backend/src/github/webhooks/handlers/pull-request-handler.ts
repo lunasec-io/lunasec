@@ -57,7 +57,7 @@ export async function pullRequestHandler(event: EmitterWebhookEvent<'pull_reques
     // // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
     // await hasura.UpdateBuildExistingCheckId({ id: buildId, existing_github_check_id });
 
-    const res = await queueRepositoryForSnapshot(event.payload.installation.id, {
+    const res = await queueRepositoryForSnapshot({
       cloneUrl: event.payload.repository.clone_url,
       gitBranch: event.payload.pull_request.head.ref, // TODO make this the human readable branch name, not the ref
       repoGithubId: event.payload.repository.id,
