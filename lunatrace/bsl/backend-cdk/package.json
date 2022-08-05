@@ -11,7 +11,8 @@
     "cdk:deploy:dev": "DEVELOPMENT=true DEV_USER=$USER cdk deploy --all",
     "cdk:deploy:prod:all": "DATADOG_API_KEY=$(aws secretsmanager get-secret-value --secret-id lunatrace-DatadogAPIKey | jq -r .SecretString) cdk deploy --all",
     "cdk:deploy:prod:cleanup": "rm cdk.out/*.tar || true",
-    "cdk:deploy:prod": "echo 'deploying...' && yarn run cdk:deploy:prod:cleanup && ./build-containers.sh && yarn run cdk:deploy:prod:all"
+    "cdk:deploy:prod": "echo 'deploying...' && yarn run cdk:deploy:prod:cleanup && ./build-containers.sh && yarn run cdk:deploy:prod:all && yarn run hasura:metadata:reload",
+    "hasura:metadata:reload": "cd ../hasura && ./scripts/hasura-metadata-reload.sh"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.156.1",
