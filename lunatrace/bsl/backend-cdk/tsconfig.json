@@ -18,10 +18,11 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "experimentalDecorators": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "outDir": "ts-output/"
   },
   "exclude": [
     "node_modules",
     "cdk.out"
-  ]
+  ],
 }
