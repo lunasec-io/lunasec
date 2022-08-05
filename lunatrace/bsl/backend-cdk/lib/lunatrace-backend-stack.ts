@@ -34,15 +34,14 @@ import { DnsRecordType, PrivateDnsNamespace } from '@aws-cdk/aws-servicediscover
 import * as cdk from '@aws-cdk/core';
 import { Duration } from '@aws-cdk/core';
 
-import { StackInputsType } from '../bin/lunatrace-backend';
+import { StackInputs } from '../stack-inputs';
 
 import { commonBuildProps } from './constants';
 import { addDatadogToTaskDefinition, datadogLogDriverForService } from './datadog-fargate-integration';
-import { getContainerTarballPath } from './util';
 import { WorkerStack } from './worker-stack';
 import { WorkerStorageStack } from './worker-storage-stack';
 
-interface LunaTraceStackProps extends cdk.StackProps, StackInputsType {}
+type LunaTraceStackProps = cdk.StackProps & StackInputs;
 
 export class LunatraceBackendStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: LunaTraceStackProps) {
