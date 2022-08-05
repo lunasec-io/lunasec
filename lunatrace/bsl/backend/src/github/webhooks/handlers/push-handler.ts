@@ -28,7 +28,7 @@ export async function pushHandler(event: EmitterWebhookEvent<'push'>) {
       return;
     }
 
-    const res = await queueRepositoryForSnapshot(event.payload.installation.id, {
+    const res = await queueRepositoryForSnapshot({
       cloneUrl: event.payload.repository.clone_url,
       gitBranch: branchOrTagName,
       repoGithubId: event.payload.repository.id,
