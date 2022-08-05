@@ -47,7 +47,7 @@ function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gz
   });
 }
 
-async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<InsertedScan> {
+async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<InsertedScan | null> {
   log.info('scanning snapshot');
 
   const [sbomStream, sbomLength] = await aws.getFileFromS3(
@@ -61,7 +61,7 @@ async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Pr
       buildId,
       sbomBucketInfo,
     });
-    throw new Error('sbom is empty');
+    return null;
   }
 
   const unZippedSbomStream = await decompressGzip(sbomStream, sbomLength);
@@ -70,6 +70,9 @@ async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Pr
   await hasura.UpdateManifestStatusIfExists({ status: 'scanning', buildId: buildId });
 
   const scanReport = await performSnapshotScanAndCollectReport(unZippedSbomStream, buildId);
+  if (scanReport === null) {
+    return null;
+  }
 
   log.info('upload complete, notifying manifest if one exists', {
     createdFindings: scanReport.findings.length,
@@ -103,6 +106,16 @@ export async function scanSnapshotActivity(buildId: string, msg: S3ObjectMetadat
         buildId: buildId,
       });
       return newError(scanResp.message);
+    }
+
+    if (scanResp === null) {
+      log.error('failed to scan snapshot due to invalid SBOM');
+      await hasura.UpdateManifestStatusIfExists({
+        status: 'error',
+        message: String('invalid SBOM was requested to be scanned'),
+        buildId: buildId,
+      });
+      return newResult(undefined);
     }
 
     try {
