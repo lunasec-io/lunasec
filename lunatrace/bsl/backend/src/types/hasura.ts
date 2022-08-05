@@ -19,3 +19,19 @@ export interface UpsertOrganizationResponse {
   id: string | null;
   github_node_id: string | null;
 }
+
+interface HasuraResponseError {
+  extensions: any;
+  message: string;
+}
+
+interface HasuraResponse {
+  errors: HasuraResponseError[];
+  status: number;
+  headers: any;
+}
+
+export interface HasuraError {
+  request: any;
+  response: HasuraResponse;
+}

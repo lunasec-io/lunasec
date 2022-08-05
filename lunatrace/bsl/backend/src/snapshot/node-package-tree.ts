@@ -27,8 +27,10 @@ import {
   Package_Release_Update_Column,
   Package_Update_Column,
 } from '../hasura-api/generated';
+import { HasuraError } from '../types/hasura';
 import { newError, newResult } from '../utils/errors';
 import { findFilesMatchingFilter } from '../utils/filesystem-utils';
+import { hasuraErrorMessage } from '../utils/hasura';
 import { log } from '../utils/log';
 import { notEmpty } from '../utils/predicates';
 import { catchError, threwError } from '../utils/try';
@@ -178,6 +180,7 @@ export async function snapshotPinnedDependencies(buildId: string, repoDir: strin
       log.error('failed to insert build dependency relationships', {
         idx: i,
         chunkSize,
+        error: hasuraErrorMessage(resp as unknown as HasuraError),
       });
       return newError(resp.message);
     }
