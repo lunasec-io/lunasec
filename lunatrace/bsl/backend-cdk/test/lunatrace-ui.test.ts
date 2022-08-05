@@ -11,25 +11,28 @@
  * limitations under the License.
  *
  */
-import { expect as expectCDK, MatchStyle, matchTemplate } from '@aws-cdk/assert';
-import * as cdk from '@aws-cdk/core';
+// import { expect as expectCDK, MatchStyle, matchTemplate } from '@aws-cdk/assert';
+// import * as cdk from '@aws-cdk/core';
+//
+// import * as LunatraceBackend from '../lib/lunatrace-backend-stack';
+//
+// test('Empty Stack', () => {
+//   const app = new cdk.App();
+//   // WHEN
+//   const stack = new LunatraceBackend.LunatraceBackendStack(app, 'MyTestStack', {
+//     domainName: '',
+//     domainZoneId: '',
+//   });
+//   // THEN
+//   expectCDK(stack).to(
+//     matchTemplate(
+//       {
+//         Resources: {},
+//       },
+//       MatchStyle.EXACT
+//     )
+//   );
+// });
 
-import * as LunatraceBackend from '../lib/lunatrace-backend-stack';
-
-test('Empty Stack', () => {
-  const app = new cdk.App();
-  // WHEN
-  const stack = new LunatraceBackend.LunatraceBackendStack(app, 'MyTestStack', {
-    domainName: '',
-    domainZoneId: '',
-  });
-  // THEN
-  expectCDK(stack).to(
-    matchTemplate(
-      {
-        Resources: {},
-      },
-      MatchStyle.EXACT
-    )
-  );
-});
+//todo: this test is deprecated
+export default {};
