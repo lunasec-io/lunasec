@@ -16,35 +16,35 @@ insert_permissions:
     permission:
       check: {}
       columns:
-        - labels
-        - project_path
-        - range
         - build_id
         - depended_by_relationship_id
         - id
+        - labels
+        - project_path
+        - range
         - release_id
       backend_only: false
 select_permissions:
   - role: service
     permission:
       columns:
-        - labels
-        - project_path
-        - range
         - build_id
         - depended_by_relationship_id
         - id
+        - labels
+        - project_path
+        - range
         - release_id
       filter: {}
   - role: user
     permission:
       columns:
-        - labels
-        - project_path
-        - range
         - build_id
         - depended_by_relationship_id
         - id
+        - labels
+        - project_path
+        - range
         - release_id
       filter:
         build:

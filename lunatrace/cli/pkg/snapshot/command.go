@@ -139,8 +139,9 @@ func ContainerCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err erro
 
 func getGitCloneOptions(gitUrl string, snapshotOptions types.SnapshotOptions, progress io.Writer) *git.CloneOptions {
 	cloneOptions := git.CloneOptions{
-		URL:      gitUrl,
-		Progress: progress,
+		URL:        gitUrl,
+		Progress:   progress,
+		NoCheckout: true,
 	}
 	// If a branch is specified but no specific commit for checkout is specified, we can go ahead and checkout that branch and only the latest commit
 	// if a commit is specified, we are going to go into a detached HEAD on some unknown branch in a later step, so clone everything for now
@@ -148,6 +149,7 @@ func getGitCloneOptions(gitUrl string, snapshotOptions types.SnapshotOptions, pr
 		cloneOptions.ReferenceName = plumbing.NewBranchReferenceName(snapshotOptions.GitBranch)
 		cloneOptions.SingleBranch = true
 		cloneOptions.Depth = 1
+		cloneOptions.NoCheckout = false
 	}
 	return &cloneOptions
 }
