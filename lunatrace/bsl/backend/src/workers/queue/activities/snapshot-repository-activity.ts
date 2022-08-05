@@ -42,6 +42,7 @@ async function performSnapshotOnRepository(
   gitCommit?: string
 ): Promise<MaybeErrorVoid> {
   log.info('creating snapshot for repository');
+
   let repoDir = '';
   try {
     repoDir = await mkdTemp(path.join(os.tmpdir(), appPrefix));
@@ -53,9 +54,7 @@ async function performSnapshotOnRepository(
       return newError('unable to generate sbom for asset');
     }
 
-    log.info('uploading snapshot results to s3', {
-      installationId,
-    });
+    log.info('uploading sbom to s3');
 
     const s3UploadRes = await catchError(uploadSbomToS3(installationId, buildId, sbom));
     if (threwError(s3UploadRes)) {
@@ -64,6 +63,10 @@ async function performSnapshotOnRepository(
       });
       return newError(s3UploadRes.message);
     }
+
+    log.info('uploaded sbom to s3', {
+      s3Url: s3UploadRes,
+    });
 
     log.info('snapshotting pinned dependencies', {
       repoDir,
@@ -145,7 +148,7 @@ async function createNewBuild(logger: LunaLogger, buildInfo: NewBuildInfo): Prom
   });
 
   if (!insert_builds_one || insert_builds_one.id === undefined) {
-    const msg = 'missing id in insert build response';
+    const msg = 'missing idd in insert build response';
     logger.error(msg, {
       insert_builds_one,
     });
@@ -184,13 +187,9 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
     return buildId;
   }
 
-  return await log.provideFields({ buildId: buildId.res, record: req }, async () => {
-    return performSnapshotOnRepository(
-      req.installationId.toString(),
-      buildId.res,
-      repoClone.cloneUrl,
-      req.gitBranch,
-      req.gitCommit
-    );
+  const installationId = req.installationId.toString();
+
+  return await log.provideFields({ buildId: buildId.res, record: req, installationId }, async () => {
+    return performSnapshotOnRepository(installationId, buildId.res, repoClone.cloneUrl, req.gitBranch, req.gitCommit);
   });
 }
