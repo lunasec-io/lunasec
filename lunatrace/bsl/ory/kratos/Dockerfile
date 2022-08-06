@@ -8,4 +8,5 @@ ADD config.yaml \
     identity_v1.schema.json \
     oidc.github.jsonnet \
     oidc.hook.jsonnet \
+    slack.hook.jsonnet \
     /config/
