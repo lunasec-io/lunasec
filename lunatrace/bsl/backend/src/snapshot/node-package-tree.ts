@@ -99,6 +99,13 @@ function mapPackageTreeToBuildDependencyRelationships(
         return null;
       }
 
+      if (!dependency.range) {
+        log.warn('failed to insert dependency, range is not defined', {
+          dependency,
+        });
+        return null;
+      }
+
       return {
         /*
          TODO (cthompson) we are generating the ids for the database here. This avoids a roundtrip from the server
