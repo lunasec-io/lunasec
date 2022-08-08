@@ -160,6 +160,7 @@ type Build_dependency_relationship_bool_exp struct {
 	Depended_by_relationship_id *Uuid_comparison_exp                      `json:"depended_by_relationship_id,omitempty"`
 	Id                          *Uuid_comparison_exp                      `json:"id,omitempty"`
 	Labels                      *Jsonb_comparison_exp                     `json:"labels,omitempty"`
+	Project_path                *String_comparison_exp                    `json:"project_path,omitempty"`
 	Range                       *String_comparison_exp                    `json:"range,omitempty"`
 	Release                     *Package_release_bool_exp                 `json:"release,omitempty"`
 	Release_id                  *Uuid_comparison_exp                      `json:"release_id,omitempty"`
@@ -204,6 +205,11 @@ func (v *Build_dependency_relationship_bool_exp) GetId() *Uuid_comparison_exp { 
 // GetLabels returns Build_dependency_relationship_bool_exp.Labels, and is useful for accessing the field via an interface.
 func (v *Build_dependency_relationship_bool_exp) GetLabels() *Jsonb_comparison_exp { return v.Labels }
 
+// GetProject_path returns Build_dependency_relationship_bool_exp.Project_path, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_bool_exp) GetProject_path() *String_comparison_exp {
+	return v.Project_path
+}
+
 // GetRange returns Build_dependency_relationship_bool_exp.Range, and is useful for accessing the field via an interface.
 func (v *Build_dependency_relationship_bool_exp) GetRange() *String_comparison_exp { return v.Range }
 
@@ -233,6 +239,7 @@ type Build_dependency_relationship_insert_input struct {
 	Depended_by_relationship_id *uuid.UUID                                          `json:"depended_by_relationship_id,omitempty"`
 	Id                          *uuid.UUID                                          `json:"id,omitempty"`
 	Labels                      *json.RawMessage                                    `json:"labels,omitempty"`
+	Project_path                *string                                             `json:"project_path,omitempty"`
 	Range                       *string                                             `json:"range,omitempty"`
 	Release                     *Package_release_obj_rel_insert_input               `json:"release,omitempty"`
 	Release_id                  *uuid.UUID                                          `json:"release_id,omitempty"`
@@ -261,6 +268,9 @@ func (v *Build_dependency_relationship_insert_input) GetId() *uuid.UUID { return
 
 // GetLabels returns Build_dependency_relationship_insert_input.Labels, and is useful for accessing the field via an interface.
 func (v *Build_dependency_relationship_insert_input) GetLabels() *json.RawMessage { return v.Labels }
+
+// GetProject_path returns Build_dependency_relationship_insert_input.Project_path, and is useful for accessing the field via an interface.
+func (v *Build_dependency_relationship_insert_input) GetProject_path() *string { return v.Project_path }
 
 // GetRange returns Build_dependency_relationship_insert_input.Range, and is useful for accessing the field via an interface.
 func (v *Build_dependency_relationship_insert_input) GetRange() *string { return v.Range }
@@ -324,6 +334,8 @@ const (
 	Build_dependency_relationship_update_columnId Build_dependency_relationship_update_column = "id"
 	// column name
 	Build_dependency_relationship_update_columnLabels Build_dependency_relationship_update_column = "labels"
+	// column name
+	Build_dependency_relationship_update_columnProjectPath Build_dependency_relationship_update_column = "project_path"
 	// column name
 	Build_dependency_relationship_update_columnRange Build_dependency_relationship_update_column = "range"
 	// column name
@@ -7127,14 +7139,13 @@ func (v *Vulnerability_range_arr_rel_insert_input) GetOn_conflict() *Vulnerabili
 
 // Boolean expression to filter rows from the table "vulnerability.range". All fields are combined with a logical 'AND'.
 type Vulnerability_range_bool_exp struct {
-	And         []*Vulnerability_range_bool_exp  `json:"_and,omitempty"`
-	Not         *Vulnerability_range_bool_exp    `json:"_not,omitempty"`
-	Or          []*Vulnerability_range_bool_exp  `json:"_or,omitempty"`
-	Affected    *Vulnerability_affected_bool_exp `json:"affected,omitempty"`
-	Affected_id *Uuid_comparison_exp             `json:"affected_id,omitempty"`
-	Fixed       *String_comparison_exp           `json:"fixed,omitempty"`
-	Id          *Uuid_comparison_exp             `json:"id,omitempty"`
-	Introduced  *String_comparison_exp           `json:"introduced,omitempty"`
+	And         []*Vulnerability_range_bool_exp `json:"_and,omitempty"`
+	Not         *Vulnerability_range_bool_exp   `json:"_not,omitempty"`
+	Or          []*Vulnerability_range_bool_exp `json:"_or,omitempty"`
+	Affected_id *Uuid_comparison_exp            `json:"affected_id,omitempty"`
+	Fixed       *String_comparison_exp          `json:"fixed,omitempty"`
+	Id          *Uuid_comparison_exp            `json:"id,omitempty"`
+	Introduced  *String_comparison_exp          `json:"introduced,omitempty"`
 }
 
 // GetAnd returns Vulnerability_range_bool_exp.And, and is useful for accessing the field via an interface.
@@ -7145,11 +7156,6 @@ func (v *Vulnerability_range_bool_exp) GetNot() *Vulnerability_range_bool_exp { 
 
 // GetOr returns Vulnerability_range_bool_exp.Or, and is useful for accessing the field via an interface.
 func (v *Vulnerability_range_bool_exp) GetOr() []*Vulnerability_range_bool_exp { return v.Or }
-
-// GetAffected returns Vulnerability_range_bool_exp.Affected, and is useful for accessing the field via an interface.
-func (v *Vulnerability_range_bool_exp) GetAffected() *Vulnerability_affected_bool_exp {
-	return v.Affected
-}
 
 // GetAffected_id returns Vulnerability_range_bool_exp.Affected_id, and is useful for accessing the field via an interface.
 func (v *Vulnerability_range_bool_exp) GetAffected_id() *Uuid_comparison_exp { return v.Affected_id }
@@ -7175,16 +7181,10 @@ const (
 
 // input type for inserting data into table "vulnerability.range"
 type Vulnerability_range_insert_input struct {
-	Affected    *Vulnerability_affected_obj_rel_insert_input `json:"affected,omitempty"`
-	Affected_id *uuid.UUID                                   `json:"affected_id,omitempty"`
-	Fixed       *string                                      `json:"fixed,omitempty"`
-	Id          *uuid.UUID                                   `json:"id,omitempty"`
-	Introduced  *string                                      `json:"introduced,omitempty"`
-}
-
-// GetAffected returns Vulnerability_range_insert_input.Affected, and is useful for accessing the field via an interface.
-func (v *Vulnerability_range_insert_input) GetAffected() *Vulnerability_affected_obj_rel_insert_input {
-	return v.Affected
+	Affected_id *uuid.UUID `json:"affected_id,omitempty"`
+	Fixed       *string    `json:"fixed,omitempty"`
+	Id          *uuid.UUID `json:"id,omitempty"`
+	Introduced  *string    `json:"introduced,omitempty"`
 }
 
 // GetAffected_id returns Vulnerability_range_insert_input.Affected_id, and is useful for accessing the field via an interface.
