@@ -1,10 +1,10 @@
 ---
-title: "Log4Shell: RCE 0-day exploit found in log4j 2, a popular Java logging package"
-description: Given how ubiquitous log4j is, the impact of this vulnerability is quite severe. Learn how to patch it, why it's bad, and more in this post.
+title: "Log4Shell: RCE 0-day exploit found in log4j, a popular Java logging package"
+description: Given how ubiquitous log4j is, the impact of this vulnerability is quite severe. Learn how to fix Log4Shell, why it's bad, and what a working exploit requires in this post.
 slug: log4j-zero-day
 image: https://www.lunasec.io/docs/img/log4shell-logo.png
-date: 2021-12-19
-keywords: [log4shell, log4j, log4j2, rce, java, zero-day, security, data-security, data-breaches]
+date: 2021-12-09T22:30
+keywords: [log4shell, log4j, log4j2, rce, java, zero-day, security, data-security, data-breaches, exploit]
 tags: [zero-day, security, data-security, guides, log4shell]
 authors: [free, chris, forrest]
 ---
@@ -22,32 +22,42 @@ authors: [free, chris, forrest]
   ~
 -->
 
+<head>
+  <meta property="article:modified_time" content="2022-08-01T22:30:00.000Z" />
+</head>
+
 ![Log4Shell Logo](https://www.lunasec.io/docs/img/log4shell-logo.png)
 
-_Originally Posted @ December 9th & Last Updated @ December 19th, 3:37pm PST_
+_Originally Posted @ December 9th & Last Updated @ <time datetime="2022-08-01T22:30:00.000Z" itemprop="dateModified">August 1st, 3:30pm PDT</time>_
 
-**Fixing Log4Shell? See Our [Updated Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide)
-including our automated scanning tool.**
-
-**Also read: Our analysis of [CVE-2021-45046](https://www.lunasec.io/docs/blog/log4j-zero-day-update-on-cve-2021-45046) (a second log4j vulnerability).**
+**Fixing Log4Shell? Claim a [free vulnerability scan](https://github.com/marketplace/lunatrace-by-lunasec/) on our dedicated security platform and generate a detailed report in minutes.**
 
 ## What is it?
-On Thursday, December 9th, a 0-day exploit in the
-popular Java logging library log4j (version 2) was discovered that results in Remote Code Execution (RCE), by
+On Thursday, December 9th a 0-day exploit in the
+popular Java logging library log4j (version 2), called Log4Shell, was discovered that results in Remote Code Execution (RCE) simply by
 logging a certain string.
 
-Given how ubiquitous this library is, the impact of the exploit (full server control), and how easy it is to exploit,
-the impact of this vulnerability is quite severe. We're calling it "Log4Shell" for short.
+Given how ubiquitous this library is, the severity of the exploit (full server control), and how easy it is to exploit,
+the impact of this vulnerability is quite severe.
 
 The 0-day was [tweeted](https://web.archive.org/web/20211211082351/https://twitter.com/P0rZ9/status/1468949890571337731) along with a POC posted on
-[GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  It has now been published as [CVE-2021-44228](https://www.randori.com/blog/cve-2021-44228/).
+[GitHub](https://github.com/tangxiaofeng7/apache-log4j-poc).  While we had initially given it the name "Log4Shell", the vulnerability has now been published as [CVE-2021-44228](https://www.randori.com/blog/cve-2021-44228/) on NVD.
 
 This post provides resources to help you understand the vulnerability and how to mitigate it.
 
 <!--truncate-->
 
-_This blog post is also available at https://log4shell.com/_
+_This blog post is also available at [https://log4shell.com/](https://log4shell.com/)_
 
+------
+
+### Claim your free Log4Shell scan
+
+If you're concerned that you may be impacted by Log4Shell, you can quickly run a free scan against your code by [installing LunaTrace on GitHub](https://github.com/marketplace/lunatrace-by-lunasec/) or by [downloading our scanning CLI tool](https://github.com/lunasec-io/lunasec/tree/master/lunatrace/cli/cmd/log4shell) from GitHub.
+
+We're the experts that wrote those tools and, since we first wrote this post in December of 2021, we've successfully gone on to help thousands of companies, from startups to Fortune 500 companies, fix vulnerabilities like Log4Shell and [Spring4Shell](https://www.lunasec.io/docs/blog/spring-rce-vulnerabilities/) across their entire software stack.
+
+------
 
 ## Who is impacted?
 
@@ -78,7 +88,11 @@ in [this blog post](https://www.veracode.com/blog/research/exploiting-jndi-injec
 a remote JNDI fetch could still take place, as described in [this post](https://alex-kiselyov.medium.com/why-trusturlcodebase-may-not-save-you-from-log4j2-ldap-vulnerability-cve-2021-44228-f87b3c1eadaf).
 Please update to the latest version of log4j for a more complete solution. 
 
-** Edit: ** To see if you are impacted, you can use our [automatic scanning tool](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide).
+### Log4Shell Migitation Guide
+
+To quickly determine if you're impacted by Log4Shell you can check for free by installing [LunaTrace on GitHub Marketplace](https://github.com/marketplace/lunatrace-by-lunasec/) which scan your code and generate a report.
+
+For other scanning strategies to detect Log4Shell, please visit our [Dedicated Log4Shell Migitation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide) with more resources.
 
 ## Affected Apache log4j Versions
 
@@ -248,12 +262,9 @@ We have published a series of posts about Log4Shell on our blog that you might b
 
 ### Limit your vulnerability to future attacks
 
-[LunaSec](https://www.lunasec.io/docs/pages/lunadefend/overview/introduction/) is an Open Source Application Security framework
-that helps [isolate and protect](https://www.lunasec.io/docs/pages/lunadefend/how-it-works/features/) you from 0-day attacks like
-Log4Shell.
+LunaSec offers a managed [Vulnerability Scanning service called LunaTrace](https://www.lunasec.io/pages/live-dependency-patching) that automatically scans code for vulnerabilities, including Log4Shell, and that notifies you when new vulnerabilities are found. It's [free to try out](https://github.com/marketplace/lunatrace-by-lunasec/) and, within a few minutes, you will be given a report with details about any vulnerabilities that were detected as well as details about how to fix them.
 
-We also offer a [managed 0-day mitigation service](https://www.lunasec.io/pages/live-dependency-patching) that
-automatically and quickly patches your live server's dependencies whenever a new 0-day is announced.
+If you need more information or have any questions, please [book a time with us](https://cal.com/lunasec/15min) or [chat with us on Slack](https://join.slack.com/t/lunaseccommunity/shared_invite/zt-178lvngk1-SHS6bMkQS71YWtCne2XWhA).
 
 ### Stay Updated
 
@@ -292,6 +303,7 @@ methods as still prevalent.
 17. Added links to other blog posts.
 18. Updated post to include latest version 2.17.0 release.
 19. Updated archived Twitter link as the original has no images anymore. Changed from `20211209230040` to `20211211082351`.
+20. Rewrote some text to be easier to understand and updated resources to include references to LunaTrace.
 
 ### Editing this post
 

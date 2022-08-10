@@ -27,8 +27,10 @@ import {
   Package_Release_Update_Column,
   Package_Update_Column,
 } from '../hasura-api/generated';
+import { HasuraError } from '../types/hasura';
 import { newError, newResult } from '../utils/errors';
 import { findFilesMatchingFilter } from '../utils/filesystem-utils';
+import { hasuraErrorMessage } from '../utils/hasura';
 import { log } from '../utils/log';
 import { notEmpty } from '../utils/predicates';
 import { catchError, threwError } from '../utils/try';
@@ -92,16 +94,8 @@ function mapPackageTreeToBuildDependencyRelationships(
       if (!dependency.version || !dependency.name) {
         return null;
       }
+
       return {
-        /*
-         TODO: (forrest) this will not happen before the heat death of the universe and we can delete the below comment
-         TODO (cthompson) we are generating the ids for the database here. This avoids a roundtrip from the server
-         so we can have an id on hand for `depended_by_relationship_id` but could result in an insertion error.
-         What is the best way to recover from this? Theoretically, on error, we can
-         regenerate the graphql insertion query which would create new UUIDs which would be incredibly unlikely to have another
-         collision. For now, this is most likely fine and shouldn't result in any issues, the planets need to align for this to
-         be a problem atm.
-         */
         id,
         build_id: buildId,
         depended_by_relationship_id: parentId,
@@ -175,7 +169,7 @@ export async function snapshotPinnedDependencies(buildId: string, repoDir: strin
       log.error('failed to insert build dependency relationships', {
         idx: i,
         chunkSize,
-        resp: resp.message.substring(0, 200),
+        error: hasuraErrorMessage(resp as unknown as HasuraError),
       });
       return newError(resp.message);
     }

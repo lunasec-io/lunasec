@@ -71,7 +71,7 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
     </a>
   ));
 
-  const renderIgnoreStuff = () => {
+  const renderIgnoreUi = () => {
     if (insertVulnIgnoreState.isLoading) {
       return <Spinner animation="border" className="position-absolute top-0 end-0 m-3" />;
     }
@@ -89,7 +89,7 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
   return (
     <>
       <Card className="vulnpkg-card">
-        {renderIgnoreStuff()}
+        {renderIgnoreUi()}
         <VulnerablePackageCardHeader pkg={pkg} depTree={depTree} />
         <PackageCardBody pkg={pkg} severityFilter={severityFilter} quickView={quickView} depTree={depTree} />
       </Card>

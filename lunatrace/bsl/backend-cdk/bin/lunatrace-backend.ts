@@ -20,58 +20,7 @@ import * as cdk from '@aws-cdk/core';
 
 import { LunatraceBackendStack } from '../lib/lunatrace-backend-stack';
 import { WorkerStorageStack } from '../lib/worker-storage-stack';
-
-export interface StackInputsType {
-  appName: string;
-  domainName: string;
-  domainZoneId: string;
-  cdkDefaultRegion: string;
-  cdkDefaultAccount: string;
-  oathkeeperConfigBucketArn: string;
-  certificateArn: string;
-  backendStaticSecretArn: string;
-  databaseSecretArn: string;
-  gitHubAppId: string;
-  gitHubAppPrivateKey: string;
-  gitHubAppWebHookSecret: string;
-  githubOauthAppLoginSecretArn: string;
-  githubOauthAppLoginClientIdArn: string;
-  kratosCookieSecretArn: string;
-  kratosCipherSecretArn: string;
-  datadogApiKeyArn: string;
-  vpcId: string;
-}
-
-const stackInputsFileContents = readFileSync('./stack-inputs.json');
-const stackInputsJson = JSON.parse(stackInputsFileContents.toString());
-
-const requiredFields = [
-  'appName',
-  'domainName',
-  'domainZoneId',
-  'cdkDefaultRegion',
-  'cdkDefaultAccount',
-  'oathkeeperConfigBucketArn',
-  'certificateArn',
-  'databaseSecretArn',
-  'gitHubAppId',
-  'gitHubAppPrivateKey',
-  'gitHubAppWebHookSecret',
-  'githubOauthAppLoginSecretArn',
-  'githubOauthAppLoginClientIdArn',
-  'kratosCookieSecretArn',
-  'kratosCipherSecretArn',
-  'datadogApiKeyArn',
-  'vpcId',
-];
-
-requiredFields.forEach((field) => {
-  if (!stackInputsJson[field]) {
-    throw Error(`${field} was not provided in stack-inputs.json`);
-  }
-});
-
-const stackInputs = stackInputsJson as StackInputsType;
+import { stackInputs } from '../stack-inputs';
 
 const app = new cdk.App();
 

@@ -8,10 +8,11 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "dev:cdk:deploy": "DEVELOPMENT=true DEV_USER=$USER cdk deploy --all",
-    "prod:cdk:deploy:all": "DATADOG_API_KEY=$(aws secretsmanager get-secret-value --secret-id lunatrace-DatadogAPIKey | jq -r .SecretString) cdk deploy --all",
-    "prod:cdk:deploy:cleanup": "rm cdk.out/*.tar || true && sudo docker rmi lunatrace-backend:latest || true && sudo docker rmi lunatrace-frontend:latest || true",
-    "prod:cdk:deploy": "echo 'deploying...' && yarn run prod:cdk:deploy:cleanup && yarn run prod:cdk:deploy:all"
+    "cdk:deploy:dev": "DEVELOPMENT=true DEV_USER=$USER cdk deploy --all",
+    "cdk:deploy:prod:all": "DATADOG_API_KEY=$(aws secretsmanager get-secret-value --secret-id lunatrace-DatadogAPIKey | jq -r .SecretString) cdk deploy --all --require-approval never",
+    "cdk:deploy:prod:cleanup": "rm cdk.out/*.tar || true",
+    "cdk:deploy:prod": "echo 'deploying...' && yarn run cdk:deploy:prod:cleanup && ./build-containers.sh && yarn run cdk:deploy:prod:all && yarn run hasura:metadata:reload",
+    "hasura:metadata:reload": "cd ../hasura && ./scripts/hasura-metadata-reload.sh"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.156.1",
@@ -40,7 +41,7 @@
     "@aws-sdk/types": "^3.22.0",
     "@types/jest": "^26.0.10",
     "@types/node": "^14.0.0",
-    "aws-cdk": "2.24.1",
+    "aws-cdk": "2.33.0",
     "aws-sdk": "^2.1068.0",
     "jest": "^26.4.2",
     "source-map-support": "^0.5.16",
@@ -49,6 +50,7 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-servicediscovery": "~1.163.0"
+    "@aws-cdk/aws-servicediscovery": "~1.163.0",
+    "@aws-cdk/cx-api": "~2.33.0"
   }
 }

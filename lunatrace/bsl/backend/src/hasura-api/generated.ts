@@ -4425,6 +4425,8 @@ export type Organizations_Variance_Fields = {
 /** columns and relationships of "package.package" */
 export type Package = {
   __typename?: 'package';
+  /** An array relationship */
+  affected_by_vulnerability: Array<Vulnerability_Affected>;
   custom_registry: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
@@ -4437,8 +4439,16 @@ export type Package = {
   /** An array relationship */
   releases: Array<Package_Release>;
   upstream_data?: Maybe<Scalars['jsonb']>;
-  /** An array relationship */
-  vulnerabilities: Array<Vulnerability_Affected>;
+};
+
+
+/** columns and relationships of "package.package" */
+export type PackageAffected_By_VulnerabilityArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Affected_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Affected_Order_By>>;
+  where?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
 };
 
 
@@ -4465,16 +4475,6 @@ export type PackageReleasesArgs = {
 /** columns and relationships of "package.package" */
 export type PackageUpstream_DataArgs = {
   path?: InputMaybe<Scalars['String']>;
-};
-
-
-/** columns and relationships of "package.package" */
-export type PackageVulnerabilitiesArgs = {
-  distinct_on?: InputMaybe<Array<Vulnerability_Affected_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Vulnerability_Affected_Order_By>>;
-  where?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
 };
 
 /** aggregated selection of "package.package" */
@@ -4509,6 +4509,7 @@ export type Package_Bool_Exp = {
   _and?: InputMaybe<Array<Package_Bool_Exp>>;
   _not?: InputMaybe<Package_Bool_Exp>;
   _or?: InputMaybe<Array<Package_Bool_Exp>>;
+  affected_by_vulnerability?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
   custom_registry?: InputMaybe<String_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -4519,7 +4520,6 @@ export type Package_Bool_Exp = {
   package_manager?: InputMaybe<Package_Manager_Comparison_Exp>;
   releases?: InputMaybe<Package_Release_Bool_Exp>;
   upstream_data?: InputMaybe<Jsonb_Comparison_Exp>;
-  vulnerabilities?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
 };
 
 /** unique or primary key constraints on table "package.package" */
@@ -4547,6 +4547,7 @@ export type Package_Delete_Key_Input = {
 
 /** input type for inserting data into table "package.package" */
 export type Package_Insert_Input = {
+  affected_by_vulnerability?: InputMaybe<Vulnerability_Affected_Arr_Rel_Insert_Input>;
   custom_registry?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
@@ -4557,7 +4558,6 @@ export type Package_Insert_Input = {
   package_manager?: InputMaybe<Scalars['package_manager']>;
   releases?: InputMaybe<Package_Release_Arr_Rel_Insert_Input>;
   upstream_data?: InputMaybe<Scalars['jsonb']>;
-  vulnerabilities?: InputMaybe<Vulnerability_Affected_Arr_Rel_Insert_Input>;
 };
 
 /** columns and relationships of "package.license" */
@@ -4857,6 +4857,7 @@ export type Package_On_Conflict = {
 
 /** Ordering options when selecting data from "package.package". */
 export type Package_Order_By = {
+  affected_by_vulnerability_aggregate?: InputMaybe<Vulnerability_Affected_Aggregate_Order_By>;
   custom_registry?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -4867,7 +4868,6 @@ export type Package_Order_By = {
   package_manager?: InputMaybe<Order_By>;
   releases_aggregate?: InputMaybe<Package_Release_Aggregate_Order_By>;
   upstream_data?: InputMaybe<Order_By>;
-  vulnerabilities_aggregate?: InputMaybe<Vulnerability_Affected_Aggregate_Order_By>;
 };
 
 /** columns and relationships of "package.package_maintainer" */
@@ -8096,13 +8096,13 @@ export type Vulnerability_Affected = {
   ecosystem_specific?: Maybe<Scalars['jsonb']>;
   id: Scalars['uuid'];
   /** An object relationship */
-  package?: Maybe<Package>;
-  package_id?: Maybe<Scalars['uuid']>;
+  package: Package;
+  package_id: Scalars['uuid'];
   /** An array relationship */
   ranges: Array<Vulnerability_Range>;
   /** An object relationship */
-  vulnerability?: Maybe<Vulnerability>;
-  vulnerability_id?: Maybe<Scalars['uuid']>;
+  vulnerability: Vulnerability;
+  vulnerability_id: Scalars['uuid'];
 };
 
 
