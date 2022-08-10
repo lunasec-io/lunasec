@@ -26,8 +26,8 @@ export const AutoUpdatePopOverHOC = (pkgsToUpdate: VulnerablePackage<Finding>[],
     <Popover className="all-packages-update-popover">
       <Popover.Header>Updatable Vulnerable Packages</Popover.Header>
       <Popover.Body>
-        Some vulnerable packages in this project have fixes available that are within their requested semver range. Your
-        lockfile is probably holding these versions down.
+        Some vulnerable packages in this project have fixes available that are within their 
+        requested semver range. Updating your lockfile will most likely fix this issue.
         <hr className="m-1" />
         This command will update the packages:
         <CopyBlock
