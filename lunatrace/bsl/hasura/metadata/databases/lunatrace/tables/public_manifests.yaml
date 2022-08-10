@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: manifests
+  schema: public
 object_relationships:
   - name: build
     using:
@@ -22,7 +22,6 @@ insert_permissions:
         - build_id
         - id
         - project_id
-      backend_only: false
   - role: user
     permission:
       check:
@@ -39,7 +38,6 @@ insert_permissions:
         - project_id
         - s3_key
         - s3_url
-      backend_only: false
 select_permissions:
   - role: service
     permission:
@@ -91,4 +89,5 @@ update_permissions:
 delete_permissions:
   - role: service
     permission:
+      backend_only: false
       filter: {}

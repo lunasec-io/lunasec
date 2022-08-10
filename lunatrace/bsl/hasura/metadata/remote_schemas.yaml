@@ -5,8 +5,8 @@
     customization:
       type_names:
         mapping:
-          UUID: uuid
           JSON: jsonb
+          UUID: uuid
     forward_client_headers: true
   comment: ""
   permissions:

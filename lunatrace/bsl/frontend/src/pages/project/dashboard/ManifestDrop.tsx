@@ -90,7 +90,6 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string; forHome
     void getManifestTrigger({ id: manifestId });
   };
 
-  console.log('manifest info is ', manifestQuery);
   useEffect(() => {
     if (manifestQuery && manifestQuery.status === 'fulfilled' && manifestQuery.currentData.manifests_by_pk) {
       switch (manifestQuery.currentData.manifests_by_pk.status) {

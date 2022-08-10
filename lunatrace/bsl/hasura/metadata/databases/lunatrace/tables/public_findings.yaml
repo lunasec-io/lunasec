@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: findings
+  schema: public
 object_relationships:
   - name: build
     using:
@@ -8,21 +8,21 @@ object_relationships:
   - name: default_branch_build
     using:
       manual_configuration:
-        remote_table:
-          schema: public
-          name: default_branch_builds
-        insertion_order: null
         column_mapping:
           build_id: id
+        insertion_order: null
+        remote_table:
+          name: default_branch_builds
+          schema: public
   - name: latest_default_build
     using:
       manual_configuration:
-        remote_table:
-          schema: public
-          name: latest_default_builds
-        insertion_order: null
         column_mapping:
           build_id: id
+        insertion_order: null
+        remote_table:
+          name: latest_default_builds
+          schema: public
   - name: scan
     using:
       foreign_key_constraint_on: scan_id
@@ -53,7 +53,6 @@ insert_permissions:
         - version_matcher
         - virtual_path
         - vulnerability_id
-      backend_only: false
 select_permissions:
   - role: service
     permission:

@@ -13,11 +13,13 @@
  */
 import { getCvssVectorFromSeverities, groupByPackage, severityOrder } from '@lunatrace/lunatrace-common';
 import React, { ChangeEvent, useState } from 'react';
-import { Col, Dropdown, Row } from 'react-bootstrap';
+import { Button, Col, Dropdown, OverlayTrigger, Row } from 'react-bootstrap';
+import { FcUpload } from 'react-icons/fc';
 
 import { toTitleCase } from '../../../../utils/string-utils';
 import { DepTree, QuickViewProps } from '../types';
 
+import { AutoUpdatePopOverHOC } from './AutoUpdatePopOverHOC';
 import { VulnerablePackageMain } from './VulnerablePackageMain';
 import { Finding } from './types';
 
@@ -67,16 +69,31 @@ export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = 
     <div className="vulnerability-list p-3">
       <Row>
         <Col md="6">
-          <h2>Vulnerable Packages</h2>
+          <h2 className="d-inline-block me-3">Vulnerable Packages</h2>
+          {depTree && (
+            <OverlayTrigger
+              placement="bottom"
+              trigger="click"
+              rootClose
+              overlay={AutoUpdatePopOverHOC(vulnerablePkgs, depTree)}
+            >
+              <Button className="mb-2">Update</Button>
+            </OverlayTrigger>
+          )}
         </Col>
         <Col md="6" style={{ display: 'flex', justifyContent: 'right' }}>
           <label className="form-check mx-2 p-1 cursor-pointer user-select-none">
             <input className="form-check-input" type="checkbox" value="" onChange={handleShowIgnoredFindings} />
-            Show Ignored Findings
+            Show Ignored
           </label>
           <Dropdown align={{ md: 'end' }} className="d-inline me-2">
-            <Dropdown.Toggle>Minimum Severity: {toTitleCase(prettySeverity)}</Dropdown.Toggle>
+            <Dropdown.Toggle variant="secondary" className="text-capitalize">
+              Minimum Severity: {prettySeverity}
+            </Dropdown.Toggle>
             <Dropdown.Menu>
+              <Dropdown.Header>
+                Lowest severity to show <hr className="m-1" />
+              </Dropdown.Header>
               {severityOrder
                 .map((severityName, severityIndex) => {
                   return (

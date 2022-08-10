@@ -1,16 +1,16 @@
 table:
-  schema: public
   name: projects
+  schema: public
 object_relationships:
   - name: github_repository
     using:
       manual_configuration:
-        remote_table:
-          schema: public
-          name: github_repositories
-        insertion_order: null
         column_mapping:
           id: project_id
+        insertion_order: null
+        remote_table:
+          name: github_repositories
+          schema: public
   - name: organization
     using:
       foreign_key_constraint_on: organization_id
@@ -23,52 +23,52 @@ array_relationships:
       foreign_key_constraint_on:
         column: project_id
         table:
-          schema: public
           name: builds
+          schema: public
   - name: default_branch_builds
     using:
       manual_configuration:
-        remote_table:
-          schema: public
-          name: default_branch_builds
-        insertion_order: null
         column_mapping:
           id: project_id
+        insertion_order: null
+        remote_table:
+          name: default_branch_builds
+          schema: public
   - name: github_repositories
     using:
       foreign_key_constraint_on:
         column: project_id
         table:
-          schema: public
           name: github_repositories
+          schema: public
   - name: ignored_vulnerabilities
     using:
       foreign_key_constraint_on:
         column: project_id
         table:
-          schema: public
           name: ignored_vulnerabilities
+          schema: public
   - name: manifests
     using:
       foreign_key_constraint_on:
         column: project_id
         table:
-          schema: public
           name: manifests
+          schema: public
   - name: project_access_tokens
     using:
       foreign_key_constraint_on:
         column: project_uuid
         table:
-          schema: public
           name: project_access_tokens
+          schema: public
   - name: reports
     using:
       foreign_key_constraint_on:
         column: project_uuid
         table:
-          schema: public
           name: project_access_tokens
+          schema: public
 insert_permissions:
   - role: service
     permission:
@@ -80,7 +80,6 @@ insert_permissions:
         - id
         - organization_id
         - settings_id
-      backend_only: false
   - role: user
     permission:
       check:
@@ -93,7 +92,6 @@ insert_permissions:
         - name
         - organization_id
         - repo
-      backend_only: false
 select_permissions:
   - role: cli
     permission:
@@ -160,6 +158,7 @@ update_permissions:
 delete_permissions:
   - role: user
     permission:
+      backend_only: false
       filter:
         organization:
           organization_users:
