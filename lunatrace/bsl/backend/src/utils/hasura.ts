@@ -14,5 +14,8 @@
 import { HasuraError } from '../types/hasura';
 
 export function hasuraErrorMessage(hasuraError: HasuraError): string {
+  if (!hasuraError.response || !hasuraError.response.errors) {
+    return 'Unknown Error from hasura, malformed response';
+  }
   return hasuraError.response.errors.map((e) => e.message).join(', ');
 }
