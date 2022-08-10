@@ -39957,7 +39957,7 @@ __metadata:
     pm2: ^5.1.2
     semver: ^7.3.5
     slugify: ^1.6.5
-    snyk-nodejs-lockfile-parser-lunatrace-fork: "https://github.com/lunasec-io/nodejs-lockfile-parser.git#77edb331dca5815f11f9ae40aa3a09a8e67542af"
+    snyk-nodejs-lockfile-parser-lunatrace-fork: ^1.0.0
     source-map-support: ^0.5.16
     sqlite: ^4.0.23
     sqlite3: ^5.0.2
@@ -50957,9 +50957,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"snyk-nodejs-lockfile-parser-lunatrace-fork@https://github.com/lunasec-io/nodejs-lockfile-parser.git#77edb331dca5815f11f9ae40aa3a09a8e67542af":
+"snyk-nodejs-lockfile-parser-lunatrace-fork@npm:^1.0.0":
   version: 1.0.0
-  resolution: "snyk-nodejs-lockfile-parser-lunatrace-fork@https://github.com/lunasec-io/nodejs-lockfile-parser.git#commit=77edb331dca5815f11f9ae40aa3a09a8e67542af"
+  resolution: "snyk-nodejs-lockfile-parser-lunatrace-fork@npm:1.0.0"
   dependencies:
     "@snyk/dep-graph": ^2.3.0
     "@snyk/graphlib": 2.1.9-patch.3
@@ -50976,8 +50976,8 @@ __metadata:
     tslib: ^1.9.3
     uuid: ^8.3.0
   bin:
-    parse-nodejs-lockfile: ./bin/index.js
-  checksum: a2cba1e4f3f783bf9d71706b81d29df143903eea8d5778c06b4c67c9d7402e44020198f9fffe3f26f6a6e7575ba8d5ac792195a2f87355348fb4932b844d6024
+    parse-nodejs-lockfile: bin/index.js
+  checksum: 68e0e59b010c33e628ca644d93d582f1fd5e90a9353612d91589f583896abd6ab149a55afeedbb21549e0a00fae3e98a00d44cbf178e9b212fe3abee0306bafa
   languageName: node
   linkType: hard
 
