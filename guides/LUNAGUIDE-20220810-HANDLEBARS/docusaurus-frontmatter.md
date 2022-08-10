@@ -12,10 +12,10 @@
   ~
 -->
 ---
-title: 
-description: 
-slug: 
-image: 
+title: Handlebars Prototype Pollution 
+description: Multiple CVEs filed for the handlebars library, most significant vulnerability is RCE via prototype pollution.
+slug: handlebars-prototype-pollution
+image: https://handlebarsjs.com/images/handlebars_logo.png
 date: 2022-08-10
 keywords: []
 tags: []
