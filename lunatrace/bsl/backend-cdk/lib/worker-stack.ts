@@ -14,16 +14,22 @@
 import { inspect } from 'util';
 
 import { Port, SecurityGroup } from '@aws-cdk/aws-ec2';
-import { Cluster, ContainerImage, DeploymentControllerType, Secret as EcsSecret } from '@aws-cdk/aws-ecs';
-import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
-import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns';
+import {
+  CapacityProviderStrategy,
+  Cluster,
+  ContainerImage,
+  DeploymentControllerType,
+  Secret as EcsSecret,
+} from '@aws-cdk/aws-ecs';
+import { ApplicationLoadBalancedFargateService, QueueProcessingFargateServiceProps } from '@aws-cdk/aws-ecs-patterns';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
 import { Construct } from '@aws-cdk/core';
 
+import { QueueProcessingFargateService } from './aws/queue-processing-fargate-service';
+import { commonBuildProps } from './constants';
 import { addDatadogToTaskDefinition, datadogLogDriverForService } from './datadog-fargate-integration';
-import { getContainerTarballPath } from './util';
 import { WorkerStorageStackState } from './worker-storage-stack';
 
 interface WorkerStackProps extends cdk.StackProps {
@@ -40,11 +46,14 @@ interface WorkerStackProps extends cdk.StackProps {
   servicesSecurityGroup: SecurityGroup;
 }
 
-interface QueueService {
+interface QueueService extends Partial<QueueProcessingFargateServiceProps> {
   name: string;
   queue: Queue;
   // number of seconds that a queue message is "visible" or accessible to a queue
   visibility?: number;
+  ram?: number;
+  cpu?: number;
+  ephemeralStorageGiB?: number;
 }
 
 export class WorkerStack extends cdk.Stack {
@@ -86,9 +95,10 @@ export class WorkerStack extends cdk.Stack {
       throw new Error(`expected non-null storage stack queues: ${inspect(storageStack)}`);
     }
 
-    const workerContainerImage = ContainerImage.fromTarball(
-      getContainerTarballPath('lunatrace-backend-queue-processor.tar')
-    );
+    const workerContainerImage = ContainerImage.fromAsset('../backend', {
+      ...commonBuildProps,
+      target: 'backend-queue-processor',
+    });
 
     // common environment variables used by queue processors
     const processQueueCommonEnvVars: Record<string, string> = {
@@ -112,11 +122,35 @@ export class WorkerStack extends cdk.Stack {
       GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
     };
 
+    const gb = 1024;
+
+    const capacityProviderStrategies: CapacityProviderStrategy[] = [
+      {
+        capacityProvider: 'FARGATE_SPOT',
+        weight: 2,
+      },
+      {
+        capacityProvider: 'FARGATE',
+        weight: 1,
+      },
+    ];
+
+    const scalingSteps = [
+      { upper: 0, change: -1 },
+      { lower: 50, change: +1 },
+      { lower: 200, change: +5 },
+    ];
+
     const queueServices: QueueService[] = [
       {
         name: 'ProcessRepositoryQueue',
         queue: repositoryQueue,
         visibility: 600,
+        ram: 8 * gb,
+        cpu: 4 * gb,
+        capacityProviderStrategies,
+        ephemeralStorageGiB: 200,
+        scalingSteps,
       },
       {
         name: 'ProcessWebhookQueue',
@@ -126,47 +160,52 @@ export class WorkerStack extends cdk.Stack {
         name: 'ProcessManifestQueue',
         queue: manifestQueue,
         visibility: 300,
+        capacityProviderStrategies,
+        scalingSteps,
       },
       {
         name: 'ProcessSbomQueue',
         queue: sbomQueue,
         visibility: 300,
+        capacityProviderStrategies,
+        scalingSteps,
       },
     ];
 
     queueServices.forEach((queueService) => {
-      const queueFargateService = new ecsPatterns.QueueProcessingFargateService(
-        context,
-        queueService.name + 'Service',
-        {
-          cluster: fargateCluster,
-          image: workerContainerImage,
-          memoryLimitMiB: 2048,
-          queue: queueService.queue, // will pass queue_name env var automatically
-          assignPublicIp: true,
-          enableLogging: true,
-          logDriver: datadogLogDriverForService('lunatrace', queueService.name),
-          environment: {
-            ...processQueueCommonEnvVars,
-            ...(queueService.visibility ? { QUEUE_VISIBILITY: queueService.visibility.toString() } : {}),
-          },
-          securityGroups: [servicesSecurityGroup],
-          secrets: processQueueCommonSecrets,
-          containerName: queueService.name + 'Container',
-          circuitBreaker: {
-            rollback: true,
-          },
-          // healthCheck: {
-          //   // stub command to just see if the container is actually running
-          //   command: ['CMD-SHELL', 'ls || exit 1'],
-          //   startPeriod: Duration.seconds(5),
-          // },
-          minScalingCapacity: 2,
-          deploymentController: {
-            type: DeploymentControllerType.ECS,
-          },
-        }
-      );
+      const { name, visibility, queue, ...other } = queueService;
+
+      const queueFargateService = new QueueProcessingFargateService(context, name + 'Service', {
+        cluster: fargateCluster,
+        image: workerContainerImage,
+        cpu: queueService.cpu,
+        memoryLimitMiB: queueService.ram || 2 * gb,
+        queue: queue, // will pass queue_name env var automatically
+        assignPublicIp: true,
+        enableLogging: true,
+        logDriver: datadogLogDriverForService('lunatrace', name),
+        environment: {
+          ...processQueueCommonEnvVars,
+          ...(visibility ? { QUEUE_VISIBILITY: visibility.toString() } : {}),
+        },
+        securityGroups: [servicesSecurityGroup],
+        secrets: processQueueCommonSecrets,
+        containerName: name + 'Container',
+        circuitBreaker: {
+          rollback: true,
+        },
+        // healthCheck: {
+        //   // stub command to just see if the container is actually running
+        //   command: ['CMD-SHELL', 'ls || exit 1'],
+        //   startPeriod: Duration.seconds(5),
+        // },
+        minScalingCapacity: 2,
+        maxScalingCapacity: 20,
+        deploymentController: {
+          type: DeploymentControllerType.ECS,
+        },
+        ...other,
+      });
 
       addDatadogToTaskDefinition(context, queueFargateService.taskDefinition, datadogApiKeyArn);
 
@@ -207,6 +246,5 @@ export class WorkerStack extends cdk.Stack {
     //     },
     //   },
     // });
-    // storageStack.grypeDatabaseBucket.grantWrite(updateVulnerabilitiesJob.taskDefinition.taskRole);
   }
 }

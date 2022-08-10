@@ -5611,6 +5611,23 @@ type organizations_variance_fields {
 columns and relationships of "package.package"
 """
 type package {
+  """An array relationship"""
+  affected_by_vulnerability(
+    """distinct select on columns"""
+    distinct_on: [vulnerability_affected_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vulnerability_affected_order_by!]
+
+    """filter the rows returned"""
+    where: vulnerability_affected_bool_exp
+  ): [vulnerability_affected!]!
   custom_registry: String!
   description: String
   id: uuid!
@@ -5658,24 +5675,6 @@ type package {
     """JSON select path"""
     path: String
   ): jsonb
-
-  """An array relationship"""
-  vulnerabilities(
-    """distinct select on columns"""
-    distinct_on: [vulnerability_affected_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [vulnerability_affected_order_by!]
-
-    """filter the rows returned"""
-    where: vulnerability_affected_bool_exp
-  ): [vulnerability_affected!]!
 }
 
 """
@@ -5707,6 +5706,7 @@ input package_bool_exp {
   _and: [package_bool_exp!]
   _not: package_bool_exp
   _or: [package_bool_exp!]
+  affected_by_vulnerability: vulnerability_affected_bool_exp
   custom_registry: String_comparison_exp
   description: String_comparison_exp
   id: uuid_comparison_exp
@@ -5717,7 +5717,6 @@ input package_bool_exp {
   package_manager: package_manager_comparison_exp
   releases: package_release_bool_exp
   upstream_data: jsonb_comparison_exp
-  vulnerabilities: vulnerability_affected_bool_exp
 }
 
 """
@@ -5760,6 +5759,7 @@ input package_delete_key_input {
 input type for inserting data into table "package.package"
 """
 input package_insert_input {
+  affected_by_vulnerability: vulnerability_affected_arr_rel_insert_input
   custom_registry: String
   description: String
   id: uuid
@@ -5770,7 +5770,6 @@ input package_insert_input {
   package_manager: package_manager
   releases: package_release_arr_rel_insert_input
   upstream_data: jsonb
-  vulnerabilities: vulnerability_affected_arr_rel_insert_input
 }
 
 """
@@ -6155,6 +6154,7 @@ input package_on_conflict {
 
 """Ordering options when selecting data from "package.package"."""
 input package_order_by {
+  affected_by_vulnerability_aggregate: vulnerability_affected_aggregate_order_by
   custom_registry: order_by
   description: order_by
   id: order_by
@@ -6165,7 +6165,6 @@ input package_order_by {
   package_manager: order_by
   releases_aggregate: package_release_aggregate_order_by
   upstream_data: order_by
-  vulnerabilities_aggregate: vulnerability_affected_aggregate_order_by
 }
 
 """
@@ -10417,8 +10416,8 @@ type vulnerability_affected {
   id: uuid!
 
   """An object relationship"""
-  package: package
-  package_id: uuid
+  package: package!
+  package_id: uuid!
 
   """An array relationship"""
   ranges(
@@ -10439,8 +10438,8 @@ type vulnerability_affected {
   ): [vulnerability_range!]!
 
   """An object relationship"""
-  vulnerability: vulnerability
-  vulnerability_id: uuid
+  vulnerability: vulnerability!
+  vulnerability_id: uuid!
 }
 
 """

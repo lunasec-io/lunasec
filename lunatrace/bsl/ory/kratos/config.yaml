@@ -1,3 +1,4 @@
+version: v0.9.0-alpha.3
 serve:
   public:
     base_url: http://localhost:4433/
@@ -76,7 +77,8 @@ selfservice:
                 url: http://host.docker.internal:3002/github/login
                 method: POST
                 body: file:///config/oidc.hook.jsonnet
-                
+
+
 
 log:
   level: debug

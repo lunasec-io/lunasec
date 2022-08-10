@@ -34,15 +34,14 @@ import { DnsRecordType, PrivateDnsNamespace } from '@aws-cdk/aws-servicediscover
 import * as cdk from '@aws-cdk/core';
 import { Duration } from '@aws-cdk/core';
 
-import { StackInputsType } from '../bin/lunatrace-backend';
+import { StackInputs } from '../stack-inputs';
 
 import { commonBuildProps } from './constants';
 import { addDatadogToTaskDefinition, datadogLogDriverForService } from './datadog-fargate-integration';
-import { getContainerTarballPath } from './util';
 import { WorkerStack } from './worker-stack';
 import { WorkerStorageStack } from './worker-storage-stack';
 
-interface LunaTraceStackProps extends cdk.StackProps, StackInputsType {}
+type LunaTraceStackProps = cdk.StackProps & StackInputs;
 
 export class LunatraceBackendStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: LunaTraceStackProps) {
@@ -152,7 +151,9 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     addDatadogToTaskDefinition(this, taskDef, props.datadogApiKeyArn);
 
-    const frontendContainerImage = ContainerImage.fromTarball(getContainerTarballPath('lunatrace-frontend.tar'));
+    const frontendContainerImage = ContainerImage.fromAsset('../frontend', {
+      ...commonBuildProps,
+    });
 
     const frontend = taskDef.addContainer('FrontendContainer', {
       image: frontendContainerImage,
@@ -204,6 +205,7 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const kratosCookieSecret = Secret.fromSecretCompleteArn(this, 'KratosCookieSecret', props.kratosCookieSecretArn);
     const kratosCipherSecret = Secret.fromSecretCompleteArn(this, 'KratosCipherSecret', props.kratosCipherSecretArn);
+    const kratosSlackSecret = Secret.fromSecretCompleteArn(this, 'KratosSlackSecret', props.kratosSlackSecretArn);
 
     const kratos = taskDef.addContainer('KratosContainer', {
       image: kratosContainerImage,
@@ -222,13 +224,17 @@ export class LunatraceBackendStack extends cdk.Stack {
           EcsSecret.fromSecretsManager(githubOauthAppLoginSecret),
         SECRETS_COOKIE: EcsSecret.fromSecretsManager(kratosCookieSecret),
         SECRETS_CIPHER: EcsSecret.fromSecretsManager(kratosCipherSecret),
+        SELFSERVICE_FLOWS_REGISTRATION_AFTER_OIDC_HOOKS_0_CONFIG_URL: EcsSecret.fromSecretsManager(kratosSlackSecret),
       },
       healthCheck: {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4434/health/ready || exit 1'],
       },
     });
 
-    const backendContainerImage = ContainerImage.fromTarball(getContainerTarballPath('lunatrace-backend.tar'));
+    const backendContainerImage = ContainerImage.fromAsset('../backend', {
+      ...commonBuildProps,
+      target: 'backend-express-server',
+    });
 
     const backend = taskDef.addContainer('BackendContainer', {
       image: backendContainerImage,

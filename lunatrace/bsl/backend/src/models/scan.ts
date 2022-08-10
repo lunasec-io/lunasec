@@ -31,7 +31,7 @@ export type InsertedScan = NonNullable<InsertScanMutation['insert_scans_one']>;
 export async function performSnapshotScanAndCollectReport(
   sbomStream: Readable,
   buildId: string
-): Promise<InsertedScan> {
+): Promise<InsertedScan | null> {
   const logger = log.child('perform-snapshot-and-collect-report', {
     buildId,
   });
@@ -41,7 +41,15 @@ export async function performSnapshotScanAndCollectReport(
 
   const typedRawGrypeReport = parseJsonToGrypeScanReport(rawGrypeReport);
   if (typedRawGrypeReport === null) {
-    throw new Error(`grype report was not able to be parsed`);
+    const errorMsg = 'report was not able to be parsed';
+    logger.error(errorMsg, {
+      rawGrypeReport,
+    });
+
+    // do not through on this case, as the scan report is not valid JSON
+    // the cause of this error happens earlier in the pipeline and looking at
+    // the error logs will help identify the problem.
+    return null;
   }
 
   logger.info('parsing scan results into report');
