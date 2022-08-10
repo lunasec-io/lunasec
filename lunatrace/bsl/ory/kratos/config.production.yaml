@@ -1,3 +1,4 @@
+version: v0.9.0-alpha.3
 serve:
   public:
     base_url: https://lunatrace.lunasec.io/api/kratos/
@@ -51,12 +52,23 @@ selfservice:
             - hook: session
         oidc:
           hooks:
+            # Please preserve this slack hook in position [0] of this array, we are referencing it with an env var to load the secret
+            - hook: web_hook
+              config:
+                url: http://fake-slack-url-replaced-by-env-var-in-prod.com
+                method: POST
+                body: file:///config/slack.hook.jsonnet
+                response:
+                  ignore: true
             - hook: session
             - hook: web_hook
               config:
                 url: http://localhost:3002/github/login
                 method: POST
                 body: file:///config/oidc.hook.jsonnet
+
+
+
 
 log:
   level: debug

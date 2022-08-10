@@ -58,7 +58,7 @@ npm install -g smee-client
 
 From `$REPO_ROOT/lunatrace/bsl/backend-cdk` folder, you'll need to run the following. Replace YOUR_USERNAME with your user.
 ```sh
-DEV_USER=YOUR_USERNAME yarn run dev:cdk:deploy
+DEV_USER=YOUR_USERNAME yarn run cdk:deploy:dev
 ```
 
 That will run a real AWS deployment of the "dev" resources required. Once it finished, you should see something like:
@@ -83,6 +83,33 @@ You'll need to format those values into an env file at `$REPO/lunatrace/dev-cli/
 S3_SBOM_BUCKET=xxx
 S3_MANIFEST_BUCKET=xxx
 QUEUE_NAME=xxx
+```
+
+### Adding github app private key
+
+The github app private key needs to exist at `lunatrace/bsl/backend/github-app-dev.2022-03-09.private-key.pem`. Ask for this file or set up your own github app.
+
+### Setting up ory kratos
+
+Ory kratos needs the github app client id and secret at `lunatrace/bsl/ory/kratos/config.dev.yaml`. Ask for this file or set up your own with the format:
+```yaml
+serve:
+  public:
+    base_url: http://localhost:4455/api/kratos/
+
+selfservice:
+  methods:
+    password:
+      enabled: false
+    oidc:
+      enabled: true
+      config:
+        providers:
+          - id: github-app
+            provider: github-app
+            client_id: xxx
+            client_secret: xxx
+            mapper_url: file:///config/oidc.github.jsonnet
 ```
 
 ### Running `tmuxp`
