@@ -30,9 +30,17 @@
 }
 
 .primary-color {
-  color: $info;
+  color: $primary;
 }
 
 .one-point-two-em {
   font-size: 1.2em;
+}
+
+.package-update-popover {
+  max-width: min( 98vw, 400px);
+}
+
+.all-packages-update-popover {
+  max-width: min(98vw, 700px);
 }

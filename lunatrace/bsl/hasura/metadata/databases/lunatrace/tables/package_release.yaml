@@ -1,6 +1,6 @@
 table:
-  schema: package
   name: release
+  schema: package
 object_relationships:
   - name: package
     using:
@@ -14,29 +14,29 @@ array_relationships:
       foreign_key_constraint_on:
         column: release_id
         table:
-          schema: public
           name: build_dependency_relationship
+          schema: public
   - name: release_dependencies
     using:
       foreign_key_constraint_on:
         column: release_id
         table:
-          schema: package
           name: release_dependency
+          schema: package
   - name: release_dependents
     using:
       foreign_key_constraint_on:
         column: dependency_release_id
         table:
-          schema: package
           name: release_dependency
+          schema: package
   - name: release_licenses
     using:
       foreign_key_constraint_on:
         column: release_id
         table:
-          schema: package
           name: release_license
+          schema: package
 insert_permissions:
   - role: service
     permission:
@@ -53,7 +53,6 @@ insert_permissions:
         - upstream_blob_url
         - upstream_data
         - version
-      backend_only: false
 select_permissions:
   - role: service
     permission:

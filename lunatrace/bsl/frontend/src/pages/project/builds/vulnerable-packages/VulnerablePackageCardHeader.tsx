@@ -14,8 +14,11 @@
 import { filterFindingsNotIgnored, VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
 import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
-import { Card, Col, Container, Row } from 'react-bootstrap';
+import { Card, Col, Container, NavLink, OverlayTrigger, Popover, Row, Tooltip } from 'react-bootstrap';
+import { CopyBlock, tomorrowNight } from 'react-code-blocks';
+import { FcUpload } from 'react-icons/fc';
 
+import useBreakpoint from '../../../../hooks/useBreakpoint';
 import { DepTree } from '../types';
 
 import { Finding } from './types';
@@ -35,13 +38,65 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
 
   // From the list of severities for a given vulnerability, determine which one is the most severe
   // and display this score. Most often, there will only be one score, but in the case there are multiple,
-  // we need to choose one to show.
+  // show the highest.
   const sortedSeverities = filteredFindings
     .map((finding) => getCvssVectorFromSeverities(finding.vulnerability.severities))
     .filter((severity) => !!severity)
     .sort((a, b) => (a && b ? b.overallScore - a.overallScore : 0));
   const mostSevereSeverity = sortedSeverities.length > 0 ? sortedSeverities[0] : null;
 
+  const renderUpdatableStatus = () => {
+    const trivialUpdateStatus = depTree?.checkIfPackageTriviallyUpdatable(pkg.package_name, pkg.version);
+
+    if (!trivialUpdateStatus || trivialUpdateStatus === 'no') {
+      return null;
+    }
+
+    const renderToolTip = (props: React.ComponentProps<typeof Tooltip>) => {
+      return (
+        <Popover className="package-update-popover" {...props}>
+          <Popover.Header>Trivially Updatable</Popover.Header>
+          <Popover.Body>
+            A fix is available within the semver range this package was requested with, meaning that the{' '}
+            <strong>project lockfile</strong> is probably the only thing constraining the package to the vulnerable
+            version.
+            <hr className="m-1" />
+            This command will update the package:
+            <CopyBlock
+              text={`npm update ${pkg.package_name}`}
+              language="bash"
+              showLineNumbers={false}
+              startingLineNumber={false}
+              theme={tomorrowNight}
+              codeBlock
+            />
+            or for Yarn:
+            <CopyBlock
+              text={`yarn upgrade ${pkg.package_name}`}
+              language="bash"
+              showLineNumbers={false}
+              startingLineNumber={false}
+              theme={tomorrowNight}
+              codeBlock
+            />
+          </Popover.Body>
+        </Popover>
+      );
+    };
+
+    const mdOrLarger = useBreakpoint('md');
+    return (
+      <>
+        {', '}
+        <OverlayTrigger trigger="click" rootClose placement={mdOrLarger ? 'right' : 'bottom'} overlay={renderToolTip}>
+          <NavLink className="primary-color d-inline m-0 p-0">
+            {trivialUpdateStatus === 'partially' ? 'partially ' : ''}updatable
+            <FcUpload color="black" className="pb-1" />
+          </NavLink>
+        </OverlayTrigger>
+      </>
+    );
+  };
   return (
     <Card.Header>
       <Container fluid>
@@ -51,9 +106,9 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
               <h2 className={headerClassNames}>{pkg.package_name}</h2>
             </Card.Title>
             <Card.Subtitle>
-              {' '}
               <span className="darker">Version: </span>
               {pkg.version}
+              {renderUpdatableStatus()}
             </Card.Subtitle>
           </Col>
           <Col sm={{ span: 6 }}>

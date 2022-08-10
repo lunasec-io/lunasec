@@ -11,69 +11,12 @@
  * limitations under the License.
  *
  */
-/* example query on builds to get these dependencies
-build_dependency_relationships {
-      depended_by_release_id
-      range
-      labels
-
-      release {
-        id
-        fetched_time
-        version
-        package {
-          name
-          last_successful_fetch
-          package_manager
-          vulnerabilities {
-            affected_range_events {
-              event
-              type
-              version
-              id
-              database_specific
-            }
-          }
-        }
-      }
-    }
- */
-
 import semver from 'semver';
 
-import { RawDependencyRelationship } from './types';
+import { AffectedByVulnerability, BuildDependencyPartial, DependencyChain, TreeNode } from './types';
+
 // This is just what we need someone to give us to build the tree
 // We extend this type with generics below so if they give us more data, we will give back more data
-export interface BuildDependencyPartial {
-  id: string;
-  depended_by_relationship_id?: string;
-  range: string;
-  release_id: string;
-  release: {
-    version: string;
-    package: {
-      vulnerabilities: Array<Vulnerability>;
-      name: string;
-      package_manager: string;
-    };
-  };
-}
-
-interface Vulnerability {
-  id: string;
-  ranges: Array<{
-    introduced?: string | null;
-    fixed?: string | null;
-  }>;
-  triviallyUpdatable?: boolean; // We add this by determining something can be updated to a non-vulnerable version without violating semver
-}
-
-// Recursive type to model the recursive tree we are building.  Simply adds the field "dependents" which points down to more nodes.
-type TreeNode<D> = D & {
-  dependents: Array<TreeNode<D>>;
-};
-
-export type DependencyChain<D> = Array<TreeNode<D>>;
 
 /**
  *  hasura and graphql doesn't allow us to fetch recursive stuff, so we build the tree ourselves on the client
@@ -84,7 +27,7 @@ export type DependencyChain<D> = Array<TreeNode<D>>;
  */
 export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
   public readonly tree: Array<TreeNode<BuildDependency>>;
-  public readonly flatVulns: Array<Vulnerability>; // may contain multiple copies of the same vuln from different deps
+  public readonly flatVulns: Array<AffectedByVulnerability>; // may contain multiple copies of the same vuln from different deps
   public flatDeps: Array<BuildDependency>;
   constructor(sourceDeps: Array<BuildDependency>) {
     this.flatVulns = [];
@@ -92,15 +35,15 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     this.flatDeps = JSON.parse(JSON.stringify(sourceDeps));
     // Go and clean out all the vulnerabilities that don't apply to this version since the DB doesn't know how to do that yet
     this.flatDeps.forEach((dep) => {
-      // dep.release.package.vulnerabilities = dep.release.package.vulnerabilities.filter((vuln) => {
-      //   const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
-      //   const isVulnerable = semver.satisfies(dep.release.version, vulnerableRange);
-      //   return isVulnerable;
-      // });
+      dep.release.package.affected_by_vulnerability = dep.release.package.affected_by_vulnerability.filter((vuln) => {
+        const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
+        const isVulnerable = semver.satisfies(dep.release.version, vulnerableRange);
+        return isVulnerable;
+      });
 
       // Mark the vulns that can be trivially updated
-      dep.release.package.vulnerabilities.forEach((vuln) => {
-        vuln.triviallyUpdatable = this.checkVulnTriviallyUpdatable(dep.range, vuln);
+      dep.release.package.affected_by_vulnerability.forEach((vuln) => {
+        vuln.triviallyUpdatable = this.precomputeVulnTriviallyUpdatable(dep.range, vuln);
         // Also add it to the flat vuln list for easy access
         this.flatVulns.push(vuln);
       });
@@ -131,10 +74,9 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     });
     // kick off the tree build
     this.tree = rootDeps.map((rootDep) => recursivelyBuildNode(rootDep));
-    console.log('flatVulns are ', this.flatVulns);
   }
 
-  private checkVulnTriviallyUpdatable(requestedRange: string, vuln: Vulnerability): boolean {
+  private precomputeVulnTriviallyUpdatable(requestedRange: string, vuln: AffectedByVulnerability): boolean {
     const fixedVersions: string[] = [];
     vuln.ranges.forEach((range) => {
       if (range.fixed) {
@@ -142,7 +84,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
       }
     });
     return fixedVersions.some((fixVersion) => {
-      return semver.satisfies(requestedRange, fixVersion);
+      return semver.satisfies(fixVersion, requestedRange);
     });
   }
 
@@ -158,7 +100,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     return allDepNodes;
   }
 
-  public convertRangesToSemverRange(ranges: Vulnerability['ranges']): semver.Range {
+  public convertRangesToSemverRange(ranges: AffectedByVulnerability['ranges']): semver.Range {
     const vulnerableRanges: string[] = [];
     ranges.forEach((range) => {
       if (range.introduced && range.fixed) {
@@ -174,8 +116,8 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
 
   // This will no longer be needed once the UI is only using this tree to show vulnerabilities
   // for now, since grype is still in the loop, we need to cross reference information out of this tree using vuln ids
-  public checkIfVulnInstancesTriviallyUpdatable(vulnId: string): 'all' | 'partial' | 'none' | 'not-found' {
-    const vulns = this.flatVulns.filter((v) => v.id === vulnId);
+  public checkIfVulnInstancesTriviallyUpdatable(vulnId: string): 'yes' | 'partially' | 'no' | 'not-found' {
+    const vulns = this.flatVulns.filter((v) => v.vulnerability.id === vulnId);
     if (vulns.length === 0) {
       console.warn(
         `failed to find a vuln with id ${vulnId} in the tree. 
@@ -186,12 +128,45 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     }
     const vulnsUpdatable = vulns.filter((vuln) => vuln.triviallyUpdatable);
     if (vulnsUpdatable.length === vulns.length) {
-      return 'all';
+      return 'yes';
     }
     if (vulnsUpdatable.length === 0) {
-      return 'none';
+      return 'no';
     }
-    return 'partial';
+    return 'partially';
+  }
+
+  public checkIfPackageTriviallyUpdatable(packageName: string, version: string): 'yes' | 'partially' | 'no' {
+    const matchingDeps = this.flatDeps.filter(
+      (dep) => dep.release.package.name === packageName && dep.release.version === version
+    );
+
+    // also keep track of the vuln count in case we are checking a package with no vulns, which would not qualify as trivially updatable
+    let totalVulnCount = 0;
+    const fullyUpdatableDeps = matchingDeps.filter((dep) => {
+      return dep.release.package.affected_by_vulnerability.every((vuln) => {
+        totalVulnCount++;
+        return vuln.triviallyUpdatable;
+      });
+    });
+    const atLeastPartiallyUpdatableDeps = matchingDeps.filter((dep) => {
+      return dep.release.package.affected_by_vulnerability.some((vuln) => vuln.triviallyUpdatable);
+    });
+
+    const fullUpdateCount = fullyUpdatableDeps.length;
+    const partialUpdateCount = atLeastPartiallyUpdatableDeps.length;
+    const allDepsCount = matchingDeps.length;
+
+    if (totalVulnCount === 0 || (fullUpdateCount === 0 && partialUpdateCount === 0)) {
+      return 'no';
+    }
+    if (fullUpdateCount < partialUpdateCount) {
+      return 'partially';
+    }
+    if (fullUpdateCount === allDepsCount) {
+      return 'yes';
+    }
+    return 'no';
   }
 
   // Can show us why a dependency is installed

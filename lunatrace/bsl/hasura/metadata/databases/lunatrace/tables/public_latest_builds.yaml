@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: latest_builds
+  schema: public
 select_permissions:
   - role: service
     permission:

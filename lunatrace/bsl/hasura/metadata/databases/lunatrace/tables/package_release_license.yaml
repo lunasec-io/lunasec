@@ -1,6 +1,6 @@
 table:
-  schema: package
   name: release_license
+  schema: package
 object_relationships:
   - name: license
     using:
@@ -16,7 +16,6 @@ insert_permissions:
         - id
         - license_id
         - release_id
-      backend_only: false
 select_permissions:
   - role: service
     permission:

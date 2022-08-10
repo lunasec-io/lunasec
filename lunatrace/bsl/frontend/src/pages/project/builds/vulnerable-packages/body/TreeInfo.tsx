@@ -13,7 +13,7 @@
  */
 import { VulnerablePackage } from '@lunatrace/lunatrace-common';
 import React, { useState } from 'react';
-import { Badge, Col, NavLink, Row } from 'react-bootstrap';
+import { Badge, NavLink } from 'react-bootstrap';
 import { ChevronRight, ChevronsRight, Maximize2, Minimize2 } from 'react-feather';
 
 import { DepTree } from '../../types';
@@ -52,10 +52,17 @@ export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depTree 
   const chainDedupeSlugs: string[] = [];
 
   // Todo: most of the data processing logic for the chains happens IN the render. It's pretty terse, so it could happen before in a separate step
+  // Also too many inline styles. Overall this needs a rewrite someday, in the mean time contact Forrest if it breaks
   return (
     <div>
       <h5 className="darker">
-        {isDirectDep ? 'Direct Dependency' : 'Transitive Dependency'}
+        {isDirectDep ? (
+          <>
+            Direct Dependency: <span className="lighter">{chains[0][0].range}</span>
+          </>
+        ) : (
+          'Transitive Dependency'
+        )}
         {!isDirectDep && (
           <NavLink onClick={() => setIsExpanded(!isExpanded)} style={{ display: 'inline' }}>
             {isExpanded ? <Minimize2 size="1rem" /> : <Maximize2 size="1rem" />}
@@ -72,24 +79,33 @@ export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depTree 
           chainDedupeSlugs.push(dedupeSlug);
 
           return (
-            <div className="mb-1 one-point-two-em" key={JSON.stringify(chain)}>
+            <div className="one-point-two-em d-flex pb-1 pt-1" key={JSON.stringify(chain)}>
               {visibleChain.map((dep, index) => {
-                const isLast = index === visibleChain.length - 1;
                 return (
                   <React.Fragment key={JSON.stringify(dep)}>
+                    <div className="me-1 ms-1 d-inline-flex justify-content-center" style={{ flexDirection: 'column' }}>
+                      {index !== 0 &&
+                        (chain.length > visibleChain.length ? (
+                          <NavLink className="p-0" onClick={() => setIsExpanded(true)} style={{ display: 'inline' }}>
+                            <ChevronsRight size="1em" className="" />
+                          </NavLink>
+                        ) : (
+                          <ChevronRight
+                            size="1em"
+                            className="mb-n1"
+                            style={{ marginLeft: 'auto', marginRight: 'auto', display: 'block' }}
+                          />
+                        ))}
+                      {isExpanded && <div style={{ fontSize: '.7rem' }}>{dep.range}</div>}
+                    </div>
                     <Badge text="dark" bg={getBadgeColor(index, visibleChain.length)}>
                       <div>{dep.release.package.name}</div>
-                      {isExpanded && <div style={{ fontSize: '.7rem' }}>{dep.release.version}</div>}
+                      {isExpanded && (
+                        <div className="mt-1" style={{ fontSize: '.7rem' }}>
+                          {dep.release.version}
+                        </div>
+                      )}
                     </Badge>
-                    {!isLast && chain.length > visibleChain.length && (
-                      <NavLink className="p-0 pe-1" onClick={() => setIsExpanded(true)} style={{ display: 'inline' }}>
-                        {' '}
-                        <ChevronsRight size="1em" className="" />
-                      </NavLink>
-                    )}
-                    {!isLast && chain.length === visibleChain.length && (
-                      <ChevronRight size="1em" className={isExpanded ? 'mb-3' : ''} />
-                    )}
                   </React.Fragment>
                 );
               })}
