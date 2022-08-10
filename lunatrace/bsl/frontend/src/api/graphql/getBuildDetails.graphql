@@ -22,8 +22,12 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                     name
                     last_successful_fetch
                     package_manager
-                    vulnerabilities {
-                        id
+                    affected_by_vulnerability {
+                        vulnerability {
+                            id
+                            source_id
+                            source
+                        }
                         ranges {
                             introduced
                             fixed

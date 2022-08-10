@@ -45,7 +45,7 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
           <tr>
             <th>Source</th>
             <th>Vulnerability Number</th>
-            {depTree && <th>Patchable</th>}
+            {depTree && <th>Lockfile Only</th>}
             <th>Severity</th>
             <th>CVSS</th>
             <th>Fix</th>

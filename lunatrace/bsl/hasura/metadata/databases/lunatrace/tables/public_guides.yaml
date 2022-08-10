@@ -1,21 +1,21 @@
 table:
-  schema: public
   name: guides
+  schema: public
 array_relationships:
   - name: guide_vulnerabilities
     using:
       foreign_key_constraint_on:
         column: guide_id
         table:
-          schema: public
           name: guide_vulnerabilities
+          schema: public
   - name: related_guides
     using:
       foreign_key_constraint_on:
         column: from_guide_id
         table:
-          schema: public
           name: guide_related_guides
+          schema: public
 insert_permissions:
   - role: service
     permission:
@@ -33,7 +33,6 @@ insert_permissions:
         - title
         - guide_unique_id
         - updated_at
-      backend_only: false
 select_permissions:
   - role: user
     permission:

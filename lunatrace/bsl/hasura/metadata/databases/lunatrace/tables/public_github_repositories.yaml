@@ -1,18 +1,18 @@
 table:
-  schema: public
   name: github_repositories
+  schema: public
 object_relationships:
   - name: project
     using:
       foreign_key_constraint_on: project_id
 remote_relationships:
   - definition:
+      hasura_fields:
+        - github_id
       remote_field:
         authenticatedRepoCloneUrl:
           arguments:
             repoGithubId: $github_id
-      hasura_fields:
-        - github_id
       remote_schema: lunatrace-custom
     name: authenticated_clone_url
 insert_permissions:
@@ -26,7 +26,6 @@ insert_permissions:
         - github_node_id
         - project_id
         - traits
-      backend_only: false
 select_permissions:
   - role: service
     permission:
