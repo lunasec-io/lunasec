@@ -13,12 +13,15 @@
  */
 import { GetBuildDetailsQuery } from '../../../api/generated';
 import { DependencyTree } from '../../../dependency-tree/builds-dependency-tree';
+import { DependencyChain } from '../../../dependency-tree/types';
 
 export type BuildDetailInfo = NonNullable<GetBuildDetailsQuery['builds_by_pk']>;
+export type DependencyRelationshipInfo = BuildDetailInfo['build_dependency_relationships'][number];
 
 export interface QuickViewProps {
   setVulnQuickViewId: (vulnId: string) => void;
   vulnQuickViewId: string | null;
 }
 
-export type DepTree = DependencyTree<BuildDetailInfo['build_dependency_relationships'][number]>;
+export type DepTree = DependencyTree<DependencyRelationshipInfo>;
+export type DepChains = DependencyChain<DependencyRelationshipInfo>[];

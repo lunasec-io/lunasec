@@ -20,13 +20,7 @@ import { DepTree } from '../types';
 
 import { Finding } from './types';
 
-export const AutoUpdatePopOverHOC = (pkgs: VulnerablePackage<Finding>[], depTree: DepTree) => {
-  const pkgsToUpdate = pkgs.filter((pkg) => {
-    const updatableStatus = depTree.checkIfPackageTriviallyUpdatable(pkg.package_name, pkg.version);
-    if (updatableStatus === 'yes' || updatableStatus === 'partially') {
-      return true;
-    }
-  });
+export const AutoUpdatePopOverHOC = (pkgsToUpdate: VulnerablePackage<Finding>[], depTree: DepTree) => {
   const pkgNameList = pkgsToUpdate.map((p) => p.package_name).join(' ');
   return (
     <Popover className="all-packages-update-popover">
