@@ -11,10 +11,11 @@
  * limitations under the License.
  *
  */
-import { severityOrder, VulnerablePackage } from '@lunatrace/lunatrace-common';
+import { VulnerablePackage } from '@lunatrace/lunatrace-common';
 import compareVersions from 'compare-versions';
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
+import { AiOutlineCode } from 'react-icons/ai';
 
 import { pluralizeIfMultiple } from '../../../../../utils/string-utils';
 import { DepTree } from '../../types';
@@ -30,6 +31,16 @@ export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ p
   const fixVersions = [...pkg.fix_versions];
   const pkgLocations = pkg.locations.join(', ');
   const recommendVersion = fixVersions.sort(compareVersions).reverse()[0];
+
+  const depChains = depTree?.showDependencyChainsOfPackage(pkg.package_name, pkg.version);
+
+  const isNodeDevOnly = depChains?.every((chain) => {
+    const rootLabels = chain[0].labels;
+    if ('scope' in rootLabels && rootLabels.scope === 'dev') {
+      return true;
+    }
+    return false;
+  });
 
   return (
     <div className="mb-3">
@@ -51,9 +62,16 @@ export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ p
             <span className="darker">{pluralizeIfMultiple(pkg.locations.length, 'Path') + ': '}</span>
             <span className="lighter mx-1">{pkgLocations}</span>
           </h5>
+          {isNodeDevOnly && (
+            <h5>
+              <AiOutlineCode className="mb-1 me-1 darker" />
+
+              <span className="">Dev Only</span>
+            </h5>
+          )}
         </Col>
         <Col xl="auto" lg={12} className="justify-content-xl-end d-flex">
-          <TreeInfo pkg={pkg} depTree={depTree} />
+          <TreeInfo pkg={pkg} depChains={depChains} />
         </Col>
       </Row>
     </div>

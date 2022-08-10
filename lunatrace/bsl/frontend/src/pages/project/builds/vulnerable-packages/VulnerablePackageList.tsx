@@ -65,17 +65,26 @@ export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = 
 
   const handleShowIgnoredFindings = (e: ChangeEvent<HTMLInputElement>) => setIgnoreFindings(!e.target.checked);
 
+  const pkgsToUpdate = vulnerablePkgs.filter((pkg) => {
+    const updatableStatus = depTree?.checkIfPackageTriviallyUpdatable(pkg.package_name, pkg.version);
+    if (updatableStatus === 'yes' || updatableStatus === 'partially') {
+      return true;
+    }
+  });
+
+  const areUpdatesAvailable = pkgsToUpdate.length > 0;
+
   return (
     <div className="vulnerability-list p-3">
       <Row>
         <Col md="6">
           <h2 className="d-inline-block me-3">Vulnerable Packages</h2>
-          {depTree && (
+          {depTree && areUpdatesAvailable && (
             <OverlayTrigger
               placement="bottom"
               trigger="click"
               rootClose
-              overlay={AutoUpdatePopOverHOC(vulnerablePkgs, depTree)}
+              overlay={AutoUpdatePopOverHOC(pkgsToUpdate, depTree)}
             >
               <Button className="mb-2">Update</Button>
             </OverlayTrigger>

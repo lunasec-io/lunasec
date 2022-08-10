@@ -16,15 +16,15 @@ import React, { useState } from 'react';
 import { Badge, NavLink } from 'react-bootstrap';
 import { ChevronRight, ChevronsRight, Maximize2, Minimize2 } from 'react-feather';
 
-import { DepTree } from '../../types';
+import { DepChains } from '../../types';
 import { Finding } from '../types';
 interface TreeInfoProps {
   pkg: VulnerablePackage<Finding>;
-  depTree: DepTree | null;
+  depChains: DepChains | undefined;
 }
 
-export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depTree }) => {
-  if (!depTree) {
+export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depChains: chains }) => {
+  if (!chains) {
     return null;
   }
   // Determines if the package is the start, the middle, or the target package and then colors them appropriately
@@ -38,7 +38,6 @@ export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depTree 
     return 'light';
   };
 
-  const chains = depTree.showDependencyChainsOfPackage(pkg.package_name, pkg.version);
   // Show the longest chains first, a hack to make expandable double chevrons show on deduped collapsed chains. Also it looks nice
   chains.sort((a, b) => {
     return b.length - a.length;
