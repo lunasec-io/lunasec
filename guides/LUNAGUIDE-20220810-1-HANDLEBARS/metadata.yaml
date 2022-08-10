@@ -1,0 +1,30 @@
+schemaVersion: 1
+cves:
+  - CVE-2021-23383
+  - CVE-2021-23369
+name:
+severity: Critical
+summary: |
+  RCE via prototype pollution in handlebars
+advisories:
+#  - type: github
+#    name: GitHub Log4Shell Advisory
+#    url: https://github.com/advisories/GHSA-jfh8-c2jp-5v3q
+cwe:
+#  - number: 20
+#    name: Improper Input Validation
+tags:
+packages:
+#  - type: maven
+#    purl: pkg:maven/log4j/log4j
+#    language: java
+#    name: log4j
+#    versionConstraint: "= 2.0 || >= 2.0.1, < 2.3.1 || >= 2.4.0, < 2.12.2 || >= 2.13.0,
+#      < 2.15.0"
+#    fixed: true
+#    fixVersion: ">= 2.16.0"
+conditions: []
+tools:
+#  - name: LunaSec log4shell CLI
+#    link: https://github.com/lunasec-io/lunasec/releases/tag/v1.6.1-log4shell
+relatedGuides: []
