@@ -8,8 +8,11 @@ summary: |
   Multiple CVEs filed for the handlebars library, most significant vulnerability is RCE via prototype pollution.
 advisories:
   - type: github
-    name: GitHub Log4Shell Advisory
+    name: GitHub Advisory
     url: https://github.com/advisories/GHSA-765h-qjxv-5f44
+  - type: github
+    name: GitHub Advisory
+    url: https://github.com/advisories/GHSA-f2jv-r9rf-7988
 cwe:
   - number: 1321
     name: Improperly Controlled Modification of Object Prototype Attributes
