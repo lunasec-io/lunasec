@@ -6282,7 +6282,7 @@ export const GetBuildDetailsDocument = `
     id
     source_type
     project_id
-    build_dependency_relationships {
+    build_dependency_relationships(where: {build_id: {_eq: $build_id}}) {
       depended_by_relationship_id
       range
       labels
