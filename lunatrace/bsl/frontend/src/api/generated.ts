@@ -5662,6 +5662,7 @@ export type Vulnerability = {
   published?: Maybe<Scalars['timestamptz']>;
   /** An array relationship */
   references: Array<Vulnerability_Reference>;
+  reviewed_by_source?: Maybe<Scalars['Boolean']>;
   /** An array relationship */
   severities: Array<Vulnerability_Severity>;
   source: Scalars['String'];
@@ -6059,6 +6060,7 @@ export type Vulnerability_Bool_Exp = {
   modified?: InputMaybe<Timestamptz_Comparison_Exp>;
   published?: InputMaybe<Timestamptz_Comparison_Exp>;
   references?: InputMaybe<Vulnerability_Reference_Bool_Exp>;
+  reviewed_by_source?: InputMaybe<Boolean_Comparison_Exp>;
   severities?: InputMaybe<Vulnerability_Severity_Bool_Exp>;
   source?: InputMaybe<String_Comparison_Exp>;
   source_id?: InputMaybe<String_Comparison_Exp>;
@@ -6204,6 +6206,7 @@ export type Vulnerability_Order_By = {
   modified?: InputMaybe<Order_By>;
   published?: InputMaybe<Order_By>;
   references_aggregate?: InputMaybe<Vulnerability_Reference_Aggregate_Order_By>;
+  reviewed_by_source?: InputMaybe<Order_By>;
   severities_aggregate?: InputMaybe<Vulnerability_Severity_Aggregate_Order_By>;
   source?: InputMaybe<Order_By>;
   source_id?: InputMaybe<Order_By>;
@@ -6405,6 +6408,8 @@ export enum Vulnerability_Select_Column {
   Modified = 'modified',
   /** column name */
   Published = 'published',
+  /** column name */
+  ReviewedBySource = 'reviewed_by_source',
   /** column name */
   Source = 'source',
   /** column name */
@@ -6689,7 +6694,7 @@ export const GetBuildDetailsDocument = `
     id
     source_type
     project_id
-    build_dependency_relationships {
+    build_dependency_relationships(where: {build_id: {_eq: $build_id}}) {
       depended_by_relationship_id
       range
       labels
