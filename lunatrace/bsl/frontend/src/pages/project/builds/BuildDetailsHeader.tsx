@@ -12,7 +12,7 @@
  *
  */
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Button, Col, Container, NavLink as FakeNavLink, Row } from 'react-bootstrap';
 import { ArrowLeft } from 'react-feather';
 import { NavLink } from 'react-router-dom';
 
@@ -55,8 +55,9 @@ export const BuildDetailsHeader: React.FC<{ build: BuildDetailInfo }> = ({ build
           </NavLink>
         </Col>
         <Col xs="6" style={{ textAlign: 'center' }}>
+          <h4>{build.project?.name}</h4>
+
           <h1>Snapshot #{build.build_number}</h1>
-          <span>{build.project?.name}</span>
           <h5>{uploadDate}</h5>
         </Col>
       </Row>

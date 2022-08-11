@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: ignored_vulnerabilities
+  schema: public
 object_relationships:
   - name: creator
     using:
@@ -29,7 +29,6 @@ insert_permissions:
         - note
         - project_id
         - vulnerability_id
-      backend_only: false
 select_permissions:
   - role: service
     permission:
@@ -77,6 +76,7 @@ update_permissions:
 delete_permissions:
   - role: user
     permission:
+      backend_only: false
       filter:
         project:
           organization:

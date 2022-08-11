@@ -74,7 +74,7 @@ services:
       POSTGRES_DB: lunatrace
 
   graphql-engine:
-    image: hasura/graphql-engine:v2.5.2.cli-migrations-v3
+    image: hasura/graphql-engine:v2.9.0.cli-migrations-v3
     ports:
     - "8080:8080"
     depends_on:

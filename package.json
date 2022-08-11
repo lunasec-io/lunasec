@@ -113,11 +113,13 @@
       "./lunatrace/dev-cli"
     ]
   },
-  "packageManager": "yarn@3.2.1",
+  "packageManager": "yarn@3.2.2",
   "dependencies": {
     "jest-environment-jsdom": "~28.0.2",
     "jsonp": "~0.2.1",
-    "node-gyp": "~9.0.0",
-    "nodejs-lockfile-parser": "https://github.com/lunasec-io/nodejs-lockfile-parser.git#29796168562d3a837611b1936ded8c2b7965d4eb"
+    "node-gyp": "~9.0.0"
+  },
+  "resolutions": {
+    "snyk-nodejs-lockfile-parser": "portal:/home/forrest/code/nodejs-lockfile-parser"
   }
 }

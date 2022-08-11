@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: scans
+  schema: public
 object_relationships:
   - name: build
     using:
@@ -11,8 +11,8 @@ array_relationships:
       foreign_key_constraint_on:
         column: scan_id
         table:
-          schema: public
           name: findings
+          schema: public
 insert_permissions:
   - role: service
     permission:
@@ -28,7 +28,6 @@ insert_permissions:
         - distro_name
         - distro_version
         - scan_number
-      backend_only: false
 select_permissions:
   - role: service
     permission:

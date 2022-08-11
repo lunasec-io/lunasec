@@ -12,6 +12,8 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
             depended_by_relationship_id
             range
             labels
+            id
+            release_id
             release {
                 id
                 fetched_time
@@ -20,14 +22,15 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                     name
                     last_successful_fetch
                     package_manager
-                    vulnerabilities {
-                        id
-                        affected_range_events {
-                            event
-                            type
-                            version
+                    affected_by_vulnerability {
+                        vulnerability {
                             id
-                            database_specific
+                            source_id
+                            source
+                        }
+                        ranges {
+                            introduced
+                            fixed
                         }
                     }
                 }
@@ -69,7 +72,6 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
             language
             locations
             matcher
-            package_version_id
             purl
             severity
             type
@@ -78,7 +80,6 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
             version_matcher
             virtual_path
             vulnerability_id
-            vulnerability_package_id
             vulnerability {
                 id
                 summary

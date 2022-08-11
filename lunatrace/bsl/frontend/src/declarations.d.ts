@@ -42,3 +42,8 @@ declare global {
 //   import * as prettifyDate from 'prettify-date';
 //   export default prettifyDate;
 // }
+
+interface WindowOrWorkerGlobalScope {
+  structuredClone(value: any, options?: StructuredSerializeOptions): any;
+}
+declare function structuredClone(value: any, options?: StructuredSerializeOptions): any;

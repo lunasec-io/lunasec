@@ -1,25 +1,25 @@
 table:
-  schema: public
   name: settings
+  schema: public
 object_relationships:
   - name: organization
     using:
       manual_configuration:
-        remote_table:
-          schema: public
-          name: organizations
-        insertion_order: null
         column_mapping:
           id: settings_id
+        insertion_order: null
+        remote_table:
+          name: organizations
+          schema: public
   - name: project
     using:
       manual_configuration:
-        remote_table:
-          schema: public
-          name: projects
-        insertion_order: null
         column_mapping:
           id: settings_id
+        insertion_order: null
+        remote_table:
+          name: projects
+          schema: public
 select_permissions:
   - role: service
     permission:
