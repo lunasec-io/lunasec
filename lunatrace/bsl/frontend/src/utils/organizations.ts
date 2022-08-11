@@ -15,7 +15,7 @@ import { GetSidebarInfoQuery } from '../api/generated';
 
 export function userHasAnyOrganizations(data: GetSidebarInfoQuery | undefined): boolean {
   if (!data) {
-    return false;
+    return true;
   }
   return data.organizations.length > 0;
 }

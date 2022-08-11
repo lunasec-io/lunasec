@@ -10367,6 +10367,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cspotcode/source-map-support@npm:^0.8.0":
+  version: 0.8.1
+  resolution: "@cspotcode/source-map-support@npm:0.8.1"
+  dependencies:
+    "@jridgewell/trace-mapping": 0.3.9
+  checksum: 5718f267085ed8edb3e7ef210137241775e607ee18b77d95aa5bd7514f47f5019aa2d82d96b3bf342ef7aa890a346fa1044532ff7cc3009e7d24fce3ce6200fa
+  languageName: node
+  linkType: hard
+
 "@csstools/convert-colors@npm:^1.4.0":
   version: 1.4.0
   resolution: "@csstools/convert-colors@npm:1.4.0"
@@ -13233,6 +13242,16 @@ __metadata:
   version: 1.4.11
   resolution: "@jridgewell/sourcemap-codec@npm:1.4.11"
   checksum: 3b2afaf8400fb07a36db60e901fcce6a746cdec587310ee9035939d89878e57b2dec8173b0b8f63176f647efa352294049a53c49739098eb907ff81fec2547c8
+  languageName: node
+  linkType: hard
+
+"@jridgewell/trace-mapping@npm:0.3.9":
+  version: 0.3.9
+  resolution: "@jridgewell/trace-mapping@npm:0.3.9"
+  dependencies:
+    "@jridgewell/resolve-uri": ^3.0.3
+    "@jridgewell/sourcemap-codec": ^1.4.10
+  checksum: d89597752fd88d3f3480845691a05a44bd21faac18e2185b6f436c3b0fd0c5a859fbbd9aaa92050c4052caf325ad3e10e2e1d1b64327517471b7d51babc0ddef
   languageName: node
   linkType: hard
 
@@ -31492,7 +31511,7 @@ __metadata:
     semver: ~7.3.7
     stream-browserify: ~3.0.0
     stream-http: ~3.2.0
-    typescript: ~4.5.5
+    typescript: ~4.5.4
     unified: ~10.1.2
     unist-util-visit: ~4.1.0
     url: ~0.11.0
@@ -39779,7 +39798,6 @@ __metadata:
     lerna: ^4.0.0
     lint-staged: ^12.1.2
     node-gyp: ~9.0.0
-    nodejs-lockfile-parser: "https://github.com/lunasec-io/nodejs-lockfile-parser.git#29796168562d3a837611b1936ded8c2b7965d4eb"
     prettier: ^2.5.0
     rimraf: ^3.0.2
     tslint-config-prettier: ^1.18.0
@@ -39931,7 +39949,6 @@ __metadata:
     jwks-rsa: ^2.0.5
     jwt-decode: ^3.1.2
     markdown-table: 2.0.0
-    nodejs-lockfile-parser: "https://github.com/lunasec-io/nodejs-lockfile-parser.git#9d3ed4f74eb62aa090bd5c8dd656b572fe26ac3b"
     nodemon: ^2.0.15
     octokit: ^1.7.1
     pg: ^8.7.1
@@ -39939,14 +39956,15 @@ __metadata:
     pm2: ^5.1.2
     semver: ^7.3.5
     slugify: ^1.6.5
+    snyk-nodejs-lockfile-parser-lunatrace-fork: ^1.0.0
     source-map-support: ^0.5.16
     sqlite: ^4.0.23
     sqlite3: ^5.0.2
     ts-jest: ^27.1.3
-    ts-node: ^10.4.0
-    ts-node-dev: ^1.1.8
+    ts-node: ^10.9.0
+    ts-node-dev: ^2.0.0
     tslog: ^3.3.3
-    typescript: ~4.5.5
+    typescript: ~4.7.4
     uuid: ^8.3.2
     validator: ^13.7.0
   languageName: unknown
@@ -41307,6 +41325,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimist@npm:^1.2.6":
+  version: 1.2.6
+  resolution: "minimist@npm:1.2.6"
+  checksum: d15428cd1e11eb14e1233bcfb88ae07ed7a147de251441d61158619dfb32c4d7e9061d09cab4825fdee18ecd6fce323228c8c47b5ba7cd20af378ca4048fb3fb
+  languageName: node
+  linkType: hard
+
 "minipass-collect@npm:^1.0.2":
   version: 1.0.2
   resolution: "minipass-collect@npm:1.0.2"
@@ -42311,54 +42336,6 @@ __metadata:
   version: 1.0.6
   resolution: "nodeify-ts@npm:1.0.6"
   checksum: ee145d3dff0ac2831047a54183576d71418ad57b6280aece12c8453157918bfca33c179398eca764eb6fe1c2b20bedd91cb53d9da429ec9528e289c6fbc86ab3
-  languageName: node
-  linkType: hard
-
-"nodejs-lockfile-parser@https://github.com/lunasec-io/nodejs-lockfile-parser.git#29796168562d3a837611b1936ded8c2b7965d4eb":
-  version: 0.0.0
-  resolution: "nodejs-lockfile-parser@https://github.com/lunasec-io/nodejs-lockfile-parser.git#commit=29796168562d3a837611b1936ded8c2b7965d4eb"
-  dependencies:
-    "@snyk/dep-graph": ^2.3.0
-    "@snyk/graphlib": 2.1.9-patch.3
-    "@yarnpkg/core": ^2.4.0
-    "@yarnpkg/lockfile": ^1.1.0
-    event-loop-spinner: ^2.0.0
-    js-yaml: ^4.1.0
-    lodash.clonedeep: ^4.5.0
-    lodash.flatmap: ^4.5.0
-    lodash.isempty: ^4.4.0
-    lodash.topairs: ^4.3.0
-    semver: ^7.3.5
-    snyk-config: ^4.0.0-rc.2
-    tslib: ^1.9.3
-    uuid: ^8.3.0
-  bin:
-    parse-nodejs-lockfile: ./bin/index.js
-  checksum: 2164f0e116cbc12f4904dcb87fac1467300b521eddf283323d09ad61befff0667d859c6820665f8f68e7f0347cc35b3b2f82bd541737effe8bb1266ea82ce5e2
-  languageName: node
-  linkType: hard
-
-"nodejs-lockfile-parser@https://github.com/lunasec-io/nodejs-lockfile-parser.git#9d3ed4f74eb62aa090bd5c8dd656b572fe26ac3b":
-  version: 0.0.0
-  resolution: "nodejs-lockfile-parser@https://github.com/lunasec-io/nodejs-lockfile-parser.git#commit=9d3ed4f74eb62aa090bd5c8dd656b572fe26ac3b"
-  dependencies:
-    "@snyk/dep-graph": ^2.3.0
-    "@snyk/graphlib": 2.1.9-patch.3
-    "@yarnpkg/core": ^2.4.0
-    "@yarnpkg/lockfile": ^1.1.0
-    event-loop-spinner: ^2.0.0
-    js-yaml: ^4.1.0
-    lodash.clonedeep: ^4.5.0
-    lodash.flatmap: ^4.5.0
-    lodash.isempty: ^4.4.0
-    lodash.topairs: ^4.3.0
-    semver: ^7.3.5
-    snyk-config: ^4.0.0-rc.2
-    tslib: ^1.9.3
-    uuid: ^8.3.0
-  bin:
-    parse-nodejs-lockfile: ./bin/index.js
-  checksum: 29d324e6ad72f9337ce4dc2317eb58f034655376a7c2d888f059f8949c5ffc23fd9b5ea0e0559e0019b47b52793b3c2c02786db04ab14e9fe04eb164e2c6e715
   languageName: node
   linkType: hard
 
@@ -50955,6 +50932,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"snyk-nodejs-lockfile-parser-lunatrace-fork@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "snyk-nodejs-lockfile-parser-lunatrace-fork@npm:1.0.0"
+  dependencies:
+    "@snyk/dep-graph": ^2.3.0
+    "@snyk/graphlib": 2.1.9-patch.3
+    "@yarnpkg/core": ^2.4.0
+    "@yarnpkg/lockfile": ^1.1.0
+    event-loop-spinner: ^2.0.0
+    js-yaml: ^4.1.0
+    lodash.clonedeep: ^4.5.0
+    lodash.flatmap: ^4.5.0
+    lodash.isempty: ^4.4.0
+    lodash.topairs: ^4.3.0
+    semver: ^7.3.5
+    snyk-config: ^4.0.0-rc.2
+    tslib: ^1.9.3
+    uuid: ^8.3.0
+  bin:
+    parse-nodejs-lockfile: bin/index.js
+  checksum: 68e0e59b010c33e628ca644d93d582f1fd5e90a9353612d91589f583896abd6ab149a55afeedbb21549e0a00fae3e98a00d44cbf178e9b212fe3abee0306bafa
+  languageName: node
+  linkType: hard
+
 "sockjs-client@npm:^1.5.0":
   version: 1.6.0
   resolution: "sockjs-client@npm:1.6.0"
@@ -53537,6 +53538,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ts-node-dev@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "ts-node-dev@npm:2.0.0"
+  dependencies:
+    chokidar: ^3.5.1
+    dynamic-dedupe: ^0.3.0
+    minimist: ^1.2.6
+    mkdirp: ^1.0.4
+    resolve: ^1.0.0
+    rimraf: ^2.6.1
+    source-map-support: ^0.5.12
+    tree-kill: ^1.2.2
+    ts-node: ^10.4.0
+    tsconfig: ^7.0.0
+  peerDependencies:
+    node-notifier: "*"
+    typescript: "*"
+  peerDependenciesMeta:
+    node-notifier:
+      optional: true
+  bin:
+    ts-node-dev: lib/bin.js
+    tsnd: lib/bin.js
+  checksum: d654b401de3d13c167981481be2a375229f6bfd2aeedf43bc0b6816e57676fcbfba3afdcf209c7a06fb6bd8768ca548c2eb0a0c9d38fa42246be3f50df1b28fb
+  languageName: node
+  linkType: hard
+
 "ts-node@npm:^10.0.0, ts-node@npm:^10.2.1, ts-node@npm:^10.3.0, ts-node@npm:^10.4.0":
   version: 10.6.0
   resolution: "ts-node@npm:10.6.0"
@@ -53609,6 +53637,44 @@ __metadata:
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
   checksum: 2a379e43f7478d0b79e1e63af91fe222d83857727957df4bd3bdf3c0a884de5097b12feb9bbf530074526b8874c0338b0e6328cf334f3a5e2c49c71e837273f7
+  languageName: node
+  linkType: hard
+
+"ts-node@npm:^10.9.0":
+  version: 10.9.1
+  resolution: "ts-node@npm:10.9.1"
+  dependencies:
+    "@cspotcode/source-map-support": ^0.8.0
+    "@tsconfig/node10": ^1.0.7
+    "@tsconfig/node12": ^1.0.7
+    "@tsconfig/node14": ^1.0.0
+    "@tsconfig/node16": ^1.0.2
+    acorn: ^8.4.1
+    acorn-walk: ^8.1.1
+    arg: ^4.1.0
+    create-require: ^1.1.0
+    diff: ^4.0.1
+    make-error: ^1.1.1
+    v8-compile-cache-lib: ^3.0.1
+    yn: 3.1.1
+  peerDependencies:
+    "@swc/core": ">=1.2.50"
+    "@swc/wasm": ">=1.2.50"
+    "@types/node": "*"
+    typescript: ">=2.7"
+  peerDependenciesMeta:
+    "@swc/core":
+      optional: true
+    "@swc/wasm":
+      optional: true
+  bin:
+    ts-node: dist/bin.js
+    ts-node-cwd: dist/bin-cwd.js
+    ts-node-esm: dist/bin-esm.js
+    ts-node-script: dist/bin-script.js
+    ts-node-transpile-only: dist/bin-transpile.js
+    ts-script: dist/bin-script-deprecated.js
+  checksum: 090adff1302ab20bd3486e6b4799e90f97726ed39e02b39e566f8ab674fd5bd5f727f43615debbfc580d33c6d9d1c6b1b3ce7d8e3cca3e20530a145ffa232c35
   languageName: node
   linkType: hard
 
@@ -54067,9 +54133,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:~4.7.4":
+  version: 4.7.4
+  resolution: "typescript@npm:4.7.4"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 5750181b1cd7e6482c4195825547e70f944114fb47e58e4aa7553e62f11b3f3173766aef9c281783edfd881f7b8299cf35e3ca8caebe73d8464528c907a164df
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@~3.9.7#~builtin<compat/typescript>":
   version: 3.9.10
-  resolution: "typescript@patch:typescript@npm%3A3.9.10#~builtin<compat/typescript>::version=3.9.10&hash=7ad353"
+  resolution: "typescript@patch:typescript@npm%3A3.9.10#~builtin<compat/typescript>::version=3.9.10&hash=f456af"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
@@ -54079,7 +54155,7 @@ __metadata:
 
 "typescript@patch:typescript@~4.3.4#~builtin<compat/typescript>":
   version: 4.3.5
-  resolution: "typescript@patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=7ad353"
+  resolution: "typescript@patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=f456af"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
@@ -54089,11 +54165,21 @@ __metadata:
 
 "typescript@patch:typescript@~4.5.0#~builtin<compat/typescript>, typescript@patch:typescript@~4.5.2#~builtin<compat/typescript>, typescript@patch:typescript@~4.5.3#~builtin<compat/typescript>, typescript@patch:typescript@~4.5.4#~builtin<compat/typescript>, typescript@patch:typescript@~4.5.5#~builtin<compat/typescript>":
   version: 4.5.5
-  resolution: "typescript@patch:typescript@npm%3A4.5.5#~builtin<compat/typescript>::version=4.5.5&hash=7ad353"
+  resolution: "typescript@patch:typescript@npm%3A4.5.5#~builtin<compat/typescript>::version=4.5.5&hash=f456af"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 858c61fa63f7274ca4aaaffeced854d550bf416cff6e558c4884041b3311fb662f476f167cf5c9f8680c607239797e26a2ee0bcc6467fbc05bfcb218e1c6c671
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@~4.7.4#~builtin<compat/typescript>":
+  version: 4.7.4
+  resolution: "typescript@patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=f456af"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 9096d8f6c16cb80ef3bf96fcbbd055bf1c4a43bd14f3b7be45a9fbe7ada46ec977f604d5feed3263b4f2aa7d4c7477ce5f9cd87de0d6feedec69a983f3a4f93e
   languageName: node
   linkType: hard
 
@@ -55061,6 +55147,13 @@ __metadata:
   version: 3.0.0
   resolution: "v8-compile-cache-lib@npm:3.0.0"
   checksum: 674e312bbca796584b61dc915f33c7e7dc4e06d196e0048cb772c8964493a1ec723f1dd014d9419fd55c24a6eae148f60769da23f622e05cd13268063fa1ed6b
+  languageName: node
+  linkType: hard
+
+"v8-compile-cache-lib@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "v8-compile-cache-lib@npm:3.0.1"
+  checksum: 78089ad549e21bcdbfca10c08850022b22024cdcc2da9b168bcf5a73a6ed7bf01a9cebb9eac28e03cd23a684d81e0502797e88f3ccd27a32aeab1cfc44c39da0
   languageName: node
   linkType: hard
 

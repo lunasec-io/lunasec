@@ -18,21 +18,23 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import api from '../../../../api';
 import { ConfirmationDailog } from '../../../../components/ConfirmationDialog';
-import { QuickViewProps } from '../types';
+import { DepTree, QuickViewProps } from '../types';
 
-import { VulnerablePackageCardBody } from './VulnerablePackageCardBody';
 import { VulnerablePackageCardHeader } from './VulnerablePackageCardHeader';
+import { PackageCardBody } from './body/PackageCardBody';
 import { Finding } from './types';
 
-interface FindingListItemProps {
+interface VulnerablePackageMainProps {
   pkg: VulnerablePackage<Finding>;
   severityFilter: number;
+  depTree: DepTree | null;
   quickView: QuickViewProps;
 }
 
-export const VulnerablePackageListItem: React.FunctionComponent<FindingListItemProps> = ({
+export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMainProps> = ({
   pkg,
   severityFilter,
+  depTree,
   quickView,
 }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -69,7 +71,7 @@ export const VulnerablePackageListItem: React.FunctionComponent<FindingListItemP
     </a>
   ));
 
-  const getIgnoreState = () => {
+  const renderIgnoreUi = () => {
     if (insertVulnIgnoreState.isLoading) {
       return <Spinner animation="border" className="position-absolute top-0 end-0 m-3" />;
     }
@@ -87,9 +89,9 @@ export const VulnerablePackageListItem: React.FunctionComponent<FindingListItemP
   return (
     <>
       <Card className="vulnpkg-card">
-        {getIgnoreState()}
-        <VulnerablePackageCardHeader pkg={pkg} />
-        <VulnerablePackageCardBody pkg={pkg} severityFilter={severityFilter} quickView={quickView} />
+        {renderIgnoreUi()}
+        <VulnerablePackageCardHeader pkg={pkg} depTree={depTree} />
+        <PackageCardBody pkg={pkg} severityFilter={severityFilter} quickView={quickView} depTree={depTree} />
       </Card>
       <ConfirmationDailog
         title={`Ignore All Findings For This Package`}

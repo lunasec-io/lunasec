@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: organization_user
+  schema: public
 object_relationships:
   - name: organization
     using:
@@ -19,7 +19,6 @@ insert_permissions:
         - id
         - organization_id
         - user_id
-      backend_only: false
   - role: user
     permission:
       check:
@@ -28,15 +27,15 @@ insert_permissions:
               creator_id:
                 _eq: X-Hasura-Real-User-Id
           - _exists:
+              _table:
+                name: users
+                schema: public
               _where:
                 _and:
                   - id:
                       _eq: X-Hasura-Real-User-Id
                   - role:
                       _eq: lunatrace_admin
-              _table:
-                schema: public
-                name: users
       set:
         user_id: x-hasura-Real-User-Id
       columns:
