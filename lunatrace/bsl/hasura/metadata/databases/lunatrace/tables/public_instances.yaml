@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: instances
+  schema: public
 object_relationships:
   - name: build
     using:

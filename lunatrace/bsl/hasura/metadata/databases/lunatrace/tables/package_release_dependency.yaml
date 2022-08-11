@@ -1,6 +1,6 @@
 table:
-  schema: package
   name: release_dependency
+  schema: package
 object_relationships:
   - name: dependency_package
     using:
@@ -22,7 +22,6 @@ insert_permissions:
         - dependency_release_id
         - id
         - release_id
-      backend_only: false
 select_permissions:
   - role: service
     permission:

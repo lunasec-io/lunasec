@@ -15,7 +15,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { Guide } from './types';
+import { Guide } from '../types';
 
 export const GuideBlurb: React.FC<{ guide: Guide }> = ({ guide }) => {
   return (

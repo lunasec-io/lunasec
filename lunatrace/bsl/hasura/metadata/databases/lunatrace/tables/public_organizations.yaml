@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: organizations
+  schema: public
 object_relationships:
   - name: creator
     using:
@@ -14,15 +14,15 @@ array_relationships:
       foreign_key_constraint_on:
         column: organization_id
         table:
-          schema: public
           name: organization_user
+          schema: public
   - name: projects
     using:
       foreign_key_constraint_on:
         column: organization_id
         table:
-          schema: public
           name: projects
+          schema: public
 insert_permissions:
   - role: service
     permission:
@@ -37,7 +37,6 @@ insert_permissions:
         - installation_id
         - name
         - settings_id
-      backend_only: false
   - role: user
     permission:
       check: {}
@@ -45,7 +44,6 @@ insert_permissions:
         creator_id: x-hasura-Real-User-Id
       columns:
         - name
-      backend_only: false
 select_permissions:
   - role: service
     permission:
@@ -73,15 +71,15 @@ select_permissions:
               user_id:
                 _eq: X-Hasura-Real-User-Id
           - _exists:
+              _table:
+                name: users
+                schema: public
               _where:
                 _and:
                   - id:
                       _eq: X-Hasura-Real-User-Id
                   - role:
                       _eq: lunatrace_admin
-              _table:
-                schema: public
-                name: users
 update_permissions:
   - role: service
     permission:

@@ -20,13 +20,14 @@ import { useParams } from 'react-router-dom';
 
 import api from '../../../api';
 import { SpinIfLoading } from '../../../components/SpinIfLoading';
+import { DependencyTree } from '../../../dependency-tree/builds-dependency-tree';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import useBreakpoint from '../../../hooks/useBreakpoint';
 import { add } from '../../../store/slices/alerts';
 
 import { BuildDetailsHeader } from './BuildDetailsHeader';
 import { VulnQuickView } from './VulnQuickView';
-import { VulnerablePackageList } from './VulnerablePackageList';
+import { VulnerablePackageList } from './vulnerable-packages/VulnerablePackageList';
 
 export const BuildDetails: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
@@ -73,6 +74,10 @@ export const BuildDetails: React.FunctionComponent = () => {
 
     const filteredFindings = ignoreFindings ? filterFindingsNotIgnored(build.findings) : build.findings;
 
+    const depTree = build.build_dependency_relationships
+      ? new DependencyTree(build.build_dependency_relationships)
+      : null;
+
     // Responsible for showing or hiding the findings list when quick view is open.  D-none only applies on screens smaller than xxl(1400)
     // meaning that the findings list will be hidden on smaller screens when quick view is open.
     const packageListColClasses = classNames('d-xxl-block', { 'd-none': quickViewOpen });
@@ -88,6 +93,7 @@ export const BuildDetails: React.FunctionComponent = () => {
             <VulnerablePackageList
               project_id={build.project_id}
               findings={filteredFindings}
+              depTree={depTree}
               quickView={{ vulnQuickViewId, setVulnQuickViewId }}
               setIgnoreFindings={setIgnoreFindings}
             />
