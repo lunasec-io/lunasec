@@ -95,6 +95,13 @@ function mapPackageTreeToBuildDependencyRelationships(
         return null;
       }
 
+      if (!dependency.range) {
+        log.warn('failed to insert dependency, range is not defined', {
+          dependency,
+        });
+        return null;
+      }
+
       return {
         id,
         build_id: buildId,
