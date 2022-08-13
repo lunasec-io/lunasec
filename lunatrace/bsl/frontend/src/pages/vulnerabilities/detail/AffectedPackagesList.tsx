@@ -31,7 +31,7 @@ export const AffectedPackagesList: React.FC<{ relatedVulns: VulnInfoDetails['equ
               <thead>
                 <tr>
                   <th>Source</th>
-                  <th>Vulnerability Number</th>
+                  <th>Vulnerability ID</th>
                   <th>Severity</th>
                   <th>CVSS</th>
                 </tr>
