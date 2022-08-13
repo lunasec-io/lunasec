@@ -99,7 +99,7 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
   };
   return (
     <Card.Header>
-      <Container fluid>
+      <div className="ms-lg-4 me-lg-4">
         <Row>
           <Col sm="6">
             <Card.Title>
@@ -136,7 +136,7 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
             </div>
           </Col>
         </Row>
-      </Container>
+      </div>
     </Card.Header>
   );
 };
