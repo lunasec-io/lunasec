@@ -116,7 +116,6 @@ export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({
   const rowValues = [
     finding.vulnerability.source,
     finding.vulnerability.source_id,
-    patchable,
     severity ? toTitleCase(severity.cvss3OverallSeverityText) : 'unknown',
     severity ? severity.overallScore : 'unknown',
     fixVersions.length > 0 ? fixVersions.join(', ') : 'none',
