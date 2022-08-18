@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: build_dependency_relationship
+  schema: public
 object_relationships:
   - name: build
     using:
@@ -23,7 +23,6 @@ insert_permissions:
         - depended_by_relationship_id
         - id
         - release_id
-      backend_only: false
 select_permissions:
   - role: service
     permission:
