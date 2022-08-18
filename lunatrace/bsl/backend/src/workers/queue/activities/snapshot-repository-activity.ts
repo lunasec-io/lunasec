@@ -68,6 +68,12 @@ async function performSnapshotOnRepository(
       s3Url: s3UploadRes,
     });
 
+    log.info('skipped snapshotting pinned dependencies', {
+      repoDir,
+    });
+
+    /*
+
     log.info('snapshotting pinned dependencies', {
       repoDir,
     });
@@ -79,6 +85,8 @@ async function performSnapshotOnRepository(
       });
       return newError(pinnedDepsError.msg);
     }
+
+     */
 
     log.info('completed snapshotting pinned dependencies', {
       repoDir,
