@@ -17,23 +17,19 @@ import path from 'path';
 import { buildDepTreeFromFiles, PkgTree } from 'snyk-nodejs-lockfile-parser-lunatrace-fork';
 import { DepTreeDep } from 'snyk-nodejs-lockfile-parser-lunatrace-fork/dist/parsers';
 
-import { hasura } from '../hasura-api';
+import pool from '../db-pool';
 import {
-  Build_Dependency_Relationship_Constraint,
   Build_Dependency_Relationship_Insert_Input,
-  Build_Dependency_Relationship_Update_Column,
   Package_Constraint,
   Package_Release_Constraint,
   Package_Release_Update_Column,
   Package_Update_Column,
 } from '../hasura-api/generated';
-import { HasuraError } from '../types/hasura';
 import { newError, newResult } from '../utils/errors';
 import { findFilesMatchingFilter } from '../utils/filesystem-utils';
-import { hasuraErrorMessage } from '../utils/hasura';
 import { log } from '../utils/log';
 import { notEmpty } from '../utils/predicates';
-import { catchError, threwError } from '../utils/try';
+import { convertNamedInsertValues } from '../utils/sql';
 
 interface CollectedPackageTree {
   lockFile: string;
@@ -107,6 +103,8 @@ function mapPackageTreeToBuildDependencyRelationships(
         build_id: buildId,
         depended_by_relationship_id: parentId,
         project_path: collectedPackageTree.lockFile,
+        labels: dependency.labels,
+        range: dependency.range,
         release: {
           data: {
             version: dependency.version,
@@ -117,23 +115,9 @@ function mapPackageTreeToBuildDependencyRelationships(
                 // TODO (cthompson) theoretically we have the information to fill this in, how do we get this from a PkgTree?
                 custom_registry: '',
               },
-              on_conflict: {
-                constraint: Package_Constraint.PackagePackageManagerCustomRegistryNameIdx,
-                update_columns: [
-                  Package_Update_Column.Name,
-                  Package_Update_Column.PackageManager,
-                  Package_Update_Column.CustomRegistry,
-                ],
-              },
             },
           },
-          on_conflict: {
-            constraint: Package_Release_Constraint.ReleasePackageIdVersionIdx,
-            update_columns: [Package_Release_Update_Column.Version],
-          },
         },
-        labels: dependency.labels,
-        range: dependency.range,
       };
     })
     .filter(notEmpty);
@@ -151,40 +135,105 @@ export async function snapshotPinnedDependencies(buildId: string, repoDir: strin
     repoDir,
   });
 
-  // TODO (cthompson) chunks are used to prevent a large insert. A single SQL insert would be more performant/reliable.
-  const chunkSize = 5000;
-  for (let i = 0; i < buildDependencyRelationships.length; i += 1) {
-    if (i % chunkSize !== 0) {
-      continue;
-    }
+  const buildDependencyRelationshipValues: Record<string, any>[] = buildDependencyRelationships
+    .map((r) => {
+      const release = r.release?.data;
+      if (!release) {
+        log.warn('release is not defined', {
+          buildDependencyRelationship: r,
+        });
+        return null;
+      }
 
-    const chunk = buildDependencyRelationships.slice(i, i + chunkSize);
-    log.info('inserting build dependency relationships', {
-      chunkSize: chunk.length,
-    });
+      const releasePackage = release.package?.data;
+      if (!releasePackage) {
+        log.warn('release package is not defined', {
+          buildDependencyRelationship: r,
+        });
+        return null;
+      }
+      return {
+        package_name: releasePackage.name,
+        package_manager: releasePackage.package_manager,
+        package_version: release.version,
+        relationship_id: r.id,
+        build_id: r.build_id,
+        depended_by_relationship_id: r.depended_by_relationship_id,
+        project_path: r.project_path,
+        labels: r.labels,
+        range: r.range,
+      };
+    })
+    .filter(notEmpty);
 
-    const resp = await catchError(
-      hasura.InsertBuildDependencyRelationships({
-        objects: chunk,
-        on_conflict: {
-          constraint: Build_Dependency_Relationship_Constraint.BuildDependencyRelationshipPkey,
-          update_columns: [Build_Dependency_Relationship_Update_Column.Id],
-        },
-      })
-    );
-    if (threwError(resp)) {
-      log.error('failed to insert build dependency relationships', {
-        idx: i,
-        chunkSize,
-        error: hasuraErrorMessage(resp as unknown as HasuraError),
-      });
-      return newError(resp.message);
+  const insertBuildDependencyRelationshipQuery = `
+      WITH referenced_package AS (
+          INSERT INTO package.package ("name", "package_manager", "custom_registry")
+              VALUES (:package_name, :package_manager, '')
+              ON CONFLICT ON CONSTRAINT package_package_manager_custom_registry_name_idx DO NOTHING
+              RETURNING id
+      ), release AS (
+          INSERT INTO package.release ("package_id", "version")
+              VALUES (referenced_package.id, :package_version)
+              ON CONFLICT ON CONSTRAINT release_package_id_version_idx DO NOTHING
+              RETURNING id
+      )
+      INSERT INTO public.build_dependency_relationship ("id", "build_id", "depended_by_relationship_id", "release_id", "project_path", "labels", "range")
+      VALUES (:relationship_id, :build_id, :depended_by_relationship_id, release.id, :project_path, :labels, :range)
+  `;
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    for (const values of buildDependencyRelationshipValues) {
+      await client.query(convertNamedInsertValues(insertBuildDependencyRelationshipQuery, values));
     }
-    log.info('inserted build dependency relationships', {
-      resp,
-      idx: i,
-      chunkSize,
+    await client.query('COMMIT');
+  } catch (e) {
+    await client.query('ROLLBACK');
+    const error = (e as Error).message;
+    log.error('failed to insert build dependency relationships into database', {
+      error,
     });
+    return newError(error);
+  } finally {
+    client.release();
   }
+
+  // TODO (cthompson) chunks are used to prevent a large insert. A single SQL insert would be more performant/reliable.
+  // const chunkSize = 5000;
+  // for (let i = 0; i < buildDependencyRelationships.length; i += 1) {
+  //   if (i % chunkSize !== 0) {
+  //     continue;
+  //   }
+  //
+  //   const chunk = buildDependencyRelationships.slice(i, i + chunkSize);
+  //   log.info('inserting build dependency relationships', {
+  //     chunkSize: chunk.length,
+  //   });
+  //
+  //   const resp = await catchError(
+  //     hasura.InsertBuildDependencyRelationships({
+  //       objects: chunk,
+  //       on_conflict: {
+  //         constraint: Build_Dependency_Relationship_Constraint.BuildDependencyRelationshipPkey,
+  //         update_columns: [Build_Dependency_Relationship_Update_Column.Id],
+  //       },
+  //     })
+  //   );
+  //   if (threwError(resp)) {
+  //     log.error('failed to insert build dependency relationships', {
+  //       idx: i,
+  //       chunkSize,
+  //       error: hasuraErrorMessage(resp as unknown as HasuraError),
+  //     });
+  //     return newError(resp.message);
+  //   }
+  //   log.info('inserted build dependency relationships', {
+  //     resp,
+  //     idx: i,
+  //     chunkSize,
+  //   });
+  // }
   return newResult(undefined);
 }
