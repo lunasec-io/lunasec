@@ -135,36 +135,35 @@ export async function snapshotPinnedDependencies(buildId: string, repoDir: strin
     repoDir,
   });
 
-  const buildDependencyRelationshipValues: Record<string, any>[] = buildDependencyRelationships
-    .map((r) => {
-      const release = r.release?.data;
-      if (!release) {
-        log.warn('release is not defined', {
-          buildDependencyRelationship: r,
-        });
-        return null;
-      }
+  const seenIds: Record<string, boolean> = {};
+  const buildDependencyRelationshipValues: Record<string, any>[] = buildDependencyRelationships.map((r) => {
+    const release = r.release?.data;
+    if (!release) {
+      log.warn('release is not defined', {
+        buildDependencyRelationship: r,
+      });
+      throw new Error('release is not defined');
+    }
 
-      const releasePackage = release.package?.data;
-      if (!releasePackage) {
-        log.warn('release package is not defined', {
-          buildDependencyRelationship: r,
-        });
-        return null;
-      }
-      return {
-        package_name: releasePackage.name,
-        package_manager: releasePackage.package_manager,
-        package_version: release.version,
-        relationship_id: r.id,
-        build_id: r.build_id,
-        depended_by_relationship_id: r.depended_by_relationship_id,
-        project_path: r.project_path,
-        labels: r.labels,
-        range: r.range,
-      };
-    })
-    .filter(notEmpty);
+    const releasePackage = release.package?.data;
+    if (!releasePackage) {
+      log.warn('release package is not defined', {
+        buildDependencyRelationship: r,
+      });
+      throw new Error('release package is not defined');
+    }
+    return {
+      package_name: releasePackage.name,
+      package_manager: releasePackage.package_manager,
+      package_version: release.version,
+      relationship_id: r.id,
+      build_id: r.build_id,
+      depended_by_relationship_id: r.depended_by_relationship_id,
+      project_path: r.project_path,
+      labels: r.labels,
+      range: r.range,
+    };
+  });
 
   const insertBuildDependencyRelationshipQuery = `
       WITH referenced_package AS (
@@ -174,12 +173,14 @@ export async function snapshotPinnedDependencies(buildId: string, repoDir: strin
               RETURNING id
       ), release AS (
           INSERT INTO package.release ("package_id", "version")
-              VALUES (referenced_package.id, :package_version)
+              SELECT id, :package_version
+              FROM referenced_package
               ON CONFLICT ON CONSTRAINT release_package_id_version_idx DO NOTHING
               RETURNING id
       )
       INSERT INTO public.build_dependency_relationship ("id", "build_id", "depended_by_relationship_id", "release_id", "project_path", "labels", "range")
-      VALUES (:relationship_id, :build_id, :depended_by_relationship_id, release.id, :project_path, :labels, :range)
+      SELECT :relationship_id, :build_id, :depended_by_relationship_id, id, :project_path, :labels, :range
+      FROM release
   `;
 
   const client = await pool.connect();
@@ -191,11 +192,11 @@ export async function snapshotPinnedDependencies(buildId: string, repoDir: strin
     await client.query('COMMIT');
   } catch (e) {
     await client.query('ROLLBACK');
-    const error = (e as Error).message;
+    const error = e as Error;
     log.error('failed to insert build dependency relationships into database', {
       error,
     });
-    return newError(error);
+    return newError(error.message);
   } finally {
     client.release();
   }
