@@ -18508,6 +18508,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/pg@npm:~8.6.5":
+  version: 8.6.5
+  resolution: "@types/pg@npm:8.6.5"
+  dependencies:
+    "@types/node": "*"
+    pg-protocol: "*"
+    pg-types: ^2.2.0
+  checksum: 49ef858d95e84a6c1be193d367996581c991cf383d8628449507cc4ce67ef43b75acb18a0f9f49f870594cdec3501ddf4d2ac3fbe0dcdaab35c295c038d47199
+  languageName: node
+  linkType: hard
+
 "@types/prettier@npm:^2.0.0, @types/prettier@npm:^2.1.5":
   version: 2.4.4
   resolution: "@types/prettier@npm:2.4.4"
@@ -39910,6 +39921,7 @@ __metadata:
     "@types/jwk-to-pem": ~2.0.1
     "@types/markdown-table": 2.0.0
     "@types/node": ^14.0.0
+    "@types/pg": ~8.6.5
     "@types/semver": ^7.3.9
     "@types/uuid": ^8.3.4
     "@types/validator": ^13.7.1
@@ -39951,7 +39963,7 @@ __metadata:
     markdown-table: 2.0.0
     nodemon: ^2.0.15
     octokit: ^1.7.1
-    pg: ^8.7.1
+    pg: ~8.7.3
     pg-promise: ^10.11.1
     pm2: ^5.1.2
     semver: ^7.3.5
@@ -39967,6 +39979,7 @@ __metadata:
     typescript: ~4.7.4
     uuid: ^8.3.2
     validator: ^13.7.0
+    zapatos: ~6.0.1
   languageName: unknown
   linkType: soft
 
@@ -44245,14 +44258,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-protocol@npm:^1.5.0":
+"pg-protocol@npm:*, pg-protocol@npm:^1.5.0":
   version: 1.5.0
   resolution: "pg-protocol@npm:1.5.0"
   checksum: b839d12cafe942ef9cbc5b13c174eb2356804fb4fe8ead8279f46a36be90722d19a91409955beb8a3d5301639c44854e49749de4aef02dc361fee3e2a61fb1e4
   languageName: node
   linkType: hard
 
-"pg-types@npm:^2.1.0":
+"pg-types@npm:^2.1.0, pg-types@npm:^2.2.0":
   version: 2.2.0
   resolution: "pg-types@npm:2.2.0"
   dependencies:
@@ -44285,7 +44298,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg@npm:^8.7.1":
+"pg@npm:~8.7.3":
   version: 8.7.3
   resolution: "pg@npm:8.7.3"
   dependencies:
@@ -57626,6 +57639,19 @@ __metadata:
     normalize-path: ^1.0.0
     strip-indent: ^2.0.0
   checksum: 6810adaf6be7b6cc115ed9454e5a4e8e0949deecb107d65dc0c196051e862f04d6394ad12fbef0d51e6c730329992ae98625ba82cba5e34775023ddb6dc921b8
+  languageName: node
+  linkType: hard
+
+"zapatos@npm:~6.0.1":
+  version: 6.0.1
+  resolution: "zapatos@npm:6.0.1"
+  peerDependencies:
+    "@types/pg": ">=7.14.3"
+    pg: ">=7.18.2"
+    typescript: ">=4.1"
+  bin:
+    zapatos: dist/generate/cli.js
+  checksum: 9f84cff51398dd65ec0e55620f711ac36605e4f941389f9218a8e818194b29c60be372ab26ec0fbbef59f3fcac85486b078f069ee0a7bbb058e9a3bfe82b90f8
   languageName: node
   linkType: hard
 

@@ -38,7 +38,9 @@ export async function getRepoCloneUrlWithAuth(
 
   if (threwError(cloneRepoInfo)) {
     const msg = 'unable to get clone repo info from git url';
-    logger.error(msg);
+    logger.error(msg, {
+      error: cloneRepoInfo.message,
+    });
     return newError(msg);
   }
 
