@@ -5,6 +5,9 @@ object_relationships:
   - name: build
     using:
       foreign_key_constraint_on: build_id
+  - name: build_dependency_relationship
+    using:
+      foreign_key_constraint_on: build_dependency_relationship_id
 insert_permissions:
   - role: service
     permission:
