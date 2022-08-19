@@ -83,15 +83,6 @@ select_permissions:
       filter:
         _or:
           - package:
-              releases:
-                build_dependency_relationships:
-                  build:
-                    project:
-                      organization:
-                        organization_users:
-                          user_id:
-                            _eq: X-Hasura-Real-User-Id
-          - package:
               last_successful_fetch:
                 _is_null: false
       allow_aggregations: true

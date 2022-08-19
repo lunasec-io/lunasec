@@ -70,14 +70,6 @@ select_permissions:
         - upstream_data
       filter:
         _or:
-          - releases:
-              build_dependency_relationships:
-                build:
-                  project:
-                    organization:
-                      organization_users:
-                        user_id:
-                          _eq: X-Hasura-Real-User-Id
           - last_successful_fetch:
               _is_null: false
 update_permissions:
