@@ -6,13 +6,6 @@ object_relationships:
     using:
       foreign_key_constraint_on: project_id
 array_relationships:
-  - name: build_dependency_relationships
-    using:
-      foreign_key_constraint_on:
-        column: build_id
-        table:
-          name: build_dependency_relationship
-          schema: public
   - name: findings
     using:
       foreign_key_constraint_on:
