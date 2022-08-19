@@ -7,8 +7,6 @@ CREATE TABLE build_dependency
 (
     build_id                         uuid
         REFERENCES builds (id),
-    release_id                       uuid
-        REFERENCES package.release (id),
     build_dependency_relationship_id uuid,
     range                            TEXT NOT NULL,
     labels                           jsonb,

@@ -8,6 +8,12 @@ object_relationships:
   - name: release
     using:
       foreign_key_constraint_on: release_id
+computed_fields:
+  - name: recursive_flat
+    definition:
+      function:
+        name: build_dependency_relationship_recursive
+        schema: public
 insert_permissions:
   - role: service
     permission:
