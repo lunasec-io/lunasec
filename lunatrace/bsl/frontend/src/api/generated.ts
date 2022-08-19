@@ -164,19 +164,87 @@ export type Bigint_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['bigint']>>;
 };
 
+/** direct dependencies of builds with pointers to their location in the merkel tree table */
+export type Build_Dependency = {
+  __typename?: 'build_dependency';
+  /** An object relationship */
+  build?: Maybe<Builds>;
+  /** An object relationship */
+  build_dependency_relationship?: Maybe<Build_Dependency_Relationship>;
+  /** pointer to merkel tree of transitive dependencies */
+  build_dependency_relationship_id?: Maybe<Scalars['uuid']>;
+  build_id?: Maybe<Scalars['uuid']>;
+  labels?: Maybe<Scalars['jsonb']>;
+  project_path: Scalars['String'];
+  range: Scalars['String'];
+};
+
+
+/** direct dependencies of builds with pointers to their location in the merkel tree table */
+export type Build_DependencyLabelsArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** order by aggregate values of table "build_dependency" */
+export type Build_Dependency_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Build_Dependency_Max_Order_By>;
+  min?: InputMaybe<Build_Dependency_Min_Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "build_dependency". All fields are combined with a logical 'AND'. */
+export type Build_Dependency_Bool_Exp = {
+  _and?: InputMaybe<Array<Build_Dependency_Bool_Exp>>;
+  _not?: InputMaybe<Build_Dependency_Bool_Exp>;
+  _or?: InputMaybe<Array<Build_Dependency_Bool_Exp>>;
+  build?: InputMaybe<Builds_Bool_Exp>;
+  build_dependency_relationship?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+  build_dependency_relationship_id?: InputMaybe<Uuid_Comparison_Exp>;
+  build_id?: InputMaybe<Uuid_Comparison_Exp>;
+  labels?: InputMaybe<Jsonb_Comparison_Exp>;
+  project_path?: InputMaybe<String_Comparison_Exp>;
+  range?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** order by max() on columns of table "build_dependency" */
+export type Build_Dependency_Max_Order_By = {
+  /** pointer to merkel tree of transitive dependencies */
+  build_dependency_relationship_id?: InputMaybe<Order_By>;
+  build_id?: InputMaybe<Order_By>;
+  project_path?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "build_dependency" */
+export type Build_Dependency_Min_Order_By = {
+  /** pointer to merkel tree of transitive dependencies */
+  build_dependency_relationship_id?: InputMaybe<Order_By>;
+  build_id?: InputMaybe<Order_By>;
+  project_path?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "build_dependency". */
+export type Build_Dependency_Order_By = {
+  build?: InputMaybe<Builds_Order_By>;
+  build_dependency_relationship?: InputMaybe<Build_Dependency_Relationship_Order_By>;
+  build_dependency_relationship_id?: InputMaybe<Order_By>;
+  build_id?: InputMaybe<Order_By>;
+  labels?: InputMaybe<Order_By>;
+  project_path?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+};
+
 /** columns and relationships of "build_dependency_relationship" */
 export type Build_Dependency_Relationship = {
   __typename?: 'build_dependency_relationship';
   /** An object relationship */
-  build: Builds;
-  build_id: Scalars['uuid'];
-  /** An object relationship */
   depended_by_relationship?: Maybe<Build_Dependency_Relationship>;
   depended_by_relationship_id?: Maybe<Scalars['uuid']>;
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
   id: Scalars['uuid'];
-  labels: Scalars['jsonb'];
-  project_path: Scalars['String'];
-  range: Scalars['String'];
+  /** A computed field, executes function "build_dependency_relationship_recursive" */
+  recursive_flat?: Maybe<Array<Build_Dependency_Relationship>>;
   /** An object relationship */
   release: Package_Release;
   release_id: Scalars['uuid'];
@@ -184,8 +252,12 @@ export type Build_Dependency_Relationship = {
 
 
 /** columns and relationships of "build_dependency_relationship" */
-export type Build_Dependency_RelationshipLabelsArgs = {
-  path?: InputMaybe<Scalars['String']>;
+export type Build_Dependency_RelationshipRecursive_FlatArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
 };
 
 /** order by aggregate values of table "build_dependency_relationship" */
@@ -200,48 +272,36 @@ export type Build_Dependency_Relationship_Bool_Exp = {
   _and?: InputMaybe<Array<Build_Dependency_Relationship_Bool_Exp>>;
   _not?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   _or?: InputMaybe<Array<Build_Dependency_Relationship_Bool_Exp>>;
-  build?: InputMaybe<Builds_Bool_Exp>;
-  build_id?: InputMaybe<Uuid_Comparison_Exp>;
   depended_by_relationship?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   depended_by_relationship_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  labels?: InputMaybe<Jsonb_Comparison_Exp>;
-  project_path?: InputMaybe<String_Comparison_Exp>;
-  range?: InputMaybe<String_Comparison_Exp>;
+  recursive_flat?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   release?: InputMaybe<Package_Release_Bool_Exp>;
   release_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
 /** order by max() on columns of table "build_dependency_relationship" */
 export type Build_Dependency_Relationship_Max_Order_By = {
-  build_id?: InputMaybe<Order_By>;
   depended_by_relationship_id?: InputMaybe<Order_By>;
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
   id?: InputMaybe<Order_By>;
-  project_path?: InputMaybe<Order_By>;
-  range?: InputMaybe<Order_By>;
   release_id?: InputMaybe<Order_By>;
 };
 
 /** order by min() on columns of table "build_dependency_relationship" */
 export type Build_Dependency_Relationship_Min_Order_By = {
-  build_id?: InputMaybe<Order_By>;
   depended_by_relationship_id?: InputMaybe<Order_By>;
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
   id?: InputMaybe<Order_By>;
-  project_path?: InputMaybe<Order_By>;
-  range?: InputMaybe<Order_By>;
   release_id?: InputMaybe<Order_By>;
 };
 
 /** Ordering options when selecting data from "build_dependency_relationship". */
 export type Build_Dependency_Relationship_Order_By = {
-  build?: InputMaybe<Builds_Order_By>;
-  build_id?: InputMaybe<Order_By>;
   depended_by_relationship?: InputMaybe<Build_Dependency_Relationship_Order_By>;
   depended_by_relationship_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  labels?: InputMaybe<Order_By>;
-  project_path?: InputMaybe<Order_By>;
-  range?: InputMaybe<Order_By>;
+  recursive_flat_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
   release?: InputMaybe<Package_Release_Order_By>;
   release_id?: InputMaybe<Order_By>;
 };
@@ -249,26 +309,32 @@ export type Build_Dependency_Relationship_Order_By = {
 /** select columns of table "build_dependency_relationship" */
 export enum Build_Dependency_Relationship_Select_Column {
   /** column name */
-  BuildId = 'build_id',
-  /** column name */
   DependedByRelationshipId = 'depended_by_relationship_id',
   /** column name */
   Id = 'id',
+  /** column name */
+  ReleaseId = 'release_id'
+}
+
+/** select columns of table "build_dependency" */
+export enum Build_Dependency_Select_Column {
+  /** column name */
+  BuildDependencyRelationshipId = 'build_dependency_relationship_id',
+  /** column name */
+  BuildId = 'build_id',
   /** column name */
   Labels = 'labels',
   /** column name */
   ProjectPath = 'project_path',
   /** column name */
-  Range = 'range',
-  /** column name */
-  ReleaseId = 'release_id'
+  Range = 'range'
 }
 
 /** columns and relationships of "builds" */
 export type Builds = {
   __typename?: 'builds';
   /** An array relationship */
-  build_dependency_relationships: Array<Build_Dependency_Relationship>;
+  build_dependencies: Array<Build_Dependency>;
   build_number?: Maybe<Scalars['Int']>;
   created_at: Scalars['timestamp'];
   existing_github_check_id?: Maybe<Scalars['bigint']>;
@@ -277,6 +343,8 @@ export type Builds = {
   findings: Array<Findings>;
   /** An aggregate relationship */
   findings_aggregate: Findings_Aggregate;
+  /** A computed field, executes function "build_dependencies_recursive" */
+  flat_dependencies?: Maybe<Array<Build_Dependency_Relationship>>;
   git_branch?: Maybe<Scalars['String']>;
   git_hash?: Maybe<Scalars['String']>;
   git_remote?: Maybe<Scalars['String']>;
@@ -298,12 +366,12 @@ export type Builds = {
 
 
 /** columns and relationships of "builds" */
-export type BuildsBuild_Dependency_RelationshipsArgs = {
-  distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
+export type BuildsBuild_DependenciesArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
-  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+  order_by?: InputMaybe<Array<Build_Dependency_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Bool_Exp>;
 };
 
 
@@ -324,6 +392,16 @@ export type BuildsFindings_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Findings_Order_By>>;
   where?: InputMaybe<Findings_Bool_Exp>;
+};
+
+
+/** columns and relationships of "builds" */
+export type BuildsFlat_DependenciesArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
 };
 
 
@@ -419,12 +497,13 @@ export type Builds_Bool_Exp = {
   _and?: InputMaybe<Array<Builds_Bool_Exp>>;
   _not?: InputMaybe<Builds_Bool_Exp>;
   _or?: InputMaybe<Array<Builds_Bool_Exp>>;
-  build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+  build_dependencies?: InputMaybe<Build_Dependency_Bool_Exp>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   existing_github_check_id?: InputMaybe<Bigint_Comparison_Exp>;
   existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
   findings?: InputMaybe<Findings_Bool_Exp>;
+  flat_dependencies?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   git_branch?: InputMaybe<String_Comparison_Exp>;
   git_hash?: InputMaybe<String_Comparison_Exp>;
   git_remote?: InputMaybe<String_Comparison_Exp>;
@@ -515,12 +594,13 @@ export type Builds_Mutation_Response = {
 
 /** Ordering options when selecting data from "builds". */
 export type Builds_Order_By = {
-  build_dependency_relationships_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
+  build_dependencies_aggregate?: InputMaybe<Build_Dependency_Aggregate_Order_By>;
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   existing_github_check_id?: InputMaybe<Order_By>;
   existing_github_review_id?: InputMaybe<Order_By>;
   findings_aggregate?: InputMaybe<Findings_Aggregate_Order_By>;
+  flat_dependencies_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
   git_branch?: InputMaybe<Order_By>;
   git_hash?: InputMaybe<Order_By>;
   git_remote?: InputMaybe<Order_By>;
@@ -3582,6 +3662,8 @@ export enum Projects_Update_Column {
 export type Query_Root = {
   __typename?: 'query_root';
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
+  /** fetch data from the table: "build_dependency" */
+  build_dependency: Array<Build_Dependency>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -3717,6 +3799,15 @@ export type Query_Root = {
 
 export type Query_RootAuthenticatedRepoCloneUrlArgs = {
   repoGithubId: Scalars['Int'];
+};
+
+
+export type Query_RootBuild_DependencyArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Bool_Exp>;
 };
 
 
@@ -4576,6 +4667,8 @@ export type Severity_Enum_Comparison_Exp = {
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
+  /** fetch data from the table: "build_dependency" */
+  build_dependency: Array<Build_Dependency>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -4702,6 +4795,15 @@ export type Subscription_Root = {
   vulnerability_severity: Array<Vulnerability_Severity>;
   /** fetch data from the table: "vulnerability.severity" using primary key columns */
   vulnerability_severity_by_pk?: Maybe<Vulnerability_Severity>;
+};
+
+
+export type Subscription_RootBuild_DependencyArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Bool_Exp>;
 };
 
 
@@ -6107,7 +6209,7 @@ export type GetBuildDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildDetailsQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, source_type: any, project_id?: any | null, build_dependency_relationships: Array<{ __typename?: 'build_dependency_relationship', depended_by_relationship_id?: any | null, range: string, labels: any, id: any, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } }>, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability: { __typename?: 'vulnerability', id: any, summary?: string | null, source: string, source_id: string, cvss_score?: number | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, source: string, type: string, score: string }>, affected: Array<{ __typename?: 'vulnerability_affected', package: { __typename?: 'package', name: string, package_manager: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', type: any, event: string, version: string }> }>, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, severity: any, summary: string, created_at: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> } | null };
+export type GetBuildDetailsQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, source_type: any, project_id?: any | null, flat_dependencies?: Array<{ __typename?: 'build_dependency_relationship', depended_by_relationship_id?: any | null, id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } }> | null, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability: { __typename?: 'vulnerability', id: any, summary?: string | null, source: string, source_id: string, cvss_score?: number | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, source: string, type: string, score: string }>, affected: Array<{ __typename?: 'vulnerability_affected', package: { __typename?: 'package', name: string, package_manager: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', type: any, event: string, version: string }> }>, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, severity: any, summary: string, created_at: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> } | null };
 
 export type GetCurrentUserInfoQueryVariables = Exact<{
   kratos_id: Scalars['uuid'];
@@ -6282,12 +6384,9 @@ export const GetBuildDetailsDocument = `
     id
     source_type
     project_id
-    build_dependency_relationships(where: {build_id: {_eq: $build_id}}) {
+    flat_dependencies {
       depended_by_relationship_id
-      range
-      labels
       id
-      release_id
       release {
         id
         fetched_time

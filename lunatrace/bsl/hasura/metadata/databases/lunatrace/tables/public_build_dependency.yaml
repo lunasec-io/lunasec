@@ -17,28 +17,25 @@ insert_permissions:
         - project_path
         - range
         - build_id
-        - release_id
         - build_dependency_relationship_id
 select_permissions:
   - role: service
     permission:
       columns:
+        - build_dependency_relationship_id
+        - build_id
         - labels
         - project_path
         - range
-        - build_id
-        - release_id
-        - build_dependency_relationship_id
       filter: {}
   - role: user
     permission:
       columns:
+        - build_dependency_relationship_id
+        - build_id
         - labels
         - project_path
         - range
-        - build_id
-        - release_id
-        - build_dependency_relationship_id
       filter:
         _or:
           - build:
@@ -56,7 +53,6 @@ update_permissions:
         - project_path
         - range
         - build_id
-        - release_id
         - build_dependency_relationship_id
       filter: {}
       check: {}

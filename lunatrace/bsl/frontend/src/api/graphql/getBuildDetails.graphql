@@ -8,12 +8,10 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
         id
         source_type
         project_id
-        build_dependency_relationships(where: {build_id: {_eq: $build_id}}) {
+
+        flat_dependencies {
             depended_by_relationship_id
-            range
-            labels
             id
-            release_id
             release {
                 id
                 fetched_time
@@ -36,6 +34,7 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                 }
             }
         }
+
         project {
             name
             ignored_vulnerabilities {

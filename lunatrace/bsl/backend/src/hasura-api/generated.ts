@@ -167,19 +167,138 @@ export type Bigint_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['bigint']>>;
 };
 
+/** direct dependencies of builds with pointers to their location in the merkel tree table */
+export type Build_Dependency = {
+  __typename?: 'build_dependency';
+  /** An object relationship */
+  build?: Maybe<Builds>;
+  /** An object relationship */
+  build_dependency_relationship?: Maybe<Build_Dependency_Relationship>;
+  /** pointer to merkel tree of transitive dependencies */
+  build_dependency_relationship_id?: Maybe<Scalars['uuid']>;
+  build_id?: Maybe<Scalars['uuid']>;
+  labels?: Maybe<Scalars['jsonb']>;
+  project_path: Scalars['String'];
+  range: Scalars['String'];
+};
+
+
+/** direct dependencies of builds with pointers to their location in the merkel tree table */
+export type Build_DependencyLabelsArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** order by aggregate values of table "build_dependency" */
+export type Build_Dependency_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Build_Dependency_Max_Order_By>;
+  min?: InputMaybe<Build_Dependency_Min_Order_By>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Build_Dependency_Append_Input = {
+  labels?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** input type for inserting array relation for remote table "build_dependency" */
+export type Build_Dependency_Arr_Rel_Insert_Input = {
+  data: Array<Build_Dependency_Insert_Input>;
+};
+
+/** Boolean expression to filter rows from the table "build_dependency". All fields are combined with a logical 'AND'. */
+export type Build_Dependency_Bool_Exp = {
+  _and?: InputMaybe<Array<Build_Dependency_Bool_Exp>>;
+  _not?: InputMaybe<Build_Dependency_Bool_Exp>;
+  _or?: InputMaybe<Array<Build_Dependency_Bool_Exp>>;
+  build?: InputMaybe<Builds_Bool_Exp>;
+  build_dependency_relationship?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+  build_dependency_relationship_id?: InputMaybe<Uuid_Comparison_Exp>;
+  build_id?: InputMaybe<Uuid_Comparison_Exp>;
+  labels?: InputMaybe<Jsonb_Comparison_Exp>;
+  project_path?: InputMaybe<String_Comparison_Exp>;
+  range?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Build_Dependency_Delete_At_Path_Input = {
+  labels?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Build_Dependency_Delete_Elem_Input = {
+  labels?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Build_Dependency_Delete_Key_Input = {
+  labels?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "build_dependency" */
+export type Build_Dependency_Insert_Input = {
+  build?: InputMaybe<Builds_Obj_Rel_Insert_Input>;
+  build_dependency_relationship?: InputMaybe<Build_Dependency_Relationship_Obj_Rel_Insert_Input>;
+  /** pointer to merkel tree of transitive dependencies */
+  build_dependency_relationship_id?: InputMaybe<Scalars['uuid']>;
+  build_id?: InputMaybe<Scalars['uuid']>;
+  labels?: InputMaybe<Scalars['jsonb']>;
+  project_path?: InputMaybe<Scalars['String']>;
+  range?: InputMaybe<Scalars['String']>;
+};
+
+/** order by max() on columns of table "build_dependency" */
+export type Build_Dependency_Max_Order_By = {
+  /** pointer to merkel tree of transitive dependencies */
+  build_dependency_relationship_id?: InputMaybe<Order_By>;
+  build_id?: InputMaybe<Order_By>;
+  project_path?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "build_dependency" */
+export type Build_Dependency_Min_Order_By = {
+  /** pointer to merkel tree of transitive dependencies */
+  build_dependency_relationship_id?: InputMaybe<Order_By>;
+  build_id?: InputMaybe<Order_By>;
+  project_path?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "build_dependency" */
+export type Build_Dependency_Mutation_Response = {
+  __typename?: 'build_dependency_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Build_Dependency>;
+};
+
+/** Ordering options when selecting data from "build_dependency". */
+export type Build_Dependency_Order_By = {
+  build?: InputMaybe<Builds_Order_By>;
+  build_dependency_relationship?: InputMaybe<Build_Dependency_Relationship_Order_By>;
+  build_dependency_relationship_id?: InputMaybe<Order_By>;
+  build_id?: InputMaybe<Order_By>;
+  labels?: InputMaybe<Order_By>;
+  project_path?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Build_Dependency_Prepend_Input = {
+  labels?: InputMaybe<Scalars['jsonb']>;
+};
+
 /** columns and relationships of "build_dependency_relationship" */
 export type Build_Dependency_Relationship = {
   __typename?: 'build_dependency_relationship';
   /** An object relationship */
-  build: Builds;
-  build_id: Scalars['uuid'];
-  /** An object relationship */
   depended_by_relationship?: Maybe<Build_Dependency_Relationship>;
   depended_by_relationship_id?: Maybe<Scalars['uuid']>;
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
   id: Scalars['uuid'];
-  labels: Scalars['jsonb'];
-  project_path: Scalars['String'];
-  range: Scalars['String'];
+  /** A computed field, executes function "build_dependency_relationship_recursive" */
+  recursive_flat?: Maybe<Array<Build_Dependency_Relationship>>;
   /** An object relationship */
   release: Package_Release;
   release_id: Scalars['uuid'];
@@ -187,8 +306,12 @@ export type Build_Dependency_Relationship = {
 
 
 /** columns and relationships of "build_dependency_relationship" */
-export type Build_Dependency_RelationshipLabelsArgs = {
-  path?: InputMaybe<Scalars['String']>;
+export type Build_Dependency_RelationshipRecursive_FlatArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
 };
 
 /** order by aggregate values of table "build_dependency_relationship" */
@@ -196,11 +319,6 @@ export type Build_Dependency_Relationship_Aggregate_Order_By = {
   count?: InputMaybe<Order_By>;
   max?: InputMaybe<Build_Dependency_Relationship_Max_Order_By>;
   min?: InputMaybe<Build_Dependency_Relationship_Min_Order_By>;
-};
-
-/** append existing jsonb value of filtered columns with new jsonb value */
-export type Build_Dependency_Relationship_Append_Input = {
-  labels?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** input type for inserting array relation for remote table "build_dependency_relationship" */
@@ -215,14 +333,10 @@ export type Build_Dependency_Relationship_Bool_Exp = {
   _and?: InputMaybe<Array<Build_Dependency_Relationship_Bool_Exp>>;
   _not?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   _or?: InputMaybe<Array<Build_Dependency_Relationship_Bool_Exp>>;
-  build?: InputMaybe<Builds_Bool_Exp>;
-  build_id?: InputMaybe<Uuid_Comparison_Exp>;
   depended_by_relationship?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   depended_by_relationship_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  labels?: InputMaybe<Jsonb_Comparison_Exp>;
-  project_path?: InputMaybe<String_Comparison_Exp>;
-  range?: InputMaybe<String_Comparison_Exp>;
+  recursive_flat?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   release?: InputMaybe<Package_Release_Bool_Exp>;
   release_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
@@ -233,52 +347,29 @@ export enum Build_Dependency_Relationship_Constraint {
   BuildDependencyRelationshipPkey = 'build_dependency_relationship_pkey'
 }
 
-/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-export type Build_Dependency_Relationship_Delete_At_Path_Input = {
-  labels?: InputMaybe<Array<Scalars['String']>>;
-};
-
-/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-export type Build_Dependency_Relationship_Delete_Elem_Input = {
-  labels?: InputMaybe<Scalars['Int']>;
-};
-
-/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-export type Build_Dependency_Relationship_Delete_Key_Input = {
-  labels?: InputMaybe<Scalars['String']>;
-};
-
 /** input type for inserting data into table "build_dependency_relationship" */
 export type Build_Dependency_Relationship_Insert_Input = {
-  build?: InputMaybe<Builds_Obj_Rel_Insert_Input>;
-  build_id?: InputMaybe<Scalars['uuid']>;
   depended_by_relationship?: InputMaybe<Build_Dependency_Relationship_Obj_Rel_Insert_Input>;
   depended_by_relationship_id?: InputMaybe<Scalars['uuid']>;
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
   id?: InputMaybe<Scalars['uuid']>;
-  labels?: InputMaybe<Scalars['jsonb']>;
-  project_path?: InputMaybe<Scalars['String']>;
-  range?: InputMaybe<Scalars['String']>;
   release?: InputMaybe<Package_Release_Obj_Rel_Insert_Input>;
   release_id?: InputMaybe<Scalars['uuid']>;
 };
 
 /** order by max() on columns of table "build_dependency_relationship" */
 export type Build_Dependency_Relationship_Max_Order_By = {
-  build_id?: InputMaybe<Order_By>;
   depended_by_relationship_id?: InputMaybe<Order_By>;
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
   id?: InputMaybe<Order_By>;
-  project_path?: InputMaybe<Order_By>;
-  range?: InputMaybe<Order_By>;
   release_id?: InputMaybe<Order_By>;
 };
 
 /** order by min() on columns of table "build_dependency_relationship" */
 export type Build_Dependency_Relationship_Min_Order_By = {
-  build_id?: InputMaybe<Order_By>;
   depended_by_relationship_id?: InputMaybe<Order_By>;
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
   id?: InputMaybe<Order_By>;
-  project_path?: InputMaybe<Order_By>;
-  range?: InputMaybe<Order_By>;
   release_id?: InputMaybe<Order_By>;
 };
 
@@ -307,87 +398,86 @@ export type Build_Dependency_Relationship_On_Conflict = {
 
 /** Ordering options when selecting data from "build_dependency_relationship". */
 export type Build_Dependency_Relationship_Order_By = {
-  build?: InputMaybe<Builds_Order_By>;
-  build_id?: InputMaybe<Order_By>;
   depended_by_relationship?: InputMaybe<Build_Dependency_Relationship_Order_By>;
   depended_by_relationship_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  labels?: InputMaybe<Order_By>;
-  project_path?: InputMaybe<Order_By>;
-  range?: InputMaybe<Order_By>;
+  recursive_flat_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
   release?: InputMaybe<Package_Release_Order_By>;
   release_id?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: build_dependency_relationship */
 export type Build_Dependency_Relationship_Pk_Columns_Input = {
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
   id: Scalars['uuid'];
-};
-
-/** prepend existing jsonb value of filtered columns with new jsonb value */
-export type Build_Dependency_Relationship_Prepend_Input = {
-  labels?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** select columns of table "build_dependency_relationship" */
 export enum Build_Dependency_Relationship_Select_Column {
   /** column name */
-  BuildId = 'build_id',
-  /** column name */
   DependedByRelationshipId = 'depended_by_relationship_id',
   /** column name */
   Id = 'id',
-  /** column name */
-  Labels = 'labels',
-  /** column name */
-  ProjectPath = 'project_path',
-  /** column name */
-  Range = 'range',
   /** column name */
   ReleaseId = 'release_id'
 }
 
 /** input type for updating data in table "build_dependency_relationship" */
 export type Build_Dependency_Relationship_Set_Input = {
-  build_id?: InputMaybe<Scalars['uuid']>;
   depended_by_relationship_id?: InputMaybe<Scalars['uuid']>;
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
   id?: InputMaybe<Scalars['uuid']>;
-  labels?: InputMaybe<Scalars['jsonb']>;
-  project_path?: InputMaybe<Scalars['String']>;
-  range?: InputMaybe<Scalars['String']>;
   release_id?: InputMaybe<Scalars['uuid']>;
 };
 
 /** update columns of table "build_dependency_relationship" */
 export enum Build_Dependency_Relationship_Update_Column {
   /** column name */
-  BuildId = 'build_id',
-  /** column name */
   DependedByRelationshipId = 'depended_by_relationship_id',
   /** column name */
   Id = 'id',
+  /** column name */
+  ReleaseId = 'release_id'
+}
+
+/** select columns of table "build_dependency" */
+export enum Build_Dependency_Select_Column {
+  /** column name */
+  BuildDependencyRelationshipId = 'build_dependency_relationship_id',
+  /** column name */
+  BuildId = 'build_id',
   /** column name */
   Labels = 'labels',
   /** column name */
   ProjectPath = 'project_path',
   /** column name */
-  Range = 'range',
-  /** column name */
-  ReleaseId = 'release_id'
+  Range = 'range'
 }
+
+/** input type for updating data in table "build_dependency" */
+export type Build_Dependency_Set_Input = {
+  /** pointer to merkel tree of transitive dependencies */
+  build_dependency_relationship_id?: InputMaybe<Scalars['uuid']>;
+  build_id?: InputMaybe<Scalars['uuid']>;
+  labels?: InputMaybe<Scalars['jsonb']>;
+  project_path?: InputMaybe<Scalars['String']>;
+  range?: InputMaybe<Scalars['String']>;
+};
 
 /** columns and relationships of "builds" */
 export type Builds = {
   __typename?: 'builds';
   agent_access_token: Scalars['uuid'];
   /** An array relationship */
-  build_dependency_relationships: Array<Build_Dependency_Relationship>;
+  build_dependencies: Array<Build_Dependency>;
   build_number?: Maybe<Scalars['Int']>;
   created_at: Scalars['timestamp'];
   existing_github_check_id?: Maybe<Scalars['bigint']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
+  /** A computed field, executes function "build_dependencies_recursive" */
+  flat_dependencies?: Maybe<Array<Build_Dependency_Relationship>>;
   git_branch?: Maybe<Scalars['String']>;
   git_hash?: Maybe<Scalars['String']>;
   git_remote?: Maybe<Scalars['String']>;
@@ -407,12 +497,12 @@ export type Builds = {
 
 
 /** columns and relationships of "builds" */
-export type BuildsBuild_Dependency_RelationshipsArgs = {
-  distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
+export type BuildsBuild_DependenciesArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
-  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+  order_by?: InputMaybe<Array<Build_Dependency_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Bool_Exp>;
 };
 
 
@@ -423,6 +513,16 @@ export type BuildsFindingsArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Findings_Order_By>>;
   where?: InputMaybe<Findings_Bool_Exp>;
+};
+
+
+/** columns and relationships of "builds" */
+export type BuildsFlat_DependenciesArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
 };
 
 
@@ -516,12 +616,13 @@ export type Builds_Bool_Exp = {
   _not?: InputMaybe<Builds_Bool_Exp>;
   _or?: InputMaybe<Array<Builds_Bool_Exp>>;
   agent_access_token?: InputMaybe<Uuid_Comparison_Exp>;
-  build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+  build_dependencies?: InputMaybe<Build_Dependency_Bool_Exp>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   existing_github_check_id?: InputMaybe<Bigint_Comparison_Exp>;
   existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
   findings?: InputMaybe<Findings_Bool_Exp>;
+  flat_dependencies?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   git_branch?: InputMaybe<String_Comparison_Exp>;
   git_hash?: InputMaybe<String_Comparison_Exp>;
   git_remote?: InputMaybe<String_Comparison_Exp>;
@@ -554,7 +655,7 @@ export type Builds_Inc_Input = {
 /** input type for inserting data into table "builds" */
 export type Builds_Insert_Input = {
   agent_access_token?: InputMaybe<Scalars['uuid']>;
-  build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Arr_Rel_Insert_Input>;
+  build_dependencies?: InputMaybe<Build_Dependency_Arr_Rel_Insert_Input>;
   build_number?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   existing_github_check_id?: InputMaybe<Scalars['bigint']>;
@@ -669,12 +770,13 @@ export type Builds_On_Conflict = {
 /** Ordering options when selecting data from "builds". */
 export type Builds_Order_By = {
   agent_access_token?: InputMaybe<Order_By>;
-  build_dependency_relationships_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
+  build_dependencies_aggregate?: InputMaybe<Build_Dependency_Aggregate_Order_By>;
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   existing_github_check_id?: InputMaybe<Order_By>;
   existing_github_review_id?: InputMaybe<Order_By>;
   findings_aggregate?: InputMaybe<Findings_Aggregate_Order_By>;
+  flat_dependencies_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
   git_branch?: InputMaybe<Order_By>;
   git_hash?: InputMaybe<Order_By>;
   git_remote?: InputMaybe<Order_By>;
@@ -2687,6 +2789,10 @@ export type Mutation_Root = {
   delete_vulnerability_range?: Maybe<Vulnerability_Range_Mutation_Response>;
   /** delete single row from the table: "vulnerability.range" */
   delete_vulnerability_range_by_pk?: Maybe<Vulnerability_Range>;
+  /** insert data into the table: "build_dependency" */
+  insert_build_dependency?: Maybe<Build_Dependency_Mutation_Response>;
+  /** insert a single row into the table: "build_dependency" */
+  insert_build_dependency_one?: Maybe<Build_Dependency>;
   /** insert data into the table: "build_dependency_relationship" */
   insert_build_dependency_relationship?: Maybe<Build_Dependency_Relationship_Mutation_Response>;
   /** insert a single row into the table: "build_dependency_relationship" */
@@ -2807,6 +2913,8 @@ export type Mutation_Root = {
   insert_webhook_cache_one?: Maybe<Webhook_Cache>;
   /**  get s3 presigned url for manifest upload, used only by the frontend  */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
+  /** update data of the table: "build_dependency" */
+  update_build_dependency?: Maybe<Build_Dependency_Mutation_Response>;
   /** update data of the table: "build_dependency_relationship" */
   update_build_dependency_relationship?: Maybe<Build_Dependency_Relationship_Mutation_Response>;
   /** update single row of the table: "build_dependency_relationship" */
@@ -2993,6 +3101,18 @@ export type Mutation_RootDelete_Vulnerability_RangeArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Vulnerability_Range_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Build_DependencyArgs = {
+  objects: Array<Build_Dependency_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Build_Dependency_OneArgs = {
+  object: Build_Dependency_Insert_Input;
 };
 
 
@@ -3416,12 +3536,19 @@ export type Mutation_RootPresignManifestUploadArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Build_DependencyArgs = {
+  _append?: InputMaybe<Build_Dependency_Append_Input>;
+  _delete_at_path?: InputMaybe<Build_Dependency_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Build_Dependency_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Build_Dependency_Delete_Key_Input>;
+  _prepend?: InputMaybe<Build_Dependency_Prepend_Input>;
+  _set?: InputMaybe<Build_Dependency_Set_Input>;
+  where: Build_Dependency_Bool_Exp;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_Build_Dependency_RelationshipArgs = {
-  _append?: InputMaybe<Build_Dependency_Relationship_Append_Input>;
-  _delete_at_path?: InputMaybe<Build_Dependency_Relationship_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Build_Dependency_Relationship_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Build_Dependency_Relationship_Delete_Key_Input>;
-  _prepend?: InputMaybe<Build_Dependency_Relationship_Prepend_Input>;
   _set?: InputMaybe<Build_Dependency_Relationship_Set_Input>;
   where: Build_Dependency_Relationship_Bool_Exp;
 };
@@ -3429,11 +3556,6 @@ export type Mutation_RootUpdate_Build_Dependency_RelationshipArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Build_Dependency_Relationship_By_PkArgs = {
-  _append?: InputMaybe<Build_Dependency_Relationship_Append_Input>;
-  _delete_at_path?: InputMaybe<Build_Dependency_Relationship_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Build_Dependency_Relationship_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Build_Dependency_Relationship_Delete_Key_Input>;
-  _prepend?: InputMaybe<Build_Dependency_Relationship_Prepend_Input>;
   _set?: InputMaybe<Build_Dependency_Relationship_Set_Input>;
   pk_columns: Build_Dependency_Relationship_Pk_Columns_Input;
 };
@@ -6090,6 +6212,8 @@ export enum Projects_Update_Column {
 export type Query_Root = {
   __typename?: 'query_root';
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
+  /** fetch data from the table: "build_dependency" */
+  build_dependency: Array<Build_Dependency>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -6243,6 +6367,15 @@ export type Query_Root = {
 
 export type Query_RootAuthenticatedRepoCloneUrlArgs = {
   repoGithubId: Scalars['Int'];
+};
+
+
+export type Query_RootBuild_DependencyArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Bool_Exp>;
 };
 
 
@@ -7125,6 +7258,8 @@ export type Severity_Enum_Comparison_Exp = {
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
+  /** fetch data from the table: "build_dependency" */
+  build_dependency: Array<Build_Dependency>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -7269,6 +7404,15 @@ export type Subscription_Root = {
   webhook_cache: Array<Webhook_Cache>;
   /** fetch data from the table: "webhook_cache" using primary key columns */
   webhook_cache_by_pk?: Maybe<Webhook_Cache>;
+};
+
+
+export type Subscription_RootBuild_DependencyArgs = {
+  distinct_on?: InputMaybe<Array<Build_Dependency_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Dependency_Order_By>>;
+  where?: InputMaybe<Build_Dependency_Bool_Exp>;
 };
 
 
