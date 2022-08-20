@@ -9,31 +9,39 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
         source_type
         project_id
 
-        flat_dependencies {
-            depended_by_relationship_id
-            id
-            release {
-                id
-                fetched_time
-                version
-                package {
-                    name
-                    last_successful_fetch
-                    package_manager
-                    affected_by_vulnerability {
-                        vulnerability {
-                            id
-                            source_id
-                            source
-                        }
-                        ranges {
-                            introduced
-                            fixed
+        build_dependencies {
+            range
+            labels
+            project_path
+            build_dependency_relationship {
+                recursive_flat{
+                    id
+                    depended_by_relationship_id
+                    release_id
+                    release {
+                        fetched_time
+                        version
+                        package {
+                            name
+                            last_successful_fetch
+                            package_manager
+                            affected_by_vulnerability {
+                                vulnerability {
+                                    id
+                                    source_id
+                                    source
+                                }
+                                ranges {
+                                    introduced
+                                    fixed
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+
 
         project {
             name
