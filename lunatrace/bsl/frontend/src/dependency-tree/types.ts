@@ -15,8 +15,8 @@
 export interface BuildDependencyPartial {
   id: string;
   depended_by_relationship_id?: string;
-  // todo this is gone, precomputeVulnTriviallyUpdatable is broken
-  range?: string;
+  // todo range is only available on direct dependencies now. (package.lock)
+  range: string;
   release_id: string;
   release: {
     version: string;
