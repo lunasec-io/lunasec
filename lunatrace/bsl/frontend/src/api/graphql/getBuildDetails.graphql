@@ -8,16 +8,11 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
         id
         source_type
         project_id
-
         build_dependencies {
-            # these fields are only available at the first level because they are not stored in the merkle tree.
             range
             labels
             project_path
-            # root node of the merkle tree
             build_dependency_relationship {
-                # get all nodes under this one including itself.
-                # no need for a fragment to get the root node because it is included by the resolver.
                 recursive_flat {
                     id
                     depended_by_relationship_id
@@ -45,8 +40,6 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                 }
             }
         }
-
-
         project {
             name
             ignored_vulnerabilities {
