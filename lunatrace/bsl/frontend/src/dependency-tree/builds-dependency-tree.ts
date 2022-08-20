@@ -43,7 +43,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
 
       // Mark the vulns that can be trivially updated
       dep.release.package.affected_by_vulnerability.forEach((vuln) => {
-        vuln.triviallyUpdatable = this.precomputeVulnTriviallyUpdatable(dep.range, vuln);
+        vuln.triviallyUpdatable = dep.range ? this.precomputeVulnTriviallyUpdatable(dep.range, vuln) : false;
         // Also add it to the flat vuln list for easy access
         this.flatVulns.push(vuln);
       });
