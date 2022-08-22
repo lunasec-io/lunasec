@@ -15,7 +15,7 @@ import path from 'path';
 import util from 'util';
 
 // eslint-disable-next-line import/order
-import { collectPackageTreesFromDirectory, snapshotPinnedDependencies } from '../snapshot/node-package-tree';
+import { collectPackageGraphsFromDirectory, snapshotPinnedDependencies } from '../snapshot/node-package-tree';
 jest.setTimeout(100000);
 
 jest.mock('../hasura-api');
@@ -44,7 +44,7 @@ function testAllTreeTypes() {
       });
 
       it('collectPackageTreesFromDirectory should return one tree', async () => {
-        const trees = await collectPackageTreesFromDirectory(fixturePath);
+        const trees = await collectPackageGraphsFromDirectory(fixturePath);
         expect(trees.length).toEqual(1);
       });
 
@@ -68,7 +68,7 @@ function testAllTreeTypes() {
           Object.keys(packageJson.dependencies).length + Object.keys(packageJson.devDependencies).length;
 
         it(`tree should have ${expectedDepLength} root level dependencies`, async () => {
-          const [tree] = await collectPackageTreesFromDirectory(fixturePath);
+          const [tree] = await collectPackageGraphsFromDirectory(fixturePath);
 
           const outputRootDepCount = Object.keys(tree.pkgTree.dependencies).length;
           expect(outputRootDepCount).toEqual(expectedDepLength);
