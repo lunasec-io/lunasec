@@ -129,7 +129,6 @@
     "generate-lockfile": "^0.0.11",
     "graphqurl": "^1.0.1",
     "jest": "^27.5.1",
-    "murmurhash3.js": "",
     "source-map-support": "^0.5.16",
     "ts-jest": "^27.1.3",
     "ts-node": "^10.9.0",
