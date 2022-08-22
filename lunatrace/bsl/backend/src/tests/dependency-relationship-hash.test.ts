@@ -19,8 +19,6 @@ import {
   generateMerkleHash,
   PackageMerkleHashInputs
 } from '../database/dependency-relationship-dag-calculator';
-import { log } from '../utils/log';
-import {generatePackageGraph} from '../snapshot/node-package-tree';
 
 const hashInputData: PackageMerkleHashInputs = {
   name: 'test',
@@ -77,18 +75,17 @@ describe('Dependency graph generation', () => {
 
   it.concurrent('should generate merkle hashes for tree', () => {
 
-    const {flatDeps, rootNode} = generatePackageGraph(JSON.parse(JSON.stringify(testPackageTree)));
+    const rootNode = dfsGenerateMerkleTreeFromDepTree(JSON.parse(JSON.stringify(testPackageTree)));
 
-    debugger;
-    expect(flatDeps.length).toBe(4);
-    expect(flatDeps[0].dependency.name).toBe('test-dep-dep');
-    expect(flatDeps[0].parentId).toBe('2b556b32-4e7e-b3e6-7406-ccb21927b4ff');
-    expect(flatDeps[1].dependency.name).toBe('test-dep');
-    expect(flatDeps[1].parentId).toBe('84e96045-7e6b-bd96-71ca-135c92165f56');
-    expect(flatDeps[2].dependency.name).toBe('test-dep-2');
-    expect(flatDeps[2].parentId).toBe('84e96045-7e6b-bd96-71ca-135c92165f56');
-    expect(flatDeps[3].dependency.name).toBe('test');
-    expect(flatDeps[4].parentId).toBe(undefined);
+    // expect(flatDeps.length).toBe(4);
+    // expect(flatDeps[0].dependency.name).toBe('test-dep-dep');
+    // expect(flatDeps[0].parentId).toBe('2b556b32-4e7e-b3e6-7406-ccb21927b4ff');
+    // expect(flatDeps[1].dependency.name).toBe('test-dep');
+    // expect(flatDeps[1].parentId).toBe('84e96045-7e6b-bd96-71ca-135c92165f56');
+    // expect(flatDeps[2].dependency.name).toBe('test-dep-2');
+    // expect(flatDeps[2].parentId).toBe('84e96045-7e6b-bd96-71ca-135c92165f56');
+    // expect(flatDeps[3].dependency.name).toBe('test');
+    // expect(flatDeps[4].parentId).toBe(undefined);
 
     expect(rootNode.children?.length).toBe(2);
     expect(rootNode.children?.[0].children?.length).toBe(1);
