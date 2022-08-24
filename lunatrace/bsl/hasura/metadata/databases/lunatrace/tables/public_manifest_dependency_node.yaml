@@ -1,3 +1,10 @@
 table:
   name: manifest_dependency_node
   schema: public
+computed_fields:
+  - name: children_recursive
+    definition:
+      function:
+        name: manifest_dependency_node_children_recursive
+        schema: public
+    comment: returns the node and all its children in flat form.
