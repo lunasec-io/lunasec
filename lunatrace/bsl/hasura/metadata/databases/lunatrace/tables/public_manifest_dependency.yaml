@@ -1,0 +1,3 @@
+table:
+  name: manifest_dependency
+  schema: public
