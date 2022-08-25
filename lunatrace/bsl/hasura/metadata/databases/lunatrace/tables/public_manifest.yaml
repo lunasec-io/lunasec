@@ -1,3 +1,11 @@
 table:
   name: manifest
   schema: public
+array_relationships:
+  - name: manifest_dependencies
+    using:
+      foreign_key_constraint_on:
+        column: manifest_id
+        table:
+          name: manifest_dependency
+          schema: public

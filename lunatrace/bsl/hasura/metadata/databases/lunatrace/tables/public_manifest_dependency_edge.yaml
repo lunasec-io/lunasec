@@ -1,3 +1,10 @@
 table:
   name: manifest_dependency_edge
   schema: public
+object_relationships:
+  - name: child
+    using:
+      foreign_key_constraint_on: child_id
+  - name: parent
+    using:
+      foreign_key_constraint_on: parent_id
