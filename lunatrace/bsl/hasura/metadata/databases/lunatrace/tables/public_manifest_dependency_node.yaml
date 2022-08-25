@@ -1,6 +1,21 @@
 table:
   name: manifest_dependency_node
   schema: public
+array_relationships:
+  - name: child_edges
+    using:
+      foreign_key_constraint_on:
+        column: parent_id
+        table:
+          name: manifest_dependency_edge
+          schema: public
+  - name: parent_edges
+    using:
+      foreign_key_constraint_on:
+        column: child_id
+        table:
+          name: manifest_dependency_edge
+          schema: public
 computed_fields:
   - name: children_recursive
     definition:
