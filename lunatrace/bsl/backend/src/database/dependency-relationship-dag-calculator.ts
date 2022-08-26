@@ -19,6 +19,9 @@ import { murmurhash3 } from '../utils/murmurhash3';
 export interface DependencyGraphNode {
   treeHashId: string;
   packageData: DepTreeDep;
+  packageEcosystem: string;
+  customRegistry: string;
+  parentRange?: string;
   parent?: DependencyGraphNode;
   children: DependencyGraphNode[];
 }
@@ -26,6 +29,7 @@ export interface DependencyGraphNode {
 export interface PackageMerkleHashInputs {
   name: string;
   version: string;
+  parentRange?: string;
   // TODO: Add support for other ecosystem types
   ecosystem: 'npm';
   // TODO: Allow this to be any string once we have support for custom registries.
@@ -38,9 +42,11 @@ export interface PackageMerkleHashInputs {
  * @param hashInputs The data to hash.
  */
 export function generateMerkleHash(hashInputs: PackageMerkleHashInputs): string {
-  const { name, version, ecosystem, customRegistry } = hashInputs;
+  const { name, version, ecosystem, parentRange, customRegistry } = hashInputs;
 
-  const packageHashSlug = `${ecosystem}-${name}-${customRegistry === undefined ? '' : customRegistry}-${version}`;
+  const packageHashSlug = `${ecosystem}-${name}-${
+    customRegistry === undefined ? '' : customRegistry
+  }-${version}-${parentRange}`;
 
   const childHashes = hashInputs.childHashes.sort().join('-');
 
@@ -73,10 +79,19 @@ export function dfsGenerateMerkleTreeFromDepTree(
     treeHashId: generateMerkleHash({
       name: currentDep.name || '',
       version: currentDep.version || '',
+      // TODO: Add support for custom registries
+      customRegistry: '',
+      // TODO: Add support for other ecosystem types
       ecosystem: 'npm',
+      parentRange: currentDep.range || undefined,
       childHashes: children.map((edge) => edge.treeHashId),
     }),
+    // TODO: Add support for custom registries
+    customRegistry: '',
+    // TODO: Add support for other ecosystem types
+    packageEcosystem: 'npm',
     packageData: currentDep,
+    parentRange: currentDep.range || undefined,
     children,
   };
 
