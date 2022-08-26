@@ -94,9 +94,9 @@ describe('Dependency graph generation', () => {
     expect(rootNode.packageData.version).toBe('1.0.0');
     expect(rootNode.parent).toBe(undefined);
 
-    expect(rootNode.children?.[0].children?.[0].treeHashId).toBe('221a34ff-5784-c74c-841e-cfa2c013f91a');
-    expect(rootNode.children?.[0].treeHashId).toBe('2b556b32-4e7e-b3e6-7406-ccb21927b4ff');
-    expect(rootNode.children?.[1].treeHashId).toBe('e0c9656a-88c0-6e11-65a8-9e62ad4a5daa');
-    expect(rootNode.treeHashId).toBe('84e96045-7e6b-bd96-71ca-135c92165f56');
+    expect(rootNode.children?.[0].children?.[0].treeHashId).toBe('06f79a95-dbdf-89be-1447-9d31d1c1967a');
+    expect(rootNode.children?.[0].treeHashId).toBe('b015639a-1ac0-4503-a117-48238de949cd');
+    expect(rootNode.children?.[1].treeHashId).toBe('d4770201-7d3c-4165-17cf-23f92c18fe7d');
+    expect(rootNode.treeHashId).toBe('f416765f-f52b-f3ec-e7bf-7dd52a4b217b');
   });
 });

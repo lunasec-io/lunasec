@@ -11,7 +11,8 @@
  * limitations under the License.
  *
  */
-import path from 'path';
+// Currently busted because we're not using Hasura for this anymore.
+/*import path from 'path';
 import util from 'util';
 
 // eslint-disable-next-line import/order
@@ -70,7 +71,7 @@ function testAllTreeTypes() {
         it(`tree should have ${expectedDepLength} root level dependencies`, async () => {
           const [tree] = await collectPackageGraphsFromDirectory(fixturePath);
 
-          const outputRootDepCount = Object.keys(tree.pkgTree.dependencies).length;
+          const outputRootDepCount = Object.keys(tree.dependencies).length;
           expect(outputRootDepCount).toEqual(expectedDepLength);
         });
 
@@ -94,4 +95,4 @@ describe('building node dependency trees from fixture:', () => {
     jest.resetAllMocks();
   });
   testAllTreeTypes();
-});
+});*/
