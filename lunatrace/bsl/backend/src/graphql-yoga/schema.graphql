@@ -16,6 +16,7 @@ type Query {
         repoGithubId: Int!
     ): AuthenticatedRepoCloneUrlOutput
     fakeQueryToHackHasuraBeingABuggyMess: String
+    availableRepos: [GithubRepository!]!
 }
 
 type Mutation {
@@ -50,4 +51,18 @@ type UploadUrl {
 
 type AuthenticatedRepoCloneUrlOutput {
     url: String
+}
+
+type GithubRepository {
+    orgName: String!
+    orgId: Int!
+    orgNodeId: String!
+    repoName: String!
+    repoId: Int!
+    repoNodeId: String!
+    gitUrl: String!
+    ownerType: String!
+    cloneUrl: String!
+    defaultBranch: String!
+    fullTraits: String!
 }

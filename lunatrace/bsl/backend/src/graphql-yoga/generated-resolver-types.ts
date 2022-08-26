@@ -22,6 +22,21 @@ export type AuthenticatedRepoCloneUrlOutput = {
   url?: Maybe<Scalars['String']>;
 };
 
+export type GithubRepository = {
+  __typename?: 'GithubRepository';
+  cloneUrl: Scalars['String'];
+  defaultBranch: Scalars['String'];
+  fullTraits: Scalars['String'];
+  gitUrl: Scalars['String'];
+  orgId: Scalars['Int'];
+  orgName: Scalars['String'];
+  orgNodeId: Scalars['String'];
+  ownerType: Scalars['String'];
+  repoId: Scalars['Int'];
+  repoName: Scalars['String'];
+  repoNodeId: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /**  get s3 presigned url for manifest upload, used only by the frontend  */
@@ -44,6 +59,7 @@ export type PresignedUrlResponse = {
 export type Query = {
   __typename?: 'Query';
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
+  availableRepos: Array<GithubRepository>;
   fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /**  get s3 presigned url for manifest upload, used by the CLI  */
   presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
@@ -154,6 +170,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   AuthenticatedRepoCloneUrlOutput: ResolverTypeWrapper<AuthenticatedRepoCloneUrlOutput>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  GithubRepository: ResolverTypeWrapper<GithubRepository>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
   PresignedUrlResponse: ResolverTypeWrapper<PresignedUrlResponse>;
@@ -170,6 +187,7 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   AuthenticatedRepoCloneUrlOutput: AuthenticatedRepoCloneUrlOutput;
   Boolean: Scalars['Boolean'];
+  GithubRepository: GithubRepository;
   Int: Scalars['Int'];
   Mutation: {};
   PresignedUrlResponse: PresignedUrlResponse;
@@ -187,6 +205,21 @@ export type AuthenticatedRepoCloneUrlOutputResolvers<ContextType = Context, Pare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GithubRepositoryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GithubRepository'] = ResolversParentTypes['GithubRepository']> = {
+  cloneUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  defaultBranch?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  fullTraits?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  gitUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  orgId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  orgName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  orgNodeId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  ownerType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  repoId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  repoName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  repoNodeId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   presignManifestUpload?: Resolver<Maybe<ResolversTypes['PresignedUrlResponse']>, ParentType, ContextType, RequireFields<MutationPresignManifestUploadArgs, 'project_id'>>;
 };
@@ -201,6 +234,7 @@ export type PresignedUrlResponseResolvers<ContextType = Context, ParentType exte
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   authenticatedRepoCloneUrl?: Resolver<Maybe<ResolversTypes['AuthenticatedRepoCloneUrlOutput']>, ParentType, ContextType, RequireFields<QueryAuthenticatedRepoCloneUrlArgs, 'repoGithubId'>>;
+  availableRepos?: Resolver<Array<ResolversTypes['GithubRepository']>, ParentType, ContextType>;
   fakeQueryToHackHasuraBeingABuggyMess?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   presignSbomUpload?: Resolver<Maybe<ResolversTypes['SbomUploadUrlOutput']>, ParentType, ContextType, RequireFields<QueryPresignSbomUploadArgs, 'buildId' | 'orgId'>>;
   sbomUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<QuerySbomUrlArgs, 'buildId'>>;
@@ -228,6 +262,7 @@ export interface UuidScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 
 export type Resolvers<ContextType = Context> = {
   AuthenticatedRepoCloneUrlOutput?: AuthenticatedRepoCloneUrlOutputResolvers<ContextType>;
+  GithubRepository?: GithubRepositoryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   PresignedUrlResponse?: PresignedUrlResponseResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

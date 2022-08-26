@@ -13,6 +13,7 @@
  */
 import { GraphQLYogaError } from '@graphql-yoga/node';
 
+import { hasura } from '../../hasura-api';
 import { log } from '../../utils/log';
 import { Context } from '../context';
 
@@ -35,4 +36,16 @@ export function getUserId(ctx: Context): string {
     throw new GraphQLYogaError('Failed to get User Id from JWT');
   }
   return userId;
+}
+
+export async function checkProjectIsAuthorized(projectId: string, ctx: Context): Promise<void> {
+  const userId = getUserId(ctx);
+  const usersAuthorizedProjects = await hasura.GetUsersProjects({ user_id: userId });
+  const userIsAuthorized = usersAuthorizedProjects.projects.some((p) => {
+    return p.id === projectId;
+  });
+  if (!userIsAuthorized) {
+    throw new GraphQLYogaError('Not authorized for this project');
+  }
+  return;
 }

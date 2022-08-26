@@ -20,17 +20,14 @@ import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';
 import { checkProjectIsAuthorized, throwIfUnauthenticated } from '../helpers/auth-helpers';
 
-type sbomUrlResolverT = NonNullable<QueryResolvers['sbomUrl']>;
+type sbomUrlResolverT = NonNullable<QueryResolvers['availableRepos']>;
 
-export const sbomUrlResolver: sbomUrlResolverT = async (parent, args, ctx, info) => {
-  throwIfUnauthenticated(ctx);
-  const build = await hasura.GetBuild({ build_id: args.buildId });
-  await checkProjectIsAuthorized(build.builds_by_pk?.project?.id, ctx);
+// export const availableReposResolver: sbomUrlResolverT = async (parent, args, ctx, info) => {
+//   throwIfUnauthenticated(ctx);
+//   // const build = await hasura.GetBuild({ build_id: args.buildId });
+//   // await checkProjectIsAuthorized(build.builds_by_pk?.project?.id, ctx);
+//
+//   throw new GraphQLYogaError('Failed to sign URL');
+// };
 
-  try {
-    return formatUrl(await aws.signArbitraryS3URL(build.builds_by_pk?.s3_url || '', 'GET'));
-  } catch (e) {
-    log.warn('Failed to sign S3 url', args, e);
-    throw new GraphQLYogaError('Failed to sign URL');
-  }
-};
+export default {};
