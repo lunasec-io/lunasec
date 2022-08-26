@@ -62,6 +62,21 @@ export type Float_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Float']>>;
 };
 
+export type GithubRepository = {
+  __typename?: 'GithubRepository';
+  cloneUrl: Scalars['String'];
+  defaultBranch: Scalars['String'];
+  fullTraits: Scalars['String'];
+  gitUrl: Scalars['String'];
+  orgId: Scalars['Int'];
+  orgName: Scalars['String'];
+  orgNodeId: Scalars['String'];
+  ownerType: Scalars['String'];
+  repoId: Scalars['Int'];
+  repoName: Scalars['String'];
+  repoNodeId: Scalars['String'];
+};
+
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Int']>;
@@ -6090,6 +6105,7 @@ export enum Projects_Update_Column {
 export type Query_Root = {
   __typename?: 'query_root';
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
+  availableRepos: Array<GithubRepository>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
