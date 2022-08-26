@@ -14,30 +14,16 @@
 import path from 'path';
 
 import { ITask } from 'pg-promise';
-import { buildDepTreeFromFiles, PkgTree } from 'snyk-nodejs-lockfile-parser-lunatrace-fork';
+import { buildDepTreeFromFiles } from 'snyk-nodejs-lockfile-parser-lunatrace-fork';
+import { v4 as uuid } from 'uuid';
 
 import { db, pgp } from '../database/db';
 import {
   DependencyGraphNode,
   dfsGenerateMerkleTreeFromDepTree,
 } from '../database/dependency-relationship-dag-calculator';
-import { hasura } from '../hasura-api';
-import {
-  Build_Dependency_Relationship_Constraint,
-  Build_Dependency_Relationship_Insert_Input,
-  Build_Dependency_Relationship_Update_Column,
-  Package_Constraint,
-  Package_Release_Constraint,
-  Package_Release_Update_Column,
-  Package_Update_Column,
-} from '../hasura-api/generated';
-import { HasuraError } from '../types/hasura';
-import { newError, newResult } from '../utils/errors';
 import { findFilesMatchingFilter } from '../utils/filesystem-utils';
-import { hasuraErrorMessage } from '../utils/hasura';
 import { log } from '../utils/log';
-import { notEmpty } from '../utils/predicates';
-import { catchError, threwError } from '../utils/try';
 
 interface PackageDependenciesWithGraphAndMetadata {
   rootNode: DependencyGraphNode;
@@ -119,58 +105,61 @@ function packageGraphToUniqueDependencyNodes(rootNode: DependencyGraphNode): Map
   return uniqueDependencyMap;
 }
 
-// Define set of columns, creating only once (statically) and then reused to cache for performance
-const manifestDependencyNodeColumns = new pgp.helpers.ColumnSet(['id', 'range'], { table: 'manifest_dependency_node' });
-const manifestDependencyEdgeColumns = new pgp.helpers.ColumnSet(['parent_id', 'child_id'], {
-  table: 'manifest_dependency_edge',
-});
-
 async function insertNodesToDatabase<Ext>(t: ITask<Ext>, queryData: DependencyGraphNode[]) {
-  const nodeInsertData = queryData.map(async (node) => {
-    const packageData = {
-      name: node.packageData.name,
-      version: node.packageData.version,
-      packageManager: node.packageEcosystem,
-      customRegistry: node.customRegistry,
-    };
-
-    const packageReleaseId = await t.one<string>(
-      `WITH package_id AS (INSERT INTO package.package (name, package_manager, custom_registry)
-               VALUES ($1, $2, $3)
-               ON CONFLICT (name, package_manager, custom_registry) DO NOTHING
-               RETURNING id)
-             INSERT INTO package.release (package_id, version) VALUES (package_id, $4)
-               ON CONFLICT (package_id, version) DO NOTHING
-               RETURNING id
-             `,
-      [packageData.name, packageData.packageManager, packageData.customRegistry, packageData.version]
-    );
-
-    return {
-      id: node.treeHashId,
-      range: node.parentRange,
-      release_id: packageReleaseId,
-    };
+  // Define set of columns, creating only once (statically) and then reused to cache for performance
+  const manifestDependencyNodeColumns = new pgp.helpers.ColumnSet(['id', 'release_id', 'range'], {
+    table: 'manifest_dependency_node',
   });
 
-  const nodeInsertQuery = pgp.helpers.concat([
-    pgp.helpers.insert(nodeInsertData, manifestDependencyNodeColumns),
-    'ON CONFLICT ON CONSTRAINT manifest_dependency_node_pkey DO NOTHING',
-  ]);
+  const nodeInsertData = await Promise.all(
+    queryData.map(async (node) => {
+      const packageData = {
+        name: node.packageData.name,
+        version: node.packageData.version,
+        packageManager: node.packageEcosystem,
+        customRegistry: node.customRegistry,
+      };
+
+      const packageId = await t.one<{ id: string }>(
+        `INSERT INTO package.package (name, package_manager, custom_registry)
+               VALUES ($1, $2, $3)
+               ON CONFLICT DO NOTHING
+               RETURNING id`,
+        [packageData.name, packageData.packageManager, packageData.customRegistry]
+      );
+
+      const packageReleaseId = await t.one<{ id: string }>(
+        `INSERT INTO package.release (package_id, version) VALUES ($1, $2)
+               ON CONFLICT DO NOTHING
+               RETURNING id
+             `,
+        [packageId.id, uuid(), packageData.version]
+      );
+
+      return {
+        id: node.treeHashId,
+        range: node.parentRange,
+        release_id: packageReleaseId.id,
+      };
+    })
+  );
+
+  const nodeInsertQuery = pgp.helpers.insert(nodeInsertData, manifestDependencyNodeColumns) + ' ON CONFLICT DO NOTHING';
 
   await t.none(nodeInsertQuery);
 }
 
 async function insertEdgesToDatabase<Ext>(t: ITask<Ext>, queryData: ManifestDependencyEdge[]) {
+  const manifestDependencyEdgeColumns = new pgp.helpers.ColumnSet(['parent_id', 'child_id'], {
+    table: 'manifest_dependency_edge',
+  });
+
   const edgeInsertData = queryData.map((edge) => ({
     parent_id: edge.parentId,
     child_id: edge.childId,
   }));
 
-  const edgeInsertQuery = pgp.helpers.concat([
-    pgp.helpers.insert(edgeInsertData, manifestDependencyEdgeColumns),
-    'ON CONFLICT ON CONSTRAINT manifest_dependency_edge_parent_id_child_id_idx DO NOTHING',
-  ]);
+  const edgeInsertQuery = pgp.helpers.insert(edgeInsertData, manifestDependencyEdgeColumns) + ' ON CONFLICT DO NOTHING';
 
   await t.none(edgeInsertQuery);
 }
@@ -187,10 +176,9 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   log.info(`Found ${uniqueNodeRootIds.size} unique root dependency hashes`);
 
-  const currentlyKnownRootIds = await db.manyOrNone(
-    'SELECT id FROM manifest_dependency_node WHERE id IN (:package_hash_ids)',
-    { package_hash_ids: Array.from(uniqueNodeRootIds) }
-  );
+  const currentlyKnownRootIds = await db.manyOrNone('SELECT id FROM manifest_dependency_node WHERE id IN (SELECT $1)', [
+    pgp.as.array(Array.from(uniqueNodeRootIds)),
+  ]);
 
   log.info(`Found ${uniqueNodeRootIds.size} missing root dependency hashes`);
 
@@ -214,9 +202,9 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   log.info(`Total ${dependencyNodeMap.size} unique transitive dependency hashes`);
 
-  const currentlyKnownTransitiveDependencyIds = await db.manyOrNone(
-    'SELECT id FROM manifest_dependency_node WHERE id IN (:package_hash_ids)',
-    { package_hash_ids: Array.from(dependencyNodeMap.keys()) }
+  const currentlyKnownTransitiveDependencyIds = await db.manyOrNone<string>(
+    'SELECT id FROM manifest_dependency_node WHERE id IN (SELECT $1)',
+    [pgp.as.array(Array.from(dependencyNodeMap.keys()))]
   );
 
   log.info(`Found ${currentlyKnownTransitiveDependencyIds.length} known transitive dependency hashes`);
@@ -225,7 +213,7 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
   // Warning: Dragons!
   // We're mutating state which is where bugs stem from.
   // This will reduce memory usage though, so we'll allow it.
-  for (const [key] of dependencyNodeMap) {
+  for (const [key] of currentlyKnownTransitiveDependencyIds) {
     dependencyNodeMap.delete(key);
   }
 
@@ -272,32 +260,35 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
   );
 
   log.info(`Inserted nodes for ${pkgGraphs.length} package graphs into database`);
+
   await db.tx(async (t) => {
     await Promise.all(
       pkgGraphs.map(async (pkgGraph) => {
         const manifestId = await t.one<{ id: string }>(
           `INSERT INTO manifest (build_id, path)
              VALUES ($1, $2)
-             ON CONFLICT (build_id, path) DO NOTHING
+             ON CONFLICT DO NOTHING
              RETURNING id`,
           [buildId, pkgGraph.lockFilePath]
         );
 
         log.info(`Inserted manifest ${manifestId.id} for ${buildId}`);
 
-        await Promise.all(
-          pkgGraph.dependencies.map(async (pkg) => {
-            await t.none(
-              `INSERT INTO manifest_dependency
-               (manifest_id, labels, manifest_dependency_node_id)
-               VALUES ($1, $2, $3)
-               ON CONFLICT (manifest_id, labels, manifest_dependency_node_id)
-               DO NOTHING`,
-              [manifestId.id, pkg.labels, pkg.rootNode.treeHashId]
-            );
-            log.info(`Inserted manifest dependency ${manifestId.id} for ${buildId}`);
-          })
+        const dependencyColumns = new pgp.helpers.ColumnSet(['manifest_id', 'labels', 'manifest_dependency_node_id'], {
+          table: 'manifest_dependency',
+        });
+
+        const insertQuery = pgp.helpers.insert(
+          pkgGraph.dependencies.map((pkg) => ({
+            manifest_id: manifestId.id,
+            labels: pkg.labels,
+            manifest_dependency_node_id: pkg.rootNode.treeHashId,
+          })),
+          dependencyColumns,
+          'manifest_dependency'
         );
+
+        await t.none(insertQuery + ' ON CONFLICT DO NOTHING');
       })
     );
   });
