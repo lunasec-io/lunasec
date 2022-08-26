@@ -28,9 +28,12 @@ const hashInputData: PackageMerkleHashInputs = {
 };
 
 describe('Dependency relationship hashing', () => {
+  const baseHash = generateMerkleHash(hashInputData);
+
   it.concurrent('should hash data', () => {
     const hash = generateMerkleHash(hashInputData);
-    expect(hash).toBe('4205f568-039b-835d-341a-0449419ce52a');
+    expect(baseHash === hash).toBeTruthy();
+    expect(hash).toBe('0dfa8e52-9b89-35e4-126a-ca48abdff888');
   });
 
   it.concurrent('should hash data with no child hashes', () => {
@@ -38,7 +41,8 @@ describe('Dependency relationship hashing', () => {
       ...hashInputData,
       childHashes: [],
     });
-    expect(hash).toBe('8ef7d4dd-1080-3586-6390-dde5ee27d8fd');
+    expect(baseHash === hash).toBeFalsy();
+    expect(hash).toBe('f3201bf5-5894-eb81-1fa4-99c8b910b131');
   });
 
   it.concurrent('should hash data with custom registry', () => {
@@ -46,7 +50,27 @@ describe('Dependency relationship hashing', () => {
       ...hashInputData,
       customRegistry: 'registry.com',
     });
-    expect(hash).toBe('42735086-192a-2496-cf2e-47899b24a49a');
+    expect(baseHash === hash).toBeFalsy();
+    expect(hash).toBe('f4a38231-2b6a-ef80-9ed6-ee77cfbc9050');
+  });
+
+  it.concurrent('should hash data with parent range', () => {
+    const hash = generateMerkleHash({
+      ...hashInputData,
+      parentRange: '^1.2.3',
+    });
+    expect(baseHash === hash).toBeFalsy();
+    expect(hash).toBe('7ad6be10-69c9-f343-f915-1fc953c11de2');
+  });
+
+  it.concurrent('should hash data with different ecosystem', () => {
+    const hash = generateMerkleHash({
+      ...hashInputData,
+      // TODO: Add support for other ecosystems in types
+      ecosystem: 'java' as any,
+    });
+    expect(baseHash === hash).toBeFalsy();
+    expect(hash).toBe('68e904ee-552c-4c1c-7a1c-f4e5132a063d');
   });
 });
 
