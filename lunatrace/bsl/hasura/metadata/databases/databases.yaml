@@ -7,3 +7,4 @@
       isolation_level: read-committed
       use_prepared_statements: false
   tables: "!include lunatrace/tables/tables.yaml"
+  functions: "!include lunatrace/functions/functions.yaml"

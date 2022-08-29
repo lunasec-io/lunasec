@@ -1,1 +1,1 @@
-- "!include public_manifest_dependency_node_children_recursive.yaml"
+- "!include public_manifest_dependency_node_child_edges_recursive.yaml"
