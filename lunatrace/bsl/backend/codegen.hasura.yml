@@ -10,7 +10,6 @@ generates:
           scalars:
             user_role: "'organization_user'|'lunatrace_admin'"
             bigint: number
-            manifest_dependency_node_scalar: any
       - "typescript-operations"
       - "typescript-graphql-request"
   ../../schema.graphql:
