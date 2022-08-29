@@ -25,7 +25,7 @@ array_relationships:
       foreign_key_constraint_on:
         column: build_id
         table:
-          name: manifest
+          name: resolved_manifest
           schema: public
   - name: scans
     using:
