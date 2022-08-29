@@ -9,37 +9,33 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
         source_type
         project_id
 
-
-
         resolved_manifests {
-            manifest_dependencies {
-                manifest_dependency_node {
-                    child_edges_recursive {
-                        parent_id
-                        child {
-                            range
-                            labels
-                            id
-                            release_id
-                            release {
-                                id
-                                fetched_time
-                                version
-                                package {
-                                    name
-                                    last_successful_fetch
-                                    package_manager
-                                    affected_by_vulnerability {
-                                        vulnerability {
-                                            id
-                                            source_id
-                                            source
-                                        }
-                                        ranges {
-                                            introduced
-                                            fixed
-                                        }
-                                    }
+            id
+            path
+            child_edges_recursive {
+                parent_id
+                child {
+                    range
+                    labels
+                    id
+                    release_id
+                    release {
+                        id
+                        fetched_time
+                        version
+                        package {
+                            name
+                            last_successful_fetch
+                            package_manager
+                            affected_by_vulnerability {
+                                vulnerability {
+                                    id
+                                    source_id
+                                    source
+                                }
+                                ranges {
+                                    introduced
+                                    fixed
                                 }
                             }
                         }
