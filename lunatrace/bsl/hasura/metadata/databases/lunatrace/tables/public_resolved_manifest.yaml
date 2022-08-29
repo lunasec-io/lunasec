@@ -1,6 +1,10 @@
 table:
   name: resolved_manifest
   schema: public
+object_relationships:
+  - name: build
+    using:
+      foreign_key_constraint_on: build_id
 array_relationships:
   - name: manifest_dependencies
     using:
@@ -9,3 +13,42 @@ array_relationships:
         table:
           name: manifest_dependency
           schema: public
+insert_permissions:
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - id
+        - build_id
+        - path
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - id
+        - build_id
+        - path
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - id
+        - build_id
+        - path
+      filter:
+        build:
+          project:
+            organization:
+              organization_users:
+                user:
+                  id:
+                    _eq: X-Hasura-Real-User-Id
+update_permissions:
+  - role: service
+    permission:
+      columns:
+        - id
+        - build_id
+        - path
+      filter: {}
+      check: {}
