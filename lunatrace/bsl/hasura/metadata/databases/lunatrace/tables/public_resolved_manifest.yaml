@@ -13,6 +13,12 @@ array_relationships:
         table:
           name: manifest_dependency
           schema: public
+computed_fields:
+  - name: child_edges_recursive
+    definition:
+      function:
+        name: resolved_manifest_child_edges_recursive
+        schema: public
 insert_permissions:
   - role: service
     permission:
