@@ -8,6 +8,12 @@ object_relationships:
   - name: resolved_manifest
     using:
       foreign_key_constraint_on: manifest_id
+computed_fields:
+  - name: child_edges_recursive
+    definition:
+      function:
+        name: manifest_dependency_child_edges_recursive
+        schema: public
 insert_permissions:
   - role: service
     permission:
