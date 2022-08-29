@@ -28,7 +28,6 @@ generates:
             reference_type: "'advisory'|'article'|'fix'|'git'|'package'|'report'|'web'"
             package_manager: string
             bigint: number
-            manifest_dependency_node_scalar: any
 
       - "typescript-operations"
       - "typescript-rtk-query":

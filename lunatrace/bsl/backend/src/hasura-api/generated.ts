@@ -21,7 +21,6 @@ export type Scalars = {
   fix_state_enum: any;
   jsonb: any;
   license_source: any;
-  manifest_dependency_node_scalar: any;
   organization_user_role: any;
   package_manager: any;
   reference_type: any;
@@ -2487,6 +2486,8 @@ export type License_Source_Comparison_Exp = {
 /** direct dependencies of builds with pointers to their location in the merkel tree table */
 export type Manifest_Dependency = {
   __typename?: 'manifest_dependency';
+  /** A computed field, executes function "manifest_dependency_child_edges_recursive" */
+  child_edges_recursive?: Maybe<Array<Manifest_Dependency_Edge>>;
   /** An object relationship */
   manifest_dependency_node: Manifest_Dependency_Node;
   /** entrypoint to dep tree */
@@ -2494,6 +2495,16 @@ export type Manifest_Dependency = {
   manifest_id: Scalars['uuid'];
   /** An object relationship */
   resolved_manifest: Resolved_Manifest;
+};
+
+
+/** direct dependencies of builds with pointers to their location in the merkel tree table */
+export type Manifest_DependencyChild_Edges_RecursiveArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Edge_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
 };
 
 /** order by aggregate values of table "manifest_dependency" */
@@ -2515,6 +2526,7 @@ export type Manifest_Dependency_Bool_Exp = {
   _and?: InputMaybe<Array<Manifest_Dependency_Bool_Exp>>;
   _not?: InputMaybe<Manifest_Dependency_Bool_Exp>;
   _or?: InputMaybe<Array<Manifest_Dependency_Bool_Exp>>;
+  child_edges_recursive?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
   manifest_dependency_node?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   manifest_dependency_node_id?: InputMaybe<Uuid_Comparison_Exp>;
   manifest_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -2741,10 +2753,6 @@ export type Manifest_Dependency_Node_Bool_Exp = {
   release_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
-export type Manifest_Dependency_Node_Child_Edges_Recursive_Args = {
-  root_node?: InputMaybe<Scalars['manifest_dependency_node_scalar']>;
-};
-
 /** unique or primary key constraints on table "manifest_dependency_node" */
 export enum Manifest_Dependency_Node_Constraint {
   /** unique or primary key constraint on columns "id" */
@@ -2866,6 +2874,7 @@ export type Manifest_Dependency_On_Conflict = {
 
 /** Ordering options when selecting data from "manifest_dependency". */
 export type Manifest_Dependency_Order_By = {
+  child_edges_recursive_aggregate?: InputMaybe<Manifest_Dependency_Edge_Aggregate_Order_By>;
   manifest_dependency_node?: InputMaybe<Manifest_Dependency_Node_Order_By>;
   manifest_dependency_node_id?: InputMaybe<Order_By>;
   manifest_id?: InputMaybe<Order_By>;
@@ -6704,8 +6713,6 @@ export type Query_Root = {
   manifest_dependency_node: Array<Manifest_Dependency_Node>;
   /** fetch data from the table: "manifest_dependency_node" using primary key columns */
   manifest_dependency_node_by_pk?: Maybe<Manifest_Dependency_Node>;
-  /** execute function "manifest_dependency_node_child_edges_recursive" which returns "manifest_dependency_edge" */
-  manifest_dependency_node_child_edges_recursive: Array<Manifest_Dependency_Edge>;
   /** An array relationship */
   manifests: Array<Manifests>;
   /** fetch data from the table: "manifests" using primary key columns */
@@ -7005,16 +7012,6 @@ export type Query_RootManifest_Dependency_NodeArgs = {
 
 export type Query_RootManifest_Dependency_Node_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootManifest_Dependency_Node_Child_Edges_RecursiveArgs = {
-  args: Manifest_Dependency_Node_Child_Edges_Recursive_Args;
-  distinct_on?: InputMaybe<Array<Manifest_Dependency_Edge_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
-  where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
 };
 
 
@@ -7428,11 +7425,23 @@ export type Resolved_Manifest = {
   /** An object relationship */
   build: Builds;
   build_id: Scalars['uuid'];
+  /** A computed field, executes function "resolved_manifest_child_edges_recursive" */
+  child_edges_recursive?: Maybe<Array<Manifest_Dependency_Edge>>;
   id: Scalars['uuid'];
   /** An array relationship */
   manifest_dependencies: Array<Manifest_Dependency>;
   /** path in repo of manifest file. empty string if the ecosystem does not have a manifest file. */
   path?: Maybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "resolved_manifest" */
+export type Resolved_ManifestChild_Edges_RecursiveArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Edge_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
 };
 
 
@@ -7466,6 +7475,7 @@ export type Resolved_Manifest_Bool_Exp = {
   _or?: InputMaybe<Array<Resolved_Manifest_Bool_Exp>>;
   build?: InputMaybe<Builds_Bool_Exp>;
   build_id?: InputMaybe<Uuid_Comparison_Exp>;
+  child_edges_recursive?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   manifest_dependencies?: InputMaybe<Manifest_Dependency_Bool_Exp>;
   path?: InputMaybe<String_Comparison_Exp>;
@@ -7532,6 +7542,7 @@ export type Resolved_Manifest_On_Conflict = {
 export type Resolved_Manifest_Order_By = {
   build?: InputMaybe<Builds_Order_By>;
   build_id?: InputMaybe<Order_By>;
+  child_edges_recursive_aggregate?: InputMaybe<Manifest_Dependency_Edge_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
   manifest_dependencies_aggregate?: InputMaybe<Manifest_Dependency_Aggregate_Order_By>;
   path?: InputMaybe<Order_By>;
@@ -7956,8 +7967,6 @@ export type Subscription_Root = {
   manifest_dependency_node: Array<Manifest_Dependency_Node>;
   /** fetch data from the table: "manifest_dependency_node" using primary key columns */
   manifest_dependency_node_by_pk?: Maybe<Manifest_Dependency_Node>;
-  /** execute function "manifest_dependency_node_child_edges_recursive" which returns "manifest_dependency_edge" */
-  manifest_dependency_node_child_edges_recursive: Array<Manifest_Dependency_Edge>;
   /** An array relationship */
   manifests: Array<Manifests>;
   /** fetch data from the table: "manifests" using primary key columns */
@@ -8249,16 +8258,6 @@ export type Subscription_RootManifest_Dependency_NodeArgs = {
 
 export type Subscription_RootManifest_Dependency_Node_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootManifest_Dependency_Node_Child_Edges_RecursiveArgs = {
-  args: Manifest_Dependency_Node_Child_Edges_Recursive_Args;
-  distinct_on?: InputMaybe<Array<Manifest_Dependency_Edge_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
-  where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
 };
 
 
