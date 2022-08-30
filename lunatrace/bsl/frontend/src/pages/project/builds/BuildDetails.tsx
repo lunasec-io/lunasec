@@ -21,6 +21,7 @@ import { useParams } from 'react-router-dom';
 import api from '../../../api';
 import { SpinIfLoading } from '../../../components/SpinIfLoading';
 import { DependencyTree } from '../../../dependency-tree/builds-dependency-tree';
+import { BuildDependencyPartial } from '../../../dependency-tree/types';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import useBreakpoint from '../../../hooks/useBreakpoint';
 import { add } from '../../../store/slices/alerts';
@@ -74,10 +75,12 @@ export const BuildDetails: React.FunctionComponent = () => {
 
     const filteredFindings = ignoreFindings ? filterFindingsNotIgnored(build.findings) : build.findings;
 
+    const mergedDependencies = build.resolved_manifests.flatMap((manifest) => {
+      return manifest.child_edges_recursive || [];
+    });
+
     // todo this is a dumb hack that will only build the tree for hte first manifest we scanned.
-    const depTree = build.resolved_manifests[0]?.child_edges_recursive
-      ? new DependencyTree(build.resolved_manifests[0].child_edges_recursive)
-      : null;
+    const depTree = mergedDependencies && mergedDependencies.length > 0 ? new DependencyTree(mergedDependencies) : null;
 
     // Responsible for showing or hiding the findings list when quick view is open.  D-none only applies on screens smaller than xxl(1400)
     // meaning that the findings list will be hidden on smaller screens when quick view is open.
