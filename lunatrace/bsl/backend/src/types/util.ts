@@ -11,6 +11,13 @@
  * limitations under the License.
  *
  */
-export type MaybeError<T> = { error: false; res: T } | { error: true; msg: string };
+export type VoidResult = { error: false };
+export type ValueResult<T> = { error: false; res: T };
+export type Result<T = undefined> = T extends undefined ? VoidResult : ValueResult<T>;
+export type ErrorResult = { error: true; msg: string; rawError?: Error };
+
+export type MaybeError<T = undefined> = Result<T> | ErrorResult;
+
+export type MaybeResultOrError<T = undefined> = Result<T> | ErrorResult;
 
 export type MaybeErrorVoid = MaybeError<undefined>;

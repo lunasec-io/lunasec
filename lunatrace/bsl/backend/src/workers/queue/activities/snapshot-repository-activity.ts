@@ -20,7 +20,7 @@ import { LunaLogger } from '@lunatrace/logger';
 
 import { getRepoCloneUrlWithAuth } from '../../../github/actions/get-repo-clone-url-with-auth';
 import { hasura } from '../../../hasura-api';
-import { InsertBuildMutation } from '../../../hasura-api/generated';
+import { InsertBuildMutation, Scalars } from '../../../hasura-api/generated';
 import { generateSbomFromAsset } from '../../../snapshot/call-cli';
 import { uploadSbomToS3 } from '../../../snapshot/generate-snapshot';
 import { snapshotPinnedDependencies } from '../../../snapshot/node-package-tree';
@@ -46,58 +46,75 @@ async function performSnapshotOnRepository(
   let repoDir = '';
   try {
     repoDir = await mkdTemp(path.join(os.tmpdir(), appPrefix));
+
     // the rest of your app goes here
     const sbom = generateSbomFromAsset('repository', cloneUrl, gitBranch, gitCommit, {
       workspace: repoDir,
     });
+
     if (sbom === null) {
-      return newError('unable to generate sbom for asset');
+      return {
+        error: true,
+        msg: 'unable to generate sbom for asset',
+      };
     }
 
     log.info('uploading sbom to s3');
 
     const s3UploadRes = await catchError(uploadSbomToS3(installationId, buildId, sbom));
+
     if (threwError(s3UploadRes)) {
       log.error('unable to upload sbom to s3', {
         message: s3UploadRes.message,
       });
-      return newError(s3UploadRes.message);
+
+      return {
+        error: true,
+        msg: s3UploadRes.message,
+        rawError: s3UploadRes,
+      };
     }
 
     log.info('uploaded sbom to s3', {
       s3Url: s3UploadRes,
     });
 
-    log.info('skipped snapshotting pinned dependencies', {
-      repoDir,
-    });
-
-    /*
-
     log.info('snapshotting pinned dependencies', {
       repoDir,
     });
 
-    const pinnedDepsError = await snapshotPinnedDependencies(buildId, repoDir);
-    if (pinnedDepsError.error) {
+    try {
+      await snapshotPinnedDependencies(buildId, repoDir);
+    } catch (err) {
       log.error('failed to snapshot pinned dependencies', {
         repoDir,
       });
-      return newError(pinnedDepsError.msg);
-    }
 
-     */
+      return {
+        error: true,
+        msg: 'failed to snapshot pinned dependencies',
+        rawError: err instanceof Error ? err : undefined,
+      };
+    }
 
     log.info('completed snapshotting pinned dependencies', {
       repoDir,
     });
-    return newResult(undefined);
+
+    return {
+      error: false,
+    };
   } catch (e) {
     log.error('error occurred while snapshotting an asset', {
       tmpDir: repoDir,
       error: e,
     });
-    return newError(`caught error while performing snapshot: ${e}`);
+
+    return {
+      error: true,
+      msg: `error occurred while snapshotting an asset: ${e}`,
+      rawError: e instanceof Error ? e : undefined,
+    };
   } finally {
     try {
       if (repoDir) {
@@ -110,13 +127,18 @@ async function performSnapshotOnRepository(
       });
     }
   }
-  return newError('did not perform snapshot successfully');
+
+  return {
+    error: true,
+    msg: 'did not preform snapshot successfully',
+    rawError: new Error('did not preform snapshot successfully'),
+  };
 }
 
 interface NewBuildInfo {
   projectId: string;
   pullRequestId?: string;
-  sourceType: string;
+  sourceType: Scalars['builds_source_type'];
   gitCommit?: string;
   gitBranch: string;
   cloneUrl: string;
@@ -146,7 +168,12 @@ async function createNewBuild(logger: LunaLogger, buildInfo: NewBuildInfo): Prom
     logger.error(msg, {
       error: insertBuildResponse,
     });
-    return newError(msg);
+
+    return {
+      error: true,
+      msg: msg,
+      rawError: insertBuildResponse,
+    };
   }
 
   const { insert_builds_one } = insertBuildResponse;
@@ -160,10 +187,17 @@ async function createNewBuild(logger: LunaLogger, buildInfo: NewBuildInfo): Prom
     logger.error(msg, {
       insert_builds_one,
     });
-    return newError(msg);
+    return {
+      error: true,
+      msg: msg,
+      rawError: new Error(msg),
+    };
   }
 
-  return newResult(insert_builds_one.id as string);
+  return {
+    error: false,
+    res: insert_builds_one.id as string,
+  };
 }
 
 export async function snapshotRepositoryActivity(req: SnapshotForRepositoryRequest): Promise<MaybeError<undefined>> {
