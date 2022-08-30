@@ -35,15 +35,17 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     this.flatDeps = JSON.parse(JSON.stringify(sourceDeps));
     // Go and clean out all the vulnerabilities that don't apply to this version since the DB doesn't know how to do that yet
     this.flatDeps.forEach((dep) => {
-      dep.release.package.affected_by_vulnerability = dep.release.package.affected_by_vulnerability.filter((vuln) => {
-        const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
-        const isVulnerable = semver.satisfies(dep.release.version, vulnerableRange);
-        return isVulnerable;
-      });
+      dep.child.release.package.affected_by_vulnerability = dep.child.release.package.affected_by_vulnerability.filter(
+        (vuln) => {
+          const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
+          const isVulnerable = semver.satisfies(dep.child.release.version, vulnerableRange);
+          return isVulnerable;
+        }
+      );
 
       // Mark the vulns that can be trivially updated
-      dep.release.package.affected_by_vulnerability.forEach((vuln) => {
-        vuln.triviallyUpdatable = this.precomputeVulnTriviallyUpdatable(dep.range, vuln);
+      dep.child.release.package.affected_by_vulnerability.forEach((vuln) => {
+        vuln.triviallyUpdatable = this.precomputeVulnTriviallyUpdatable(dep.child.range, vuln);
         // Also add it to the flat vuln list for easy access
         this.flatVulns.push(vuln);
       });
@@ -55,13 +57,13 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     const cycleCheckIds: Array<string> = [];
     const recursivelyBuildNode = (dep: BuildDependency): TreeNode<BuildDependency> => {
       // Check for cycles, just in case
-      if (cycleCheckIds.includes(dep.id)) {
+      if (cycleCheckIds.includes(dep.child_id)) {
         throw new Error('Dependency cycle detected!');
       }
-      cycleCheckIds.push(dep.id);
+      cycleCheckIds.push(dep.child_id);
       // Find every dep that points back at this dep
       const unbuiltDependents = this.flatDeps.filter(
-        (potentialDependent) => potentialDependent.depended_by_relationship_id === dep.id
+        (potentialDependent) => potentialDependent.parent_id === dep.child_id
       );
       // For each dependent, add it to our list of dependents and populate its own dependents recursively
       const dependents = unbuiltDependents.map(recursivelyBuildNode);
@@ -70,7 +72,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     };
     // start with the root dependencies
     const rootDeps = this.flatDeps.filter((d) => {
-      return d.depended_by_relationship_id === null;
+      return d.parent_id === null;
     });
     // kick off the tree build
     this.tree = rootDeps.map((rootDep) => recursivelyBuildNode(rootDep));
@@ -138,19 +140,19 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
 
   public checkIfPackageTriviallyUpdatable(packageName: string, version: string): 'yes' | 'partially' | 'no' {
     const matchingDeps = this.flatDeps.filter(
-      (dep) => dep.release.package.name === packageName && dep.release.version === version
+      (dep) => dep.child.release.package.name === packageName && dep.child.release.version === version
     );
 
     // also keep track of the vuln count in case we are checking a package with no vulns, which would not qualify as trivially updatable
     let totalVulnCount = 0;
     const fullyUpdatableDeps = matchingDeps.filter((dep) => {
-      return dep.release.package.affected_by_vulnerability.every((vuln) => {
+      return dep.child.release.package.affected_by_vulnerability.every((vuln) => {
         totalVulnCount++;
         return vuln.triviallyUpdatable;
       });
     });
     const atLeastPartiallyUpdatableDeps = matchingDeps.filter((dep) => {
-      return dep.release.package.affected_by_vulnerability.some((vuln) => vuln.triviallyUpdatable);
+      return dep.child.release.package.affected_by_vulnerability.some((vuln) => vuln.triviallyUpdatable);
     });
 
     const fullUpdateCount = fullyUpdatableDeps.length;
@@ -181,7 +183,10 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
       currentNode: TreeNode<BuildDependency>,
       currentChain: DependencyChain<BuildDependency>
     ): void {
-      if (currentNode.release.package.name === packageName && currentNode.release.version === packageVersion) {
+      if (
+        currentNode.child.release.package.name === packageName &&
+        currentNode.child.release.version === packageVersion
+      ) {
         // Put our targetted dep on the end since its the end of the chain
         currentChain.push(currentNode);
         chains.push(currentChain);
