@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
@@ -97,7 +98,7 @@ export class LogIOTransport implements Transport {
     const ctxString = JSON.stringify(logObj.context, undefined, 0);
 
     this.logIOClient.send(`+msg|${logObj.name}|${logSource}|[${ctxString}]\n\t${logObj.message}\0`).catch((e) => {
-      console.error('unable to send message to LogIO');
+      console.error('unable to send message to LogIO', e);
     });
     return;
   }
