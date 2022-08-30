@@ -14,7 +14,7 @@ generates:
           scalars:
             _text: string
             bigint: number
-            date: string
+            date: Date
             fix_state_enum: "'fixed'|'not-fixed'|'unknown'"
             jsonb: "Record<any, any> | any[]"
             builds_source_type: "'cli'|'gui'|'pr'|'default_branch'"
