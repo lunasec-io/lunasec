@@ -16,7 +16,8 @@ import { DependencyTree } from '../../../dependency-tree/builds-dependency-tree'
 import { DependencyChain } from '../../../dependency-tree/types';
 
 export type BuildDetailInfo = NonNullable<GetBuildDetailsQuery['builds_by_pk']>;
-export type DependencyRelationshipInfo = BuildDetailInfo['build_dependency_relationships'][number];
+export type DependencyRelationshipInfo = any;
+//BuildDetailInfo['build_dependency_relationships'][number];
 
 export interface QuickViewProps {
   setVulnQuickViewId: (vulnId: string) => void;
