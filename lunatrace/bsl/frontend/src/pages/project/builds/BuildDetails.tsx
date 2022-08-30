@@ -74,7 +74,7 @@ export const BuildDetails: React.FunctionComponent = () => {
 
     const filteredFindings = ignoreFindings ? filterFindingsNotIgnored(build.findings) : build.findings;
 
-    const depTree = {} as any; /*= build.build_dependency_relationships
+    const depTree = 'foo' as any; /*build.build_dependency_relationships
       ? new DependencyTree(build.build_dependency_relationships)
       : null;*/
 

@@ -14,10 +14,10 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
             path
             child_edges_recursive {
                 parent_id
+                child_id
                 child {
                     range
                     labels
-                    id
                     release_id
                     release {
                         id
