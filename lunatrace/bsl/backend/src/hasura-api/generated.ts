@@ -66,7 +66,6 @@ export type GithubRepository = {
   __typename?: 'GithubRepository';
   cloneUrl: Scalars['String'];
   defaultBranch: Scalars['String'];
-  fullTraits: Scalars['String'];
   gitUrl: Scalars['String'];
   orgId: Scalars['Int'];
   orgName: Scalars['String'];

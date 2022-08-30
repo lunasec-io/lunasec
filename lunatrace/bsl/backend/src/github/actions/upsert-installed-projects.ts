@@ -22,8 +22,8 @@ import { logError, newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { catchError, threwError } from '../../utils/try';
 
-import { getGithubReposForInstallation } from './get-github-repos-for-installation';
 import { getHasuraOrgMembers } from './get-org-members';
+import { getReposFromInstallation } from './get-repos-from-installation';
 import { queueNewReposForSnapshot } from './queue-new-repos-for-snapshot';
 
 // Performs the full upsertion of any projects and orgs that the github app is linked to, and returns some metadata about the repos for any subsequent processing
@@ -31,7 +31,7 @@ export async function upsertInstalledProjects(
   installationAuthToken: string,
   installationId: number
 ): Promise<MaybeError<GithubRepositoryInfo[]>> {
-  const githubRepos = await getGithubReposForInstallation(installationAuthToken, installationId);
+  const githubRepos = await getReposFromInstallation(installationAuthToken, installationId);
 
   log.info(`Collected installation data`, {
     installationId,

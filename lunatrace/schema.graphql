@@ -50,7 +50,6 @@ input Float_comparison_exp {
 type GithubRepository {
   cloneUrl: String!
   defaultBranch: String!
-  fullTraits: String!
   gitUrl: String!
   orgId: Int!
   orgName: String!

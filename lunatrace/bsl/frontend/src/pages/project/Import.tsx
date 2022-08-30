@@ -12,13 +12,26 @@
  *
  */
 import React from 'react';
-import { Col, Container, Form, Row } from 'react-bootstrap';
+import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+import { FiArrowRight, FiGithub } from 'react-icons/fi';
+
+import api from '../../api';
+import { SpinIfLoading } from '../../components/SpinIfLoading';
 
 export const ImportProjects: React.FC = () => {
-  const orgs = [
-    { name: 'factoidForrest', repos: [{ name: 'my first project' }, { name: 'my second project' }] },
-    { name: 'lunasec', repos: [{ name: 'my first project' }, { name: 'lunatrace' }] },
-  ];
+  const { data: githubData, isLoading: isLoadingGithubData } = api.useGetAvailableReposQuery();
+  const { data: existingProjectData, isLoading: isLoadingProjectData } = api.useGetSidebarInfoQuery();
+  const isLoading = isLoadingGithubData || isLoadingProjectData;
+
+  if (githubData && existingProjectData) {
+    githubData.availableRepos.forEach((org) => {
+      org.repos.forEach((repo) => {
+        existingProjectData.projects.some((existingProject) {
+          if (existingProject.github_repository?.github_id === repo.)
+        })
+      });
+    });
+  }
   return (
     <Container>
       <Row>
@@ -27,28 +40,55 @@ export const ImportProjects: React.FC = () => {
           <p>Choose repos to add to LunaTrace</p>
         </Col>
       </Row>
-      <Row>
-        <Form>
-          {orgs.map((org) => {
-            return (
-              <React.Fragment key={org.name}>
-                <h3>{org.name}</h3>
-
-                {org.repos.map((repo) => {
-                  return (
-                    <Form.Check
-                      type="checkbox"
-                      key={repo.name}
-                      label={repo.name}
-                      id="disabled-custom-switch"
-                    ></Form.Check>
-                  );
-                })}
-              </React.Fragment>
-            );
-          })}
-        </Form>
-      </Row>
+      <SpinIfLoading isLoading={isLoading}>
+        {data && data.availableRepos && (
+          <>
+            <Row className="justify-content-md-center">
+              <Col md="auto">
+                <Form>
+                  {data.availableRepos.map((org, orgNumber) => {
+                    return (
+                      <Form.Group key={org.organizationName}>
+                        {orgNumber > 0 && <hr />}
+                        <Form.Label as="h2" className="darker">
+                          {org.organizationName}
+                        </Form.Label>
+                        {org.repos.map((repo) => {
+                          return (
+                            <Form.Check
+                              className="lighter"
+                              type="checkbox"
+                              key={repo.repoId}
+                              label={<h4>{repo.repoName}</h4>}
+                              id={repo.repoName}
+                            ></Form.Check>
+                          );
+                        })}
+                      </Form.Group>
+                    );
+                  })}
+                </Form>
+              </Col>
+            </Row>
+            <Row className="ms-lg-7 me-lg-7 mt-lg-4">
+              <Col xs="12" md="6">
+                <div className="d-grid m-3">
+                  <Button>
+                    Continue <FiArrowRight size={18} className="mb-1" />
+                  </Button>
+                </div>
+              </Col>
+              <Col xs="12" md={{ order: 'first', span: 6 }}>
+                <div className="d-grid  m-3">
+                  <Button variant="secondary">
+                    <FiGithub className="mb-1 me-1" /> Manage Permissions on GitHub
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+          </>
+        )}
+      </SpinIfLoading>
     </Container>
   );
 };
