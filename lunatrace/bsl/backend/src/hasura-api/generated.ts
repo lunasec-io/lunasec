@@ -17,7 +17,7 @@ export type Scalars = {
   affected_range_type: any;
   bigint: number;
   builds_source_type: 'cli'|'gui'|'pr'|'default_branch';
-  date: string;
+  date: Date;
   fix_state_enum: 'fixed'|'not-fixed'|'unknown';
   jsonb: Record<any, any> | any[];
   license_source: any;
@@ -10600,14 +10600,6 @@ export type GetUserFromIdentityQueryVariables = Exact<{
 
 export type GetUserFromIdentityQuery = { __typename?: 'query_root', identities_by_pk?: { __typename?: 'identities', user?: { __typename?: 'users', id: any } | null } | null };
 
-export type InsertBuildDependencyRelationshipsMutationVariables = Exact<{
-  objects: Array<Build_Dependency_Relationship_Insert_Input> | Build_Dependency_Relationship_Insert_Input;
-  on_conflict: Build_Dependency_Relationship_On_Conflict;
-}>;
-
-
-export type InsertBuildDependencyRelationshipsMutation = { __typename?: 'mutation_root', insert_build_dependency_relationship?: { __typename?: 'build_dependency_relationship_mutation_response', affected_rows: number } | null };
-
 export type InsertBuildMutationVariables = Exact<{
   build: Builds_Insert_Input;
 }>;
@@ -10893,16 +10885,6 @@ export const GetUserFromIdentityDocument = gql`
   }
 }
     `;
-export const InsertBuildDependencyRelationshipsDocument = gql`
-    mutation InsertBuildDependencyRelationships($objects: [build_dependency_relationship_insert_input!]!, $on_conflict: build_dependency_relationship_on_conflict!) {
-  insert_build_dependency_relationship(
-    objects: $objects
-    on_conflict: $on_conflict
-  ) {
-    affected_rows
-  }
-}
-    `;
 export const InsertBuildDocument = gql`
     mutation InsertBuild($build: builds_insert_input!) {
   insert_builds_one(object: $build) {
@@ -11129,9 +11111,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetUserFromIdentity(variables: GetUserFromIdentityQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserFromIdentityQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserFromIdentityQuery>(GetUserFromIdentityDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserFromIdentity', 'query');
-    },
-    InsertBuildDependencyRelationships(variables: InsertBuildDependencyRelationshipsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildDependencyRelationshipsMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildDependencyRelationshipsMutation>(InsertBuildDependencyRelationshipsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuildDependencyRelationships', 'mutation');
     },
     InsertBuild(variables: InsertBuildMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildMutation>(InsertBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuild', 'mutation');
