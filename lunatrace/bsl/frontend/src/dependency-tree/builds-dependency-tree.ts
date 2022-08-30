@@ -72,7 +72,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     };
     // start with the root dependencies
     const rootDeps = this.flatDeps.filter((d) => {
-      return d.parent_id === null;
+      return d.parent_id === null || d.parent_id === '00000000-0000-0000-0000-000000000000';
     });
     // kick off the tree build
     this.tree = rootDeps.map((rootDep) => recursivelyBuildNode(rootDep));
