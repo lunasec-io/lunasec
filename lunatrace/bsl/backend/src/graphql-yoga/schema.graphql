@@ -16,7 +16,7 @@ type Query {
         repoGithubId: Int!
     ): AuthenticatedRepoCloneUrlOutput
     fakeQueryToHackHasuraBeingABuggyMess: String
-    availableRepos: [GithubRepository!]!
+    availableRepos: [OrgWithRepos!]
 }
 
 type Mutation {
@@ -64,5 +64,9 @@ type GithubRepository {
     ownerType: String!
     cloneUrl: String!
     defaultBranch: String!
-    fullTraits: String!
+}
+
+type OrgWithRepos {
+    organizationName: String!
+    repos: [GithubRepository!]!
 }
