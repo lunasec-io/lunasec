@@ -34,7 +34,7 @@ describe('Dependency relationship hashing', () => {
   it.concurrent('should hash data', () => {
     const hash = generateMerkleHash(hashInputData);
     expect(baseHash === hash).toBeTruthy();
-    expect(hash).toBe('0dfa8e52-9b89-35e4-126a-ca48abdff888');
+    expect(hash).toBe('1e4f7e93-e3eb-d38e-b6e0-1d5444e09116');
   });
 
   it.concurrent('should hash data with no child hashes', () => {
@@ -43,7 +43,7 @@ describe('Dependency relationship hashing', () => {
       childHashes: []
     });
     expect(baseHash === hash).toBeFalsy();
-    expect(hash).toBe('f3201bf5-5894-eb81-1fa4-99c8b910b131');
+    expect(hash).toBe('dfe1616f-8c9b-8bef-8b47-1f552b9a5fc9');
   });
 
   it.concurrent('should hash data with custom registry', () => {
@@ -52,7 +52,7 @@ describe('Dependency relationship hashing', () => {
       customRegistry: 'registry.com'
     });
     expect(baseHash === hash).toBeFalsy();
-    expect(hash).toBe('f4a38231-2b6a-ef80-9ed6-ee77cfbc9050');
+    expect(hash).toBe('83f2fa97-ae7d-9c0f-0985-37e38e567552');
   });
 
   it.concurrent('should hash data with parent range', () => {
@@ -61,7 +61,7 @@ describe('Dependency relationship hashing', () => {
       parentRange: '^1.2.3'
     });
     expect(baseHash === hash).toBeFalsy();
-    expect(hash).toBe('7ad6be10-69c9-f343-f915-1fc953c11de2');
+    expect(hash).toBe('8c78c738-e87e-0d10-2d42-9a34c9e675ed');
   });
 
   it.concurrent('should hash data with different ecosystem', () => {
@@ -71,7 +71,7 @@ describe('Dependency relationship hashing', () => {
       ecosystem: 'java' as any
     });
     expect(baseHash === hash).toBeFalsy();
-    expect(hash).toBe('68e904ee-552c-4c1c-7a1c-f4e5132a063d');
+    expect(hash).toBe('67ca139b-2196-f6ec-5ad6-fc1337be5c0d');
   });
 });
 
@@ -146,10 +146,10 @@ describe('Dependency graph generation', () => {
     expect(rootNode.packageData.version).toBe('1.0.0');
     expect(rootNode.parent).toBe(undefined);
 
-    expect(rootNode.children?.[0].children?.[0].treeHashId).toBe('06f79a95-dbdf-89be-1447-9d31d1c1967a');
-    expect(rootNode.children?.[0].treeHashId).toBe('b015639a-1ac0-4503-a117-48238de949cd');
-    expect(rootNode.children?.[1].treeHashId).toBe('d4770201-7d3c-4165-17cf-23f92c18fe7d');
-    expect(rootNode.treeHashId).toBe('f416765f-f52b-f3ec-e7bf-7dd52a4b217b');
+    expect(rootNode.children?.[0].children?.[0].treeHashId).toBe('1ad4c5b9-4f06-7911-ad85-6677944a3d1a');
+    expect(rootNode.children?.[0].treeHashId).toBe('39e82dcf-99f4-7f2c-6e96-1fc98d87c302');
+    expect(rootNode.children?.[1].treeHashId).toBe('16cb328f-e554-2f2e-dbe9-1694dd107f27');
+    expect(rootNode.treeHashId).toBe('90e4f604-b510-7ccd-a760-eef8ca9e3537');
   });
 
   it.concurrent('should generate merkle hashes for tree with common subtrees', () => {
@@ -165,10 +165,10 @@ describe('Dependency graph generation', () => {
     expect(rootNode.parent).toBe(undefined);
 
     expect(rootNode.children?.[0].children?.[0].treeHashId).toEqual(rootNode.children?.[2].treeHashId);
-    expect(rootNode.children?.[0].children?.[0].treeHashId).toBe('751ad100-9d33-0041-1c7c-afeaa1821201');
-    expect(rootNode.children?.[0].treeHashId).toBe('56eb248a-4851-2e97-d4d9-998f64d6ca06');
-    expect(rootNode.children?.[1].treeHashId).toBe('4ae5fb2c-c7c9-c5dc-4878-297288d20668');
-    expect(rootNode.children?.[2].treeHashId).toBe('751ad100-9d33-0041-1c7c-afeaa1821201');
-    expect(rootNode.treeHashId).toBe('376a747f-6128-04d9-beac-960f0082fb76');
+    expect(rootNode.children?.[0].children?.[0].treeHashId).toBe('e0fa603b-568c-d6d7-d8c6-39e6cc783971');
+    expect(rootNode.children?.[0].treeHashId).toBe('2434a8c2-835b-3351-41f9-e9dc404f6db9');
+    expect(rootNode.children?.[1].treeHashId).toBe('16cb328f-e554-2f2e-dbe9-1694dd107f27');
+    expect(rootNode.children?.[2].treeHashId).toBe('e0fa603b-568c-d6d7-d8c6-39e6cc783971');
+    expect(rootNode.treeHashId).toBe('d7f9642b-fdb4-fb3f-40d6-f5cce92c95c6');
   });
 });
