@@ -24,7 +24,7 @@ import { log } from '../utils/log';
 import { tryParseInt } from '../utils/parse';
 import { sleep } from '../utils/sleep';
 
-import { getGithubReposForInstallation } from './actions/get-github-repos-for-installation';
+import { getReposFromInstallation } from './actions/get-repos-from-installation';
 import { getInstallationAccessToken } from './auth';
 
 const serverConfig = getServerConfig();
@@ -34,7 +34,7 @@ async function waitForGithubInstall(installationId: number, installationAuthToke
   let attempts = 0;
   const maxAttempts = 10;
 
-  const newRepos = await getGithubReposForInstallation(installationAuthToken, installationId);
+  const newRepos = await getReposFromInstallation(installationAuthToken, installationId);
 
   // TODO: Fix this with proper UI in the future. Logging of this error happens at the route handler
   if (newRepos.length > 200) {

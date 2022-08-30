@@ -59,6 +59,20 @@ export type Float_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Float']>>;
 };
 
+export type GithubRepository = {
+  __typename?: 'GithubRepository';
+  cloneUrl: Scalars['String'];
+  defaultBranch: Scalars['String'];
+  gitUrl: Scalars['String'];
+  orgId: Scalars['Int'];
+  orgName: Scalars['String'];
+  orgNodeId: Scalars['String'];
+  ownerType: Scalars['String'];
+  repoId: Scalars['Int'];
+  repoName: Scalars['String'];
+  repoNodeId: Scalars['String'];
+};
+
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Int']>;
@@ -70,6 +84,12 @@ export type Int_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Int']>;
   _neq?: InputMaybe<Scalars['Int']>;
   _nin?: InputMaybe<Array<Scalars['Int']>>;
+};
+
+export type OrgWithRepos = {
+  __typename?: 'OrgWithRepos';
+  organizationName: Scalars['String'];
+  repos: Array<GithubRepository>;
 };
 
 export type PresignedUrlResponse = {
@@ -3582,6 +3602,7 @@ export enum Projects_Update_Column {
 export type Query_Root = {
   __typename?: 'query_root';
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
+  availableRepos?: Maybe<Array<OrgWithRepos>>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -6101,6 +6122,11 @@ export type GetAllGuidesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllGuidesQuery = { __typename?: 'query_root', guides: Array<{ __typename?: 'guides', created_at: any, id: any, metadata: any, metadata_schema_version: number, severity: any, summary: string, tags: any, title: string, guide_unique_id: string, updated_at: any }> };
 
+export type GetAvailableReposQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAvailableReposQuery = { __typename?: 'query_root', availableRepos?: Array<{ __typename?: 'OrgWithRepos', organizationName: string, repos: Array<{ __typename?: 'GithubRepository', gitUrl: string, repoId: number, repoName: string }> }> | null };
+
 export type GetBuildDetailsQueryVariables = Exact<{
   build_id: Scalars['uuid'];
   project_id: Scalars['uuid'];
@@ -6167,7 +6193,7 @@ export type GetSidebarInfoQueryVariables = Exact<{
 }>;
 
 
-export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }> }> };
+export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }>, github_repository?: { __typename?: 'github_repositories', id: any, github_id?: number | null } | null }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }> }> }> };
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
@@ -6268,6 +6294,18 @@ export const GetAllGuidesDocument = `
     title
     guide_unique_id
     updated_at
+  }
+}
+    `;
+export const GetAvailableReposDocument = `
+    query GetAvailableRepos {
+  availableRepos {
+    organizationName
+    repos {
+      gitUrl
+      repoId
+      repoName
+    }
   }
 }
     `;
@@ -6660,6 +6698,10 @@ export const GetSidebarInfoDocument = `
       id
       build_number
     }
+    github_repository {
+      id
+      github_id
+    }
   }
   organizations(
     order_by: {projects_aggregate: {count: asc}}
@@ -6912,6 +6954,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetAllGuides: build.query<GetAllGuidesQuery, GetAllGuidesQueryVariables | void>({
       query: (variables) => ({ document: GetAllGuidesDocument, variables })
+    }),
+    GetAvailableRepos: build.query<GetAvailableReposQuery, GetAvailableReposQueryVariables | void>({
+      query: (variables) => ({ document: GetAvailableReposDocument, variables })
     }),
     GetBuildDetails: build.query<GetBuildDetailsQuery, GetBuildDetailsQueryVariables>({
       query: (variables) => ({ document: GetBuildDetailsDocument, variables })

@@ -13,49 +13,34 @@
  */
 import { Octokit } from 'octokit';
 
-import { GithubRepositoryInfo, RepositoriesForInstallationResponse } from '../../types/github';
+import { GithubRepositoryInfo, RawRepositories } from '../../types/github';
 import { log } from '../../utils/log';
+import { walkPagination } from '../helpers/walk-pagination';
 
-const PER_PAGE = 100;
-
-async function fetchReposFromGithub(
-  authToken: string,
-  installationId: number
-): Promise<RepositoriesForInstallationResponse> {
+async function fetchReposFromGithub(authToken: string, installationId: number): Promise<RawRepositories> {
   const octokit = new Octokit({ auth: authToken });
 
-  const repos = [];
+  const iLog = log.child('fetchReposFromGithubLogger');
 
-  // Cap at 10000 iterations just because infinite loops suck.
-  for (let page = 1; page < 10000; page++) {
-    log.info(`[installId: ${installationId}] Getting GitHub repos for installation, page #${page}`);
+  async function callGithub(page: number, perPage: number) {
+    iLog.info(`[installId: ${installationId}] Getting GitHub repos for installation, page #${page}`);
 
     // authenticates as app based on request URLs
     const response = await octokit.rest.apps.listReposAccessibleToInstallation({
       page: page,
-      per_page: PER_PAGE,
+      per_page: perPage,
     });
 
-    log.info(
+    iLog.info(
       `[installId: ${installationId}] GitHub repos for page #${page}: ${response.data.repositories.length}, total_count: ${response.data.total_count}`
     );
-
-    repos.push(...response.data.repositories);
-
-    if (repos.length >= response.data.total_count) {
-      log.info(`[installId: ${installationId}] Successfully collected ${repos.length} repositories from GitHub`);
-      return repos;
-    }
-
-    log.info(`[installId: ${installationId}] Detected paginated GitHub repositories`);
+    return { newItems: response.data.repositories, total: response.data.total_count };
   }
 
-  log.error(`[installId: ${installationId}] Hit max iterations for listing repos for installation`);
-
-  throw new Error('Hit max iterations for listing repos for installation: ' + installationId.toString(10));
+  return walkPagination(iLog, callGithub);
 }
 
-export async function getGithubReposForInstallation(
+export async function getReposFromInstallation(
   authToken: string,
   installationId: number
 ): Promise<GithubRepositoryInfo[]> {

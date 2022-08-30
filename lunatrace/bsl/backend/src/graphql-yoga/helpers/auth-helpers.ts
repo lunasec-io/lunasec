@@ -15,14 +15,21 @@ import { GraphQLYogaError } from '@graphql-yoga/node';
 
 import { hasura } from '../../hasura-api';
 import { log } from '../../utils/log';
-import { Context } from '../context';
+import { Context, ContextLoggedIn } from '../context';
 
 // todo: make this an auth guard with annotations in the schema
 export function throwIfUnauthenticated(ctx: Context): void {
-  if (!ctx.req.user) {
-    log.warn('No parsed JWT claims on route that required authorization, throwing a graphql error');
+  if (!isAuthenticated(ctx)) {
+    log.warn('No parsed JWT claims with a user ID on route that required authorization, throwing a graphql error');
     throw new GraphQLYogaError('Unauthorized');
   }
+}
+
+export function isAuthenticated(ctx: Context): ctx is ContextLoggedIn {
+  if (!ctx.req.user || !ctx.req.user['https://hasura.io/jwt/claims']['x-hasura-user-id']) {
+    return false;
+  }
+  return true;
 }
 
 export function getUserId(ctx: Context): string {
