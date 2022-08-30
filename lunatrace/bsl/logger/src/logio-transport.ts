@@ -61,11 +61,12 @@ class LogIOClient {
 }
 
 function getSourceAndRemove(logObj: LogObj): string {
-  if (logObj.context.source) {
-    const source = logObj.context.source;
+  const logContextWithSource = logObj.context as { source?: string };
+  if (logContextWithSource.source) {
+    const source = logContextWithSource.source;
 
-    // remove source from context so it only gets logged in one place
-    delete logObj.context.source;
+    // remove source from context to ensure that it only gets logged in one place
+    delete logContextWithSource.source;
     return source;
   }
   return 'source';
