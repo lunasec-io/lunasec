@@ -1,0 +1,27 @@
+table:
+  name: manifest
+  schema: public
+insert_permissions:
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - build_id
+        - id
+        - path
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - build_id
+        - id
+        - path
+      filter: {}
+array_relationships:
+  - name: manifest_dependencies
+    using:
+      foreign_key_constraint_on:
+        column: manifest_id
+        table:
+          name: manifest_dependency
+          schema: public

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="TypeScriptCompiler">
     <option name="nodeInterpreterTextField" value="node" />
-    <option name="typeScriptServiceDirectory" value="yarn:package.json:typescript" />
+    <option name="typeScriptServiceDirectory" value="yarn:lunatrace/bsl/backend/package.json:typescript" />
     <option name="versionType" value="SERVICE_DIRECTORY" />
   </component>
 </project>

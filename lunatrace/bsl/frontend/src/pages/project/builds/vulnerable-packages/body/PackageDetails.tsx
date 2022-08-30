@@ -35,7 +35,7 @@ export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ p
   const depChains = depTree?.showDependencyChainsOfPackage(pkg.package_name, pkg.version);
 
   const isNodeDevOnly = depChains?.every((chain) => {
-    const rootLabels = chain[0].labels;
+    const rootLabels = chain[0].child.labels;
     if ('scope' in rootLabels && rootLabels.scope === 'dev') {
       return true;
     }

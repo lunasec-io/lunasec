@@ -91,7 +91,8 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
 
     const insertedWebhookResult: Try<InsertWebhookToCacheMutation> = await catchError(
       this.hasura.InsertWebhookToCache({
-        data: options.payload,
+        // TODO: Figure out what the correct types should be coming from GitHub
+        data: options.payload as any,
         event_type: options.name,
         signature_256: options.signature,
         delivery_id: options.id,
