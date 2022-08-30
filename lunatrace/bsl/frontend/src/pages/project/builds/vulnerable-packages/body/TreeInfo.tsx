@@ -57,7 +57,7 @@ export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depChain
       <h5 className="darker">
         {isDirectDep ? (
           <>
-            Direct Dependency: <span className="lighter">{chains[0][0].range}</span>
+            Direct Dependency: <span className="lighter">{chains[0][0].child.range}</span>
           </>
         ) : (
           'Transitive Dependency'
@@ -71,7 +71,7 @@ export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depChain
       {!isDirectDep &&
         chains.map((chain) => {
           const visibleChain = isExpanded ? chain : [chain[0], chain[chain.length - 1]];
-          const dedupeSlug = visibleChain.reduce((slug, chain) => slug + chain.release.package.name, '');
+          const dedupeSlug = visibleChain.reduce((slug, chain) => slug + chain.child.release.package.name, '');
           if (chainDedupeSlugs.includes(dedupeSlug)) {
             return null;
           }
@@ -95,13 +95,13 @@ export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depChain
                             style={{ marginLeft: 'auto', marginRight: 'auto', display: 'block' }}
                           />
                         ))}
-                      {isExpanded && <div style={{ fontSize: '.7rem' }}>{dep.range}</div>}
+                      {isExpanded && <div style={{ fontSize: '.7rem' }}>{dep.child.range}</div>}
                     </div>
                     <Badge text="dark" bg={getBadgeColor(index, visibleChain.length)}>
-                      <div>{dep.release.package.name}</div>
+                      <div>{dep.child.release.package.name}</div>
                       {isExpanded && (
                         <div className="mt-1" style={{ fontSize: '.7rem' }}>
-                          {dep.release.version}
+                          {dep.child.release.version}
                         </div>
                       )}
                     </Badge>

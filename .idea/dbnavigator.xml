@@ -18,6 +18,7 @@
       <destination value="FILE" />
       <format value="EXCEL" />
       <charset value="UTF-8" />
+      <charset value="UTF-8" />
     </export-instructions>
   </component>
   <component name="DBNavigator.Project.DatabaseBrowserManager">
@@ -45,6 +46,7 @@
   </component>
   <component name="DBNavigator.Project.FileConnectionMappingManager">
     <mapping file-url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1650321911749_add_webhook_cache/up.sql" connection-id="2288c982-597b-4cb4-a0b1-d6f80f52304a" session-id="MAIN" current-schema="public" />
+    <mapping file-url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1661812840365_manifest_dependency_node_child_edges_recursive/up.sql" connection-id="2288c982-597b-4cb4-a0b1-d6f80f52304a" session-id="MAIN" current-schema="hdb_catalog" />
   </component>
   <component name="DBNavigator.Project.MethodExecutionManager">
     <method-browser />
@@ -123,7 +125,7 @@
           <alternative-statement-delimiter value="" />
         </details>
         <object-filters hide-empty-schemas="false" hide-pseudo-columns="false">
-          <object-type-filter use-master-settings="true">
+          <object-type-filter>
             <object-type name="SCHEMA" enabled="true" />
             <object-type name="USER" enabled="true" />
             <object-type name="ROLE" enabled="true" />
@@ -194,6 +196,7 @@
         <object-type name="FUNCTION" sorting-type="NAME" />
         <object-type name="PROCEDURE" sorting-type="NAME" />
         <object-type name="ARGUMENT" sorting-type="POSITION" />
+        <object-type name="TYPE ATTRIBUTE" sorting-type="POSITION" />
       </sorting>
       <default-editors>
         <object-type name="VIEW" editor-type="SELECTION" />
@@ -240,11 +243,11 @@
         <nulls-first value="true" />
         <max-sorting-columns value="4" />
       </sorting>
-      <tracking-columns>
-        <columnNames value="" />
+      <audit-columns>
+        <column-names value="" />
         <visible value="true" />
         <editable value="false" />
-      </tracking-columns>
+      </audit-columns>
     </dataset-grid-settings>
     <dataset-editor-settings>
       <text-editor-popup>

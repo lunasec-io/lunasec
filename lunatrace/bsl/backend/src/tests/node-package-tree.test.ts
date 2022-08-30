@@ -19,7 +19,7 @@ import pgp from 'pg-promise';
 
 const inMemoryPostgresDb = newDb();
 
-const pgPromiseDb = inMemoryPostgresDb.adapters.createPgPromise();
+const pgPromiseDb = inMemoryPostgresDb.adapters.createPgPromise() as typeof db;
 
 import { v4 } from 'uuid';
 
@@ -41,9 +41,8 @@ inMemoryPostgresDb.registerExtension('default_lunatrace_settings', (schema) => {
   });
 });
 
-import { db } from '../database/db';
 // eslint-disable-next-line import/order
-import { hasura as mockedHasura } from '../hasura-api';
+import { db } from '../database/db';
 
 jest.mock('../database/db', () => {
   return {
@@ -59,33 +58,88 @@ jest.setTimeout(100000);
 
 let backup: IBackup | null = null;
 
-jest.mock('../hasura-api');
-
 import { loadSql } from './mock-db';
-
-const hasura = mockedHasura as jest.MockedObject<typeof mockedHasura>;
-// const db = mockedDb as jest.MockedObject<typeof mockedDb>;
 
 const manifestFixtures = [
   // { name: 'large-yarn-repo'}, supporting workspaces right now will break this test but should in theory still work in prod, we can go to the trouble to write this test if we want to bring official support for them
-  { name: 'normal-yarn1-repo' },
-  { name: 'normal-yarn3-repo' },
-  { name: 'normal-npm-repo' },
+  {
+    name: 'normal-yarn1-repo',
+    nodeCount: 444,
+    edgeCount: 621,
+    manifestPath: '/yarn.lock',
+  },
+  {
+    name: 'normal-yarn3-repo',
+    nodeCount: 510,
+    edgeCount: 754,
+    manifestPath: '/yarn.lock',
+  },
+  {
+    name: 'normal-npm-repo',
+    nodeCount: 387,
+    edgeCount: 551,
+    manifestPath: '/package-lock.json',
+  },
+  {
+    name: 'large-npm-repo-with-react-scripts',
+    nodeCount: 1489,
+    edgeCount: 3303,
+    manifestPath: '/package-lock.json',
+  },
   // { name: 'vulnerable-repo' }, has no package.json and not sure where this came from so commented out since the test needs a package.json
 ];
+
+const buildIdOne = 'aaaaaaaa-bbbb-4e6a-92d5-e1deddd1319a';
+const buildIdTwo = 'bbbbbbbb-cccc-5e6a-a2d5-f1deddd1319b';
 
 function testAllTreeTypes() {
   manifestFixtures.forEach((fixture) => {
     const fixturePath = path.resolve(__dirname, '../fixtures/manifests', fixture.name);
     describe(fixture.name, () => {
-      it(`should call hasura when calling snapshotPinnedDependencies`, async () => {
+      it(`should call db when calling snapshotPinnedDependencies`, async () => {
         backup?.restore();
-        pgPromiseDb.none(`INSERT INTO builds (id, source_type) VALUES ('7f73f7ca-19f0-4e6a-92d5-e1deddd1319a', 'pr')`);
-        // build id doesn't matter, this never hits the DB
-        await snapshotPinnedDependencies('7f73f7ca-19f0-4e6a-92d5-e1deddd1319a', fixturePath);
-        const manifests = await db.many<{ id: string }>(`SELECT id FROM manifest`);
-        expect(manifests.length).toBe(1);
-        expect(manifests[0].id).toBeTruthy();
+        await pgPromiseDb.none(`INSERT INTO builds (id, source_type) VALUES ($1, 'pr')`, [buildIdOne]);
+
+        await snapshotPinnedDependencies(buildIdOne, fixturePath);
+
+        const initialManifests = await db.many<{ id: string; build_id: string; path: string }>(
+          `SELECT id, build_id, path FROM manifest`
+        );
+        expect(initialManifests.length).toBe(1);
+        expect(initialManifests[0].id).toBeTruthy();
+        expect(initialManifests[0].build_id).toEqual(buildIdOne);
+        expect(initialManifests[0].path).toEqual(fixture.manifestPath);
+
+        const numberOfNodes = await db.one<{ count: number }>(`SELECT COUNT(*) AS count FROM manifest_dependency_node`);
+        const numberOfEdges = await db.one<{ count: number }>(`SELECT COUNT(*) AS count FROM manifest_dependency_edge`);
+
+        expect(numberOfNodes.count).toEqual(fixture.nodeCount);
+        expect(numberOfEdges.count).toEqual(fixture.edgeCount);
+
+        await pgPromiseDb.none(`INSERT INTO builds (id, source_type) VALUES ($1, 'pr')`, [buildIdTwo]);
+
+        await snapshotPinnedDependencies(buildIdTwo, fixturePath);
+
+        const bothManifests = await db.many<{ id: string; build_id: string; path: string }>(
+          `SELECT id, build_id, path FROM manifest`
+        );
+        expect(bothManifests.length).toBe(2);
+        expect(bothManifests[0].id).toBeTruthy();
+        expect(bothManifests[0].build_id).toEqual(buildIdOne);
+        expect(bothManifests[0].path).toEqual(fixture.manifestPath);
+        expect(bothManifests[1].id).toBeTruthy();
+        expect(bothManifests[1].build_id).toEqual(buildIdTwo);
+        expect(bothManifests[1].path).toEqual(fixture.manifestPath);
+
+        const secondNumberOfNodes = await db.one<{ count: number }>(
+          `SELECT COUNT(*) AS count FROM manifest_dependency_node`
+        );
+        const secondNumberOfEdges = await db.one<{ count: number }>(
+          `SELECT COUNT(*) AS count FROM manifest_dependency_edge`
+        );
+
+        expect(numberOfNodes.count).toEqual(secondNumberOfNodes.count);
+        expect(numberOfEdges.count).toEqual(secondNumberOfEdges.count);
       });
 
       it('collectPackageTreesFromDirectory should return one tree', async () => {
