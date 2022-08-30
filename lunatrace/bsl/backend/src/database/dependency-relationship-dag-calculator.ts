@@ -11,10 +11,12 @@
  * limitations under the License.
  *
  */
-import { PkgTree } from 'snyk-nodejs-lockfile-parser-lunatrace-fork';
+import { promisify } from 'util';
+
+import { murmurHash128x64 } from 'murmurhash-native';
 import { DepTreeDep } from 'snyk-nodejs-lockfile-parser-lunatrace-fork/dist/parsers';
 
-import { murmurhash3 } from '../utils/murmurhash3';
+// import { murmurhash3 } from '../utils/murmurhash3';
 
 export interface DependencyGraphNode {
   treeHashId: string;
@@ -30,10 +32,11 @@ export interface PackageMerkleHashInputs {
   name: string;
   version: string;
   parentRange?: string;
+  labels?: Record<string, unknown>;
   // TODO: Add support for other ecosystem types
   ecosystem: 'npm';
   // TODO: Allow this to be any string once we have support for custom registries.
-  customRegistry?: string;
+  customRegistry: string;
   childHashes: string[];
 }
 
@@ -42,31 +45,42 @@ export interface PackageMerkleHashInputs {
  * @param hashInputs The data to hash.
  */
 export function generateMerkleHash(hashInputs: PackageMerkleHashInputs): string {
-  const { name, version, ecosystem, parentRange, customRegistry } = hashInputs;
+  const { name, version, ecosystem, parentRange, customRegistry, labels, childHashes } = hashInputs;
 
-  const packageHashSlug = `${ecosystem}-${name}-${
-    customRegistry === undefined ? '' : customRegistry
-  }-${version}-${parentRange}`;
+  const hash = murmurHash128x64(
+    childHashes.sort().join('') +
+      name +
+      version +
+      ecosystem +
+      customRegistry +
+      (parentRange ?? '') +
+      (labels !== undefined ? JSON.stringify(labels, Object.keys(labels).sort()) : '')
+  );
 
-  const childHashes = hashInputs.childHashes.sort().join('-');
+  return (
+    hash.substring(0, 8) +
+    '-' +
+    hash.substring(8, 12) +
+    '-' +
+    hash.substring(12, 16) +
+    '-' +
+    hash.substring(16, 20) +
+    '-' +
+    hash.substring(20, 32)
+  );
 
-  const hash = murmurhash3.hash128(`${packageHashSlug}-${childHashes}`);
-
-  return `${hash.substring(0, 8)}-${hash.substring(8, 12)}-${hash.substring(12, 16)}-${hash.substring(
-    16,
-    20
-  )}-${hash.substring(20, 32)}`;
+  // return murmurhash3.hash128(name + version + ecosystem + parentRange + customRegistry + childHashes.sort().join(''));
 }
 
 export function dfsGenerateMerkleTreeFromDepTree(
   currentDep: DepTreeDep,
   recursionFn?: (dep: DepTreeDep) => DependencyGraphNode
 ): DependencyGraphNode {
+  const children: DependencyGraphNode[] = [];
+
   if (!recursionFn) {
     recursionFn = dfsGenerateMerkleTreeFromDepTree;
   }
-
-  const children: DependencyGraphNode[] = [];
 
   // DependencyGraphEdge
   if (currentDep.dependencies) {
@@ -77,13 +91,13 @@ export function dfsGenerateMerkleTreeFromDepTree(
 
   const currentEdge: DependencyGraphNode = {
     treeHashId: generateMerkleHash({
-      name: currentDep.name || '',
-      version: currentDep.version || '',
+      name: currentDep.name !== undefined ? currentDep.name : '',
+      version: currentDep.version !== undefined ? currentDep.version : '',
       // TODO: Add support for custom registries
       customRegistry: '',
       // TODO: Add support for other ecosystem types
       ecosystem: 'npm',
-      parentRange: currentDep.range || undefined,
+      parentRange: currentDep.range !== null ? currentDep.range : undefined,
       childHashes: children.map((edge) => edge.treeHashId),
     }),
     // TODO: Add support for custom registries
@@ -91,7 +105,7 @@ export function dfsGenerateMerkleTreeFromDepTree(
     // TODO: Add support for other ecosystem types
     packageEcosystem: 'npm',
     packageData: currentDep,
-    parentRange: currentDep.range || undefined,
+    parentRange: currentDep.range !== null ? currentDep.range : undefined,
     children,
   };
 

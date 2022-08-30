@@ -74,8 +74,9 @@ export const BuildDetails: React.FunctionComponent = () => {
 
     const filteredFindings = ignoreFindings ? filterFindingsNotIgnored(build.findings) : build.findings;
 
-    const depTree = build.build_dependency_relationships
-      ? new DependencyTree(build.build_dependency_relationships)
+    // todo this is a dumb hack that will only build the tree for hte first manifest we scanned.
+    const depTree = build.resolved_manifests[0]?.child_edges_recursive
+      ? new DependencyTree(build.resolved_manifests[0].child_edges_recursive)
       : null;
 
     // Responsible for showing or hiding the findings list when quick view is open.  D-none only applies on screens smaller than xxl(1400)
