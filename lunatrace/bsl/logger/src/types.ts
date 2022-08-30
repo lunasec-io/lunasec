@@ -28,7 +28,7 @@ export interface LogObj {
   timePretty: string;
   name: string;
   message: string;
-  context: Record<string, string>;
+  context: object;
 }
 
 export interface Transport {

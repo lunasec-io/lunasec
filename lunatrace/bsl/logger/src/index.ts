@@ -145,7 +145,10 @@ export class LunaLogger {
       // If the argument is an object, then add its keys to the context object
       if (this.isObject(arg)) {
         const argAsObject = arg as object;
-        logObject.context = mergeObjectIntoRecord(logObject.context, argAsObject);
+        logObject.context = {
+          ...logObject.context,
+          ...argAsObject,
+        };
         return;
       }
 
