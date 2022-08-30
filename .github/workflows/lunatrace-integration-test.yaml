@@ -1,4 +1,4 @@
-name: LunaTrace Hasura Migrate and Regenerate
+name: LunaTrace Stack and Hasura
 
 # This workflow posts hasura changes as a comment.
 on:
@@ -36,6 +36,7 @@ jobs:
       - name: Build
         run: |-
           set -x
+          yarn install --immutable --immutable-cache --check-cache --inline-builds
           (cd lunatrace/bsl/logger && yarn run compile)
           (cd lunatrace/bsl/common && yarn run compile)
           (cd lunatrace/bsl/backend && yarn run compile)
