@@ -67,8 +67,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
       );
       // For each dependent, add it to our list of dependents and populate its own dependents recursively
       const dependents = unbuiltDependents.map(recursivelyBuildNode);
-      const builtNode = { ...dep, dependents };
-      return builtNode;
+      return { ...dep, dependents };
     };
     // start with the root dependencies
     const rootDeps = this.flatDeps.filter((d) => {
