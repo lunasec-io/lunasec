@@ -16,7 +16,7 @@ import { createAppAuth } from '@octokit/auth-app';
 import { GraphQLClient } from 'graphql-request';
 
 import { getGithubAppConfig } from '../config';
-import { MaybeError } from '../types/util';
+import { MaybeError, MaybeResultOrError } from '../types/util';
 import { newError, newResult } from '../utils/errors';
 import { catchError, threwError } from '../utils/try';
 
@@ -44,7 +44,7 @@ export function getGithubAppAuth(clientInfo?: { clientId: string; clientSecret: 
 }
 
 // TODO (cthompson) catch error thrown by auth
-export async function getInstallationAccessToken(installationId: number): Promise<MaybeError<string>> {
+export async function getInstallationAccessToken(installationId: number): Promise<MaybeResultOrError<string>> {
   const auth = getGithubAppAuth();
 
   // Retrieves the installation access token

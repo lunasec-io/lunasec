@@ -13,6 +13,23 @@
  */
 
 export interface BuildDependencyPartial {
+  child_id: string;
+  parent_id?: string;
+  child: {
+    range: string;
+    release_id: string;
+    release: {
+      version: string;
+      package: {
+        affected_by_vulnerability: Array<AffectedByVulnerability>;
+        name: string;
+        package_manager: string;
+      };
+    };
+  };
+}
+/*
+export interface BuildDependencyPartial {
   id: string;
   depended_by_relationship_id?: string;
   range: string;
@@ -26,7 +43,7 @@ export interface BuildDependencyPartial {
     };
   };
 }
-
+*/
 export interface AffectedByVulnerability {
   vulnerability: {
     id: string;
