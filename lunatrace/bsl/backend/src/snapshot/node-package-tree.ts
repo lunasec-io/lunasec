@@ -65,7 +65,6 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
           version: pkg.version,
         };
       });
-
       // Remove the repo path from the returned lockfile path
       const truncatedLockfilePath = lockFilePath.replace(new RegExp('^' + repoDir), '');
 
@@ -79,11 +78,6 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
       };
     })
   );
-}
-
-interface ManifestDependencyNode {
-  id: string;
-  range: string | undefined;
 }
 
 interface ManifestDependencyEdge {
@@ -176,9 +170,12 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   log.info(`Found ${uniqueNodeRootIds.size} unique root dependency hashes`);
 
-  const currentlyKnownRootIds = await db.manyOrNone('SELECT id FROM manifest_dependency_node WHERE id IN (SELECT $1)', [
-    pgp.as.array(Array.from(uniqueNodeRootIds)),
-  ]);
+  const currentlyKnownRootIds = await db.manyOrNone(
+    `SELECT id FROM manifest_dependency_node WHERE id IN (${pgp.as
+      .array(Array.from(uniqueNodeRootIds))
+      .replace(/^array\[/i, '')
+      .replace(/]$/, '')})`
+  );
 
   log.info(`Found ${uniqueNodeRootIds.size} missing root dependency hashes`);
 
@@ -202,10 +199,12 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   log.info(`Total ${dependencyNodeMap.size} unique transitive dependency hashes`);
 
-  const currentlyKnownTransitiveDependencyIds = await db.manyOrNone<string>(
-    'SELECT id FROM manifest_dependency_node WHERE id IN (SELECT $1)',
-    [pgp.as.array(Array.from(dependencyNodeMap.keys()))]
-  );
+  const currentKnownQuery = `SELECT id FROM manifest_dependency_node WHERE id IN (${pgp.as
+    .array(Array.from(dependencyNodeMap.keys()))
+    .replace(/^array\[/i, '')
+    .replace(/]$/, '')})`;
+
+  const currentlyKnownTransitiveDependencyIds = await db.manyOrNone<string>(currentKnownQuery);
 
   log.info(`Found ${currentlyKnownTransitiveDependencyIds.length} known transitive dependency hashes`);
 
@@ -213,9 +212,9 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
   // Warning: Dragons!
   // We're mutating state which is where bugs stem from.
   // This will reduce memory usage though, so we'll allow it.
-  for (const [key] of currentlyKnownTransitiveDependencyIds) {
-    dependencyNodeMap.delete(key);
-  }
+  currentlyKnownTransitiveDependencyIds.forEach((id) => {
+    dependencyNodeMap.delete(id);
+  });
 
   log.info(`Found ${dependencyNodeMap.size} transitive dependency hashes to insert`);
 
