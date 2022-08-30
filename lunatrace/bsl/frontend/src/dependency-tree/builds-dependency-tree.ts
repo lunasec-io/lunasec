@@ -54,13 +54,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     // an internal recursive function that builds each node
     // it's in the constructor because this has access to the class generic and the flatDeps
     // recursive stuff is always a little hairy but this is really quite dead simple
-    const cycleCheckIds: Array<string> = [];
     const recursivelyBuildNode = (dep: BuildDependency): TreeNode<BuildDependency> => {
-      // Check for cycles, just in case
-      if (cycleCheckIds.includes(dep.child_id)) {
-        throw new Error('Dependency cycle detected!');
-      }
-      cycleCheckIds.push(dep.child_id);
       // Find every dep that points back at this dep
       const unbuiltDependents = this.flatDeps.filter(
         (potentialDependent) => potentialDependent.parent_id === dep.child_id
