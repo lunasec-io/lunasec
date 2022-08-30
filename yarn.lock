@@ -40271,6 +40271,7 @@ __metadata:
     jwks-rsa: ^2.0.5
     jwt-decode: ^3.1.2
     markdown-table: 2.0.0
+    murmurhash-native: ^3.5.0
     nodemon: ^2.0.15
     octokit: ^1.7.1
     pg: ^8.7.1
@@ -42088,6 +42089,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"murmurhash-native@npm:^3.5.0":
+  version: 3.5.0
+  resolution: "murmurhash-native@npm:3.5.0"
+  dependencies:
+    nan: ^2.14.1
+    node-pre-gyp: ^0.14.0
+  checksum: 05c8d1a2ad95d4b8f259b8a858fe5d8722896c98431f6677ffb94fc44d6398937e2a5b312a74f2a28822d30419ad02dfc0161aaec27c7adce35a7de18b5d1eea
+  languageName: node
+  linkType: hard
+
 "mute-stream@npm:0.0.7":
   version: 0.0.7
   resolution: "mute-stream@npm:0.0.7"
@@ -42119,6 +42130,15 @@ __metadata:
   dependencies:
     node-gyp: latest
   checksum: 33e1bb4dfca447fe37d4bb5889be55de154828632c8d38646db67293a21afd61ed9909cdf1b886214a64707d935926c4e60e2b09de9edfc2ad58de31d6ce8f39
+  languageName: node
+  linkType: hard
+
+"nan@npm:^2.14.1":
+  version: 2.16.0
+  resolution: "nan@npm:2.16.0"
+  dependencies:
+    node-gyp: latest
+  checksum: cb16937273ea55b01ea47df244094c12297ce6b29b36e845d349f1f7c268b8d7c5abd126a102c5678a1e1afd0d36bba35ea0cc959e364928ce60561c9306064a
   languageName: node
   linkType: hard
 
@@ -42652,6 +42672,26 @@ __metadata:
   bin:
     node-pre-gyp: ./bin/node-pre-gyp
   checksum: b0db47eb6594d6a6844efa2ee75a12c772a22109f67dd864d6bc14538752c1c336e8d640af3a6f92504ac67d68be5aa186a5de169e1e0626df58f003ff2a8133
+  languageName: node
+  linkType: hard
+
+"node-pre-gyp@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "node-pre-gyp@npm:0.14.0"
+  dependencies:
+    detect-libc: ^1.0.2
+    mkdirp: ^0.5.1
+    needle: ^2.2.1
+    nopt: ^4.0.1
+    npm-packlist: ^1.1.6
+    npmlog: ^4.0.2
+    rc: ^1.2.7
+    rimraf: ^2.6.1
+    semver: ^5.3.0
+    tar: ^4.4.2
+  bin:
+    node-pre-gyp: ./bin/node-pre-gyp
+  checksum: 2bdf1c51fbe96d54b70083818f92717cb97285a5e5b2543c2da4c9672a0af1003c77667df502593af317fa99a616b57af022617c8f288ea2ab11d11890c4b2f3
   languageName: node
   linkType: hard
 
@@ -53121,7 +53161,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar@npm:^4, tar@npm:^4.4.10, tar@npm:^4.4.12, tar@npm:^4.4.8":
+"tar@npm:^4, tar@npm:^4.4.10, tar@npm:^4.4.12, tar@npm:^4.4.2, tar@npm:^4.4.8":
   version: 4.4.19
   resolution: "tar@npm:4.4.19"
   dependencies:

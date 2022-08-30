@@ -13,22 +13,22 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  _text: any;
+  _text: string;
   affected_range_type: any;
   bigint: number;
-  builds_source_type: any;
-  date: any;
-  fix_state_enum: any;
-  jsonb: any;
+  builds_source_type: 'cli'|'gui'|'pr'|'default_branch';
+  date: string;
+  fix_state_enum: 'fixed'|'not-fixed'|'unknown';
+  jsonb: Record<any, any> | any[];
   license_source: any;
-  organization_user_role: any;
+  organization_user_role: string;
   package_manager: any;
   reference_type: any;
-  severity_enum: any;
-  timestamp: any;
-  timestamptz: any;
+  severity_enum: string;
+  timestamp: string;
+  timestamptz: string;
   user_role: 'organization_user'|'lunatrace_admin';
-  uuid: any;
+  uuid: string;
 };
 
 export type AuthenticatedRepoCloneUrlOutput = {
