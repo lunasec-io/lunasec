@@ -202,6 +202,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     packageVersion: string
   ): DependencyChain<BuildDependency>[] {
     const chains: DependencyChain<BuildDependency>[] = [];
+
     // walk tree recursively, finding all paths that contain a given item and putting them in the array
     function findInstanceRecur(
       currentNode: TreeNode<BuildDependency>,
