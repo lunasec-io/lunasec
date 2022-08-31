@@ -38,7 +38,7 @@ export class JsonTransport implements Transport {
     const { message, ...logWithoutMessage } = logObj;
     const logWithMessageOnBottom = { ...logWithoutMessage, message };
 
-    const logString = JSON.stringify(logWithMessageOnBottom, undefined, spacing).replace(/\n/, '\\n');
+    const logString = JSON.stringify(logWithMessageOnBottom, undefined, spacing).replace(/\n/g, '\\n');
     if (this.options.colors) {
       const colors = this.getColors(logObj.level);
       console.log(colorize(logString, { colors }));
