@@ -248,15 +248,13 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   log.info(`Total ${dependencyNodeMap.size} unique transitive dependency hashes`);
 
-  const currentKnownQuery =
-    dependencyNodeMap.size > 0
-      ? `SELECT id FROM manifest_dependency_node WHERE id IN (${pgp.as
-          .array(Array.from(dependencyNodeMap.keys()))
-          .replace(/^array\[/i, '')
-          .replace(/]$/, '')})`
-      : [];
+  const currentKnownQuery = `SELECT id FROM manifest_dependency_node WHERE id IN (${pgp.as
+    .array(Array.from(dependencyNodeMap.keys()))
+    .replace(/^array\[/i, '')
+    .replace(/]$/, '')})`;
 
-  const currentlyKnownTransitiveDependencyIds = await db.manyOrNone<string>(currentKnownQuery);
+  const currentlyKnownTransitiveDependencyIds =
+    dependencyNodeMap.size > 0 ? await db.manyOrNone<string>(currentKnownQuery) : [];
 
   log.info(`Found ${currentlyKnownTransitiveDependencyIds.length} known transitive dependency hashes`);
 
