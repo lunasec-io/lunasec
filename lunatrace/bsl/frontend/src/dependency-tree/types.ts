@@ -16,6 +16,7 @@ export interface BuildDependencyPartial {
   child_id: string;
   parent_id?: string;
   child: {
+    id: string;
     range: string;
     release_id: string;
     release: {

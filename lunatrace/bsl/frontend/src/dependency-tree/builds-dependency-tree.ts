@@ -18,6 +18,20 @@ import { AffectedByVulnerability, BuildDependencyPartial, DependencyChain, TreeN
 // This is just what we need someone to give us to build the tree
 // We extend this type with generics below so if they give us more data, we will give back more data
 
+export interface BuildDependencyNode {
+  id: string;
+  range: string;
+  release: {
+    version: string;
+    package: {
+      affected_by_vulnerability: Array<AffectedByVulnerability>;
+      name: string;
+      package_manager: string;
+    };
+  };
+  children: BuildDependencyNode[];
+}
+
 /**
  *  hasura and graphql doesn't allow us to fetch recursive stuff, so we build the tree ourselves on the client
  *  Note that the same dependency could appear multiple times in this tree if multiple things depend on it
@@ -28,47 +42,64 @@ import { AffectedByVulnerability, BuildDependencyPartial, DependencyChain, TreeN
 export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
   public readonly tree: Array<TreeNode<BuildDependency>>;
   public readonly flatVulns: Array<AffectedByVulnerability>; // may contain multiple copies of the same vuln from different deps
-  public flatDeps: Array<BuildDependency>;
+  public flatEdges: Array<BuildDependency>;
+
   constructor(sourceDeps: Array<BuildDependency>) {
     this.flatVulns = [];
+
     // This is a hack to clone this object and unfreeze it, surprisingly tricky in JS
-    this.flatDeps = JSON.parse(JSON.stringify(sourceDeps));
+    this.flatEdges = JSON.parse(JSON.stringify(sourceDeps));
+
     // Go and clean out all the vulnerabilities that don't apply to this version since the DB doesn't know how to do that yet
-    this.flatDeps.forEach((dep) => {
-      dep.child.release.package.affected_by_vulnerability = dep.child.release.package.affected_by_vulnerability.filter(
-        (vuln) => {
+    this.flatEdges.forEach((edge) => {
+      edge.child.release.package.affected_by_vulnerability =
+        edge.child.release.package.affected_by_vulnerability.filter((vuln) => {
           const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
-          const isVulnerable = semver.satisfies(dep.child.release.version, vulnerableRange);
+          const isVulnerable = semver.satisfies(edge.child.release.version, vulnerableRange);
           return isVulnerable;
-        }
-      );
+        });
 
       // Mark the vulns that can be trivially updated
-      dep.child.release.package.affected_by_vulnerability.forEach((vuln) => {
-        vuln.triviallyUpdatable = this.precomputeVulnTriviallyUpdatable(dep.child.range, vuln);
+      edge.child.release.package.affected_by_vulnerability.forEach((vuln) => {
+        vuln.triviallyUpdatable = this.precomputeVulnTriviallyUpdatable(edge.child.range, vuln);
         // Also add it to the flat vuln list for easy access
         this.flatVulns.push(vuln);
       });
     });
 
+    const alreadyBuiltNodes = new Map<string, TreeNode<BuildDependency>>();
+
     // an internal recursive function that builds each node
     // it's in the constructor because this has access to the class generic and the flatDeps
     // recursive stuff is always a little hairy but this is really quite dead simple
     const recursivelyBuildNode = (dep: BuildDependency): TreeNode<BuildDependency> => {
+      if (alreadyBuiltNodes.has(dep.child_id)) {
+        return alreadyBuiltNodes.get(dep.child_id) as TreeNode<BuildDependency>;
+      }
+
       // Find every dep that points back at this dep
-      const unbuiltDependents = this.flatDeps.filter(
-        (potentialDependent) => potentialDependent.parent_id === dep.child_id
-      );
+      const unbuiltEdges = this.flatEdges.filter((potentialDependent) => potentialDependent.parent_id === dep.child_id);
+
       // For each dependent, add it to our list of dependents and populate its own dependents recursively
-      const dependents = unbuiltDependents.map(recursivelyBuildNode);
-      return { ...dep, dependents };
+      const dependents = unbuiltEdges.map(recursivelyBuildNode);
+
+      const newDep: TreeNode<BuildDependency> = {
+        ...dep,
+        dependents,
+      };
+
+      alreadyBuiltNodes.set(dep.child_id, newDep);
+
+      return newDep;
     };
+
     // start with the root dependencies
-    const rootDeps = this.flatDeps.filter((d) => {
-      return d.parent_id === null || d.parent_id === '00000000-0000-0000-0000-000000000000';
+    const rootEdges = this.flatEdges.filter((d) => {
+      return d.parent_id === '00000000-0000-0000-0000-000000000000';
     });
+
     // kick off the tree build
-    this.tree = rootDeps.map((rootDep) => recursivelyBuildNode(rootDep));
+    this.tree = rootEdges.map((rootEdge) => recursivelyBuildNode(rootEdge));
   }
 
   private precomputeVulnTriviallyUpdatable(requestedRange: string, vuln: AffectedByVulnerability): boolean {
@@ -132,7 +163,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
   }
 
   public checkIfPackageTriviallyUpdatable(packageName: string, version: string): 'yes' | 'partially' | 'no' {
-    const matchingDeps = this.flatDeps.filter(
+    const matchingDeps = this.flatEdges.filter(
       (dep) => dep.child.release.package.name === packageName && dep.child.release.version === version
     );
 
