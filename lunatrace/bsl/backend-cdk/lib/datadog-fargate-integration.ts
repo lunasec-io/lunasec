@@ -121,7 +121,7 @@ export class DatadogFargateIntegration extends cdk.Construct {
     const datadogApiKey = Secret.fromSecretCompleteArn(this, 'DatadogApiKeySecret', props.datadogApiKeyArn);
 
     const datadog = taskDefinition.addContainer('dd-agent', {
-      image: ecs.ContainerImage.fromRegistry('datadog/docker-dd-agent'),
+      image: ecs.ContainerImage.fromRegistry('datadog/agent'),
       memoryLimitMiB: 256,
       environment,
       logging: LogDriver.awsLogs({
