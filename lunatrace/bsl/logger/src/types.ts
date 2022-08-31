@@ -37,5 +37,5 @@ export interface Transport {
 
 // This is the type of the splatted args to all our log functions
 // This seems like a cleaner alternative to method overloading since we need this many times, only downside is args wont be named in tooltip
-// export type LogMethodArgs = [Record<string, any>, string | undefined] | [string];
+// export type LogMethodArgs = [LoggerContext, string | undefined] | [string];
 export type LogMethodArgs = Array<unknown>;
