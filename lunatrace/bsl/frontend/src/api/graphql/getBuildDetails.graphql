@@ -16,6 +16,7 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                 parent_id
                 child_id
                 child {
+                    id
                     range
                     labels
                     release_id
