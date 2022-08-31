@@ -36,7 +36,7 @@ function formatObjectValues<K extends string, T, U>(obj: Record<K, T>, f: (x: T)
   }, {} as Record<K, U>);
 }
 
-function mergeObjectIntoRecord(record: Record<string, any>, obj: Record<string, any>): Record<string, any> {
+function mergeObjectIntoRecord(record: LoggerContext, obj: LoggerContext): LoggerContext {
   return {
     ...record,
     ...formatObjectValues(obj, (v) => (v instanceof Error ? v.stack || v.toString() : v)),
@@ -55,11 +55,11 @@ function anythingToString(arg: unknown): string {
 
 export class LunaLogger {
   options: LoggerOptions = defaultLoggerOptions;
-  context: Record<string, any>;
+  context: LoggerContext;
   storage: AsyncLocalStorage<{ context: LoggerContext }>;
   public transports: Array<Transport> = [];
 
-  constructor(options?: LoggerOptions, additionalFields?: Record<string, any>) {
+  constructor(options?: LoggerOptions, additionalFields?: LoggerContext) {
     this.options = options || defaultLoggerOptions;
     this.storage = new AsyncLocalStorage();
     this.context = {
@@ -68,7 +68,7 @@ export class LunaLogger {
     };
   }
 
-  public child(name: string, additionalFields?: Record<string, any>): LunaLogger {
+  public child(name: string, additionalFields?: LoggerContext): LunaLogger {
     const newContext = mergeObjectIntoRecord(this.context, additionalFields || {});
     const childLogger = new LunaLogger(
       {
@@ -84,7 +84,7 @@ export class LunaLogger {
 
   // This node wizardry is like stack / thread storage.  Anywhere in this callstack, these fields will be used by the logger
   // It HAS to take a function for the wrapping to work. Wrapped it in a promise since that simplifies usage and keeps the user from having to generate their own new Promise()
-  public provideFields<T>(fields: Record<string, any>, callback: () => T): Promise<T> {
+  public provideFields<T>(fields: LoggerContext, callback: () => T): Promise<T> {
     return new Promise((resolve, reject) => {
       // .run will overwrite the previous store (if any) from any higher level provideFields calls, so we merge them together here before overwriting
       const existing = this.storage.getStore();
