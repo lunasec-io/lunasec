@@ -203,6 +203,10 @@ async function insertEdgesToDatabase<Ext>(t: ITask<Ext>, queryData: ManifestDepe
 async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: CollectedPackageTree[]) {
   log.info(`Inserting ${pkgGraphs.length} package graphs into database`);
 
+  if (pkgGraphs.length === 0) {
+    return;
+  }
+
   const uniqueRootDependencyHashes = pkgGraphs.flatMap((pkgGraph) =>
     pkgGraph.dependencies.map((pkg) => pkg.rootNode.treeHashId)
   );
@@ -212,12 +216,15 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   log.info(`Found ${uniqueNodeRootIds.size} unique root dependency hashes`);
 
-  const currentlyKnownRootIds = await db.manyOrNone(
-    `SELECT id FROM manifest_dependency_node WHERE id IN (${pgp.as
-      .array(Array.from(uniqueNodeRootIds))
-      .replace(/^array\[/i, '')
-      .replace(/]$/, '')})`
-  );
+  const currentlyKnownRootIds =
+    uniqueNodeRootIds.size > 0
+      ? await db.manyOrNone(
+          `SELECT id FROM manifest_dependency_node WHERE id IN (${pgp.as
+            .array(Array.from(uniqueNodeRootIds))
+            .replace(/^array\[/i, '')
+            .replace(/]$/, '')})`
+        )
+      : [];
 
   log.info(`Found ${uniqueNodeRootIds.size} missing root dependency hashes`);
 
@@ -246,7 +253,8 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
     .replace(/^array\[/i, '')
     .replace(/]$/, '')})`;
 
-  const currentlyKnownTransitiveDependencyIds = await db.manyOrNone<string>(currentKnownQuery);
+  const currentlyKnownTransitiveDependencyIds =
+    dependencyNodeMap.size > 0 ? await db.manyOrNone<string>(currentKnownQuery) : [];
 
   log.info(`Found ${currentlyKnownTransitiveDependencyIds.length} known transitive dependency hashes`);
 
