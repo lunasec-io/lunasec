@@ -36,7 +36,7 @@ export class FileTransport implements Transport {
       return;
     }
 
-    const logString = JSON.stringify(logObj, undefined, 0);
+    const logString = JSON.stringify(logObj, undefined, 0).replace(/\n/, '\\n');
 
     this.fileStream.write(logString + '\n', (e) => {
       if (e) {
