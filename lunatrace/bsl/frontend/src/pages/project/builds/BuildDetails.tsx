@@ -13,7 +13,7 @@
  */
 import { filterFindingsNotIgnored } from '@lunatrace/lunatrace-common';
 import classNames from 'classnames';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
@@ -79,8 +79,10 @@ export const BuildDetails: React.FunctionComponent = () => {
       return manifest.child_edges_recursive || [];
     });
 
-    // todo this is a dumb hack that will only build the tree for hte first manifest we scanned.
-    const depTree = mergedDependencies && mergedDependencies.length > 0 ? new DependencyTree(mergedDependencies) : null;
+    const depTree = useMemo(
+      () => (mergedDependencies && mergedDependencies.length > 0 ? new DependencyTree(mergedDependencies) : null),
+      [mergedDependencies]
+    );
 
     // Responsible for showing or hiding the findings list when quick view is open.  D-none only applies on screens smaller than xxl(1400)
     // meaning that the findings list will be hidden on smaller screens when quick view is open.
