@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 import { inspect } from 'util';
 
 import { Certificate } from '@aws-cdk/aws-certificatemanager';
