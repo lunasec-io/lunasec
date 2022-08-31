@@ -27,7 +27,7 @@ export const pgp = pgPromise({
   /* initialization options */
   capSQL: true, // capitalize all generated SQL
   query: (e) => {
-    log.info('DB QUERY', {
+    log.debug('DB QUERY', {
       query: e.query,
     });
   },
