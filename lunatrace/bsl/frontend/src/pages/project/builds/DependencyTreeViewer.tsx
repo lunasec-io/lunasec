@@ -13,7 +13,7 @@
  */
 import React, { useMemo } from 'react';
 
-import { Resolved_Manifest } from '../../../api/generated';
+import { GetBuildDetailsQuery, Resolved_Manifest } from '../../../api/generated';
 import { DependencyTree } from '../../../dependency-tree/builds-dependency-tree';
 import useBreakpoint from '../../../hooks/useBreakpoint';
 
@@ -21,45 +21,12 @@ import { QuickViewProps } from './types';
 import { VulnerablePackageList } from './vulnerable-packages/VulnerablePackageList';
 import { Finding } from './vulnerable-packages/types';
 
-export interface ResolvedManifestQueryResponse {
-  __typename?: 'resolved_manifest';
-  id: any;
-  path?: string | null;
-  child_edges_recursive?: Array<{
-    __typename?: 'manifest_dependency_edge';
-    parent_id: any;
-    child_id: any;
-    child: {
-      __typename?: 'manifest_dependency_node';
-      id: any;
-      range: string;
-      labels?: any | null;
-      release_id: any;
-      release: {
-        __typename?: 'package_release';
-        id: any;
-        fetched_time?: any | null;
-        version: string;
-        package: {
-          __typename?: 'package';
-          name: string;
-          last_successful_fetch?: any | null;
-          package_manager: any;
-          affected_by_vulnerability: Array<{
-            __typename?: 'vulnerability_affected';
-            vulnerability: { __typename?: 'vulnerability'; id: any; source_id: string; source: string };
-            ranges: Array<{ __typename?: 'vulnerability_range'; introduced?: string | null; fixed?: string | null }>;
-          }>;
-        };
-      };
-    };
-  }> | null;
-}
+export type ResolvedManifestQueryResponse = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['resolved_manifests'];
 
 export interface DependencyTreeViewerProps {
   findings: Finding[];
   quickViewConfig: QuickViewProps;
-  resolvedManifests: ResolvedManifestQueryResponse[];
+  resolvedManifests: ResolvedManifestQueryResponse;
   projectId: string;
   toggleIgnoreFindings: () => void;
 }
