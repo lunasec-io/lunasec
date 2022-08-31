@@ -245,8 +245,14 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   const currentKnownQuery = `SELECT id FROM manifest_dependency_node WHERE id IN ($1:csv)`;
 
+  log.info(`keys`, {
+    keys: Array.from(dependencyNodeMap.keys()),
+  });
+
   const currentlyKnownTransitiveDependencyIds =
-    dependencyNodeMap.size > 0 ? await db.manyOrNone<string>(currentKnownQuery, [dependencyNodeMap.keys()]) : [];
+    dependencyNodeMap.size > 0
+      ? await db.manyOrNone<string>(currentKnownQuery, [Array.from(dependencyNodeMap.keys())])
+      : [];
 
   log.info(`Found ${currentlyKnownTransitiveDependencyIds.length} known transitive dependency hashes`);
 
