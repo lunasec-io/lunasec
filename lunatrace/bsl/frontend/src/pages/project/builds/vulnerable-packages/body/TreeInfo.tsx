@@ -78,10 +78,10 @@ export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depChain
           chainDedupeSlugs.push(dedupeSlug);
 
           return (
-            <div className="one-point-two-em d-flex pb-1 pt-1" key={JSON.stringify(chain)}>
+            <div className="one-point-two-em d-flex pb-1 pt-1" key={dedupeSlug}>
               {visibleChain.map((dep, index) => {
                 return (
-                  <React.Fragment key={JSON.stringify(dep)}>
+                  <React.Fragment key={dep.child_id}>
                     <div className="me-1 ms-1 d-inline-flex justify-content-center" style={{ flexDirection: 'column' }}>
                       {index !== 0 &&
                         (chain.length > visibleChain.length ? (
