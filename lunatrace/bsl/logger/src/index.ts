@@ -28,14 +28,19 @@ const defaultLoggerOptions: LoggerOptions = {
 
 const defaultLoggerContext: LoggerContext = {};
 
-function mergeObjectIntoRecord(record: Record<string, string>, obj: object): Record<string, string> {
-  const copiedRecord = {
+function formatObjectValues<K extends string, T, U>(obj: Record<K, T>, f: (x: T) => U): Record<K, U> {
+  return Object.keys(obj).reduce((ret, key) => {
+    const k = key as K;
+    ret[k] = f(obj[k]);
+    return ret;
+  }, {} as Record<K, U>);
+}
+
+function mergeObjectIntoRecord(record: LoggerContext, obj: LoggerContext): LoggerContext {
+  return {
     ...record,
+    ...formatObjectValues(obj, (v) => (v instanceof Error ? v.stack || v.toString() : v)),
   };
-  Object.entries(obj).forEach(([k, v]) => {
-    copiedRecord[k] = anythingToString(v);
-  });
-  return copiedRecord;
 }
 
 function anythingToString(arg: unknown): string {
@@ -50,11 +55,11 @@ function anythingToString(arg: unknown): string {
 
 export class LunaLogger {
   options: LoggerOptions = defaultLoggerOptions;
-  context: Record<string, string>;
+  context: LoggerContext;
   storage: AsyncLocalStorage<{ context: LoggerContext }>;
   public transports: Array<Transport> = [];
 
-  constructor(options?: LoggerOptions, additionalFields?: Record<string, unknown>) {
+  constructor(options?: LoggerOptions, additionalFields?: LoggerContext) {
     this.options = options || defaultLoggerOptions;
     this.storage = new AsyncLocalStorage();
     this.context = {
@@ -63,7 +68,7 @@ export class LunaLogger {
     };
   }
 
-  public child(name: string, additionalFields?: Record<string, unknown>): LunaLogger {
+  public child(name: string, additionalFields?: LoggerContext): LunaLogger {
     const newContext = mergeObjectIntoRecord(this.context, additionalFields || {});
     const childLogger = new LunaLogger(
       {
@@ -79,7 +84,7 @@ export class LunaLogger {
 
   // This node wizardry is like stack / thread storage.  Anywhere in this callstack, these fields will be used by the logger
   // It HAS to take a function for the wrapping to work. Wrapped it in a promise since that simplifies usage and keeps the user from having to generate their own new Promise()
-  public provideFields<T>(fields: Record<string, unknown>, callback: () => T): Promise<T> {
+  public provideFields<T>(fields: LoggerContext, callback: () => T): Promise<T> {
     return new Promise((resolve, reject) => {
       // .run will overwrite the previous store (if any) from any higher level provideFields calls, so we merge them together here before overwriting
       const existing = this.storage.getStore();
@@ -144,17 +149,13 @@ export class LunaLogger {
     args.forEach((arg) => {
       // If the argument is an object, then add its keys to the context object
       if (this.isObject(arg)) {
-        const argAsObject = arg as object;
-        logObject.context = {
-          ...logObject.context,
-          ...argAsObject,
-        };
+        logObject.context = mergeObjectIntoRecord(logObject.context, arg as object);
         return;
       }
 
       const argAsString = anythingToString(arg);
       // Otherwise, just glob everything onto the message
-      logObject.message = logObject.message.concat(argAsString);
+      logObject.message = logObject.message.concat(argAsString + ' ');
     });
     this.transport(logObject);
     return;
