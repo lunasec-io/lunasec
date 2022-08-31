@@ -216,12 +216,10 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   log.info(`Found ${uniqueNodeRootIds.size} unique root dependency hashes`);
 
+  const currentKnownRootIdsQuery = `SELECT id FROM manifest_dependency_node WHERE id IN ($1:csv)`;
+
   const currentlyKnownRootIds =
-    uniqueNodeRootIds.size > 0
-      ? await db.manyOrNone(`SELECT id FROM manifest_dependency_node WHERE id IN ($1:csv)`, [
-          Array.from(uniqueNodeRootIds),
-        ])
-      : [];
+    uniqueNodeRootIds.size > 0 ? await db.manyOrNone(currentKnownRootIdsQuery, [Array.from(uniqueNodeRootIds)]) : [];
 
   log.info(`Found ${uniqueNodeRootIds.size} missing root dependency hashes`);
 
@@ -245,13 +243,10 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   log.info(`Total ${dependencyNodeMap.size} unique transitive dependency hashes`);
 
-  const currentKnownQuery = `SELECT id FROM manifest_dependency_node WHERE id IN (${pgp.as
-    .array(Array.from(dependencyNodeMap.keys()))
-    .replace(/^array\[/i, '')
-    .replace(/]$/, '')})`;
+  const currentKnownQuery = `SELECT id FROM manifest_dependency_node WHERE id IN ($1:csv)`;
 
   const currentlyKnownTransitiveDependencyIds =
-    dependencyNodeMap.size > 0 ? await db.manyOrNone<string>(currentKnownQuery) : [];
+    dependencyNodeMap.size > 0 ? await db.manyOrNone<string>(currentKnownQuery, [dependencyNodeMap.keys()]) : [];
 
   log.info(`Found ${currentlyKnownTransitiveDependencyIds.length} known transitive dependency hashes`);
 
