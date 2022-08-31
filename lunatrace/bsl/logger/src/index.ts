@@ -28,10 +28,18 @@ const defaultLoggerOptions: LoggerOptions = {
 
 const defaultLoggerContext: LoggerContext = {};
 
-function mergeObjectIntoRecord(record: Record<string, any>, obj: object): Record<string, any> {
+function formatObjectValues<K extends string, T, U>(obj: Record<K, T>, f: (x: T) => U): Record<K, U> {
+  return Object.keys(obj).reduce((ret, key) => {
+    const k = key as K;
+    ret[k] = f(obj[k]);
+    return ret;
+  }, {} as Record<K, U>);
+}
+
+function mergeObjectIntoRecord(record: Record<string, any>, obj: Record<string, any>): Record<string, any> {
   return {
     ...record,
-    ...obj,
+    ...formatObjectValues(obj, (v) => (v instanceof Error ? v.stack || v.toString() : v)),
   };
 }
 
@@ -141,14 +149,13 @@ export class LunaLogger {
     args.forEach((arg) => {
       // If the argument is an object, then add its keys to the context object
       if (this.isObject(arg)) {
-        const argAsObject = arg as object;
-        logObject.context = mergeObjectIntoRecord(logObject.context, argAsObject);
+        logObject.context = mergeObjectIntoRecord(logObject.context, arg as object);
         return;
       }
 
       const argAsString = anythingToString(arg);
       // Otherwise, just glob everything onto the message
-      logObject.message = logObject.message.concat(argAsString);
+      logObject.message = logObject.message.concat(argAsString + ' ');
     });
     this.transport(logObject);
     return;
