@@ -200,6 +200,34 @@ async function insertEdgesToDatabase<Ext>(t: ITask<Ext>, queryData: ManifestDepe
   await t.none(edgeInsertQuery);
 }
 
+async function findCurrentlyKnownDependencies(query: string, manifestIds: string[]): Promise<string[]> {
+  if (manifestIds.length === 0) {
+    return [];
+  }
+
+  const currentlyKnownIds: string[][] = [];
+
+  for (let i = 0; i < manifestIds.length; i += 999) {
+    const slice = manifestIds.slice(i, i + 999);
+
+    log.info(`Checking ${slice.length} currently known dependencies (${i + slice.length}/${manifestIds.length})`);
+
+    const result = await db.manyOrNone<string>(query, [slice]);
+
+    log.info(`Added ${result.length} known dependencies (${i + slice.length}/${manifestIds.length})`);
+
+    if (result) {
+      currentlyKnownIds.push(result);
+    }
+  }
+
+  const allKnownIds = currentlyKnownIds.flat(1);
+
+  log.info(`Found ${allKnownIds.length} known dependencies`);
+
+  return allKnownIds;
+}
+
 async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: CollectedPackageTree[]) {
   log.info(`Inserting ${pkgGraphs.length} package graphs into database`);
 
@@ -216,10 +244,10 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   log.info(`Found ${uniqueNodeRootIds.size} unique root dependency hashes`);
 
-  const currentKnownRootIdsQuery = `SELECT id FROM manifest_dependency_node WHERE id IN ($1:csv)`;
-
-  const currentlyKnownRootIds =
-    uniqueNodeRootIds.size > 0 ? await db.manyOrNone(currentKnownRootIdsQuery, [Array.from(uniqueNodeRootIds)]) : [];
+  const currentlyKnownRootIds = await findCurrentlyKnownDependencies(
+    `SELECT id FROM manifest_dependency_node WHERE id IN ($1:csv)`,
+    Array.from(uniqueNodeRootIds)
+  );
 
   log.info(`Found ${uniqueNodeRootIds.size} missing root dependency hashes`);
 
@@ -243,16 +271,10 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   log.info(`Total ${dependencyNodeMap.size} unique transitive dependency hashes`);
 
-  const currentKnownQuery = `SELECT id FROM manifest_dependency_node WHERE id IN ($1:csv)`;
-
-  log.info(`keys`, {
-    keys: Array.from(dependencyNodeMap.keys()),
-  });
-
-  const currentlyKnownTransitiveDependencyIds =
-    dependencyNodeMap.size > 0
-      ? await db.manyOrNone<string>(currentKnownQuery, [Array.from(dependencyNodeMap.keys())])
-      : [];
+  const currentlyKnownTransitiveDependencyIds = await findCurrentlyKnownDependencies(
+    `SELECT id FROM manifest_dependency_node WHERE id IN ($1:csv)`,
+    Array.from(dependencyNodeMap.keys())
+  );
 
   log.info(`Found ${currentlyKnownTransitiveDependencyIds.length} known transitive dependency hashes`);
 
