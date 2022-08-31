@@ -218,12 +218,9 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   const currentlyKnownRootIds =
     uniqueNodeRootIds.size > 0
-      ? await db.manyOrNone(
-          `SELECT id FROM manifest_dependency_node WHERE id IN (${pgp.as
-            .array(Array.from(uniqueNodeRootIds))
-            .replace(/^array\[/i, '')
-            .replace(/]$/, '')})`
-        )
+      ? await db.manyOrNone(`SELECT id FROM manifest_dependency_node WHERE id IN ($1:csv)`, [
+          Array.from(uniqueNodeRootIds),
+        ])
       : [];
 
   log.info(`Found ${uniqueNodeRootIds.size} missing root dependency hashes`);

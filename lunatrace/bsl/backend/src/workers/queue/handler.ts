@@ -15,6 +15,7 @@ import { DeleteMessageCommand, Message, ReceiveMessageCommand, ReceiveMessageCom
 
 import { sqsClient } from '../../aws/sqs-client';
 import { getQueueHandlerConfig, getWorkerBucketConfig } from '../../config';
+import { db } from '../../database/db';
 import { SqsQueueConfig, WorkerBucketConfig } from '../../types/config';
 import { MessageTypeToActivityLookup } from '../../types/sqs';
 import { MaybeErrorVoid } from '../../types/util';
@@ -26,6 +27,14 @@ import { createActivities, processLunaTraceSqsMessage } from './queue-processors
 import { processS3SqsMessage } from './queue-processors/process-s3-sqs-message';
 
 export async function startQueueWorker(): Promise<void> {
+  try {
+    const firstId = await db.one('SELECT parent_id FROM lunatrace.public.manifest_dependency_edge LIMIT 1');
+
+    log.info('Debug message test DB connection:', { firstId });
+  } catch (e) {
+    log.error('Error connecting to DB', { error: e });
+  }
+
   const queueWorker = await QueueWorker.newWorker();
   await queueWorker.listenForMessages();
 }
