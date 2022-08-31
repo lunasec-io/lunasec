@@ -65,6 +65,7 @@ async function performSnapshotOnRepository(
 
     if (threwError(s3UploadRes)) {
       log.error('unable to upload sbom to s3', {
+        error: s3UploadRes,
         message: s3UploadRes.message,
       });
 
@@ -87,6 +88,7 @@ async function performSnapshotOnRepository(
       await snapshotPinnedDependencies(buildId, repoDir);
     } catch (err) {
       log.error('failed to snapshot pinned dependencies', {
+        error: err,
         repoDir,
       });
 
