@@ -26,6 +26,11 @@ const conf = {
 export const pgp = pgPromise({
   /* initialization options */
   capSQL: true, // capitalize all generated SQL
+  query: (e) => {
+    log.info('DB QUERY', {
+      query: e.query,
+    });
+  },
 });
 
 export const db = pgp(process.env.DATABASE_CONNECTION_URL || conf);
