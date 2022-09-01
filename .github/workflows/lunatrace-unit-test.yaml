@@ -45,4 +45,4 @@ jobs:
 
       - name: logger-tests
         working-directory: 'lunatrace/bsl/logger'
-        run: yarn run test:jest --verbose
+        run: yarn run test --verbose
