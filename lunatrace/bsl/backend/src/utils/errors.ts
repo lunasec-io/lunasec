@@ -12,16 +12,19 @@
  *
  */
 
+import { ErrorResult, ValueResult } from '../types/util';
+
 import { log } from './log';
 
-export function newError(msg: string): { error: true; msg: string } {
+export function newError(msg: string, err?: Error): ErrorResult {
   return {
     error: true,
     msg,
+    rawError: err,
   };
 }
 
-export function newResult<T>(res: T): { error: false; res: T } {
+export function newResult<T = undefined>(res: T): ValueResult<T> {
   return {
     error: false,
     res,
@@ -32,7 +35,7 @@ export function logError(error: Error): void {
   log.error(error);
 }
 
-export function errorResponse(msg: string) {
+export function errorResponse(msg: string): { error: true; message: string } {
   return {
     error: true,
     message: msg,
