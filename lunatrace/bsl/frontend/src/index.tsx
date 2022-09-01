@@ -11,8 +11,7 @@
  * limitations under the License.
  *
  */
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+
 import { datadogRum } from '@datadog/browser-rum';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -29,7 +28,7 @@ datadogRum.init({
   clientToken: 'pub571912fab56c24ef6732d75a65230513',
   site: 'datadoghq.com',
   service: 'lunatrace',
-  env: 'production',
+  env: process.env.NODE_ENV,
   // Specify a version number to identify the deployed version of your application in Datadog
   // version: '1.0.0',
   sampleRate: 100,
