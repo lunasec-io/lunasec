@@ -53,9 +53,27 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
   return Promise.all(
     nonDependencyLockFilePaths.map(async (lockFilePath) => {
       const { dir, base } = path.parse(lockFilePath);
-      // Calls our fork of the Snyk library
-      const pkgTree = await buildDepTreeFromFiles(dir, 'package.json', base, true);
 
+      // Remove the repo path from the returned lockfile path
+      const truncatedLockfilePath = lockFilePath.replace(new RegExp('^' + repoDir), '');
+
+      const lockFilePathWithLeadingSlash = truncatedLockfilePath.startsWith('/')
+        ? truncatedLockfilePath
+        : `/${truncatedLockfilePath}`;
+
+      let pkgTree;
+      try {
+        // Calls our fork of the Snyk library
+        pkgTree = await buildDepTreeFromFiles(dir, 'package.json', base, true);
+      } catch (e) {
+        log.error('failed to parse a lockfile pair', {
+          lockFilePathWithLeadingSlash,
+        });
+        return {
+          lockFilePath: lockFilePathWithLeadingSlash,
+          dependencies: [],
+        };
+      }
       const pkgDependenciesWithGraphAndMetadata = Object.values(pkgTree.dependencies).map((pkg) => {
         return {
           rootNode: dfsGenerateMerkleTreeFromDepTree(pkg),
@@ -65,12 +83,6 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
           version: pkg.version,
         };
       });
-      // Remove the repo path from the returned lockfile path
-      const truncatedLockfilePath = lockFilePath.replace(new RegExp('^' + repoDir), '');
-
-      const lockFilePathWithLeadingSlash = truncatedLockfilePath.startsWith('/')
-        ? truncatedLockfilePath
-        : `/${truncatedLockfilePath}`;
 
       return {
         lockFilePath: lockFilePathWithLeadingSlash,
