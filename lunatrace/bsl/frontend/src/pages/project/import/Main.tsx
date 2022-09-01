@@ -17,7 +17,7 @@ import { FiArrowRight, FiGithub } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 import api from '../../../api';
-import { GetAvailableReposQuery, OrgsWithReposInput } from '../../../api/generated';
+import { OrgsWithReposInput } from '../../../api/generated';
 import { SpinIfLoading } from '../../../components/SpinIfLoading';
 import { GithubAppUrl } from '../../../constants';
 import useAppDispatch from '../../../hooks/useAppDispatch';

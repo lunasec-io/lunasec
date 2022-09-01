@@ -23,7 +23,6 @@ import { hasura } from '../../../hasura-api';
 import { InsertBuildMutation } from '../../../hasura-api/generated';
 import { generateSbomFromAsset } from '../../../snapshot/call-cli';
 import { uploadSbomToS3 } from '../../../snapshot/generate-snapshot';
-import { snapshotPinnedDependencies } from '../../../snapshot/node-package-tree';
 import { SnapshotForRepositoryRequest } from '../../../types/sqs';
 import { MaybeError, MaybeErrorVoid } from '../../../types/util';
 import { newError, newResult } from '../../../utils/errors';

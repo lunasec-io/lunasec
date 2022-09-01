@@ -12,7 +12,7 @@
  *
  */
 
-import { JsonTransport, LogIOTransport, logLevels, LunaLogger } from '../index';
+import { JsonTransport, logLevels, LunaLogger } from '../index';
 const log = new LunaLogger({ trace: false }, {});
 log.addTransport(new JsonTransport({ minLevel: 'debug', colors: false, pretty: true }));
 
