@@ -8,7 +8,9 @@ services:
       DD_LOGS_ENABLED: 'true'
       DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: 'true'
       DD_CONTAINER_EXCLUDE_LOGS: name:datadog
-      DD_TAGS: environment:local
+      DD_TAGS: "environment:local"
+      # lol
+      ECS_FARGATE: 'true'
     env_file:
       - .env.dev
     volumes:
