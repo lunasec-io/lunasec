@@ -28,6 +28,7 @@ export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): 
       await log.provideFields({ trace: 'webhook-logger', hookName, actionName, event }, async () => {
         log.info(`processing ${hookName} github webhook event from queue`);
         await callback(event);
+        log.info(`Finished processing ${hookName} webhook`);
       });
     });
   };
