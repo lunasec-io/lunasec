@@ -1,0 +1,19 @@
+# Currently this is used during import to see which we have already imported, if any.  This is being used because
+# the sidebar query that also fetches this data
+# is now janky and requires the kratos_id as part of the query params
+
+query GetProjects {
+    projects(order_by: {name: asc}) {
+#        name
+#        id
+#        created_at
+#        builds {
+#            id
+#            build_number
+#        }
+        github_repository {
+#            id
+            github_id
+        }
+    }
+}

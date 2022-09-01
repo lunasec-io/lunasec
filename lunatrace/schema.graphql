@@ -60,6 +60,10 @@ type GithubRepository {
   repoNodeId: String!
 }
 
+type InstallSelectedReposResponse {
+  success: Boolean
+}
+
 """
 Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
 """
@@ -73,6 +77,17 @@ input Int_comparison_exp {
   _lte: Int
   _neq: Int
   _nin: [Int!]
+}
+
+type OrgWithRepos {
+  installationId: Int!
+  organizationName: String!
+  repos: [GithubRepository!]!
+}
+
+input OrgsWithReposInput {
+  installationId: Int!
+  repos: [Int!]!
 }
 
 type PresignedUrlResponse {
@@ -4007,6 +4022,7 @@ type mutation_root {
     """upsert condition"""
     on_conflict: webhook_cache_on_conflict
   ): webhook_cache
+  installSelectedRepos(orgs: OrgsWithReposInput): InstallSelectedReposResponse
 
   """ get s3 presigned url for manifest upload, used only by the frontend """
   presignManifestUpload(project_id: uuid!): PresignedUrlResponse
@@ -7724,7 +7740,7 @@ enum projects_update_column {
 
 type query_root {
   authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
-  availableRepos: [GithubRepository!]!
+  availableOrgsWithRepos: [OrgWithRepos!]
 
   """
   fetch data from the table: "build_dependency_relationship"

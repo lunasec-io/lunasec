@@ -20,18 +20,19 @@ import { getGithubAccessTokenFromKratos } from '../../kratos';
 import { GithubRepositoryInfo, RawInstallation, RawRepositories } from '../../types/github';
 import { Context } from '../context';
 import { QueryResolvers } from '../generated-resolver-types';
-import { getUserId, throwIfUnauthenticated } from '../helpers/auth-helpers';
+import { getGithubUserToken, getUserId, throwIfUnauthenticated } from '../helpers/auth-helpers';
 
-type AvailableReposResolverT = NonNullable<QueryResolvers['availableRepos']>;
+type AvailableOrgsWithReposType = NonNullable<QueryResolvers['availableOrgsWithRepos']>;
 
 interface OrgWithRepos {
   organizationName: string;
+  installationId: number;
   repos: GithubRepositoryInfo[];
 }
 /**
  * Gets the available repos accessible to a given user, so that we can show them in an install prompt where the user can choose which to import to lunatrace
  */
-export const availableReposResolver: AvailableReposResolverT = async (parent, args, ctx, info) => {
+export const availableOrgsWithRepos: AvailableOrgsWithReposType = async (parent, args, ctx, info) => {
   throwIfUnauthenticated(ctx);
 
   const userToken = await getGithubUserToken(ctx);
@@ -42,15 +43,6 @@ export const availableReposResolver: AvailableReposResolverT = async (parent, ar
   // await checkProjectIsAuthorized(build.builds_by_pk?.project?.id, ctx);
 };
 
-async function getGithubUserToken(ctx: Context): Promise<string> {
-  const userId = getUserId(ctx);
-  const githubUserTokenRes = await getGithubAccessTokenFromKratos(userId);
-  if (githubUserTokenRes.error) {
-    throw new GraphQLYogaError(githubUserTokenRes.message);
-  }
-  return githubUserTokenRes.token;
-}
-
 async function populateInstallationRepos(installation: RawInstallation): Promise<OrgWithRepos> {
   const installationId = installation.id;
   const installationTokenRes = await getInstallationAccessToken(installationId);
@@ -59,5 +51,5 @@ async function populateInstallationRepos(installation: RawInstallation): Promise
   }
   const repos = await getReposFromInstallation(installationTokenRes.res, installationId);
   const organizationName = installation.account?.login || 'Unknown Organization';
-  return { organizationName, repos };
+  return { organizationName, installationId, repos };
 }

@@ -21,6 +21,7 @@ import { MaybeError } from '../../types/util';
 import { logError, newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { catchError, threwError } from '../../utils/try';
+import { getInstallationAccessToken } from '../auth';
 
 import { getHasuraOrgMembers } from './get-org-members';
 import { getReposFromInstallation } from './get-repos-from-installation';
@@ -28,10 +29,22 @@ import { queueNewReposForSnapshot } from './queue-new-repos-for-snapshot';
 
 // Performs the full upsertion of any projects and orgs that the github app is linked to, and returns some metadata about the repos for any subsequent processing
 export async function upsertInstalledProjects(
-  installationAuthToken: string,
-  installationId: number
+  installationId: number,
+  selectedRepoIds?: number[]
 ): Promise<MaybeError<GithubRepositoryInfo[]>> {
-  const githubRepos = await getReposFromInstallation(installationAuthToken, installationId);
+  const installationAuthToken = await getInstallationAccessToken(installationId);
+  if (installationAuthToken.error) {
+    return newError(`unable to get installation token: ${installationAuthToken.msg}`);
+  }
+
+  const unfilteredGithubRepos = await getReposFromInstallation(installationAuthToken.res, installationId);
+
+  const githubRepos = unfilteredGithubRepos.filter((repo) => {
+    if (!selectedRepoIds) {
+      return true;
+    }
+    return selectedRepoIds.includes(repo.repoId);
+  });
 
   log.info(`Collected installation data`, {
     installationId,
@@ -46,8 +59,9 @@ export async function upsertInstalledProjects(
     return newError(`Maximum repo count hit, aborting installed repo synchronization job ${installationId}`);
   }
 
-  const organizations = generateOrgsAndProjectsMutation(installationId, githubRepos);
-  const orgMutationInputs = Object.values(organizations);
+  // Get the data ready to go into hasura
+  const orgMutationInputsByOrgId = generateOrgsAndProjectsMutation(installationId, githubRepos);
+  const orgMutationInputs = Object.values(orgMutationInputsByOrgId);
 
   const orgIds = await insertOrgsAndProjects(installationId, orgMutationInputs);
 
@@ -73,11 +87,11 @@ export async function upsertInstalledProjects(
     };
   }, {} as Record<string, string>);
 
-  const orgLoginList = Object.keys(organizations);
+  const orgLoginList = Object.keys(orgMutationInputsByOrgId);
 
   const createOrgUsersResp = await Promise.all(
     orgLoginList.map(async (login) => {
-      const org = organizations[login];
+      const org = orgMutationInputsByOrgId[login];
       const orgMembers = await getHasuraOrgMembers(installationId, installationAuthToken, org, githubOrgToHasuraOrg);
 
       if (orgMembers.error) {
