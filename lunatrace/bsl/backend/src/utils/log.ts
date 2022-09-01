@@ -12,9 +12,7 @@
  *
  */
 
-import { JsonTransport, LunaLogger } from '@lunatrace/logger';
-import { FileTransport } from '@lunatrace/logger/build/main/file-transport';
-import { LogIOTransport } from '@lunatrace/logger/build/main/logio-transport';
+import { FileTransport, JsonTransport, LogIOTransport, LunaLogger } from '@lunatrace/logger';
 
 import { getLogConfig, isProduction } from '../config';
 

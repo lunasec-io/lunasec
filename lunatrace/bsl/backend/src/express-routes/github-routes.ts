@@ -18,5 +18,5 @@ import { githubLogin } from '../github/login';
 
 export const githubApiRouter = express.Router();
 
-githubApiRouter.get('/github/install', githubInstall);
+// githubApiRouter.get('/github/install', githubInstall);
 githubApiRouter.post('/github/login', githubLogin);

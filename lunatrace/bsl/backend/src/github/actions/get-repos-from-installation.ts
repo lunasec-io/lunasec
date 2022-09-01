@@ -40,12 +40,9 @@ async function fetchReposFromGithub(authToken: string, installationId: number): 
   return walkPagination(iLog, callGithub);
 }
 
-export async function getReposFromInstallation(
-  authToken: string,
-  installationId: number
-): Promise<GithubRepositoryInfo[]> {
-  const repositories = await fetchReposFromGithub(authToken, installationId);
-  return repositories.map((repo) => {
+// TODO: This is just an intermediary data format, this gets converted again before it goes to hasura. Not sure why we are bothering with this so maybe we can get rid of it and just handle the raw repo data during the hasura upsert
+export function cleanUpRawRepoData(rawRepositories: RawRepositories): GithubRepositoryInfo[] {
+  return rawRepositories.map((repo) => {
     return {
       orgName: repo.owner.login,
       orgId: repo.owner.id,
@@ -60,4 +57,12 @@ export async function getReposFromInstallation(
       fullTraits: repo, // TODO: potentially TMI
     };
   });
+}
+
+export async function getReposFromInstallation(
+  authToken: string,
+  installationId: number
+): Promise<GithubRepositoryInfo[]> {
+  const rawRepositories = await fetchReposFromGithub(authToken, installationId);
+  return cleanUpRawRepoData(rawRepositories);
 }

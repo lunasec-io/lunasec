@@ -9854,6 +9854,14 @@ export type UpdateBuildExistingReviewIdMutationVariables = Exact<{
 
 export type UpdateBuildExistingReviewIdMutation = { __typename?: 'mutation_root', update_builds_by_pk?: { __typename?: 'builds', id: any } | null };
 
+export type UpdateRepoIfExistsMutationVariables = Exact<{
+  repo_body: Github_Repositories_Set_Input;
+  github_id: Scalars['Int'];
+}>;
+
+
+export type UpdateRepoIfExistsMutation = { __typename?: 'mutation_root', update_github_repositories?: { __typename?: 'github_repositories_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', id: any, name: string } }> } | null };
+
 export type UpdateManifestStatusIfExistsMutationVariables = Exact<{
   buildId: Scalars['uuid'];
   message?: InputMaybe<Scalars['String']>;
@@ -9872,6 +9880,14 @@ export type UpdateManifestMutationVariables = Exact<{
 
 
 export type UpdateManifestMutation = { __typename?: 'mutation_root', update_manifests?: { __typename?: 'manifests_mutation_response', returning: Array<{ __typename?: 'manifests', filename: string, project_id: any, project: { __typename?: 'projects', organization_id?: any | null } }> } | null };
+
+export type UpdateProjectNameMutationVariables = Exact<{
+  id: Scalars['uuid'];
+  name: Scalars['String'];
+}>;
+
+
+export type UpdateProjectNameMutation = { __typename?: 'mutation_root', update_projects_by_pk?: { __typename?: 'projects', id: any } | null };
 
 export type UpdateOrganizationsForUserMutationVariables = Exact<{
   organizations_for_user: Array<Organization_User_Insert_Input> | Organization_User_Insert_Input;
@@ -10182,6 +10198,22 @@ export const UpdateBuildExistingReviewIdDocument = gql`
   }
 }
     `;
+export const UpdateRepoIfExistsDocument = gql`
+    mutation UpdateRepoIfExists($repo_body: github_repositories_set_input!, $github_id: Int!) {
+  update_github_repositories(
+    _set: $repo_body
+    where: {github_id: {_eq: $github_id}}
+  ) {
+    affected_rows
+    returning {
+      project {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
 export const UpdateManifestStatusIfExistsDocument = gql`
     mutation UpdateManifestStatusIfExists($buildId: uuid!, $message: String, $status: String!) {
   update_manifests(
@@ -10205,6 +10237,13 @@ export const UpdateManifestDocument = gql`
         organization_id
       }
     }
+  }
+}
+    `;
+export const UpdateProjectNameDocument = gql`
+    mutation UpdateProjectName($id: uuid!, $name: String!) {
+  update_projects_by_pk(pk_columns: {id: $id}, _set: {name: $name}) {
+    id
   }
 }
     `;
@@ -10343,11 +10382,17 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     UpdateBuildExistingReviewId(variables: UpdateBuildExistingReviewIdMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateBuildExistingReviewIdMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateBuildExistingReviewIdMutation>(UpdateBuildExistingReviewIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateBuildExistingReviewId', 'mutation');
     },
+    UpdateRepoIfExists(variables: UpdateRepoIfExistsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateRepoIfExistsMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateRepoIfExistsMutation>(UpdateRepoIfExistsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateRepoIfExists', 'mutation');
+    },
     UpdateManifestStatusIfExists(variables: UpdateManifestStatusIfExistsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateManifestStatusIfExistsMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateManifestStatusIfExistsMutation>(UpdateManifestStatusIfExistsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateManifestStatusIfExists', 'mutation');
     },
     UpdateManifest(variables: UpdateManifestMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateManifestMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateManifestMutation>(UpdateManifestDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateManifest', 'mutation');
+    },
+    UpdateProjectName(variables: UpdateProjectNameMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateProjectNameMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateProjectNameMutation>(UpdateProjectNameDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateProjectName', 'mutation');
     },
     UpdateOrganizationsForUser(variables: UpdateOrganizationsForUserMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateOrganizationsForUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateOrganizationsForUserMutation>(UpdateOrganizationsForUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateOrganizationsForUser', 'mutation');
