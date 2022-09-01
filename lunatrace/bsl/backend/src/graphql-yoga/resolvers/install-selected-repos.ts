@@ -14,15 +14,12 @@
 import { GraphQLYogaError } from '@graphql-yoga/node';
 
 import { getInstallationsFromUser } from '../../github/actions/get-installations-from-user';
-import { getReposFromInstallation } from '../../github/actions/get-repos-from-installation';
 import { upsertInstalledProjects } from '../../github/actions/upsert-installed-projects';
-import { getInstallationAccessToken } from '../../github/auth';
-import { getGithubAccessTokenFromKratos } from '../../kratos';
-import { GithubRepositoryInfo, RawInstallation, RawRepositories } from '../../types/github';
+import { GithubRepositoryInfo } from '../../types/github';
 import { log } from '../../utils/log';
 import { Context } from '../context';
 import { MutationResolvers, OrgsWithReposInput } from '../generated-resolver-types';
-import { getGithubUserToken, getUserId, throwIfUnauthenticated } from '../helpers/auth-helpers';
+import { getGithubUserToken, throwIfUnauthenticated } from '../helpers/auth-helpers';
 
 type InstallSelectedReposType = NonNullable<MutationResolvers['installSelectedRepos']>;
 
@@ -32,7 +29,7 @@ interface OrgWithRepos {
   repos: GithubRepositoryInfo[];
 }
 /**
- * Gets the available repos accessible to a given user, so that we can show them in an install prompt where the user can choose which to import to lunatrace
+ * Installs the repos the user selected in the GUI
  */
 export const installSelectedReposResolver: InstallSelectedReposType = async (parent, args, ctx, _info) => {
   throwIfUnauthenticated(ctx);

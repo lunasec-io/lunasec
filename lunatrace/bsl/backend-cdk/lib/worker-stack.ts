@@ -13,7 +13,7 @@
  */
 import { inspect } from 'util';
 
-import { Port, SecurityGroup } from '@aws-cdk/aws-ec2';
+import { SecurityGroup } from '@aws-cdk/aws-ec2';
 import {
   CapacityProviderStrategy,
   Cluster,

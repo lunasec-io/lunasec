@@ -16,11 +16,9 @@ import { GraphQLYogaError } from '@graphql-yoga/node';
 import { getInstallationsFromUser } from '../../github/actions/get-installations-from-user';
 import { getReposFromInstallation } from '../../github/actions/get-repos-from-installation';
 import { getInstallationAccessToken } from '../../github/auth';
-import { getGithubAccessTokenFromKratos } from '../../kratos';
-import { GithubRepositoryInfo, RawInstallation, RawRepositories } from '../../types/github';
-import { Context } from '../context';
+import { GithubRepositoryInfo, RawInstallation } from '../../types/github';
 import { QueryResolvers } from '../generated-resolver-types';
-import { getGithubUserToken, getUserId, throwIfUnauthenticated } from '../helpers/auth-helpers';
+import { getGithubUserToken, throwIfUnauthenticated } from '../helpers/auth-helpers';
 
 type AvailableOrgsWithReposType = NonNullable<QueryResolvers['availableOrgsWithRepos']>;
 
@@ -31,19 +29,18 @@ interface OrgWithRepos {
 }
 /**
  * Gets the available repos accessible to a given user, so that we can show them in an install prompt where the user can choose which to import to lunatrace
+ * Because the github API is clunky and we cant directly fetch the repos without knowing the installations, we first fetch the installationIds authenticated as the user,
+ * and then fetch the repo list for each installation in parallel, authenticated as the installation
  */
 export const availableOrgsWithRepos: AvailableOrgsWithReposType = async (parent, args, ctx, info) => {
   throwIfUnauthenticated(ctx);
 
   const userToken = await getGithubUserToken(ctx);
   const installations = await getInstallationsFromUser(userToken);
-  return Promise.all(installations.map(populateInstallationRepos));
-
-  // const build = await hasura.GetBuild({ build_id: args.buildId });
-  // await checkProjectIsAuthorized(build.builds_by_pk?.project?.id, ctx);
+  return Promise.all(installations.map(loadReposByInstallation));
 };
 
-async function populateInstallationRepos(installation: RawInstallation): Promise<OrgWithRepos> {
+async function loadReposByInstallation(installation: RawInstallation): Promise<OrgWithRepos> {
   const installationId = installation.id;
   const installationTokenRes = await getInstallationAccessToken(installationId);
   if (installationTokenRes.error) {
