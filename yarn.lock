@@ -10543,6 +10543,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@datadog/browser-core@npm:4.18.1":
+  version: 4.18.1
+  resolution: "@datadog/browser-core@npm:4.18.1"
+  checksum: ba303a8821b813c622e0a13f2050c4c8aa724e0c6b3a007b06cce8ffbc2c98c53b5fb07a5a1fcc981a06ec6fb3473d19b965bf96a80d6106e691d919cdbebfae
+  languageName: node
+  linkType: hard
+
+"@datadog/browser-rum-core@npm:4.18.1":
+  version: 4.18.1
+  resolution: "@datadog/browser-rum-core@npm:4.18.1"
+  dependencies:
+    "@datadog/browser-core": 4.18.1
+  checksum: f32e785eac8e13ba8563e3701e260f34ba98725a3c3fb4c7fc71eec3d3474b466aa1cdbab94ef0e34ef4cae1a22c81ee82e51ed8cc9b6adf651c79b0bd03c792
+  languageName: node
+  linkType: hard
+
+"@datadog/browser-rum@npm:~4.18.1":
+  version: 4.18.1
+  resolution: "@datadog/browser-rum@npm:4.18.1"
+  dependencies:
+    "@datadog/browser-core": 4.18.1
+    "@datadog/browser-rum-core": 4.18.1
+  peerDependencies:
+    "@datadog/browser-logs": 4.18.1
+  peerDependenciesMeta:
+    "@datadog/browser-logs":
+      optional: true
+  checksum: 88789a63572e8021e79fbef9af1cdd3b3c899150cdc3388d9f8595d72e841101e7891e0c1c31c9eecd4d1dcc407ea37b110de85e3ded458e17550e4e36954d94
+  languageName: node
+  linkType: hard
+
 "@discoveryjs/json-ext@npm:^0.5.0":
   version: 0.5.6
   resolution: "@discoveryjs/json-ext@npm:0.5.6"
@@ -31622,6 +31653,7 @@ __metadata:
   dependencies:
     "@aws-sdk/client-s3": ^3.52.0
     "@craco/craco": ~6.4.3
+    "@datadog/browser-rum": ~4.18.1
     "@graphql-codegen/cli": 2.3.1
     "@graphql-codegen/introspection": 2.1.1
     "@graphql-codegen/schema-ast": ~2.4.1
