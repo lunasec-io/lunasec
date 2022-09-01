@@ -16,7 +16,7 @@ import { GraphQLJSON, GraphQLUUID } from 'graphql-scalars';
 import { Resolvers } from '../generated-resolver-types';
 
 import { authenticatedRepoCloneUrlResolver } from './authenticated-repo-clone-url';
-import { availableReposResolver } from './available-repos';
+import { availableOrgsWithRepos } from './available-repos';
 import { presignManifestUploadResolver } from './presign-manifest-upload';
 import { presignSbomUploadResolver } from './presign-sbom-upload';
 import { sbomUrlResolver } from './sbom-url';
@@ -26,7 +26,7 @@ export const resolvers: Resolvers = {
     presignSbomUpload: presignSbomUploadResolver,
     authenticatedRepoCloneUrl: authenticatedRepoCloneUrlResolver,
     sbomUrl: sbomUrlResolver,
-    availableRepos: availableReposResolver,
+    availableOrgsWithRepos: availableOrgsWithRepos,
   },
   Mutation: {
     presignManifestUpload: presignManifestUploadResolver,
