@@ -116,6 +116,7 @@ export class DatadogFargateIntegration extends cdk.Construct {
       DD_ENABLE_PAYLOADS_SERIES: 'false',
       DD_ENABLE_PAYLOADS_SERVICE_CHECKS: 'false',
       DD_ENABLE_PAYLOADS_SKETCHES: 'false',
+      DD_TAGS: 'environment:production',
     };
 
     const datadogApiKey = Secret.fromSecretCompleteArn(this, 'DatadogApiKeySecret', props.datadogApiKeyArn);
