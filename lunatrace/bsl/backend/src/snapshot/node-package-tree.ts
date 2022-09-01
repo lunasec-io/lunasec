@@ -68,6 +68,7 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
       } catch (e) {
         log.error('failed to parse a lockfile pair', {
           lockFilePathWithLeadingSlash,
+          e,
         });
         return {
           lockFilePath: lockFilePathWithLeadingSlash,
