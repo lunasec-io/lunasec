@@ -34,7 +34,7 @@ interface OrgWithRepos {
 /**
  * Gets the available repos accessible to a given user, so that we can show them in an install prompt where the user can choose which to import to lunatrace
  */
-export const installSelectedRepos: InstallSelectedReposType = async (parent, args, ctx, info) => {
+export const installSelectedReposResolver: InstallSelectedReposType = async (parent, args, ctx, _info) => {
   throwIfUnauthenticated(ctx);
 
   const orgs = args.orgs;
@@ -47,8 +47,9 @@ export const installSelectedRepos: InstallSelectedReposType = async (parent, arg
   await throwIfInstallationsUnauthenticated(orgs, ctx);
 
   // Go through each org and add the repos from it
-  const results = await Promise.all(
+  await Promise.all(
     orgs.map(async (org) => {
+      log.info('Attempting to upsert selected repos from org ', { org });
       const result = await upsertInstalledProjects(org.installationId, org.repos);
       if (result.error) {
         log.error('Failure during project installation', result.msg);

@@ -73,6 +73,11 @@ export type GithubRepository = {
   repoNodeId: Scalars['String'];
 };
 
+export type InstallSelectedReposResponse = {
+  __typename?: 'InstallSelectedReposResponse';
+  success?: Maybe<Scalars['Boolean']>;
+};
+
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Int']>;
@@ -91,6 +96,11 @@ export type OrgWithRepos = {
   installationId: Scalars['Int'];
   organizationName: Scalars['String'];
   repos: Array<GithubRepository>;
+};
+
+export type OrgsWithReposInput = {
+  installationId: Scalars['Int'];
+  repos: Array<Scalars['Int']>;
 };
 
 export type PresignedUrlResponse = {
@@ -2380,6 +2390,7 @@ export type Mutation_Root = {
   insert_projects?: Maybe<Projects_Mutation_Response>;
   /** insert a single row into the table: "projects" */
   insert_projects_one?: Maybe<Projects>;
+  installSelectedRepos?: Maybe<InstallSelectedReposResponse>;
   /**  get s3 presigned url for manifest upload, used only by the frontend  */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** update data of the table: "builds" */
@@ -2534,6 +2545,12 @@ export type Mutation_RootInsert_ProjectsArgs = {
 export type Mutation_RootInsert_Projects_OneArgs = {
   object: Projects_Insert_Input;
   on_conflict?: InputMaybe<Projects_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInstallSelectedReposArgs = {
+  orgs: Array<OrgsWithReposInput>;
 };
 
 
@@ -6264,6 +6281,13 @@ export type InsertProjectMutationVariables = Exact<{
 
 export type InsertProjectMutation = { __typename?: 'mutation_root', insert_projects_one?: { __typename?: 'projects', id: any } | null };
 
+export type InstallSelectedReposMutationVariables = Exact<{
+  orgs: Array<OrgsWithReposInput> | OrgsWithReposInput;
+}>;
+
+
+export type InstallSelectedReposMutation = { __typename?: 'mutation_root', installSelectedRepos?: { __typename?: 'InstallSelectedReposResponse', success?: boolean | null } | null };
+
 export type PresignManifestUrlMutationVariables = Exact<{
   project_id: Scalars['uuid'];
 }>;
@@ -6945,6 +6969,13 @@ export const InsertProjectDocument = `
   }
 }
     `;
+export const InstallSelectedReposDocument = `
+    mutation InstallSelectedRepos($orgs: [OrgsWithReposInput!]!) {
+  installSelectedRepos(orgs: $orgs) {
+    success
+  }
+}
+    `;
 export const PresignManifestUrlDocument = `
     mutation presignManifestUrl($project_id: uuid!) {
   presignManifestUpload(project_id: $project_id) {
@@ -7030,6 +7061,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     InsertProject: build.mutation<InsertProjectMutation, InsertProjectMutationVariables>({
       query: (variables) => ({ document: InsertProjectDocument, variables })
+    }),
+    InstallSelectedRepos: build.mutation<InstallSelectedReposMutation, InstallSelectedReposMutationVariables>({
+      query: (variables) => ({ document: InstallSelectedReposDocument, variables })
     }),
     presignManifestUrl: build.mutation<PresignManifestUrlMutation, PresignManifestUrlMutationVariables>({
       query: (variables) => ({ document: PresignManifestUrlDocument, variables })

@@ -17,7 +17,7 @@ import { log } from '../../utils/log';
 import { organizationMemberAddedHandler } from './handlers/organization-member-added-handler';
 import { pullRequestHandler } from './handlers/pull-request-handler';
 import { pushHandler } from './handlers/push-handler';
-import { syncRepositoriesHandler } from './handlers/sync-repositories-handler';
+import { repositoryUpdatedHandler } from './handlers/repository-updated-handler';
 import { WebhookInterceptor } from './interceptor';
 
 export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): void {
@@ -32,9 +32,11 @@ export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): 
     });
   };
 
-  listenToHook('installation_repositories.added', syncRepositoriesHandler);
-  listenToHook('installation.created', syncRepositoriesHandler);
-  listenToHook('repository.edited', syncRepositoriesHandler); // Particularly inefficient over-fetching but...it does work
+  listenToHook('repository.edited', repositoryUpdatedHandler);
+  listenToHook('repository.renamed', repositoryUpdatedHandler);
+  listenToHook('repository.publicized', repositoryUpdatedHandler);
+  listenToHook('repository.privatized', repositoryUpdatedHandler);
+
   listenToHook('pull_request', pullRequestHandler);
   listenToHook('organization.member_added', organizationMemberAddedHandler);
   listenToHook('push', pushHandler);

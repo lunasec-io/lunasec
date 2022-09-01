@@ -14,9 +14,16 @@
 
 // eslint-disable-next-line import/no-unresolved
 import { components } from '@octokit/openapi-types';
+import { EmitterWebhookEvent } from '@octokit/webhooks';
 
 export type RawRepository = components['schemas']['repository'];
 export type RawRepositories = RawRepository[];
+
+// repository typing for update events seems slightly different so we just pull it out of the event itself
+type UpdateEvent = EmitterWebhookEvent<
+  'repository.edited' | 'repository.privatized' | 'repository.publicized' | 'repository.renamed'
+>;
+export type UpdatedRawRepository = UpdateEvent['payload']['repository'];
 
 export type RawInstallation = components['schemas']['installation'];
 

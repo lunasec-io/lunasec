@@ -27,10 +27,14 @@ import { getHasuraOrgMembers } from './get-org-members';
 import { getReposFromInstallation } from './get-repos-from-installation';
 import { queueNewReposForSnapshot } from './queue-new-repos-for-snapshot';
 
-// Performs the full upsertion of any projects and orgs that the github app is linked to, and returns some metadata about the repos for any subsequent processing
+/**
+ * Performs the full upsertion of any projects and orgs that the github app is linked to, and returns some metadata about the repos for any subsequent processing
+ * @param installationId
+ * @param selectedRepoIds A subset of the repos in the installation that we want to import
+ */
 export async function upsertInstalledProjects(
   installationId: number,
-  selectedRepoIds?: number[]
+  selectedRepoIds: number[]
 ): Promise<MaybeError<GithubRepositoryInfo[]>> {
   const installationAuthToken = await getInstallationAccessToken(installationId);
   if (installationAuthToken.error) {
@@ -40,9 +44,6 @@ export async function upsertInstalledProjects(
   const unfilteredGithubRepos = await getReposFromInstallation(installationAuthToken.res, installationId);
 
   const githubRepos = unfilteredGithubRepos.filter((repo) => {
-    if (!selectedRepoIds) {
-      return true;
-    }
     return selectedRepoIds.includes(repo.repoId);
   });
 
@@ -54,7 +55,8 @@ export async function upsertInstalledProjects(
     })),
   });
 
-  // TODO: Fix this with proper UI in the future. Logging this will happen automatically at the handler level
+  // TODO: we could query hasura here for the existing repo count if we want to set up hard limits on repo count, TBD by pricing
+  // this isn't a very robust check at the moment because people could still manually batch in more repos by hacking around the GUI by doing 199 at a time
   if (githubRepos.length > 200) {
     return newError(`Maximum repo count hit, aborting installed repo synchronization job ${installationId}`);
   }
@@ -92,7 +94,12 @@ export async function upsertInstalledProjects(
   const createOrgUsersResp = await Promise.all(
     orgLoginList.map(async (login) => {
       const org = orgMutationInputsByOrgId[login];
-      const orgMembers = await getHasuraOrgMembers(installationId, installationAuthToken, org, githubOrgToHasuraOrg);
+      const orgMembers = await getHasuraOrgMembers(
+        installationId,
+        installationAuthToken.res,
+        org,
+        githubOrgToHasuraOrg
+      );
 
       if (orgMembers.error) {
         log.error(orgMembers.msg);
