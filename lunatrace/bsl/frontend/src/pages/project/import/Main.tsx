@@ -176,7 +176,7 @@ export const ImportProjectsMain: React.FC = () => {
                 <Col xs="12" lg={{ order: 'first', span: 6 }}>
                   <div className="d-grid  m-3">
                     <Card.Subtitle className="darker" style={{ marginBottom: '.2rem' }}>
-                      Don't see your repo? Click here
+                      Don&apos;t see your repo? Click here
                     </Card.Subtitle>
                     <Button variant="secondary" href={GithubAppUrl}>
                       <FiGithub className="mb-1 me-1" /> Add More Repos on GitHub
