@@ -21,7 +21,7 @@ export const stackInputs = {
   oathkeeperConfigBucketArn: 'arn:aws:s3:::lunatrace-backendstack-oryconfig40a14966-7bohik8ti3qc',
   certificateArn: 'arn:aws:acm:us-west-2:134071937287:certificate/5a390bf1-cb77-4394-8d75-900d3b857fc7',
   backendStaticSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceBackendStaticSecret-rMiBGh',
-  databaseSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:lunatrace-HasuraDatabaseUrlSecret-QepHEY',
+  databaseSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:lunatrace-HasuraDatabaseUrlSecret-v2-HdcJ1q',
   gitHubAppId: '180838',
   gitHubAppPrivateKey: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceGitHubAppPrivateKey-iAHHOb',
   gitHubAppWebHookSecret: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceGitHubAppWebHookSecret-3YTJBv',

@@ -15,5 +15,13 @@
       <jdbc-url>jdbc:sqlite:../.cache/grype/db/3/vulnerability.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="LunaTrace Production (postgres@localhost)" read-only="true" uuid="60703370-4771-453b-81a1-e251ed9b8f3f">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <remarks>DO NOT USE THIS</remarks>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5435/lunatrace</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

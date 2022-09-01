@@ -1,5 +1,0 @@
-mutation InsertBuildDependencyRelationships($objects: [build_dependency_relationship_insert_input!]!, $on_conflict: build_dependency_relationship_on_conflict!) {
-  insert_build_dependency_relationship(objects: $objects, on_conflict: $on_conflict) {
-    affected_rows
-  }
-}

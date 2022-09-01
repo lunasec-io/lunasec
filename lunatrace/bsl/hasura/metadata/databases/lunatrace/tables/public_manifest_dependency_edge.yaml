@@ -1,0 +1,38 @@
+table:
+  name: manifest_dependency_edge
+  schema: public
+object_relationships:
+  - name: child
+    using:
+      foreign_key_constraint_on: child_id
+  - name: parent
+    using:
+      foreign_key_constraint_on: parent_id
+insert_permissions:
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - child_id
+        - parent_id
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - child_id
+        - parent_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - child_id
+        - parent_id
+      filter: {}
+update_permissions:
+  - role: service
+    permission:
+      columns:
+        - child_id
+        - parent_id
+      filter: {}
+      check: {}
