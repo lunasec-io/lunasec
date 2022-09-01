@@ -88,6 +88,7 @@ export type Int_Comparison_Exp = {
 
 export type OrgWithRepos = {
   __typename?: 'OrgWithRepos';
+  installationId: Scalars['Int'];
   organizationName: Scalars['String'];
   repos: Array<GithubRepository>;
 };
@@ -3602,7 +3603,7 @@ export enum Projects_Update_Column {
 export type Query_Root = {
   __typename?: 'query_root';
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
-  availableRepos?: Maybe<Array<OrgWithRepos>>;
+  availableOrgsWithRepos?: Maybe<Array<OrgWithRepos>>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -6125,7 +6126,7 @@ export type GetAllGuidesQuery = { __typename?: 'query_root', guides: Array<{ __t
 export type GetAvailableReposQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAvailableReposQuery = { __typename?: 'query_root', availableRepos?: Array<{ __typename?: 'OrgWithRepos', organizationName: string, repos: Array<{ __typename?: 'GithubRepository', gitUrl: string, repoId: number, repoName: string }> }> | null };
+export type GetAvailableReposQuery = { __typename?: 'query_root', availableOrgsWithRepos?: Array<{ __typename?: 'OrgWithRepos', organizationName: string, installationId: number, repos: Array<{ __typename?: 'GithubRepository', gitUrl: string, repoId: number, repoName: string }> }> | null };
 
 export type GetBuildDetailsQueryVariables = Exact<{
   build_id: Scalars['uuid'];
@@ -6180,6 +6181,11 @@ export type GetProjectCloneUrlQueryVariables = Exact<{
 
 
 export type GetProjectCloneUrlQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', github_repository?: { __typename?: 'github_repositories', authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null } | null };
+
+export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProjectsQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', github_repository?: { __typename?: 'github_repositories', github_id?: number | null } | null }> };
 
 export type GetSbomUrlQueryVariables = Exact<{
   build_id: Scalars['uuid'];
@@ -6299,8 +6305,9 @@ export const GetAllGuidesDocument = `
     `;
 export const GetAvailableReposDocument = `
     query GetAvailableRepos {
-  availableRepos {
+  availableOrgsWithRepos {
     organizationName
+    installationId
     repos {
       gitUrl
       repoId
@@ -6681,6 +6688,15 @@ export const GetProjectCloneUrlDocument = `
   }
 }
     `;
+export const GetProjectsDocument = `
+    query GetProjects {
+  projects(order_by: {name: asc}) {
+    github_repository {
+      github_id
+    }
+  }
+}
+    `;
 export const GetSbomUrlDocument = `
     query GetSbomUrl($build_id: uuid!) {
   builds_by_pk(id: $build_id) {
@@ -6981,6 +6997,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetProjectCloneUrl: build.query<GetProjectCloneUrlQuery, GetProjectCloneUrlQueryVariables>({
       query: (variables) => ({ document: GetProjectCloneUrlDocument, variables })
+    }),
+    GetProjects: build.query<GetProjectsQuery, GetProjectsQueryVariables | void>({
+      query: (variables) => ({ document: GetProjectsDocument, variables })
     }),
     GetSbomUrl: build.query<GetSbomUrlQuery, GetSbomUrlQueryVariables>({
       query: (variables) => ({ document: GetSbomUrlDocument, variables })

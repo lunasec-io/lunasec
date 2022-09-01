@@ -27,15 +27,9 @@ export async function syncRepositoriesHandler(
     log.error('hook was missing installation id, aborting handler');
     return;
   }
-  const installationAuthToken = await getInstallationAccessToken(installationId);
-  if (installationAuthToken.error) {
-    log.error('unable to get installation token', {
-      error: installationAuthToken.msg,
-    });
-    return;
-  }
+
   // Here we just refetch everything
-  const upsertedRepos = await upsertInstalledProjects(installationAuthToken.res, installationId);
+  const upsertedRepos = await upsertInstalledProjects(installationId);
   if (upsertedRepos.error) {
     log.error('unable to create orgs and projects from github install', {
       error: upsertedRepos.msg,

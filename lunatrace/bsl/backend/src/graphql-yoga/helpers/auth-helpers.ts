@@ -14,6 +14,7 @@
 import { GraphQLYogaError } from '@graphql-yoga/node';
 
 import { hasura } from '../../hasura-api';
+import { getGithubAccessTokenFromKratos } from '../../kratos';
 import { log } from '../../utils/log';
 import { Context, ContextLoggedIn } from '../context';
 
@@ -55,4 +56,13 @@ export async function checkProjectIsAuthorized(projectId: string, ctx: Context):
     throw new GraphQLYogaError('Not authorized for this project');
   }
   return;
+}
+
+export async function getGithubUserToken(ctx: Context): Promise<string> {
+  const userId = getUserId(ctx);
+  const githubUserTokenRes = await getGithubAccessTokenFromKratos(userId);
+  if (githubUserTokenRes.error) {
+    throw new GraphQLYogaError(githubUserTokenRes.message);
+  }
+  return githubUserTokenRes.token;
 }
