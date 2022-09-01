@@ -12,7 +12,7 @@
  *
  */
 
-import { JsonTransport, logLevels, LunaLogger } from '../index';
+import { JsonTransport, LogIOTransport, logLevels, LunaLogger } from '../index';
 const log = new LunaLogger({ trace: false }, {});
 log.addTransport(new JsonTransport({ minLevel: 'debug', colors: false, pretty: true }));
 
@@ -46,6 +46,12 @@ describe('LunaLogger', () => {
     console.error(output);
     parseAndCheck(output, 'message', "[ 'test' ]test message");
   });
+
+  // it.only('logs to logio without throwing', () => {
+  //   const loggerWithLogIo = new LunaLogger();
+  //   loggerWithLogIo.addTransport(new LogIOTransport({ minLevel: 'info' }));
+  //   loggerWithLogIo.info('Log IO test');
+  // });
 
   describe('helper method', () => {
     logLevels.forEach((level) => {

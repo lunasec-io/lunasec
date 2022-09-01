@@ -19,6 +19,8 @@ import { LevelChoice, LoggerContext, LoggerOptions, LogMethodArgs, LogObj, Trans
 
 export * from './types';
 export * from './json-transport';
+export * from './logio-transport';
+export * from './file-transport';
 
 const defaultLoggerName = 'default';
 

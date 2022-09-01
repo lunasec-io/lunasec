@@ -12,34 +12,27 @@
  *
  */
 import React, { useState } from 'react';
-import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+import { Button, Card, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
 import { FiArrowRight, FiGithub } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 import api from '../../../api';
-import { GetAvailableReposQuery } from '../../../api/generated';
+import { GetAvailableReposQuery, OrgsWithReposInput } from '../../../api/generated';
 import { SpinIfLoading } from '../../../components/SpinIfLoading';
 import { GithubAppUrl } from '../../../constants';
-
-//
-// type RepoData = NonNullable<GetAvailableReposQuery['availableRepos']>[number]['repos'][number]
-//
-// interface ExtendedFields {
-//   alreadyImported?:boolean;
-//   selectedForImport?:boolean;
-// }
-//
-// type ExtendedRepoData = RepoData & ExtendedFields;
-//
-// interface ExtendedGithubData extends GetAvailableReposQuery {
-//   availableRepos?: Array<{
-//     repos: Array<ExtendedRepoData>
-//   }>
-// }
-//
+import useAppDispatch from '../../../hooks/useAppDispatch';
+import { add } from '../../../store/slices/alerts';
 
 export const ImportProjectsMain: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  // API access
   const { data: githubData, isLoading: isLoadingGithubData } = api.useGetAvailableReposQuery();
   const { data: existingProjectData, isLoading: isLoadingProjectData } = api.useGetProjectsQuery();
+  const [insertRepos, insertReposResult] = api.useInstallSelectedReposMutation();
+
+  // Computed state
   const isLoading = isLoadingGithubData || isLoadingProjectData;
 
   const dataLoaded =
@@ -54,6 +47,8 @@ export const ImportProjectsMain: React.FC = () => {
       }
     });
   }
+
+  // Form handling
   const [selected, setSelected] = useState<number[]>([]);
 
   const handleBoxChecked = (repoId: number) => {
@@ -66,7 +61,8 @@ export const ImportProjectsMain: React.FC = () => {
     setSelected([...selected, repoId]);
   };
 
-  const organizeReposByOrg = () => {
+  // this is used to change the shape of the data so it matches the graphql mutation
+  function organizeReposByOrg(): OrgsWithReposInput[] | null {
     if (!githubData?.availableOrgsWithRepos) {
       return null;
     }
@@ -85,11 +81,32 @@ export const ImportProjectsMain: React.FC = () => {
     });
     //filter out empty orgs
     return orgsWithFilteredRepos.filter((org) => org.repos.length > 0);
+  }
+
+  const submit = async () => {
+    const orgData = organizeReposByOrg();
+    if (!orgData) {
+      return;
+    }
+    const insertResponse = await insertRepos({
+      orgs: orgData,
+    }).unwrap();
+    const result = insertResponse.installSelectedRepos;
+    if (!result || result.success === false) {
+      dispatch(add({ message: 'Failed to add projects, please try again or contact support using chat.' }));
+      return;
+    }
+    dispatch(
+      add({
+        message:
+          'Projects imported. View your new projects under "Your Organizations" to the left. They will be scanned shortly.',
+        variant: 'success',
+      })
+    );
+    navigate('/');
   };
 
-  console.log('filtered repos are ', organizeReposByOrg());
-
-  // Todo: This is really only a frontend guard, someone could insert batches of up to 200 repos since the backend doesnt consider existing, at present
+  // Todo: This is really only a frontend guard, someone could insert batches of up to 200 repos since the backend doesnt consider existing repo count, at present
   const tooManyRepos = alreadyImported.length + selected.length > 200;
 
   return (
@@ -138,23 +155,31 @@ export const ImportProjectsMain: React.FC = () => {
                 </Col>
               </Row>
               <Row className="ms-lg-7 me-lg-7 mt-lg-4">
-                <Col xs="12" md="6">
+                <Col xs="12" lg="6">
                   <div className="d-grid m-3">
                     {tooManyRepos ? (
                       <Button variant="danger">
                         200 repo limit exceeded. Select less repos or contact support via chat
                       </Button>
                     ) : (
-                      <Button>
-                        Continue <FiArrowRight size={18} className="mb-1" />
+                      <Button onClick={submit} style={{ marginTop: '1rem' }}>
+                        Continue{' '}
+                        {insertReposResult.isLoading ? (
+                          <Spinner animation="border" size="sm" />
+                        ) : (
+                          <FiArrowRight size={18} className="mb-1" />
+                        )}
                       </Button>
                     )}
                   </div>
                 </Col>
-                <Col xs="12" md={{ order: 'first', span: 6 }}>
+                <Col xs="12" lg={{ order: 'first', span: 6 }}>
                   <div className="d-grid  m-3">
+                    <Card.Subtitle className="darker" style={{ marginBottom: '.2rem' }}>
+                      Don't see your repo? Click here
+                    </Card.Subtitle>
                     <Button variant="secondary" href={GithubAppUrl}>
-                      <FiGithub className="mb-1 me-1" /> Manage Permissions on GitHub
+                      <FiGithub className="mb-1 me-1" /> Add More Repos on GitHub
                     </Button>
                   </div>
                 </Col>
