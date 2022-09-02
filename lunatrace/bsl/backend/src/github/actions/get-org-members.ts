@@ -37,7 +37,7 @@ function newOrganizationUser(hasuraOrgId: string, githubUserData: GitHubUserData
       },
       on_conflict: {
         constraint: Users_Constraint.UsersGithubIdKey,
-        update_columns: [Users_Update_Column.GithubNodeId],
+        update_columns: [Users_Update_Column.GithubId, Users_Update_Column.GithubNodeId],
       },
     },
   };
