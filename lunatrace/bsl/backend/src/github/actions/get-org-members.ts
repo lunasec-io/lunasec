@@ -33,7 +33,7 @@ function newOrganizationUser(hasuraOrgId: string, githubUserData: GitHubUserData
     user: {
       data: {
         github_node_id: githubUserData.nodeId,
-        github_id: githubUserData.databaseId.toString(),
+        github_id: githubUserData.githubUserId.toString(),
       },
       on_conflict: {
         constraint: Users_Constraint.UsersGithubIdKey,
@@ -121,7 +121,7 @@ export async function getHasuraOrgMembers(
 
     const organizationUser = newOrganizationUser(hasuraOrgId, {
       nodeId: githubUserNodeId,
-      databaseId: githubUserDatabaseId,
+      githubUserId: githubUserDatabaseId,
     });
     return {
       error: false,
