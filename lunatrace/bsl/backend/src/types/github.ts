@@ -53,5 +53,5 @@ export interface GitHubUserData {
   // Can be either a base64 encoded value or a value like `U_adsjf1324512`
   nodeId: string;
   // This is a numerical value, ie 123456
-  databaseId: number;
+  githubUserId: number;
 }

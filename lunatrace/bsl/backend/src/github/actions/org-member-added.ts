@@ -27,7 +27,7 @@ export async function orgMemberAdded(installationId: number, githubUserData: Git
   const user = await catchError(
     hasura.UpsertUserFromId({
       user: {
-        github_id: githubUserData.databaseId.toString(),
+        github_id: githubUserData.githubUserId.toString(),
         github_node_id: githubUserData.nodeId,
       },
     })
@@ -48,19 +48,19 @@ export async function orgMemberAdded(installationId: number, githubUserData: Git
   const userId = user.insert_users_one.id;
 
   // get the organization that is referred to by the installation id
-  const org = await catchError(
+  const orgQueryRes = await catchError(
     async () =>
       await hasura.GetOrganizationFromInstallationId({
         installation_id: installationId,
       })
   );
 
-  if (threwError(org)) {
-    logError(org);
+  if (threwError(orgQueryRes)) {
+    logError(orgQueryRes);
     return;
   }
 
-  if (org.organizations.length !== 1) {
+  if (orgQueryRes.organizations.length !== 1) {
     log.error('organizations for installation id is not exactly one result', {
       installationId,
       githubUserData,
@@ -68,7 +68,7 @@ export async function orgMemberAdded(installationId: number, githubUserData: Git
     return;
   }
 
-  const orgId = org.organizations[0].id;
+  const orgId = orgQueryRes.organizations[0].id;
 
   // create the association between the two
   const res = await catchError(
