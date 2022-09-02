@@ -209,7 +209,7 @@ async function handleUpdatingGitHubUser(userId: string, githubId: string | undef
 
   const user = userGitHubDataResponse.users[0];
 
-  if (user.github_id !== githubId) {
+  if (githubId && user.github_id !== githubId) {
     const error = new Error('GitHub IDs do not match from Kratos');
     log.error('GitHub ID mismatch on login from Kratos', { error, userId, githubId, user });
     throw error;
