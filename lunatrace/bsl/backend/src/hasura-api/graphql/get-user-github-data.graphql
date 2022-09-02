@@ -1,0 +1,8 @@
+query GetUserGitHubData($kratos_id: uuid) {
+  users(where: {kratos_id: {_eq: $kratos_id}}) {
+    github_id
+    github_node_id
+    kratos_id
+    id
+  }
+}
