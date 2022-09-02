@@ -24,10 +24,10 @@ export async function organizationMemberAddedHandler(event: EmitterWebhookEvent<
 
   const installationId = event.payload.installation.id;
   const githubNodeId = event.payload.membership.user.node_id;
-  const githubDatabaseId = event.payload.membership.user.id;
+  const githubUserId = event.payload.membership.user.id;
 
   await orgMemberAdded(installationId, {
     nodeId: githubNodeId,
-    databaseId: githubDatabaseId,
+    githubUserId,
   });
 }

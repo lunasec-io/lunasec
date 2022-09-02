@@ -32,7 +32,7 @@ import { queueNewReposForSnapshot } from './queue-new-repos-for-snapshot';
  * @param installationId
  * @param selectedRepoIds A subset of the repos in the installation that we want to import
  */
-export async function upsertInstalledProjects(
+export async function installProjectsFromGithub(
   installationId: number,
   selectedRepoIds: number[]
 ): Promise<MaybeError<GithubRepositoryInfo[]>> {

@@ -14,7 +14,7 @@
 import { GraphQLYogaError } from '@graphql-yoga/node';
 
 import { getInstallationsFromUser } from '../../github/actions/get-installations-from-user';
-import { upsertInstalledProjects } from '../../github/actions/upsert-installed-projects';
+import { installProjectsFromGithub } from '../../github/actions/install-projects-from-github';
 import { GithubRepositoryInfo } from '../../types/github';
 import { log } from '../../utils/log';
 import { Context } from '../context';
@@ -47,7 +47,7 @@ export const installSelectedReposResolver: InstallSelectedReposType = async (par
   await Promise.all(
     orgs.map(async (org) => {
       log.info('Attempting to upsert selected repos from org ', { org });
-      const result = await upsertInstalledProjects(org.installationId, org.repos);
+      const result = await installProjectsFromGithub(org.installationId, org.repos);
       if (result.error) {
         log.error('Failure during project installation', result.msg);
         throw new GraphQLYogaError(`Failed to install repos from organization: ${result.msg}`);
