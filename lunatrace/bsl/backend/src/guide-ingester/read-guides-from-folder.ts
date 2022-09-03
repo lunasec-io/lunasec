@@ -57,7 +57,7 @@ function parseGuide(guidePath: string, guideFolderName: string): Guide | void {
   }
   const metadata = parseMetadata(path.join(guidePath, 'metadata.yaml'));
   if (!metadata) {
-    log.error({ guidePath, guideContents }, 'No metadata, skipping guide');
+    log.error({ guidePath, guideContents }, 'No metadata or invalid, skipping guide');
     return;
   }
   const body = fs.readFileSync(path.join(guidePath, 'body.md'), 'utf-8');

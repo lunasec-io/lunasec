@@ -1,6 +1,6 @@
 table:
-  schema: package
   name: package_maintainer
+  schema: package
 object_relationships:
   - name: maintainer
     using:
@@ -15,7 +15,6 @@ insert_permissions:
       columns:
         - maintainer_id
         - package_id
-      backend_only: false
 select_permissions:
   - role: service
     permission:

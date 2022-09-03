@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: users
+  schema: public
 object_relationships:
   - name: kratos_identity
     using:
@@ -14,7 +14,6 @@ insert_permissions:
         - github_node_id
         - id
         - kratos_id
-      backend_only: false
 select_permissions:
   - role: service
     permission:
@@ -37,15 +36,15 @@ select_permissions:
           - id:
               _eq: X-Hasura-Real-User-Id
           - _exists:
+              _table:
+                name: users
+                schema: public
               _where:
                 _and:
                   - id:
                       _eq: X-Hasura-Real-User-Id
                   - role:
                       _eq: lunatrace_admin
-              _table:
-                schema: public
-                name: users
 update_permissions:
   - role: service
     permission:

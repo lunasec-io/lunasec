@@ -105,7 +105,6 @@ query GetProject($project_id: uuid!, $build_limit: Int = 10) {
                 language
                 locations
                 matcher
-                package_version_id
                 purl
                 severity
                 type
@@ -114,7 +113,6 @@ query GetProject($project_id: uuid!, $build_limit: Int = 10) {
                 version_matcher
                 virtual_path
                 vulnerability_id
-                vulnerability_package_id
                 vulnerability {
                     id
                     summary
