@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: builds
+  schema: public
 object_relationships:
   - name: project
     using:
@@ -11,37 +11,44 @@ array_relationships:
       foreign_key_constraint_on:
         column: build_id
         table:
-          schema: public
           name: build_dependency_relationship
+          schema: public
   - name: findings
     using:
       foreign_key_constraint_on:
         column: build_id
         table:
-          schema: public
           name: findings
+          schema: public
   - name: manifests
     using:
       foreign_key_constraint_on:
         column: build_id
         table:
-          schema: public
           name: manifests
+          schema: public
+  - name: resolved_manifests
+    using:
+      foreign_key_constraint_on:
+        column: build_id
+        table:
+          name: resolved_manifest
+          schema: public
   - name: scans
     using:
       foreign_key_constraint_on:
         column: build_id
         table:
-          schema: public
           name: scans
+          schema: public
 remote_relationships:
   - definition:
+      hasura_fields:
+        - id
       remote_field:
         sbomUrl:
           arguments:
             buildId: $id
-      hasura_fields:
-        - id
       remote_schema: lunatrace-custom
     name: s3_url_signed
 insert_permissions:
@@ -62,7 +69,6 @@ insert_permissions:
         - git_remote
         - project_id
         - s3_url
-      backend_only: false
   - role: service
     permission:
       check: {}
@@ -80,7 +86,6 @@ insert_permissions:
         - pull_request_id
         - s3_url
         - source_type
-      backend_only: false
 select_permissions:
   - role: cli
     permission:
@@ -182,6 +187,7 @@ update_permissions:
 delete_permissions:
   - role: cli
     permission:
+      backend_only: false
       filter:
         project:
           project_access_tokens:
@@ -189,9 +195,11 @@ delete_permissions:
               _eq: X-Hasura-Access-Token
   - role: service
     permission:
+      backend_only: false
       filter: {}
   - role: user
     permission:
+      backend_only: false
       filter:
         agent_access_token:
           _eq: X-Hasura-Access-Token

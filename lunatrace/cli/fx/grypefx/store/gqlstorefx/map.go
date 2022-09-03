@@ -91,7 +91,7 @@ introduced:
 			// find fixed
 			if fixedEvent.Event == "fixed" {
 				// emit a range
-				ranges = append(ranges, fmt.Sprintf(">= %s, <= %s", introducedEvent.Version.String(), fixedEvent.Version.String()))
+				ranges = append(ranges, fmt.Sprintf(">= %s, < %s", introducedEvent.Version.String(), fixedEvent.Version.String()))
 				continue introduced
 			}
 		}

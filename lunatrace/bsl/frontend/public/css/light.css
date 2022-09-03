@@ -17633,7 +17633,27 @@ pre[class*=language-] {
 }
 
 .vuln-table-item.ignored {
-  background-color: #156da5;
+  background-color: #dee6ed;
+}
+
+.package-trees {
+  font-size: 1.2em;
+}
+
+.primary-color {
+  color: #3F80EA;
+}
+
+.one-point-two-em {
+  font-size: 1.2em;
+}
+
+.package-update-popover {
+  max-width: min(98vw, 400px);
+}
+
+.all-packages-update-popover {
+  max-width: min(98vw, 700px);
 }
 
 .breadcrumb-navigation {

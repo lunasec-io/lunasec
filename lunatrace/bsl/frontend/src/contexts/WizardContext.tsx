@@ -13,7 +13,6 @@
  */
 import React, { useContext, useEffect } from 'react';
 
-import api from '../api';
 import useAppSelector from '../hooks/useAppSelector';
 import { selectIsAuthenticated, selectKratosId } from '../store/slices/authentication';
 import { userHasAnyOrganizations } from '../utils/organizations';
