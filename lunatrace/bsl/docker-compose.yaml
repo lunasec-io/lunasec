@@ -128,24 +128,6 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-#  We need better namespacing in datadog before we enable this again.
-#  Currently, it will log alongside production which gets quite noisy.
-#  datadog:
-#    image: datadog/agent:latest
-#    environment:
-#     DD_LOGS_ENABLED: "true"
-#     DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: "true"
-#     DD_CONTAINER_EXCLUDE_LOGS: "name:datadog-agent"
-#    env_file:
-#      - .env.dev
-#    volumes:
-#      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-#      - "/proc/:/host/proc/:ro"
-#      - "/opt/datadog-agent/run:/opt/datadog-agent/run:rw"
-#      - "/sys/fs/cgroup/:/host/sys/fs/cgroup:ro"
-#      - "./backend/logs/:/logs/:rw"
-#      - "./datadog/:/etc/datadog-agent/conf.d/lunatrace.d/:ro"
-
   mailslurper:
     image: oryd/mailslurper:latest-smtps
     ports:
