@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: project_access_tokens
+  schema: public
 object_relationships:
   - name: created_by_user
     using:
@@ -24,7 +24,6 @@ insert_permissions:
         - access_token
         - name
         - project_uuid
-      backend_only: false
 select_permissions:
   - role: cli
     permission:
@@ -61,6 +60,7 @@ select_permissions:
 delete_permissions:
   - role: user
     permission:
+      backend_only: false
       filter:
         project:
           organization:

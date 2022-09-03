@@ -18,7 +18,7 @@ import { Request, Response } from 'express';
 
 import { getServerConfig } from '../config';
 import { hasura } from '../hasura-api';
-import { MaybeErrorVoid } from '../types/util';
+import { MaybeError, MaybeErrorVoid } from '../types/util';
 import { errorResponse, newError, newResult } from '../utils/errors';
 import { log } from '../utils/log';
 import { tryParseInt } from '../utils/parse';
@@ -30,7 +30,7 @@ import { getInstallationAccessToken } from './auth';
 const serverConfig = getServerConfig();
 
 // Installation happens from the installed webhook, which is async, so we poll until all repos are present in hasura
-async function waitForGithubInstall(installationId: number, installationAuthToken: string): Promise<MaybeErrorVoid> {
+async function waitForGithubInstall(installationId: number, installationAuthToken: string): Promise<MaybeError> {
   let attempts = 0;
   const maxAttempts = 10;
 

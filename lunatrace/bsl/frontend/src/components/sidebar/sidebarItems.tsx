@@ -94,12 +94,12 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
     {
       href: '/guides',
       icon: BsChatSquareText,
-      title: 'Guides',
+      title: 'Guides Database',
     },
     {
       href: '/vulnerabilities',
       icon: AlertOctagon,
-      title: 'Vulnerabilities',
+      title: 'Vulnerabilities Reference Database',
     },
   ];
 
@@ -139,7 +139,7 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
 
   const loggedInSections = [
     {
-      title: 'Organizations',
+      title: 'Your Organizations',
       items: projectsSection,
     },
     {

@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: webhook_cache
+  schema: public
 insert_permissions:
   - role: service
     permission:
@@ -13,7 +13,6 @@ insert_permissions:
         - installation_id
         - data
         - sqs_message_id
-      backend_only: false
 select_permissions:
   - role: service
     permission:

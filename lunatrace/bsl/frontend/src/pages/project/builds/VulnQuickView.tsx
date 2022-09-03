@@ -11,10 +11,10 @@
  * limitations under the License.
  *
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Row, Spinner } from 'react-bootstrap';
 import { ArrowLeft } from 'react-feather';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import { useNavigate } from 'react-router-dom';
 
 import api from '../../../api';
 import { StickyScrollableElement } from '../../../components/utils/StickyScrollableElement';
@@ -30,12 +30,35 @@ export const VulnQuickView: React.FC<VulnQuickViewProps> = ({ vulnId, setVulnId,
 
   const CloseButton = (
     <Row className="m-4">
-      <Button onClick={() => setVulnId(null)} variant="light">
+      <Button onClick={() => closeQuickView()} variant="light">
         <ArrowLeft className="pb-1" />
         {sideBySideView ? 'Close' : 'Back to findings'}
       </Button>
     </Row>
   );
+
+  function closeQuickView() {
+    setVulnId(null);
+  }
+
+  // hacks to catch the back button and use it to close the vuln quick view without leaving the snapshot altogether
+  // react router v6 is absolute trash and they took out this functionality
+  // check this thread for updates on a better solution https://github.com/remix-run/react-router/issues/8139
+  useEffect(() => {
+    // Add a fake history event so that the back button does nothing by default
+    window.history.pushState('fake-route', document.title, window.location.href);
+
+    addEventListener('popstate', closeQuickView);
+
+    // Here is the cleanup when this component unmounts
+    return () => {
+      removeEventListener('popstate', closeQuickView);
+      // If we left without using the back button, aka by clicking a button on the page, we need to clear out that fake history event
+      if (window.history.state === 'fake-route') {
+        window.history.back();
+      }
+    };
+  }, []);
 
   return (
     <>

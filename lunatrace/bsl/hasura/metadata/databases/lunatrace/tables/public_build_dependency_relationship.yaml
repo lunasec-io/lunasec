@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: build_dependency_relationship
+  schema: public
 object_relationships:
   - name: build
     using:
@@ -17,23 +17,22 @@ insert_permissions:
       check: {}
       columns:
         - labels
-        - project_path
         - range
         - build_id
+        - project_path
         - depended_by_relationship_id
         - id
         - release_id
-      backend_only: false
 select_permissions:
   - role: service
     permission:
       columns:
         - labels
-        - project_path
         - range
         - build_id
         - depended_by_relationship_id
         - id
+        - project_path
         - release_id
       filter: {}
   - role: user
@@ -69,4 +68,5 @@ update_permissions:
 delete_permissions:
   - role: service
     permission:
+      backend_only: false
       filter: {}

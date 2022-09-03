@@ -1,6 +1,6 @@
 table:
-  schema: public
   name: identity_verifiable_addresses
+  schema: public
 object_relationships:
   - name: identity
     using:

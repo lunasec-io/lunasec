@@ -8,31 +8,43 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
         id
         source_type
         project_id
-        build_dependency_relationships {
-            depended_by_relationship_id
-            range
-            labels
-            release {
-                id
-                fetched_time
-                version
-                package {
-                    name
-                    last_successful_fetch
-                    package_manager
-                    vulnerabilities {
+
+        resolved_manifests {
+            id
+            path
+            child_edges_recursive {
+                parent_id
+                child_id
+                child {
+                    id
+                    range
+                    labels
+                    release_id
+                    release {
                         id
-                        affected_range_events {
-                            event
-                            type
-                            version
-                            id
-                            database_specific
+                        fetched_time
+                        version
+                        package {
+                            name
+                            last_successful_fetch
+                            package_manager
+                            affected_by_vulnerability {
+                                vulnerability {
+                                    id
+                                    source_id
+                                    source
+                                }
+                                ranges {
+                                    introduced
+                                    fixed
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+
         project {
             name
             ignored_vulnerabilities {
@@ -69,7 +81,6 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
             language
             locations
             matcher
-            package_version_id
             purl
             severity
             type
@@ -78,7 +89,6 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
             version_matcher
             virtual_path
             vulnerability_id
-            vulnerability_package_id
             vulnerability {
                 id
                 summary
