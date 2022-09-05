@@ -13,7 +13,7 @@
  */
 import { EmitterWebhookEvent } from '@octokit/webhooks';
 
-import { updateExistingRepository } from '../../actions/update-existing-repository';
+import { updateRepositoryIfExists } from '../../actions/update-repository-if-exists';
 
 // Handles changes to a given repo to keep data such as the repo name up to date
 export async function repositoryUpdatedHandler(
@@ -22,5 +22,5 @@ export async function repositoryUpdatedHandler(
   >
 ) {
   const repository = event.payload.repository;
-  await updateExistingRepository(repository);
+  await updateRepositoryIfExists(repository);
 }
