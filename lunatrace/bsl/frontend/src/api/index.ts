@@ -18,7 +18,7 @@ import { add } from '../store/slices/alerts';
 import { api as generatedApi } from './generated';
 // This extends the generated API so we can add any custom logic needed, as per https://www.graphql-code-generator.com/plugins/typescript-rtk-query
 const appApi = generatedApi.enhanceEndpoints({
-  addTagTypes: ['User', 'Projects', 'Organizations', 'Builds', 'ProjectDetails'],
+  addTagTypes: ['User', 'Projects', 'Organizations', 'Builds', 'BuildNumber', 'ProjectDetails'],
   endpoints: {
     GetSidebarInfo: {
       providesTags: ['Projects', 'Organizations'],
@@ -37,6 +37,9 @@ const appApi = generatedApi.enhanceEndpoints({
     },
     GetBuildDetails: {
       providesTags: ['Builds'],
+    },
+    GetBuildNumber: {
+      providesTags: ['BuildNumber'],
     },
     InsertPersonalProjectAndOrg: {
       invalidatesTags: ['Projects'],
