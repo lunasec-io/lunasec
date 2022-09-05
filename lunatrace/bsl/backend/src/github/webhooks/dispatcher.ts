@@ -12,6 +12,8 @@
  *
  */
 
+import { ClientError } from 'graphql-request';
+
 import { log } from '../../utils/log';
 
 import { organizationMemberAddedHandler } from './handlers/organization-member-added-handler';
@@ -19,7 +21,6 @@ import { pullRequestHandler } from './handlers/pull-request-handler';
 import { pushHandler } from './handlers/push-handler';
 import { repositoryUpdatedHandler } from './handlers/repository-updated-handler';
 import { WebhookInterceptor } from './interceptor';
-
 export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): void {
   // Wrap the hook in logging, pulls the type from octokit since this has the same signature
   const listenToHook: typeof interceptor.on = (hookName, callback) => {
@@ -27,7 +28,30 @@ export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): 
       const actionName = 'action' in event.payload ? event.payload.action : 'none given';
       await log.provideFields({ trace: 'webhook-logger', hookName, actionName, event }, async () => {
         log.info(`processing ${hookName} github webhook event from queue`);
-        await callback(event);
+        try {
+          // Fire handler
+          await callback(event);
+          // added error handling here so we can stop doing the golang style catchError, threwError pattern in our handlers
+          // TODO: golang style error handling has not yet been removed from existing handlers, but can be omitted for any new handlers.
+        } catch (e: unknown) {
+          if (e instanceof Error) {
+            if (e instanceof ClientError) {
+              log.error('Caught a graphql error while handling github webhook. Webhook processing has cancelled.', {
+                error: e,
+              });
+              return;
+            }
+            log.error(
+              'Caught an unknown error while processing github webhook. This should be investigated. Webhook processing has cancelled.',
+              {
+                error: e,
+              }
+            );
+            return;
+          }
+          log.error('Webhook handler threw non-error, this should never happen.');
+          return;
+        }
         log.info(`Finished processing ${hookName} webhook`);
       });
     });
@@ -38,7 +62,8 @@ export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): 
   listenToHook('repository.publicized', repositoryUpdatedHandler);
   listenToHook('repository.privatized', repositoryUpdatedHandler);
 
-  listenToHook('pull_request', pullRequestHandler);
   listenToHook('organization.member_added', organizationMemberAddedHandler);
+
+  listenToHook('pull_request', pullRequestHandler);
   listenToHook('push', pushHandler);
 }
