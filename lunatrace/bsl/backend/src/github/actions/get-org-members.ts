@@ -165,7 +165,7 @@ export async function getHasuraOrgMembers(
         }
         return {
           nodeId: m.id,
-          databaseId: m.databaseId,
+          githubUserId: m.databaseId,
         };
       })
       .filter(notEmpty);
@@ -193,7 +193,7 @@ export async function getHasuraOrgMembers(
             }
             return {
               nodeId: m.id,
-              databaseId: m.databaseId,
+              githubUserId: m.databaseId,
             };
           })
           .filter(notEmpty),
