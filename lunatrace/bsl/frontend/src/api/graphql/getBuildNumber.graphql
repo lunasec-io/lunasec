@@ -1,0 +1,5 @@
+query GetBuildNumber($build_id: uuid!) {
+    builds_by_pk(id: $build_id) {
+        build_number
+    }
+}
