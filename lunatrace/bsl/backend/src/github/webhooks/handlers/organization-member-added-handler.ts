@@ -14,7 +14,7 @@
 import { EmitterWebhookEvent } from '@octokit/webhooks';
 
 import { log } from '../../../utils/log';
-import { orgMemberAdded } from '../../actions/org-member-added';
+import { addOrgMember } from '../../actions/add-org-member';
 
 export async function organizationMemberAddedHandler(event: EmitterWebhookEvent<'organization.member_added'>) {
   if (!event.payload.installation) {
@@ -26,7 +26,7 @@ export async function organizationMemberAddedHandler(event: EmitterWebhookEvent<
   const githubNodeId = event.payload.membership.user.node_id;
   const githubUserId = event.payload.membership.user.id;
 
-  await orgMemberAdded(installationId, {
+  await addOrgMember(installationId, {
     nodeId: githubNodeId,
     githubUserId,
   });
