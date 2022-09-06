@@ -8,7 +8,7 @@ RUN go generate ./...
 
 WORKDIR /build/lunatrace/bsl/ingest-worker
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o ingestworker ./cmd/lpt
+RUN CGO_ENABLED=0 GOOS=linux go build -o ingestworker ./cmd/ingestworker
 
 FROM scratch
 
