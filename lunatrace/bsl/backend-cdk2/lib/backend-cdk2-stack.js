@@ -44,25 +44,24 @@ class BackendCdk2Stack extends cdk.Stack {
       metadata: { name: 'flux' },
     });
 
-    const manifestUrl = 'https://raw.githubusercontent.com/fluxcd/helm-operator/master/deploy/crds.yaml';
-    const manifest = yaml.loadAll(request('GET', manifestUrl).getBody());
-    const fluxCRDs = cluster.addManifest('FluxCD-CRDs', manifest);
-    fluxCRDs.node.addDependency(fluxNamespace)
-
     const fluxChart = new eks.HelmChart(this, 'FluxCD-chart-flux', {
       cluster,
       chart: 'flux',
       repository: 'https://charts.fluxcd.io',
       namespace: 'flux',
     });
-    fluxChart.node.addDependency(fluxCRDs);
+    fluxChart.node.addDependency(fluxNamespace);
+
     const fluxHelmOperatorChart = new eks.HelmChart(this, 'FluxCD-chart-helm-operator', {
       cluster,
       chart: 'helm-operator',
       repository: 'https://charts.fluxcd.io',
       namespace: 'flux',
+      values: {
+        createCRD: 'true'
+      },
     });
-    fluxHelmOperatorChart.node.addDependency(fluxCRDs);
+    fluxHelmOperatorChart.node.addDependency(fluxNamespace);
 
 
   }
