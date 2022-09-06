@@ -14,9 +14,6 @@
 const cdk = require('aws-cdk-lib');
 const eks = require('aws-cdk-lib/aws-eks');
 
-const yaml = require('js-yaml');
-const request = require('sync-request');
-
 class BackendCdk2Stack extends cdk.Stack {
   /**
    * @param {cdk.App} scope
