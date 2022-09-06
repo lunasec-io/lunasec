@@ -34,10 +34,6 @@ class BackendCdk2Stack extends cdk.Stack {
       },
     });
 
-    // todo switch to role
-    const adminUser = iam.User.fromUserArn(this, 'iamAdminUser', props.adminUserArn);
-    cluster.awsAuth.addUserMapping(adminUser, { groups: [ 'system:masters' ]});
-
     const fluxNamespace = cluster.addManifest("FluxCD-namespace-flux", {
       apiVersion: "v1",
       kind: "Namespace",
