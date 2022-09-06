@@ -40,6 +40,7 @@ interface PackageDependenciesWithGraphAndMetadata {
 
 interface CollectedPackageTree {
   lockFilePath: string;
+  error?: string;
   dependencies: PackageDependenciesWithGraphAndMetadata[];
 }
 
@@ -97,6 +98,7 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
         });
         return {
           lockFilePath: lockFilePathWithLeadingSlash,
+          error: 'Unable to process lockfile',
           dependencies: [],
         };
       }
@@ -271,6 +273,9 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
   if (pkgGraphs.length === 0) {
     return;
   }
+
+  // TODO: Add a place for us to mark manifest files with errors in the build results.
+  // Is it safe for us to display the raw error from the Snyk library, or is that a security risk?
 
   const uniqueRootDependencyHashes = pkgGraphs.flatMap((pkgGraph) =>
     pkgGraph.dependencies.map((pkg) => pkg.rootNode.treeHashId)
