@@ -25,7 +25,7 @@ const env = {
   region: stackInputs.cdkDefaultRegion,
 };
 
-new BackendCdk2Stack(app, 'BackendCdk2Stack', {
+new BackendCdk2Stack(app, 'BackendCdk2Stack3', {
   env: env,
   ...stackInputs,
 });
