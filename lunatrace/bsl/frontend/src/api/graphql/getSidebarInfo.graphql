@@ -23,10 +23,6 @@ query GetSidebarInfo($kratos_id: uuid) {
       github_repository {
         id
       }
-      builds {
-        id
-        build_number
-      }
     }
   }
 }
