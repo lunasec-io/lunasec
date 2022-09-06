@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -11,8 +11,8 @@
  * limitations under the License.
  *
  */
-const cdk = require('aws-cdk-lib');
-const eks = require('aws-cdk-lib/aws-eks');
+const cdk = require("aws-cdk-lib");
+const eks = require("aws-cdk-lib/aws-eks");
 
 class BackendCdk2Stack extends cdk.Stack {
   /**
@@ -23,33 +23,30 @@ class BackendCdk2Stack extends cdk.Stack {
   constructor(scope, id, props) {
     super(scope, id, props);
 
-    const cluster = new eks.Cluster(this, 'lunatest', {
+    const cluster = new eks.FargateCluster(this, "lunatest", {
       version: eks.KubernetesVersion.V1_21,
-      defaultCapacity: 0,
       albController: {
         version: eks.AlbControllerVersion.V2_4_1,
       },
+      defaultProfile: {
+        selectors: [{ namespace: "*" }],
+      },
     });
 
-    cluster.addFargateProfile('DefaultProfile', {
-      selectors: [ { namespace: '*' },  ],
+    const fluxNamespace = cluster.addManifest("FluxCD-namespace-flux", {
+      apiVersion: "v1",
+      kind: "Namespace",
+      metadata: { name: "flux" },
     });
 
-    const fluxNamespace = cluster.addManifest('FluxCD-namespace-flux', {
-      apiVersion: 'v1',
-      kind: 'Namespace',
-      metadata: { name: 'flux' },
-    });
-
-    const fluxChart = new eks.HelmChart(this, 'FluxCD-chart-flux', {
+    const fluxChart = new eks.HelmChart(this, "FluxCD-chart-flux", {
       cluster,
-      chart: 'flux2',
-      repository: 'https://fluxcd-community.github.io/helm-charts',
-      namespace: 'flux',
+      chart: "flux2",
+      repository: "https://fluxcd-community.github.io/helm-charts",
+      namespace: "flux",
     });
     fluxChart.node.addDependency(fluxNamespace);
-
   }
 }
 
-module.exports = { BackendCdk2Stack }
+module.exports = { BackendCdk2Stack };
