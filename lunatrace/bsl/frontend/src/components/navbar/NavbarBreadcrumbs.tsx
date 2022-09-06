@@ -90,7 +90,7 @@ const BuildBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponen
     return <span>Error: Unknown build</span>;
   }
 
-  return <span># {buildsByPrimaryKey.build_number}</span>;
+  return <span>#{buildsByPrimaryKey.build_number}</span>;
 };
 
 const BuildMainPathBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
