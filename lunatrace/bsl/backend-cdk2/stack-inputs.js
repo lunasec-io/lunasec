@@ -11,8 +11,9 @@
  * limitations under the License.
  *
  */
-module.default = {
+module.exports = {
   cdkDefaultRegion: 'us-west-2',
   cdkDefaultAccount: '916430638549',
   appName: 'lunatrace',
+  adminUserArn: 'arn:aws:iam::916430638549:user/alex_vanderpot',
 };

@@ -13,6 +13,7 @@
  */
 const cdk = require("aws-cdk-lib");
 const eks = require("aws-cdk-lib/aws-eks");
+const iam = require("aws-cdk-lib/aws-iam");
 
 class BackendCdk2Stack extends cdk.Stack {
   /**
@@ -33,6 +34,10 @@ class BackendCdk2Stack extends cdk.Stack {
       },
     });
 
+    // todo switch to role
+    const adminUser = iam.User.fromUserArn(this, 'iamAdminUser', props.adminUserArn);
+    cluster.awsAuth.addUserMapping(adminUser, { groups: [ 'system:masters' ]});
+
     const fluxNamespace = cluster.addManifest("FluxCD-namespace-flux", {
       apiVersion: "v1",
       kind: "Namespace",
@@ -44,6 +49,7 @@ class BackendCdk2Stack extends cdk.Stack {
       chart: "flux2",
       repository: "https://fluxcd-community.github.io/helm-charts",
       namespace: "flux",
+      version: "1.3.0",
     });
     fluxChart.node.addDependency(fluxNamespace);
   }
