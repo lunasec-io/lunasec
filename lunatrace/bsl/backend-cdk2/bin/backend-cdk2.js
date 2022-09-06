@@ -11,11 +11,11 @@
  * limitations under the License.
  *
  */
-#!/usr/bin/env node
+
 const cdk = require('aws-cdk-lib');
 const { BackendCdk2Stack } = require('../lib/backend-cdk2-stack');
 
-import { stackInputs } from '../stack-inputs';
+const stackInputs = require('../stack-inputs');
 
 const app = new cdk.App();
 

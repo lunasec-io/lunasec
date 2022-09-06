@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-export const stackInputs = {
+module.default = {
   cdkDefaultRegion: 'us-west-2',
   cdkDefaultAccount: '916430638549',
   appName: 'lunatrace',
