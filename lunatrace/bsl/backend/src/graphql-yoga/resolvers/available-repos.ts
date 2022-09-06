@@ -14,7 +14,7 @@
 import { GraphQLYogaError } from '@graphql-yoga/node';
 
 import { getInstallationsFromUser } from '../../github/actions/get-installations-from-user';
-import { getReposForInstallation } from '../../github/actions/get-repos-for-installation';
+import { getReposFromInstallation } from '../../github/actions/get-repos-from-installation';
 import { getInstallationAccessToken } from '../../github/auth';
 import { GithubRepositoryInfo, RawInstallation } from '../../types/github';
 import { log } from '../../utils/log';
@@ -57,7 +57,7 @@ async function loadReposByInstallation(installation: RawInstallation): Promise<O
   if (installationTokenRes.error) {
     throw new GraphQLYogaError(`failed authenticating the installation with github: ${installationTokenRes.msg}`);
   }
-  const repos = await getReposForInstallation(installationTokenRes.res, installationId);
+  const repos = await getReposFromInstallation(installationTokenRes.res, installationId);
   if (repos === null) {
     throw new GraphQLYogaError(`failed to get repos for installation: ${installationId}`);
   }
