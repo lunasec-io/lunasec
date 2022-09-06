@@ -43,23 +43,11 @@ class BackendCdk2Stack extends cdk.Stack {
 
     const fluxChart = new eks.HelmChart(this, 'FluxCD-chart-flux', {
       cluster,
-      chart: 'flux',
-      repository: 'https://charts.fluxcd.io',
+      chart: 'flux2',
+      repository: 'https://fluxcd-community.github.io/helm-charts',
       namespace: 'flux',
     });
     fluxChart.node.addDependency(fluxNamespace);
-
-    const fluxHelmOperatorChart = new eks.HelmChart(this, 'FluxCD-chart-helm-operator', {
-      cluster,
-      chart: 'helm-operator',
-      repository: 'https://charts.fluxcd.io',
-      namespace: 'flux',
-      values: {
-        createCRD: 'true'
-      },
-    });
-    fluxHelmOperatorChart.node.addDependency(fluxNamespace);
-
 
   }
 }
