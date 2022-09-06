@@ -14,6 +14,9 @@
 const cdk = require('aws-cdk-lib');
 const eks = require('aws-cdk-lib/aws-eks');
 
+const yaml = require('js-yaml');
+const request = require('sync-request');
+
 class BackendCdk2Stack extends cdk.Stack {
   /**
    * @param {cdk.App} scope
@@ -23,9 +26,45 @@ class BackendCdk2Stack extends cdk.Stack {
   constructor(scope, id, props) {
     super(scope, id, props);
 
-    new eks.FargateCluster(this, 'lunatest', {
+    const cluster = new eks.Cluster(this, 'lunatest', {
       version: eks.KubernetesVersion.V1_21,
+      defaultCapacity: 0,
+      albController: {
+        version: eks.AlbControllerVersion.V2_4_1,
+      },
     });
+
+    cluster.addFargateProfile('DefaultProfile', {
+      selectors: [ { namespace: '*' },  ],
+    });
+
+    const fluxNamespace = cluster.addManifest('FluxCD-namespace-flux', {
+      apiVersion: 'v1',
+      kind: 'Namespace',
+      metadata: { name: 'flux' },
+    });
+
+    const manifestUrl = 'https://raw.githubusercontent.com/fluxcd/helm-operator/master/deploy/crds.yaml';
+    const manifest = yaml.loadAll(request('GET', manifestUrl).getBody());
+    const fluxCRDs = cluster.addManifest('FluxCD-CRDs', manifest);
+    fluxCRDs.node.addDependency(fluxNamespace)
+
+    const fluxChart = new eks.HelmChart(this, 'FluxCD-chart-flux', {
+      cluster,
+      chart: 'flux',
+      repository: 'https://charts.fluxcd.io',
+      namespace: 'flux',
+    });
+    fluxChart.node.addDependency(fluxCRDs);
+    const fluxHelmOperatorChart = new eks.HelmChart(this, 'FluxCD-chart-helm-operator', {
+      cluster,
+      chart: 'helm-operator',
+      repository: 'https://charts.fluxcd.io',
+      namespace: 'flux',
+    });
+    fluxHelmOperatorChart.node.addDependency(fluxCRDs);
+
+
   }
 }
 
