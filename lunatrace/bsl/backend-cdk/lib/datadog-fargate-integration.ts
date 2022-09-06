@@ -15,6 +15,7 @@ import * as ecs from '@aws-cdk/aws-ecs';
 import {
   AwsLogDriver,
   Secret as EcsSecret,
+  FirelensConfigFileType,
   FirelensLogRouterType,
   LogDriver,
   LogDrivers,
@@ -91,6 +92,7 @@ export class DatadogIntegration extends cdk.Construct {
         options: {
           enableECSLogMetadata: true,
           configFileValue: '/fluent-bit/configs/parse-json.conf',
+          configFileType: FirelensConfigFileType.FILE,
         },
       },
       logging: new AwsLogDriver({ streamPrefix: 'firelens' }),
