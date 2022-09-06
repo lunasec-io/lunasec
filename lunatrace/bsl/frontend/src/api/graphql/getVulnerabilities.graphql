@@ -35,39 +35,6 @@ query SearchVulnerabilities($search: String!, $source: String_comparison_exp = {
     }
     database_specific
     details
-    equivalents {
-      equivalent_vulnerability {
-        id
-        source
-        source_id
-        summary
-        severities {
-          id
-          type
-          score
-          source
-        }
-      }
-    }
-    findings(where: {latest_default_build: {}}) {
-      id
-      build_id
-      default_branch_build {
-        id
-        project {
-          name
-          id
-        }
-        build_number
-        created_at
-        project_id
-      }
-    }
-    references {
-      id
-      type
-      url
-    }
     severities {
       id
       score
