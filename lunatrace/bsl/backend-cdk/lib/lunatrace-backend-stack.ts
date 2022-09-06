@@ -312,12 +312,6 @@ export class LunatraceBackendStack extends cdk.Stack {
       }
     );
 
-    // get hasura health check working before enabling this
-    // backend.addContainerDependencies({
-    //   container: hasura,
-    //   condition: ContainerDependencyCondition.HEALTHY,
-    // });
-
     frontend.addContainerDependencies({
       container: oathkeeper,
       condition: ContainerDependencyCondition.HEALTHY,
