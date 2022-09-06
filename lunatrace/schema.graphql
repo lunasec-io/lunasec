@@ -6167,6 +6167,11 @@ unique or primary key constraints on table "organizations"
 """
 enum organizations_constraint {
   """
+  unique or primary key constraint on columns "installation_id"
+  """
+  installation_id_unique
+
+  """
   unique or primary key constraint on columns "github_id"
   """
   organizations_github_id_key
