@@ -24,7 +24,7 @@ import { catchError, threwError } from '../../utils/try';
 import { getInstallationAccessToken } from '../auth';
 
 import { getHasuraOrgMembers } from './get-org-members';
-import { getReposForInstallation } from './get-repos-for-installation';
+import { getReposFromInstallation } from './get-repos-from-installation';
 import { queueNewReposForSnapshot } from './queue-new-repos-for-snapshot';
 
 /**
@@ -41,7 +41,7 @@ export async function installProjectsFromGithub(
     return newError(`unable to get installation token: ${installationAuthToken.msg}`);
   }
 
-  const unfilteredGithubRepos = await getReposForInstallation(installationAuthToken.res, installationId);
+  const unfilteredGithubRepos = await getReposFromInstallation(installationAuthToken.res, installationId);
   if (unfilteredGithubRepos === null) {
     return newError(`failed to get repos for installation: ${installationId}`);
   }
