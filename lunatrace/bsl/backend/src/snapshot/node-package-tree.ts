@@ -249,6 +249,10 @@ async function findCurrentlyKnownDependencies(query: string, manifestIds: string
   for (let i = 0; i < manifestIds.length; i += 999) {
     const slice = manifestIds.slice(i, i + 999);
 
+    if (slice.length === 0) {
+      continue;
+    }
+
     log.info(`Checking ${slice.length} currently known dependencies (${i + slice.length}/${manifestIds.length})`);
 
     const result = await db.manyOrNone<string>(query, [slice]);
@@ -284,6 +288,11 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
   // Remove duplicates
   const uniqueNodeRootIds = new Set(uniqueRootDependencyHashes);
 
+  if (uniqueNodeRootIds.size === 0) {
+    log.error('No unique root dependency hashes found');
+    return;
+  }
+
   log.info(`Found ${uniqueNodeRootIds.size} unique root dependency hashes`);
 
   const currentlyKnownRootIds = await findCurrentlyKnownDependencies(
@@ -313,6 +322,11 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   log.info(`Total ${dependencyNodeMap.size} unique transitive dependency hashes`);
 
+  if (dependencyNodeMap.size === 0) {
+    log.info(`All dependencies already known by database, skipping insert`);
+    return;
+  }
+
   const currentlyKnownTransitiveDependencyIds = await findCurrentlyKnownDependencies(
     `SELECT id FROM manifest_dependency_node WHERE id IN ($1:csv)`,
     Array.from(dependencyNodeMap.keys()).sort()
@@ -328,7 +342,12 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
     dependencyNodeMap.delete(id);
   });
 
-  log.info(`Found ${dependencyNodeMap.size} transitive dependency hashes to insert`);
+  if (dependencyNodeMap.size === 0) {
+    log.info(`All transitive dependencies already known by database, skipping insert`);
+    return;
+  }
+
+  log.info(`Found ${dependencyNodeMap.size} new transitive dependency hashes to insert`);
 
   // Insert any new dependencies into the database
   await db.tx(
@@ -390,6 +409,11 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
         );
 
         log.info(`Inserted manifest ${manifestId.id} for ${buildId}`);
+
+        if (pkgGraph.dependencies.length === 0) {
+          log.info(`No dependencies found for manifest: ${pkgGraph.lockFilePath}`);
+          return;
+        }
 
         const dependencyColumns = new pgp.helpers.ColumnSet(['manifest_id', 'manifest_dependency_node_id'], {
           table: 'manifest_dependency',
