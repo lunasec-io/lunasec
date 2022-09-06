@@ -107,6 +107,7 @@
       "./lunadefend/js/internal-infrastructure/metrics-server-backend",
       "./lunatrace/bsl/backend",
       "./lunatrace/bsl/backend-cdk",
+      "./lunatrace/bsl/backend-cdk2",
       "./lunatrace/bsl/common",
       "./lunatrace/bsl/logger",
       "./lunatrace/bsl/frontend",
