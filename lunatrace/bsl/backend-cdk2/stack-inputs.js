@@ -16,4 +16,5 @@ module.exports = {
   cdkDefaultAccount: '916430638549',
   appName: 'lunatrace',
   adminUserArn: 'arn:aws:iam::916430638549:user/alex_vanderpot',
+  testSecret: 'arn:aws:secretsmanager:us-west-2:916430638549:secret:testsecret-6yadD5',
 };
