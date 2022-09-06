@@ -66,7 +66,7 @@ export function cleanUpRawRepoData(rawRepositories: RawRepositories): GithubRepo
   });
 }
 
-export async function getReposForInstallation(
+export async function getReposFromInstallation(
   authToken: string,
   installationId: number
 ): Promise<GithubRepositoryInfo[] | null> {
