@@ -22251,6 +22251,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"aws-cdk-lib@npm:2.40.0":
+  version: 2.40.0
+  resolution: "aws-cdk-lib@npm:2.40.0"
+  dependencies:
+    "@balena/dockerignore": ^1.0.2
+    case: 1.6.3
+    fs-extra: ^9.1.0
+    ignore: ^5.2.0
+    jsonschema: ^1.4.1
+    minimatch: ^3.1.2
+    punycode: ^2.1.1
+    semver: ^7.3.7
+    yaml: 1.10.2
+  peerDependencies:
+    constructs: ^10.0.0
+  checksum: 429878097ecd944ee9c41a8b5ef0551a288c3801a32b8ea23afd3598fbb3e7cb808e00ddaf30f720b5cfea8747f104be5a2978fcfdec0409d91c926677d17307
+  languageName: node
+  linkType: hard
+
 "aws-cdk-local@npm:1.65.8":
   version: 1.65.8
   resolution: "aws-cdk-local@npm:1.65.8"
@@ -22323,6 +22342,20 @@ __metadata:
   bin:
     cdk: bin/cdk
   checksum: 7d3c6f1385586e01c6e645f7af9582967188320f9e2ffdc99cd177fd723bed8314194f2de66c605727f79968a56fab74363cb35af3d128a61b7ce5b077b349f0
+  languageName: node
+  linkType: hard
+
+"aws-cdk@npm:2.40.0":
+  version: 2.40.0
+  resolution: "aws-cdk@npm:2.40.0"
+  dependencies:
+    fsevents: 2.3.2
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    cdk: bin/cdk
+  checksum: 546f07bbad211e6d4881bc260f6ea9ea4b5d6de84b2051d0879f7d56e11a1e78f22aeb5b8081be35017ee27a6b0562460a451bf645f102133e0232c312734b32
   languageName: node
   linkType: hard
 
@@ -23054,6 +23087,19 @@ __metadata:
   checksum: 0777ae0c735ce1cbfc856d627589ed9aae212b84fb0c03c368b55e6c5d3507841780052808d0ad46e18a2ba516e93d55eeed8cd967f3b2938822dfeccfb2a16d
   languageName: node
   linkType: hard
+
+"backend-cdk2@workspace:lunatrace/bsl/backend-cdk2":
+  version: 0.0.0-use.local
+  resolution: "backend-cdk2@workspace:lunatrace/bsl/backend-cdk2"
+  dependencies:
+    aws-cdk: 2.40.0
+    aws-cdk-lib: 2.40.0
+    constructs: ^10.0.0
+    jest: ^27.5.1
+  bin:
+    backend-cdk2: bin/backend-cdk2.js
+  languageName: unknown
+  linkType: soft
 
 "backo2@npm:^1.0.2":
   version: 1.0.2
@@ -25827,6 +25873,13 @@ __metadata:
   version: 1.0.0
   resolution: "constants-browserify@npm:1.0.0"
   checksum: f7ac8c6d0b6e4e0c77340a1d47a3574e25abd580bfd99ad707b26ff7618596cf1a5e5ce9caf44715e9e01d4a5d12cb3b4edaf1176f34c19adb2874815a56e64f
+  languageName: node
+  linkType: hard
+
+"constructs@npm:^10.0.0":
+  version: 10.1.94
+  resolution: "constructs@npm:10.1.94"
+  checksum: 6116a379288538de99229e78fe22270096ea54e26f34ae6600f303afdb7b652ab5f9799885e0b4fad862b48e00c49132a413e3a26cf811ed3393b4eb968d0447
   languageName: node
   linkType: hard
 
