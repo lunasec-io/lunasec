@@ -14,11 +14,13 @@
 import { GraphQLYogaError } from '@graphql-yoga/node';
 
 import { getInstallationsFromUser } from '../../github/actions/get-installations-from-user';
-import { getReposFromInstallation } from '../../github/actions/get-repos-from-installation';
+import { getReposForInstallation } from '../../github/actions/get-repos-for-installation';
 import { getInstallationAccessToken } from '../../github/auth';
 import { GithubRepositoryInfo, RawInstallation } from '../../types/github';
+import { log } from '../../utils/log';
+import { catchError, threwError } from '../../utils/try';
 import { QueryResolvers } from '../generated-resolver-types';
-import { getGithubUserToken, throwIfUnauthenticated } from '../helpers/auth-helpers';
+import { getGithubUserToken, getUserId, throwIfUnauthenticated } from '../helpers/auth-helpers';
 
 type AvailableOrgsWithReposType = NonNullable<QueryResolvers['availableOrgsWithRepos']>;
 
@@ -36,17 +38,30 @@ export const availableOrgsWithRepos: AvailableOrgsWithReposType = async (parent,
   throwIfUnauthenticated(ctx);
 
   const userToken = await getGithubUserToken(ctx);
-  const installations = await getInstallationsFromUser(userToken);
-  return Promise.all(installations.map(loadReposByInstallation));
+  const installationsResult = await catchError(getInstallationsFromUser(userToken));
+  if (threwError(installationsResult)) {
+    const userId = getUserId(ctx);
+    log.error('failed to get available orgs for user', {
+      userId,
+      error: installationsResult,
+    });
+    throw new GraphQLYogaError(`failed to get available orgs for user: ${userId}`);
+  }
+
+  return Promise.all(installationsResult.map(loadReposByInstallation));
 };
 
 async function loadReposByInstallation(installation: RawInstallation): Promise<OrgWithRepos> {
   const installationId = installation.id;
   const installationTokenRes = await getInstallationAccessToken(installationId);
   if (installationTokenRes.error) {
-    throw new GraphQLYogaError('Failed authenticating the installation with github: ' + installationTokenRes.msg);
+    throw new GraphQLYogaError(`failed authenticating the installation with github: ${installationTokenRes.msg}`);
   }
-  const repos = await getReposFromInstallation(installationTokenRes.res, installationId);
+  const repos = await getReposForInstallation(installationTokenRes.res, installationId);
+  if (repos === null) {
+    throw new GraphQLYogaError(`failed to get repos for installation: ${installationId}`);
+  }
+
   const organizationName = installation.account?.login || 'Unknown Organization';
   return { organizationName, installationId, repos };
 }

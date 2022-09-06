@@ -20,19 +20,26 @@ import { walkPagination } from '../helpers/walk-pagination';
 export async function getInstallationsFromUser(userAccessToken: string): Promise<RawInstallation[]> {
   const octokit = new Octokit({ auth: userAccessToken });
 
-  const iLog = log.child('fetchInstallationsFromGithubLogger');
+  const logger = log.child('fetch-installations-from-github-logger');
 
   async function callGithub(page: number, perPage: number) {
+    logger.info(`listing installations for authenticated user`, {
+      page,
+      perPage,
+    });
+
     const response = await octokit.rest.apps.listInstallationsForAuthenticatedUser({
       page: page,
       per_page: perPage,
     });
 
-    iLog.info(
-      ` GitHub installations for page #${page}: ${response.data.installations.length}, total_count: ${response.data.total_count}`
-    );
+    logger.info(`GitHub installations for page`, {
+      page,
+      resultCount: response.data.installations.length,
+      totalCount: response.data.total_count,
+    });
     return { newItems: response.data.installations, total: response.data.total_count };
   }
 
-  return walkPagination(iLog, callGithub);
+  return walkPagination(logger, callGithub);
 }

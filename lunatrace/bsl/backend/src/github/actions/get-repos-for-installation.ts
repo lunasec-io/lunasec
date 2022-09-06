@@ -15,15 +15,20 @@ import { Octokit } from 'octokit';
 
 import { GithubRepositoryInfo, RawRepositories } from '../../types/github';
 import { log } from '../../utils/log';
+import { catchError, threwError } from '../../utils/try';
 import { walkPagination } from '../helpers/walk-pagination';
 
 async function fetchReposFromGithub(authToken: string, installationId: number): Promise<RawRepositories> {
   const octokit = new Octokit({ auth: authToken });
 
-  const iLog = log.child('fetchReposFromGithubLogger');
+  const logger = log.child('fetch-repos-from-github-logger', {
+    installationId,
+  });
 
   async function callGithub(page: number, perPage: number) {
-    iLog.info(`[installId: ${installationId}] Getting GitHub repos for installation, page #${page}`);
+    logger.info('getting GitHub repos for installation', {
+      page,
+    });
 
     // authenticates as app based on request URLs
     const response = await octokit.rest.apps.listReposAccessibleToInstallation({
@@ -31,13 +36,15 @@ async function fetchReposFromGithub(authToken: string, installationId: number): 
       per_page: perPage,
     });
 
-    iLog.info(
-      `[installId: ${installationId}] GitHub repos for page #${page}: ${response.data.repositories.length}, total_count: ${response.data.total_count}`
-    );
+    logger.info('GitHub repos for page', {
+      page,
+      responseCount: response.data.repositories.length,
+      totalCount: response.data.total_count,
+    });
     return { newItems: response.data.repositories, total: response.data.total_count };
   }
 
-  return walkPagination(iLog, callGithub);
+  return walkPagination(logger, callGithub);
 }
 
 // TODO: This is just an intermediary data format, this gets converted again before it goes to hasura. Not sure why we are bothering with this so maybe we can get rid of it and just handle the raw repo data during the hasura upsert
@@ -59,10 +66,17 @@ export function cleanUpRawRepoData(rawRepositories: RawRepositories): GithubRepo
   });
 }
 
-export async function getReposFromInstallation(
+export async function getReposForInstallation(
   authToken: string,
   installationId: number
-): Promise<GithubRepositoryInfo[]> {
-  const rawRepositories = await fetchReposFromGithub(authToken, installationId);
-  return cleanUpRawRepoData(rawRepositories);
+): Promise<GithubRepositoryInfo[] | null> {
+  const rawRepositoriesResult = await catchError(fetchReposFromGithub(authToken, installationId));
+  if (threwError(rawRepositoriesResult)) {
+    log.error('failed to fetch repos from github', {
+      installationId,
+      error: rawRepositoriesResult,
+    });
+    return null;
+  }
+  return cleanUpRawRepoData(rawRepositoriesResult);
 }
