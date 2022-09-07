@@ -10557,6 +10557,13 @@ export type GetPreviousBuildForPrQueryVariables = Exact<{
 
 export type GetPreviousBuildForPrQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', existing_github_review_id?: string | null }> };
 
+export type GetUserGitHubDataQueryVariables = Exact<{
+  kratos_id?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type GetUserGitHubDataQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', github_id?: string | null, github_node_id?: string | null, kratos_id?: any | null, id: any }> };
+
 export type GetUserRoleQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
 }>;
@@ -10708,6 +10715,7 @@ export type UpsertOrganizationsMutation = { __typename?: 'mutation_root', insert
 
 export type UpsertUserFromIdMutationVariables = Exact<{
   user: Users_Insert_Input;
+  on_conflict?: InputMaybe<Users_On_Conflict>;
 }>;
 
 
@@ -10822,6 +10830,16 @@ export const GetPreviousBuildForPrDocument = gql`
     order_by: {created_at: desc}
   ) {
     existing_github_review_id
+  }
+}
+    `;
+export const GetUserGitHubDataDocument = gql`
+    query GetUserGitHubData($kratos_id: uuid) {
+  users(where: {kratos_id: {_eq: $kratos_id}}) {
+    github_id
+    github_node_id
+    kratos_id
+    id
   }
 }
     `;
@@ -11047,11 +11065,8 @@ export const UpsertOrganizationsDocument = gql`
 }
     `;
 export const UpsertUserFromIdDocument = gql`
-    mutation UpsertUserFromId($user: users_insert_input!) {
-  insert_users_one(
-    object: $user
-    on_conflict: {constraint: users_github_id_key, update_columns: github_node_id}
-  ) {
+    mutation UpsertUserFromId($user: users_insert_input!, $on_conflict: users_on_conflict) {
+  insert_users_one(object: $user, on_conflict: $on_conflict) {
     id
   }
 }
@@ -11093,6 +11108,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetPreviousBuildForPr(variables: GetPreviousBuildForPrQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPreviousBuildForPrQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPreviousBuildForPrQuery>(GetPreviousBuildForPrDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPreviousBuildForPr', 'query');
+    },
+    GetUserGitHubData(variables?: GetUserGitHubDataQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserGitHubDataQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetUserGitHubDataQuery>(GetUserGitHubDataDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserGitHubData', 'query');
     },
     GetUserRole(variables?: GetUserRoleQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserRoleQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserRoleQuery>(GetUserRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserRole', 'query');

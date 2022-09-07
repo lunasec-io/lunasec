@@ -12,6 +12,7 @@
  *
  */
 import { hasura } from '../../hasura-api';
+import { Users_Constraint, Users_Update_Column } from '../../hasura-api/generated';
 import { GitHubUserData } from '../../types/github';
 import { logError } from '../../utils/errors';
 import { log } from '../../utils/log';
@@ -29,6 +30,10 @@ export async function orgMemberAdded(installationId: number, githubUserData: Git
       user: {
         github_id: githubUserData.databaseId.toString(),
         github_node_id: githubUserData.nodeId,
+      },
+      on_conflict: {
+        constraint: Users_Constraint.UsersGithubIdKey,
+        update_columns: [Users_Update_Column.GithubId, Users_Update_Column.GithubNodeId],
       },
     })
   );
