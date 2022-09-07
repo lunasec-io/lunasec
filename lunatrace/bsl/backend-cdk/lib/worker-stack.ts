@@ -13,15 +13,21 @@
  */
 import { inspect } from 'util';
 
-import { SecurityGroup } from '@aws-cdk/aws-ec2';
+import { SecurityGroup, SubnetType } from '@aws-cdk/aws-ec2';
 import {
   CapacityProviderStrategy,
   Cluster,
   ContainerImage,
   DeploymentControllerType,
   Secret as EcsSecret,
+  FargatePlatformVersion,
 } from '@aws-cdk/aws-ecs';
-import { ApplicationLoadBalancedFargateService, QueueProcessingFargateServiceProps } from '@aws-cdk/aws-ecs-patterns';
+import {
+  ApplicationLoadBalancedFargateService,
+  QueueProcessingFargateServiceProps,
+  ScheduledFargateTask,
+} from '@aws-cdk/aws-ecs-patterns';
+import { Schedule } from '@aws-cdk/aws-events';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
@@ -74,7 +80,6 @@ export class WorkerStack extends cdk.Stack {
   public static createWorkerStack(context: Construct, props: WorkerStackProps): void {
     const {
       fargateCluster,
-      fargateService,
       publicHasuraServiceUrl,
       gitHubAppId,
       gitHubAppPrivateKey,
@@ -217,34 +222,37 @@ export class WorkerStack extends cdk.Stack {
       repositoryQueue.grantSendMessages(queueFargateService.taskDefinition.taskRole);
     });
 
+    const ingestWorkerImage = ContainerImage.fromAsset('../ingest-worker', {
+      ...commonBuildProps,
+      target: 'backend-queue-processor',
+      file: 'docker/ingestworker.dockerfile',
+    });
+
     // Update vulnerabilities job
-    // const updateVulnerabilitiesJob = new ScheduledFargateTask(context, 'UpdateVulnerabilitesJob', {
-    //   cluster: props.fargateCluster,
-    //   platformVersion: FargatePlatformVersion.LATEST,
-    //   desiredTaskCount: 1,
-    //   schedule: Schedule.cron({
-    //     minute: '0',
-    //     hour: '0',
-    //     day: '*',
-    //     month: '*',
-    //     year: '*',
-    //   }),
-    //   subnetSelection: { subnetType: SubnetType.PUBLIC },
-    //   scheduledFargateTaskImageOptions: {
-    //     memoryLimitMiB: 8 * 1024,
-    //     cpu: 4 * 1024,
-    //     image: workerContainerImage,
-    //     logDriver: LogDriver.awsLogs({
-    //       streamPrefix: 'lunatrace-update-vulnerabilities',
-    //     }),
-    //     environment: {
-    //       ...processQueueCommonEnvVars,
-    //       GRYPE_DATABASE_BUCKET: storageStack.grypeDatabaseBucket.bucketName,
-    //     },
-    //     secrets: {
-    //       DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-    //     },
-    //   },
-    // });
+    const updateVulnerabilitiesJob = new ScheduledFargateTask(context, 'UpdateVulnerabilitesJob', {
+      cluster: props.fargateCluster,
+      platformVersion: FargatePlatformVersion.LATEST,
+      desiredTaskCount: 1,
+      schedule: Schedule.cron({
+        minute: '0',
+        hour: '0',
+        day: '*',
+        month: '*',
+        year: '*',
+      }),
+      subnetSelection: { subnetType: SubnetType.PUBLIC },
+      scheduledFargateTaskImageOptions: {
+        memoryLimitMiB: 8 * 1024,
+        cpu: 4 * 1024,
+        image: ingestWorkerImage,
+        logDriver: datadogLogDriverForService('lunatrace', 'update-vulnerabilities-job'),
+        environment: {
+          ...processQueueCommonEnvVars,
+        },
+        secrets: {
+          LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+        },
+      },
+    });
   }
 }
