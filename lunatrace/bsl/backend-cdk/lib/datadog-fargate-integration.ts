@@ -15,6 +15,7 @@ import * as ecs from '@aws-cdk/aws-ecs';
 import {
   AwsLogDriver,
   Secret as EcsSecret,
+  FirelensConfigFileType,
   FirelensLogRouterType,
   LogDriver,
   LogDrivers,
@@ -91,6 +92,7 @@ export class DatadogIntegration extends cdk.Construct {
         options: {
           enableECSLogMetadata: true,
           configFileValue: '/fluent-bit/configs/parse-json.conf',
+          configFileType: FirelensConfigFileType.FILE,
         },
       },
       logging: new AwsLogDriver({ streamPrefix: 'firelens' }),
@@ -116,12 +118,13 @@ export class DatadogFargateIntegration extends cdk.Construct {
       DD_ENABLE_PAYLOADS_SERIES: 'false',
       DD_ENABLE_PAYLOADS_SERVICE_CHECKS: 'false',
       DD_ENABLE_PAYLOADS_SKETCHES: 'false',
+      DD_TAGS: 'environment:production',
     };
 
     const datadogApiKey = Secret.fromSecretCompleteArn(this, 'DatadogApiKeySecret', props.datadogApiKeyArn);
 
     const datadog = taskDefinition.addContainer('dd-agent', {
-      image: ecs.ContainerImage.fromRegistry('datadog/docker-dd-agent'),
+      image: ecs.ContainerImage.fromRegistry('public.ecr.aws/datadog/agent:latest'),
       memoryLimitMiB: 256,
       environment,
       logging: LogDriver.awsLogs({
