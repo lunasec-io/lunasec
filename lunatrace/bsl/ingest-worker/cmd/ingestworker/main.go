@@ -13,6 +13,7 @@ package main
 
 import (
 	ingest "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/package-injest"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 	"github.com/rs/zerolog/log"
 	"net/http"
 
@@ -37,6 +38,11 @@ import (
 func main() {
 	clifx2.Main(
 		lunatracefx.Module,
+		fx.Invoke(func() {
+			util.RunOnProcessExit(func() {
+				util.RemoveCleanupDirs()
+			})
+		}),
 		// todo make a module
 		fx.Provide(func(appConfig types.LunaTraceConfig, hc *http.Client) graphql.Client {
 			if appConfig.GraphqlServer.Url == "" {

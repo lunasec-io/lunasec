@@ -248,10 +248,9 @@ export class WorkerStack extends cdk.Stack {
         logDriver: datadogLogDriverForService('lunatrace', 'update-vulnerabilities-job'),
         environment: {
           ...processQueueCommonEnvVars,
-          GRYPE_DATABASE_BUCKET: storageStack.grypeDatabaseBucket.bucketName,
         },
         secrets: {
-          DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+          LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
         },
       },
     });
