@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-import * as util from 'util';
 
 import { SendMessageCommand } from '@aws-sdk/client-sqs';
 
