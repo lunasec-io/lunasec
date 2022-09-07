@@ -1,4 +1,4 @@
-FROM golang:1.18-alpine AS go-build
+FROM golang:1.18-alpine AS builder
 
 COPY . /build/
 WORKDIR /build/lunatrace/cli/
@@ -12,6 +12,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o ingestworker ./cmd/ingestworker
 
 FROM scratch
 
-COPY --from=go-build /build/lunatrace/bsl/ingest-worker/ingestworker /
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+COPY --from=builder /build/lunatrace/bsl/ingest-worker/ingestworker /
 
 ENTRYPOINT ["/ingestworker"]
