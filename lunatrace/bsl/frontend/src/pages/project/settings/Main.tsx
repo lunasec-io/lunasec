@@ -16,8 +16,7 @@ import { Container } from 'react-bootstrap';
 
 import { ProjectInfo } from '../types';
 
-import { SettingsPrChecks } from './PrChecks';
-import { SettingsPrComments } from './PrComments';
+import { SettingsPrFeedback } from './PrFeedback';
 
 interface ProjectSettingsProps {
   project: ProjectInfo;
@@ -25,8 +24,7 @@ interface ProjectSettingsProps {
 export const ProjectSettingsMain: React.FC<ProjectSettingsProps> = ({ project }) => {
   return (
     <Container>
-      <SettingsPrComments project={project} />
-      <SettingsPrChecks project={project} />
+      <SettingsPrFeedback project={project} />
     </Container>
   );
 };
