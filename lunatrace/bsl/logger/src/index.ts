@@ -19,6 +19,8 @@ import { LevelChoice, LoggerContext, LoggerOptions, LogMethodArgs, LogObj, Trans
 
 export * from './types';
 export * from './json-transport';
+export * from './logio-transport';
+export * from './file-transport';
 
 const defaultLoggerName = 'default';
 
@@ -146,7 +148,10 @@ export class LunaLogger {
       }
     }
 
-    args.forEach((arg) => {
+    args.forEach((arg, index) => {
+      // If the item is the last in the list, then have no spacing.
+      const spacing = index === args.length - 1 ? '' : ' ';
+
       // If the argument is an object, then add its keys to the context object
       if (this.isObject(arg)) {
         logObject.context = mergeObjectIntoRecord(logObject.context, arg as object);
@@ -155,7 +160,7 @@ export class LunaLogger {
 
       const argAsString = anythingToString(arg);
       // Otherwise, just glob everything onto the message
-      logObject.message = logObject.message.concat(argAsString + ' ');
+      logObject.message = logObject.message.concat(argAsString + spacing);
     });
     this.transport(logObject);
     return;
