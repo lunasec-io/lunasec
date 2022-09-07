@@ -40,7 +40,33 @@ interface PackageDependenciesWithGraphAndMetadata {
 
 interface CollectedPackageTree {
   lockFilePath: string;
+  error?: string;
   dependencies: PackageDependenciesWithGraphAndMetadata[];
+}
+
+interface ManifestDependencyEdge {
+  parent_id: string;
+  child_id: string;
+}
+
+function sortEdges(a: ManifestDependencyEdge, b: ManifestDependencyEdge): number {
+  if (a.parent_id < b.parent_id) {
+    return -1;
+  }
+
+  if (a.parent_id > b.parent_id) {
+    return 1;
+  }
+
+  if (a.child_id < b.child_id) {
+    return -1;
+  }
+
+  if (a.child_id > b.child_id) {
+    return 1;
+  }
+
+  return 0;
 }
 
 export async function collectPackageGraphsFromDirectory(repoDir: string): Promise<CollectedPackageTree[]> {
@@ -53,9 +79,29 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
   return Promise.all(
     nonDependencyLockFilePaths.map(async (lockFilePath) => {
       const { dir, base } = path.parse(lockFilePath);
-      // Calls our fork of the Snyk library
-      const pkgTree = await buildDepTreeFromFiles(dir, 'package.json', base, true);
 
+      // Remove the repo path from the returned lockfile path
+      const truncatedLockfilePath = lockFilePath.replace(new RegExp('^' + repoDir), '');
+
+      const lockFilePathWithLeadingSlash = truncatedLockfilePath.startsWith('/')
+        ? truncatedLockfilePath
+        : `/${truncatedLockfilePath}`;
+
+      let pkgTree;
+      try {
+        // Calls our fork of the Snyk library
+        pkgTree = await buildDepTreeFromFiles(dir, 'package.json', base, true);
+      } catch (e) {
+        log.error('failed to parse a lockfile pair', {
+          lockFilePathWithLeadingSlash,
+          e,
+        });
+        return {
+          lockFilePath: lockFilePathWithLeadingSlash,
+          error: 'Unable to process lockfile',
+          dependencies: [],
+        };
+      }
       const pkgDependenciesWithGraphAndMetadata = Object.values(pkgTree.dependencies).map((pkg) => {
         return {
           rootNode: dfsGenerateMerkleTreeFromDepTree(pkg),
@@ -65,12 +111,6 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
           version: pkg.version,
         };
       });
-      // Remove the repo path from the returned lockfile path
-      const truncatedLockfilePath = lockFilePath.replace(new RegExp('^' + repoDir), '');
-
-      const lockFilePathWithLeadingSlash = truncatedLockfilePath.startsWith('/')
-        ? truncatedLockfilePath
-        : `/${truncatedLockfilePath}`;
 
       return {
         lockFilePath: lockFilePathWithLeadingSlash,
@@ -78,11 +118,6 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
       };
     })
   );
-}
-
-interface ManifestDependencyEdge {
-  parentId: string;
-  childId: string;
 }
 
 function packageGraphToUniqueDependencyNodes(rootNode: DependencyGraphNode): Map<string, DependencyGraphNode> {
@@ -99,7 +134,7 @@ function packageGraphToUniqueDependencyNodes(rootNode: DependencyGraphNode): Map
   return uniqueDependencyMap;
 }
 
-async function getPackageId<Ext>(t: ITask<Ext>, name: string, packageManager: string, customRegistry: string) {
+async function upsertAndGetPackageId<Ext>(t: ITask<Ext>, name: string, packageManager: string, customRegistry: string) {
   const selectPackageIdQuery = `SELECT id FROM package.package WHERE name = $1 AND package_manager = $2 AND custom_registry = $3`;
 
   const packageId = await t.oneOrNone<{ id: string }>(selectPackageIdQuery, [name, packageManager, customRegistry]);
@@ -147,7 +182,11 @@ async function getPackageReleaseId<Ext>(t: ITask<Ext>, packageId: string, versio
   return (await t.one<{ id: string }>(selectPackageReleaseIdQuery, [packageId, version])).id;
 }
 
-async function insertNodesToDatabase<Ext>(t: ITask<Ext>, queryData: DependencyGraphNode[]) {
+async function insertNodesToDatabase<Ext>(t: ITask<Ext>, queryData: DependencyGraphNode[]): Promise<void> {
+  if (queryData.length === 0) {
+    return;
+  }
+
   // Define set of columns, creating only once (statically) and then reused to cache for performance
   const manifestDependencyNodeColumns = new pgp.helpers.ColumnSet(['id', 'labels', 'release_id', 'range'], {
     table: 'manifest_dependency_node',
@@ -162,7 +201,7 @@ async function insertNodesToDatabase<Ext>(t: ITask<Ext>, queryData: DependencyGr
         customRegistry: node.customRegistry,
       };
 
-      const packageId = await getPackageId(
+      const packageId = await upsertAndGetPackageId(
         t,
         packageData.name || '',
         packageData.packageManager,
@@ -185,19 +224,51 @@ async function insertNodesToDatabase<Ext>(t: ITask<Ext>, queryData: DependencyGr
   await t.none(nodeInsertQuery);
 }
 
-async function insertEdgesToDatabase<Ext>(t: ITask<Ext>, queryData: ManifestDependencyEdge[]) {
+async function insertEdgesToDatabase<Ext>(t: ITask<Ext>, queryData: ManifestDependencyEdge[]): Promise<void> {
+  if (queryData.length === 0) {
+    return;
+  }
+
   const manifestDependencyEdgeColumns = new pgp.helpers.ColumnSet(['parent_id', 'child_id'], {
     table: 'manifest_dependency_edge',
   });
 
-  const edgeInsertData = queryData.map((edge) => ({
-    parent_id: edge.parentId,
-    child_id: edge.childId,
-  }));
-
-  const edgeInsertQuery = pgp.helpers.insert(edgeInsertData, manifestDependencyEdgeColumns) + ' ON CONFLICT DO NOTHING';
+  const edgeInsertQuery =
+    pgp.helpers.insert(queryData.sort(sortEdges), manifestDependencyEdgeColumns) + ' ON CONFLICT DO NOTHING';
 
   await t.none(edgeInsertQuery);
+}
+
+async function findCurrentlyKnownDependencies(query: string, manifestIds: string[]): Promise<string[]> {
+  if (manifestIds.length === 0) {
+    return [];
+  }
+
+  const currentlyKnownIds: string[][] = [];
+
+  for (let i = 0; i < manifestIds.length; i += 999) {
+    const slice = manifestIds.slice(i, i + 999);
+
+    if (slice.length === 0) {
+      continue;
+    }
+
+    log.info(`Checking ${slice.length} currently known dependencies (${i + slice.length}/${manifestIds.length})`);
+
+    const result = await db.manyOrNone<string>(query, [slice]);
+
+    log.info(`Added ${result.length} known dependencies (${i + slice.length}/${manifestIds.length})`);
+
+    if (result) {
+      currentlyKnownIds.push(result);
+    }
+  }
+
+  const allKnownIds = currentlyKnownIds.flat(1);
+
+  log.info(`Found ${allKnownIds.length} known dependencies`);
+
+  return allKnownIds;
 }
 
 async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: CollectedPackageTree[]) {
@@ -207,6 +278,9 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
     return;
   }
 
+  // TODO: Add a place for us to mark manifest files with errors in the build results.
+  // Is it safe for us to display the raw error from the Snyk library, or is that a security risk?
+
   const uniqueRootDependencyHashes = pkgGraphs.flatMap((pkgGraph) =>
     pkgGraph.dependencies.map((pkg) => pkg.rootNode.treeHashId)
   );
@@ -214,17 +288,17 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
   // Remove duplicates
   const uniqueNodeRootIds = new Set(uniqueRootDependencyHashes);
 
+  if (uniqueNodeRootIds.size === 0) {
+    log.error('No unique root dependency hashes found');
+    return;
+  }
+
   log.info(`Found ${uniqueNodeRootIds.size} unique root dependency hashes`);
 
-  const currentlyKnownRootIds =
-    uniqueNodeRootIds.size > 0
-      ? await db.manyOrNone(
-          `SELECT id FROM manifest_dependency_node WHERE id IN (${pgp.as
-            .array(Array.from(uniqueNodeRootIds))
-            .replace(/^array\[/i, '')
-            .replace(/]$/, '')})`
-        )
-      : [];
+  const currentlyKnownRootIds = await findCurrentlyKnownDependencies(
+    `SELECT id FROM manifest_dependency_node WHERE id IN ($1:csv)`,
+    Array.from(uniqueNodeRootIds).sort()
+  );
 
   log.info(`Found ${uniqueNodeRootIds.size} missing root dependency hashes`);
 
@@ -248,13 +322,15 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   log.info(`Total ${dependencyNodeMap.size} unique transitive dependency hashes`);
 
-  const currentKnownQuery = `SELECT id FROM manifest_dependency_node WHERE id IN (${pgp.as
-    .array(Array.from(dependencyNodeMap.keys()))
-    .replace(/^array\[/i, '')
-    .replace(/]$/, '')})`;
+  if (dependencyNodeMap.size === 0) {
+    log.info(`All dependencies already known by database, skipping insert`);
+    return;
+  }
 
-  const currentlyKnownTransitiveDependencyIds =
-    dependencyNodeMap.size > 0 ? await db.manyOrNone<string>(currentKnownQuery) : [];
+  const currentlyKnownTransitiveDependencyIds = await findCurrentlyKnownDependencies(
+    `SELECT id FROM manifest_dependency_node WHERE id IN ($1:csv)`,
+    Array.from(dependencyNodeMap.keys()).sort()
+  );
 
   log.info(`Found ${currentlyKnownTransitiveDependencyIds.length} known transitive dependency hashes`);
 
@@ -266,7 +342,12 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
     dependencyNodeMap.delete(id);
   });
 
-  log.info(`Found ${dependencyNodeMap.size} transitive dependency hashes to insert`);
+  if (dependencyNodeMap.size === 0) {
+    log.info(`All transitive dependencies already known by database, skipping insert`);
+    return;
+  }
+
+  log.info(`Found ${dependencyNodeMap.size} new transitive dependency hashes to insert`);
 
   // Insert any new dependencies into the database
   await db.tx(
@@ -277,9 +358,12 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
       }),
     },
     async (t) => {
+      // We need to sort these in order to help the database avoid deadlocking
+      const sortedDependencyNodes = Array.from(dependencyNodeMap.values()).sort();
+
       // Insert the nodes in batches to avoid exceeding the maximum query values limit
       for (let i = 0; i < dependencyNodeMap.size; i += 999) {
-        const dependencySlice = Array.from(dependencyNodeMap.values()).slice(i, i + 999);
+        const dependencySlice = sortedDependencyNodes.slice(i, i + 999);
 
         await insertNodesToDatabase(t, dependencySlice);
 
@@ -288,12 +372,15 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
       // TODO: If the performance of this sucks, we can move to using a generator instead.
       // Note: We have to insert the edges _after_ the nodes, otherwise the edges may refer to missing nodes
-      const dependencyEdges = Array.from(dependencyNodeMap.values()).flatMap((data) =>
-        data.children.map((child) => ({
-          parentId: data.treeHashId,
-          childId: child.treeHashId,
-        }))
-      );
+      const dependencyEdges = sortedDependencyNodes
+        .flatMap((data) =>
+          data.children.map((child) => ({
+            parent_id: data.treeHashId,
+            child_id: child.treeHashId,
+          }))
+        )
+        // We sort these to help the database avoid deadlocking
+        .sort(sortEdges);
 
       log.info(`Inserting ${dependencyEdges.length} edges`);
 
@@ -322,6 +409,11 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
         );
 
         log.info(`Inserted manifest ${manifestId.id} for ${buildId}`);
+
+        if (pkgGraph.dependencies.length === 0) {
+          log.info(`No dependencies found for manifest: ${pkgGraph.lockFilePath}`);
+          return;
+        }
 
         const dependencyColumns = new pgp.helpers.ColumnSet(['manifest_id', 'manifest_dependency_node_id'], {
           table: 'manifest_dependency',
