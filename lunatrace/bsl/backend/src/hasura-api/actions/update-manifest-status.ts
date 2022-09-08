@@ -13,6 +13,6 @@
  */
 import { hasura } from '../index';
 
-export function insertBuildLog(message: string) {
-  return null;
+export function updateManifestStatus(buildId: string, status: string, message?: string) {
+  void hasura.UpdateManifestStatusIfExists({ buildId, status, message });
 }

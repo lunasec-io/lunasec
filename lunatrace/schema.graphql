@@ -469,6 +469,107 @@ enum build_dependency_relationship_update_column {
 }
 
 """
+columns and relationships of "build_log"
+"""
+type build_log {
+  """An object relationship"""
+  build: builds!
+  build_id: uuid!
+  created_at: timestamptz!
+  id: uuid!
+  message: String
+}
+
+"""
+Boolean expression to filter rows from the table "build_log". All fields are combined with a logical 'AND'.
+"""
+input build_log_bool_exp {
+  _and: [build_log_bool_exp!]
+  _not: build_log_bool_exp
+  _or: [build_log_bool_exp!]
+  build: builds_bool_exp
+  build_id: uuid_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  message: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "build_log"
+"""
+enum build_log_constraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  build_log_pkey
+}
+
+"""
+input type for inserting data into table "build_log"
+"""
+input build_log_insert_input {
+  build: builds_obj_rel_insert_input
+  build_id: uuid
+  created_at: timestamptz
+  id: uuid
+  message: String
+}
+
+"""
+response of any mutation on the table "build_log"
+"""
+type build_log_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [build_log!]!
+}
+
+"""
+on_conflict condition type for table "build_log"
+"""
+input build_log_on_conflict {
+  constraint: build_log_constraint!
+  update_columns: [build_log_update_column!]! = []
+  where: build_log_bool_exp
+}
+
+"""Ordering options when selecting data from "build_log"."""
+input build_log_order_by {
+  build: builds_order_by
+  build_id: order_by
+  created_at: order_by
+  id: order_by
+  message: order_by
+}
+
+"""
+select columns of table "build_log"
+"""
+enum build_log_select_column {
+  """column name"""
+  build_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  message
+}
+
+"""
+placeholder for update columns of table "build_log" (current role has no relevant permissions)
+"""
+enum build_log_update_column {
+  """placeholder (do not use)"""
+  _PLACEHOLDER
+}
+
+"""
 columns and relationships of "builds"
 """
 type builds {
@@ -3968,6 +4069,28 @@ type mutation_root {
     """upsert condition"""
     on_conflict: build_dependency_relationship_on_conflict
   ): build_dependency_relationship
+
+  """
+  insert data into the table: "build_log"
+  """
+  insert_build_log(
+    """the rows to be inserted"""
+    objects: [build_log_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: build_log_on_conflict
+  ): build_log_mutation_response
+
+  """
+  insert a single row into the table: "build_log"
+  """
+  insert_build_log_one(
+    """the row to be inserted"""
+    object: build_log_insert_input!
+
+    """upsert condition"""
+    on_conflict: build_log_on_conflict
+  ): build_log
 
   """
   insert data into the table: "builds"
@@ -8537,6 +8660,29 @@ type query_root {
   """
   build_dependency_relationship_by_pk(id: uuid!): build_dependency_relationship
 
+  """
+  fetch data from the table: "build_log"
+  """
+  build_log(
+    """distinct select on columns"""
+    distinct_on: [build_log_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [build_log_order_by!]
+
+    """filter the rows returned"""
+    where: build_log_bool_exp
+  ): [build_log!]!
+
+  """fetch data from the table: "build_log" using primary key columns"""
+  build_log_by_pk(id: uuid!): build_log
+
   """An array relationship"""
   builds(
     """distinct select on columns"""
@@ -10214,6 +10360,29 @@ type subscription_root {
   fetch data from the table: "build_dependency_relationship" using primary key columns
   """
   build_dependency_relationship_by_pk(id: uuid!): build_dependency_relationship
+
+  """
+  fetch data from the table: "build_log"
+  """
+  build_log(
+    """distinct select on columns"""
+    distinct_on: [build_log_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [build_log_order_by!]
+
+    """filter the rows returned"""
+    where: build_log_bool_exp
+  ): [build_log!]!
+
+  """fetch data from the table: "build_log" using primary key columns"""
+  build_log_by_pk(id: uuid!): build_log
 
   """An array relationship"""
   builds(

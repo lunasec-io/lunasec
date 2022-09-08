@@ -407,6 +407,87 @@ export enum Build_Dependency_Relationship_Update_Column {
   ReleaseId = 'release_id'
 }
 
+/** columns and relationships of "build_log" */
+export type Build_Log = {
+  __typename?: 'build_log';
+  /** An object relationship */
+  build: Builds;
+  build_id: Scalars['uuid'];
+  created_at: Scalars['timestamptz'];
+  id: Scalars['uuid'];
+  message?: Maybe<Scalars['String']>;
+};
+
+/** Boolean expression to filter rows from the table "build_log". All fields are combined with a logical 'AND'. */
+export type Build_Log_Bool_Exp = {
+  _and?: InputMaybe<Array<Build_Log_Bool_Exp>>;
+  _not?: InputMaybe<Build_Log_Bool_Exp>;
+  _or?: InputMaybe<Array<Build_Log_Bool_Exp>>;
+  build?: InputMaybe<Builds_Bool_Exp>;
+  build_id?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  message?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "build_log" */
+export enum Build_Log_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  BuildLogPkey = 'build_log_pkey'
+}
+
+/** input type for inserting data into table "build_log" */
+export type Build_Log_Insert_Input = {
+  build?: InputMaybe<Builds_Obj_Rel_Insert_Input>;
+  build_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  message?: InputMaybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "build_log" */
+export type Build_Log_Mutation_Response = {
+  __typename?: 'build_log_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Build_Log>;
+};
+
+/** on_conflict condition type for table "build_log" */
+export type Build_Log_On_Conflict = {
+  constraint: Build_Log_Constraint;
+  update_columns?: Array<Build_Log_Update_Column>;
+  where?: InputMaybe<Build_Log_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "build_log". */
+export type Build_Log_Order_By = {
+  build?: InputMaybe<Builds_Order_By>;
+  build_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "build_log" */
+export enum Build_Log_Select_Column {
+  /** column name */
+  BuildId = 'build_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Message = 'message'
+}
+
+/** placeholder for update columns of table "build_log" (current role has no relevant permissions) */
+export enum Build_Log_Update_Column {
+  /** placeholder (do not use) */
+  Placeholder = '_PLACEHOLDER'
+}
+
 /** columns and relationships of "builds" */
 export type Builds = {
   __typename?: 'builds';
@@ -3158,6 +3239,10 @@ export type Mutation_Root = {
   insert_build_dependency_relationship?: Maybe<Build_Dependency_Relationship_Mutation_Response>;
   /** insert a single row into the table: "build_dependency_relationship" */
   insert_build_dependency_relationship_one?: Maybe<Build_Dependency_Relationship>;
+  /** insert data into the table: "build_log" */
+  insert_build_log?: Maybe<Build_Log_Mutation_Response>;
+  /** insert a single row into the table: "build_log" */
+  insert_build_log_one?: Maybe<Build_Log>;
   /** insert data into the table: "builds" */
   insert_builds?: Maybe<Builds_Mutation_Response>;
   /** insert a single row into the table: "builds" */
@@ -3503,6 +3588,20 @@ export type Mutation_RootInsert_Build_Dependency_RelationshipArgs = {
 export type Mutation_RootInsert_Build_Dependency_Relationship_OneArgs = {
   object: Build_Dependency_Relationship_Insert_Input;
   on_conflict?: InputMaybe<Build_Dependency_Relationship_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Build_LogArgs = {
+  objects: Array<Build_Log_Insert_Input>;
+  on_conflict?: InputMaybe<Build_Log_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Build_Log_OneArgs = {
+  object: Build_Log_Insert_Input;
+  on_conflict?: InputMaybe<Build_Log_On_Conflict>;
 };
 
 
@@ -6707,6 +6806,10 @@ export type Query_Root = {
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
   build_dependency_relationship_by_pk?: Maybe<Build_Dependency_Relationship>;
+  /** fetch data from the table: "build_log" */
+  build_log: Array<Build_Log>;
+  /** fetch data from the table: "build_log" using primary key columns */
+  build_log_by_pk?: Maybe<Build_Log>;
   /** An array relationship */
   builds: Array<Builds>;
   /** An aggregate relationship */
@@ -6881,6 +6984,20 @@ export type Query_RootBuild_Dependency_RelationshipArgs = {
 
 
 export type Query_RootBuild_Dependency_Relationship_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootBuild_LogArgs = {
+  distinct_on?: InputMaybe<Array<Build_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Log_Order_By>>;
+  where?: InputMaybe<Build_Log_Bool_Exp>;
+};
+
+
+export type Query_RootBuild_Log_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -7962,6 +8079,10 @@ export type Subscription_Root = {
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
   build_dependency_relationship_by_pk?: Maybe<Build_Dependency_Relationship>;
+  /** fetch data from the table: "build_log" */
+  build_log: Array<Build_Log>;
+  /** fetch data from the table: "build_log" using primary key columns */
+  build_log_by_pk?: Maybe<Build_Log>;
   /** An array relationship */
   builds: Array<Builds>;
   /** An aggregate relationship */
@@ -8127,6 +8248,20 @@ export type Subscription_RootBuild_Dependency_RelationshipArgs = {
 
 
 export type Subscription_RootBuild_Dependency_Relationship_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootBuild_LogArgs = {
+  distinct_on?: InputMaybe<Array<Build_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Log_Order_By>>;
+  where?: InputMaybe<Build_Log_Bool_Exp>;
+};
+
+
+export type Subscription_RootBuild_Log_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -10648,6 +10783,13 @@ export type GetUserFromIdentityQueryVariables = Exact<{
 
 export type GetUserFromIdentityQuery = { __typename?: 'query_root', identities_by_pk?: { __typename?: 'identities', user?: { __typename?: 'users', id: any } | null } | null };
 
+export type InsertBuildLogMutationVariables = Exact<{
+  build_log: Build_Log_Insert_Input;
+}>;
+
+
+export type InsertBuildLogMutation = { __typename?: 'mutation_root', insert_build_log_one?: { __typename?: 'build_log', id: any } | null };
+
 export type InsertBuildMutationVariables = Exact<{
   build: Builds_Insert_Input;
 }>;
@@ -10960,6 +11102,13 @@ export const GetUserFromIdentityDocument = gql`
   }
 }
     `;
+export const InsertBuildLogDocument = gql`
+    mutation InsertBuildLog($build_log: build_log_insert_input!) {
+  insert_build_log_one(object: $build_log) {
+    id
+  }
+}
+    `;
 export const InsertBuildDocument = gql`
     mutation InsertBuild($build: builds_insert_input!) {
   insert_builds_one(object: $build) {
@@ -11209,6 +11358,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetUserFromIdentity(variables: GetUserFromIdentityQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserFromIdentityQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserFromIdentityQuery>(GetUserFromIdentityDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserFromIdentity', 'query');
+    },
+    InsertBuildLog(variables: InsertBuildLogMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildLogMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildLogMutation>(InsertBuildLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuildLog', 'mutation');
     },
     InsertBuild(variables: InsertBuildMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildMutation>(InsertBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuild', 'mutation');
