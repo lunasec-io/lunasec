@@ -20,13 +20,14 @@ import { LunaLogger } from '@lunatrace/logger';
 
 import { getRepoCloneUrlWithAuth } from '../../../github/actions/get-repo-clone-url-with-auth';
 import { hasura } from '../../../hasura-api';
+import { updateBuildStatus } from '../../../hasura-api/actions/update-build-status';
 import { InsertBuildMutation, Scalars } from '../../../hasura-api/generated';
 import { generateSbomFromAsset } from '../../../snapshot/call-cli';
 import { uploadSbomToS3 } from '../../../snapshot/generate-snapshot';
 import { snapshotPinnedDependencies } from '../../../snapshot/node-package-tree';
 import { SnapshotForRepositoryRequest } from '../../../types/sqs';
 import { MaybeError, MaybeErrorVoid } from '../../../types/util';
-import { newError, newResult } from '../../../utils/errors';
+import { newError } from '../../../utils/errors';
 import { log } from '../../../utils/log';
 import { catchError, threwError, Try } from '../../../utils/try';
 
@@ -41,7 +42,9 @@ async function performSnapshotOnRepository(
   gitBranch: string,
   gitCommit?: string
 ): Promise<MaybeErrorVoid> {
-  log.info('creating snapshot for repository');
+  updateBuildStatus(buildId, 'Starting to snapshot repository.', {
+    type: 'info',
+  });
 
   let repoDir = '';
   try {
@@ -53,20 +56,26 @@ async function performSnapshotOnRepository(
     });
 
     if (sbom === null) {
+      updateBuildStatus(buildId, 'Failed to generated SBOM for repository.', {
+        type: 'error',
+      });
       return {
         error: true,
         msg: 'unable to generate sbom for asset',
       };
     }
-
-    log.info('uploading sbom to s3');
+    updateBuildStatus(buildId, 'Successfully generated SBOM for repository.', {
+      type: 'info',
+    });
 
     const s3UploadRes = await catchError(uploadSbomToS3(installationId, buildId, sbom));
-
     if (threwError(s3UploadRes)) {
-      log.error('unable to upload sbom to s3', {
-        error: s3UploadRes,
-        message: s3UploadRes.message,
+      updateBuildStatus(buildId, 'Failed to save SBOM for repository.', {
+        type: 'error',
+        context: {
+          error: s3UploadRes,
+          message: s3UploadRes.message,
+        },
       });
 
       return {
@@ -76,20 +85,29 @@ async function performSnapshotOnRepository(
       };
     }
 
-    log.info('uploaded sbom to s3', {
-      s3Url: s3UploadRes,
+    updateBuildStatus(buildId, 'Successfully saved SBOM for repository.', {
+      type: 'info',
+      context: {
+        s3Url: s3UploadRes,
+      },
     });
 
-    log.info('snapshotting pinned dependencies', {
-      repoDir,
+    updateBuildStatus(buildId, 'Attempting to snapshot pinned dependencies for repository.', {
+      type: 'info',
+      context: {
+        repoDir,
+      },
     });
 
     try {
       await snapshotPinnedDependencies(buildId, repoDir);
     } catch (err) {
-      log.error('failed to snapshot pinned dependencies', {
-        error: err,
-        repoDir,
+      updateBuildStatus(buildId, 'Failed to snapshot pinned dependencies for repository.', {
+        type: 'error',
+        context: {
+          error: err,
+          repoDir,
+        },
       });
 
       return {
@@ -99,22 +117,28 @@ async function performSnapshotOnRepository(
       };
     }
 
-    log.info('completed snapshotting pinned dependencies', {
-      repoDir,
+    updateBuildStatus(buildId, 'Successfully created snapshot for pinned dependencies for repository.', {
+      type: 'info',
+      context: {
+        repoDir,
+      },
     });
 
     return {
       error: false,
     };
   } catch (e) {
-    log.error('error occurred while snapshotting an asset', {
-      tmpDir: repoDir,
-      error: e,
+    updateBuildStatus(buildId, 'Failed to snapshot repository.', {
+      type: 'error',
+      context: {
+        tmpDir: repoDir,
+        error: e,
+      },
     });
 
     return {
       error: true,
-      msg: `error occurred while snapshotting an asset: ${e}`,
+      msg: `error occurred while snapshotting repository: ${e}`,
       rawError: e instanceof Error ? e : undefined,
     };
   } finally {
@@ -123,12 +147,17 @@ async function performSnapshotOnRepository(
         await rmDir(repoDir, { recursive: true });
       }
     } catch (e) {
+      // Do not update build status, this is not a fatal error.
       log.error('error occurred while removing temp folder', {
         tmpDir: repoDir,
         error: e,
       });
     }
   }
+
+  updateBuildStatus(buildId, 'Experienced internal error while creating snapshot for repository.', {
+    type: 'error',
+  });
 
   return {
     error: true,

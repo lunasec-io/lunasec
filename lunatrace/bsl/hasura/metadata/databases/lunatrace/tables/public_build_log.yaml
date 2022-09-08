@@ -15,6 +15,14 @@ insert_permissions:
         - build_id
         - id
 select_permissions:
+  - role: service
+    permission:
+      columns:
+        - message
+        - created_at
+        - build_id
+        - id
+      filter: {}
   - role: user
     permission:
       columns:

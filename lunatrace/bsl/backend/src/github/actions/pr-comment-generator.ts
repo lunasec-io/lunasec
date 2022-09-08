@@ -16,6 +16,7 @@ import markdownTable from 'markdown-table';
 import { Octokit } from 'octokit';
 
 import { hasura } from '../../hasura-api';
+import { updateBuildStatus } from '../../hasura-api/actions/update-build-status';
 import { GetBuildQuery } from '../../hasura-api/generated';
 import { InsertedScan } from '../../models/scan';
 import { newError } from '../../utils/errors';
@@ -205,10 +206,6 @@ async function executePRCheck(
 }
 
 export async function interactWithPR(buildId: string, scanReport: InsertedScan) {
-  const logger = log.child('interact-with-pr', {
-    buildId,
-  });
-
   const buildLookup = await hasura.GetBuild({
     build_id: buildId,
   });
@@ -219,42 +216,49 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
     !buildLookup.builds_by_pk.project.organization ||
     !buildLookup.builds_by_pk.project.settings
   ) {
-    logger.error('unable to get required scan notify information for buildId');
+    log.error('unable to get required scan notify information for buildId');
     return;
   }
 
   const pullRequestId = buildLookup.builds_by_pk.pull_request_id;
 
   if (!pullRequestId) {
-    logger.info('pull request id is not defined, skipping comment because this build did not come from a PR');
+    log.info('pull request id is not defined, skipping comment because this build did not come from a PR');
     return;
   }
 
   const installationId = buildLookup.builds_by_pk?.project?.organization?.installation_id;
   if (!installationId) {
-    logger.error(
-      'github installation id is not defined for the organization linked to build, skipping github PR comment'
-    );
+    log.error('github installation id is not defined for the organization linked to build, skipping github PR comment');
     return;
   }
+
+  updateBuildStatus(buildId, 'Reporting findings on PR.', {
+    type: 'info',
+  });
 
   const projectId = buildLookup.builds_by_pk.project.id;
 
   const body = generatePullRequestCommentFromReport(projectId, scanReport);
 
   if (body === null) {
-    logger.error(`generated scan report is null`, {
-      projectId,
-      pullRequestId,
+    updateBuildStatus(buildId, 'Findings report is empty, nothing to report.', {
+      type: 'warn',
+      context: {
+        projectId,
+        pullRequestId,
+      },
     });
     return;
   }
   // Check if a previous build already commented on the PR. Could probably query github for this but its hard and rate limits exist so we just check our own db
   const previousReviewId = await findPreviousReviewId(pullRequestId);
 
-  logger.info('Starting PR Comment Submission flow');
-  logger.info('found previous review id', {
-    previousReviewId,
+  updateBuildStatus(buildId, 'Commenting on PR.', {
+    type: 'info',
+    context: {
+      previousReviewId,
+    },
   });
 
   if (buildLookup.builds_by_pk.project.settings.pr_check_enabled) {
@@ -282,6 +286,12 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
     );
   }
 
+  updateBuildStatus(buildId, 'Done commenting on PR.', {
+    type: 'info',
+    context: {
+      previousReviewId,
+    },
+  });
   return;
 }
 
