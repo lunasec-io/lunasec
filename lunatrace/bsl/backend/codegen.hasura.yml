@@ -1,15 +1,31 @@
 overwrite: true
 schema:
-  - "http://localhost:8080/v1/graphql":
-      headers: {"x-hasura-admin-secret": "myadminsecretkey", "x-hasura-role":"service"}
+  - http://localhost:8080/v1/graphql: {
+      headers: {
+        "x-hasura-admin-secret": "myadminsecretkey",
+        "x-hasura-role": "service"
+      }
+    }
 documents: "src/hasura-api/graphql/**/*.graphql"
 generates:
   ./src/hasura-api/generated.ts:
     plugins:
-      - "typescript":
+      - typescript:
           scalars:
-            user_role: "'organization_user'|'lunatrace_admin'"
+            _text: string
             bigint: number
+            date: Date
+            fix_state_enum: "'fixed'|'not-fixed'|'unknown'"
+            jsonb: "Record<any, any> | any[]"
+            builds_source_type: "'cli'|'gui'|'pr'|'default_branch'"
+            numeric: "number"
+            organization_user_role: "string"
+            severity_enum: "string"
+            user_role: "'organization_user'|'lunatrace_admin'"
+            timestamp: "string"
+            timestamptz: string
+            uuid: string
+
       - "typescript-operations"
       - "typescript-graphql-request"
   ../../schema.graphql:

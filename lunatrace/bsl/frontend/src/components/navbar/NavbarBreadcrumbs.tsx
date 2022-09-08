@@ -11,8 +11,8 @@
  * limitations under the License.
  *
  */
-import React, { useContext } from 'react';
-import { Breadcrumb } from 'react-bootstrap';
+import React, { useContext, useEffect } from 'react';
+import { Breadcrumb, Spinner } from 'react-bootstrap';
 import { NavLink, Params } from 'react-router-dom';
 import useBreadCrumbs, {
   BreadcrumbComponentProps,
@@ -63,25 +63,34 @@ const ProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbCompon
 };
 
 const BuildBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
-  const { sidebarData } = useContext(SidebarContext);
-  if (!sidebarData) {
-    return null;
-  }
-  const projects = sidebarData.projects;
+  const buildId = crumbProps.match.params.build_id;
 
-  if (projects.length === 0) {
-    console.error('no projects were found');
+  if (!buildId) {
     return null;
   }
 
-  const currentProject = getCurrentProject(projects, crumbProps.match.params);
-  if (currentProject === null) {
-    console.error('could not find current project');
-    return null;
+  const { data, isLoading } = api.useGetBuildNumberQuery({ build_id: buildId });
+
+  if (isLoading) {
+    return <Spinner size="sm" animation="border" />;
   }
 
-  const buildNumber = currentProject.builds.filter((b) => b.id === crumbProps.match.params.build_id)[0]?.build_number;
-  return <span># {buildNumber}</span>;
+  if (!data) {
+    console.error('Error loading build number', new Error('Error loading build number'));
+    return <span>Error loading build number</span>;
+  }
+
+  const buildsByPrimaryKey = data.builds_by_pk;
+
+  if (!buildsByPrimaryKey) {
+    console.error(
+      'Error, could not find build by primary key',
+      new Error('Error, could not find build by primary key')
+    );
+    return <span>Error: Unknown build</span>;
+  }
+
+  return <span>#{buildsByPrimaryKey.build_number}</span>;
 };
 
 const BuildMainPathBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
@@ -120,6 +129,10 @@ const NewProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbCom
   return <span>New Project</span>;
 };
 
+const ProjectImportBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
+  return <span>Import</span>;
+};
+
 const NewGuideBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
   const id = crumbProps.match.params.guide_id;
   if (!id) {
@@ -140,6 +153,7 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
   }
   // These custom breadcrumbs override the defaults from the library
   const customRoutes: BreadcrumbsRoute[] = [
+    { path: '/project/import', breadcrumb: ProjectImportBreadCrumb },
     { path: '/project/:project_id', breadcrumb: ProjectBreadCrumb },
     { path: '/project/:project_id/build/:build_id', breadcrumb: BuildBreadCrumb },
     { path: '/project/:project_id/build/', breadcrumb: BuildMainPathBreadCrumb },

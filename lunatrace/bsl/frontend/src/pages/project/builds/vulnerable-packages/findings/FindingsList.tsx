@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-import { VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
 import React from 'react';
 import { Accordion, Table } from 'react-bootstrap';
 import { ChevronDown, ChevronUp } from 'react-feather';
@@ -40,12 +39,11 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
 }) => {
   return (
     <Accordion.Body>
-      <Table hover size="sm">
+      <Table hover size="sm" responsive>
         <thead>
           <tr>
             <th>Source</th>
-            <th>Vulnerability Number</th>
-            {depTree && <th>Lockfile Only</th>}
+            <th>Vulnerability ID</th>
             <th>Severity</th>
             <th>CVSS</th>
             <th>Fix</th>
