@@ -73,3 +73,5 @@ authenticators:
       preserve_query: true
       token_from:
         header: X-LunaTrace-Access-Token
+log:
+  format: json

@@ -1,0 +1,64 @@
+table:
+  name: manifest_dependency_node
+  schema: public
+object_relationships:
+  - name: release
+    using:
+      foreign_key_constraint_on: release_id
+array_relationships:
+  - name: child_edges
+    using:
+      foreign_key_constraint_on:
+        column: parent_id
+        table:
+          name: manifest_dependency_edge
+          schema: public
+  - name: parent_edges
+    using:
+      foreign_key_constraint_on:
+        column: child_id
+        table:
+          name: manifest_dependency_edge
+          schema: public
+computed_fields:
+  - name: child_edges_recursive
+    definition:
+      function:
+        name: manifest_dependency_node_child_edges_recursive
+        schema: public
+insert_permissions:
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - labels
+        - range
+        - release_id
+        - id
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - labels
+        - range
+        - release_id
+        - id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - labels
+        - range
+        - release_id
+        - id
+      filter: {}
+update_permissions:
+  - role: service
+    permission:
+      columns:
+        - labels
+        - range
+        - release_id
+        - id
+      filter: {}
+      check: {}

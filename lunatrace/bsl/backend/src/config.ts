@@ -27,8 +27,6 @@ import {
   VulnerabilityUpdateConfig,
   WebhookConfig,
   WorkerBucketConfig,
-  WorkerConfig,
-  WorkerType,
 } from './types/config';
 import { tryParseInt, validateBooleanString } from './utils/parse';
 

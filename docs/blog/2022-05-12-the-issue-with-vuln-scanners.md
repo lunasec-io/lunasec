@@ -40,13 +40,8 @@ assumed
 that there was no better way. The infrastructure just didn't exist to eliminate that tedious job.
 
 At LunaSec,
-we've been taking on this type of work for a few select companies, and taking notes. We realized something a little mind-blowing.
-
-:::info
-By the way, if you'd like to hire us for a dependency review, 
-please [send us an email](mailto:deps@lunasec.io) and we'll manually comb through your dependency tree 
-and help you patch what we find. We're using this experience to improve our own scanners. More on that below.
-:::
+we've been taking on this type of work for a few select companies, and taking notes. We realized something a little 
+mind-blowing:
 
 ## Scanners could do a lot better
 
@@ -56,11 +51,11 @@ Typically, the [CPEs (packages)](https://nvd.nist.gov/products/cpe) that are vul
 [CVE (the official report)](https://www.cve.org/).
 
 Most scanners consume this database. If they find you have a vulnerable package, they notify
-you. Full stop.
+you. That's it.
 
-We've reviewed thousands of these notifications. We wrote down the reasons results could be ignored, and in the end
-realized that the vast majority of these false
-positives fell into one of a few categories.
+We've reviewed thousands of these notifications. For each false positive, we wrote down the reasons results could be 
+ignored, and in the end
+realized that the vast majority fell into one of a few categories.
 Many of them could be eliminated by relatively simple code.
 
 ## Common false positive scenarios

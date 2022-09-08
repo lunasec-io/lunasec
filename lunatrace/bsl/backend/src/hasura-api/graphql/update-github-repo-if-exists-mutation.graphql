@@ -1,0 +1,11 @@
+mutation UpdateRepoIfExists($repo_body: github_repositories_set_input!, $github_id: Int!) {
+    update_github_repositories(_set: $repo_body, where: {github_id: {_eq: $github_id}}) {
+        affected_rows
+        returning {
+            project {
+                id
+                name
+            }
+        }
+    }
+}

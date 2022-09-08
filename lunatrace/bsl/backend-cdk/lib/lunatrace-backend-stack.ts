@@ -262,7 +262,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     });
     storageStackStage.processRepositorySqsQueue.grantSendMessages(backend.taskDefinition.taskRole);
 
-    const hasuraJwtSecretValue = {
+    const hasuraJwksEndpointConfig = {
       type: 'RS256',
       jwk_url: 'http://localhost:4456/.well-known/jwks.json',
       issuer: 'http://oathkeeper:4455/',
@@ -281,7 +281,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         HASURA_GRAPHQL_ENABLE_CONSOLE: 'true',
         HASURA_GRAPHQL_PG_CONNECTIONS: '100',
         HASURA_GRAPHQL_LOG_LEVEL: 'debug',
-        HASURA_GRAPHQL_JWT_SECRET: JSON.stringify(hasuraJwtSecretValue),
+        HASURA_GRAPHQL_JWT_SECRET: JSON.stringify(hasuraJwksEndpointConfig),
         ACTION_BASE_URL: `http://localhost:${backend.containerPort}`,
         REMOTE_SCHEMA_URL: `http://localhost:${backend.containerPort}/graphql/v1`,
       },
@@ -291,13 +291,9 @@ export class LunatraceBackendStack extends cdk.Stack {
         HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
       },
       // healthCheck: {
+      //   // TODO: Make this verify a 200 status code in the response
       //   command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:8080/healthz || exit 1'],
       // },
-    });
-
-    hasura.addContainerDependencies({
-      container: oathkeeper,
-      condition: ContainerDependencyCondition.HEALTHY,
     });
 
     backend.addContainerDependencies({
@@ -305,11 +301,16 @@ export class LunatraceBackendStack extends cdk.Stack {
       condition: ContainerDependencyCondition.HEALTHY,
     });
 
-    // get hasura health check working before enabling this
-    // backend.addContainerDependencies({
-    //   container: hasura,
-    //   condition: ContainerDependencyCondition.HEALTHY,
-    // });
+    hasura.addContainerDependencies(
+      {
+        container: oathkeeper,
+        condition: ContainerDependencyCondition.HEALTHY,
+      },
+      {
+        container: backend,
+        condition: ContainerDependencyCondition.HEALTHY,
+      }
+    );
 
     frontend.addContainerDependencies({
       container: oathkeeper,

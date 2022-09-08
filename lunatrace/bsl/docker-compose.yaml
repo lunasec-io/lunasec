@@ -1,5 +1,24 @@
 version: '3.6'
 services:
+  datadog:
+    image: datadog/agent:latest
+    pid: host
+    environment:
+      DD_SITE: datadoghq.com
+      DD_LOGS_ENABLED: 'true'
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: 'true'
+      DD_CONTAINER_EXCLUDE_LOGS: "name:datadog name:bsl-datadog-1"
+      DD_TAGS: "environment:local"
+    restart: 'no'
+    env_file:
+      - .env.dev
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+      - ./backend/logs/:/logs/:rw
+      - ./datadog/:/etc/datadog-agent/conf.d/lunatrace.d/:ro
   oathkeeper:
     build:
       context: ./ory/oathkeeper
@@ -65,6 +84,8 @@ services:
   postgres:
     image: postgres:12
     restart: always
+    # Uncomment this if you want Postgres to log queries out.
+    # command: ["postgres", "-c", "logging_collector=on", "-c", "log_directory=/tmp", "-c", "log_filename=postgresql.log", "-c", "log_statement=all"]
     ports:
       - "5431:5432"
     volumes:
@@ -106,24 +127,6 @@ services:
       HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura/migrations
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
-#  We need better namespacing in datadog before we enable this again.
-#  Currently, it will log alongside production which gets quite noisy.
-#  datadog:
-#    image: datadog/agent:latest
-#    environment:
-#     DD_LOGS_ENABLED: "true"
-#     DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: "true"
-#     DD_CONTAINER_EXCLUDE_LOGS: "name:datadog-agent"
-#    env_file:
-#      - .env.dev
-#    volumes:
-#      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-#      - "/proc/:/host/proc/:ro"
-#      - "/opt/datadog-agent/run:/opt/datadog-agent/run:rw"
-#      - "/sys/fs/cgroup/:/host/sys/fs/cgroup:ro"
-#      - "./backend/logs/:/logs/:rw"
-#      - "./datadog/:/etc/datadog-agent/conf.d/lunatrace.d/:ro"
 
   mailslurper:
     image: oryd/mailslurper:latest-smtps
