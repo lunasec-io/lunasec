@@ -17,23 +17,23 @@ reset-dir() {
 # Make sure generated code is up to date before building Docker containers
 echo "Making sure generated code is up to date before building Docker containers"
 
-echo "frontend generation start"
-change-dir ../frontend
-if ! yarn run generate ; then
-	echo "unable to generate code for frontend"
-	exit 1
-fi
-reset-dir
-echo "done"
+#echo "frontend generation start"
+#change-dir ../frontend
+#if ! yarn run generate ; then
+#	echo "unable to generate code for frontend"
+#	exit 1
+#fi
+#reset-dir
+#echo "done"
 
-echo "backend generation start"
-change-dir ../backend
-if ! yarn run generate ; then
-	echo "unable to generate code for backend"
-	exit 1
-fi
-reset-dir
-echo "done"
+#echo "backend generation start"
+#change-dir ../backend
+#if ! yarn run generate ; then
+#	echo "unable to generate code for backend"
+#	exit 1
+#fi
+#reset-dir
+#echo "done"
 
 echo "starting container build"
 

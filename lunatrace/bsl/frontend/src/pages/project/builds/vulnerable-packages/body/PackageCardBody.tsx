@@ -55,7 +55,7 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
         </Container>
       </ConditionallyRender>
 
-      <Container fluid>
+      <div className="m-lg-4">
         <PackageDetails pkg={pkg} depTree={depTree} />
         <Row>
           <Accordion defaultActiveKey={filteredFindings.length > 2 ? 'nonexistant' : '0'}>
@@ -76,7 +76,7 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
             </Accordion.Item>
           </Accordion>
         </Row>
-      </Container>
+      </div>
     </Card.Body>
   );
 };

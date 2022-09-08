@@ -1,0 +1,52 @@
+table:
+  name: manifest_dependency
+  schema: public
+object_relationships:
+  - name: manifest_dependency_node
+    using:
+      foreign_key_constraint_on: manifest_dependency_node_id
+  - name: resolved_manifest
+    using:
+      foreign_key_constraint_on: manifest_id
+computed_fields:
+  - name: child_edges_recursive
+    definition:
+      function:
+        name: manifest_dependency_child_edges_recursive
+        schema: public
+insert_permissions:
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - manifest_id
+        - manifest_dependency_node_id
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - manifest_id
+        - manifest_dependency_node_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - manifest_id
+        - manifest_dependency_node_id
+      filter:
+        resolved_manifest:
+          build:
+            project:
+              organization:
+                organization_users:
+                  user:
+                    id:
+                      _eq: X-Hasura-Real-User-Id
+update_permissions:
+  - role: service
+    permission:
+      columns:
+        - manifest_id
+        - manifest_dependency_node_id
+      filter: {}
+      check: {}

@@ -13,22 +13,22 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  _text: any;
+  _text: string;
   affected_range_type: any;
   bigint: number;
-  builds_source_type: any;
-  date: any;
-  fix_state_enum: any;
-  jsonb: any;
+  builds_source_type: 'cli'|'gui'|'pr'|'default_branch';
+  date: Date;
+  fix_state_enum: 'fixed'|'not-fixed'|'unknown';
+  jsonb: Record<any, any> | any[];
   license_source: any;
-  organization_user_role: any;
+  organization_user_role: string;
   package_manager: any;
   reference_type: any;
-  severity_enum: any;
-  timestamp: any;
-  timestamptz: any;
+  severity_enum: string;
+  timestamp: string;
+  timestamptz: string;
   user_role: 'organization_user'|'lunatrace_admin';
-  uuid: any;
+  uuid: string;
 };
 
 export type AuthenticatedRepoCloneUrlOutput = {
@@ -62,6 +62,25 @@ export type Float_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Float']>>;
 };
 
+export type GithubRepository = {
+  __typename?: 'GithubRepository';
+  cloneUrl: Scalars['String'];
+  defaultBranch: Scalars['String'];
+  gitUrl: Scalars['String'];
+  orgId: Scalars['Int'];
+  orgName: Scalars['String'];
+  orgNodeId: Scalars['String'];
+  ownerType: Scalars['String'];
+  repoId: Scalars['Int'];
+  repoName: Scalars['String'];
+  repoNodeId: Scalars['String'];
+};
+
+export type InstallSelectedReposResponse = {
+  __typename?: 'InstallSelectedReposResponse';
+  success?: Maybe<Scalars['Boolean']>;
+};
+
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Int']>;
@@ -73,6 +92,18 @@ export type Int_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Int']>;
   _neq?: InputMaybe<Scalars['Int']>;
   _nin?: InputMaybe<Array<Scalars['Int']>>;
+};
+
+export type OrgWithRepos = {
+  __typename?: 'OrgWithRepos';
+  installationId: Scalars['Int'];
+  organizationName: Scalars['String'];
+  repos: Array<GithubRepository>;
+};
+
+export type OrgsWithReposInput = {
+  installationId: Scalars['Int'];
+  repos: Array<Scalars['Int']>;
 };
 
 export type PresignedUrlResponse = {
@@ -167,7 +198,7 @@ export type Bigint_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['bigint']>>;
 };
 
-/** columns and relationships of "build_dependency_relationship" */
+/** DEPRECATED: old dependency tree */
 export type Build_Dependency_Relationship = {
   __typename?: 'build_dependency_relationship';
   /** An object relationship */
@@ -186,7 +217,7 @@ export type Build_Dependency_Relationship = {
 };
 
 
-/** columns and relationships of "build_dependency_relationship" */
+/** DEPRECATED: old dependency tree */
 export type Build_Dependency_RelationshipLabelsArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
@@ -398,6 +429,8 @@ export type Builds = {
   project?: Maybe<Projects>;
   project_id?: Maybe<Scalars['uuid']>;
   pull_request_id?: Maybe<Scalars['String']>;
+  /** An array relationship */
+  resolved_manifests: Array<Resolved_Manifest>;
   s3_url?: Maybe<Scalars['String']>;
   s3_url_signed?: Maybe<Scalars['String']>;
   /** An array relationship */
@@ -433,6 +466,16 @@ export type BuildsManifestsArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Manifests_Order_By>>;
   where?: InputMaybe<Manifests_Bool_Exp>;
+};
+
+
+/** columns and relationships of "builds" */
+export type BuildsResolved_ManifestsArgs = {
+  distinct_on?: InputMaybe<Array<Resolved_Manifest_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Resolved_Manifest_Order_By>>;
+  where?: InputMaybe<Resolved_Manifest_Bool_Exp>;
 };
 
 
@@ -530,6 +573,7 @@ export type Builds_Bool_Exp = {
   project?: InputMaybe<Projects_Bool_Exp>;
   project_id?: InputMaybe<Uuid_Comparison_Exp>;
   pull_request_id?: InputMaybe<String_Comparison_Exp>;
+  resolved_manifests?: InputMaybe<Resolved_Manifest_Bool_Exp>;
   s3_url?: InputMaybe<String_Comparison_Exp>;
   scans?: InputMaybe<Scans_Bool_Exp>;
   source_type?: InputMaybe<Builds_Source_Type_Comparison_Exp>;
@@ -568,6 +612,7 @@ export type Builds_Insert_Input = {
   project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
   project_id?: InputMaybe<Scalars['uuid']>;
   pull_request_id?: InputMaybe<Scalars['String']>;
+  resolved_manifests?: InputMaybe<Resolved_Manifest_Arr_Rel_Insert_Input>;
   s3_url?: InputMaybe<Scalars['String']>;
   scans?: InputMaybe<Scans_Arr_Rel_Insert_Input>;
   source_type?: InputMaybe<Scalars['builds_source_type']>;
@@ -683,6 +728,7 @@ export type Builds_Order_By = {
   project?: InputMaybe<Projects_Order_By>;
   project_id?: InputMaybe<Order_By>;
   pull_request_id?: InputMaybe<Order_By>;
+  resolved_manifests_aggregate?: InputMaybe<Resolved_Manifest_Aggregate_Order_By>;
   s3_url?: InputMaybe<Order_By>;
   scans_aggregate?: InputMaybe<Scans_Aggregate_Order_By>;
   source_type?: InputMaybe<Order_By>;
@@ -2468,6 +2514,427 @@ export type License_Source_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['license_source']>>;
 };
 
+/** direct dependencies of builds with pointers to their location in the merkel tree table */
+export type Manifest_Dependency = {
+  __typename?: 'manifest_dependency';
+  /** A computed field, executes function "manifest_dependency_child_edges_recursive" */
+  child_edges_recursive?: Maybe<Array<Manifest_Dependency_Edge>>;
+  /** An object relationship */
+  manifest_dependency_node: Manifest_Dependency_Node;
+  /** entrypoint to dep tree */
+  manifest_dependency_node_id: Scalars['uuid'];
+  manifest_id: Scalars['uuid'];
+  /** An object relationship */
+  resolved_manifest: Resolved_Manifest;
+};
+
+
+/** direct dependencies of builds with pointers to their location in the merkel tree table */
+export type Manifest_DependencyChild_Edges_RecursiveArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Edge_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+};
+
+/** order by aggregate values of table "manifest_dependency" */
+export type Manifest_Dependency_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Manifest_Dependency_Max_Order_By>;
+  min?: InputMaybe<Manifest_Dependency_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "manifest_dependency" */
+export type Manifest_Dependency_Arr_Rel_Insert_Input = {
+  data: Array<Manifest_Dependency_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Manifest_Dependency_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "manifest_dependency". All fields are combined with a logical 'AND'. */
+export type Manifest_Dependency_Bool_Exp = {
+  _and?: InputMaybe<Array<Manifest_Dependency_Bool_Exp>>;
+  _not?: InputMaybe<Manifest_Dependency_Bool_Exp>;
+  _or?: InputMaybe<Array<Manifest_Dependency_Bool_Exp>>;
+  child_edges_recursive?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+  manifest_dependency_node?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
+  manifest_dependency_node_id?: InputMaybe<Uuid_Comparison_Exp>;
+  manifest_id?: InputMaybe<Uuid_Comparison_Exp>;
+  resolved_manifest?: InputMaybe<Resolved_Manifest_Bool_Exp>;
+};
+
+/** unique or primary key constraints on table "manifest_dependency" */
+export enum Manifest_Dependency_Constraint {
+  /** unique or primary key constraint on columns "manifest_dependency_node_id", "manifest_id" */
+  ManifestDependencyManifestIdManifestDependencyNodeIdIdx = 'manifest_dependency_manifest_id_manifest_dependency_node_id_idx'
+}
+
+/** columns and relationships of "manifest_dependency_edge" */
+export type Manifest_Dependency_Edge = {
+  __typename?: 'manifest_dependency_edge';
+  /** An object relationship */
+  child: Manifest_Dependency_Node;
+  child_id: Scalars['uuid'];
+  /** An object relationship */
+  parent: Manifest_Dependency_Node;
+  parent_id: Scalars['uuid'];
+};
+
+/** order by aggregate values of table "manifest_dependency_edge" */
+export type Manifest_Dependency_Edge_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Manifest_Dependency_Edge_Max_Order_By>;
+  min?: InputMaybe<Manifest_Dependency_Edge_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "manifest_dependency_edge" */
+export type Manifest_Dependency_Edge_Arr_Rel_Insert_Input = {
+  data: Array<Manifest_Dependency_Edge_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Manifest_Dependency_Edge_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "manifest_dependency_edge". All fields are combined with a logical 'AND'. */
+export type Manifest_Dependency_Edge_Bool_Exp = {
+  _and?: InputMaybe<Array<Manifest_Dependency_Edge_Bool_Exp>>;
+  _not?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+  _or?: InputMaybe<Array<Manifest_Dependency_Edge_Bool_Exp>>;
+  child?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
+  child_id?: InputMaybe<Uuid_Comparison_Exp>;
+  parent?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
+  parent_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "manifest_dependency_edge" */
+export enum Manifest_Dependency_Edge_Constraint {
+  /** unique or primary key constraint on columns "child_id", "parent_id" */
+  ManifestDependencyEdgeParentIdChildIdIdx = 'manifest_dependency_edge_parent_id_child_id_idx'
+}
+
+/** input type for inserting data into table "manifest_dependency_edge" */
+export type Manifest_Dependency_Edge_Insert_Input = {
+  child?: InputMaybe<Manifest_Dependency_Node_Obj_Rel_Insert_Input>;
+  child_id?: InputMaybe<Scalars['uuid']>;
+  parent?: InputMaybe<Manifest_Dependency_Node_Obj_Rel_Insert_Input>;
+  parent_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** order by max() on columns of table "manifest_dependency_edge" */
+export type Manifest_Dependency_Edge_Max_Order_By = {
+  child_id?: InputMaybe<Order_By>;
+  parent_id?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "manifest_dependency_edge" */
+export type Manifest_Dependency_Edge_Min_Order_By = {
+  child_id?: InputMaybe<Order_By>;
+  parent_id?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "manifest_dependency_edge" */
+export type Manifest_Dependency_Edge_Mutation_Response = {
+  __typename?: 'manifest_dependency_edge_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Manifest_Dependency_Edge>;
+};
+
+/** on_conflict condition type for table "manifest_dependency_edge" */
+export type Manifest_Dependency_Edge_On_Conflict = {
+  constraint: Manifest_Dependency_Edge_Constraint;
+  update_columns?: Array<Manifest_Dependency_Edge_Update_Column>;
+  where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "manifest_dependency_edge". */
+export type Manifest_Dependency_Edge_Order_By = {
+  child?: InputMaybe<Manifest_Dependency_Node_Order_By>;
+  child_id?: InputMaybe<Order_By>;
+  parent?: InputMaybe<Manifest_Dependency_Node_Order_By>;
+  parent_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "manifest_dependency_edge" */
+export enum Manifest_Dependency_Edge_Select_Column {
+  /** column name */
+  ChildId = 'child_id',
+  /** column name */
+  ParentId = 'parent_id'
+}
+
+/** input type for updating data in table "manifest_dependency_edge" */
+export type Manifest_Dependency_Edge_Set_Input = {
+  child_id?: InputMaybe<Scalars['uuid']>;
+  parent_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** update columns of table "manifest_dependency_edge" */
+export enum Manifest_Dependency_Edge_Update_Column {
+  /** column name */
+  ChildId = 'child_id',
+  /** column name */
+  ParentId = 'parent_id'
+}
+
+/** input type for inserting data into table "manifest_dependency" */
+export type Manifest_Dependency_Insert_Input = {
+  manifest_dependency_node?: InputMaybe<Manifest_Dependency_Node_Obj_Rel_Insert_Input>;
+  /** entrypoint to dep tree */
+  manifest_dependency_node_id?: InputMaybe<Scalars['uuid']>;
+  manifest_id?: InputMaybe<Scalars['uuid']>;
+  resolved_manifest?: InputMaybe<Resolved_Manifest_Obj_Rel_Insert_Input>;
+};
+
+/** order by max() on columns of table "manifest_dependency" */
+export type Manifest_Dependency_Max_Order_By = {
+  /** entrypoint to dep tree */
+  manifest_dependency_node_id?: InputMaybe<Order_By>;
+  manifest_id?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "manifest_dependency" */
+export type Manifest_Dependency_Min_Order_By = {
+  /** entrypoint to dep tree */
+  manifest_dependency_node_id?: InputMaybe<Order_By>;
+  manifest_id?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "manifest_dependency" */
+export type Manifest_Dependency_Mutation_Response = {
+  __typename?: 'manifest_dependency_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Manifest_Dependency>;
+};
+
+/** columns and relationships of "manifest_dependency_node" */
+export type Manifest_Dependency_Node = {
+  __typename?: 'manifest_dependency_node';
+  /** An array relationship */
+  child_edges: Array<Manifest_Dependency_Edge>;
+  /** A computed field, executes function "manifest_dependency_node_child_edges_recursive" */
+  child_edges_recursive?: Maybe<Array<Manifest_Dependency_Edge>>;
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
+  id: Scalars['uuid'];
+  labels?: Maybe<Scalars['jsonb']>;
+  /** An array relationship */
+  parent_edges: Array<Manifest_Dependency_Edge>;
+  range: Scalars['String'];
+  /** An object relationship */
+  release: Package_Release;
+  release_id: Scalars['uuid'];
+};
+
+
+/** columns and relationships of "manifest_dependency_node" */
+export type Manifest_Dependency_NodeChild_EdgesArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Edge_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+};
+
+
+/** columns and relationships of "manifest_dependency_node" */
+export type Manifest_Dependency_NodeChild_Edges_RecursiveArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Edge_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+};
+
+
+/** columns and relationships of "manifest_dependency_node" */
+export type Manifest_Dependency_NodeLabelsArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "manifest_dependency_node" */
+export type Manifest_Dependency_NodeParent_EdgesArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Edge_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Manifest_Dependency_Node_Append_Input = {
+  labels?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** Boolean expression to filter rows from the table "manifest_dependency_node". All fields are combined with a logical 'AND'. */
+export type Manifest_Dependency_Node_Bool_Exp = {
+  _and?: InputMaybe<Array<Manifest_Dependency_Node_Bool_Exp>>;
+  _not?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
+  _or?: InputMaybe<Array<Manifest_Dependency_Node_Bool_Exp>>;
+  child_edges?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+  child_edges_recursive?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  labels?: InputMaybe<Jsonb_Comparison_Exp>;
+  parent_edges?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+  range?: InputMaybe<String_Comparison_Exp>;
+  release?: InputMaybe<Package_Release_Bool_Exp>;
+  release_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "manifest_dependency_node" */
+export enum Manifest_Dependency_Node_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  ManifestDependencyNodePkey = 'manifest_dependency_node_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Manifest_Dependency_Node_Delete_At_Path_Input = {
+  labels?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Manifest_Dependency_Node_Delete_Elem_Input = {
+  labels?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Manifest_Dependency_Node_Delete_Key_Input = {
+  labels?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for inserting data into table "manifest_dependency_node" */
+export type Manifest_Dependency_Node_Insert_Input = {
+  child_edges?: InputMaybe<Manifest_Dependency_Edge_Arr_Rel_Insert_Input>;
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
+  id?: InputMaybe<Scalars['uuid']>;
+  labels?: InputMaybe<Scalars['jsonb']>;
+  parent_edges?: InputMaybe<Manifest_Dependency_Edge_Arr_Rel_Insert_Input>;
+  range?: InputMaybe<Scalars['String']>;
+  release?: InputMaybe<Package_Release_Obj_Rel_Insert_Input>;
+  release_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** response of any mutation on the table "manifest_dependency_node" */
+export type Manifest_Dependency_Node_Mutation_Response = {
+  __typename?: 'manifest_dependency_node_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Manifest_Dependency_Node>;
+};
+
+/** input type for inserting object relation for remote table "manifest_dependency_node" */
+export type Manifest_Dependency_Node_Obj_Rel_Insert_Input = {
+  data: Manifest_Dependency_Node_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Manifest_Dependency_Node_On_Conflict>;
+};
+
+/** on_conflict condition type for table "manifest_dependency_node" */
+export type Manifest_Dependency_Node_On_Conflict = {
+  constraint: Manifest_Dependency_Node_Constraint;
+  update_columns?: Array<Manifest_Dependency_Node_Update_Column>;
+  where?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "manifest_dependency_node". */
+export type Manifest_Dependency_Node_Order_By = {
+  child_edges_aggregate?: InputMaybe<Manifest_Dependency_Edge_Aggregate_Order_By>;
+  child_edges_recursive_aggregate?: InputMaybe<Manifest_Dependency_Edge_Aggregate_Order_By>;
+  id?: InputMaybe<Order_By>;
+  labels?: InputMaybe<Order_By>;
+  parent_edges_aggregate?: InputMaybe<Manifest_Dependency_Edge_Aggregate_Order_By>;
+  range?: InputMaybe<Order_By>;
+  release?: InputMaybe<Package_Release_Order_By>;
+  release_id?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: manifest_dependency_node */
+export type Manifest_Dependency_Node_Pk_Columns_Input = {
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Manifest_Dependency_Node_Prepend_Input = {
+  labels?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "manifest_dependency_node" */
+export enum Manifest_Dependency_Node_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Labels = 'labels',
+  /** column name */
+  Range = 'range',
+  /** column name */
+  ReleaseId = 'release_id'
+}
+
+/** input type for updating data in table "manifest_dependency_node" */
+export type Manifest_Dependency_Node_Set_Input = {
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
+  id?: InputMaybe<Scalars['uuid']>;
+  labels?: InputMaybe<Scalars['jsonb']>;
+  range?: InputMaybe<Scalars['String']>;
+  release_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** update columns of table "manifest_dependency_node" */
+export enum Manifest_Dependency_Node_Update_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Labels = 'labels',
+  /** column name */
+  Range = 'range',
+  /** column name */
+  ReleaseId = 'release_id'
+}
+
+/** on_conflict condition type for table "manifest_dependency" */
+export type Manifest_Dependency_On_Conflict = {
+  constraint: Manifest_Dependency_Constraint;
+  update_columns?: Array<Manifest_Dependency_Update_Column>;
+  where?: InputMaybe<Manifest_Dependency_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "manifest_dependency". */
+export type Manifest_Dependency_Order_By = {
+  child_edges_recursive_aggregate?: InputMaybe<Manifest_Dependency_Edge_Aggregate_Order_By>;
+  manifest_dependency_node?: InputMaybe<Manifest_Dependency_Node_Order_By>;
+  manifest_dependency_node_id?: InputMaybe<Order_By>;
+  manifest_id?: InputMaybe<Order_By>;
+  resolved_manifest?: InputMaybe<Resolved_Manifest_Order_By>;
+};
+
+/** select columns of table "manifest_dependency" */
+export enum Manifest_Dependency_Select_Column {
+  /** column name */
+  ManifestDependencyNodeId = 'manifest_dependency_node_id',
+  /** column name */
+  ManifestId = 'manifest_id'
+}
+
+/** input type for updating data in table "manifest_dependency" */
+export type Manifest_Dependency_Set_Input = {
+  /** entrypoint to dep tree */
+  manifest_dependency_node_id?: InputMaybe<Scalars['uuid']>;
+  manifest_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** update columns of table "manifest_dependency" */
+export enum Manifest_Dependency_Update_Column {
+  /** column name */
+  ManifestDependencyNodeId = 'manifest_dependency_node_id',
+  /** column name */
+  ManifestId = 'manifest_id'
+}
+
 /** columns and relationships of "manifests" */
 export type Manifests = {
   __typename?: 'manifests';
@@ -2713,6 +3180,18 @@ export type Mutation_Root = {
   insert_guide_vulnerabilities_one?: Maybe<Guide_Vulnerabilities>;
   /** insert data into the table: "guides" */
   insert_guides?: Maybe<Guides_Mutation_Response>;
+  /** insert data into the table: "manifest_dependency" */
+  insert_manifest_dependency?: Maybe<Manifest_Dependency_Mutation_Response>;
+  /** insert data into the table: "manifest_dependency_edge" */
+  insert_manifest_dependency_edge?: Maybe<Manifest_Dependency_Edge_Mutation_Response>;
+  /** insert a single row into the table: "manifest_dependency_edge" */
+  insert_manifest_dependency_edge_one?: Maybe<Manifest_Dependency_Edge>;
+  /** insert data into the table: "manifest_dependency_node" */
+  insert_manifest_dependency_node?: Maybe<Manifest_Dependency_Node_Mutation_Response>;
+  /** insert a single row into the table: "manifest_dependency_node" */
+  insert_manifest_dependency_node_one?: Maybe<Manifest_Dependency_Node>;
+  /** insert a single row into the table: "manifest_dependency" */
+  insert_manifest_dependency_one?: Maybe<Manifest_Dependency>;
   /** insert data into the table: "manifests" */
   insert_manifests?: Maybe<Manifests_Mutation_Response>;
   /** insert a single row into the table: "manifests" */
@@ -2757,6 +3236,10 @@ export type Mutation_Root = {
   insert_projects?: Maybe<Projects_Mutation_Response>;
   /** insert a single row into the table: "projects" */
   insert_projects_one?: Maybe<Projects>;
+  /** insert data into the table: "resolved_manifest" */
+  insert_resolved_manifest?: Maybe<Resolved_Manifest_Mutation_Response>;
+  /** insert a single row into the table: "resolved_manifest" */
+  insert_resolved_manifest_one?: Maybe<Resolved_Manifest>;
   /** insert data into the table: "scans" */
   insert_scans?: Maybe<Scans_Mutation_Response>;
   /** insert a single row into the table: "scans" */
@@ -2805,6 +3288,7 @@ export type Mutation_Root = {
   insert_webhook_cache?: Maybe<Webhook_Cache_Mutation_Response>;
   /** insert a single row into the table: "webhook_cache" */
   insert_webhook_cache_one?: Maybe<Webhook_Cache>;
+  installSelectedRepos?: Maybe<InstallSelectedReposResponse>;
   /**  get s3 presigned url for manifest upload, used only by the frontend  */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** update data of the table: "build_dependency_relationship" */
@@ -2833,6 +3317,14 @@ export type Mutation_Root = {
   update_guide_vulnerabilities_by_pk?: Maybe<Guide_Vulnerabilities>;
   /** update data of the table: "guides" */
   update_guides?: Maybe<Guides_Mutation_Response>;
+  /** update data of the table: "manifest_dependency" */
+  update_manifest_dependency?: Maybe<Manifest_Dependency_Mutation_Response>;
+  /** update data of the table: "manifest_dependency_edge" */
+  update_manifest_dependency_edge?: Maybe<Manifest_Dependency_Edge_Mutation_Response>;
+  /** update data of the table: "manifest_dependency_node" */
+  update_manifest_dependency_node?: Maybe<Manifest_Dependency_Node_Mutation_Response>;
+  /** update single row of the table: "manifest_dependency_node" */
+  update_manifest_dependency_node_by_pk?: Maybe<Manifest_Dependency_Node>;
   /** update data of the table: "manifests" */
   update_manifests?: Maybe<Manifests_Mutation_Response>;
   /** update single row of the table: "manifests" */
@@ -2875,6 +3367,10 @@ export type Mutation_Root = {
   update_projects?: Maybe<Projects_Mutation_Response>;
   /** update single row of the table: "projects" */
   update_projects_by_pk?: Maybe<Projects>;
+  /** update data of the table: "resolved_manifest" */
+  update_resolved_manifest?: Maybe<Resolved_Manifest_Mutation_Response>;
+  /** update single row of the table: "resolved_manifest" */
+  update_resolved_manifest_by_pk?: Maybe<Resolved_Manifest>;
   /** update data of the table: "scans" */
   update_scans?: Maybe<Scans_Mutation_Response>;
   /** update single row of the table: "scans" */
@@ -3088,6 +3584,48 @@ export type Mutation_RootInsert_GuidesArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_Manifest_DependencyArgs = {
+  objects: Array<Manifest_Dependency_Insert_Input>;
+  on_conflict?: InputMaybe<Manifest_Dependency_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Manifest_Dependency_EdgeArgs = {
+  objects: Array<Manifest_Dependency_Edge_Insert_Input>;
+  on_conflict?: InputMaybe<Manifest_Dependency_Edge_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Manifest_Dependency_Edge_OneArgs = {
+  object: Manifest_Dependency_Edge_Insert_Input;
+  on_conflict?: InputMaybe<Manifest_Dependency_Edge_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Manifest_Dependency_NodeArgs = {
+  objects: Array<Manifest_Dependency_Node_Insert_Input>;
+  on_conflict?: InputMaybe<Manifest_Dependency_Node_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Manifest_Dependency_Node_OneArgs = {
+  object: Manifest_Dependency_Node_Insert_Input;
+  on_conflict?: InputMaybe<Manifest_Dependency_Node_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Manifest_Dependency_OneArgs = {
+  object: Manifest_Dependency_Insert_Input;
+  on_conflict?: InputMaybe<Manifest_Dependency_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_ManifestsArgs = {
   objects: Array<Manifests_Insert_Input>;
   on_conflict?: InputMaybe<Manifests_On_Conflict>;
@@ -3238,6 +3776,20 @@ export type Mutation_RootInsert_ProjectsArgs = {
 export type Mutation_RootInsert_Projects_OneArgs = {
   object: Projects_Insert_Input;
   on_conflict?: InputMaybe<Projects_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Resolved_ManifestArgs = {
+  objects: Array<Resolved_Manifest_Insert_Input>;
+  on_conflict?: InputMaybe<Resolved_Manifest_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Resolved_Manifest_OneArgs = {
+  object: Resolved_Manifest_Insert_Input;
+  on_conflict?: InputMaybe<Resolved_Manifest_On_Conflict>;
 };
 
 
@@ -3410,6 +3962,12 @@ export type Mutation_RootInsert_Webhook_Cache_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInstallSelectedReposArgs = {
+  orgs: Array<OrgsWithReposInput>;
+};
+
+
+/** mutation root */
 export type Mutation_RootPresignManifestUploadArgs = {
   project_id: Scalars['uuid'];
 };
@@ -3533,6 +4091,44 @@ export type Mutation_RootUpdate_GuidesArgs = {
   _prepend?: InputMaybe<Guides_Prepend_Input>;
   _set?: InputMaybe<Guides_Set_Input>;
   where: Guides_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Manifest_DependencyArgs = {
+  _set?: InputMaybe<Manifest_Dependency_Set_Input>;
+  where: Manifest_Dependency_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Manifest_Dependency_EdgeArgs = {
+  _set?: InputMaybe<Manifest_Dependency_Edge_Set_Input>;
+  where: Manifest_Dependency_Edge_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Manifest_Dependency_NodeArgs = {
+  _append?: InputMaybe<Manifest_Dependency_Node_Append_Input>;
+  _delete_at_path?: InputMaybe<Manifest_Dependency_Node_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Manifest_Dependency_Node_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Manifest_Dependency_Node_Delete_Key_Input>;
+  _prepend?: InputMaybe<Manifest_Dependency_Node_Prepend_Input>;
+  _set?: InputMaybe<Manifest_Dependency_Node_Set_Input>;
+  where: Manifest_Dependency_Node_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Manifest_Dependency_Node_By_PkArgs = {
+  _append?: InputMaybe<Manifest_Dependency_Node_Append_Input>;
+  _delete_at_path?: InputMaybe<Manifest_Dependency_Node_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Manifest_Dependency_Node_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Manifest_Dependency_Node_Delete_Key_Input>;
+  _prepend?: InputMaybe<Manifest_Dependency_Node_Prepend_Input>;
+  _set?: InputMaybe<Manifest_Dependency_Node_Set_Input>;
+  pk_columns: Manifest_Dependency_Node_Pk_Columns_Input;
 };
 
 
@@ -3712,6 +4308,20 @@ export type Mutation_RootUpdate_ProjectsArgs = {
 export type Mutation_RootUpdate_Projects_By_PkArgs = {
   _set?: InputMaybe<Projects_Set_Input>;
   pk_columns: Projects_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Resolved_ManifestArgs = {
+  _set?: InputMaybe<Resolved_Manifest_Set_Input>;
+  where: Resolved_Manifest_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Resolved_Manifest_By_PkArgs = {
+  _set?: InputMaybe<Resolved_Manifest_Set_Input>;
+  pk_columns: Resolved_Manifest_Pk_Columns_Input;
 };
 
 
@@ -4218,6 +4828,8 @@ export type Organizations_Bool_Exp = {
 
 /** unique or primary key constraints on table "organizations" */
 export enum Organizations_Constraint {
+  /** unique or primary key constraint on columns "installation_id" */
+  InstallationIdUnique = 'installation_id_unique',
   /** unique or primary key constraint on columns "github_id" */
   OrganizationsGithubIdKey = 'organizations_github_id_key',
   /** unique or primary key constraint on columns "github_node_id" */
@@ -6090,6 +6702,7 @@ export enum Projects_Update_Column {
 export type Query_Root = {
   __typename?: 'query_root';
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
+  availableOrgsWithRepos?: Maybe<Array<OrgWithRepos>>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -6133,6 +6746,14 @@ export type Query_Root = {
   ignored_vulnerabilities_by_pk?: Maybe<Ignored_Vulnerabilities>;
   /** fetch data from the table: "latest_builds" */
   latest_builds: Array<Latest_Builds>;
+  /** fetch data from the table: "manifest_dependency" */
+  manifest_dependency: Array<Manifest_Dependency>;
+  /** fetch data from the table: "manifest_dependency_edge" */
+  manifest_dependency_edge: Array<Manifest_Dependency_Edge>;
+  /** fetch data from the table: "manifest_dependency_node" */
+  manifest_dependency_node: Array<Manifest_Dependency_Node>;
+  /** fetch data from the table: "manifest_dependency_node" using primary key columns */
+  manifest_dependency_node_by_pk?: Maybe<Manifest_Dependency_Node>;
   /** An array relationship */
   manifests: Array<Manifests>;
   /** fetch data from the table: "manifests" using primary key columns */
@@ -6187,6 +6808,10 @@ export type Query_Root = {
   projects_aggregate: Projects_Aggregate;
   /** fetch data from the table: "projects" using primary key columns */
   projects_by_pk?: Maybe<Projects>;
+  /** fetch data from the table: "resolved_manifest" */
+  resolved_manifest: Array<Resolved_Manifest>;
+  /** fetch data from the table: "resolved_manifest" using primary key columns */
+  resolved_manifest_by_pk?: Maybe<Resolved_Manifest>;
   sbomUrl?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
@@ -6399,6 +7024,38 @@ export type Query_RootLatest_BuildsArgs = {
 };
 
 
+export type Query_RootManifest_DependencyArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Bool_Exp>;
+};
+
+
+export type Query_RootManifest_Dependency_EdgeArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Edge_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+};
+
+
+export type Query_RootManifest_Dependency_NodeArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Node_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Node_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
+};
+
+
+export type Query_RootManifest_Dependency_Node_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
 export type Query_RootManifestsArgs = {
   distinct_on?: InputMaybe<Array<Manifests_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -6591,6 +7248,20 @@ export type Query_RootProjects_AggregateArgs = {
 
 
 export type Query_RootProjects_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootResolved_ManifestArgs = {
+  distinct_on?: InputMaybe<Array<Resolved_Manifest_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Resolved_Manifest_Order_By>>;
+  where?: InputMaybe<Resolved_Manifest_Bool_Exp>;
+};
+
+
+export type Query_RootResolved_Manifest_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -6788,6 +7459,168 @@ export type Reference_Type_Comparison_Exp = {
   _neq?: InputMaybe<Scalars['reference_type']>;
   _nin?: InputMaybe<Array<Scalars['reference_type']>>;
 };
+
+/** columns and relationships of "resolved_manifest" */
+export type Resolved_Manifest = {
+  __typename?: 'resolved_manifest';
+  /** An object relationship */
+  build: Builds;
+  build_id: Scalars['uuid'];
+  /** A computed field, executes function "resolved_manifest_child_edges_recursive" */
+  child_edges_recursive?: Maybe<Array<Manifest_Dependency_Edge>>;
+  id: Scalars['uuid'];
+  /** An array relationship */
+  manifest_dependencies: Array<Manifest_Dependency>;
+  /** path in repo of manifest file. empty string if the ecosystem does not have a manifest file. */
+  path?: Maybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "resolved_manifest" */
+export type Resolved_ManifestChild_Edges_RecursiveArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Edge_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+};
+
+
+/** columns and relationships of "resolved_manifest" */
+export type Resolved_ManifestManifest_DependenciesArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Bool_Exp>;
+};
+
+/** order by aggregate values of table "resolved_manifest" */
+export type Resolved_Manifest_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Resolved_Manifest_Max_Order_By>;
+  min?: InputMaybe<Resolved_Manifest_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "resolved_manifest" */
+export type Resolved_Manifest_Arr_Rel_Insert_Input = {
+  data: Array<Resolved_Manifest_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Resolved_Manifest_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "resolved_manifest". All fields are combined with a logical 'AND'. */
+export type Resolved_Manifest_Bool_Exp = {
+  _and?: InputMaybe<Array<Resolved_Manifest_Bool_Exp>>;
+  _not?: InputMaybe<Resolved_Manifest_Bool_Exp>;
+  _or?: InputMaybe<Array<Resolved_Manifest_Bool_Exp>>;
+  build?: InputMaybe<Builds_Bool_Exp>;
+  build_id?: InputMaybe<Uuid_Comparison_Exp>;
+  child_edges_recursive?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  manifest_dependencies?: InputMaybe<Manifest_Dependency_Bool_Exp>;
+  path?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "resolved_manifest" */
+export enum Resolved_Manifest_Constraint {
+  /** unique or primary key constraint on columns "build_id", "path" */
+  ManifestBuildIdPathIdx = 'manifest_build_id_path_idx',
+  /** unique or primary key constraint on columns "id" */
+  ManifestPkey = 'manifest_pkey'
+}
+
+/** input type for inserting data into table "resolved_manifest" */
+export type Resolved_Manifest_Insert_Input = {
+  build?: InputMaybe<Builds_Obj_Rel_Insert_Input>;
+  build_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  manifest_dependencies?: InputMaybe<Manifest_Dependency_Arr_Rel_Insert_Input>;
+  /** path in repo of manifest file. empty string if the ecosystem does not have a manifest file. */
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** order by max() on columns of table "resolved_manifest" */
+export type Resolved_Manifest_Max_Order_By = {
+  build_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  /** path in repo of manifest file. empty string if the ecosystem does not have a manifest file. */
+  path?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "resolved_manifest" */
+export type Resolved_Manifest_Min_Order_By = {
+  build_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  /** path in repo of manifest file. empty string if the ecosystem does not have a manifest file. */
+  path?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "resolved_manifest" */
+export type Resolved_Manifest_Mutation_Response = {
+  __typename?: 'resolved_manifest_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Resolved_Manifest>;
+};
+
+/** input type for inserting object relation for remote table "resolved_manifest" */
+export type Resolved_Manifest_Obj_Rel_Insert_Input = {
+  data: Resolved_Manifest_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Resolved_Manifest_On_Conflict>;
+};
+
+/** on_conflict condition type for table "resolved_manifest" */
+export type Resolved_Manifest_On_Conflict = {
+  constraint: Resolved_Manifest_Constraint;
+  update_columns?: Array<Resolved_Manifest_Update_Column>;
+  where?: InputMaybe<Resolved_Manifest_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "resolved_manifest". */
+export type Resolved_Manifest_Order_By = {
+  build?: InputMaybe<Builds_Order_By>;
+  build_id?: InputMaybe<Order_By>;
+  child_edges_recursive_aggregate?: InputMaybe<Manifest_Dependency_Edge_Aggregate_Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependencies_aggregate?: InputMaybe<Manifest_Dependency_Aggregate_Order_By>;
+  path?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: resolved_manifest */
+export type Resolved_Manifest_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "resolved_manifest" */
+export enum Resolved_Manifest_Select_Column {
+  /** column name */
+  BuildId = 'build_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Path = 'path'
+}
+
+/** input type for updating data in table "resolved_manifest" */
+export type Resolved_Manifest_Set_Input = {
+  build_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  /** path in repo of manifest file. empty string if the ecosystem does not have a manifest file. */
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** update columns of table "resolved_manifest" */
+export enum Resolved_Manifest_Update_Column {
+  /** column name */
+  BuildId = 'build_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Path = 'path'
+}
 
 /** An individual time a scan was run on a build */
 export type Scans = {
@@ -7167,6 +8000,14 @@ export type Subscription_Root = {
   ignored_vulnerabilities_by_pk?: Maybe<Ignored_Vulnerabilities>;
   /** fetch data from the table: "latest_builds" */
   latest_builds: Array<Latest_Builds>;
+  /** fetch data from the table: "manifest_dependency" */
+  manifest_dependency: Array<Manifest_Dependency>;
+  /** fetch data from the table: "manifest_dependency_edge" */
+  manifest_dependency_edge: Array<Manifest_Dependency_Edge>;
+  /** fetch data from the table: "manifest_dependency_node" */
+  manifest_dependency_node: Array<Manifest_Dependency_Node>;
+  /** fetch data from the table: "manifest_dependency_node" using primary key columns */
+  manifest_dependency_node_by_pk?: Maybe<Manifest_Dependency_Node>;
   /** An array relationship */
   manifests: Array<Manifests>;
   /** fetch data from the table: "manifests" using primary key columns */
@@ -7219,6 +8060,10 @@ export type Subscription_Root = {
   projects_aggregate: Projects_Aggregate;
   /** fetch data from the table: "projects" using primary key columns */
   projects_by_pk?: Maybe<Projects>;
+  /** fetch data from the table: "resolved_manifest" */
+  resolved_manifest: Array<Resolved_Manifest>;
+  /** fetch data from the table: "resolved_manifest" using primary key columns */
+  resolved_manifest_by_pk?: Maybe<Resolved_Manifest>;
   /** An array relationship */
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
@@ -7425,6 +8270,38 @@ export type Subscription_RootLatest_BuildsArgs = {
 };
 
 
+export type Subscription_RootManifest_DependencyArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Bool_Exp>;
+};
+
+
+export type Subscription_RootManifest_Dependency_EdgeArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Edge_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+};
+
+
+export type Subscription_RootManifest_Dependency_NodeArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Node_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Node_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
+};
+
+
+export type Subscription_RootManifest_Dependency_Node_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
 export type Subscription_RootManifestsArgs = {
   distinct_on?: InputMaybe<Array<Manifests_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -7611,6 +8488,20 @@ export type Subscription_RootProjects_AggregateArgs = {
 
 
 export type Subscription_RootProjects_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootResolved_ManifestArgs = {
+  distinct_on?: InputMaybe<Array<Resolved_Manifest_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Resolved_Manifest_Order_By>>;
+  where?: InputMaybe<Resolved_Manifest_Bool_Exp>;
+};
+
+
+export type Subscription_RootResolved_Manifest_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -9707,6 +10598,13 @@ export type GetPreviousBuildForPrQueryVariables = Exact<{
 
 export type GetPreviousBuildForPrQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', existing_github_review_id?: string | null }> };
 
+export type GetUserGitHubDataQueryVariables = Exact<{
+  kratos_id?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type GetUserGitHubDataQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', github_id?: string | null, github_node_id?: string | null, kratos_id?: any | null, id: any }> };
+
 export type GetUserRoleQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
 }>;
@@ -9749,14 +10647,6 @@ export type GetUserFromIdentityQueryVariables = Exact<{
 
 
 export type GetUserFromIdentityQuery = { __typename?: 'query_root', identities_by_pk?: { __typename?: 'identities', user?: { __typename?: 'users', id: any } | null } | null };
-
-export type InsertBuildDependencyRelationshipsMutationVariables = Exact<{
-  objects: Array<Build_Dependency_Relationship_Insert_Input> | Build_Dependency_Relationship_Insert_Input;
-  on_conflict: Build_Dependency_Relationship_On_Conflict;
-}>;
-
-
-export type InsertBuildDependencyRelationshipsMutation = { __typename?: 'mutation_root', insert_build_dependency_relationship?: { __typename?: 'build_dependency_relationship_mutation_response', affected_rows: number } | null };
 
 export type InsertBuildMutationVariables = Exact<{
   build: Builds_Insert_Input;
@@ -9815,6 +10705,14 @@ export type UpdateBuildExistingReviewIdMutationVariables = Exact<{
 
 export type UpdateBuildExistingReviewIdMutation = { __typename?: 'mutation_root', update_builds_by_pk?: { __typename?: 'builds', id: any } | null };
 
+export type UpdateRepoIfExistsMutationVariables = Exact<{
+  repo_body: Github_Repositories_Set_Input;
+  github_id: Scalars['Int'];
+}>;
+
+
+export type UpdateRepoIfExistsMutation = { __typename?: 'mutation_root', update_github_repositories?: { __typename?: 'github_repositories_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', id: any, name: string } }> } | null };
+
 export type UpdateManifestStatusIfExistsMutationVariables = Exact<{
   buildId: Scalars['uuid'];
   message?: InputMaybe<Scalars['String']>;
@@ -9833,6 +10731,14 @@ export type UpdateManifestMutationVariables = Exact<{
 
 
 export type UpdateManifestMutation = { __typename?: 'mutation_root', update_manifests?: { __typename?: 'manifests_mutation_response', returning: Array<{ __typename?: 'manifests', filename: string, project_id: any, project: { __typename?: 'projects', organization_id?: any | null } }> } | null };
+
+export type UpdateProjectNameMutationVariables = Exact<{
+  id: Scalars['uuid'];
+  name: Scalars['String'];
+}>;
+
+
+export type UpdateProjectNameMutation = { __typename?: 'mutation_root', update_projects_by_pk?: { __typename?: 'projects', id: any } | null };
 
 export type UpdateOrganizationsForUserMutationVariables = Exact<{
   organizations_for_user: Array<Organization_User_Insert_Input> | Organization_User_Insert_Input;
@@ -9866,6 +10772,7 @@ export type UpsertOrganizationsMutation = { __typename?: 'mutation_root', insert
 
 export type UpsertUserFromIdMutationVariables = Exact<{
   user: Users_Insert_Input;
+  on_conflict?: InputMaybe<Users_On_Conflict>;
 }>;
 
 
@@ -9983,6 +10890,16 @@ export const GetPreviousBuildForPrDocument = gql`
   }
 }
     `;
+export const GetUserGitHubDataDocument = gql`
+    query GetUserGitHubData($kratos_id: uuid) {
+  users(where: {kratos_id: {_eq: $kratos_id}}) {
+    github_id
+    github_node_id
+    kratos_id
+    id
+  }
+}
+    `;
 export const GetUserRoleDocument = gql`
     query GetUserRole($kratos_id: uuid) {
   users(where: {kratos_id: {_eq: $kratos_id}}) {
@@ -10040,16 +10957,6 @@ export const GetUserFromIdentityDocument = gql`
     user {
       id
     }
-  }
-}
-    `;
-export const InsertBuildDependencyRelationshipsDocument = gql`
-    mutation InsertBuildDependencyRelationships($objects: [build_dependency_relationship_insert_input!]!, $on_conflict: build_dependency_relationship_on_conflict!) {
-  insert_build_dependency_relationship(
-    objects: $objects
-    on_conflict: $on_conflict
-  ) {
-    affected_rows
   }
 }
     `;
@@ -10143,6 +11050,22 @@ export const UpdateBuildExistingReviewIdDocument = gql`
   }
 }
     `;
+export const UpdateRepoIfExistsDocument = gql`
+    mutation UpdateRepoIfExists($repo_body: github_repositories_set_input!, $github_id: Int!) {
+  update_github_repositories(
+    _set: $repo_body
+    where: {github_id: {_eq: $github_id}}
+  ) {
+    affected_rows
+    returning {
+      project {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
 export const UpdateManifestStatusIfExistsDocument = gql`
     mutation UpdateManifestStatusIfExists($buildId: uuid!, $message: String, $status: String!) {
   update_manifests(
@@ -10166,6 +11089,13 @@ export const UpdateManifestDocument = gql`
         organization_id
       }
     }
+  }
+}
+    `;
+export const UpdateProjectNameDocument = gql`
+    mutation UpdateProjectName($id: uuid!, $name: String!) {
+  update_projects_by_pk(pk_columns: {id: $id}, _set: {name: $name}) {
+    id
   }
 }
     `;
@@ -10215,11 +11145,8 @@ export const UpsertOrganizationsDocument = gql`
 }
     `;
 export const UpsertUserFromIdDocument = gql`
-    mutation UpsertUserFromId($user: users_insert_input!) {
-  insert_users_one(
-    object: $user
-    on_conflict: {constraint: users_github_id_key, update_columns: github_node_id}
-  ) {
+    mutation UpsertUserFromId($user: users_insert_input!, $on_conflict: users_on_conflict) {
+  insert_users_one(object: $user, on_conflict: $on_conflict) {
     id
   }
 }
@@ -10262,6 +11189,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetPreviousBuildForPr(variables: GetPreviousBuildForPrQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPreviousBuildForPrQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPreviousBuildForPrQuery>(GetPreviousBuildForPrDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPreviousBuildForPr', 'query');
     },
+    GetUserGitHubData(variables?: GetUserGitHubDataQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserGitHubDataQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetUserGitHubDataQuery>(GetUserGitHubDataDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserGitHubData', 'query');
+    },
     GetUserRole(variables?: GetUserRoleQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserRoleQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserRoleQuery>(GetUserRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserRole', 'query');
     },
@@ -10279,9 +11209,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetUserFromIdentity(variables: GetUserFromIdentityQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserFromIdentityQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserFromIdentityQuery>(GetUserFromIdentityDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserFromIdentity', 'query');
-    },
-    InsertBuildDependencyRelationships(variables: InsertBuildDependencyRelationshipsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildDependencyRelationshipsMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildDependencyRelationshipsMutation>(InsertBuildDependencyRelationshipsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuildDependencyRelationships', 'mutation');
     },
     InsertBuild(variables: InsertBuildMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildMutation>(InsertBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuild', 'mutation');
@@ -10304,11 +11231,17 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     UpdateBuildExistingReviewId(variables: UpdateBuildExistingReviewIdMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateBuildExistingReviewIdMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateBuildExistingReviewIdMutation>(UpdateBuildExistingReviewIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateBuildExistingReviewId', 'mutation');
     },
+    UpdateRepoIfExists(variables: UpdateRepoIfExistsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateRepoIfExistsMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateRepoIfExistsMutation>(UpdateRepoIfExistsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateRepoIfExists', 'mutation');
+    },
     UpdateManifestStatusIfExists(variables: UpdateManifestStatusIfExistsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateManifestStatusIfExistsMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateManifestStatusIfExistsMutation>(UpdateManifestStatusIfExistsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateManifestStatusIfExists', 'mutation');
     },
     UpdateManifest(variables: UpdateManifestMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateManifestMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateManifestMutation>(UpdateManifestDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateManifest', 'mutation');
+    },
+    UpdateProjectName(variables: UpdateProjectNameMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateProjectNameMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateProjectNameMutation>(UpdateProjectNameDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateProjectName', 'mutation');
     },
     UpdateOrganizationsForUser(variables: UpdateOrganizationsForUserMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateOrganizationsForUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateOrganizationsForUserMutation>(UpdateOrganizationsForUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateOrganizationsForUser', 'mutation');

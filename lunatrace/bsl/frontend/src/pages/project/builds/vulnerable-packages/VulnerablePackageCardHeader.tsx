@@ -14,7 +14,7 @@
 import { filterFindingsNotIgnored, VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
 import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
-import { Card, Col, Container, NavLink, OverlayTrigger, Popover, Row, Tooltip } from 'react-bootstrap';
+import { Card, Col, NavLink, OverlayTrigger, Popover, Row, Tooltip } from 'react-bootstrap';
 import { CopyBlock, tomorrowNight } from 'react-code-blocks';
 import { FcUpload } from 'react-icons/fc';
 
@@ -99,7 +99,7 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
   };
   return (
     <Card.Header>
-      <Container fluid>
+      <div className="ms-lg-4 me-lg-4">
         <Row>
           <Col sm="6">
             <Card.Title>
@@ -136,7 +136,7 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
             </div>
           </Col>
         </Row>
-      </Container>
+      </div>
     </Card.Header>
   );
 };

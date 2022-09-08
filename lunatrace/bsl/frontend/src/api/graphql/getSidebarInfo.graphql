@@ -7,6 +7,10 @@ query GetSidebarInfo($kratos_id: uuid) {
       id
       build_number
     }
+    github_repository {
+      id
+      github_id
+    }
   }
   organizations(order_by: {projects_aggregate: {count: asc}}, where: {organization_users: {user: {kratos_id: {_eq: $kratos_id}}}}) {
     name
@@ -18,10 +22,6 @@ query GetSidebarInfo($kratos_id: uuid) {
       created_at
       github_repository {
         id
-      }
-      builds {
-        id
-        build_number
       }
     }
   }
