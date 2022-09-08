@@ -1,0 +1,32 @@
+table:
+  name: build_log
+  schema: public
+object_relationships:
+  - name: build
+    using:
+      foreign_key_constraint_on: build_id
+insert_permissions:
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - message
+        - created_at
+        - build_id
+        - id
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - created_at
+        - build_id
+        - message
+      filter:
+        build:
+          project:
+            organization:
+              organization_users:
+                user:
+                  id:
+                    _eq: X-Hasura-Real-User-Id
