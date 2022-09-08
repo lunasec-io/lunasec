@@ -41,10 +41,10 @@ interface VulnerableProjectsList {
 
 const VulnerableProjectsList: React.FunctionComponent<VulnerableProjectsList> = ({ vuln }) => {
   const projects = vuln.findings.map((f) => {
-    const projectName = f.default_branch_build?.project?.name;
-    const projectId = f.default_branch_build?.project_id;
-    const buildId = f.default_branch_build?.id;
-    const buildDate = f.default_branch_build?.created_at;
+    const projectName = f.latest_default_build?.project?.name;
+    const projectId = f.latest_default_build?.project_id;
+    const buildId = f.latest_default_build?.id;
+    const buildDate = f.latest_default_build?.created_at;
 
     if (!projectName || !projectId || !buildId || !buildDate) {
       console.error('missing data to show project vulnerable', projectName, projectId, buildId);
