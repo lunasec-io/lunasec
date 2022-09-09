@@ -16,12 +16,8 @@ import * as os from 'os';
 import path from 'path';
 import util from 'util';
 
-import { LunaLogger } from '@lunatrace/logger';
-
 import { getRepoCloneUrlWithAuth } from '../../../github/actions/get-repo-clone-url-with-auth';
-import { hasura } from '../../../hasura-api';
 import { updateBuildStatus } from '../../../hasura-api/actions/update-build-status';
-import { InsertBuildMutation, Scalars } from '../../../hasura-api/generated';
 import { generateSbomFromAsset } from '../../../snapshot/call-cli';
 import { uploadSbomToS3 } from '../../../snapshot/generate-snapshot';
 import { snapshotPinnedDependencies } from '../../../snapshot/node-package-tree';
@@ -166,71 +162,6 @@ async function performSnapshotOnRepository(
   };
 }
 
-interface NewBuildInfo {
-  projectId: string;
-  pullRequestId?: string;
-  sourceType: Scalars['builds_source_type'];
-  gitCommit?: string;
-  gitBranch: string;
-  cloneUrl: string;
-}
-
-async function createNewBuild(logger: LunaLogger, buildInfo: NewBuildInfo): Promise<MaybeError<string>> {
-  logger.info('Creating a new build for repository', {
-    projectId: buildInfo.projectId,
-  });
-
-  const insertBuildResponse: Try<InsertBuildMutation> = await catchError(
-    async () =>
-      await hasura.InsertBuild({
-        build: {
-          project_id: buildInfo.projectId,
-          pull_request_id: buildInfo.pullRequestId,
-          source_type: buildInfo.sourceType,
-          git_hash: buildInfo.gitCommit,
-          git_branch: buildInfo.gitBranch,
-          git_remote: buildInfo.cloneUrl,
-        },
-      })
-  );
-
-  if (threwError(insertBuildResponse)) {
-    const msg = 'failed to insert a new build';
-    logger.error(msg, {
-      error: insertBuildResponse,
-    });
-
-    return {
-      error: true,
-      msg: msg,
-      rawError: insertBuildResponse,
-    };
-  }
-
-  const { insert_builds_one } = insertBuildResponse;
-
-  logger.info('inserted new build', {
-    insert_builds_one,
-  });
-
-  if (!insert_builds_one || insert_builds_one.id === undefined) {
-    const msg = 'missing idd in insert build response';
-    logger.error(msg, {
-      insert_builds_one,
-    });
-    return {
-      error: true,
-      msg: msg,
-      rawError: new Error(msg),
-    };
-  }
-
-  return {
-    error: false,
-    res: insert_builds_one.id as string,
-  };
-}
-
 export async function snapshotRepositoryActivity(req: SnapshotForRepositoryRequest): Promise<MaybeError<undefined>> {
   const logger = log.child('repo-snapshot-setup', {
     record: req,
@@ -239,7 +170,6 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
   logger.info('creating authed git clone url');
 
   const cloneUrlWithAuth = await getRepoCloneUrlWithAuth(req.repoGithubId);
-
   if (cloneUrlWithAuth.error) {
     logger.error('could not create authed git clone url', {
       error: cloneUrlWithAuth.msg,
@@ -248,21 +178,9 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
   }
   const repoClone = cloneUrlWithAuth.res;
 
-  const buildId = await createNewBuild(logger, {
-    projectId: repoClone.projectId,
-    pullRequestId: req.pullRequestId,
-    sourceType: req.sourceType,
-    gitCommit: req.gitCommit,
-    gitBranch: req.gitBranch,
-    cloneUrl: req.cloneUrl,
-  });
-  if (buildId.error) {
-    return buildId;
-  }
-
   const installationId = req.installationId.toString();
 
-  return await log.provideFields({ buildId: buildId.res, record: req, installationId }, async () => {
-    return performSnapshotOnRepository(installationId, buildId.res, repoClone.cloneUrl, req.gitBranch, req.gitCommit);
+  return await log.provideFields({ buildId: req.buildId, record: req, installationId }, async () => {
+    return performSnapshotOnRepository(installationId, req.buildId, repoClone.cloneUrl, req.gitBranch, req.gitCommit);
   });
 }
