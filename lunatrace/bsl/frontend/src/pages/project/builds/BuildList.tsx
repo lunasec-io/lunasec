@@ -16,26 +16,26 @@ import { Container, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
-import { ProjectInfo } from '../types';
+import { BuildInfo, ProjectInfo } from '../types';
 
 import { BuildListItem } from './BuildListItem';
 interface BuildListProps {
-  project: ProjectInfo;
+  builds: BuildInfo[];
 }
 
-export const BuildList: React.FunctionComponent<BuildListProps> = ({ project }) => {
+export const BuildList: React.FunctionComponent<BuildListProps> = ({ builds }) => {
   const navigate = useNavigate();
-  const buildCards = project.builds.map((build) => {
+  const buildCards = builds.map((build) => {
     return (
       <Row key={build.id}>
-        <BuildListItem onClick={() => navigate(`./build/${build.id as string}`)} build={build} project={project} />
+        <BuildListItem onClick={() => navigate(`./build/${build.id as string}`)} build={build} />
       </Row>
     );
   });
 
   return (
     <Container className="build-list">
-      <ConditionallyRender if={project.builds.length === 0}>
+      <ConditionallyRender if={builds.length === 0}>
         <p className="text-center">
           No snapshots yet. <br />
           Submit a snapshot using one of the techniques explained on the &quot;Dashboard&quot; tab.

@@ -41,6 +41,7 @@ export async function queueRepositoryForSnapshot(repo: SnapshotForRepositoryRequ
   }
 
   log.info('queueing repository for snapshot', {
+    queue: repositoryQueueUrl.res,
     repo,
   });
 
@@ -68,7 +69,8 @@ export async function queueRepositoryForSnapshot(repo: SnapshotForRepositoryRequ
     });
     return newError('sending message to queue failed, responded: ' + JSON.stringify(result));
   }
-  log.info('queued repo for snapshot', {
+  log.info('queued repository for snapshot', {
+    queue: repositoryQueueUrl.res,
     repo,
   });
   return newResult(undefined);

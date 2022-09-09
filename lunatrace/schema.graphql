@@ -481,6 +481,25 @@ type build_log {
 }
 
 """
+order by aggregate values of table "build_log"
+"""
+input build_log_aggregate_order_by {
+  count: order_by
+  max: build_log_max_order_by
+  min: build_log_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "build_log"
+"""
+input build_log_arr_rel_insert_input {
+  data: [build_log_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: build_log_on_conflict
+}
+
+"""
 Boolean expression to filter rows from the table "build_log". All fields are combined with a logical 'AND'.
 """
 input build_log_bool_exp {
@@ -513,6 +532,26 @@ input build_log_insert_input {
   created_at: timestamptz
   id: uuid
   message: String
+}
+
+"""
+order by max() on columns of table "build_log"
+"""
+input build_log_max_order_by {
+  build_id: order_by
+  created_at: order_by
+  id: order_by
+  message: order_by
+}
+
+"""
+order by min() on columns of table "build_log"
+"""
+input build_log_min_order_by {
+  build_id: order_by
+  created_at: order_by
+  id: order_by
+  message: order_by
 }
 
 """
@@ -592,6 +631,24 @@ type builds {
     """filter the rows returned"""
     where: build_dependency_relationship_bool_exp
   ): [build_dependency_relationship!]!
+
+  """An array relationship"""
+  build_logs(
+    """distinct select on columns"""
+    distinct_on: [build_log_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [build_log_order_by!]
+
+    """filter the rows returned"""
+    where: build_log_bool_exp
+  ): [build_log!]!
   build_number: Int
   created_at: timestamp!
   existing_github_check_id: bigint
@@ -757,6 +814,7 @@ input builds_bool_exp {
   _or: [builds_bool_exp!]
   agent_access_token: uuid_comparison_exp
   build_dependency_relationships: build_dependency_relationship_bool_exp
+  build_logs: build_log_bool_exp
   build_number: Int_comparison_exp
   created_at: timestamp_comparison_exp
   existing_github_check_id: bigint_comparison_exp
@@ -810,6 +868,7 @@ input type for inserting data into table "builds"
 input builds_insert_input {
   agent_access_token: uuid
   build_dependency_relationships: build_dependency_relationship_arr_rel_insert_input
+  build_logs: build_log_arr_rel_insert_input
   build_number: Int
   created_at: timestamp
   existing_github_check_id: bigint
@@ -935,6 +994,7 @@ input builds_on_conflict {
 input builds_order_by {
   agent_access_token: order_by
   build_dependency_relationships_aggregate: build_dependency_relationship_aggregate_order_by
+  build_logs_aggregate: build_log_aggregate_order_by
   build_number: order_by
   created_at: order_by
   existing_github_check_id: order_by
