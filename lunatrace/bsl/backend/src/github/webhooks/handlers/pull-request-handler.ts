@@ -14,6 +14,7 @@
 import { EmitterWebhookEvent } from '@octokit/webhooks';
 
 import { hasura } from '../../../hasura-api';
+import { SnapshotBuildInfo, SnapshotForRepositoryRequest } from '../../../types/sqs';
 import { log } from '../../../utils/log';
 import { queueRepositoryForSnapshot } from '../../actions/queue-repository-for-snapshot';
 
@@ -37,6 +38,8 @@ export async function pullRequestHandler(event: EmitterWebhookEvent<'pull_reques
     log.info('Received a webhook for a repository which is not imported, no-op.');
     return;
   }
+
+  const projectId = getRepositoryResponse.github_repositories[0].project.id;
 
   log.info('snapshotting repository for pull request');
 
@@ -70,16 +73,16 @@ export async function pullRequestHandler(event: EmitterWebhookEvent<'pull_reques
   // // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
   // await hasura.UpdateBuildExistingCheckId({ id: buildId, existing_github_check_id });
 
-  const res = await queueRepositoryForSnapshot({
+  const buildInfo: SnapshotBuildInfo = {
+    projectId,
     cloneUrl: event.payload.repository.clone_url,
     gitBranch: event.payload.pull_request.head.ref, // TODO make this the human readable branch name, not the ref
-    repoGithubId: event.payload.repository.id,
-    installationId: event.payload.installation.id,
     sourceType: 'pr',
     pullRequestId: event.payload.pull_request.node_id,
     gitCommit: event.payload.pull_request.head.sha,
-  });
+  };
 
+  const res = await queueRepositoryForSnapshot(event.payload.installation.id, event.payload.repository.id, buildInfo);
   if (res.error) {
     log.error('failed to queue repository for snapshot');
     return;
