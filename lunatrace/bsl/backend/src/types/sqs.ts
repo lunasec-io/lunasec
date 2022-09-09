@@ -12,9 +12,9 @@
  *
  */
 
-import { MaybeError } from './util';
+import { Scalars } from '../hasura-api/generated';
 
-export type BuildSourceType = 'pr' | 'gui' | 'cli' | 'default_branch';
+import { MaybeError } from './util';
 
 export type QueueMessageProcessorType = 's3-queue-handler' | 'lunatrace-queue-handler';
 
@@ -47,14 +47,19 @@ export interface ProcessGithubWebhookRequest {
   delivery_id: string;
 }
 
-export interface SnapshotForRepositoryRequest {
-  cloneUrl: string;
-  gitBranch: string;
+export interface SnapshotBuildInfo {
+  projectId?: string;
+  pullRequestId?: string;
+  sourceType: Scalars['builds_source_type'];
   gitCommit?: string;
+  gitBranch: string;
+  cloneUrl: string;
+}
+
+export interface SnapshotForRepositoryRequest extends SnapshotBuildInfo {
+  buildId: string;
   repoGithubId: number;
   installationId: number;
-  sourceType: BuildSourceType;
-  pullRequestId?: string;
 }
 
 export interface S3SqsMessage {

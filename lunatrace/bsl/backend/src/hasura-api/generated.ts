@@ -10757,7 +10757,7 @@ export type GetGithubRepositoriesByIdsQueryVariables = Exact<{
 }>;
 
 
-export type GetGithubRepositoriesByIdsQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', github_id?: number | null }> };
+export type GetGithubRepositoriesByIdsQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', github_id?: number | null, project: { __typename?: 'projects', id: any } }> };
 
 export type GetLatestBuildsForRescanQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -10777,6 +10777,13 @@ export type GetPreviousBuildForPrQueryVariables = Exact<{
 
 
 export type GetPreviousBuildForPrQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', existing_github_review_id?: string | null }> };
+
+export type GetProjectFromRepoIdQueryVariables = Exact<{
+  repo_github_id: Scalars['Int'];
+}>;
+
+
+export type GetProjectFromRepoIdQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', id: any } }> };
 
 export type GetUserGitHubDataQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
@@ -11050,6 +11057,9 @@ export const GetGithubRepositoriesByIdsDocument = gql`
     query GetGithubRepositoriesByIds($ids: [Int!]!) {
   github_repositories(where: {github_id: {_in: $ids}}) {
     github_id
+    project {
+      id
+    }
   }
 }
     `;
@@ -11074,6 +11084,15 @@ export const GetPreviousBuildForPrDocument = gql`
     order_by: {created_at: desc}
   ) {
     existing_github_review_id
+  }
+}
+    `;
+export const GetProjectFromRepoIdDocument = gql`
+    query GetProjectFromRepoId($repo_github_id: Int!) {
+  github_repositories(where: {github_id: {_eq: $repo_github_id}}) {
+    project {
+      id
+    }
   }
 }
     `;
@@ -11382,6 +11401,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetPreviousBuildForPr(variables: GetPreviousBuildForPrQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPreviousBuildForPrQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPreviousBuildForPrQuery>(GetPreviousBuildForPrDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPreviousBuildForPr', 'query');
+    },
+    GetProjectFromRepoId(variables: GetProjectFromRepoIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectFromRepoIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectFromRepoIdQuery>(GetProjectFromRepoIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectFromRepoId', 'query');
     },
     GetUserGitHubData(variables?: GetUserGitHubDataQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserGitHubDataQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserGitHubDataQuery>(GetUserGitHubDataDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserGitHubData', 'query');

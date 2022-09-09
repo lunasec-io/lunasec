@@ -14,7 +14,7 @@
 
 import { hasura } from '../../hasura-api';
 import { GithubRepositoryInfo } from '../../types/github';
-import { SnapshotForRepositoryRequest } from '../../types/sqs';
+import { SnapshotBuildInfo, SnapshotForRepositoryRequest } from '../../types/sqs';
 import { MaybeError } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
@@ -44,14 +44,12 @@ export async function queueNewReposForSnapshot(
         return;
       }
 
-      const record: SnapshotForRepositoryRequest = {
+      const record: SnapshotBuildInfo = {
         cloneUrl: repo.cloneUrl,
         gitBranch: repo.defaultBranch,
-        installationId: installationId,
-        repoGithubId: repo.repoId,
         sourceType: 'default_branch',
       };
-      return queueRepositoryForSnapshot(record);
+      return queueRepositoryForSnapshot(installationId, repo.repoId, record);
     })
   );
 

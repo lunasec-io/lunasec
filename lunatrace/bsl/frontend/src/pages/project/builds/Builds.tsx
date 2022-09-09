@@ -44,10 +44,11 @@ export const Builds: React.FunctionComponent<BuildsProps> = ({
   });
 
   useEffect(() => {
-    void getProjectBuildsTrigger({
+    const runningQuery = getProjectBuildsTrigger({
       project_id: projectId,
       build_limit: buildLimit,
     });
+    //runningQuery.abort();
   }, []);
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
