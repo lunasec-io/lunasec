@@ -418,6 +418,20 @@ export type Build_Log = {
   message?: Maybe<Scalars['String']>;
 };
 
+/** order by aggregate values of table "build_log" */
+export type Build_Log_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Build_Log_Max_Order_By>;
+  min?: InputMaybe<Build_Log_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "build_log" */
+export type Build_Log_Arr_Rel_Insert_Input = {
+  data: Array<Build_Log_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Build_Log_On_Conflict>;
+};
+
 /** Boolean expression to filter rows from the table "build_log". All fields are combined with a logical 'AND'. */
 export type Build_Log_Bool_Exp = {
   _and?: InputMaybe<Array<Build_Log_Bool_Exp>>;
@@ -443,6 +457,22 @@ export type Build_Log_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
   message?: InputMaybe<Scalars['String']>;
+};
+
+/** order by max() on columns of table "build_log" */
+export type Build_Log_Max_Order_By = {
+  build_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "build_log" */
+export type Build_Log_Min_Order_By = {
+  build_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "build_log" */
@@ -494,6 +524,8 @@ export type Builds = {
   agent_access_token: Scalars['uuid'];
   /** An array relationship */
   build_dependency_relationships: Array<Build_Dependency_Relationship>;
+  /** An array relationship */
+  build_logs: Array<Build_Log>;
   build_number?: Maybe<Scalars['Int']>;
   created_at: Scalars['timestamp'];
   existing_github_check_id?: Maybe<Scalars['bigint']>;
@@ -527,6 +559,16 @@ export type BuildsBuild_Dependency_RelationshipsArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
   where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+};
+
+
+/** columns and relationships of "builds" */
+export type BuildsBuild_LogsArgs = {
+  distinct_on?: InputMaybe<Array<Build_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Log_Order_By>>;
+  where?: InputMaybe<Build_Log_Bool_Exp>;
 };
 
 
@@ -641,6 +683,7 @@ export type Builds_Bool_Exp = {
   _or?: InputMaybe<Array<Builds_Bool_Exp>>;
   agent_access_token?: InputMaybe<Uuid_Comparison_Exp>;
   build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+  build_logs?: InputMaybe<Build_Log_Bool_Exp>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   existing_github_check_id?: InputMaybe<Bigint_Comparison_Exp>;
@@ -680,6 +723,7 @@ export type Builds_Inc_Input = {
 export type Builds_Insert_Input = {
   agent_access_token?: InputMaybe<Scalars['uuid']>;
   build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Arr_Rel_Insert_Input>;
+  build_logs?: InputMaybe<Build_Log_Arr_Rel_Insert_Input>;
   build_number?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   existing_github_check_id?: InputMaybe<Scalars['bigint']>;
@@ -796,6 +840,7 @@ export type Builds_On_Conflict = {
 export type Builds_Order_By = {
   agent_access_token?: InputMaybe<Order_By>;
   build_dependency_relationships_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
+  build_logs_aggregate?: InputMaybe<Build_Log_Aggregate_Order_By>;
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   existing_github_check_id?: InputMaybe<Order_By>;

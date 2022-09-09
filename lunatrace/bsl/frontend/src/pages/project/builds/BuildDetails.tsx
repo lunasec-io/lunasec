@@ -14,8 +14,9 @@
 import { filterFindingsNotIgnored } from '@lunatrace/lunatrace-common';
 import classNames from 'classnames';
 import React, { useMemo, useRef, useState } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Card, Col, Container, Modal, Row, Spinner } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
+import { AiFillFolderOpen } from 'react-icons/ai';
 import { useParams } from 'react-router-dom';
 
 import api from '../../../api';
@@ -76,11 +77,25 @@ export const BuildDetails: React.FunctionComponent = () => {
 
   const build = data.builds_by_pk;
 
+  const buildLog = build.build_logs.map((log) => {
+    return <p key={log.id}>{log.message}</p>;
+  });
+
   if (build.scans.length === 0) {
     return renderContainer(
       <span>
         Error: This build has not yet been scanned. Please wait a short time for the scan to finish and then return to
         this page.
+        <Card>
+          <Modal.Header>
+            <h4 className="mb-n2">
+              <Spinner animation="border" /> Build Log
+            </h4>
+          </Modal.Header>
+          <Modal.Body>
+            <div>{buildLog}</div>
+          </Modal.Body>
+        </Card>
       </span>
     );
   }

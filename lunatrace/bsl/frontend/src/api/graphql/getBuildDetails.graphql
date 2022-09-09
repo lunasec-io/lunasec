@@ -9,6 +9,11 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
         source_type
         project_id
 
+        build_logs(order_by: {created_at: asc}) {
+            id
+            message
+        }
+
         resolved_manifests {
             id
             path

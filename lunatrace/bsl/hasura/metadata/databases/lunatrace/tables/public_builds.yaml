@@ -13,6 +13,13 @@ array_relationships:
         table:
           name: build_dependency_relationship
           schema: public
+  - name: build_logs
+    using:
+      foreign_key_constraint_on:
+        column: build_id
+        table:
+          name: build_log
+          schema: public
   - name: findings
     using:
       foreign_key_constraint_on:
