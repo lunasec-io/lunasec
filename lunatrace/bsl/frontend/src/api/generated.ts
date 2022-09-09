@@ -306,6 +306,13 @@ export type Build_Log = {
   message?: Maybe<Scalars['String']>;
 };
 
+/** order by aggregate values of table "build_log" */
+export type Build_Log_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Build_Log_Max_Order_By>;
+  min?: InputMaybe<Build_Log_Min_Order_By>;
+};
+
 /** Boolean expression to filter rows from the table "build_log". All fields are combined with a logical 'AND'. */
 export type Build_Log_Bool_Exp = {
   _and?: InputMaybe<Array<Build_Log_Bool_Exp>>;
@@ -316,6 +323,22 @@ export type Build_Log_Bool_Exp = {
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   message?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** order by max() on columns of table "build_log" */
+export type Build_Log_Max_Order_By = {
+  build_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "build_log" */
+export type Build_Log_Min_Order_By = {
+  build_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
 };
 
 /** Ordering options when selecting data from "build_log". */
@@ -344,6 +367,8 @@ export type Builds = {
   __typename?: 'builds';
   /** An array relationship */
   build_dependency_relationships: Array<Build_Dependency_Relationship>;
+  /** An array relationship */
+  build_logs: Array<Build_Log>;
   build_number?: Maybe<Scalars['Int']>;
   created_at: Scalars['timestamp'];
   existing_github_check_id?: Maybe<Scalars['bigint']>;
@@ -381,6 +406,16 @@ export type BuildsBuild_Dependency_RelationshipsArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
   where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+};
+
+
+/** columns and relationships of "builds" */
+export type BuildsBuild_LogsArgs = {
+  distinct_on?: InputMaybe<Array<Build_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Log_Order_By>>;
+  where?: InputMaybe<Build_Log_Bool_Exp>;
 };
 
 
@@ -507,6 +542,7 @@ export type Builds_Bool_Exp = {
   _not?: InputMaybe<Builds_Bool_Exp>;
   _or?: InputMaybe<Array<Builds_Bool_Exp>>;
   build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+  build_logs?: InputMaybe<Build_Log_Bool_Exp>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   existing_github_check_id?: InputMaybe<Bigint_Comparison_Exp>;
@@ -604,6 +640,7 @@ export type Builds_Mutation_Response = {
 /** Ordering options when selecting data from "builds". */
 export type Builds_Order_By = {
   build_dependency_relationships_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
+  build_logs_aggregate?: InputMaybe<Build_Log_Aggregate_Order_By>;
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   existing_github_check_id?: InputMaybe<Order_By>;
@@ -6678,7 +6715,7 @@ export type GetBuildDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildDetailsQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, source_type: any, project_id?: any | null, resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', parent_id: any, child_id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability: { __typename?: 'vulnerability', id: any, summary?: string | null, source: string, source_id: string, cvss_score?: number | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, source: string, type: string, score: string }>, affected: Array<{ __typename?: 'vulnerability_affected', package: { __typename?: 'package', name: string, package_manager: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', type: any, event: string, version: string }> }>, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, severity: any, summary: string, created_at: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> } | null };
+export type GetBuildDetailsQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, source_type: any, project_id?: any | null, build_logs: Array<{ __typename?: 'build_log', id: any, message?: string | null }>, resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', parent_id: any, child_id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability: { __typename?: 'vulnerability', id: any, summary?: string | null, source: string, source_id: string, cvss_score?: number | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, source: string, type: string, score: string }>, affected: Array<{ __typename?: 'vulnerability_affected', package: { __typename?: 'package', name: string, package_manager: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', type: any, event: string, version: string }> }>, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, severity: any, summary: string, created_at: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> } | null };
 
 export type GetBuildNumberQueryVariables = Exact<{
   build_id: Scalars['uuid'];
@@ -6725,6 +6762,14 @@ export type GetProjectQueryVariables = Exact<{
 
 
 export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id: any, settings: { __typename?: 'settings', id: any, pr_feedback_disabled?: boolean | null, pr_check_enabled?: boolean | null }, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, default_branch?: string | null, traits: any } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', language: string, purl: string, severity: any, locations: any, vulnerability: { __typename?: 'vulnerability', severities: Array<{ __typename?: 'vulnerability_severity', id: any, source: string, type: string, score: string }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', locations: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }>, builds_aggregate: { __typename?: 'builds_aggregate', aggregate?: { __typename?: 'builds_aggregate_fields', count: number } | null }, default_branch_builds: Array<{ __typename?: 'default_branch_builds', build_number?: number | null, created_at?: any | null, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id?: any | null, source_type?: any | null, project_id?: any | null, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }>, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability: { __typename?: 'vulnerability', id: any, summary?: string | null, source: string, source_id: string, severities: Array<{ __typename?: 'vulnerability_severity', id: any, source: string, type: string, score: string }>, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, severity: any, summary: string, created_at: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> }> } | null };
+
+export type GetProjectBuildsQueryVariables = Exact<{
+  project_id: Scalars['uuid'];
+  build_limit?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetProjectBuildsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id?: any | null, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', language: string, purl: string, severity: any, locations: any, vulnerability: { __typename?: 'vulnerability', severities: Array<{ __typename?: 'vulnerability_severity', id: any, source: string, type: string, score: string }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', locations: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }> };
 
 export type GetProjectCloneUrlQueryVariables = Exact<{
   project_id: Scalars['uuid'];
@@ -6885,6 +6930,10 @@ export const GetBuildDetailsDocument = `
     id
     source_type
     project_id
+    build_logs(order_by: {created_at: asc}) {
+      id
+      message
+    }
     resolved_manifests {
       id
       path
@@ -7249,6 +7298,50 @@ export const GetProjectDocument = `
   }
 }
     `;
+export const GetProjectBuildsDocument = `
+    query GetProjectBuilds($project_id: uuid!, $build_limit: Int = 10) {
+  builds(
+    order_by: {created_at: desc}
+    limit: $build_limit
+    where: {project_id: {_eq: $project_id}}
+  ) {
+    id
+    created_at
+    build_number
+    project_id
+    source_type
+    findings {
+      language
+      purl
+      severity
+      locations
+      vulnerability {
+        severities {
+          id
+          source
+          type
+          score
+        }
+        ignored_vulnerabilities(where: {project_id: {_eq: $project_id}}) {
+          locations
+        }
+      }
+    }
+    scans_aggregate {
+      aggregate {
+        count
+      }
+    }
+    scans(limit: 1, order_by: {created_at: desc}) {
+      created_at
+      scan_number
+    }
+    git_branch
+    git_hash
+    git_remote
+  }
+}
+    `;
 export const GetProjectCloneUrlDocument = `
     query GetProjectCloneUrl($project_id: uuid!) {
   projects_by_pk(id: $project_id) {
@@ -7539,6 +7632,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetProject: build.query<GetProjectQuery, GetProjectQueryVariables>({
       query: (variables) => ({ document: GetProjectDocument, variables })
+    }),
+    GetProjectBuilds: build.query<GetProjectBuildsQuery, GetProjectBuildsQueryVariables>({
+      query: (variables) => ({ document: GetProjectBuildsDocument, variables })
     }),
     GetProjectCloneUrl: build.query<GetProjectCloneUrlQuery, GetProjectCloneUrlQueryVariables>({
       query: (variables) => ({ document: GetProjectCloneUrlDocument, variables })
