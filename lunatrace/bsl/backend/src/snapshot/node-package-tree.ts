@@ -102,10 +102,16 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
           dependencies: [],
         };
       }
+
+      // This value is set to false by the library when there are zero dev dependencies
+      const prodOrDevLabel = pkgTree.hasDevDependencies ? 'dev' : 'prod';
+
       const pkgDependenciesWithGraphAndMetadata = Object.values(pkgTree.dependencies).map((pkg) => {
         return {
           rootNode: dfsGenerateMerkleTreeFromDepTree(pkg),
-          labels: pkg.labels,
+          // If there is nothing in the labels, then we know that it is a prod dependency
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          labels: pkg.labels ?? ({ scope: prodOrDevLabel } as any),
           name: pkg.name,
           range: pkg.range,
           version: pkg.version,
@@ -239,12 +245,12 @@ async function insertEdgesToDatabase<Ext>(t: ITask<Ext>, queryData: ManifestDepe
   await t.none(edgeInsertQuery);
 }
 
-async function findCurrentlyKnownDependencies(query: string, manifestIds: string[]): Promise<string[]> {
+async function findCurrentlyKnownDependencies(query: string, manifestIds: string[]): Promise<Set<string>> {
   if (manifestIds.length === 0) {
-    return [];
+    return new Set();
   }
 
-  const currentlyKnownIds: string[][] = [];
+  const currentlyKnownIds: Set<string> = new Set();
 
   for (let i = 0; i < manifestIds.length; i += 999) {
     const slice = manifestIds.slice(i, i + 999);
@@ -255,20 +261,20 @@ async function findCurrentlyKnownDependencies(query: string, manifestIds: string
 
     log.info(`Checking ${slice.length} currently known dependencies (${i + slice.length}/${manifestIds.length})`);
 
-    const result = await db.manyOrNone<string>(query, [slice]);
+    const result = await db.manyOrNone<{ id: string }>(query, [slice]);
 
     log.info(`Added ${result.length} known dependencies (${i + slice.length}/${manifestIds.length})`);
 
     if (result) {
-      currentlyKnownIds.push(result);
+      for (const { id } of result) {
+        currentlyKnownIds.add(id);
+      }
     }
   }
 
-  const allKnownIds = currentlyKnownIds.flat(1);
+  log.info(`Found ${currentlyKnownIds.size} known dependencies`);
 
-  log.info(`Found ${allKnownIds.length} known dependencies`);
-
-  return allKnownIds;
+  return currentlyKnownIds;
 }
 
 async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: CollectedPackageTree[]) {
@@ -300,14 +306,14 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
     Array.from(uniqueNodeRootIds).sort()
   );
 
-  log.info(`Found ${uniqueNodeRootIds.size} missing root dependency hashes`);
+  log.info(`Found ${currentlyKnownRootIds.size} of ${uniqueNodeRootIds.size} known root dependency hashes`);
 
   // Allows us to hold only one copy of each node for querying later
   const dependencyNodeMap = new Map<string, DependencyGraphNode>();
 
   pkgGraphs.forEach((pkgGraph) => {
     pkgGraph.dependencies.forEach((pkg) => {
-      if (currentlyKnownRootIds.includes(pkg.rootNode.treeHashId)) {
+      if (currentlyKnownRootIds.has(pkg.rootNode.treeHashId)) {
         return;
       }
 
@@ -320,34 +326,41 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
     });
   });
 
-  log.info(`Total ${dependencyNodeMap.size} unique transitive dependency hashes`);
-
   if (dependencyNodeMap.size === 0) {
     log.info(`All dependencies already known by database, skipping insert`);
     return;
   }
 
+  log.info(`Total ${dependencyNodeMap.size} transitive dependency hashes to search`);
+
+  // TODO: This could be optimized by doing a breadth first search starting from the root nodes going down by subtree
   const currentlyKnownTransitiveDependencyIds = await findCurrentlyKnownDependencies(
     `SELECT id FROM manifest_dependency_node WHERE id IN ($1:csv)`,
     Array.from(dependencyNodeMap.keys()).sort()
   );
 
-  log.info(`Found ${currentlyKnownTransitiveDependencyIds.length} known transitive dependency hashes`);
+  log.info(
+    `Found ${currentlyKnownTransitiveDependencyIds.size} of ${dependencyNodeMap.size} known transitive dependency hashes`
+  );
+
+  const originalDependencySize = dependencyNodeMap.size;
 
   // Remove the nodes that we know we don't need to insert.
   // Warning: Dragons!
   // We're mutating state which is where bugs stem from.
   // This will reduce memory usage though, so we'll allow it.
-  currentlyKnownTransitiveDependencyIds.forEach((id) => {
+  for (const id of currentlyKnownTransitiveDependencyIds) {
     dependencyNodeMap.delete(id);
-  });
+  }
 
   if (dependencyNodeMap.size === 0) {
     log.info(`All transitive dependencies already known by database, skipping insert`);
     return;
   }
 
-  log.info(`Found ${dependencyNodeMap.size} new transitive dependency hashes to insert`);
+  log.info(
+    `Found ${dependencyNodeMap.size} of ${originalDependencySize} are new transitive dependency hashes to insert`
+  );
 
   // Insert any new dependencies into the database
   await db.tx(
@@ -396,15 +409,27 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
   );
 
   log.info(`Inserted nodes for ${pkgGraphs.length} package graphs into database`);
+}
+
+export async function insertPackageManifestsIntoDatabase(
+  buildId: string,
+  pkgGraphs: CollectedPackageTree[]
+): Promise<void> {
+  if (pkgGraphs.length === 0) {
+    log.info(`No package manifests found to insert for build ${buildId}`);
+    return;
+  }
+
+  log.info(`Inserting ${pkgGraphs.length} package manifests into database`);
 
   await db.tx(async (t) => {
     await Promise.all(
       pkgGraphs.map(async (pkgGraph) => {
         const manifestId = await t.one<{ id: string }>(
           `INSERT INTO resolved_manifest (build_id, path)
-             VALUES ($1, $2)
-             ON CONFLICT DO NOTHING
-             RETURNING id`,
+           VALUES ($1, $2)
+           ON CONFLICT DO NOTHING
+           RETURNING id`,
           [buildId, pkgGraph.lockFilePath]
         );
 
@@ -437,5 +462,9 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 export async function snapshotPinnedDependencies(buildId: string, repoDir: string): Promise<void> {
   const pkgGraphs = await collectPackageGraphsFromDirectory(repoDir);
 
+  // Creates all nodes and edges for the dependency graph into the database
   await insertPackageGraphsIntoDatabase(buildId, pkgGraphs);
+
+  // Creates all manifests and associated root dependencies into the database
+  await insertPackageManifestsIntoDatabase(buildId, pkgGraphs);
 }
