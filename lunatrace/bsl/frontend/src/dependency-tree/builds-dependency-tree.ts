@@ -33,7 +33,6 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
 
     flatEdges.forEach((edge) => {
       const versionSlug = `${edge.child.release.package.name}@${edge.child.release.version}`;
-      const rangeSlug = `${edge.child.release.package.name}@${edge.child.range}`;
 
       const edgesWithNameAndVersion = this.packageSlugToEdgeIds.get(edge.child_id) || new Set();
 
@@ -41,9 +40,6 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
 
       // Create an index to make the lookup of the edge by its name and version faster later
       this.packageSlugToEdgeIds.set(versionSlug, edgesWithNameAndVersion);
-
-      // We set the package with the range, also, to cover the case where the version is resolved to a different version
-      this.packageSlugToEdgeIds.set(rangeSlug, edgesWithNameAndVersion);
 
       // Create a lookup of child IDs that map to a set of edges that include them (parents).
       const parentIdsForEdge = this.childIdToParentIds.get(edge.child_id) || new Set();
@@ -195,7 +191,13 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
 
     // Flatten the chains
     const recursivelyGenerateChainsWithStack = (dep: BuildDependency, stack: DependencyChain<BuildDependency>) => {
-      const newStack: DependencyChain<BuildDependency> = [dep, ...stack];
+      // Fastest way to clone into a new array
+      const stackLength = stack.length;
+      const newStack = new Array<BuildDependency>(stackLength + 1);
+      newStack[0] = dep;
+      for (let i = 0; i < stackLength; i++) {
+        newStack[i + 1] = stack[i];
+      }
 
       if (!dep.parent_id || dep.parent_id === '00000000-0000-0000-0000-000000000000') {
         flattenedChains.push(newStack);
@@ -218,9 +220,9 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     };
 
     rootEdgeIds.forEach((rootEdgeId) => {
-      const rootEdges = this.edgeById.get(rootEdgeId);
+      const rootEdge = this.edgeById.get(rootEdgeId);
 
-      if (!rootEdges) {
+      if (!rootEdge) {
         throw new Error(`Failed to find root edge with id ${rootEdgeId} for package ${packageName}@${packageVersion}`);
       }
 
@@ -228,11 +230,11 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
 
       // Handle direct dependency case
       if (!parentIds) {
-        flattenedChains.push([rootEdges]);
+        flattenedChains.push([rootEdge]);
         return;
       }
 
-      recursivelyGenerateChainsWithStack(rootEdges, []);
+      recursivelyGenerateChainsWithStack(rootEdge, []);
     });
 
     return flattenedChains;
