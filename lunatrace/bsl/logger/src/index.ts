@@ -49,6 +49,9 @@ function anythingToString(arg: unknown): string {
   if (typeof arg === 'string') {
     return arg;
   }
+  if (typeof arg === 'number') {
+    return arg.toString(10);
+  }
   if (arg instanceof Error) {
     return arg.stack || arg.toString();
   }
@@ -154,7 +157,7 @@ export class LunaLogger {
 
       // If the argument is an object, then add its keys to the context object
       if (this.isObject(arg)) {
-        logObject.context = mergeObjectIntoRecord(logObject.context, arg as object);
+        logObject.params = [...(logObject.params || []), arg];
         return;
       }
 

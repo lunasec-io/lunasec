@@ -81,9 +81,9 @@ export async function runLunaTraceScan(sbomStream: Readable): Promise<string> {
       outputBuffers.push(Buffer.from(chunk));
     });
     lunatraceCli.stderr.on('data', (errorChunk) => {
-      // log.warn('lunatrace cli stderr', {
-      //   output: errorChunk.toString(),
-      // });
+      log.warn('lunatrace cli stderr', {
+        output: errorChunk.toString(),
+      });
     });
     lunatraceCli.on('close', (code) => {
       if (code !== 0) {
