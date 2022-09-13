@@ -46,7 +46,7 @@ export async function performSnapshotScanAndCollectReport(
       rawGrypeReport,
     });
 
-    // do not through on this case, as the scan report is not valid JSON
+    // do not throw on this case, as the scan report is not valid JSON
     // the cause of this error happens earlier in the pipeline and looking at
     // the error logs will help identify the problem.
     return null;

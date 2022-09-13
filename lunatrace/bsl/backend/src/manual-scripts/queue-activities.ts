@@ -14,7 +14,9 @@
 import { Command } from 'commander';
 
 import { getRepoCloneUrlWithAuth } from '../github/actions/get-repo-clone-url-with-auth';
-import { SnapshotForRepositoryRequest } from '../types/sqs';
+import { createNewBuild } from '../hasura-api/actions/create-new-build';
+import { SnapshotBuildInfo, SnapshotForRepositoryRequest } from '../types/sqs';
+import { newError } from '../utils/errors';
 import { log } from '../utils/log';
 import { scanSnapshotActivity } from '../workers/queue/activities/scan-snapshot-activity';
 import { snapshotRepositoryActivity } from '../workers/queue/activities/snapshot-repository-activity';
@@ -49,14 +51,27 @@ program
       return;
     }
 
-    const snapshotRequest: SnapshotForRepositoryRequest = {
+    const buildInfo: SnapshotBuildInfo = {
       cloneUrl: authUrl.res.cloneUrl,
       gitBranch: options.branch,
       gitCommit: options.commit,
-      repoGithubId: parsedRepoGithubId,
-      installationId: parseInt(options.installId),
       sourceType: 'cli',
       pullRequestId: options.pullRequestId,
+    };
+
+    const buildIdResult = await createNewBuild(parsedRepoGithubId, buildInfo);
+    if (buildIdResult.error) {
+      log.error('Failed to create new build for snapshot request', {
+        buildInfo,
+      });
+      return;
+    }
+
+    const snapshotRequest: SnapshotForRepositoryRequest = {
+      ...buildInfo,
+      buildId: buildIdResult.res,
+      repoGithubId: parsedRepoGithubId,
+      installationId: parseInt(options.installId),
     };
     await snapshotRepositoryActivity(snapshotRequest);
   });

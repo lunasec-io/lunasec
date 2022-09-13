@@ -25,6 +25,7 @@ generates:
             timestamp: "string"
             timestamptz: string
             uuid: string
+            build_state_enum: "'snapshot_queued'|'snapshot_started'|'snapshot_completed'|'snapshot_failed'|'snapshot_scan_queued'|'snapshot_scan_started'|'snapshot_scan_completed'|'snapshot_scan_failed'"
 
       - "typescript-operations"
       - "typescript-graphql-request"

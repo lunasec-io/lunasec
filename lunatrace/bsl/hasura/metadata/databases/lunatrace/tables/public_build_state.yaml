@@ -1,0 +1,4 @@
+table:
+  name: build_state
+  schema: public
+is_enum: true

@@ -17,6 +17,7 @@ import { sqsClient } from '../../aws/sqs-client';
 import { getRepositoryQueueConfig } from '../../config';
 import { createNewBuild } from '../../hasura-api/actions/create-new-build';
 import { updateBuildStatus } from '../../hasura-api/actions/update-build-status';
+import { Build_State_Enum } from '../../hasura-api/generated';
 import {
   LunaTraceRepositorySnapshotSqsMessage,
   SnapshotBuildInfo,
@@ -44,9 +45,6 @@ export async function queueRepositoryForSnapshot(
     });
     return newError('Failed to create new build for snapshot request');
   }
-  updateBuildStatus(buildIdResult.res, 'Starting ', {
-    type: 'info',
-  });
 
   const req: SnapshotForRepositoryRequest = {
     ...buildInfo,
@@ -68,10 +66,11 @@ export async function queueRepositoryForSnapshot(
     return newError('unable to get queue url');
   }
 
-  log.info('queueing repository for snapshot', {
+  log.info('Queueing repository for snapshot', {
     queue: repositoryQueueUrl.res,
     req,
   });
+  updateBuildStatus(buildIdResult.res, Build_State_Enum.SnapshotQueued);
 
   const sqsEvent: LunaTraceRepositorySnapshotSqsMessage = {
     type: 'repository-snapshot',

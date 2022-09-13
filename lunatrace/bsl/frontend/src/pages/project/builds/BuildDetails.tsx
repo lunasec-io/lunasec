@@ -12,19 +12,23 @@
  *
  */
 import { filterFindingsNotIgnored } from '@lunatrace/lunatrace-common';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
-import React, { useMemo, useRef, useState } from 'react';
-import { Card, Col, Container, Modal, Row, Spinner } from 'react-bootstrap';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Alert, Card, Col, Container, Modal, ProgressBar, Row, Spinner } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { AiFillFolderOpen } from 'react-icons/ai';
 import { useParams } from 'react-router-dom';
 
 import api from '../../../api';
+import { Build_State_Enum, GetBuildLogsQuery, GetProjectBuildsQuery } from '../../../api/generated';
 import { SpinIfLoading } from '../../../components/SpinIfLoading';
 import { DependencyTree } from '../../../dependency-tree/builds-dependency-tree';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import useBreakpoint from '../../../hooks/useBreakpoint';
 import { add } from '../../../store/slices/alerts';
+import { toTitleCase } from '../../../utils/string-utils';
+import { BuildInfo, BuildLogs } from '../types';
 
 import { BuildDetailsHeader } from './BuildDetailsHeader';
 import { DependencyTreeViewer } from './DependencyTreeViewer';
@@ -40,7 +44,44 @@ export const BuildDetails: React.FunctionComponent = () => {
     dispatch(add({ message: 'Malformed URL, missing build_id or project_id parameter' }));
     return null;
   }
-  const { data, isLoading } = api.useGetBuildDetailsQuery({ build_id, project_id });
+  const [trigger, result] = api.useLazyGetBuildDetailsQuery();
+  const { data, isLoading } = result;
+
+  const [getBuildLogsTrigger, lastBuildLogsArg] = api.endpoints.GetBuildLogs.useLazyQuerySubscription({
+    pollingInterval: 3000,
+  });
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const buildLogsQuery = api.endpoints.GetBuildLogs.useQueryState(lastBuildLogsArg || skipToken) as {
+    status: string;
+    currentData: GetBuildLogsQuery;
+  } | null;
+
+  const buildLogs: BuildLogs = buildLogsQuery?.currentData?.build_log || [];
+
+  useEffect(() => {
+    if (buildLogs.length === 0 || buildLogs.filter((log) => log.state === 'snapshot_scan_completed').length > 0) {
+      void trigger({ build_id, project_id });
+    }
+  }, [lastBuildLogsArg]);
+
+  useEffect(() => {
+    if (!data || !data.builds_by_pk || isLoading) {
+      return;
+    }
+
+    if (data.builds_by_pk.scans.length === 0) {
+      const runningQuery = getBuildLogsTrigger({
+        build_id,
+      });
+
+      // After 5 minutes, stop polling for information.
+      setTimeout(() => {
+        runningQuery.abort();
+      }, 5 * 60 * 1000);
+    }
+  }, [data]);
 
   const [ignoreFindings, setIgnoreFindings] = useState<boolean>(true);
 
@@ -77,23 +118,68 @@ export const BuildDetails: React.FunctionComponent = () => {
 
   const build = data.builds_by_pk;
 
-  const buildLog = build.build_logs.map((log) => {
-    return <p key={log.id}>{log.message}</p>;
-  });
+  const reachedBuildStates: Record<Build_State_Enum, string | boolean> = {
+    snapshot_queued: false,
+    snapshot_started: false,
+    snapshot_completed: false,
+    snapshot_failed: false,
+    snapshot_scan_queued: false,
+    snapshot_scan_started: false,
+    snapshot_scan_completed: false,
+    snapshot_scan_failed: false,
+  };
+
+  buildLogs.forEach((log) => (reachedBuildStates[log.state] = log.message || true));
+
+  const plannedReachedStates = Object.keys(reachedBuildStates).filter(
+    (reachedState) => reachedState !== 'snapshot_failed' && reachedState !== 'snapshot_scan_failed'
+  );
+  const completedStateCount = plannedReachedStates.filter(
+    (plannedReachedState) => !!reachedBuildStates[plannedReachedState as Build_State_Enum]
+  ).length;
+  const percentCompletedStates = completedStateCount / plannedReachedStates.length;
+
+  const failedBuildStates = ['snapshot_failed', 'snapshot_scan_failed'];
 
   if (build.scans.length === 0) {
     return renderContainer(
       <span>
-        Error: This build has not yet been scanned. Please wait a short time for the scan to finish and then return to
-        this page.
         <Card>
           <Modal.Header>
-            <h4 className="mb-n2">
-              <Spinner animation="border" /> Build Log
-            </h4>
+            <h4 className="mb-n2">Build In Progress</h4>
+            {!reachedBuildStates['snapshot_scan_completed'] && <Spinner animation="border" />}
           </Modal.Header>
           <Modal.Body>
-            <div>{buildLog}</div>
+            <ProgressBar now={percentCompletedStates * 100} />
+            <div className="mt-3">
+              {failedBuildStates
+                .filter((state) => !!reachedBuildStates[state as Build_State_Enum])
+                .map((state, idx) => {
+                  const message = reachedBuildStates[state as Build_State_Enum];
+                  return (
+                    <Alert key={idx} variant="danger">
+                      {message}
+                    </Alert>
+                  );
+                })}
+              {plannedReachedStates.map((state) => {
+                return (
+                  <p
+                    className={reachedBuildStates[state as Build_State_Enum] ? 'lighter font-weight-bold' : ''}
+                    key={state}
+                  >
+                    {toTitleCase(state.replaceAll('_', ' '))}
+                  </p>
+                );
+              })}
+              {!reachedBuildStates['snapshot_scan_completed'] && isLoading && (
+                <div>
+                  <p>
+                    Loading results of snapshot scan... <Spinner animation="border" />
+                  </p>
+                </div>
+              )}
+            </div>
           </Modal.Body>
         </Card>
       </span>

@@ -18,6 +18,7 @@ import util from 'util';
 
 import { getRepoCloneUrlWithAuth } from '../../../github/actions/get-repo-clone-url-with-auth';
 import { updateBuildStatus } from '../../../hasura-api/actions/update-build-status';
+import { Build_State_Enum } from '../../../hasura-api/generated';
 import { generateSbomFromAsset } from '../../../snapshot/call-cli';
 import { uploadSbomToS3 } from '../../../snapshot/generate-snapshot';
 import { snapshotPinnedDependencies } from '../../../snapshot/node-package-tree';
@@ -25,7 +26,7 @@ import { SnapshotForRepositoryRequest } from '../../../types/sqs';
 import { MaybeError, MaybeErrorVoid } from '../../../types/util';
 import { newError } from '../../../utils/errors';
 import { log } from '../../../utils/log';
-import { catchError, threwError, Try } from '../../../utils/try';
+import { catchError, threwError } from '../../../utils/try';
 
 const mkdTemp = util.promisify(fs.mkdtemp);
 const rmDir = util.promisify(fs.rm);
@@ -38,9 +39,8 @@ async function performSnapshotOnRepository(
   gitBranch: string,
   gitCommit?: string
 ): Promise<MaybeErrorVoid> {
-  updateBuildStatus(buildId, 'Starting to snapshot repository.', {
-    type: 'info',
-  });
+  log.info('Starting to snapshot repository.');
+  updateBuildStatus(buildId, Build_State_Enum.SnapshotStarted);
 
   let repoDir = '';
   try {
@@ -52,26 +52,20 @@ async function performSnapshotOnRepository(
     });
 
     if (sbom === null) {
-      updateBuildStatus(buildId, 'Failed to generated SBOM for repository.', {
-        type: 'error',
-      });
+      log.error('Failed to generated SBOM for repository.');
+      updateBuildStatus(buildId, Build_State_Enum.SnapshotFailed, 'Failed to generated SBOM for repository.');
       return {
         error: true,
         msg: 'unable to generate sbom for asset',
       };
     }
-    updateBuildStatus(buildId, 'Successfully generated SBOM for repository.', {
-      type: 'info',
-    });
+    log.info('Successfully generated SBOM for repository.');
 
     const s3UploadRes = await catchError(uploadSbomToS3(installationId, buildId, sbom));
     if (threwError(s3UploadRes)) {
-      updateBuildStatus(buildId, 'Failed to save SBOM for repository.', {
-        type: 'error',
-        context: {
-          error: s3UploadRes,
-          message: s3UploadRes.message,
-        },
+      log.error('Failed to save SBOM for repository.', {
+        error: s3UploadRes,
+        message: s3UploadRes.message,
       });
 
       return {
@@ -81,30 +75,26 @@ async function performSnapshotOnRepository(
       };
     }
 
-    updateBuildStatus(buildId, 'Successfully saved SBOM for repository.', {
-      type: 'info',
-      context: {
-        s3Url: s3UploadRes,
-      },
+    log.info('Successfully saved SBOM for repository.', {
+      s3Url: s3UploadRes,
     });
 
-    updateBuildStatus(buildId, 'Attempting to snapshot pinned dependencies for repository.', {
-      type: 'info',
-      context: {
-        repoDir,
-      },
+    log.info('Attempting to snapshot pinned dependencies for repository.', {
+      repoDir,
     });
 
     try {
       await snapshotPinnedDependencies(buildId, repoDir);
     } catch (err) {
-      updateBuildStatus(buildId, 'Failed to snapshot pinned dependencies for repository.', {
-        type: 'error',
-        context: {
-          error: err,
-          repoDir,
-        },
+      log.error('Failed to snapshot pinned dependencies for repository.', {
+        error: err,
+        repoDir,
       });
+      updateBuildStatus(
+        buildId,
+        Build_State_Enum.SnapshotFailed,
+        'Failed to snapshot pinned dependencies for repository.'
+      );
 
       return {
         error: true,
@@ -113,24 +103,26 @@ async function performSnapshotOnRepository(
       };
     }
 
-    updateBuildStatus(buildId, 'Successfully created snapshot for pinned dependencies for repository.', {
-      type: 'info',
-      context: {
-        repoDir,
-      },
+    log.info('Successfully created snapshot for pinned dependencies for repository.', {
+      repoDir,
     });
+    updateBuildStatus(buildId, Build_State_Enum.SnapshotCompleted);
+
+    updateBuildStatus(buildId, Build_State_Enum.SnapshotScanQueued);
 
     return {
       error: false,
     };
   } catch (e) {
-    updateBuildStatus(buildId, 'Failed to snapshot repository.', {
-      type: 'error',
-      context: {
-        tmpDir: repoDir,
-        error: e,
-      },
+    log.error('Experienced internal error while creating snapshot for repository.', {
+      tmpDir: repoDir,
+      error: e,
     });
+    updateBuildStatus(
+      buildId,
+      Build_State_Enum.SnapshotFailed,
+      'Experienced internal error while creating snapshot for repository.'
+    );
 
     return {
       error: true,
@@ -151,9 +143,12 @@ async function performSnapshotOnRepository(
     }
   }
 
-  updateBuildStatus(buildId, 'Experienced internal error while creating snapshot for repository.', {
-    type: 'error',
-  });
+  log.error('Experienced internal error while creating snapshot for repository.');
+  updateBuildStatus(
+    buildId,
+    Build_State_Enum.SnapshotFailed,
+    'Experienced internal error while creating snapshot for repository.'
+  );
 
   return {
     error: true,
