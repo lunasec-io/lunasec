@@ -15,7 +15,6 @@ import path from 'path';
 
 import { ITask } from 'pg-promise';
 import { buildDepTreeFromFiles } from 'snyk-nodejs-lockfile-parser-lunatrace-fork';
-import { v4 as uuid } from 'uuid';
 
 import { db, pgp } from '../database/db';
 import {
@@ -259,11 +258,13 @@ async function findCurrentlyKnownDependencies(query: string, manifestIds: string
       continue;
     }
 
-    log.info(`Checking ${slice.length} currently known dependencies (${i + slice.length}/${manifestIds.length})`);
+    log.info(`Checking currently known dependencies (${i + slice.length}/${manifestIds.length})`, {
+      length: slice.length,
+    });
 
     const result = await db.manyOrNone<{ id: string }>(query, [slice]);
 
-    log.info(`Added ${result.length} known dependencies (${i + slice.length}/${manifestIds.length})`);
+    log.info(`Added known dependencies (${i + slice.length}/${manifestIds.length})`, { length: slice.length });
 
     if (result) {
       for (const { id } of result) {
@@ -272,13 +273,13 @@ async function findCurrentlyKnownDependencies(query: string, manifestIds: string
     }
   }
 
-  log.info(`Found ${currentlyKnownIds.size} known dependencies`);
+  log.info(`Found known dependencies`, { length: currentlyKnownIds.size });
 
   return currentlyKnownIds;
 }
 
 async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: CollectedPackageTree[]) {
-  log.info(`Inserting ${pkgGraphs.length} package graphs into database`);
+  log.info(`Inserting package graphs into database`, { length: pkgGraphs.length });
 
   if (pkgGraphs.length === 0) {
     return;
@@ -299,14 +300,17 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
     return;
   }
 
-  log.info(`Found ${uniqueNodeRootIds.size} unique root dependency hashes`);
+  log.info(`Found unique root dependency hashes`, { length: uniqueNodeRootIds.size });
 
   const currentlyKnownRootIds = await findCurrentlyKnownDependencies(
     `SELECT id FROM manifest_dependency_node WHERE id IN ($1:csv)`,
     Array.from(uniqueNodeRootIds).sort()
   );
 
-  log.info(`Found ${currentlyKnownRootIds.size} of ${uniqueNodeRootIds.size} known root dependency hashes`);
+  log.info(`Found known root dependency hashes`, {
+    currentlyKnownRootIds: currentlyKnownRootIds.size,
+    total: uniqueNodeRootIds.size,
+  });
 
   // Allows us to hold only one copy of each node for querying later
   const dependencyNodeMap = new Map<string, DependencyGraphNode>();
@@ -331,7 +335,7 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
     return;
   }
 
-  log.info(`Total ${dependencyNodeMap.size} transitive dependency hashes to search`);
+  log.info(`Total transitive dependency hashes to search`, { length: dependencyNodeMap.size });
 
   // TODO: This could be optimized by doing a breadth first search starting from the root nodes going down by subtree
   const currentlyKnownTransitiveDependencyIds = await findCurrentlyKnownDependencies(
@@ -339,9 +343,10 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
     Array.from(dependencyNodeMap.keys()).sort()
   );
 
-  log.info(
-    `Found ${currentlyKnownTransitiveDependencyIds.size} of ${dependencyNodeMap.size} known transitive dependency hashes`
-  );
+  log.info(`Found known transitive dependency hashes`, {
+    currentlyKnownTransitiveDependencyIds: currentlyKnownTransitiveDependencyIds.size,
+    total: dependencyNodeMap.size,
+  });
 
   const originalDependencySize = dependencyNodeMap.size;
 
@@ -358,9 +363,10 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
     return;
   }
 
-  log.info(
-    `Found ${dependencyNodeMap.size} of ${originalDependencySize} are new transitive dependency hashes to insert`
-  );
+  log.info(`Found new transitive dependency hashes to insert`, {
+    newLength: dependencyNodeMap.size,
+    total: originalDependencySize,
+  });
 
   // Insert any new dependencies into the database
   await db.tx(
@@ -380,7 +386,9 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
         await insertNodesToDatabase(t, dependencySlice);
 
-        log.info(`Inserted ${dependencySlice.length} nodes (${i + dependencySlice.length}/${dependencyNodeMap.size})`);
+        log.info(`Inserted nodes (${i + dependencySlice.length}/${dependencyNodeMap.size})`, {
+          length: dependencySlice.length,
+        });
       }
 
       // TODO: If the performance of this sucks, we can move to using a generator instead.
@@ -395,7 +403,9 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
         // We sort these to help the database avoid deadlocking
         .sort(sortEdges);
 
-      log.info(`Inserting ${dependencyEdges.length} edges`);
+      log.info(`Inserting edges`, {
+        length: dependencyEdges.length,
+      });
 
       // Insert the edges in batches to avoid exceeding the maximum query values limit
       for (let j = 0; j < dependencyEdges.length; j += 999) {
@@ -403,12 +413,12 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
         await insertEdgesToDatabase(t, edgeSlice);
 
-        log.info(`Inserted ${edgeSlice.length} edges (${j + edgeSlice.length}/${dependencyEdges.length})`);
+        log.info(`Inserted edges (${j + edgeSlice.length}/${dependencyEdges.length})`, { length: edgeSlice.length });
       }
     }
   );
 
-  log.info(`Inserted nodes for ${pkgGraphs.length} package graphs into database`);
+  log.info(`Inserted nodes for package graphs into database`, { length: pkgGraphs.length });
 }
 
 export async function insertPackageManifestsIntoDatabase(
@@ -416,11 +426,11 @@ export async function insertPackageManifestsIntoDatabase(
   pkgGraphs: CollectedPackageTree[]
 ): Promise<void> {
   if (pkgGraphs.length === 0) {
-    log.info(`No package manifests found to insert for build ${buildId}`);
+    log.info(`No package manifests found to insert for build`, { buildId });
     return;
   }
 
-  log.info(`Inserting ${pkgGraphs.length} package manifests into database`);
+  log.info(`Inserting package manifests into database`, { length: pkgGraphs.length });
 
   await db.tx(async (t) => {
     await Promise.all(
@@ -433,10 +443,13 @@ export async function insertPackageManifestsIntoDatabase(
           [buildId, pkgGraph.lockFilePath]
         );
 
-        log.info(`Inserted manifest ${manifestId.id} for ${buildId}`);
+        log.info(`Inserted manifest for build`, {
+          manifestId: manifestId.id,
+          buildId,
+        });
 
         if (pkgGraph.dependencies.length === 0) {
-          log.info(`No dependencies found for manifest: ${pkgGraph.lockFilePath}`);
+          log.info(`No dependencies found for manifest`, { lockFilePath: pkgGraph.lockFilePath });
           return;
         }
 
