@@ -56,9 +56,4 @@ export interface AffectedByVulnerability {
   triviallyUpdatable?: boolean; // We add this by determining something can be updated to a non-vulnerable version without violating semver
 }
 
-// Recursive type to model the recursive tree we are building.  Simply adds the field "dependents" which points down to more nodes.
-export type TreeNode<D> = D & {
-  dependents: Array<TreeNode<D>>;
-};
-
-export type DependencyChain<D> = Array<TreeNode<D>>;
+export type DependencyChain<D extends BuildDependencyPartial> = Array<D>;
