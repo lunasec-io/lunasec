@@ -104,8 +104,8 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     const vulns = this.vulnIdToVulns.get(vulnId);
     if (!vulns || vulns.size === 0) {
       console.warn(
-        `failed to find a vuln with id ${vulnId} in the tree. 
-        It may be that the tree determined this vulnerability did not apply and it was removed.`
+        `failed to find a vuln with id in the tree. Tree maybe determined this vulnerability did not apply.`,
+        { vulnId }
       );
       return 'not-found';
     }
@@ -128,9 +128,10 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     const edgeSet = this.packageSlugToEdgeIds.get(`${packageName}@${version}`);
 
     if (!edgeSet) {
-      console.error(
-        `failed to find a dependency with name ${packageName} and version ${version} in the tree for update check`
-      );
+      console.error(`failed to find a dependency with name and version in the tree for update check`, {
+        packageName,
+        version,
+      });
       return 'no';
     }
 
@@ -138,9 +139,11 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
       .map((edgeId) => this.edgeById.get(edgeId))
       .filter((edge) => {
         if (!edge) {
-          console.error(
-            `failed to find a dependency with id ${edge} for ${packageName}@${version} in the tree for update check`
-          );
+          console.error(`failed to find a dependency with id for in the tree for update check`, {
+            id: edge,
+            packageName,
+            version,
+          });
           return false;
         }
         return true;
@@ -183,7 +186,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     const rootEdgeIds = this.packageSlugToEdgeIds.get(`${packageName}@${packageVersion}`);
 
     if (!rootEdgeIds) {
-      console.error(`failed to find package ${packageName}@${packageVersion} in the tree`);
+      console.error(`failed to find package in the tree`, { packageName, packageVersion });
       return [];
     }
 
