@@ -416,6 +416,7 @@ export type Build_Log = {
   created_at: Scalars['timestamptz'];
   id: Scalars['uuid'];
   message?: Maybe<Scalars['String']>;
+  state: Build_State_Enum;
 };
 
 /** order by aggregate values of table "build_log" */
@@ -442,6 +443,7 @@ export type Build_Log_Bool_Exp = {
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   message?: InputMaybe<String_Comparison_Exp>;
+  state?: InputMaybe<Build_State_Enum_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "build_log" */
@@ -457,6 +459,7 @@ export type Build_Log_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
   message?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Build_State_Enum>;
 };
 
 /** order by max() on columns of table "build_log" */
@@ -498,6 +501,7 @@ export type Build_Log_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   message?: InputMaybe<Order_By>;
+  state?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "build_log" */
@@ -509,7 +513,9 @@ export enum Build_Log_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  Message = 'message'
+  Message = 'message',
+  /** column name */
+  State = 'state'
 }
 
 /** placeholder for update columns of table "build_log" (current role has no relevant permissions) */
@@ -517,6 +523,26 @@ export enum Build_Log_Update_Column {
   /** placeholder (do not use) */
   Placeholder = '_PLACEHOLDER'
 }
+
+export enum Build_State_Enum {
+  SnapshotCompleted = 'snapshot_completed',
+  SnapshotFailed = 'snapshot_failed',
+  SnapshotQueued = 'snapshot_queued',
+  SnapshotScanCompleted = 'snapshot_scan_completed',
+  SnapshotScanFailed = 'snapshot_scan_failed',
+  SnapshotScanQueued = 'snapshot_scan_queued',
+  SnapshotScanStarted = 'snapshot_scan_started',
+  SnapshotStarted = 'snapshot_started'
+}
+
+/** Boolean expression to compare columns of type "build_state_enum". All fields are combined with logical 'AND'. */
+export type Build_State_Enum_Comparison_Exp = {
+  _eq?: InputMaybe<Build_State_Enum>;
+  _in?: InputMaybe<Array<Build_State_Enum>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _neq?: InputMaybe<Build_State_Enum>;
+  _nin?: InputMaybe<Array<Build_State_Enum>>;
+};
 
 /** columns and relationships of "builds" */
 export type Builds = {
@@ -10840,7 +10866,7 @@ export type InsertBuildLogMutationVariables = Exact<{
 }>;
 
 
-export type InsertBuildLogMutation = { __typename?: 'mutation_root', insert_build_log_one?: { __typename?: 'build_log', id: any } | null };
+export type InsertBuildLogMutation = { __typename?: 'mutation_root', insert_build_log_one?: { __typename?: 'build_log', id: any, state: Build_State_Enum } | null };
 
 export type InsertBuildMutationVariables = Exact<{
   build: Builds_Insert_Input;
@@ -11170,6 +11196,7 @@ export const InsertBuildLogDocument = gql`
     mutation InsertBuildLog($build_log: build_log_insert_input!) {
   insert_build_log_one(object: $build_log) {
     id
+    state
   }
 }
     `;

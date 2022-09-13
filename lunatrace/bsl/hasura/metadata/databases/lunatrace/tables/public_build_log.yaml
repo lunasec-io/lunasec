@@ -10,26 +10,29 @@ insert_permissions:
     permission:
       check: {}
       columns:
-        - message
-        - created_at
         - build_id
+        - created_at
         - id
+        - message
+        - state
 select_permissions:
   - role: service
     permission:
       columns:
-        - message
-        - created_at
         - build_id
+        - created_at
         - id
+        - message
+        - state
       filter: {}
   - role: user
     permission:
       columns:
-        - id
-        - created_at
         - build_id
+        - created_at
+        - id
         - message
+        - state
       filter:
         build:
           project:
