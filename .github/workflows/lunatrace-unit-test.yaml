@@ -42,7 +42,3 @@ jobs:
       - name: backend-tests
         working-directory: 'lunatrace/bsl/backend'
         run: yarn run test:jest --verbose
-
-      - name: logger-tests
-        working-directory: 'lunatrace/bsl/logger'
-        run: yarn run test --verbose

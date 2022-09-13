@@ -11,10 +11,10 @@
  * limitations under the License.
  *
  */
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import useAppSelector from '../hooks/useAppSelector';
-import { selectIsAuthenticated } from '../store/slices/authentication';
+import { selectIsAuthenticated, selectKratosId } from '../store/slices/authentication';
 import { userHasAnyOrganizations } from '../utils/organizations';
 
 import { SidebarContext } from './SidebarContext';
