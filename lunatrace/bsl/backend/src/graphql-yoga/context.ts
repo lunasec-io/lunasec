@@ -29,9 +29,3 @@ export interface Context extends YogaInitialContext {
     user: JWTClaims | undefined;
   };
 }
-
-export type ContextLoggedIn = Context & {
-  req: {
-    user: NonNullable<Context['req']['user'] & { 'https://hasura.io/jwt/claims': { 'x-hasura-user-id': string } }>;
-  };
-};

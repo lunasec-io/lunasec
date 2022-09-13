@@ -44,14 +44,8 @@ describe('LunaLogger', () => {
     log.info(['test'], 'test message');
     const output = consoleMock.mock.calls[0][0];
     console.error(output);
-    parseAndCheck(output, 'message', "[ 'test' ] test message");
+    parseAndCheck(output, 'message', "[ 'test' ]test message");
   });
-
-  // it.only('logs to logio without throwing', () => {
-  //   const loggerWithLogIo = new LunaLogger();
-  //   loggerWithLogIo.addTransport(new LogIOTransport({ minLevel: 'info' }));
-  //   loggerWithLogIo.info('Log IO test');
-  // });
 
   describe('helper method', () => {
     logLevels.forEach((level) => {
