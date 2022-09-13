@@ -1,5 +1,0 @@
-mutation InstallSelectedRepos($orgs: [OrgsWithReposInput!]!) {
-    installSelectedRepos(orgs: $orgs) {
-        success
-    }
-}

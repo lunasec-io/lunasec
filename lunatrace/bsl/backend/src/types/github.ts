@@ -14,18 +14,9 @@
 
 // eslint-disable-next-line import/no-unresolved
 import { components } from '@octokit/openapi-types';
-import { EmitterWebhookEvent } from '@octokit/webhooks';
 
-export type RawRepository = components['schemas']['repository'];
-export type RawRepositories = RawRepository[];
-
-// repository typing for update events seems slightly different so we just pull it out of the event itself
-type UpdateEvent = EmitterWebhookEvent<
-  'repository.edited' | 'repository.privatized' | 'repository.publicized' | 'repository.renamed'
->;
-export type UpdatedRawRepository = UpdateEvent['payload']['repository'];
-
-export type RawInstallation = components['schemas']['installation'];
+export type RepositoryResponse = components['schemas']['repository'];
+export type RepositoriesForInstallationResponse = RepositoryResponse[];
 
 export interface GithubRepositoryInfo {
   orgName: string;
@@ -38,7 +29,7 @@ export interface GithubRepositoryInfo {
   ownerType: string;
   cloneUrl: string;
   defaultBranch: string;
-  fullTraits: RawRepository;
+  fullTraits: RepositoriesForInstallationResponse[number];
 }
 
 export interface GithubPullRequest {
@@ -53,5 +44,5 @@ export interface GitHubUserData {
   // Can be either a base64 encoded value or a value like `U_adsjf1324512`
   nodeId: string;
   // This is a numerical value, ie 123456
-  githubUserId: number;
+  databaseId: number;
 }
