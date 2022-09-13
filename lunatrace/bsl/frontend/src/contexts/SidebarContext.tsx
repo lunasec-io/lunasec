@@ -56,7 +56,7 @@ function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [behavior, setBehavior] = useSettingsState('sidebarBehavior', SIDEBAR_BEHAVIOR.STICKY);
 
   const kratosId = useAppSelector(selectKratosId);
-  const [trigger, result] = api.useLazyGetSidebarInfoQuery();
+  const [trigger, result, lastPromiseInfo] = api.useLazyGetSidebarInfoQuery();
   const { data, isLoading } = result;
 
   useEffect(() => {

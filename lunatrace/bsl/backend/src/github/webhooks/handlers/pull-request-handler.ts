@@ -13,76 +13,64 @@
  */
 import { EmitterWebhookEvent } from '@octokit/webhooks';
 
-import { hasura } from '../../../hasura-api';
 import { log } from '../../../utils/log';
 import { queueRepositoryForSnapshot } from '../../actions/queue-repository-for-snapshot';
 
 export async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
   const actionName = event.payload.action;
 
-  if (actionName !== 'synchronize' && actionName !== 'opened' && actionName !== 'reopened') {
-    log.info('Received pull request webhook for action we dont care about, no-op', { actionName });
-    return;
+  if (actionName === 'synchronize' || actionName === 'opened' || actionName === 'reopened') {
+    if (!event.payload.installation) {
+      log.error(`no installation found in pull request webhook`);
+      return;
+    }
+
+    log.info('snapshotting repository for pull request');
+
+    // TODO (cthompson) we need to start the github PR check here, and then in pr-comment-generator.ts, that is where
+    // we update the check to say that it is finished.
+
+    // logger.info('updating check status', {
+    //   owner,
+    //   repo,
+    //   insertedCheckId,
+    // });
+    //
+    // // Otherwise just update the existing review on the PR.  Very similar to above but we update instead
+    // const githubReviewResponse = await octokit.rest.checks.update({
+    //   owner,
+    //   repo,
+    //   check_run_id: insertedCheckId || previousReviewId,
+    //   conclusion: scanReport.findings.length ? 'neutral' : 'success',
+    //   completed_at: new Date().toISOString(),
+    //   ...checkData,
+    // });
+
+    // const existing_github_check_id = githubReviewResponse.data.id;
+    //
+    // if (!existing_github_check_id) {
+    //   return logger.error('Failed to generate a check, github responded ', {
+    //     githubReviewResponse,
+    //   });
+    // }
+    // logger.info('successfully updated the check');
+    // // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
+    // await hasura.UpdateBuildExistingCheckId({ id: buildId, existing_github_check_id });
+
+    const res = await queueRepositoryForSnapshot({
+      cloneUrl: event.payload.repository.clone_url,
+      gitBranch: event.payload.pull_request.head.ref, // TODO make this the human readable branch name, not the ref
+      repoGithubId: event.payload.repository.id,
+      installationId: event.payload.installation.id,
+      sourceType: 'pr',
+      pullRequestId: event.payload.pull_request.node_id,
+      gitCommit: event.payload.pull_request.head.sha,
+    });
+
+    if (res.error) {
+      log.error('failed to queue repository for snapshot');
+      return;
+    }
+    log.info('processed pull request');
   }
-
-  if (!event.payload.installation) {
-    log.error(`no installation found in pull request webhook`);
-    return;
-  }
-
-  const repositoryId = event.payload.repository.id;
-
-  const getRepositoryResponse = await hasura.GetGithubRepositoriesByIds({ ids: [repositoryId] });
-  if (getRepositoryResponse.github_repositories.length !== 1) {
-    log.info('Received a webhook for a repository which is not imported, no-op.');
-    return;
-  }
-
-  log.info('snapshotting repository for pull request');
-
-  // TODO (cthompson) we need to start the github PR check here, and then in pr-comment-generator.ts, that is where
-  // we update the check to say that it is finished.
-
-  // logger.info('updating check status', {
-  //   owner,
-  //   repo,
-  //   insertedCheckId,
-  // });
-  //
-  // // Otherwise just update the existing review on the PR.  Very similar to above but we update instead
-  // const githubReviewResponse = await octokit.rest.checks.update({
-  //   owner,
-  //   repo,
-  //   check_run_id: insertedCheckId || previousReviewId,
-  //   conclusion: scanReport.findings.length ? 'neutral' : 'success',
-  //   completed_at: new Date().toISOString(),
-  //   ...checkData,
-  // });
-
-  // const existing_github_check_id = githubReviewResponse.data.id;
-  //
-  // if (!existing_github_check_id) {
-  //   return logger.error('Failed to generate a check, github responded ', {
-  //     githubReviewResponse,
-  //   });
-  // }
-  // logger.info('successfully updated the check');
-  // // Put the ID onto the latest build also, in case we want to make sure later that it submitted successfully.
-  // await hasura.UpdateBuildExistingCheckId({ id: buildId, existing_github_check_id });
-
-  const res = await queueRepositoryForSnapshot({
-    cloneUrl: event.payload.repository.clone_url,
-    gitBranch: event.payload.pull_request.head.ref, // TODO make this the human readable branch name, not the ref
-    repoGithubId: event.payload.repository.id,
-    installationId: event.payload.installation.id,
-    sourceType: 'pr',
-    pullRequestId: event.payload.pull_request.node_id,
-    gitCommit: event.payload.pull_request.head.sha,
-  });
-
-  if (res.error) {
-    log.error('failed to queue repository for snapshot');
-    return;
-  }
-  log.info('processed pull request');
 }
