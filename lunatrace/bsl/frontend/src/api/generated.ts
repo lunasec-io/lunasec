@@ -304,6 +304,7 @@ export type Build_Log = {
   created_at: Scalars['timestamptz'];
   id: Scalars['uuid'];
   message?: Maybe<Scalars['String']>;
+  state: Build_State_Enum;
 };
 
 /** order by aggregate values of table "build_log" */
@@ -323,6 +324,7 @@ export type Build_Log_Bool_Exp = {
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   message?: InputMaybe<String_Comparison_Exp>;
+  state?: InputMaybe<Build_State_Enum_Comparison_Exp>;
 };
 
 /** order by max() on columns of table "build_log" */
@@ -348,6 +350,7 @@ export type Build_Log_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   message?: InputMaybe<Order_By>;
+  state?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "build_log" */
@@ -359,8 +362,30 @@ export enum Build_Log_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
-  Message = 'message'
+  Message = 'message',
+  /** column name */
+  State = 'state'
 }
+
+export enum Build_State_Enum {
+  SnapshotCompleted = 'snapshot_completed',
+  SnapshotFailed = 'snapshot_failed',
+  SnapshotQueued = 'snapshot_queued',
+  SnapshotScanCompleted = 'snapshot_scan_completed',
+  SnapshotScanFailed = 'snapshot_scan_failed',
+  SnapshotScanQueued = 'snapshot_scan_queued',
+  SnapshotScanStarted = 'snapshot_scan_started',
+  SnapshotStarted = 'snapshot_started'
+}
+
+/** Boolean expression to compare columns of type "build_state_enum". All fields are combined with logical 'AND'. */
+export type Build_State_Enum_Comparison_Exp = {
+  _eq?: InputMaybe<Build_State_Enum>;
+  _in?: InputMaybe<Array<Build_State_Enum>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _neq?: InputMaybe<Build_State_Enum>;
+  _nin?: InputMaybe<Array<Build_State_Enum>>;
+};
 
 /** columns and relationships of "builds" */
 export type Builds = {
@@ -6717,6 +6742,13 @@ export type GetBuildDetailsQueryVariables = Exact<{
 
 export type GetBuildDetailsQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', build_number?: number | null, created_at: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id: any, source_type: any, project_id?: any | null, build_logs: Array<{ __typename?: 'build_log', id: any, message?: string | null }>, resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', parent_id: any, child_id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, scans: Array<{ __typename?: 'scans', created_at: any, db_date: any, distro_name: string, distro_version: string, grype_version: string, id: any, scan_number?: number | null, source_type: string, target: string }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability: { __typename?: 'vulnerability', id: any, summary?: string | null, source: string, source_id: string, cvss_score?: number | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, source: string, type: string, score: string }>, affected: Array<{ __typename?: 'vulnerability_affected', package: { __typename?: 'package', name: string, package_manager: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', type: any, event: string, version: string }> }>, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, severity: any, summary: string, created_at: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> } | null };
 
+export type GetBuildLogsQueryVariables = Exact<{
+  build_id: Scalars['uuid'];
+}>;
+
+
+export type GetBuildLogsQuery = { __typename?: 'query_root', build_log: Array<{ __typename?: 'build_log', id: any, state: Build_State_Enum, message?: string | null }> };
+
 export type GetBuildNumberQueryVariables = Exact<{
   build_id: Scalars['uuid'];
 }>;
@@ -7065,6 +7097,15 @@ export const GetBuildDetailsDocument = `
         }
       }
     }
+  }
+}
+    `;
+export const GetBuildLogsDocument = `
+    query GetBuildLogs($build_id: uuid!) {
+  build_log(where: {build_id: {_eq: $build_id}}, order_by: {created_at: asc}) {
+    id
+    state
+    message
   }
 }
     `;
@@ -7611,6 +7652,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetBuildDetails: build.query<GetBuildDetailsQuery, GetBuildDetailsQueryVariables>({
       query: (variables) => ({ document: GetBuildDetailsDocument, variables })
+    }),
+    GetBuildLogs: build.query<GetBuildLogsQuery, GetBuildLogsQueryVariables>({
+      query: (variables) => ({ document: GetBuildLogsDocument, variables })
     }),
     GetBuildNumber: build.query<GetBuildNumberQuery, GetBuildNumberQueryVariables>({
       query: (variables) => ({ document: GetBuildNumberDocument, variables })

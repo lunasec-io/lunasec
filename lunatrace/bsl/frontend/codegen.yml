@@ -26,6 +26,7 @@ generates:
             UUID: string
             affected_range_type: "'git'|'semver'|'ecosystem'"
             reference_type: "'advisory'|'article'|'fix'|'git'|'package'|'report'|'web'"
+            build_state_enum: "'snapshot_queued'|'snapshot_started'|'snapshot_completed'|'snapshot_failed'|'snapshot_scan_queued'|'snapshot_scan_started'|'snapshot_scan_completed'|'snapshot_scan_failed'"
             package_manager: string
             bigint: number
 

@@ -478,6 +478,7 @@ type build_log {
   created_at: timestamptz!
   id: uuid!
   message: String
+  state: build_state_enum!
 }
 
 """
@@ -511,6 +512,7 @@ input build_log_bool_exp {
   created_at: timestamptz_comparison_exp
   id: uuid_comparison_exp
   message: String_comparison_exp
+  state: build_state_enum_comparison_exp
 }
 
 """
@@ -532,6 +534,7 @@ input build_log_insert_input {
   created_at: timestamptz
   id: uuid
   message: String
+  state: build_state_enum
 }
 
 """
@@ -581,6 +584,7 @@ input build_log_order_by {
   created_at: order_by
   id: order_by
   message: order_by
+  state: order_by
 }
 
 """
@@ -598,6 +602,9 @@ enum build_log_select_column {
 
   """column name"""
   message
+
+  """column name"""
+  state
 }
 
 """
@@ -606,6 +613,28 @@ placeholder for update columns of table "build_log" (current role has no relevan
 enum build_log_update_column {
   """placeholder (do not use)"""
   _PLACEHOLDER
+}
+
+enum build_state_enum {
+  snapshot_completed
+  snapshot_failed
+  snapshot_queued
+  snapshot_scan_completed
+  snapshot_scan_failed
+  snapshot_scan_queued
+  snapshot_scan_started
+  snapshot_started
+}
+
+"""
+Boolean expression to compare columns of type "build_state_enum". All fields are combined with logical 'AND'.
+"""
+input build_state_enum_comparison_exp {
+  _eq: build_state_enum
+  _in: [build_state_enum!]
+  _is_null: Boolean
+  _neq: build_state_enum
+  _nin: [build_state_enum!]
 }
 
 """

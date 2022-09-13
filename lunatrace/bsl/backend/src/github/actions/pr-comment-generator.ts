@@ -233,32 +233,24 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
     return;
   }
 
-  updateBuildStatus(buildId, 'Reporting findings on PR.', {
-    type: 'info',
-  });
+  log.info('Reporting findings on PR.');
 
   const projectId = buildLookup.builds_by_pk.project.id;
 
   const body = generatePullRequestCommentFromReport(projectId, scanReport);
 
   if (body === null) {
-    updateBuildStatus(buildId, 'Findings report is empty, nothing to report.', {
-      type: 'warn',
-      context: {
-        projectId,
-        pullRequestId,
-      },
+    log.warn('Findings report is empty, nothing to report.', {
+      projectId,
+      pullRequestId,
     });
     return;
   }
   // Check if a previous build already commented on the PR. Could probably query github for this but its hard and rate limits exist so we just check our own db
   const previousReviewId = await findPreviousReviewId(pullRequestId);
 
-  updateBuildStatus(buildId, 'Commenting on PR.', {
-    type: 'info',
-    context: {
-      previousReviewId,
-    },
+  log.info('Commenting on PR.', {
+    previousReviewId,
   });
 
   if (buildLookup.builds_by_pk.project.settings.pr_check_enabled) {
@@ -286,11 +278,8 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
     );
   }
 
-  updateBuildStatus(buildId, 'Done commenting on PR.', {
-    type: 'info',
-    context: {
-      previousReviewId,
-    },
+  log.info('Done commenting on PR.', {
+    previousReviewId,
   });
   return;
 }

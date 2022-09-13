@@ -48,7 +48,11 @@ export const Builds: React.FunctionComponent<BuildsProps> = ({
       project_id: projectId,
       build_limit: buildLimit,
     });
-    //runningQuery.abort();
+
+    // After 5 minutes, stop polling for information.
+    setTimeout(() => {
+      runningQuery.abort();
+    }, 5 * 60 * 1000);
   }, []);
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -60,6 +64,7 @@ export const Builds: React.FunctionComponent<BuildsProps> = ({
 
   const builds: BuildInfo[] = projectBuildsQuery?.currentData?.builds || [];
 
+  // TODO (cthompson) show an indication to the user that automatic polling has stopped and that they will need to refresh the page.
   return (
     <>
       <BuildList builds={builds} />
