@@ -129,12 +129,6 @@ const mapGrypeMatchToGraphqlFinding =
     const { vulnerability, artifact } = match;
     const details = match.matchDetails[0];
 
-    // log.debug('match details', {
-    //   vuln_id: vulnerability.id,
-    //   vuln_namespace: vulnerability.namespace,
-    //   artifact_name: match.artifact.name,
-    // });
-
     // TODO (cthompson) we no longer need to use a slug here to dedup findings, we can create a unique
     // constraint on (vulnerability_id, package_id, locations)
     // To achieve this, we need to insert the package_id instead of just the package_name. Also,
