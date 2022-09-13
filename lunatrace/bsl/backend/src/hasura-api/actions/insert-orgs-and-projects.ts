@@ -33,7 +33,7 @@ import {
 } from '../generated';
 import { hasura } from '../index';
 
-function getExistingProjectsInOrg(orgLookup: OrganizationInputLookup, orgName: string) {
+function getExistingProjects(orgLookup: OrganizationInputLookup, orgName: string) {
   const existingOrg = orgLookup[orgName];
   if (!existingOrg || !existingOrg.projects) {
     return [];
@@ -85,7 +85,7 @@ export function generateOrgsAndProjectsMutation(
       github_node_id: repo.orgNodeId,
       github_owner_type: repo.ownerType,
       projects: {
-        data: [...getExistingProjectsInOrg(orgLookup, repo.orgName), project],
+        data: [...getExistingProjects(orgLookup, repo.orgName), project],
         on_conflict: projectOnConflict,
       },
     };
