@@ -40,7 +40,7 @@ export const Builds: React.FunctionComponent<BuildsProps> = ({
 
   // Subscribe to builds that have been completed or are in progress
   const [getProjectBuildsTrigger, lastProjectBuildsArg] = api.endpoints.GetProjectBuilds.useLazyQuerySubscription({
-    pollingInterval: 3000,
+    pollingInterval: 10000,
   });
 
   useEffect(() => {
