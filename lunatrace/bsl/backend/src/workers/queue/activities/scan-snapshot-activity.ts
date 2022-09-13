@@ -74,10 +74,6 @@ async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Pr
     updateBuildStatus(buildId, Build_State_Enum.SnapshotScanFailed, 'Internal error while scanning snapshot.');
     return null;
   }
-
-  log.info('Successfully scanned snapshot.');
-  updateBuildStatus(buildId, Build_State_Enum.SnapshotScanCompleted);
-  updateManifestStatus(buildId, 'scanned');
   return scanReport;
 }
 
@@ -109,7 +105,9 @@ export async function scanSnapshotActivity(buildId: string, msg: S3ObjectMetadat
       return newResult(undefined);
     }
 
+    log.info('Successfully scanned snapshot.');
     updateBuildStatus(buildId, Build_State_Enum.SnapshotScanCompleted);
+    updateManifestStatus(buildId, 'scanned');
 
     try {
       await interactWithPR(buildId, scanResp);

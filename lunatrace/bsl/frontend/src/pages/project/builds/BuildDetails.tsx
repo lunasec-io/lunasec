@@ -11,33 +11,31 @@
  * limitations under the License.
  *
  */
-import { filterFindingsNotIgnored } from '@lunatrace/lunatrace-common';
+import { filterFindingsNotIgnored } from '@lunatrace/lunatrace-common/build/main';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Card, Col, Container, Modal, ProgressBar, Row, Spinner } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
-import { AiFillFolderOpen } from 'react-icons/ai';
 import { useParams } from 'react-router-dom';
 
 import api from '../../../api';
-import { Build_State_Enum, GetBuildLogsQuery, GetProjectBuildsQuery } from '../../../api/generated';
+import { Build_State_Enum, GetBuildLogsQuery } from '../../../api/generated';
 import { SpinIfLoading } from '../../../components/SpinIfLoading';
-import { DependencyTree } from '../../../dependency-tree/builds-dependency-tree';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import useBreakpoint from '../../../hooks/useBreakpoint';
 import { add } from '../../../store/slices/alerts';
 import { toTitleCase } from '../../../utils/string-utils';
-import { BuildInfo, BuildLogs } from '../types';
+import { BuildLogs } from '../types';
 
 import { BuildDetailsHeader } from './BuildDetailsHeader';
 import { DependencyTreeViewer } from './DependencyTreeViewer';
 import { VulnQuickView } from './VulnQuickView';
-import { VulnerablePackageList } from './vulnerable-packages/VulnerablePackageList';
 
 export const BuildDetails: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const listStartRef = useRef<HTMLDivElement>(null);
+  const logsRunningQuery = useRef<any>(null);
 
   const { build_id, project_id } = useParams();
   if (!build_id || !project_id) {
@@ -61,10 +59,14 @@ export const BuildDetails: React.FunctionComponent = () => {
   const buildLogs: BuildLogs = buildLogsQuery?.currentData?.build_log || [];
 
   useEffect(() => {
-    if (buildLogs.length === 0 || buildLogs.filter((log) => log.state === 'snapshot_scan_completed').length > 0) {
+    if (!data && !isLoading) {
       void trigger({ build_id, project_id });
     }
-  }, [lastBuildLogsArg]);
+    if (buildLogs.filter((log) => log.state === Build_State_Enum.SnapshotScanCompleted).length > 0) {
+      logsRunningQuery.current.abort();
+      void trigger({ build_id, project_id });
+    }
+  }, [data, buildLogs]);
 
   useEffect(() => {
     if (!data || !data.builds_by_pk || isLoading) {
@@ -72,13 +74,13 @@ export const BuildDetails: React.FunctionComponent = () => {
     }
 
     if (data.builds_by_pk.scans.length === 0) {
-      const runningQuery = getBuildLogsTrigger({
+      logsRunningQuery.current = getBuildLogsTrigger({
         build_id,
       });
 
       // After 5 minutes, stop polling for information.
       setTimeout(() => {
-        runningQuery.abort();
+        logsRunningQuery.current.abort();
       }, 5 * 60 * 1000);
     }
   }, [data]);
@@ -172,7 +174,7 @@ export const BuildDetails: React.FunctionComponent = () => {
                   </p>
                 );
               })}
-              {!reachedBuildStates['snapshot_scan_completed'] && isLoading && (
+              {reachedBuildStates['snapshot_scan_completed'] && isLoading && (
                 <div>
                   <p>
                     Loading results of snapshot scan... <Spinner animation="border" />
