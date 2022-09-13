@@ -13,6 +13,8 @@
  */
 import semver from 'semver';
 
+import { Vulnerability_Affected } from '../api/generated';
+
 export function formatAdvisoryUrlForSource(source: string, sourceId: string) {
   if (source === 'ghsa') {
     return `https://github.com/advisories/${sourceId}`;

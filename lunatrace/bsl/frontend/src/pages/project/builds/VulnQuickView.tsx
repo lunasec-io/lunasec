@@ -14,6 +14,7 @@
 import React, { useEffect } from 'react';
 import { Button, Row, Spinner } from 'react-bootstrap';
 import { ArrowLeft } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
 
 import api from '../../../api';
 import { StickyScrollableElement } from '../../../components/utils/StickyScrollableElement';
