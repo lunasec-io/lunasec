@@ -158,6 +158,12 @@ export class LunaLogger {
       // If the argument is an object, then add its keys to the context object
       if (this.isObject(arg)) {
         logObject.params = [...(logObject.params || []), arg];
+
+        // Also log the error directly as a string
+        if (arg instanceof Error) {
+          logObject.errors = [...(logObject.errors || []), arg.stack || arg.toString()];
+        }
+
         return;
       }
 
