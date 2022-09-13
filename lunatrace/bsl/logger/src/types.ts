@@ -29,6 +29,8 @@ export interface LogObj {
   name: string;
   message: string;
   context: object;
+  params?: unknown[];
+  errors?: string[];
 }
 
 export interface Transport {
