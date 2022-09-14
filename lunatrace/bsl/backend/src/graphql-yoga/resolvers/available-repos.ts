@@ -16,17 +16,20 @@ import { GraphQLYogaError } from '@graphql-yoga/node';
 import { getInstallationsFromUser } from '../../github/actions/get-installations-from-user';
 import { getReposFromInstallation } from '../../github/actions/get-repos-from-installation';
 import { getInstallationAccessToken } from '../../github/auth';
+import { hasura } from '../../hasura-api';
+import { GetOrganizationsFromUserQueryQuery } from '../../hasura-api/generated';
 import { GithubRepositoryInfo, RawInstallation } from '../../types/github';
 import { log } from '../../utils/log';
+import { notEmpty } from '../../utils/predicates';
 import { catchError, threwError } from '../../utils/try';
 import { QueryResolvers } from '../generated-resolver-types';
-import { getGithubUserToken, getUserId, throwIfUnauthenticated } from '../helpers/auth-helpers';
+import { getGithubUserToken, getUserId, isAuthenticated, throwIfUnauthenticated } from '../helpers/auth-helpers';
 
 type AvailableOrgsWithReposType = NonNullable<QueryResolvers['availableOrgsWithRepos']>;
 
 interface OrgWithRepos {
   organizationName: string;
-  installationId: number;
+  id: string;
   repos: GithubRepositoryInfo[];
 }
 /**
@@ -35,33 +38,49 @@ interface OrgWithRepos {
  * and then fetch the repo list for each installation in parallel, authenticated as the installation
  */
 export const availableOrgsWithRepos: AvailableOrgsWithReposType = async (parent, args, ctx, info) => {
-  throwIfUnauthenticated(ctx);
-
-  const userToken = await getGithubUserToken(ctx);
-  const installationsResult = await catchError(getInstallationsFromUser(userToken));
-  if (threwError(installationsResult)) {
-    const userId = getUserId(ctx);
-    log.error('failed to get available orgs for user', {
-      userId,
-      error: installationsResult,
-    });
-    throw new GraphQLYogaError(`failed to get available orgs for user: ${userId}`);
+  if (!isAuthenticated(ctx)) {
+    log.warn('No parsed JWT claims with a user ID on route that required authorization, throwing a graphql error');
+    throw new GraphQLYogaError('Unauthorized');
   }
 
-  return Promise.all(installationsResult.map(loadReposByInstallation));
+  const userId = ctx.req.user['https://hasura.io/jwt/claims']['x-hasura-real-user-id'];
+
+  const orgsQuery = await catchError(hasura.GetOrganizationsFromUserQuery({ user_id: userId }));
+  if (threwError(orgsQuery)) {
+    throw new GraphQLYogaError('Database Connection Error fetching orgs');
+  }
+
+  const orgs = orgsQuery.organizations;
+  console.log('LOADED ORGS', orgs);
+
+  const orgDataWithNulls = await Promise.all(orgs.map(loadReposByOrganization));
+  const orgData = orgDataWithNulls.filter((o) => o !== null) as OrgWithRepos[];
+  return orgData;
 };
 
-async function loadReposByInstallation(installation: RawInstallation): Promise<OrgWithRepos> {
-  const installationId = installation.id;
-  const installationTokenRes = await getInstallationAccessToken(installationId);
-  if (installationTokenRes.error) {
-    throw new GraphQLYogaError(`failed authenticating the installation with github: ${installationTokenRes.msg}`);
-  }
-  const repos = await getReposFromInstallation(installationTokenRes.res, installationId);
-  if (repos === null) {
-    throw new GraphQLYogaError(`failed to get repos for installation: ${installationId}`);
-  }
+async function loadReposByOrganization(
+  organization: NonNullable<GetOrganizationsFromUserQueryQuery>['organizations'][number]
+): Promise<OrgWithRepos | null> {
+  try {
+    const installationId = organization.installation_id;
+    if (!installationId) {
+      throw new GraphQLYogaError('Missing installationId for organization, that should be physically impossible');
+    }
+    const installationTokenRes = await getInstallationAccessToken(installationId);
+    if (installationTokenRes.error) {
+      throw new GraphQLYogaError(`failed authenticating the installation with github: ${installationTokenRes.msg}`);
+    }
+    const repos = await getReposFromInstallation(installationTokenRes.res, installationId);
+    if (repos === null) {
+      throw new GraphQLYogaError(`failed to get repos for installation: ${installationId}`);
+    }
 
-  const organizationName = installation.account?.login || 'Unknown Organization';
-  return { organizationName, installationId, repos };
+    return { organizationName: organization.name, id: organization.id, repos };
+  } catch (e) {
+    log.warn(
+      'Failed to fetch repos for the org, this is typically an auth error because the org has been uninstalled, returning null so that we dont show it',
+      { error: e }
+    );
+    return null;
+  }
 }
