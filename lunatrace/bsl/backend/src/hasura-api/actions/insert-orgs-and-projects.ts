@@ -122,7 +122,7 @@ export async function insertOrgsAndProjects(
   const createOrgsRes: Try<UpsertOrganizationsMutation> = await catchError(
     async () =>
       await hasura.UpsertOrganizations({
-        objects: orgObjectList,
+        object: orgObjectList,
         on_conflict: onOrgConflict,
       })
   );
