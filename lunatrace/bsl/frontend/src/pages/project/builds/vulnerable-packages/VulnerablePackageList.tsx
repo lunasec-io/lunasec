@@ -14,7 +14,9 @@
 import { getCvssVectorFromSeverities, groupByPackage, severityOrder } from '@lunatrace/lunatrace-common';
 import React, { ChangeEvent, useState } from 'react';
 import { Button, Col, Dropdown, OverlayTrigger, Row } from 'react-bootstrap';
+import { FcUpload } from 'react-icons/fc';
 
+import { toTitleCase } from '../../../../utils/string-utils';
 import { DepTree, QuickViewProps } from '../types';
 
 import { AutoUpdatePopOverHOC } from './AutoUpdatePopOverHOC';

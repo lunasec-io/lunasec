@@ -59,25 +59,6 @@ export type Float_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Float']>>;
 };
 
-export type GithubRepository = {
-  __typename?: 'GithubRepository';
-  cloneUrl: Scalars['String'];
-  defaultBranch: Scalars['String'];
-  gitUrl: Scalars['String'];
-  orgId: Scalars['Int'];
-  orgName: Scalars['String'];
-  orgNodeId: Scalars['String'];
-  ownerType: Scalars['String'];
-  repoId: Scalars['Int'];
-  repoName: Scalars['String'];
-  repoNodeId: Scalars['String'];
-};
-
-export type InstallSelectedReposResponse = {
-  __typename?: 'InstallSelectedReposResponse';
-  success?: Maybe<Scalars['Boolean']>;
-};
-
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Int']>;
@@ -89,18 +70,6 @@ export type Int_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Int']>;
   _neq?: InputMaybe<Scalars['Int']>;
   _nin?: InputMaybe<Array<Scalars['Int']>>;
-};
-
-export type OrgWithRepos = {
-  __typename?: 'OrgWithRepos';
-  installationId: Scalars['Int'];
-  organizationName: Scalars['String'];
-  repos: Array<GithubRepository>;
-};
-
-export type OrgsWithReposInput = {
-  installationId: Scalars['Int'];
-  repos: Array<Scalars['Int']>;
 };
 
 export type PresignedUrlResponse = {
@@ -2734,7 +2703,6 @@ export type Mutation_Root = {
   insert_projects?: Maybe<Projects_Mutation_Response>;
   /** insert a single row into the table: "projects" */
   insert_projects_one?: Maybe<Projects>;
-  installSelectedRepos?: Maybe<InstallSelectedReposResponse>;
   /**  get s3 presigned url for manifest upload, used only by the frontend  */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** update data of the table: "builds" */
@@ -2889,12 +2857,6 @@ export type Mutation_RootInsert_ProjectsArgs = {
 export type Mutation_RootInsert_Projects_OneArgs = {
   object: Projects_Insert_Input;
   on_conflict?: InputMaybe<Projects_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInstallSelectedReposArgs = {
-  orgs: Array<OrgsWithReposInput>;
 };
 
 
@@ -3966,7 +3928,6 @@ export enum Projects_Update_Column {
 export type Query_Root = {
   __typename?: 'query_root';
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
-  availableOrgsWithRepos?: Maybe<Array<OrgWithRepos>>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -6729,11 +6690,6 @@ export type GetAllGuidesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllGuidesQuery = { __typename?: 'query_root', guides: Array<{ __typename?: 'guides', created_at: any, id: any, metadata: any, metadata_schema_version: number, severity: any, summary: string, tags: any, title: string, guide_unique_id: string, updated_at: any }> };
 
-export type GetAvailableReposQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetAvailableReposQuery = { __typename?: 'query_root', availableOrgsWithRepos?: Array<{ __typename?: 'OrgWithRepos', organizationName: string, installationId: number, repos: Array<{ __typename?: 'GithubRepository', gitUrl: string, repoId: number, repoName: string }> }> | null };
-
 export type GetBuildDetailsQueryVariables = Exact<{
   build_id: Scalars['uuid'];
   project_id: Scalars['uuid'];
@@ -6810,11 +6766,6 @@ export type GetProjectCloneUrlQueryVariables = Exact<{
 
 export type GetProjectCloneUrlQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', github_repository?: { __typename?: 'github_repositories', authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null } | null };
 
-export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetProjectsQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', github_repository?: { __typename?: 'github_repositories', github_id?: number | null } | null }> };
-
 export type GetSbomUrlQueryVariables = Exact<{
   build_id: Scalars['uuid'];
 }>;
@@ -6827,7 +6778,7 @@ export type GetSidebarInfoQueryVariables = Exact<{
 }>;
 
 
-export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }>, github_repository?: { __typename?: 'github_repositories', id: any, github_id?: number | null } | null }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null }> }> };
+export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null }> }> };
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
@@ -6892,13 +6843,6 @@ export type InsertProjectMutationVariables = Exact<{
 
 export type InsertProjectMutation = { __typename?: 'mutation_root', insert_projects_one?: { __typename?: 'projects', id: any } | null };
 
-export type InstallSelectedReposMutationVariables = Exact<{
-  orgs: Array<OrgsWithReposInput> | OrgsWithReposInput;
-}>;
-
-
-export type InstallSelectedReposMutation = { __typename?: 'mutation_root', installSelectedRepos?: { __typename?: 'InstallSelectedReposResponse', success?: boolean | null } | null };
-
 export type PresignManifestUrlMutationVariables = Exact<{
   project_id: Scalars['uuid'];
 }>;
@@ -6935,19 +6879,6 @@ export const GetAllGuidesDocument = `
     title
     guide_unique_id
     updated_at
-  }
-}
-    `;
-export const GetAvailableReposDocument = `
-    query GetAvailableRepos {
-  availableOrgsWithRepos {
-    organizationName
-    installationId
-    repos {
-      gitUrl
-      repoId
-      repoName
-    }
   }
 }
     `;
@@ -7394,15 +7325,6 @@ export const GetProjectCloneUrlDocument = `
   }
 }
     `;
-export const GetProjectsDocument = `
-    query GetProjects {
-  projects(order_by: {name: asc}) {
-    github_repository {
-      github_id
-    }
-  }
-}
-    `;
 export const GetSbomUrlDocument = `
     query GetSbomUrl($build_id: uuid!) {
   builds_by_pk(id: $build_id) {
@@ -7416,14 +7338,6 @@ export const GetSidebarInfoDocument = `
     name
     id
     created_at
-    builds {
-      id
-      build_number
-    }
-    github_repository {
-      id
-      github_id
-    }
   }
   organizations(
     order_by: {projects_aggregate: {count: asc}}
@@ -7614,13 +7528,6 @@ export const InsertProjectDocument = `
   }
 }
     `;
-export const InstallSelectedReposDocument = `
-    mutation InstallSelectedRepos($orgs: [OrgsWithReposInput!]!) {
-  installSelectedRepos(orgs: $orgs) {
-    success
-  }
-}
-    `;
 export const PresignManifestUrlDocument = `
     mutation presignManifestUrl($project_id: uuid!) {
   presignManifestUpload(project_id: $project_id) {
@@ -7646,9 +7553,6 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetAllGuides: build.query<GetAllGuidesQuery, GetAllGuidesQueryVariables | void>({
       query: (variables) => ({ document: GetAllGuidesDocument, variables })
-    }),
-    GetAvailableRepos: build.query<GetAvailableReposQuery, GetAvailableReposQueryVariables | void>({
-      query: (variables) => ({ document: GetAvailableReposDocument, variables })
     }),
     GetBuildDetails: build.query<GetBuildDetailsQuery, GetBuildDetailsQueryVariables>({
       query: (variables) => ({ document: GetBuildDetailsDocument, variables })
@@ -7683,9 +7587,6 @@ const injectedRtkApi = api.injectEndpoints({
     GetProjectCloneUrl: build.query<GetProjectCloneUrlQuery, GetProjectCloneUrlQueryVariables>({
       query: (variables) => ({ document: GetProjectCloneUrlDocument, variables })
     }),
-    GetProjects: build.query<GetProjectsQuery, GetProjectsQueryVariables | void>({
-      query: (variables) => ({ document: GetProjectsDocument, variables })
-    }),
     GetSbomUrl: build.query<GetSbomUrlQuery, GetSbomUrlQueryVariables>({
       query: (variables) => ({ document: GetSbomUrlDocument, variables })
     }),
@@ -7715,9 +7616,6 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     InsertProject: build.mutation<InsertProjectMutation, InsertProjectMutationVariables>({
       query: (variables) => ({ document: InsertProjectDocument, variables })
-    }),
-    InstallSelectedRepos: build.mutation<InstallSelectedReposMutation, InstallSelectedReposMutationVariables>({
-      query: (variables) => ({ document: InstallSelectedReposDocument, variables })
     }),
     presignManifestUrl: build.mutation<PresignManifestUrlMutation, PresignManifestUrlMutationVariables>({
       query: (variables) => ({ document: PresignManifestUrlDocument, variables })
