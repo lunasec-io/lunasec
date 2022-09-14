@@ -81,9 +81,9 @@ export async function runLunaTraceScan(sbomStream: Readable): Promise<string> {
       outputBuffers.push(Buffer.from(chunk));
     });
     lunatraceCli.stderr.on('data', (errorChunk) => {
-      // log.warn('lunatrace cli stderr', {
-      //   output: errorChunk.toString(),
-      // });
+      log.warn('lunatrace cli stderr', {
+        output: errorChunk.toString(),
+      });
     });
     lunatraceCli.on('close', (code) => {
       if (code !== 0) {
@@ -128,12 +128,6 @@ const mapGrypeMatchToGraphqlFinding =
   (match: Match): Findings_Insert_Input | null => {
     const { vulnerability, artifact } = match;
     const details = match.matchDetails[0];
-
-    // log.debug('match details', {
-    //   vuln_id: vulnerability.id,
-    //   vuln_namespace: vulnerability.namespace,
-    //   artifact_name: match.artifact.name,
-    // });
 
     // TODO (cthompson) we no longer need to use a slug here to dedup findings, we can create a unique
     // constraint on (vulnerability_id, package_id, locations)

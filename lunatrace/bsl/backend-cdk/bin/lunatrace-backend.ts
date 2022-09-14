@@ -14,6 +14,7 @@
  */
 
 import 'source-map-support/register';
+import { readFileSync } from 'fs';
 
 import * as cdk from '@aws-cdk/core';
 

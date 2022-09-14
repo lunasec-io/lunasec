@@ -43,8 +43,6 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
     return severityOrder.indexOf(f.severity) >= severityFilter || !shouldFilterFindings;
   });
 
-  const chains = depTree?.showDependencyChainsOfPackage(pkg.package_name, pkg.version);
-
   return (
     <Card.Body>
       <ConditionallyRender if={pkg.guides.length > 0}>

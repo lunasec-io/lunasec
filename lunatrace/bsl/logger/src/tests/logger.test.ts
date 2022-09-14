@@ -37,21 +37,14 @@ describe('LunaLogger', () => {
   it('appends any object properties from the first argument', () => {
     log.info({ test: 'field' });
     const output = consoleMock.mock.calls[0][0];
-    parseAndCheckContext(output, 'test', 'field');
+    parseAndCheckParams(output, 0, 'test', 'field');
   });
 
   it('stringifies anything else into message', () => {
     log.info(['test'], 'test message');
     const output = consoleMock.mock.calls[0][0];
-    console.error(output);
-    parseAndCheck(output, 'message', "[ 'test' ] test message");
+    parseAndCheck(output, 'message', "[ 'test' ]test message");
   });
-
-  // it.only('logs to logio without throwing', () => {
-  //   const loggerWithLogIo = new LunaLogger();
-  //   loggerWithLogIo.addTransport(new LogIOTransport({ minLevel: 'info' }));
-  //   loggerWithLogIo.info('Log IO test');
-  // });
 
   describe('helper method', () => {
     logLevels.forEach((level) => {
@@ -116,4 +109,9 @@ function parseAndCheck(jsonString: string, key: string, value: unknown) {
 function parseAndCheckContext(jsonString: string, key: string, value: unknown) {
   const parsed = JSON.parse(jsonString); // This breaks if we use color, interestingly
   expect(parsed['context'][key]).toEqual(value);
+}
+
+function parseAndCheckParams(jsonString: string, index: number, key: string, value: unknown) {
+  const parsed = JSON.parse(jsonString); // This breaks if we use color, interestingly
+  expect(parsed['params'][index][key]).toEqual(value);
 }
