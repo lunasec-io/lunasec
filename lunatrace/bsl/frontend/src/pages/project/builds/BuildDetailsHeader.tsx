@@ -12,7 +12,7 @@
  *
  */
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Button, Col, Container, NavLink as FakeNavLink, Row } from 'react-bootstrap';
 import { ArrowLeft } from 'react-feather';
 import { NavLink } from 'react-router-dom';
 

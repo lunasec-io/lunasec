@@ -33,7 +33,7 @@ function newOrganizationUser(hasuraOrgId: string, githubUserData: GitHubUserData
     user: {
       data: {
         github_node_id: githubUserData.nodeId,
-        github_id: githubUserData.githubUserId.toString(),
+        github_id: githubUserData.databaseId.toString(),
       },
       on_conflict: {
         constraint: Users_Constraint.UsersGithubIdKey,
@@ -121,7 +121,7 @@ export async function getHasuraOrgMembers(
 
     const organizationUser = newOrganizationUser(hasuraOrgId, {
       nodeId: githubUserNodeId,
-      githubUserId: githubUserDatabaseId,
+      databaseId: githubUserDatabaseId,
     });
     return {
       error: false,
@@ -165,7 +165,7 @@ export async function getHasuraOrgMembers(
         }
         return {
           nodeId: m.id,
-          githubUserId: m.databaseId,
+          databaseId: m.databaseId,
         };
       })
       .filter(notEmpty);
@@ -193,7 +193,7 @@ export async function getHasuraOrgMembers(
             }
             return {
               nodeId: m.id,
-              githubUserId: m.databaseId,
+              databaseId: m.databaseId,
             };
           })
           .filter(notEmpty),

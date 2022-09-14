@@ -129,10 +129,6 @@ const NewProjectBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbCom
   return <span>New Project</span>;
 };
 
-const ProjectImportBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
-  return <span>Import</span>;
-};
-
 const NewGuideBreadCrumb: BreadcrumbComponentType = (crumbProps: BreadcrumbComponentProps) => {
   const id = crumbProps.match.params.guide_id;
   if (!id) {
@@ -153,7 +149,6 @@ export const NavbarBreadcrumbs: React.FunctionComponent = () => {
   }
   // These custom breadcrumbs override the defaults from the library
   const customRoutes: BreadcrumbsRoute[] = [
-    { path: '/project/import', breadcrumb: ProjectImportBreadCrumb },
     { path: '/project/:project_id', breadcrumb: ProjectBreadCrumb },
     { path: '/project/:project_id/build/:build_id', breadcrumb: BuildBreadCrumb },
     { path: '/project/:project_id/build/', breadcrumb: BuildMainPathBreadCrumb },

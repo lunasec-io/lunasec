@@ -26,7 +26,10 @@ export const store = configureStore({
     alerts: alertsSlice.reducer,
   },
   middleware: (getDefaultMiddleware) => {
-    const middleware = getDefaultMiddleware();
+    const middleware = getDefaultMiddleware({
+      // This is disabled because it makes development very slow and the lib complains about it a lot
+      serializableCheck: false,
+    });
     middleware.push(appApi.middleware);
     middleware.push(rtkQueryErrorLogger);
     return middleware;
