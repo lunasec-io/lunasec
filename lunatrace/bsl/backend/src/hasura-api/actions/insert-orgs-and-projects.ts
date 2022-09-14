@@ -96,6 +96,7 @@ export function generateOrgsAndProjectsMutation(
   }, {} as OrganizationInputLookup);
 }
 
+// This is DEPRECATED now that we do not insert orgs manually, and instead insert them from webhook. We can bring this back if we ever fix our oauth
 export async function insertOrgsAndProjects(
   installationId: number,
   orgObjectList: Organizations_Insert_Input[]

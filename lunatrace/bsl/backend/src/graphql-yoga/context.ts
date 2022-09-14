@@ -19,6 +19,7 @@ export interface JWTClaims {
     'x-hasura-allowed-roles'?: string[];
     'x-hasura-default-role'?: string;
     'x-hasura-user-id'?: string;
+    'x-hasura-real-user-id'?: string;
     'x-hasura-builds'?: string;
   };
   [x: string]: unknown;
@@ -32,6 +33,10 @@ export interface Context extends YogaInitialContext {
 
 export type ContextLoggedIn = Context & {
   req: {
-    user: NonNullable<Context['req']['user'] & { 'https://hasura.io/jwt/claims': { 'x-hasura-user-id': string } }>;
+    user: NonNullable<
+      Context['req']['user'] & {
+        'https://hasura.io/jwt/claims': { 'x-hasura-user-id': string; 'x-hasura-real-user-id': string };
+      }
+    >;
   };
 };

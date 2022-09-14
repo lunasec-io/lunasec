@@ -16,6 +16,7 @@ import { ClientError } from 'graphql-request';
 
 import { log } from '../../utils/log';
 
+import { installationHandler } from './handlers/installation-handler';
 import { organizationMemberAddedHandler } from './handlers/organization-member-added-handler';
 import { pullRequestHandler } from './handlers/pull-request-handler';
 import { pushHandler } from './handlers/push-handler';
@@ -41,12 +42,9 @@ export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): 
               });
               return;
             }
-            log.error(
-              'Caught an unknown error while processing github webhook. This should be investigated. Webhook processing has cancelled.',
-              {
-                error: e,
-              }
-            );
+            log.error('Caught an error while processing github webhook. Webhook processing has cancelled.', {
+              error: e,
+            });
             return;
           }
           log.error('Webhook handler threw non-error, this should never happen.');
@@ -63,6 +61,8 @@ export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): 
   listenToHook('repository.privatized', repositoryUpdatedHandler);
 
   listenToHook('organization.member_added', organizationMemberAddedHandler);
+
+  listenToHook('installation', installationHandler);
 
   listenToHook('pull_request', pullRequestHandler);
   listenToHook('push', pushHandler);
