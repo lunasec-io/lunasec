@@ -60,13 +60,13 @@ export type MutationPresignManifestUploadArgs = {
 
 export type OrgWithRepos = {
   __typename?: 'OrgWithRepos';
-  installationId: Scalars['Int'];
+  id: Scalars['String'];
   organizationName: Scalars['String'];
   repos: Array<GithubRepository>;
 };
 
 export type OrgsWithReposInput = {
-  installationId: Scalars['Int'];
+  id: Scalars['String'];
   repos: Array<Scalars['Int']>;
 };
 
@@ -258,7 +258,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
 };
 
 export type OrgWithReposResolvers<ContextType = Context, ParentType extends ResolversParentTypes['OrgWithRepos'] = ResolversParentTypes['OrgWithRepos']> = {
-  installationId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   organizationName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   repos?: Resolver<Array<ResolversTypes['GithubRepository']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

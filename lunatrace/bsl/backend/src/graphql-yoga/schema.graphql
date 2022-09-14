@@ -30,7 +30,7 @@ type Mutation {
 }
 
 input OrgsWithReposInput {
-    installationId: Int!
+    id: String!
     repos: [Int!]!
 }
 
@@ -80,6 +80,6 @@ type GithubRepository {
 
 type OrgWithRepos {
     organizationName: String!
-    installationId: Int!
+    id: String!
     repos: [GithubRepository!]!
 }

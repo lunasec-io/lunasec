@@ -61,9 +61,10 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - id
-        - name
         - createdAt
+        - id
+        - installation_id
+        - name
         - settings_id
       filter:
         _or:
