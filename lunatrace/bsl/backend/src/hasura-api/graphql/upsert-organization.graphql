@@ -1,0 +1,7 @@
+mutation UpsertOrganization($object: organizations_insert_input!, $on_conflict: organizations_on_conflict) {
+    insert_organizations_one(object: $object, on_conflict: $on_conflict) {
+        id
+        github_node_id
+        name
+    }
+}

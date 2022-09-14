@@ -23,6 +23,8 @@ export type RawRepositories = RawRepository[];
 type UpdateEvent = EmitterWebhookEvent<
   'repository.edited' | 'repository.privatized' | 'repository.publicized' | 'repository.renamed'
 >;
+
+export type WebHookOrgData = EmitterWebhookEvent<'installation'>['payload']['installation'];
 export type UpdatedRawRepository = UpdateEvent['payload']['repository'];
 
 export type RawInstallation = components['schemas']['installation'];

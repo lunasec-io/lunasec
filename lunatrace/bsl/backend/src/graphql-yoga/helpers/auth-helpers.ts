@@ -27,7 +27,11 @@ export function throwIfUnauthenticated(ctx: Context): void {
 }
 
 export function isAuthenticated(ctx: Context): ctx is ContextLoggedIn {
-  if (!ctx.req.user || !ctx.req.user['https://hasura.io/jwt/claims']['x-hasura-user-id']) {
+  if (!ctx.req.user || !ctx.req.user['https://hasura.io/jwt/claims']) {
+    return false;
+  }
+  const claims = ctx.req.user['https://hasura.io/jwt/claims'];
+  if (!claims['x-hasura-user-id'] || !claims['x-hasura-real-user-id']) {
     return false;
   }
   return true;
