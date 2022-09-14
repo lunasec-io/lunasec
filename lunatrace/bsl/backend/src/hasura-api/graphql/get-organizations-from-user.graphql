@@ -1,0 +1,7 @@
+query GetOrganizationsFromUserQuery($user_id: uuid!) {
+    organizations(where: {organization_users: {user_id: {_eq: $user_id}}}) {
+        id
+        installation_id
+        name
+    }
+}

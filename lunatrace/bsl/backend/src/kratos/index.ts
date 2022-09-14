@@ -16,6 +16,7 @@ import { Configuration, V0alpha2ApiFactory } from '@ory/kratos-client';
 import { KratosIdentityConfig } from '../types/kratos';
 import { log } from '../utils/log';
 
+// TODO: Deprecated, WARNING this tends not to work for older accounts or accounts that may have authenticated and then unauthenticated, because kratos does not keep these tokens up to date
 export async function getGithubAccessTokenFromKratos(
   userId: string
 ): Promise<{ error: false; token: string } | { error: true; message: string }> {

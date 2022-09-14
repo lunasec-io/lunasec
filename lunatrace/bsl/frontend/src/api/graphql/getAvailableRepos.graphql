@@ -1,7 +1,7 @@
 query GetAvailableRepos {
     availableOrgsWithRepos{
         organizationName
-        installationId
+        id
         repos {
             gitUrl
             repoId

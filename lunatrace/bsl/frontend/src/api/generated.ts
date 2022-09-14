@@ -93,13 +93,13 @@ export type Int_Comparison_Exp = {
 
 export type OrgWithRepos = {
   __typename?: 'OrgWithRepos';
-  installationId: Scalars['Int'];
+  id: Scalars['String'];
   organizationName: Scalars['String'];
   repos: Array<GithubRepository>;
 };
 
 export type OrgsWithReposInput = {
-  installationId: Scalars['Int'];
+  id: Scalars['String'];
   repos: Array<Scalars['Int']>;
 };
 
@@ -3052,6 +3052,7 @@ export type Organizations = {
   /** An object relationship */
   creator?: Maybe<Users>;
   id: Scalars['uuid'];
+  installation_id?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
   /** An array relationship */
   organization_users: Array<Organization_User>;
@@ -3090,6 +3091,7 @@ export type Organizations_Bool_Exp = {
   createdAt?: InputMaybe<Timestamp_Comparison_Exp>;
   creator?: InputMaybe<Users_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  installation_id?: InputMaybe<Int_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   organization_users?: InputMaybe<Organization_User_Bool_Exp>;
   projects?: InputMaybe<Projects_Bool_Exp>;
@@ -3144,6 +3146,7 @@ export type Organizations_Order_By = {
   createdAt?: InputMaybe<Order_By>;
   creator?: InputMaybe<Users_Order_By>;
   id?: InputMaybe<Order_By>;
+  installation_id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   organization_users_aggregate?: InputMaybe<Organization_User_Aggregate_Order_By>;
   projects_aggregate?: InputMaybe<Projects_Aggregate_Order_By>;
@@ -3157,6 +3160,8 @@ export enum Organizations_Select_Column {
   CreatedAt = 'createdAt',
   /** column name */
   Id = 'id',
+  /** column name */
+  InstallationId = 'installation_id',
   /** column name */
   Name = 'name',
   /** column name */
@@ -6590,7 +6595,7 @@ export type GetAllGuidesQuery = { __typename?: 'query_root', guides: Array<{ __t
 export type GetAvailableReposQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAvailableReposQuery = { __typename?: 'query_root', availableOrgsWithRepos?: Array<{ __typename?: 'OrgWithRepos', organizationName: string, installationId: number, repos: Array<{ __typename?: 'GithubRepository', gitUrl: string, repoId: number, repoName: string }> }> | null };
+export type GetAvailableReposQuery = { __typename?: 'query_root', availableOrgsWithRepos?: Array<{ __typename?: 'OrgWithRepos', organizationName: string, id: string, repos: Array<{ __typename?: 'GithubRepository', gitUrl: string, repoId: number, repoName: string }> }> | null };
 
 export type GetBuildDetailsQueryVariables = Exact<{
   build_id: Scalars['uuid'];
@@ -6624,7 +6629,7 @@ export type GetGuideDetailsQuery = { __typename?: 'query_root', guides_by_pk?: {
 export type GetLunaTraceOrganizationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetLunaTraceOrganizationsQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, name: string }> };
+export type GetLunaTraceOrganizationsQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, name: string, installation_id?: number | null }> };
 
 export type GetLunaTraceUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -6785,7 +6790,7 @@ export const GetAvailableReposDocument = `
     query GetAvailableRepos {
   availableOrgsWithRepos {
     organizationName
-    installationId
+    id
     repos {
       gitUrl
       repoId
@@ -6986,6 +6991,7 @@ export const GetLunaTraceOrganizationsDocument = `
   organizations {
     id
     name
+    installation_id
   }
 }
     `;
