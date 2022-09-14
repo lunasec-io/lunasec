@@ -1,0 +1,9 @@
+mutation InsertProjects($projects: [projects_insert_input!]!) {
+    insert_projects(objects: $projects) {
+        affected_rows
+        returning {
+            id
+            name
+        }
+    }
+}

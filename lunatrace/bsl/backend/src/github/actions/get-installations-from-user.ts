@@ -17,6 +17,7 @@ import { RawInstallation } from '../../types/github';
 import { log } from '../../utils/log';
 import { walkPagination } from '../helpers/walk-pagination';
 
+// TODO: Deprecated because we do not have access to this token reliably. We can resume doing things this way if we figure out how to keep githubs refresh token active
 export async function getInstallationsFromUser(userAccessToken: string): Promise<RawInstallation[]> {
   const octokit = new Octokit({ auth: userAccessToken });
 
