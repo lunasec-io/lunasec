@@ -80,13 +80,13 @@ input Int_comparison_exp {
 }
 
 type OrgWithRepos {
-  installationId: Int!
+  id: String!
   organizationName: String!
   repos: [GithubRepository!]!
 }
 
 input OrgsWithReposInput {
-  installationId: Int!
+  id: String!
   repos: [Int!]!
 }
 
@@ -6048,7 +6048,7 @@ type organizations {
   github_id: Int
   github_node_id: String
   id: uuid!
-  installation_id: Int
+  installation_id: Int!
   name: String!
 
   """An array relationship"""

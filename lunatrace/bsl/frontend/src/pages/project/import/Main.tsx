@@ -11,14 +11,15 @@
  * limitations under the License.
  *
  */
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
 import { FiArrowRight, FiGithub } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import api from '../../../api';
 import { OrgsWithReposInput } from '../../../api/generated';
 import { SpinIfLoading } from '../../../components/SpinIfLoading';
+import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { GithubAppUrl } from '../../../constants';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import { add } from '../../../store/slices/alerts';
@@ -27,8 +28,17 @@ export const ImportProjectsMain: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  const [isPolling, setIsPolling] = useState(true);
   // API access
-  const { data: githubData, isLoading: isLoadingGithubData } = api.useGetAvailableReposQuery();
+  const { data: orgsData, refetch: refetchOrgs } = api.useGetLunaTraceOrganizationsQuery(
+    {},
+    { pollingInterval: isPolling ? 1000 : 0 }
+  );
+  const {
+    data: githubData,
+    isLoading: isLoadingGithubData,
+    refetch: refetchAvailableRepos,
+  } = api.useGetAvailableReposQuery();
   const { data: existingProjectData, isLoading: isLoadingProjectData } = api.useGetProjectsQuery();
   const [insertRepos, insertReposResult] = api.useInstallSelectedReposMutation();
 
@@ -46,6 +56,30 @@ export const ImportProjectsMain: React.FC = () => {
         alreadyImported.push(existingProject.github_repository.github_id);
       }
     });
+  }
+
+  // redirect handling on postinstall from github for a new installation ID
+  const [searchParams] = useSearchParams();
+  const installationIdFromRedirect = searchParams.get('installation_id'); // "testCode"
+
+  const stopPolling = () => {
+    if (isPolling) {
+      setIsPolling(false);
+    }
+  };
+
+  if (!installationIdFromRedirect) {
+    stopPolling();
+  } else {
+    const orgPresent = orgsData?.organizations?.some(
+      (org) => org.installation_id === Number(installationIdFromRedirect)
+    );
+    if (orgPresent) {
+      if (isPolling) {
+        refetchAvailableRepos();
+      }
+      stopPolling();
+    }
   }
 
   // Form handling
@@ -70,7 +104,7 @@ export const ImportProjectsMain: React.FC = () => {
     // organizes the data by installationId (org), with only the checked repos included
     const orgsWithFilteredRepos = githubData.availableOrgsWithRepos.map((org) => {
       return {
-        installationId: org.installationId,
+        id: org.id,
         repos: org.repos.reduce((repos, repo) => {
           if (selected.includes(repo.repoId)) {
             repos.push(repo.repoId);
@@ -152,8 +186,15 @@ export const ImportProjectsMain: React.FC = () => {
                       );
                     })}
                   </Form>
+                  <ConditionallyRender if={isPolling}>
+                    <Spinner animation="border" className="me-2"></Spinner>{' '}
+                    <span className="mb-3">
+                      Waiting for your new organization to install. Should only take a few seconds.
+                    </span>
+                  </ConditionallyRender>
                 </Col>
               </Row>
+
               <Row className="ms-lg-7 me-lg-7 mt-lg-4">
                 <Col xs="12" lg="6">
                   <div className="d-grid m-3">
