@@ -13,10 +13,19 @@
  */
 import { EmitterWebhookEvent } from '@octokit/webhooks';
 
+import { hasura } from '../../../hasura-api';
 import { log } from '../../../utils/log';
 import { queueRepositoryForSnapshot } from '../../actions/queue-repository-for-snapshot';
 
 export async function pushHandler(event: EmitterWebhookEvent<'push'>) {
+  const repositoryId = event.payload.repository.id;
+
+  const getRepositoryResponse = await hasura.GetGithubRepositoriesByIds({ ids: [repositoryId] });
+  if (getRepositoryResponse.github_repositories.length !== 1) {
+    log.info('Received a webhook for a repository which is not imported, no-op.');
+    return;
+  }
+
   const ref = event.payload.ref;
   const branchOrTagName = ref.split('/').pop();
   const defaultBranch = event.payload.repository.default_branch;

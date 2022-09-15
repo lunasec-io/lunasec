@@ -16,6 +16,7 @@ type Query {
         repoGithubId: Int!
     ): AuthenticatedRepoCloneUrlOutput
     fakeQueryToHackHasuraBeingABuggyMess: String
+    availableOrgsWithRepos: [OrgWithRepos!]
 }
 
 type Mutation {
@@ -23,6 +24,18 @@ type Mutation {
     presignManifestUpload(
         project_id: uuid!
     ): PresignedUrlResponse
+    installSelectedRepos(
+        orgs: [OrgsWithReposInput!]!
+    ): InstallSelectedReposResponse
+}
+
+input OrgsWithReposInput {
+    id: String!
+    repos: [Int!]!
+}
+
+type InstallSelectedReposResponse {
+    success: Boolean
 }
 
 input SbomUploadUrlInput {
@@ -50,4 +63,23 @@ type UploadUrl {
 
 type AuthenticatedRepoCloneUrlOutput {
     url: String
+}
+
+type GithubRepository {
+    orgName: String!
+    orgId: Int!
+    orgNodeId: String!
+    repoName: String!
+    repoId: Int!
+    repoNodeId: String!
+    gitUrl: String!
+    ownerType: String!
+    cloneUrl: String!
+    defaultBranch: String!
+}
+
+type OrgWithRepos {
+    organizationName: String!
+    id: String!
+    repos: [GithubRepository!]!
 }

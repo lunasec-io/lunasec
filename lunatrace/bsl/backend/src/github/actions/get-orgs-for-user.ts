@@ -19,6 +19,7 @@ import { catchError, threwError, Try } from '../../utils/try';
 import { GetUserOrganizationsQuery } from '../api/generated';
 import { getGithubGraphqlClient } from '../auth';
 
+// Deprecated, not in use anywhere, just here for posterity
 export async function getOrgsForUser(userId: string, accessToken: string) {
   const github = getGithubGraphqlClient(accessToken);
 
