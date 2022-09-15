@@ -13,9 +13,9 @@
  */
 import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
-import { Card, Col, Container, Modal, OverlayTrigger, Row, Spinner, Table, Tooltip } from 'react-bootstrap';
+import { Card, Col, Container, Modal, Row, Table } from 'react-bootstrap';
 import { ExternalLink } from 'react-feather';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import { Markdown } from '../../../components/Markdown';
 import {
