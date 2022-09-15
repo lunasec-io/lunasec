@@ -1,5 +1,0 @@
-mutation UpdateProjectName($id: uuid!, $name: String!) {
-    update_projects_by_pk(pk_columns: {id: $id}, _set: {name: $name}) {
-        id
-    }
-}
