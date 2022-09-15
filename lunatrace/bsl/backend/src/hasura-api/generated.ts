@@ -4727,7 +4727,7 @@ export type Organizations = {
   github_id?: Maybe<Scalars['Int']>;
   github_node_id?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
-  installation_id: Scalars['Int'];
+  installation_id?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
   /** An array relationship */
   organization_users: Array<Organization_User>;
@@ -10556,14 +10556,14 @@ export type GetBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, existing_github_check_id?: any | null, s3_url?: string | null, git_hash?: string | null, project?: { __typename?: 'projects', id: any, name: string, organization?: { __typename?: 'organizations', installation_id: number, name: string } | null, settings: { __typename?: 'settings', pr_feedback_disabled?: boolean | null, pr_check_enabled?: boolean | null } } | null } | null };
+export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, existing_github_check_id?: any | null, s3_url?: string | null, git_hash?: string | null, project?: { __typename?: 'projects', id: any, name: string, organization?: { __typename?: 'organizations', installation_id?: number | null, name: string } | null, settings: { __typename?: 'settings', pr_feedback_disabled?: boolean | null, pr_check_enabled?: boolean | null } } | null } | null };
 
 export type GetCloneRepoInfoFromRepoIdQueryVariables = Exact<{
   repo_github_id: Scalars['Int'];
 }>;
 
 
-export type GetCloneRepoInfoFromRepoIdQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', git_url: string, project: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id: number } | null } }> };
+export type GetCloneRepoInfoFromRepoIdQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', git_url: string, project: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null } }> };
 
 export type GetCountOfPersonalOrgQueryVariables = Exact<{
   user_id: Scalars['uuid'];
@@ -10596,7 +10596,7 @@ export type GetOrganizationsFromUserQueryQueryVariables = Exact<{
 }>;
 
 
-export type GetOrganizationsFromUserQueryQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, installation_id: number, name: string }> };
+export type GetOrganizationsFromUserQueryQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, installation_id?: number | null, name: string }> };
 
 export type GetPreviousBuildForPrQueryVariables = Exact<{
   pull_request_id: Scalars['String'];

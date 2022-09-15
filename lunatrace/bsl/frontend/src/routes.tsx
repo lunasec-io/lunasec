@@ -23,6 +23,7 @@ import { GuideMain } from './pages/guide/Guide';
 import { GuideList } from './pages/guide/List';
 import { HomePage } from './pages/homepage/Home';
 import { ProjectCreate } from './pages/project/Create';
+import { ImportProjectsMain } from './pages/project/import/Main';
 import { VulnerabilityDetailMain } from './pages/vulnerabilities/detail/DetailMain';
 
 export const routes: RouteObject[] = [
@@ -69,6 +70,14 @@ export const routes: RouteObject[] = [
         element: (
           <RouteGuard>
             <ProjectCreate />
+          </RouteGuard>
+        ),
+      },
+      {
+        path: 'project/import',
+        element: (
+          <RouteGuard>
+            <ImportProjectsMain />
           </RouteGuard>
         ),
       },

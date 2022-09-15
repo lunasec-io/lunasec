@@ -13,15 +13,12 @@
  */
 import { Octokit } from 'octokit';
 
-import { GithubRepositoryInfo, RepositoriesForInstallationResponse } from '../../types/github';
+import { GithubRepositoryInfo, RawRepositories } from '../../types/github';
 import { log } from '../../utils/log';
 
 const PER_PAGE = 100;
 
-async function fetchReposFromGithub(
-  authToken: string,
-  installationId: number
-): Promise<RepositoriesForInstallationResponse> {
+async function fetchReposFromGithub(authToken: string, installationId: number): Promise<RawRepositories> {
   const octokit = new Octokit({ auth: authToken });
 
   const repos = [];
