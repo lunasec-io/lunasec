@@ -16,7 +16,6 @@ import { Command } from 'commander';
 import { getRepoCloneUrlWithAuth } from '../github/actions/get-repo-clone-url-with-auth';
 import { SnapshotForRepositoryRequest } from '../types/sqs';
 import { log } from '../utils/log';
-import { threwError } from '../utils/try';
 import { scanSnapshotActivity } from '../workers/queue/activities/scan-snapshot-activity';
 import { snapshotRepositoryActivity } from '../workers/queue/activities/snapshot-repository-activity';
 

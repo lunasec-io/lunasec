@@ -15,28 +15,13 @@ import { GraphQLYogaError } from '@graphql-yoga/node';
 import { v4 as uuid } from 'uuid';
 
 import { getWorkerBucketConfig } from '../../config';
-import { hasura } from '../../hasura-api';
 import { aws } from '../../utils/aws-utils';
-import { Context } from '../context';
 import { MutationResolvers } from '../generated-resolver-types';
-
-import { getUserId, throwIfUnauthenticated } from './auth-helpers';
+import { checkProjectIsAuthorized, throwIfUnauthenticated } from '../helpers/auth-helpers';
 
 type PresignManifestUploadResolver = NonNullable<MutationResolvers['presignManifestUpload']>;
 
 const sbomHandlerConfig = getWorkerBucketConfig();
-
-export async function checkProjectIsAuthorized(projectId: string, ctx: Context): Promise<void> {
-  const userId = getUserId(ctx);
-  const usersAuthorizedProjects = await hasura.GetUsersProjects({ user_id: userId });
-  const userIsAuthorized = usersAuthorizedProjects.projects.some((p) => {
-    return p.id === projectId;
-  });
-  if (!userIsAuthorized) {
-    throw new GraphQLYogaError('Not authorized for this project');
-  }
-  return;
-}
 
 export const presignManifestUploadResolver: PresignManifestUploadResolver = async (parent, args, ctx, info) => {
   throwIfUnauthenticated(ctx);

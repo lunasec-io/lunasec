@@ -62,6 +62,25 @@ export type Float_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Float']>>;
 };
 
+export type GithubRepository = {
+  __typename?: 'GithubRepository';
+  cloneUrl: Scalars['String'];
+  defaultBranch: Scalars['String'];
+  gitUrl: Scalars['String'];
+  orgId: Scalars['Int'];
+  orgName: Scalars['String'];
+  orgNodeId: Scalars['String'];
+  ownerType: Scalars['String'];
+  repoId: Scalars['Int'];
+  repoName: Scalars['String'];
+  repoNodeId: Scalars['String'];
+};
+
+export type InstallSelectedReposResponse = {
+  __typename?: 'InstallSelectedReposResponse';
+  success?: Maybe<Scalars['Boolean']>;
+};
+
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Int']>;
@@ -73,6 +92,18 @@ export type Int_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Int']>;
   _neq?: InputMaybe<Scalars['Int']>;
   _nin?: InputMaybe<Array<Scalars['Int']>>;
+};
+
+export type OrgWithRepos = {
+  __typename?: 'OrgWithRepos';
+  id: Scalars['String'];
+  organizationName: Scalars['String'];
+  repos: Array<GithubRepository>;
+};
+
+export type OrgsWithReposInput = {
+  id: Scalars['String'];
+  repos: Array<Scalars['Int']>;
 };
 
 export type PresignedUrlResponse = {
@@ -3257,6 +3288,7 @@ export type Mutation_Root = {
   insert_webhook_cache?: Maybe<Webhook_Cache_Mutation_Response>;
   /** insert a single row into the table: "webhook_cache" */
   insert_webhook_cache_one?: Maybe<Webhook_Cache>;
+  installSelectedRepos?: Maybe<InstallSelectedReposResponse>;
   /**  get s3 presigned url for manifest upload, used only by the frontend  */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** update data of the table: "build_dependency_relationship" */
@@ -3926,6 +3958,12 @@ export type Mutation_RootInsert_Webhook_CacheArgs = {
 export type Mutation_RootInsert_Webhook_Cache_OneArgs = {
   object: Webhook_Cache_Insert_Input;
   on_conflict?: InputMaybe<Webhook_Cache_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInstallSelectedReposArgs = {
+  orgs: Array<OrgsWithReposInput>;
 };
 
 
@@ -4689,7 +4727,7 @@ export type Organizations = {
   github_id?: Maybe<Scalars['Int']>;
   github_node_id?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
-  installation_id?: Maybe<Scalars['Int']>;
+  installation_id: Scalars['Int'];
   name: Scalars['String'];
   /** An array relationship */
   organization_users: Array<Organization_User>;
@@ -4790,6 +4828,8 @@ export type Organizations_Bool_Exp = {
 
 /** unique or primary key constraints on table "organizations" */
 export enum Organizations_Constraint {
+  /** unique or primary key constraint on columns "installation_id" */
+  InstallationIdUnique = 'installation_id_unique',
   /** unique or primary key constraint on columns "github_id" */
   OrganizationsGithubIdKey = 'organizations_github_id_key',
   /** unique or primary key constraint on columns "github_node_id" */
@@ -6662,6 +6702,7 @@ export enum Projects_Update_Column {
 export type Query_Root = {
   __typename?: 'query_root';
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
+  availableOrgsWithRepos?: Maybe<Array<OrgWithRepos>>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -10515,14 +10556,14 @@ export type GetBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, existing_github_check_id?: any | null, s3_url?: string | null, git_hash?: string | null, project?: { __typename?: 'projects', id: any, name: string, organization?: { __typename?: 'organizations', installation_id?: number | null, name: string } | null, settings: { __typename?: 'settings', pr_feedback_disabled?: boolean | null, pr_check_enabled?: boolean | null } } | null } | null };
+export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, existing_github_check_id?: any | null, s3_url?: string | null, git_hash?: string | null, project?: { __typename?: 'projects', id: any, name: string, organization?: { __typename?: 'organizations', installation_id: number, name: string } | null, settings: { __typename?: 'settings', pr_feedback_disabled?: boolean | null, pr_check_enabled?: boolean | null } } | null } | null };
 
 export type GetCloneRepoInfoFromRepoIdQueryVariables = Exact<{
   repo_github_id: Scalars['Int'];
 }>;
 
 
-export type GetCloneRepoInfoFromRepoIdQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', git_url: string, project: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null } }> };
+export type GetCloneRepoInfoFromRepoIdQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', git_url: string, project: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id: number } | null } }> };
 
 export type GetCountOfPersonalOrgQueryVariables = Exact<{
   user_id: Scalars['uuid'];
@@ -10549,6 +10590,13 @@ export type GetOrganizationFromInstallationIdQueryVariables = Exact<{
 
 
 export type GetOrganizationFromInstallationIdQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any }> };
+
+export type GetOrganizationsFromUserQueryQueryVariables = Exact<{
+  user_id: Scalars['uuid'];
+}>;
+
+
+export type GetOrganizationsFromUserQueryQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, installation_id: number, name: string }> };
 
 export type GetPreviousBuildForPrQueryVariables = Exact<{
   pull_request_id: Scalars['String'];
@@ -10621,6 +10669,13 @@ export type InsertPersonalProjectAndOrgMutationVariables = Exact<{
 
 export type InsertPersonalProjectAndOrgMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', id: any } | null };
 
+export type InsertProjectsMutationVariables = Exact<{
+  projects: Array<Projects_Insert_Input> | Projects_Insert_Input;
+}>;
+
+
+export type InsertProjectsMutation = { __typename?: 'mutation_root', insert_projects?: { __typename?: 'projects_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'projects', id: any, name: string }> } | null };
+
 export type InsertScanMutationVariables = Exact<{
   scan: Scans_Insert_Input;
   build_id: Scalars['uuid'];
@@ -10664,6 +10719,14 @@ export type UpdateBuildExistingReviewIdMutationVariables = Exact<{
 
 export type UpdateBuildExistingReviewIdMutation = { __typename?: 'mutation_root', update_builds_by_pk?: { __typename?: 'builds', id: any } | null };
 
+export type UpdateRepoIfExistsMutationVariables = Exact<{
+  repo_body: Github_Repositories_Set_Input;
+  github_id: Scalars['Int'];
+}>;
+
+
+export type UpdateRepoIfExistsMutation = { __typename?: 'mutation_root', update_github_repositories?: { __typename?: 'github_repositories_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', id: any, name: string } }> } | null };
+
 export type UpdateManifestStatusIfExistsMutationVariables = Exact<{
   buildId: Scalars['uuid'];
   message?: InputMaybe<Scalars['String']>;
@@ -10682,6 +10745,14 @@ export type UpdateManifestMutationVariables = Exact<{
 
 
 export type UpdateManifestMutation = { __typename?: 'mutation_root', update_manifests?: { __typename?: 'manifests_mutation_response', returning: Array<{ __typename?: 'manifests', filename: string, project_id: any, project: { __typename?: 'projects', organization_id?: any | null } }> } | null };
+
+export type UpdateProjectNameMutationVariables = Exact<{
+  id: Scalars['uuid'];
+  name: Scalars['String'];
+}>;
+
+
+export type UpdateProjectNameMutation = { __typename?: 'mutation_root', update_projects_by_pk?: { __typename?: 'projects', id: any } | null };
 
 export type UpdateOrganizationsForUserMutationVariables = Exact<{
   organizations_for_user: Array<Organization_User_Insert_Input> | Organization_User_Insert_Input;
@@ -10705,13 +10776,21 @@ export type UpsertOrganizationUsersMutationVariables = Exact<{
 
 export type UpsertOrganizationUsersMutation = { __typename?: 'mutation_root', insert_organization_user?: { __typename?: 'organization_user_mutation_response', affected_rows: number } | null };
 
-export type UpsertOrganizationsMutationVariables = Exact<{
-  objects?: InputMaybe<Array<Organizations_Insert_Input> | Organizations_Insert_Input>;
+export type UpsertOrganizationMutationVariables = Exact<{
+  object: Organizations_Insert_Input;
   on_conflict?: InputMaybe<Organizations_On_Conflict>;
 }>;
 
 
-export type UpsertOrganizationsMutation = { __typename?: 'mutation_root', insert_organizations?: { __typename?: 'organizations_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'organizations', id: any, github_node_id?: string | null, name: string }> } | null };
+export type UpsertOrganizationMutation = { __typename?: 'mutation_root', insert_organizations_one?: { __typename?: 'organizations', id: any, github_node_id?: string | null, name: string } | null };
+
+export type UpsertOrganizationsMutationVariables = Exact<{
+  object: Array<Organizations_Insert_Input> | Organizations_Insert_Input;
+  on_conflict?: InputMaybe<Organizations_On_Conflict>;
+}>;
+
+
+export type UpsertOrganizationsMutation = { __typename?: 'mutation_root', insert_organizations?: { __typename?: 'organizations_mutation_response', returning: Array<{ __typename?: 'organizations', id: any, github_node_id?: string | null, name: string }> } | null };
 
 export type UpsertUserFromIdMutationVariables = Exact<{
   user: Users_Insert_Input;
@@ -10823,6 +10902,15 @@ export const GetOrganizationFromInstallationIdDocument = gql`
   }
 }
     `;
+export const GetOrganizationsFromUserQueryDocument = gql`
+    query GetOrganizationsFromUserQuery($user_id: uuid!) {
+  organizations(where: {organization_users: {user_id: {_eq: $user_id}}}) {
+    id
+    installation_id
+    name
+  }
+}
+    `;
 export const GetPreviousBuildForPrDocument = gql`
     query GetPreviousBuildForPr($pull_request_id: String!) {
   builds(
@@ -10919,6 +11007,17 @@ export const InsertPersonalProjectAndOrgDocument = gql`
   }
 }
     `;
+export const InsertProjectsDocument = gql`
+    mutation InsertProjects($projects: [projects_insert_input!]!) {
+  insert_projects(objects: $projects) {
+    affected_rows
+    returning {
+      id
+      name
+    }
+  }
+}
+    `;
 export const InsertScanDocument = gql`
     mutation InsertScan($scan: scans_insert_input!, $build_id: uuid!) {
   insert_scans_one(object: $scan) {
@@ -10993,6 +11092,22 @@ export const UpdateBuildExistingReviewIdDocument = gql`
   }
 }
     `;
+export const UpdateRepoIfExistsDocument = gql`
+    mutation UpdateRepoIfExists($repo_body: github_repositories_set_input!, $github_id: Int!) {
+  update_github_repositories(
+    _set: $repo_body
+    where: {github_id: {_eq: $github_id}}
+  ) {
+    affected_rows
+    returning {
+      project {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
 export const UpdateManifestStatusIfExistsDocument = gql`
     mutation UpdateManifestStatusIfExists($buildId: uuid!, $message: String, $status: String!) {
   update_manifests(
@@ -11016,6 +11131,13 @@ export const UpdateManifestDocument = gql`
         organization_id
       }
     }
+  }
+}
+    `;
+export const UpdateProjectNameDocument = gql`
+    mutation UpdateProjectName($id: uuid!, $name: String!) {
+  update_projects_by_pk(pk_columns: {id: $id}, _set: {name: $name}) {
+    id
   }
 }
     `;
@@ -11052,10 +11174,18 @@ export const UpsertOrganizationUsersDocument = gql`
   }
 }
     `;
+export const UpsertOrganizationDocument = gql`
+    mutation UpsertOrganization($object: organizations_insert_input!, $on_conflict: organizations_on_conflict) {
+  insert_organizations_one(object: $object, on_conflict: $on_conflict) {
+    id
+    github_node_id
+    name
+  }
+}
+    `;
 export const UpsertOrganizationsDocument = gql`
-    mutation UpsertOrganizations($objects: [organizations_insert_input!] = {}, $on_conflict: organizations_on_conflict) {
-  insert_organizations(objects: $objects, on_conflict: $on_conflict) {
-    affected_rows
+    mutation UpsertOrganizations($object: [organizations_insert_input!]!, $on_conflict: organizations_on_conflict) {
+  insert_organizations(objects: $object, on_conflict: $on_conflict) {
     returning {
       id
       github_node_id
@@ -11106,6 +11236,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetOrganizationFromInstallationId(variables?: GetOrganizationFromInstallationIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetOrganizationFromInstallationIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetOrganizationFromInstallationIdQuery>(GetOrganizationFromInstallationIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetOrganizationFromInstallationId', 'query');
     },
+    GetOrganizationsFromUserQuery(variables: GetOrganizationsFromUserQueryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetOrganizationsFromUserQueryQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetOrganizationsFromUserQueryQuery>(GetOrganizationsFromUserQueryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetOrganizationsFromUserQuery', 'query');
+    },
     GetPreviousBuildForPr(variables: GetPreviousBuildForPrQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPreviousBuildForPrQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPreviousBuildForPrQuery>(GetPreviousBuildForPrDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPreviousBuildForPr', 'query');
     },
@@ -11136,6 +11269,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     InsertPersonalProjectAndOrg(variables: InsertPersonalProjectAndOrgMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertPersonalProjectAndOrgMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertPersonalProjectAndOrgMutation>(InsertPersonalProjectAndOrgDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertPersonalProjectAndOrg', 'mutation');
     },
+    InsertProjects(variables: InsertProjectsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertProjectsMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<InsertProjectsMutation>(InsertProjectsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertProjects', 'mutation');
+    },
     InsertScan(variables: InsertScanMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertScanMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertScanMutation>(InsertScanDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertScan', 'mutation');
     },
@@ -11151,11 +11287,17 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     UpdateBuildExistingReviewId(variables: UpdateBuildExistingReviewIdMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateBuildExistingReviewIdMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateBuildExistingReviewIdMutation>(UpdateBuildExistingReviewIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateBuildExistingReviewId', 'mutation');
     },
+    UpdateRepoIfExists(variables: UpdateRepoIfExistsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateRepoIfExistsMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateRepoIfExistsMutation>(UpdateRepoIfExistsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateRepoIfExists', 'mutation');
+    },
     UpdateManifestStatusIfExists(variables: UpdateManifestStatusIfExistsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateManifestStatusIfExistsMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateManifestStatusIfExistsMutation>(UpdateManifestStatusIfExistsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateManifestStatusIfExists', 'mutation');
     },
     UpdateManifest(variables: UpdateManifestMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateManifestMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateManifestMutation>(UpdateManifestDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateManifest', 'mutation');
+    },
+    UpdateProjectName(variables: UpdateProjectNameMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateProjectNameMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateProjectNameMutation>(UpdateProjectNameDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateProjectName', 'mutation');
     },
     UpdateOrganizationsForUser(variables: UpdateOrganizationsForUserMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateOrganizationsForUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateOrganizationsForUserMutation>(UpdateOrganizationsForUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateOrganizationsForUser', 'mutation');
@@ -11166,7 +11308,10 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     UpsertOrganizationUsers(variables: UpsertOrganizationUsersMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertOrganizationUsersMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpsertOrganizationUsersMutation>(UpsertOrganizationUsersDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpsertOrganizationUsers', 'mutation');
     },
-    UpsertOrganizations(variables?: UpsertOrganizationsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertOrganizationsMutation> {
+    UpsertOrganization(variables: UpsertOrganizationMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertOrganizationMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpsertOrganizationMutation>(UpsertOrganizationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpsertOrganization', 'mutation');
+    },
+    UpsertOrganizations(variables: UpsertOrganizationsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertOrganizationsMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpsertOrganizationsMutation>(UpsertOrganizationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpsertOrganizations', 'mutation');
     },
     UpsertUserFromId(variables: UpsertUserFromIdMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertUserFromIdMutation> {
