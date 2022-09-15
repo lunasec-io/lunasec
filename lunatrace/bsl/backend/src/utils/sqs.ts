@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { GetQueueUrlCommand, SQSClient } from '@aws-sdk/client-sqs';
+import { GetQueueUrlCommand } from '@aws-sdk/client-sqs';
 
 import { sqsClient } from '../aws/sqs-client';
 import { MaybeError } from '../types/util';

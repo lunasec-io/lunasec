@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-import { VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
 import React from 'react';
 import { Accordion, Table } from 'react-bootstrap';
 import { ChevronDown, ChevronUp } from 'react-feather';
