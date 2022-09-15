@@ -30,10 +30,7 @@ export const ImportProjectsMain: React.FC = () => {
 
   const [isPolling, setIsPolling] = useState(true);
   // API access
-  const { data: orgsData, refetch: refetchOrgs } = api.useGetLunaTraceOrganizationsQuery(
-    {},
-    { pollingInterval: isPolling ? 1000 : 0 }
-  );
+  const { data: orgsData } = api.useGetLunaTraceOrganizationsQuery({}, { pollingInterval: isPolling ? 1000 : 0 });
   const {
     data: githubData,
     isLoading: isLoadingGithubData,
