@@ -23,6 +23,9 @@ const appApi = generatedApi.enhanceEndpoints({
     GetSidebarInfo: {
       providesTags: ['Projects', 'Organizations'],
     },
+    GetProjects: {
+      providesTags: ['Projects'],
+    },
     InsertProject: {
       invalidatesTags: ['Projects'],
     },
@@ -39,6 +42,9 @@ const appApi = generatedApi.enhanceEndpoints({
       providesTags: ['Builds'],
     },
     InsertPersonalProjectAndOrg: {
+      invalidatesTags: ['Projects'],
+    },
+    InstallSelectedRepos: {
       invalidatesTags: ['Projects'],
     },
     GetProject: {

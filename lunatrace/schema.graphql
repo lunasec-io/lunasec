@@ -47,6 +47,23 @@ input Float_comparison_exp {
   _nin: [Float!]
 }
 
+type GithubRepository {
+  cloneUrl: String!
+  defaultBranch: String!
+  gitUrl: String!
+  orgId: Int!
+  orgName: String!
+  orgNodeId: String!
+  ownerType: String!
+  repoId: Int!
+  repoName: String!
+  repoNodeId: String!
+}
+
+type InstallSelectedReposResponse {
+  success: Boolean
+}
+
 """
 Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
 """
@@ -60,6 +77,17 @@ input Int_comparison_exp {
   _lte: Int
   _neq: Int
   _nin: [Int!]
+}
+
+type OrgWithRepos {
+  id: String!
+  organizationName: String!
+  repos: [GithubRepository!]!
+}
+
+input OrgsWithReposInput {
+  id: String!
+  repos: [Int!]!
 }
 
 type PresignedUrlResponse {
@@ -4655,6 +4683,7 @@ type mutation_root {
     """upsert condition"""
     on_conflict: webhook_cache_on_conflict
   ): webhook_cache
+  installSelectedRepos(orgs: [OrgsWithReposInput!]!): InstallSelectedReposResponse
 
   """ get s3 presigned url for manifest upload, used only by the frontend """
   presignManifestUpload(project_id: uuid!): PresignedUrlResponse
@@ -6019,7 +6048,7 @@ type organizations {
   github_id: Int
   github_node_id: String
   id: uuid!
-  installation_id: Int
+  installation_id: Int!
   name: String!
 
   """An array relationship"""
@@ -6137,6 +6166,11 @@ input organizations_bool_exp {
 unique or primary key constraints on table "organizations"
 """
 enum organizations_constraint {
+  """
+  unique or primary key constraint on columns "installation_id"
+  """
+  installation_id_unique
+
   """
   unique or primary key constraint on columns "github_id"
   """
@@ -8476,6 +8510,7 @@ enum projects_update_column {
 
 type query_root {
   authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
+  availableOrgsWithRepos: [OrgWithRepos!]
 
   """
   fetch data from the table: "build_dependency_relationship"

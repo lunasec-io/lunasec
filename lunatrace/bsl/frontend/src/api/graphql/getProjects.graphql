@@ -1,0 +1,14 @@
+# Currently this is used during new repo import to see which we have already imported, if any.  This is being used because
+# the sidebar query that also fetches this data
+# is now janky and requires the kratos_id as part of the query params
+
+# It's possible this will be broken in admin impersonation mode where we can impersonate other users, but thats probably fine.
+# TODO: find a better way to do that which doesnt hinge on passing the kratos id in the query params
+
+query GetProjects {
+    projects(order_by: {name: asc}) {
+        github_repository {
+            github_id
+        }
+    }
+}
