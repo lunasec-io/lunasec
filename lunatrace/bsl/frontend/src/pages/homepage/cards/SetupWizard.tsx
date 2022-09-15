@@ -81,15 +81,9 @@ export const SetupWizard: React.FunctionComponent<WizardProps> = ({ compact }) =
 
           <Row className="justify-content-center">
             <Col md={compact ? '12' : '6'} className="d-grid gap-2">
-              {hasProjects ? (
-                <Button variant="light" size="lg" onClick={() => navigate('/project/import')}>
-                  <BsGithub className="mb-1 me-1" /> {'Add more projects'}
-                </Button>
-              ) : (
-                <Button variant="primary" size="lg" href={GithubAppUrl}>
-                  <BsGithub className="mb-1 me-1" /> {'Connect to GitHub'}
-                </Button>
-              )}
+              <Button variant={hasProjects ? 'light' : 'primary'} size="lg" href={GithubAppUrl}>
+                <BsGithub className="mb-1 me-1" /> {hasProjects ? 'Add more projects' : 'Connect to GitHub'}
+              </Button>
               <ConditionallyRender if={!hasProjects}>
                 {createPersonalProjectMutationResult.isLoading ? (
                   <Spinner animation="border" variant="primary" />

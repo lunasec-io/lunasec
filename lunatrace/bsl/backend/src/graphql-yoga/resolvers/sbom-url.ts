@@ -18,7 +18,9 @@ import { hasura } from '../../hasura-api';
 import { aws } from '../../utils/aws-utils';
 import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';
-import { checkProjectIsAuthorized, throwIfUnauthenticated } from '../helpers/auth-helpers';
+
+import { throwIfUnauthenticated } from './auth-helpers';
+import { checkProjectIsAuthorized } from './presign-manifest-upload';
 
 type sbomUrlResolverT = NonNullable<QueryResolvers['sbomUrl']>;
 

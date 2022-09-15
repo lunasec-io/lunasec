@@ -73,6 +73,20 @@ describe('Dependency relationship hashing', () => {
     expect(baseHash === hash).toBeFalsy();
     expect(hash).toBe('67ca139b-2196-f6ec-5ad6-fc1337be5c0d');
   });
+
+  it.concurrent('should hash data without labels', () => {
+    const hash = generateMerkleHash({
+      name: 'trim',
+      version: '0.0.1',
+      ecosystem: 'npm',
+      customRegistry: '',
+      childHashes: [],
+      parentRange: '0.0.1',
+      labels: undefined
+    });
+    expect(baseHash === hash).toBeFalsy();
+    expect(hash).toBe('f6b07e92-29bc-25ab-933c-91f5895af5e5');
+  });
 });
 
 const testPackageTree: PkgTree = {

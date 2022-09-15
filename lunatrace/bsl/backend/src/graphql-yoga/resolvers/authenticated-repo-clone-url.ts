@@ -15,7 +15,8 @@ import { getRepoCloneUrlWithAuth } from '../../github/actions/get-repo-clone-url
 import { userIsAdmin } from '../../hasura-api/actions/user-is-admin';
 import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';
-import { getUserId } from '../helpers/auth-helpers';
+
+import { getUserId } from './auth-helpers';
 
 type AuthenticatedRepoCloneUrlResolver = NonNullable<QueryResolvers['authenticatedRepoCloneUrl']>;
 
