@@ -21,17 +21,34 @@ import { MaybeError } from '../../types/util';
 import { logError, newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { catchError, threwError } from '../../utils/try';
+import { getInstallationAccessToken } from '../auth';
 
-import { getGithubReposForInstallation } from './get-github-repos-for-installation';
 import { getHasuraOrgMembers } from './get-org-members';
+import { getReposFromInstallation } from './get-repos-from-installation';
 import { queueNewReposForSnapshot } from './queue-new-repos-for-snapshot';
 
-// Performs the full upsertion of any projects and orgs that the github app is linked to, and returns some metadata about the repos for any subsequent processing
-export async function upsertInstalledProjects(
-  installationAuthToken: string,
-  installationId: number
+/**
+ * Performs the full upsertion of any projects and orgs that the github app is linked to, and returns some metadata about the repos for any subsequent processing
+ * @param installationId
+ * @param selectedRepoIds A subset of the repos in the installation that we want to import
+ */
+export async function installProjectsFromGithub(
+  installationId: number,
+  selectedRepoIds: number[]
 ): Promise<MaybeError<GithubRepositoryInfo[]>> {
-  const githubRepos = await getGithubReposForInstallation(installationAuthToken, installationId);
+  const installationAuthToken = await getInstallationAccessToken(installationId);
+  if (installationAuthToken.error) {
+    return newError(`unable to get installation token: ${installationAuthToken.msg}`);
+  }
+
+  const unfilteredGithubRepos = await getReposFromInstallation(installationAuthToken.res, installationId);
+  if (unfilteredGithubRepos === null) {
+    return newError(`failed to get repos for installation: ${installationId}`);
+  }
+
+  const githubRepos = unfilteredGithubRepos.filter((repo) => {
+    return selectedRepoIds.includes(repo.repoId);
+  });
 
   log.info(`Collected installation data`, {
     installationId,
@@ -41,13 +58,15 @@ export async function upsertInstalledProjects(
     })),
   });
 
-  // TODO: Fix this with proper UI in the future. Logging this will happen automatically at the handler level
+  // TODO: we could query hasura here for the existing repo count if we want to set up hard limits on repo count, TBD by pricing
+  // this isn't a very robust check at the moment because people could still manually batch in more repos by hacking around the GUI by doing 199 at a time
   if (githubRepos.length > 200) {
     return newError(`Maximum repo count hit, aborting installed repo synchronization job ${installationId}`);
   }
 
-  const organizations = generateOrgsAndProjectsMutation(installationId, githubRepos);
-  const orgMutationInputs = Object.values(organizations);
+  // Get the data ready to go into hasura
+  const orgMutationInputsByOrgId = generateOrgsAndProjectsMutation(installationId, githubRepos);
+  const orgMutationInputs = Object.values(orgMutationInputsByOrgId);
 
   const orgIds = await insertOrgsAndProjects(installationId, orgMutationInputs);
 
@@ -73,12 +92,17 @@ export async function upsertInstalledProjects(
     };
   }, {} as Record<string, string>);
 
-  const orgLoginList = Object.keys(organizations);
+  const orgLoginList = Object.keys(orgMutationInputsByOrgId);
 
   const createOrgUsersResp = await Promise.all(
     orgLoginList.map(async (login) => {
-      const org = organizations[login];
-      const orgMembers = await getHasuraOrgMembers(installationId, installationAuthToken, org, githubOrgToHasuraOrg);
+      const org = orgMutationInputsByOrgId[login];
+      const orgMembers = await getHasuraOrgMembers(
+        installationId,
+        installationAuthToken.res,
+        org,
+        githubOrgToHasuraOrg
+      );
 
       if (orgMembers.error) {
         log.error(orgMembers.msg);

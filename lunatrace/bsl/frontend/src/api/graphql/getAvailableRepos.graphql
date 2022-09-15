@@ -1,0 +1,11 @@
+query GetAvailableRepos {
+    availableOrgsWithRepos{
+        organizationName
+        installationId
+        repos {
+            gitUrl
+            repoId
+            repoName
+        }
+    }
+}

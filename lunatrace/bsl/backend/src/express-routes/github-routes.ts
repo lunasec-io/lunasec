@@ -13,10 +13,8 @@
  */
 import express from 'express';
 
-import { githubInstall } from '../github/install';
 import { githubLogin } from '../github/login';
 
 export const githubApiRouter = express.Router();
 
-githubApiRouter.get('/github/install', githubInstall);
 githubApiRouter.post('/github/login', githubLogin);
