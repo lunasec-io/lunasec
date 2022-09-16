@@ -13,10 +13,6 @@ directive @cached(
   ttl: Int! = 60
 ) on QUERY
 
-type AuthenticatedRepoCloneUrlOutput {
-  url: String
-}
-
 """
 Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
 """
@@ -60,18 +56,6 @@ input Int_comparison_exp {
   _lte: Int
   _neq: Int
   _nin: [Int!]
-}
-
-type PresignedUrlResponse {
-  bucket: String!
-  headers: jsonb!
-  key: String!
-  url: String!
-}
-
-type SbomUploadUrlOutput {
-  error: Boolean!
-  uploadUrl: UploadUrl
 }
 
 """
@@ -125,11 +109,6 @@ input String_comparison_exp {
 
   """does the column match the given SQL regular expression"""
   _similar: String
-}
-
-type UploadUrl {
-  headers: jsonb!
-  url: String!
 }
 
 scalar _text
@@ -718,7 +697,6 @@ type builds {
     where: resolved_manifest_bool_exp
   ): [resolved_manifest!]!
   s3_url: String
-  s3_url_signed: String
 
   """An array relationship"""
   scans(
@@ -1923,7 +1901,6 @@ input fix_state_enum_comparison_exp {
 
 """Metadata about a github repository and where to find it."""
 type github_repositories {
-  authenticated_clone_url: AuthenticatedRepoCloneUrlOutput
   default_branch: String
   git_url: String!
   github_id: Int
@@ -4867,9 +4844,6 @@ type mutation_root {
     """upsert condition"""
     on_conflict: webhook_cache_on_conflict
   ): webhook_cache
-
-  """ get s3 presigned url for manifest upload, used only by the frontend """
-  presignManifestUpload(project_id: uuid!): PresignedUrlResponse
 
   """
   update data of the table: "build_dependency_relationship"
@@ -8692,8 +8666,6 @@ enum projects_update_column {
 }
 
 type query_root {
-  authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
-
   """
   fetch data from the table: "build_dependency_relationship"
   """
@@ -8798,7 +8770,6 @@ type query_root {
     """filter the rows returned"""
     where: default_branch_builds_bool_exp
   ): [default_branch_builds!]!
-  fakeQueryToHackHasuraBeingABuggyMess: String
 
   """An array relationship"""
   findings(
@@ -9324,9 +9295,6 @@ type query_root {
   """
   package_release_license_by_pk(id: uuid!): package_release_license
 
-  """ get s3 presigned url for manifest upload, used by the CLI """
-  presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
-
   """An array relationship"""
   project_access_tokens(
     """distinct select on columns"""
@@ -9413,7 +9381,6 @@ type query_root {
   fetch data from the table: "resolved_manifest" using primary key columns
   """
   resolved_manifest_by_pk(id: uuid!): resolved_manifest
-  sbomUrl(buildId: uuid!): String
 
   """An array relationship"""
   scans(
