@@ -50,7 +50,7 @@
     "@octokit/auth-app": "^3.6.1",
     "@octokit/graphql": "^4.8.0",
     "@octokit/plugin-rest-endpoint-methods": "^5.13.0",
-    "@octokit/webhooks": "^9.23.0",
+    "@octokit/webhooks": "~10.1.5",
     "@octokit/webhooks-types": "^5.5.1",
     "@ory/kratos-client": "0.9.0-alpha.3",
     "@types/bl": "~5.0.2",
