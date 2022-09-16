@@ -15,7 +15,7 @@ errors:
     json:
       enabled: true
       config:
-        verbose: true
+        verbose: false
     redirect:
       enabled: true
       config:
@@ -75,3 +75,4 @@ authenticators:
         header: X-LunaTrace-Access-Token
 log:
   format: json
+  level: error
