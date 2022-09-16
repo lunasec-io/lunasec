@@ -15780,6 +15780,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@octokit/openapi-types@npm:^13.11.0":
+  version: 13.12.0
+  resolution: "@octokit/openapi-types@npm:13.12.0"
+  checksum: d8f2598d95b7031799af54c6af0bfcd03f59372f417248a7bf04f60d1ac79019d41aff3ed5285760bd80e3b674a611043385ace4067346277e8c95ff6437a2e7
+  languageName: node
+  linkType: hard
+
 "@octokit/plugin-enterprise-rest@npm:^6.0.1":
   version: 6.0.1
   resolution: "@octokit/plugin-enterprise-rest@npm:6.0.1"
@@ -15882,6 +15889,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@octokit/request-error@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "@octokit/request-error@npm:3.0.1"
+  dependencies:
+    "@octokit/types": ^7.0.0
+    deprecation: ^2.0.0
+    once: ^1.4.0
+  checksum: ae386b5181b3cb66b844047a21d062b683cd7ec4daf70cb9868406c1a51608a72d683955e692c7cc6237d66a09b12c6bcf102a712985da68bcedcc3820117e75
+  languageName: node
+  linkType: hard
+
 "@octokit/request@npm:^5.2.0, @octokit/request@npm:^5.3.0, @octokit/request@npm:^5.4.14, @octokit/request@npm:^5.6.0, @octokit/request@npm:^5.6.3":
   version: 5.6.3
   resolution: "@octokit/request@npm:5.6.3"
@@ -15950,10 +15968,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@octokit/types@npm:^7.0.0":
+  version: 7.5.0
+  resolution: "@octokit/types@npm:7.5.0"
+  dependencies:
+    "@octokit/openapi-types": ^13.11.0
+  checksum: ded2fa77d939e54e97c9561120c19990781686250a0fbb36c3c8fe63f2c6ab081eca065e67a830a5731e1f0d9a4b8a8c26f858e28e1beb0f0c31aed31284e087
+  languageName: node
+  linkType: hard
+
 "@octokit/webhooks-methods@npm:^2.0.0":
   version: 2.0.0
   resolution: "@octokit/webhooks-methods@npm:2.0.0"
   checksum: 42f87ccb93d05b314a12e99c717523cef290c896719e95cdb9349aee4be453d42c3a4286ee9de67f88946d048b29ae31c2f98875df0c6d5da662e94554acab56
+  languageName: node
+  linkType: hard
+
+"@octokit/webhooks-methods@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@octokit/webhooks-methods@npm:3.0.0"
+  checksum: 3d1fdd051acb1e185160e138794b52b168a94dbd0fb05b1267914bfada199ccd615bc62828453b08edc5037557810319198c2684cfe5eba6267686952a9b644d
   languageName: node
   linkType: hard
 
@@ -15964,7 +15998,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@octokit/webhooks@npm:^9.0.1, @octokit/webhooks@npm:^9.23.0":
+"@octokit/webhooks-types@npm:6.3.6":
+  version: 6.3.6
+  resolution: "@octokit/webhooks-types@npm:6.3.6"
+  checksum: 974db34258cbdb0d02f3bed202595822c1799804cbd46e3375571537e0ba879350f30a3e27b156480a0be4eaa924bbb353a578ae86cb58e495c524478f052f6b
+  languageName: node
+  linkType: hard
+
+"@octokit/webhooks@npm:^9.0.1":
   version: 9.23.0
   resolution: "@octokit/webhooks@npm:9.23.0"
   dependencies:
@@ -15973,6 +16014,18 @@ __metadata:
     "@octokit/webhooks-types": 5.5.1
     aggregate-error: ^3.1.0
   checksum: f1803d14790957f619aadc68ec5f460fa8acb295b24c29074a8771ceb4f418e9de170b4b96b4436e731606d26318fedb89aaa68005dbb47dbd6e764c140dc43a
+  languageName: node
+  linkType: hard
+
+"@octokit/webhooks@npm:~10.1.5":
+  version: 10.1.5
+  resolution: "@octokit/webhooks@npm:10.1.5"
+  dependencies:
+    "@octokit/request-error": ^3.0.0
+    "@octokit/webhooks-methods": ^3.0.0
+    "@octokit/webhooks-types": 6.3.6
+    aggregate-error: ^3.1.0
+  checksum: ea34d0e9431550d94cc2421b7afee56515745d8df3a61592cfeba3087ad7541c5b3bd64dba77fe0da554dc34e4e5438061cc94b80ba7e57ee65b74024929792e
   languageName: node
   linkType: hard
 
@@ -39641,7 +39694,7 @@ __metadata:
     "@octokit/graphql": ^4.8.0
     "@octokit/openapi-types": ^11.2.0
     "@octokit/plugin-rest-endpoint-methods": ^5.13.0
-    "@octokit/webhooks": ^9.23.0
+    "@octokit/webhooks": ~10.1.5
     "@octokit/webhooks-types": ^5.5.1
     "@ory/kratos-client": 0.9.0-alpha.3
     "@types/aws-lambda": ^8.10.89
