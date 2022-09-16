@@ -14,7 +14,7 @@
 import { EmitterWebhookEvent } from '@octokit/webhooks';
 
 import { hasura } from '../../../hasura-api';
-import { SnapshotBuildInfo, SnapshotForRepositoryRequest } from '../../../types/sqs';
+import { SnapshotBuildInfo } from '../../../types/sqs';
 import { log } from '../../../utils/log';
 import { queueRepositoryForSnapshot } from '../../actions/queue-repository-for-snapshot';
 

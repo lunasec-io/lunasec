@@ -14,7 +14,7 @@
 import { filterFindingsNotIgnored, VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
 import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
-import { Card, Col, Container, NavLink, OverlayTrigger, Popover, Row, Tooltip } from 'react-bootstrap';
+import { Card, Col, NavLink, OverlayTrigger, Popover, Row, Tooltip } from 'react-bootstrap';
 import { CopyBlock, tomorrowNight } from 'react-code-blocks';
 import { FcUpload } from 'react-icons/fc';
 

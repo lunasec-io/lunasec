@@ -18,7 +18,6 @@ import { createNewBuild } from '../hasura-api/actions/create-new-build';
 import { SnapshotBuildInfo, SnapshotForRepositoryRequest } from '../types/sqs';
 import { newError } from '../utils/errors';
 import { log } from '../utils/log';
-import { threwError } from '../utils/try';
 import { scanSnapshotActivity } from '../workers/queue/activities/scan-snapshot-activity';
 import { snapshotRepositoryActivity } from '../workers/queue/activities/snapshot-repository-activity';
 

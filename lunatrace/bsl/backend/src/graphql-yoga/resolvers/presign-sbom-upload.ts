@@ -18,8 +18,7 @@ import { getWorkerBucketConfig } from '../../config';
 import { aws } from '../../utils/aws-utils';
 import { JWTClaims } from '../context';
 import { QueryResolvers } from '../generated-resolver-types';
-
-import { throwIfUnauthenticated } from './auth-helpers';
+import { throwIfUnauthenticated } from '../helpers/auth-helpers';
 
 type PresignSbomUploadResolver = NonNullable<QueryResolvers['presignSbomUpload']>;
 

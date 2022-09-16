@@ -33,7 +33,7 @@ import {
 } from '../generated';
 import { hasura } from '../index';
 
-function getExistingProjects(orgLookup: OrganizationInputLookup, orgName: string) {
+function getExistingProjectsInOrg(orgLookup: OrganizationInputLookup, orgName: string) {
   const existingOrg = orgLookup[orgName];
   if (!existingOrg || !existingOrg.projects) {
     return [];
@@ -85,7 +85,7 @@ export function generateOrgsAndProjectsMutation(
       github_node_id: repo.orgNodeId,
       github_owner_type: repo.ownerType,
       projects: {
-        data: [...getExistingProjects(orgLookup, repo.orgName), project],
+        data: [...getExistingProjectsInOrg(orgLookup, repo.orgName), project],
         on_conflict: projectOnConflict,
       },
     };
@@ -96,6 +96,7 @@ export function generateOrgsAndProjectsMutation(
   }, {} as OrganizationInputLookup);
 }
 
+// This is DEPRECATED now that we do not insert orgs manually, and instead insert them from webhook. We can bring this back if we ever fix our oauth
 export async function insertOrgsAndProjects(
   installationId: number,
   orgObjectList: Organizations_Insert_Input[]
@@ -121,7 +122,7 @@ export async function insertOrgsAndProjects(
   const createOrgsRes: Try<UpsertOrganizationsMutation> = await catchError(
     async () =>
       await hasura.UpsertOrganizations({
-        objects: orgObjectList,
+        object: orgObjectList,
         on_conflict: onOrgConflict,
       })
   );
