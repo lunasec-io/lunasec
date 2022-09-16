@@ -68,10 +68,8 @@ selfservice:
                 body: file:///config/oidc.hook.jsonnet
 
 
-
-
 log:
-  level: debug
+  level: error
   format: json
   leak_sensitive_values: false
 
