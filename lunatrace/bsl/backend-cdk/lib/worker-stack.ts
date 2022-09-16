@@ -253,5 +253,6 @@ export class WorkerStack extends cdk.Stack {
         },
       },
     });
+    addDatadogToTaskDefinition(context, updateVulnerabilitiesJob.taskDefinition, datadogApiKeyArn);
   }
 }
