@@ -27,7 +27,7 @@ export function registerWebhooksToInterceptor(interceptor: WebhookInterceptor): 
   const listenToHook: typeof interceptor.on = (hookName, callback) => {
     interceptor.on(hookName, async (event) => {
       const actionName = 'action' in event.payload ? event.payload.action : 'none given';
-      await log.provideFields({ trace: 'webhook-logger', hookName, actionName, event }, async () => {
+      await log.provideFields({ trace: 'webhook-logger', hookName, actionName }, async () => {
         log.info(`processing ${hookName} github webhook event from queue`);
         try {
           // Fire handler

@@ -17,7 +17,9 @@ import zlib from 'zlib';
 import validate from 'validator';
 
 import { interactWithPR } from '../../../github/actions/pr-comment-generator';
-import { hasura } from '../../../hasura-api';
+import { updateBuildStatus } from '../../../hasura-api/actions/update-build-status';
+import { updateManifestStatus } from '../../../hasura-api/actions/update-manifest-status';
+import { Build_State_Enum } from '../../../hasura-api/generated';
 import { InsertedScan, performSnapshotScanAndCollectReport } from '../../../models/scan';
 import { S3ObjectMetadata } from '../../../types/s3';
 import { SbomBucketInfo } from '../../../types/scan';
@@ -48,8 +50,6 @@ function decompressGzip(stream: Readable, streamLength: number): Promise<zlib.Gz
 }
 
 async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Promise<InsertedScan | null> {
-  log.info('scanning snapshot');
-
   const [sbomStream, sbomLength] = await aws.getFileFromS3(
     sbomBucketInfo.key,
     sbomBucketInfo.bucketName,
@@ -57,30 +57,23 @@ async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Pr
   );
 
   if (sbomLength === 0) {
-    log.error('sbom is empty', {
-      buildId,
-      sbomBucketInfo,
-    });
+    log.error('SBOM length is zero.');
+    updateBuildStatus(buildId, Build_State_Enum.SnapshotScanFailed, 'Internal error while scanning snapshot.');
     return null;
   }
 
   const unZippedSbomStream = await decompressGzip(sbomStream, sbomLength);
 
-  log.info(`updating manifest status to "scanning" if it existed`);
-  await hasura.UpdateManifestStatusIfExists({ status: 'scanning', buildId: buildId });
+  log.info('Starting to scan snapshot.');
+  updateBuildStatus(buildId, Build_State_Enum.SnapshotScanStarted);
+  updateManifestStatus(buildId, 'scanning');
 
   const scanReport = await performSnapshotScanAndCollectReport(unZippedSbomStream, buildId);
   if (scanReport === null) {
+    log.error('Failed to scan snapshot.');
+    updateBuildStatus(buildId, Build_State_Enum.SnapshotScanFailed, 'Internal error while scanning snapshot.');
     return null;
   }
-
-  log.info('upload complete, notifying manifest if one exists', {
-    createdFindings: scanReport.findings.length,
-  });
-  await hasura.UpdateManifestStatusIfExists({ status: 'scanned', buildId: buildId });
-
-  log.info('done with scan');
-
   return scanReport;
 }
 
@@ -99,24 +92,22 @@ export async function scanSnapshotActivity(buildId: string, msg: S3ObjectMetadat
 
     const scanResp = await catchError(scanSnapshot(buildId, bucketInfo));
     if (threwError(scanResp)) {
-      log.error('scan snapshot failed', { scanResp });
-      await hasura.UpdateManifestStatusIfExists({
-        status: 'error',
-        message: String(scanResp.message),
-        buildId: buildId,
-      });
+      log.error('Failed to scan snapshot.');
+      updateBuildStatus(buildId, Build_State_Enum.SnapshotScanFailed, scanResp.message);
+      updateManifestStatus(buildId, 'error', String(scanResp.message));
       return newError(scanResp.message);
     }
 
     if (scanResp === null) {
       log.error('failed to scan snapshot due to invalid SBOM');
-      await hasura.UpdateManifestStatusIfExists({
-        status: 'error',
-        message: String('invalid SBOM was requested to be scanned'),
-        buildId: buildId,
-      });
+      updateBuildStatus(buildId, Build_State_Enum.SnapshotScanFailed, 'Invalid SBOM was requested to be scanned.');
+      updateManifestStatus(buildId, 'error', 'invalid SBOM was requested to be scanned');
       return newResult(undefined);
     }
+
+    log.info('Successfully scanned snapshot.');
+    updateBuildStatus(buildId, Build_State_Enum.SnapshotScanCompleted);
+    updateManifestStatus(buildId, 'scanned');
 
     try {
       await interactWithPR(buildId, scanResp);

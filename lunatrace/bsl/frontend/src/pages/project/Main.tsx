@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import React, { useEffect, useState } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { Box, Home, Lock, Menu, Settings } from 'react-feather';
@@ -18,6 +19,7 @@ import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 
 import api from '../../api';
+import { GetManifestQuery, GetProjectBuildsQuery } from '../../api/generated';
 import { SpinIfLoading } from '../../components/SpinIfLoading';
 import useBreakpoint from '../../hooks/useBreakpoint';
 import { useRecentProjects } from '../../hooks/useRecentProjects';
@@ -33,7 +35,8 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
   const { project_id } = useParams();
 
   const [buildLimit, setBuildLimit] = useState(10);
-  // RUN SEARCH QUERY
+
+  // Load project information
   const { data, isLoading, refetch, isFetching } = api.useGetProjectQuery({
     project_id: project_id as string,
     build_limit: buildLimit,
@@ -120,17 +123,24 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
         </Navbar>
 
         <br />
-        {renderProjectSubPage(p)}
+        {renderProjectSubPage(p, buildLimit)}
       </>
     );
   };
 
-  const renderProjectSubPage = (p: ProjectInfo) => {
+  const renderProjectSubPage = (p: ProjectInfo, buildLimit: number) => {
     switch (activeTab) {
       case 'dashboard':
         return <ProjectDashboardMain project={p} setActiveTab={setActiveTab} />;
       case 'builds':
-        return <Builds project={p} loadMoreBuildsCallback={loadMoreBuildsCallback} isFetching={isFetching} />;
+        return (
+          <Builds
+            projectId={p.id}
+            buildLimit={buildLimit}
+            loadMoreBuildsCallback={loadMoreBuildsCallback}
+            isFetching={isFetching}
+          />
+        );
       case 'secrets':
         return <SecretsMain project={p} />;
       case 'settings':
