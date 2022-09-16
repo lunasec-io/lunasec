@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-import { sqsClient } from '../../aws/sqs-client';
 import { getWebhookConfig } from '../../config';
 import { hasura } from '../../hasura-api';
 import { log } from '../../utils/log';
