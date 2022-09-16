@@ -224,7 +224,6 @@ export class WorkerStack extends cdk.Stack {
 
     const ingestWorkerImage = ContainerImage.fromAsset('../ingest-worker', {
       ...commonBuildProps,
-      target: 'backend-queue-processor',
       file: 'docker/ingestworker.dockerfile',
     });
 
