@@ -81,7 +81,7 @@ selfservice:
 
 
 log:
-  level: debug
+  level: info
   format: json
   leak_sensitive_values: true
 
