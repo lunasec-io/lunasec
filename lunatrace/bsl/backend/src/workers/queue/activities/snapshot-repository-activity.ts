@@ -16,19 +16,17 @@ import * as os from 'os';
 import path from 'path';
 import util from 'util';
 
-import { LunaLogger } from '@lunatrace/logger';
-
 import { getRepoCloneUrlWithAuth } from '../../../github/actions/get-repo-clone-url-with-auth';
-import { hasura } from '../../../hasura-api';
-import { InsertBuildMutation, Scalars } from '../../../hasura-api/generated';
+import { updateBuildStatus } from '../../../hasura-api/actions/update-build-status';
+import { Build_State_Enum } from '../../../hasura-api/generated';
 import { generateSbomFromAsset } from '../../../snapshot/call-cli';
 import { uploadSbomToS3 } from '../../../snapshot/generate-snapshot';
 import { snapshotPinnedDependencies } from '../../../snapshot/node-package-tree';
 import { SnapshotForRepositoryRequest } from '../../../types/sqs';
 import { MaybeError, MaybeErrorVoid } from '../../../types/util';
-import { newError, newResult } from '../../../utils/errors';
+import { newError } from '../../../utils/errors';
 import { log } from '../../../utils/log';
-import { catchError, threwError, Try } from '../../../utils/try';
+import { catchError, threwError } from '../../../utils/try';
 
 const mkdTemp = util.promisify(fs.mkdtemp);
 const rmDir = util.promisify(fs.rm);
@@ -41,7 +39,8 @@ async function performSnapshotOnRepository(
   gitBranch: string,
   gitCommit?: string
 ): Promise<MaybeErrorVoid> {
-  log.info('creating snapshot for repository');
+  log.info('Starting to snapshot repository.');
+  updateBuildStatus(buildId, Build_State_Enum.SnapshotStarted);
 
   let repoDir = '';
   try {
@@ -53,18 +52,18 @@ async function performSnapshotOnRepository(
     });
 
     if (sbom === null) {
+      log.error('Failed to generated SBOM for repository.');
+      updateBuildStatus(buildId, Build_State_Enum.SnapshotFailed, 'Failed to generated SBOM for repository.');
       return {
         error: true,
         msg: 'unable to generate sbom for asset',
       };
     }
-
-    log.info('uploading sbom to s3');
+    log.info('Successfully generated SBOM for repository.');
 
     const s3UploadRes = await catchError(uploadSbomToS3(installationId, buildId, sbom));
-
     if (threwError(s3UploadRes)) {
-      log.error('unable to upload sbom to s3', {
+      log.error('Failed to save SBOM for repository.', {
         error: s3UploadRes,
         message: s3UploadRes.message,
       });
@@ -76,21 +75,26 @@ async function performSnapshotOnRepository(
       };
     }
 
-    log.info('uploaded sbom to s3', {
+    log.info('Successfully saved SBOM for repository.', {
       s3Url: s3UploadRes,
     });
 
-    log.info('snapshotting pinned dependencies', {
+    log.info('Attempting to snapshot pinned dependencies for repository.', {
       repoDir,
     });
 
     try {
       await snapshotPinnedDependencies(buildId, repoDir);
     } catch (err) {
-      log.error('failed to snapshot pinned dependencies', {
+      log.error('Failed to snapshot pinned dependencies for repository.', {
         error: err,
         repoDir,
       });
+      updateBuildStatus(
+        buildId,
+        Build_State_Enum.SnapshotFailed,
+        'Failed to snapshot pinned dependencies for repository.'
+      );
 
       return {
         error: true,
@@ -99,22 +103,30 @@ async function performSnapshotOnRepository(
       };
     }
 
-    log.info('completed snapshotting pinned dependencies', {
+    log.info('Successfully created snapshot for pinned dependencies for repository.', {
       repoDir,
     });
+    updateBuildStatus(buildId, Build_State_Enum.SnapshotCompleted);
+
+    updateBuildStatus(buildId, Build_State_Enum.SnapshotScanQueued);
 
     return {
       error: false,
     };
   } catch (e) {
-    log.error('error occurred while snapshotting an asset', {
+    log.error('Experienced internal error while creating snapshot for repository.', {
       tmpDir: repoDir,
       error: e,
     });
+    updateBuildStatus(
+      buildId,
+      Build_State_Enum.SnapshotFailed,
+      'Experienced internal error while creating snapshot for repository.'
+    );
 
     return {
       error: true,
-      msg: `error occurred while snapshotting an asset: ${e}`,
+      msg: `error occurred while snapshotting repository: ${e}`,
       rawError: e instanceof Error ? e : undefined,
     };
   } finally {
@@ -123,6 +135,7 @@ async function performSnapshotOnRepository(
         await rmDir(repoDir, { recursive: true });
       }
     } catch (e) {
+      // Do not update build status, this is not a fatal error.
       log.error('error occurred while removing temp folder', {
         tmpDir: repoDir,
         error: e,
@@ -130,75 +143,17 @@ async function performSnapshotOnRepository(
     }
   }
 
+  log.error('Experienced internal error while creating snapshot for repository.');
+  updateBuildStatus(
+    buildId,
+    Build_State_Enum.SnapshotFailed,
+    'Experienced internal error while creating snapshot for repository.'
+  );
+
   return {
     error: true,
     msg: 'did not preform snapshot successfully',
     rawError: new Error('did not preform snapshot successfully'),
-  };
-}
-
-interface NewBuildInfo {
-  projectId: string;
-  pullRequestId?: string;
-  sourceType: Scalars['builds_source_type'];
-  gitCommit?: string;
-  gitBranch: string;
-  cloneUrl: string;
-}
-
-async function createNewBuild(logger: LunaLogger, buildInfo: NewBuildInfo): Promise<MaybeError<string>> {
-  logger.info('Creating a new build for repository', {
-    projectId: buildInfo.projectId,
-  });
-
-  const insertBuildResponse: Try<InsertBuildMutation> = await catchError(
-    async () =>
-      await hasura.InsertBuild({
-        build: {
-          project_id: buildInfo.projectId,
-          pull_request_id: buildInfo.pullRequestId,
-          source_type: buildInfo.sourceType,
-          git_hash: buildInfo.gitCommit,
-          git_branch: buildInfo.gitBranch,
-          git_remote: buildInfo.cloneUrl,
-        },
-      })
-  );
-
-  if (threwError(insertBuildResponse)) {
-    const msg = 'failed to insert a new build';
-    logger.error(msg, {
-      error: insertBuildResponse,
-    });
-
-    return {
-      error: true,
-      msg: msg,
-      rawError: insertBuildResponse,
-    };
-  }
-
-  const { insert_builds_one } = insertBuildResponse;
-
-  logger.info('inserted new build', {
-    insert_builds_one,
-  });
-
-  if (!insert_builds_one || insert_builds_one.id === undefined) {
-    const msg = 'missing idd in insert build response';
-    logger.error(msg, {
-      insert_builds_one,
-    });
-    return {
-      error: true,
-      msg: msg,
-      rawError: new Error(msg),
-    };
-  }
-
-  return {
-    error: false,
-    res: insert_builds_one.id as string,
   };
 }
 
@@ -210,7 +165,6 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
   logger.info('creating authed git clone url');
 
   const cloneUrlWithAuth = await getRepoCloneUrlWithAuth(req.repoGithubId);
-
   if (cloneUrlWithAuth.error) {
     logger.error('could not create authed git clone url', {
       error: cloneUrlWithAuth.msg,
@@ -219,21 +173,9 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
   }
   const repoClone = cloneUrlWithAuth.res;
 
-  const buildId = await createNewBuild(logger, {
-    projectId: repoClone.projectId,
-    pullRequestId: req.pullRequestId,
-    sourceType: req.sourceType,
-    gitCommit: req.gitCommit,
-    gitBranch: req.gitBranch,
-    cloneUrl: req.cloneUrl,
-  });
-  if (buildId.error) {
-    return buildId;
-  }
-
   const installationId = req.installationId.toString();
 
-  return await log.provideFields({ buildId: buildId.res, record: req, installationId }, async () => {
-    return performSnapshotOnRepository(installationId, buildId.res, repoClone.cloneUrl, req.gitBranch, req.gitCommit);
+  return await log.provideFields({ buildId: req.buildId, record: req, installationId }, async () => {
+    return performSnapshotOnRepository(installationId, req.buildId, repoClone.cloneUrl, req.gitBranch, req.gitCommit);
   });
 }

@@ -25,6 +25,7 @@ export async function pushHandler(event: EmitterWebhookEvent<'push'>) {
     log.info('Received a webhook for a repository which is not imported, no-op.');
     return;
   }
+  const projectId = getRepositoryResponse.github_repositories[0].project.id;
 
   const ref = event.payload.ref;
   const branchOrTagName = ref.split('/').pop();
@@ -37,11 +38,10 @@ export async function pushHandler(event: EmitterWebhookEvent<'push'>) {
       return;
     }
 
-    const res = await queueRepositoryForSnapshot({
+    const res = await queueRepositoryForSnapshot(event.payload.installation.id, event.payload.repository.id, {
+      projectId,
       cloneUrl: event.payload.repository.clone_url,
       gitBranch: branchOrTagName,
-      repoGithubId: event.payload.repository.id,
-      installationId: event.payload.installation.id,
       sourceType: 'default_branch',
       gitCommit: event.payload.after,
     });

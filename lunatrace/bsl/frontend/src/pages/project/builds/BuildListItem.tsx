@@ -25,11 +25,10 @@ import { SourceIcon } from './SourceIcon';
 
 interface BuildListItemProps {
   build: BuildInfo;
-  project: ProjectInfo;
   onClick: (_e: unknown) => void;
 }
 
-export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ build, project, onClick }) => {
+export const BuildListItem: React.FunctionComponent<BuildListItemProps> = ({ build, onClick }) => {
   const uploadDate = prettyDate(new Date(build.created_at as string));
   const lastScannedDate = build.scans[0] ? prettyDate(new Date(build.scans[0].created_at as string)) : 'Never';
 

@@ -11,24 +11,25 @@
  * limitations under the License.
  *
  */
-import { filterFindingsNotIgnored } from '@lunatrace/lunatrace-common';
+import { filterFindingsNotIgnored } from '@lunatrace/lunatrace-common/build/main';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
-import React, { useMemo, useRef, useState } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import React, { useEffect, useRef, useState } from 'react';
+import { Alert, Card, Col, Container, Modal, ProgressBar, Row, Spinner } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 
 import api from '../../../api';
+import { Build_State_Enum, GetBuildLogsQuery } from '../../../api/generated';
 import { SpinIfLoading } from '../../../components/SpinIfLoading';
-import { DependencyTree } from '../../../dependency-tree/builds-dependency-tree';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import useBreakpoint from '../../../hooks/useBreakpoint';
 import { add } from '../../../store/slices/alerts';
 
 import { BuildDetailsHeader } from './BuildDetailsHeader';
+import { BuildStateViewer } from './BuildStateViewer';
 import { DependencyTreeViewer } from './DependencyTreeViewer';
 import { VulnQuickView } from './VulnQuickView';
-import { VulnerablePackageList } from './vulnerable-packages/VulnerablePackageList';
 
 export const BuildDetails: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
@@ -39,7 +40,16 @@ export const BuildDetails: React.FunctionComponent = () => {
     dispatch(add({ message: 'Malformed URL, missing build_id or project_id parameter' }));
     return null;
   }
-  const { data, isLoading } = api.useGetBuildDetailsQuery({ build_id, project_id });
+  const [getBuildDetailsTrigger, getBuildDetailsResult] = api.useLazyGetBuildDetailsQuery();
+  const { data, isLoading: getBuildDetailsIsLoading } = getBuildDetailsResult;
+
+  const scanCompletedCallback = () => {
+    void getBuildDetailsTrigger({ build_id, project_id });
+  };
+
+  useEffect(() => {
+    void getBuildDetailsTrigger({ build_id, project_id });
+  }, []);
 
   const [ignoreFindings, setIgnoreFindings] = useState<boolean>(true);
 
@@ -59,7 +69,7 @@ export const BuildDetails: React.FunctionComponent = () => {
       <>
         {/*  widen the whole viewport using container fluid in side by side mode*/}
         <Container fluid={isSideBySideView} className="build-page">
-          <SpinIfLoading isLoading={isLoading}>{children}</SpinIfLoading>
+          <SpinIfLoading isLoading={getBuildDetailsIsLoading}>{children}</SpinIfLoading>
         </Container>
       </>
     );
@@ -79,8 +89,7 @@ export const BuildDetails: React.FunctionComponent = () => {
   if (build.scans.length === 0) {
     return renderContainer(
       <span>
-        Error: This build has not yet been scanned. Please wait a short time for the scan to finish and then return to
-        this page.
+        <BuildStateViewer buildId={build_id} scanCompletedCallback={scanCompletedCallback} />
       </span>
     );
   }

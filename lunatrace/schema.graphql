@@ -13,10 +13,6 @@ directive @cached(
   ttl: Int! = 60
 ) on QUERY
 
-type AuthenticatedRepoCloneUrlOutput {
-  url: String
-}
-
 """
 Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
 """
@@ -47,23 +43,6 @@ input Float_comparison_exp {
   _nin: [Float!]
 }
 
-type GithubRepository {
-  cloneUrl: String!
-  defaultBranch: String!
-  gitUrl: String!
-  orgId: Int!
-  orgName: String!
-  orgNodeId: String!
-  ownerType: String!
-  repoId: Int!
-  repoName: String!
-  repoNodeId: String!
-}
-
-type InstallSelectedReposResponse {
-  success: Boolean
-}
-
 """
 Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
 """
@@ -77,29 +56,6 @@ input Int_comparison_exp {
   _lte: Int
   _neq: Int
   _nin: [Int!]
-}
-
-type OrgWithRepos {
-  id: String!
-  organizationName: String!
-  repos: [GithubRepository!]!
-}
-
-input OrgsWithReposInput {
-  id: String!
-  repos: [Int!]!
-}
-
-type PresignedUrlResponse {
-  bucket: String!
-  headers: jsonb!
-  key: String!
-  url: String!
-}
-
-type SbomUploadUrlOutput {
-  error: Boolean!
-  uploadUrl: UploadUrl
 }
 
 """
@@ -153,11 +109,6 @@ input String_comparison_exp {
 
   """does the column match the given SQL regular expression"""
   _similar: String
-}
-
-type UploadUrl {
-  headers: jsonb!
-  url: String!
 }
 
 scalar _text
@@ -469,6 +420,175 @@ enum build_dependency_relationship_update_column {
 }
 
 """
+columns and relationships of "build_log"
+"""
+type build_log {
+  """An object relationship"""
+  build: builds!
+  build_id: uuid!
+  created_at: timestamptz!
+  id: uuid!
+  message: String
+  state: build_state_enum!
+}
+
+"""
+order by aggregate values of table "build_log"
+"""
+input build_log_aggregate_order_by {
+  count: order_by
+  max: build_log_max_order_by
+  min: build_log_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "build_log"
+"""
+input build_log_arr_rel_insert_input {
+  data: [build_log_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: build_log_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "build_log". All fields are combined with a logical 'AND'.
+"""
+input build_log_bool_exp {
+  _and: [build_log_bool_exp!]
+  _not: build_log_bool_exp
+  _or: [build_log_bool_exp!]
+  build: builds_bool_exp
+  build_id: uuid_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  message: String_comparison_exp
+  state: build_state_enum_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "build_log"
+"""
+enum build_log_constraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  build_log_pkey
+}
+
+"""
+input type for inserting data into table "build_log"
+"""
+input build_log_insert_input {
+  build: builds_obj_rel_insert_input
+  build_id: uuid
+  created_at: timestamptz
+  id: uuid
+  message: String
+  state: build_state_enum
+}
+
+"""
+order by max() on columns of table "build_log"
+"""
+input build_log_max_order_by {
+  build_id: order_by
+  created_at: order_by
+  id: order_by
+  message: order_by
+}
+
+"""
+order by min() on columns of table "build_log"
+"""
+input build_log_min_order_by {
+  build_id: order_by
+  created_at: order_by
+  id: order_by
+  message: order_by
+}
+
+"""
+response of any mutation on the table "build_log"
+"""
+type build_log_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [build_log!]!
+}
+
+"""
+on_conflict condition type for table "build_log"
+"""
+input build_log_on_conflict {
+  constraint: build_log_constraint!
+  update_columns: [build_log_update_column!]! = []
+  where: build_log_bool_exp
+}
+
+"""Ordering options when selecting data from "build_log"."""
+input build_log_order_by {
+  build: builds_order_by
+  build_id: order_by
+  created_at: order_by
+  id: order_by
+  message: order_by
+  state: order_by
+}
+
+"""
+select columns of table "build_log"
+"""
+enum build_log_select_column {
+  """column name"""
+  build_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  message
+
+  """column name"""
+  state
+}
+
+"""
+placeholder for update columns of table "build_log" (current role has no relevant permissions)
+"""
+enum build_log_update_column {
+  """placeholder (do not use)"""
+  _PLACEHOLDER
+}
+
+enum build_state_enum {
+  snapshot_completed
+  snapshot_failed
+  snapshot_queued
+  snapshot_scan_completed
+  snapshot_scan_failed
+  snapshot_scan_queued
+  snapshot_scan_started
+  snapshot_started
+}
+
+"""
+Boolean expression to compare columns of type "build_state_enum". All fields are combined with logical 'AND'.
+"""
+input build_state_enum_comparison_exp {
+  _eq: build_state_enum
+  _in: [build_state_enum!]
+  _is_null: Boolean
+  _neq: build_state_enum
+  _nin: [build_state_enum!]
+}
+
+"""
 columns and relationships of "builds"
 """
 type builds {
@@ -491,6 +611,24 @@ type builds {
     """filter the rows returned"""
     where: build_dependency_relationship_bool_exp
   ): [build_dependency_relationship!]!
+
+  """An array relationship"""
+  build_logs(
+    """distinct select on columns"""
+    distinct_on: [build_log_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [build_log_order_by!]
+
+    """filter the rows returned"""
+    where: build_log_bool_exp
+  ): [build_log!]!
   build_number: Int
   created_at: timestamp!
   existing_github_check_id: bigint
@@ -559,7 +697,6 @@ type builds {
     where: resolved_manifest_bool_exp
   ): [resolved_manifest!]!
   s3_url: String
-  s3_url_signed: String
 
   """An array relationship"""
   scans(
@@ -656,6 +793,7 @@ input builds_bool_exp {
   _or: [builds_bool_exp!]
   agent_access_token: uuid_comparison_exp
   build_dependency_relationships: build_dependency_relationship_bool_exp
+  build_logs: build_log_bool_exp
   build_number: Int_comparison_exp
   created_at: timestamp_comparison_exp
   existing_github_check_id: bigint_comparison_exp
@@ -709,6 +847,7 @@ input type for inserting data into table "builds"
 input builds_insert_input {
   agent_access_token: uuid
   build_dependency_relationships: build_dependency_relationship_arr_rel_insert_input
+  build_logs: build_log_arr_rel_insert_input
   build_number: Int
   created_at: timestamp
   existing_github_check_id: bigint
@@ -834,6 +973,7 @@ input builds_on_conflict {
 input builds_order_by {
   agent_access_token: order_by
   build_dependency_relationships_aggregate: build_dependency_relationship_aggregate_order_by
+  build_logs_aggregate: build_log_aggregate_order_by
   build_number: order_by
   created_at: order_by
   existing_github_check_id: order_by
@@ -1761,7 +1901,6 @@ input fix_state_enum_comparison_exp {
 
 """Metadata about a github repository and where to find it."""
 type github_repositories {
-  authenticated_clone_url: AuthenticatedRepoCloneUrlOutput
   default_branch: String
   git_url: String!
   github_id: Int
@@ -3970,6 +4109,28 @@ type mutation_root {
   ): build_dependency_relationship
 
   """
+  insert data into the table: "build_log"
+  """
+  insert_build_log(
+    """the rows to be inserted"""
+    objects: [build_log_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: build_log_on_conflict
+  ): build_log_mutation_response
+
+  """
+  insert a single row into the table: "build_log"
+  """
+  insert_build_log_one(
+    """the row to be inserted"""
+    object: build_log_insert_input!
+
+    """upsert condition"""
+    on_conflict: build_log_on_conflict
+  ): build_log
+
+  """
   insert data into the table: "builds"
   """
   insert_builds(
@@ -4683,10 +4844,6 @@ type mutation_root {
     """upsert condition"""
     on_conflict: webhook_cache_on_conflict
   ): webhook_cache
-  installSelectedRepos(orgs: [OrgsWithReposInput!]!): InstallSelectedReposResponse
-
-  """ get s3 presigned url for manifest upload, used only by the frontend """
-  presignManifestUpload(project_id: uuid!): PresignedUrlResponse
 
   """
   update data of the table: "build_dependency_relationship"
@@ -6048,7 +6205,7 @@ type organizations {
   github_id: Int
   github_node_id: String
   id: uuid!
-  installation_id: Int!
+  installation_id: Int
   name: String!
 
   """An array relationship"""
@@ -8509,9 +8666,6 @@ enum projects_update_column {
 }
 
 type query_root {
-  authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
-  availableOrgsWithRepos: [OrgWithRepos!]
-
   """
   fetch data from the table: "build_dependency_relationship"
   """
@@ -8536,6 +8690,29 @@ type query_root {
   fetch data from the table: "build_dependency_relationship" using primary key columns
   """
   build_dependency_relationship_by_pk(id: uuid!): build_dependency_relationship
+
+  """
+  fetch data from the table: "build_log"
+  """
+  build_log(
+    """distinct select on columns"""
+    distinct_on: [build_log_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [build_log_order_by!]
+
+    """filter the rows returned"""
+    where: build_log_bool_exp
+  ): [build_log!]!
+
+  """fetch data from the table: "build_log" using primary key columns"""
+  build_log_by_pk(id: uuid!): build_log
 
   """An array relationship"""
   builds(
@@ -8593,7 +8770,6 @@ type query_root {
     """filter the rows returned"""
     where: default_branch_builds_bool_exp
   ): [default_branch_builds!]!
-  fakeQueryToHackHasuraBeingABuggyMess: String
 
   """An array relationship"""
   findings(
@@ -9119,9 +9295,6 @@ type query_root {
   """
   package_release_license_by_pk(id: uuid!): package_release_license
 
-  """ get s3 presigned url for manifest upload, used by the CLI """
-  presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
-
   """An array relationship"""
   project_access_tokens(
     """distinct select on columns"""
@@ -9208,7 +9381,6 @@ type query_root {
   fetch data from the table: "resolved_manifest" using primary key columns
   """
   resolved_manifest_by_pk(id: uuid!): resolved_manifest
-  sbomUrl(buildId: uuid!): String
 
   """An array relationship"""
   scans(
@@ -10214,6 +10386,29 @@ type subscription_root {
   fetch data from the table: "build_dependency_relationship" using primary key columns
   """
   build_dependency_relationship_by_pk(id: uuid!): build_dependency_relationship
+
+  """
+  fetch data from the table: "build_log"
+  """
+  build_log(
+    """distinct select on columns"""
+    distinct_on: [build_log_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [build_log_order_by!]
+
+    """filter the rows returned"""
+    where: build_log_bool_exp
+  ): [build_log!]!
+
+  """fetch data from the table: "build_log" using primary key columns"""
+  build_log_by_pk(id: uuid!): build_log
 
   """An array relationship"""
   builds(

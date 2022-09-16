@@ -8,7 +8,6 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
         id
         source_type
         project_id
-
         resolved_manifests {
             id
             path
