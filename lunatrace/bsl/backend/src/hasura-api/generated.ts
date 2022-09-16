@@ -31,11 +31,6 @@ export type Scalars = {
   uuid: string;
 };
 
-export type AuthenticatedRepoCloneUrlOutput = {
-  __typename?: 'AuthenticatedRepoCloneUrlOutput';
-  url?: Maybe<Scalars['String']>;
-};
-
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
 export type Boolean_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Boolean']>;
@@ -62,25 +57,6 @@ export type Float_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Float']>>;
 };
 
-export type GithubRepository = {
-  __typename?: 'GithubRepository';
-  cloneUrl: Scalars['String'];
-  defaultBranch: Scalars['String'];
-  gitUrl: Scalars['String'];
-  orgId: Scalars['Int'];
-  orgName: Scalars['String'];
-  orgNodeId: Scalars['String'];
-  ownerType: Scalars['String'];
-  repoId: Scalars['Int'];
-  repoName: Scalars['String'];
-  repoNodeId: Scalars['String'];
-};
-
-export type InstallSelectedReposResponse = {
-  __typename?: 'InstallSelectedReposResponse';
-  success?: Maybe<Scalars['Boolean']>;
-};
-
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Int']>;
@@ -92,32 +68,6 @@ export type Int_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Int']>;
   _neq?: InputMaybe<Scalars['Int']>;
   _nin?: InputMaybe<Array<Scalars['Int']>>;
-};
-
-export type OrgWithRepos = {
-  __typename?: 'OrgWithRepos';
-  id: Scalars['String'];
-  organizationName: Scalars['String'];
-  repos: Array<GithubRepository>;
-};
-
-export type OrgsWithReposInput = {
-  id: Scalars['String'];
-  repos: Array<Scalars['Int']>;
-};
-
-export type PresignedUrlResponse = {
-  __typename?: 'PresignedUrlResponse';
-  bucket: Scalars['String'];
-  headers: Scalars['jsonb'];
-  key: Scalars['String'];
-  url: Scalars['String'];
-};
-
-export type SbomUploadUrlOutput = {
-  __typename?: 'SbomUploadUrlOutput';
-  error: Scalars['Boolean'];
-  uploadUrl?: Maybe<UploadUrl>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -151,12 +101,6 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
-};
-
-export type UploadUrl = {
-  __typename?: 'UploadUrl';
-  headers: Scalars['jsonb'];
-  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
@@ -407,12 +351,151 @@ export enum Build_Dependency_Relationship_Update_Column {
   ReleaseId = 'release_id'
 }
 
+/** columns and relationships of "build_log" */
+export type Build_Log = {
+  __typename?: 'build_log';
+  /** An object relationship */
+  build: Builds;
+  build_id: Scalars['uuid'];
+  created_at: Scalars['timestamptz'];
+  id: Scalars['uuid'];
+  message?: Maybe<Scalars['String']>;
+  state: Build_State_Enum;
+};
+
+/** order by aggregate values of table "build_log" */
+export type Build_Log_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Build_Log_Max_Order_By>;
+  min?: InputMaybe<Build_Log_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "build_log" */
+export type Build_Log_Arr_Rel_Insert_Input = {
+  data: Array<Build_Log_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Build_Log_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "build_log". All fields are combined with a logical 'AND'. */
+export type Build_Log_Bool_Exp = {
+  _and?: InputMaybe<Array<Build_Log_Bool_Exp>>;
+  _not?: InputMaybe<Build_Log_Bool_Exp>;
+  _or?: InputMaybe<Array<Build_Log_Bool_Exp>>;
+  build?: InputMaybe<Builds_Bool_Exp>;
+  build_id?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  message?: InputMaybe<String_Comparison_Exp>;
+  state?: InputMaybe<Build_State_Enum_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "build_log" */
+export enum Build_Log_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  BuildLogPkey = 'build_log_pkey'
+}
+
+/** input type for inserting data into table "build_log" */
+export type Build_Log_Insert_Input = {
+  build?: InputMaybe<Builds_Obj_Rel_Insert_Input>;
+  build_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  message?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Build_State_Enum>;
+};
+
+/** order by max() on columns of table "build_log" */
+export type Build_Log_Max_Order_By = {
+  build_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "build_log" */
+export type Build_Log_Min_Order_By = {
+  build_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "build_log" */
+export type Build_Log_Mutation_Response = {
+  __typename?: 'build_log_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Build_Log>;
+};
+
+/** on_conflict condition type for table "build_log" */
+export type Build_Log_On_Conflict = {
+  constraint: Build_Log_Constraint;
+  update_columns?: Array<Build_Log_Update_Column>;
+  where?: InputMaybe<Build_Log_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "build_log". */
+export type Build_Log_Order_By = {
+  build?: InputMaybe<Builds_Order_By>;
+  build_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
+  state?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "build_log" */
+export enum Build_Log_Select_Column {
+  /** column name */
+  BuildId = 'build_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Message = 'message',
+  /** column name */
+  State = 'state'
+}
+
+/** placeholder for update columns of table "build_log" (current role has no relevant permissions) */
+export enum Build_Log_Update_Column {
+  /** placeholder (do not use) */
+  Placeholder = '_PLACEHOLDER'
+}
+
+export enum Build_State_Enum {
+  SnapshotCompleted = 'snapshot_completed',
+  SnapshotFailed = 'snapshot_failed',
+  SnapshotQueued = 'snapshot_queued',
+  SnapshotScanCompleted = 'snapshot_scan_completed',
+  SnapshotScanFailed = 'snapshot_scan_failed',
+  SnapshotScanQueued = 'snapshot_scan_queued',
+  SnapshotScanStarted = 'snapshot_scan_started',
+  SnapshotStarted = 'snapshot_started'
+}
+
+/** Boolean expression to compare columns of type "build_state_enum". All fields are combined with logical 'AND'. */
+export type Build_State_Enum_Comparison_Exp = {
+  _eq?: InputMaybe<Build_State_Enum>;
+  _in?: InputMaybe<Array<Build_State_Enum>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _neq?: InputMaybe<Build_State_Enum>;
+  _nin?: InputMaybe<Array<Build_State_Enum>>;
+};
+
 /** columns and relationships of "builds" */
 export type Builds = {
   __typename?: 'builds';
   agent_access_token: Scalars['uuid'];
   /** An array relationship */
   build_dependency_relationships: Array<Build_Dependency_Relationship>;
+  /** An array relationship */
+  build_logs: Array<Build_Log>;
   build_number?: Maybe<Scalars['Int']>;
   created_at: Scalars['timestamp'];
   existing_github_check_id?: Maybe<Scalars['bigint']>;
@@ -432,7 +515,6 @@ export type Builds = {
   /** An array relationship */
   resolved_manifests: Array<Resolved_Manifest>;
   s3_url?: Maybe<Scalars['String']>;
-  s3_url_signed?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
   source_type: Scalars['builds_source_type'];
@@ -446,6 +528,16 @@ export type BuildsBuild_Dependency_RelationshipsArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
   where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+};
+
+
+/** columns and relationships of "builds" */
+export type BuildsBuild_LogsArgs = {
+  distinct_on?: InputMaybe<Array<Build_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Log_Order_By>>;
+  where?: InputMaybe<Build_Log_Bool_Exp>;
 };
 
 
@@ -560,6 +652,7 @@ export type Builds_Bool_Exp = {
   _or?: InputMaybe<Array<Builds_Bool_Exp>>;
   agent_access_token?: InputMaybe<Uuid_Comparison_Exp>;
   build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+  build_logs?: InputMaybe<Build_Log_Bool_Exp>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamp_Comparison_Exp>;
   existing_github_check_id?: InputMaybe<Bigint_Comparison_Exp>;
@@ -599,6 +692,7 @@ export type Builds_Inc_Input = {
 export type Builds_Insert_Input = {
   agent_access_token?: InputMaybe<Scalars['uuid']>;
   build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Arr_Rel_Insert_Input>;
+  build_logs?: InputMaybe<Build_Log_Arr_Rel_Insert_Input>;
   build_number?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamp']>;
   existing_github_check_id?: InputMaybe<Scalars['bigint']>;
@@ -715,6 +809,7 @@ export type Builds_On_Conflict = {
 export type Builds_Order_By = {
   agent_access_token?: InputMaybe<Order_By>;
   build_dependency_relationships_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
+  build_logs_aggregate?: InputMaybe<Build_Log_Aggregate_Order_By>;
   build_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   existing_github_check_id?: InputMaybe<Order_By>;
@@ -1470,7 +1565,6 @@ export type Fix_State_Enum_Comparison_Exp = {
 /** Metadata about a github repository and where to find it. */
 export type Github_Repositories = {
   __typename?: 'github_repositories';
-  authenticated_clone_url?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   default_branch?: Maybe<Scalars['String']>;
   git_url: Scalars['String'];
   github_id?: Maybe<Scalars['Int']>;
@@ -3158,6 +3252,10 @@ export type Mutation_Root = {
   insert_build_dependency_relationship?: Maybe<Build_Dependency_Relationship_Mutation_Response>;
   /** insert a single row into the table: "build_dependency_relationship" */
   insert_build_dependency_relationship_one?: Maybe<Build_Dependency_Relationship>;
+  /** insert data into the table: "build_log" */
+  insert_build_log?: Maybe<Build_Log_Mutation_Response>;
+  /** insert a single row into the table: "build_log" */
+  insert_build_log_one?: Maybe<Build_Log>;
   /** insert data into the table: "builds" */
   insert_builds?: Maybe<Builds_Mutation_Response>;
   /** insert a single row into the table: "builds" */
@@ -3288,9 +3386,6 @@ export type Mutation_Root = {
   insert_webhook_cache?: Maybe<Webhook_Cache_Mutation_Response>;
   /** insert a single row into the table: "webhook_cache" */
   insert_webhook_cache_one?: Maybe<Webhook_Cache>;
-  installSelectedRepos?: Maybe<InstallSelectedReposResponse>;
-  /**  get s3 presigned url for manifest upload, used only by the frontend  */
-  presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** update data of the table: "build_dependency_relationship" */
   update_build_dependency_relationship?: Maybe<Build_Dependency_Relationship_Mutation_Response>;
   /** update single row of the table: "build_dependency_relationship" */
@@ -3503,6 +3598,20 @@ export type Mutation_RootInsert_Build_Dependency_RelationshipArgs = {
 export type Mutation_RootInsert_Build_Dependency_Relationship_OneArgs = {
   object: Build_Dependency_Relationship_Insert_Input;
   on_conflict?: InputMaybe<Build_Dependency_Relationship_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Build_LogArgs = {
+  objects: Array<Build_Log_Insert_Input>;
+  on_conflict?: InputMaybe<Build_Log_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Build_Log_OneArgs = {
+  object: Build_Log_Insert_Input;
+  on_conflict?: InputMaybe<Build_Log_On_Conflict>;
 };
 
 
@@ -3958,18 +4067,6 @@ export type Mutation_RootInsert_Webhook_CacheArgs = {
 export type Mutation_RootInsert_Webhook_Cache_OneArgs = {
   object: Webhook_Cache_Insert_Input;
   on_conflict?: InputMaybe<Webhook_Cache_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInstallSelectedReposArgs = {
-  orgs: Array<OrgsWithReposInput>;
-};
-
-
-/** mutation root */
-export type Mutation_RootPresignManifestUploadArgs = {
-  project_id: Scalars['uuid'];
 };
 
 
@@ -4727,7 +4824,7 @@ export type Organizations = {
   github_id?: Maybe<Scalars['Int']>;
   github_node_id?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
-  installation_id: Scalars['Int'];
+  installation_id?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
   /** An array relationship */
   organization_users: Array<Organization_User>;
@@ -6701,12 +6798,14 @@ export enum Projects_Update_Column {
 
 export type Query_Root = {
   __typename?: 'query_root';
-  authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
-  availableOrgsWithRepos?: Maybe<Array<OrgWithRepos>>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
   build_dependency_relationship_by_pk?: Maybe<Build_Dependency_Relationship>;
+  /** fetch data from the table: "build_log" */
+  build_log: Array<Build_Log>;
+  /** fetch data from the table: "build_log" using primary key columns */
+  build_log_by_pk?: Maybe<Build_Log>;
   /** An array relationship */
   builds: Array<Builds>;
   /** An aggregate relationship */
@@ -6715,7 +6814,6 @@ export type Query_Root = {
   builds_by_pk?: Maybe<Builds>;
   /** An array relationship */
   default_branch_builds: Array<Default_Branch_Builds>;
-  fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
   /** fetch data from the table: "findings" using primary key columns */
@@ -6796,8 +6894,6 @@ export type Query_Root = {
   package_release_license: Array<Package_Release_License>;
   /** fetch data from the table: "package.release_license" using primary key columns */
   package_release_license_by_pk?: Maybe<Package_Release_License>;
-  /**  get s3 presigned url for manifest upload, used by the CLI  */
-  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
@@ -6812,7 +6908,6 @@ export type Query_Root = {
   resolved_manifest: Array<Resolved_Manifest>;
   /** fetch data from the table: "resolved_manifest" using primary key columns */
   resolved_manifest_by_pk?: Maybe<Resolved_Manifest>;
-  sbomUrl?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
@@ -6866,11 +6961,6 @@ export type Query_Root = {
 };
 
 
-export type Query_RootAuthenticatedRepoCloneUrlArgs = {
-  repoGithubId: Scalars['Int'];
-};
-
-
 export type Query_RootBuild_Dependency_RelationshipArgs = {
   distinct_on?: InputMaybe<Array<Build_Dependency_Relationship_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -6881,6 +6971,20 @@ export type Query_RootBuild_Dependency_RelationshipArgs = {
 
 
 export type Query_RootBuild_Dependency_Relationship_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootBuild_LogArgs = {
+  distinct_on?: InputMaybe<Array<Build_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Log_Order_By>>;
+  where?: InputMaybe<Build_Log_Bool_Exp>;
+};
+
+
+export type Query_RootBuild_Log_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -7209,12 +7313,6 @@ export type Query_RootPackage_Release_License_By_PkArgs = {
 };
 
 
-export type Query_RootPresignSbomUploadArgs = {
-  buildId: Scalars['uuid'];
-  orgId: Scalars['uuid'];
-};
-
-
 export type Query_RootProject_Access_TokensArgs = {
   distinct_on?: InputMaybe<Array<Project_Access_Tokens_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -7263,11 +7361,6 @@ export type Query_RootResolved_ManifestArgs = {
 
 export type Query_RootResolved_Manifest_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootSbomUrlArgs = {
-  buildId: Scalars['uuid'];
 };
 
 
@@ -7962,6 +8055,10 @@ export type Subscription_Root = {
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
   build_dependency_relationship_by_pk?: Maybe<Build_Dependency_Relationship>;
+  /** fetch data from the table: "build_log" */
+  build_log: Array<Build_Log>;
+  /** fetch data from the table: "build_log" using primary key columns */
+  build_log_by_pk?: Maybe<Build_Log>;
   /** An array relationship */
   builds: Array<Builds>;
   /** An aggregate relationship */
@@ -8127,6 +8224,20 @@ export type Subscription_RootBuild_Dependency_RelationshipArgs = {
 
 
 export type Subscription_RootBuild_Dependency_Relationship_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootBuild_LogArgs = {
+  distinct_on?: InputMaybe<Array<Build_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Build_Log_Order_By>>;
+  where?: InputMaybe<Build_Log_Bool_Exp>;
+};
+
+
+export type Subscription_RootBuild_Log_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -10556,14 +10667,14 @@ export type GetBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, existing_github_check_id?: any | null, s3_url?: string | null, git_hash?: string | null, project?: { __typename?: 'projects', id: any, name: string, organization?: { __typename?: 'organizations', installation_id: number, name: string } | null, settings: { __typename?: 'settings', pr_feedback_disabled?: boolean | null, pr_check_enabled?: boolean | null } } | null } | null };
+export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, existing_github_check_id?: any | null, s3_url?: string | null, git_hash?: string | null, project?: { __typename?: 'projects', id: any, name: string, organization?: { __typename?: 'organizations', installation_id?: number | null, name: string } | null, settings: { __typename?: 'settings', pr_feedback_disabled?: boolean | null, pr_check_enabled?: boolean | null } } | null } | null };
 
 export type GetCloneRepoInfoFromRepoIdQueryVariables = Exact<{
   repo_github_id: Scalars['Int'];
 }>;
 
 
-export type GetCloneRepoInfoFromRepoIdQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', git_url: string, project: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id: number } | null } }> };
+export type GetCloneRepoInfoFromRepoIdQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', git_url: string, project: { __typename?: 'projects', id: any, organization?: { __typename?: 'organizations', installation_id?: number | null } | null } }> };
 
 export type GetCountOfPersonalOrgQueryVariables = Exact<{
   user_id: Scalars['uuid'];
@@ -10577,7 +10688,7 @@ export type GetGithubRepositoriesByIdsQueryVariables = Exact<{
 }>;
 
 
-export type GetGithubRepositoriesByIdsQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', github_id?: number | null }> };
+export type GetGithubRepositoriesByIdsQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', github_id?: number | null, project: { __typename?: 'projects', id: any } }> };
 
 export type GetLatestBuildsForRescanQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -10596,7 +10707,7 @@ export type GetOrganizationsFromUserQueryQueryVariables = Exact<{
 }>;
 
 
-export type GetOrganizationsFromUserQueryQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, installation_id: number, name: string }> };
+export type GetOrganizationsFromUserQueryQuery = { __typename?: 'query_root', organizations: Array<{ __typename?: 'organizations', id: any, installation_id?: number | null, name: string }> };
 
 export type GetPreviousBuildForPrQueryVariables = Exact<{
   pull_request_id: Scalars['String'];
@@ -10604,6 +10715,13 @@ export type GetPreviousBuildForPrQueryVariables = Exact<{
 
 
 export type GetPreviousBuildForPrQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', existing_github_review_id?: string | null }> };
+
+export type GetProjectFromRepoIdQueryVariables = Exact<{
+  repo_github_id: Scalars['Int'];
+}>;
+
+
+export type GetProjectFromRepoIdQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', id: any } }> };
 
 export type GetUserGitHubDataQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
@@ -10654,6 +10772,13 @@ export type GetUserFromIdentityQueryVariables = Exact<{
 
 
 export type GetUserFromIdentityQuery = { __typename?: 'query_root', identities_by_pk?: { __typename?: 'identities', user?: { __typename?: 'users', id: any } | null } | null };
+
+export type InsertBuildLogMutationVariables = Exact<{
+  build_log: Build_Log_Insert_Input;
+}>;
+
+
+export type InsertBuildLogMutation = { __typename?: 'mutation_root', insert_build_log_one?: { __typename?: 'build_log', id: any, state: Build_State_Enum } | null };
 
 export type InsertBuildMutationVariables = Exact<{
   build: Builds_Insert_Input;
@@ -10885,6 +11010,9 @@ export const GetGithubRepositoriesByIdsDocument = gql`
     query GetGithubRepositoriesByIds($ids: [Int!]!) {
   github_repositories(where: {github_id: {_in: $ids}}) {
     github_id
+    project {
+      id
+    }
   }
 }
     `;
@@ -10918,6 +11046,15 @@ export const GetPreviousBuildForPrDocument = gql`
     order_by: {created_at: desc}
   ) {
     existing_github_review_id
+  }
+}
+    `;
+export const GetProjectFromRepoIdDocument = gql`
+    query GetProjectFromRepoId($repo_github_id: Int!) {
+  github_repositories(where: {github_id: {_eq: $repo_github_id}}) {
+    project {
+      id
+    }
   }
 }
     `;
@@ -10988,6 +11125,14 @@ export const GetUserFromIdentityDocument = gql`
     user {
       id
     }
+  }
+}
+    `;
+export const InsertBuildLogDocument = gql`
+    mutation InsertBuildLog($build_log: build_log_insert_input!) {
+  insert_build_log_one(object: $build_log) {
+    id
+    state
   }
 }
     `;
@@ -11242,6 +11387,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetPreviousBuildForPr(variables: GetPreviousBuildForPrQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPreviousBuildForPrQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPreviousBuildForPrQuery>(GetPreviousBuildForPrDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPreviousBuildForPr', 'query');
     },
+    GetProjectFromRepoId(variables: GetProjectFromRepoIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectFromRepoIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProjectFromRepoIdQuery>(GetProjectFromRepoIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectFromRepoId', 'query');
+    },
     GetUserGitHubData(variables?: GetUserGitHubDataQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserGitHubDataQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserGitHubDataQuery>(GetUserGitHubDataDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserGitHubData', 'query');
     },
@@ -11262,6 +11410,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetUserFromIdentity(variables: GetUserFromIdentityQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserFromIdentityQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserFromIdentityQuery>(GetUserFromIdentityDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserFromIdentity', 'query');
+    },
+    InsertBuildLog(variables: InsertBuildLogMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildLogMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildLogMutation>(InsertBuildLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuildLog', 'mutation');
     },
     InsertBuild(variables: InsertBuildMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InsertBuildMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<InsertBuildMutation>(InsertBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InsertBuild', 'mutation');

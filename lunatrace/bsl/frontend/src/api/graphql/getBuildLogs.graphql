@@ -1,0 +1,7 @@
+query GetBuildLogs($build_id: uuid!) {
+    build_log(where: {build_id: {_eq: $build_id}}, order_by: {created_at: asc}) {
+        id
+        state
+        message
+    }
+}

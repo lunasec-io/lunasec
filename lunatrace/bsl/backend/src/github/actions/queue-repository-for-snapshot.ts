@@ -15,17 +15,43 @@ import { SendMessageCommand } from '@aws-sdk/client-sqs';
 
 import { sqsClient } from '../../aws/sqs-client';
 import { getRepositoryQueueConfig } from '../../config';
-import { LunaTraceRepositorySnapshotSqsMessage, SnapshotForRepositoryRequest } from '../../types/sqs';
+import { createNewBuild } from '../../hasura-api/actions/create-new-build';
+import { updateBuildStatus } from '../../hasura-api/actions/update-build-status';
+import { Build_State_Enum } from '../../hasura-api/generated';
+import {
+  LunaTraceRepositorySnapshotSqsMessage,
+  SnapshotBuildInfo,
+  SnapshotForRepositoryRequest,
+} from '../../types/sqs';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { getSqsUrlFromName } from '../../utils/sqs';
 import { catchError, threwError } from '../../utils/try';
 
-export async function queueRepositoryForSnapshot(repo: SnapshotForRepositoryRequest) {
+export async function queueRepositoryForSnapshot(
+  installationId: number,
+  repoGithubId: number,
+  buildInfo: SnapshotBuildInfo
+) {
   // TODO: We manually banned this org. Implement a real ban system in the future
-  if (repo.installationId === 27912909) {
+  if (installationId === 27912909) {
     return newError('Banned organization attempted a snapshot, skipping');
   }
+
+  const buildIdResult = await createNewBuild(repoGithubId, buildInfo);
+  if (buildIdResult.error) {
+    log.error('Failed to create new build for snapshot request', {
+      buildInfo,
+    });
+    return newError('Failed to create new build for snapshot request');
+  }
+
+  const req: SnapshotForRepositoryRequest = {
+    ...buildInfo,
+    installationId,
+    repoGithubId,
+    buildId: buildIdResult.res,
+  };
 
   const repoQueueConfig = getRepositoryQueueConfig();
 
@@ -40,13 +66,15 @@ export async function queueRepositoryForSnapshot(repo: SnapshotForRepositoryRequ
     return newError('unable to get queue url');
   }
 
-  log.info('queueing repository for snapshot', {
-    repo,
+  log.info('Queueing repository for snapshot', {
+    queue: repositoryQueueUrl.res,
+    req,
   });
+  updateBuildStatus(buildIdResult.res, Build_State_Enum.SnapshotQueued);
 
   const sqsEvent: LunaTraceRepositorySnapshotSqsMessage = {
     type: 'repository-snapshot',
-    records: [repo],
+    records: [req],
   };
 
   // messages sent to this queue will be processed by the process-repository queue handler in workers/snapshot-repository.
@@ -56,7 +84,7 @@ export async function queueRepositoryForSnapshot(repo: SnapshotForRepositoryRequ
       MessageAttributes: {
         installation_id: {
           DataType: 'Number',
-          StringValue: repo.installationId.toString(),
+          StringValue: req.installationId.toString(),
         },
       },
       QueueUrl: repositoryQueueUrl.res,
@@ -64,12 +92,13 @@ export async function queueRepositoryForSnapshot(repo: SnapshotForRepositoryRequ
   );
   if (!result || !result.$metadata.httpStatusCode || result.$metadata.httpStatusCode >= 300) {
     log.error('unable to queue repository for snapshot', {
-      repo,
+      req,
     });
     return newError('sending message to queue failed, responded: ' + JSON.stringify(result));
   }
-  log.info('queued repo for snapshot', {
-    repo,
+  log.info('queued repository for snapshot', {
+    queue: repositoryQueueUrl.res,
+    req,
   });
   return newResult(undefined);
 }

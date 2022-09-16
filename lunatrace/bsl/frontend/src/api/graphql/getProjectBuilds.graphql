@@ -1,0 +1,38 @@
+query GetProjectBuilds($project_id: uuid!, $build_limit: Int = 10) {
+  builds(order_by: {created_at: desc}, limit: $build_limit, where: {project_id: {_eq: $project_id}}) {
+    id
+    created_at
+    build_number
+    project_id
+    source_type
+    findings {
+      language
+      purl
+      severity
+      locations
+      vulnerability {
+        severities {
+          id
+          source
+          type
+          score
+        }
+        ignored_vulnerabilities(where: {project_id: {_eq: $project_id}}) {
+          locations
+        }
+      }
+    }
+    scans_aggregate {
+      aggregate {
+        count
+      }
+    }
+    scans(limit: 1, order_by: {created_at: desc}) {
+      created_at
+      scan_number
+    }
+    git_branch
+    git_hash
+    git_remote
+  }
+}
