@@ -100,7 +100,6 @@ export async function installProjectsFromGithub(
     installationId,
     insertRes,
   });
-  //
 
   // Now snapshot any new repos.  This will not snapshot repos with old builds, so only new repos will be snapshotted.
   const snapshotResp = await queueNewReposForSnapshot(installationId, githubRepos);
