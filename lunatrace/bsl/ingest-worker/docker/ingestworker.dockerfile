@@ -1,6 +1,6 @@
 FROM golang:1.18-alpine AS builder
 
-COPY . /build/
+COPY --from=repo-bootstrap /usr/repo/ /build/
 WORKDIR /build/lunatrace/cli/
 
 # generate the graphql code from the schema
