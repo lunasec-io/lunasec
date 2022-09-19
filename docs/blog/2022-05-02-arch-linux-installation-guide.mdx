@@ -170,7 +170,7 @@ You should be able to see the two partitions available as **/dev/nvme0n1p1** and
 With your partitions set, create the encrypted container for your root file system.
 Below is the command to encrypt the partition using LUKS:
 
-    cryptsetup --cipher aes-exts-plain64 --hash sha256 --use-random --verify-passphrase luksFormat --type luks2 /dev/nvme0n1p2
+    cryptsetup --cipher aes-xts-plain64 --hash sha256 --use-random --verify-passphrase luksFormat --type luks2 /dev/nvme0n1p2
 
 Open the encrypted partition with:
 
@@ -322,7 +322,7 @@ You will also need to follow this guide to calculate your [offset](https://wiki.
 
 Provide the UUID of your root partition:
 
-    blkid -s UUID -o value /dev/sda2
+    blkid -s UUID -o value /dev/nvme0n1p2
 
 Replace `UUID-OF-ROOT` in /boot/loader/entries/arch.conf
 
