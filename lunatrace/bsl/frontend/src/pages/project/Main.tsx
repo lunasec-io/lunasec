@@ -103,12 +103,12 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
                   <Box size="1em" className="mb-2 me-1" /> Snapshots
                 </Nav.Link>
               </Nav.Item>
+              {/*<Nav.Item className="ms-lg-auto">*/}
+              {/*  <Nav.Link onClick={() => setActiveTab('secrets')} eventKey="secrets">*/}
+              {/*    <Lock size="1em" className="mb-2 me-1" /> Secrets and Keys*/}
+              {/*  </Nav.Link>*/}
+              {/*</Nav.Item>*/}
               <Nav.Item className="ms-lg-auto">
-                <Nav.Link onClick={() => setActiveTab('secrets')} eventKey="secrets">
-                  <Lock size="1em" className="mb-2 me-1" /> Secrets and Keys
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
                 <Nav.Link onClick={() => setActiveTab('settings')} eventKey="settings">
                   <Settings size="1em" className="mb-2 me-1" /> Settings
                 </Nav.Link>
