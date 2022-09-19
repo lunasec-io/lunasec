@@ -35,12 +35,12 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
   return (
     <>
       <Row className="">
-        <Col className="d-flex align-items-stretch" lg="8">
+        <Col className="d-flex align-items-stretch" lg="12">
           <DefaultBranchSummary project={project} />
         </Col>
-        <Col className="d-flex align-items-stretch" lg="4">
-          <ManifestDrop project_id={project.id} />
-        </Col>
+        {/*<Col className="d-flex align-items-stretch" lg="4">*/}
+        {/*  <ManifestDrop project_id={project.id} />*/}
+        {/*</Col>*/}
       </Row>
       {/*Github URL Github Name short github description blurb most recent several builds, master first probably*/}
       <Accordion flush={false} defaultActiveKey={project.builds.length > 0 ? '' : '0'}>
