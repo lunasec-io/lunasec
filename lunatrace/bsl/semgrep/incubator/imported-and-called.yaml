@@ -1,0 +1,65 @@
+rules:
+  - id: imported-and-called
+    patterns:
+      - pattern-either:
+        - pattern-inside: |
+            import $IMPORT from "vulnerable-package"
+            ...
+            $IMPORT.$FUNC()
+        - pattern-inside: |
+            import { ..., $IMPORT,... } from "vulnerable-package"
+            ...
+            $IMPORT.$FUNC()
+        - pattern-inside: |
+            import { ..., $X as $IMPORT,... } from "vulnerable-package"
+            ...
+            $IMPORT.$FUNC()
+        - pattern-inside: |
+            import * as $IMPORT from "vulnerable-package"
+            ...
+            $IMPORT.$FUNC()
+        - pattern-inside: |
+            $IMPORT = require("vulnerable-package")
+            ...
+            $IMPORT.$FUNC()
+        - pattern-inside: |
+            import $IMPORT from "vulnerable-package"
+            ...
+            $IMPORT.$FUNC()
+        - pattern-inside: |
+            import * as $IMPORT from "vulnerable-package"
+            ...
+            $IMPORT.$FUNC()
+        - pattern-inside: |
+            import $IMPORT from "vulnerable-package"
+            ...
+            $IMPORT()
+        - pattern-inside: |
+            import { ..., $IMPORT,... } from "vulnerable-package"
+            ...
+            $IMPORT()
+        - pattern-inside: |
+            import { ..., $X as $IMPORT,... } from "vulnerable-package"
+            ...
+            $IMPORT()
+        - pattern-inside: |
+            import * as $IMPORT from "vulnerable-package"
+            ...
+            $IMPORT()
+        - pattern-inside: |
+            $IMPORT = require("vulnerable-package")
+            ...
+            $IMPORT()
+        - pattern-inside: |
+            import $IMPORT from "vulnerable-package"
+            ...
+            $IMPORT()
+        - pattern-inside: |
+            import * as $IMPORT from "vulnerable-package"
+            ...
+            $IMPORT()
+    message: should not import vulnerable
+    languages:
+      - javascript
+      - typescript
+    severity: ERROR
