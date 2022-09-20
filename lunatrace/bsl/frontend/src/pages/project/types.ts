@@ -13,12 +13,13 @@
  */
 import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods';
 
-import { GetProjectQuery } from '../../api/generated';
+import { GetBuildLogsQuery, GetProjectQuery } from '../../api/generated';
 
 type MaybeProjectInfo = GetProjectQuery['projects_by_pk'];
 export type ProjectInfo = NonNullable<MaybeProjectInfo>;
 
 export type BuildInfo = ProjectInfo['builds'][number];
+export type BuildLogs = GetBuildLogsQuery['build_log'];
 
 export type TabName = 'builds' | 'secrets' | 'dashboard' | 'settings';
 export type SetActiveTab = (tabName: TabName) => void;

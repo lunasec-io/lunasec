@@ -1,0 +1,6 @@
+mutation InsertBuildLog($build_log: build_log_insert_input!) {
+  insert_build_log_one(object: $build_log) {
+    id
+    state
+  }
+}

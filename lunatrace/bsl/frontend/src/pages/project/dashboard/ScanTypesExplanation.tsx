@@ -39,35 +39,42 @@ export const ScanTypesExplanation: React.FC<{ setActiveTab: SetActiveTab; projec
             Projects imported from GitHub will automatically take a snapshot of pull-requests, and notify of any
             critical vulnerabilities in a comment on the PR.
           </Card.Subtitle>
+          <Card.Title>
+            <AiFillGithub className="m-3" size="40px" />
+            Commits to default branch
+          </Card.Title>
+          <Card.Subtitle className="darker homepage-subtitle">
+            Commits made to the default branch of the repository will have their snapshot taken.
+          </Card.Subtitle>
         </ConditionallyRender>
-        <Card.Title>
-          {' '}
-          <AiFillCode size="40px" className="m-3" />
-          LunaTrace CLI
-        </Card.Title>
-        <Card.Subtitle className={`darker homepage-subtitle active`}>
-          Use the{' '}
-          <a href={process.env.REACT_APP_GITHUB_CLI_DOWNLOAD_LINK || ''} target="_blank" rel="noopener noreferrer">
-            LunaTrace CLI
-          </a>{' '}
-          with a{' '}
-          <a onClick={() => setActiveTab('secrets')} className="btn-link">
-            secret key
-          </a>{' '}
-          to upload snapshots from the command line. This is particularly useful for built artifacts such as .jar files,
-          docker containers, and anything you want to scan that isn&apos;t committed to the repository. Often done from
-          a CI job.
-        </Card.Subtitle>
-        <Card.Title>
-          {' '}
-          <AiFillDiff className="m-3" size="40px" />
-          Drag and Drop
-        </Card.Title>
-        <Card.Subtitle className={`darker homepage-subtitle`}>
-          Use the drag and drop box to do a one-off snapshot of an artifact. Works on many file types such as built
-          artifacts (like .jar files), manifest files (like package-lock.json), tarred docker images, or an archive of
-          your entire repo.
-        </Card.Subtitle>
+        {/*<Card.Title>*/}
+        {/*  {' '}*/}
+        {/*  <AiFillCode size="40px" className="m-3" />*/}
+        {/*  LunaTrace CLI*/}
+        {/*</Card.Title>*/}
+        {/*<Card.Subtitle className={`darker homepage-subtitle active`}>*/}
+        {/*  Use the{' '}*/}
+        {/*  <a href={process.env.REACT_APP_GITHUB_CLI_DOWNLOAD_LINK || ''} target="_blank" rel="noopener noreferrer">*/}
+        {/*    LunaTrace CLI*/}
+        {/*  </a>{' '}*/}
+        {/*  with a{' '}*/}
+        {/*  <a onClick={() => setActiveTab('secrets')} className="btn-link">*/}
+        {/*    secret key*/}
+        {/*  </a>{' '}*/}
+        {/*  to upload snapshots from the command line. This is particularly useful for built artifacts such as .jar files,*/}
+        {/*  docker containers, and anything you want to scan that isn&apos;t committed to the repository. Often done from*/}
+        {/*  a CI job.*/}
+        {/*</Card.Subtitle>*/}
+        {/*<Card.Title>*/}
+        {/*  {' '}*/}
+        {/*  <AiFillDiff className="m-3" size="40px" />*/}
+        {/*  Drag and Drop*/}
+        {/*</Card.Title>*/}
+        {/*<Card.Subtitle className={`darker homepage-subtitle`}>*/}
+        {/*  Use the drag and drop box to do a one-off snapshot of an artifact. Works on many file types such as built*/}
+        {/*  artifacts (like .jar files), manifest files (like package-lock.json), tarred docker images, or an archive of*/}
+        {/*  your entire repo.*/}
+        {/*</Card.Subtitle>*/}
         <ConditionallyRender if={!project.github_repository}>
           <Card.Title className="darker">
             <AiFillGithub className="m-3" size="40px" />
