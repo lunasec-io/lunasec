@@ -1,22 +1,34 @@
 overwrite: true,
-schema: ./src/graphql-yoga/schema.graphql
+schema:
+# pull types from hasura so we can use them without copy pasting
+  - http://localhost:8080/v1/graphql:
+      headers:
+        x-hasura-admin-secret: myadminsecretkey
+        x-hasura-role: service
+  - "./src/graphql-yoga/custom-schema.graphql"
 generates:
-  ./src/graphql-yoga/generated-resolver-types.ts:
+  "./src/graphql-yoga/generated-resolver-types.ts":
     plugins:
-      - "typescript"
-      - "typescript-resolvers"
+      - typescript
+      - typescript-resolvers
+#  we also need to spit back out a file with the combination of our custom calls and the hasura schema, since we want to use types from hasura in the custom calls
+# this is the file we pass into the graphql runtime at server startup
+  ./src/graphql-yoga/merged-schema.graphql:
+    plugins:
+      - "schema-ast"
+
 config:
-  contextType: ./context#Context
+  contextType: "./context#Context"
   scalars:
     _text: string
     date: string
     fix_state_enum: "'fixed'|'not-fixed'|'unknown'"
-    jsonb: "Record<any, any> | any[]"
+    jsonb: Record<any, any> | any[]
     builds_source_type: "'cli'|'gui'|'pr'|'default_branch'"
-    numeric: "number"
-    organization_user_role: "string"
-    severity_enum: "string"
+    numeric: number
+    organization_user_role: string
+    severity_enum: string
     user_role: "'organization_user'|'lunatrace_admin'"
-    timestamp: "string"
-    timestamptz: "string"
-    uuid: "string"
+    timestamp: string
+    timestamptz: string
+    uuid: string

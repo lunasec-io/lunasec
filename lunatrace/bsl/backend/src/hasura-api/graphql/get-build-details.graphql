@@ -1,0 +1,147 @@
+
+
+query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
+    builds_by_pk(id: $build_id) {
+        build_number
+        created_at
+        git_branch
+        git_hash
+        git_remote
+        id
+        source_type
+        project_id
+
+        resolved_manifests {
+            id
+            path
+            child_edges_recursive {
+                parent_id
+                child_id
+                child {
+                    id
+                    range
+                    labels
+                    release_id
+                    release {
+                        id
+                        fetched_time
+                        version
+                        package {
+                            name
+                            last_successful_fetch
+                            package_manager
+                            affected_by_vulnerability {
+                                vulnerability {
+                                    id
+                                    source_id
+                                    source
+                                }
+                                ranges {
+                                    introduced
+                                    fixed
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        project {
+            name
+            ignored_vulnerabilities {
+                id
+                creator_id
+                locations
+                note
+                project_id
+                vulnerability_id
+            }
+        }
+        scans(order_by: {created_at: asc}) {
+            created_at
+            db_date
+            distro_name
+            distro_version
+            grype_version
+            id
+            scan_number
+            source_type
+            target
+        }
+        scans_aggregate {
+            aggregate {
+                count
+            }
+        }
+        findings {
+            fix_state
+            fix_versions
+            package_name
+            created_at
+            id
+            language
+            locations
+            matcher
+            purl
+            severity
+            type
+            version
+            updated_at
+            version_matcher
+            virtual_path
+            vulnerability_id
+            vulnerability {
+                id
+                summary
+                source
+                source_id
+                cvss_score
+                severities {
+                    id
+                    source
+                    type
+                    score
+                }
+                affected {
+                    package {
+                        name
+                        package_manager
+                    }
+                    affected_range_events {
+                        type
+                        event
+                        version
+                    }
+                }
+                guide_vulnerabilities {
+                    guide {
+                        id
+                        body
+                        metadata
+                        title
+                        severity
+                        summary
+                        created_at
+                        metadata_schema_version
+                        related_guides {
+                            guide {
+                                title
+                                summary
+                                id
+                            }
+                        }
+                    }
+                }
+                ignored_vulnerabilities(where: {project_id: {_eq: $project_id}}) {
+                    creator_id
+                    id
+                    locations
+                    note
+                    project_id
+                    vulnerability_id
+                }
+            }
+        }
+    }
+}
