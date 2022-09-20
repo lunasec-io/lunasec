@@ -34,7 +34,11 @@ function debugRequest(req: Request, res: Response, next: NextFunction) {
 export async function newApp() {
   const app = Express();
   app.use(cors());
-  app.use(Express.json());
+  app.use(
+    Express.json({
+      limit: '50mb',
+    })
+  );
 
   app.get('/health', (_req: Express.Request, res: Express.Response) => {
     res.send({
