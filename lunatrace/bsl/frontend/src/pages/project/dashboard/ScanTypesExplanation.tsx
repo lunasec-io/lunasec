@@ -39,6 +39,13 @@ export const ScanTypesExplanation: React.FC<{ setActiveTab: SetActiveTab; projec
             Projects imported from GitHub will automatically take a snapshot of pull-requests, and notify of any
             critical vulnerabilities in a comment on the PR.
           </Card.Subtitle>
+          <Card.Title>
+            <AiFillGithub className="m-3" size="40px" />
+            Commits to default branch
+          </Card.Title>
+          <Card.Subtitle className="darker homepage-subtitle">
+            Commits made to the default branch of the repository will have their snapshot taken.
+          </Card.Subtitle>
         </ConditionallyRender>
         {/*<Card.Title>*/}
         {/*  {' '}*/}
