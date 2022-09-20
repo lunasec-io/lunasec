@@ -49,7 +49,7 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
             {' '}
             <AiOutlineInfoCircle className="me-2" size="1rem" />{' '}
             {project.builds.length > 0
-              ? 'How to take more snapshots'
+              ? 'When is a snapshot created'
               : 'How to take your first snapshot and start seeing vulnerabilities'}
           </Accordion.Header>
           <Accordion.Body>
