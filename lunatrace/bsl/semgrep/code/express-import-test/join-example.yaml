@@ -1,0 +1,18 @@
+rules:
+- id: express-sql-injection
+  mode: join
+  join:
+    refs:
+      - rule: express-user-input.yaml
+        as: user-input
+      - rule: sql-injection.yaml
+        as: sql-sinks
+    on:
+      - 'user-input.$FUNCTION == sql-sinks.$FUNCTION'
+#    - 'unescaped-extensions.$VAR == template-vars.$VAR'
+#    - 'unescaped-extensions.$PATH > template-vars.path'
+  message: |
+      Detected a SQLi vulnerability: Express '$REQ' param '$PARAM' calls
+      function '$FUNCTION' which
+      unsafely uses '$DATA' in query '$SQLSTR'. 
+  severity: ERROR
