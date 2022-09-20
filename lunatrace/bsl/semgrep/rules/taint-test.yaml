@@ -1,0 +1,18 @@
+rules:
+  - id: tainted-import
+    mode: taint
+    message: test express import
+    pattern-sources:
+      - patterns:
+          - pattern: |
+              $VUlNERABLE = require('express');
+          - pattern: |
+              $VUlNERABLE from 'express';
+    pattern-sinks:
+      - patterns:
+          - pattern: vulnerable()
+    severity: WARNING
+    languages:
+      - javascript
+      - typescript
+
