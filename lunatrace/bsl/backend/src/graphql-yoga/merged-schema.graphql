@@ -13,6 +13,10 @@ directive @cached(
   ttl: Int! = 60
 ) on QUERY
 
+type AuthenticatedRepoCloneUrlOutput {
+  url: String
+}
+
 """
 Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
 """
@@ -43,6 +47,23 @@ input Float_comparison_exp {
   _nin: [Float!]
 }
 
+type GithubRepository {
+  cloneUrl: String!
+  defaultBranch: String!
+  gitUrl: String!
+  orgId: Int!
+  orgName: String!
+  orgNodeId: String!
+  ownerType: String!
+  repoId: Int!
+  repoName: String!
+  repoNodeId: String!
+}
+
+type InstallSelectedReposResponse {
+  success: Boolean
+}
+
 """
 Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
 """
@@ -56,6 +77,51 @@ input Int_comparison_exp {
   _lte: Int
   _neq: Int
   _nin: [Int!]
+}
+
+type Mutation {
+  installSelectedRepos(orgs: [OrgsWithReposInput!]!): InstallSelectedReposResponse
+
+  """ get s3 presigned url for manifest upload, used only by the frontend """
+  presignManifestUpload(project_id: uuid!): PresignedUrlResponse
+}
+
+type OrgWithRepos {
+  id: String!
+  organizationName: String!
+  repos: [GithubRepository!]!
+}
+
+input OrgsWithReposInput {
+  id: String!
+  repos: [Int!]!
+}
+
+type PresignedUrlResponse {
+  bucket: String!
+  headers: jsonb!
+  key: String!
+  url: String!
+}
+
+type Query {
+  authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
+  availableOrgsWithRepos: [OrgWithRepos!]
+  fakeQueryToHackHasuraBeingABuggyMess: String
+
+  """ get s3 presigned url for manifest upload, used by the CLI """
+  presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
+  sbomUrl(buildId: uuid!): String
+}
+
+input SbomUploadUrlInput {
+  orgId: uuid!
+  projectId: uuid!
+}
+
+type SbomUploadUrlOutput {
+  error: Boolean!
+  uploadUrl: UploadUrl
 }
 
 """
@@ -109,6 +175,16 @@ input String_comparison_exp {
 
   """does the column match the given SQL regular expression"""
   _similar: String
+}
+
+type UploadUrl {
+  headers: jsonb!
+  url: String!
+}
+
+type VulnerabilityData {
+  devOnly: Boolean!
+  vulnerability: vulnerability!
 }
 
 scalar _text
@@ -420,175 +496,6 @@ enum build_dependency_relationship_update_column {
 }
 
 """
-columns and relationships of "build_log"
-"""
-type build_log {
-  """An object relationship"""
-  build: builds!
-  build_id: uuid!
-  created_at: timestamptz!
-  id: uuid!
-  message: String
-  state: build_state_enum!
-}
-
-"""
-order by aggregate values of table "build_log"
-"""
-input build_log_aggregate_order_by {
-  count: order_by
-  max: build_log_max_order_by
-  min: build_log_min_order_by
-}
-
-"""
-input type for inserting array relation for remote table "build_log"
-"""
-input build_log_arr_rel_insert_input {
-  data: [build_log_insert_input!]!
-
-  """upsert condition"""
-  on_conflict: build_log_on_conflict
-}
-
-"""
-Boolean expression to filter rows from the table "build_log". All fields are combined with a logical 'AND'.
-"""
-input build_log_bool_exp {
-  _and: [build_log_bool_exp!]
-  _not: build_log_bool_exp
-  _or: [build_log_bool_exp!]
-  build: builds_bool_exp
-  build_id: uuid_comparison_exp
-  created_at: timestamptz_comparison_exp
-  id: uuid_comparison_exp
-  message: String_comparison_exp
-  state: build_state_enum_comparison_exp
-}
-
-"""
-unique or primary key constraints on table "build_log"
-"""
-enum build_log_constraint {
-  """
-  unique or primary key constraint on columns "id"
-  """
-  build_log_pkey
-}
-
-"""
-input type for inserting data into table "build_log"
-"""
-input build_log_insert_input {
-  build: builds_obj_rel_insert_input
-  build_id: uuid
-  created_at: timestamptz
-  id: uuid
-  message: String
-  state: build_state_enum
-}
-
-"""
-order by max() on columns of table "build_log"
-"""
-input build_log_max_order_by {
-  build_id: order_by
-  created_at: order_by
-  id: order_by
-  message: order_by
-}
-
-"""
-order by min() on columns of table "build_log"
-"""
-input build_log_min_order_by {
-  build_id: order_by
-  created_at: order_by
-  id: order_by
-  message: order_by
-}
-
-"""
-response of any mutation on the table "build_log"
-"""
-type build_log_mutation_response {
-  """number of rows affected by the mutation"""
-  affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [build_log!]!
-}
-
-"""
-on_conflict condition type for table "build_log"
-"""
-input build_log_on_conflict {
-  constraint: build_log_constraint!
-  update_columns: [build_log_update_column!]! = []
-  where: build_log_bool_exp
-}
-
-"""Ordering options when selecting data from "build_log"."""
-input build_log_order_by {
-  build: builds_order_by
-  build_id: order_by
-  created_at: order_by
-  id: order_by
-  message: order_by
-  state: order_by
-}
-
-"""
-select columns of table "build_log"
-"""
-enum build_log_select_column {
-  """column name"""
-  build_id
-
-  """column name"""
-  created_at
-
-  """column name"""
-  id
-
-  """column name"""
-  message
-
-  """column name"""
-  state
-}
-
-"""
-placeholder for update columns of table "build_log" (current role has no relevant permissions)
-"""
-enum build_log_update_column {
-  """placeholder (do not use)"""
-  _PLACEHOLDER
-}
-
-enum build_state_enum {
-  snapshot_completed
-  snapshot_failed
-  snapshot_queued
-  snapshot_scan_completed
-  snapshot_scan_failed
-  snapshot_scan_queued
-  snapshot_scan_started
-  snapshot_started
-}
-
-"""
-Boolean expression to compare columns of type "build_state_enum". All fields are combined with logical 'AND'.
-"""
-input build_state_enum_comparison_exp {
-  _eq: build_state_enum
-  _in: [build_state_enum!]
-  _is_null: Boolean
-  _neq: build_state_enum
-  _nin: [build_state_enum!]
-}
-
-"""
 columns and relationships of "builds"
 """
 type builds {
@@ -611,24 +518,6 @@ type builds {
     """filter the rows returned"""
     where: build_dependency_relationship_bool_exp
   ): [build_dependency_relationship!]!
-
-  """An array relationship"""
-  build_logs(
-    """distinct select on columns"""
-    distinct_on: [build_log_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [build_log_order_by!]
-
-    """filter the rows returned"""
-    where: build_log_bool_exp
-  ): [build_log!]!
   build_number: Int
   created_at: timestamp!
   existing_github_check_id: bigint
@@ -715,24 +604,6 @@ type builds {
     """filter the rows returned"""
     where: scans_bool_exp
   ): [scans!]!
-
-  """An aggregate relationship"""
-  scans_aggregate(
-    """distinct select on columns"""
-    distinct_on: [scans_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [scans_order_by!]
-
-    """filter the rows returned"""
-    where: scans_bool_exp
-  ): scans_aggregate!
   source_type: builds_source_type!
 }
 
@@ -811,7 +682,6 @@ input builds_bool_exp {
   _or: [builds_bool_exp!]
   agent_access_token: uuid_comparison_exp
   build_dependency_relationships: build_dependency_relationship_bool_exp
-  build_logs: build_log_bool_exp
   build_number: Int_comparison_exp
   created_at: timestamp_comparison_exp
   existing_github_check_id: bigint_comparison_exp
@@ -865,7 +735,6 @@ input type for inserting data into table "builds"
 input builds_insert_input {
   agent_access_token: uuid
   build_dependency_relationships: build_dependency_relationship_arr_rel_insert_input
-  build_logs: build_log_arr_rel_insert_input
   build_number: Int
   created_at: timestamp
   existing_github_check_id: bigint
@@ -991,7 +860,6 @@ input builds_on_conflict {
 input builds_order_by {
   agent_access_token: order_by
   build_dependency_relationships_aggregate: build_dependency_relationship_aggregate_order_by
-  build_logs_aggregate: build_log_aggregate_order_by
   build_number: order_by
   created_at: order_by
   existing_github_check_id: order_by
@@ -1300,24 +1168,6 @@ type default_branch_builds {
     """filter the rows returned"""
     where: scans_bool_exp
   ): [scans!]!
-
-  """An aggregate relationship"""
-  scans_aggregate(
-    """distinct select on columns"""
-    distinct_on: [scans_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [scans_order_by!]
-
-    """filter the rows returned"""
-    where: scans_bool_exp
-  ): scans_aggregate!
   source_type: builds_source_type
 }
 
@@ -2261,24 +2111,9 @@ columns and relationships of "guide_related_guides"
 type guide_related_guides {
   created_at: timestamptz!
   from_guide_id: uuid!
-
-  """An object relationship"""
-  guide: guides!
   id: uuid!
-
-  """An object relationship"""
-  parent_guide: guides!
   to_guide_unique_id: String!
   updated_at: timestamptz!
-}
-
-"""
-order by aggregate values of table "guide_related_guides"
-"""
-input guide_related_guides_aggregate_order_by {
-  count: order_by
-  max: guide_related_guides_max_order_by
-  min: guide_related_guides_min_order_by
 }
 
 """
@@ -2300,9 +2135,7 @@ input guide_related_guides_bool_exp {
   _or: [guide_related_guides_bool_exp!]
   created_at: timestamptz_comparison_exp
   from_guide_id: uuid_comparison_exp
-  guide: guides_bool_exp
   id: uuid_comparison_exp
-  parent_guide: guides_bool_exp
   to_guide_unique_id: String_comparison_exp
   updated_at: timestamptz_comparison_exp
 }
@@ -2336,28 +2169,6 @@ input guide_related_guides_insert_input {
 }
 
 """
-order by max() on columns of table "guide_related_guides"
-"""
-input guide_related_guides_max_order_by {
-  created_at: order_by
-  from_guide_id: order_by
-  id: order_by
-  to_guide_unique_id: order_by
-  updated_at: order_by
-}
-
-"""
-order by min() on columns of table "guide_related_guides"
-"""
-input guide_related_guides_min_order_by {
-  created_at: order_by
-  from_guide_id: order_by
-  id: order_by
-  to_guide_unique_id: order_by
-  updated_at: order_by
-}
-
-"""
 response of any mutation on the table "guide_related_guides"
 """
 type guide_related_guides_mutation_response {
@@ -2381,9 +2192,7 @@ input guide_related_guides_on_conflict {
 input guide_related_guides_order_by {
   created_at: order_by
   from_guide_id: order_by
-  guide: guides_order_by
   id: order_by
-  parent_guide: guides_order_by
   to_guide_unique_id: order_by
   updated_at: order_by
 }
@@ -2449,9 +2258,6 @@ columns and relationships of "guide_vulnerabilities"
 """
 type guide_vulnerabilities {
   created_at: timestamptz!
-
-  """An object relationship"""
-  guide: guides!
   guide_id: uuid!
   id: uuid!
   updated_at: timestamptz!
@@ -2488,7 +2294,6 @@ input guide_vulnerabilities_bool_exp {
   _not: guide_vulnerabilities_bool_exp
   _or: [guide_vulnerabilities_bool_exp!]
   created_at: timestamptz_comparison_exp
-  guide: guides_bool_exp
   guide_id: uuid_comparison_exp
   id: uuid_comparison_exp
   updated_at: timestamptz_comparison_exp
@@ -2569,7 +2374,6 @@ input guide_vulnerabilities_on_conflict {
 """Ordering options when selecting data from "guide_vulnerabilities"."""
 input guide_vulnerabilities_order_by {
   created_at: order_by
-  guide: guides_order_by
   guide_id: order_by
   id: order_by
   updated_at: order_by
@@ -2633,63 +2437,6 @@ enum guide_vulnerabilities_update_column {
   vulnerability_id
 }
 
-"""
-columns and relationships of "guides"
-"""
-type guides {
-  body: String!
-  created_at: timestamptz!
-  data_source_link: String!
-  guide_unique_id: String!
-
-  """An array relationship"""
-  guide_vulnerabilities(
-    """distinct select on columns"""
-    distinct_on: [guide_vulnerabilities_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [guide_vulnerabilities_order_by!]
-
-    """filter the rows returned"""
-    where: guide_vulnerabilities_bool_exp
-  ): [guide_vulnerabilities!]!
-  id: uuid!
-  metadata(
-    """JSON select path"""
-    path: String
-  ): jsonb!
-  metadata_schema_version: Int!
-
-  """An array relationship"""
-  related_guides(
-    """distinct select on columns"""
-    distinct_on: [guide_related_guides_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [guide_related_guides_order_by!]
-
-    """filter the rows returned"""
-    where: guide_related_guides_bool_exp
-  ): [guide_related_guides!]!
-  severity: severity_enum!
-  summary: String!
-  tags: _text!
-  title: String!
-  updated_at: timestamptz!
-}
-
 """append existing jsonb value of filtered columns with new jsonb value"""
 input guides_append_input {
   metadata: jsonb
@@ -2702,20 +2449,6 @@ input guides_bool_exp {
   _and: [guides_bool_exp!]
   _not: guides_bool_exp
   _or: [guides_bool_exp!]
-  body: String_comparison_exp
-  created_at: timestamptz_comparison_exp
-  data_source_link: String_comparison_exp
-  guide_unique_id: String_comparison_exp
-  guide_vulnerabilities: guide_vulnerabilities_bool_exp
-  id: uuid_comparison_exp
-  metadata: jsonb_comparison_exp
-  metadata_schema_version: Int_comparison_exp
-  related_guides: guide_related_guides_bool_exp
-  severity: severity_enum_comparison_exp
-  summary: String_comparison_exp
-  tags: _text_comparison_exp
-  title: String_comparison_exp
-  updated_at: timestamptz_comparison_exp
 }
 
 """
@@ -2792,9 +2525,6 @@ response of any mutation on the table "guides"
 type guides_mutation_response {
   """number of rows affected by the mutation"""
   affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [guides!]!
 }
 
 """
@@ -2816,73 +2546,9 @@ input guides_on_conflict {
   where: guides_bool_exp
 }
 
-"""Ordering options when selecting data from "guides"."""
-input guides_order_by {
-  body: order_by
-  created_at: order_by
-  data_source_link: order_by
-  guide_unique_id: order_by
-  guide_vulnerabilities_aggregate: guide_vulnerabilities_aggregate_order_by
-  id: order_by
-  metadata: order_by
-  metadata_schema_version: order_by
-  related_guides_aggregate: guide_related_guides_aggregate_order_by
-  severity: order_by
-  summary: order_by
-  tags: order_by
-  title: order_by
-  updated_at: order_by
-}
-
-"""primary key columns input for table: guides"""
-input guides_pk_columns_input {
-  id: uuid!
-}
-
 """prepend existing jsonb value of filtered columns with new jsonb value"""
 input guides_prepend_input {
   metadata: jsonb
-}
-
-"""
-select columns of table "guides"
-"""
-enum guides_select_column {
-  """column name"""
-  body
-
-  """column name"""
-  created_at
-
-  """column name"""
-  data_source_link
-
-  """column name"""
-  guide_unique_id
-
-  """column name"""
-  id
-
-  """column name"""
-  metadata
-
-  """column name"""
-  metadata_schema_version
-
-  """column name"""
-  severity
-
-  """column name"""
-  summary
-
-  """column name"""
-  tags
-
-  """column name"""
-  title
-
-  """column name"""
-  updated_at
 }
 
 """
@@ -4329,28 +3995,6 @@ type mutation_root {
   ): build_dependency_relationship
 
   """
-  insert data into the table: "build_log"
-  """
-  insert_build_log(
-    """the rows to be inserted"""
-    objects: [build_log_insert_input!]!
-
-    """upsert condition"""
-    on_conflict: build_log_on_conflict
-  ): build_log_mutation_response
-
-  """
-  insert a single row into the table: "build_log"
-  """
-  insert_build_log_one(
-    """the row to be inserted"""
-    object: build_log_insert_input!
-
-    """upsert condition"""
-    on_conflict: build_log_on_conflict
-  ): build_log
-
-  """
   insert data into the table: "builds"
   """
   insert_builds(
@@ -4470,17 +4114,6 @@ type mutation_root {
     """upsert condition"""
     on_conflict: guides_on_conflict
   ): guides_mutation_response
-
-  """
-  insert a single row into the table: "guides"
-  """
-  insert_guides_one(
-    """the row to be inserted"""
-    object: guides_insert_input!
-
-    """upsert condition"""
-    on_conflict: guides_on_conflict
-  ): guides
 
   """
   insert data into the table: "manifest_dependency"
@@ -5326,39 +4959,6 @@ type mutation_root {
     """filter the rows which have to be updated"""
     where: guides_bool_exp!
   ): guides_mutation_response
-
-  """
-  update single row of the table: "guides"
-  """
-  update_guides_by_pk(
-    """append existing jsonb value of filtered columns with new jsonb value"""
-    _append: guides_append_input
-
-    """
-    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
-    """
-    _delete_at_path: guides_delete_at_path_input
-
-    """
-    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
-    """
-    _delete_elem: guides_delete_elem_input
-
-    """
-    delete key/value pair or string element. key/value pairs are matched based on their key value
-    """
-    _delete_key: guides_delete_key_input
-
-    """increments the numeric columns with given value of the filtered values"""
-    _inc: guides_inc_input
-
-    """prepend existing jsonb value of filtered columns with new jsonb value"""
-    _prepend: guides_prepend_input
-
-    """sets the columns of the filtered rows to the given values"""
-    _set: guides_set_input
-    pk_columns: guides_pk_columns_input!
-  ): guides
 
   """
   update data of the table: "manifest_dependency"
@@ -8955,29 +8555,6 @@ type query_root {
   """
   build_dependency_relationship_by_pk(id: uuid!): build_dependency_relationship
 
-  """
-  fetch data from the table: "build_log"
-  """
-  build_log(
-    """distinct select on columns"""
-    distinct_on: [build_log_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [build_log_order_by!]
-
-    """filter the rows returned"""
-    where: build_log_bool_exp
-  ): [build_log!]!
-
-  """fetch data from the table: "build_log" using primary key columns"""
-  build_log_by_pk(id: uuid!): build_log
-
   """An array relationship"""
   builds(
     """distinct select on columns"""
@@ -9126,29 +8703,6 @@ type query_root {
   fetch data from the table: "guide_vulnerabilities" using primary key columns
   """
   guide_vulnerabilities_by_pk(id: uuid!): guide_vulnerabilities
-
-  """
-  fetch data from the table: "guides"
-  """
-  guides(
-    """distinct select on columns"""
-    distinct_on: [guides_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [guides_order_by!]
-
-    """filter the rows returned"""
-    where: guides_bool_exp
-  ): [guides!]!
-
-  """fetch data from the table: "guides" using primary key columns"""
-  guides_by_pk(id: uuid!): guides
 
   """
   fetch data from the table: "identities"
@@ -9686,24 +9240,6 @@ type query_root {
     """filter the rows returned"""
     where: scans_bool_exp
   ): [scans!]!
-
-  """An aggregate relationship"""
-  scans_aggregate(
-    """distinct select on columns"""
-    distinct_on: [scans_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [scans_order_by!]
-
-    """filter the rows returned"""
-    where: scans_bool_exp
-  ): scans_aggregate!
 
   """fetch data from the table: "scans" using primary key columns"""
   scans_by_pk(id: uuid!): scans
@@ -10279,31 +9815,6 @@ type scans {
 }
 
 """
-aggregated selection of "scans"
-"""
-type scans_aggregate {
-  aggregate: scans_aggregate_fields
-  nodes: [scans!]!
-}
-
-"""
-aggregate fields of "scans"
-"""
-type scans_aggregate_fields {
-  avg: scans_avg_fields
-  count(columns: [scans_select_column!], distinct: Boolean): Int!
-  max: scans_max_fields
-  min: scans_min_fields
-  stddev: scans_stddev_fields
-  stddev_pop: scans_stddev_pop_fields
-  stddev_samp: scans_stddev_samp_fields
-  sum: scans_sum_fields
-  var_pop: scans_var_pop_fields
-  var_samp: scans_var_samp_fields
-  variance: scans_variance_fields
-}
-
-"""
 order by aggregate values of table "scans"
 """
 input scans_aggregate_order_by {
@@ -10328,11 +9839,6 @@ input scans_arr_rel_insert_input {
 
   """upsert condition"""
   on_conflict: scans_on_conflict
-}
-
-"""aggregate avg on columns"""
-type scans_avg_fields {
-  scan_number: Float
 }
 
 """
@@ -10403,20 +9909,6 @@ input scans_insert_input {
   target: String
 }
 
-"""aggregate max on columns"""
-type scans_max_fields {
-  build_id: uuid
-  created_at: timestamp
-  db_date: date
-  distro_name: String
-  distro_version: String
-  grype_version: String
-  id: uuid
-  scan_number: Int
-  source_type: String
-  target: String
-}
-
 """
 order by max() on columns of table "scans"
 """
@@ -10431,20 +9923,6 @@ input scans_max_order_by {
   scan_number: order_by
   source_type: order_by
   target: order_by
-}
-
-"""aggregate min on columns"""
-type scans_min_fields {
-  build_id: uuid
-  created_at: timestamp
-  db_date: date
-  distro_name: String
-  distro_version: String
-  grype_version: String
-  id: uuid
-  scan_number: Int
-  source_type: String
-  target: String
 }
 
 """
@@ -10565,21 +10043,11 @@ input scans_set_input {
   target: String
 }
 
-"""aggregate stddev on columns"""
-type scans_stddev_fields {
-  scan_number: Float
-}
-
 """
 order by stddev() on columns of table "scans"
 """
 input scans_stddev_order_by {
   scan_number: order_by
-}
-
-"""aggregate stddev_pop on columns"""
-type scans_stddev_pop_fields {
-  scan_number: Float
 }
 
 """
@@ -10589,21 +10057,11 @@ input scans_stddev_pop_order_by {
   scan_number: order_by
 }
 
-"""aggregate stddev_samp on columns"""
-type scans_stddev_samp_fields {
-  scan_number: Float
-}
-
 """
 order by stddev_samp() on columns of table "scans"
 """
 input scans_stddev_samp_order_by {
   scan_number: order_by
-}
-
-"""aggregate sum on columns"""
-type scans_sum_fields {
-  scan_number: Int
 }
 
 """
@@ -10648,11 +10106,6 @@ enum scans_update_column {
   target
 }
 
-"""aggregate var_pop on columns"""
-type scans_var_pop_fields {
-  scan_number: Float
-}
-
 """
 order by var_pop() on columns of table "scans"
 """
@@ -10660,21 +10113,11 @@ input scans_var_pop_order_by {
   scan_number: order_by
 }
 
-"""aggregate var_samp on columns"""
-type scans_var_samp_fields {
-  scan_number: Float
-}
-
 """
 order by var_samp() on columns of table "scans"
 """
 input scans_var_samp_order_by {
   scan_number: order_by
-}
-
-"""aggregate variance on columns"""
-type scans_variance_fields {
-  scan_number: Float
 }
 
 """
@@ -10784,29 +10227,6 @@ type subscription_root {
   fetch data from the table: "build_dependency_relationship" using primary key columns
   """
   build_dependency_relationship_by_pk(id: uuid!): build_dependency_relationship
-
-  """
-  fetch data from the table: "build_log"
-  """
-  build_log(
-    """distinct select on columns"""
-    distinct_on: [build_log_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [build_log_order_by!]
-
-    """filter the rows returned"""
-    where: build_log_bool_exp
-  ): [build_log!]!
-
-  """fetch data from the table: "build_log" using primary key columns"""
-  build_log_by_pk(id: uuid!): build_log
 
   """An array relationship"""
   builds(
@@ -10956,29 +10376,6 @@ type subscription_root {
   fetch data from the table: "guide_vulnerabilities" using primary key columns
   """
   guide_vulnerabilities_by_pk(id: uuid!): guide_vulnerabilities
-
-  """
-  fetch data from the table: "guides"
-  """
-  guides(
-    """distinct select on columns"""
-    distinct_on: [guides_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [guides_order_by!]
-
-    """filter the rows returned"""
-    where: guides_bool_exp
-  ): [guides!]!
-
-  """fetch data from the table: "guides" using primary key columns"""
-  guides_by_pk(id: uuid!): guides
 
   """
   fetch data from the table: "identities"
@@ -11516,24 +10913,6 @@ type subscription_root {
     """filter the rows returned"""
     where: scans_bool_exp
   ): [scans!]!
-
-  """An aggregate relationship"""
-  scans_aggregate(
-    """distinct select on columns"""
-    distinct_on: [scans_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [scans_order_by!]
-
-    """filter the rows returned"""
-    where: scans_bool_exp
-  ): scans_aggregate!
 
   """fetch data from the table: "scans" using primary key columns"""
   scans_by_pk(id: uuid!): scans
