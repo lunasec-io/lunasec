@@ -48,8 +48,8 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
               };
             }),
             {
-              href: `/new-project/${o.id}`,
-              title: 'New Project',
+              href: `/project/import`,
+              title: 'Import projects',
               icon: Plus,
             },
           ],
