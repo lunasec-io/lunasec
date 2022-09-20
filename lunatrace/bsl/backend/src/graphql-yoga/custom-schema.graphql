@@ -75,11 +75,17 @@ type GithubRepository {
     gitUrl: String!
     ownerType: String!
     cloneUrl: String!
-    defaultBranch: String!
+defaultBranch: String!
 }
 
 type OrgWithRepos {
     organizationName: String!
     id: String!
     repos: [GithubRepository!]!
+}
+
+type VulnerabilityData {
+    vulnerability: vulnerability!
+    devOnly: Boolean!
+
 }
