@@ -16,4 +16,4 @@ deploy-apigateway-to-firehose.ts
 **/cdk.out/**
 **/generated-schema-1-validator.ts
 **/generated-resolver-types.ts
-lunatrace/bsl/semgrep/code/
+lunatrace/bsl/semgrep/
