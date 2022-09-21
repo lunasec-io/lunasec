@@ -1,0 +1,29 @@
+rules:
+  - id: imported-and-called
+    options:
+      symbolic_propagation: true
+    patterns:
+      - pattern-either:
+          - pattern-inside: |
+              $IMPORT = require("vulnerable-package")
+              ...
+          - pattern-inside: |
+              import $IMPORT from "vulnerable-package"
+              ...
+          - pattern-inside: |
+              import * as $IMPORT from "vulnerable-package"
+              ...
+          - pattern-inside: |
+              import { ..., $IMPORT,... } from "vulnerable-package"
+              ...
+          - pattern-inside: |
+              import { ..., $X as $IMPORT,... } from "vulnerable-package"
+              ...
+      - pattern-either:
+        - pattern-inside: $IMPORT.$FUNC()
+        - pattern-inside: $IMPORT()
+    message: A vulnerable package was imported and called.
+    languages:
+      - javascript
+      - typescript
+    severity: ERROR

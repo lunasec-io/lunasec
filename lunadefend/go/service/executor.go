@@ -56,19 +56,6 @@ func NewExecutorWithoutStreaming(
 	cwd string,
 	stdin io.Reader,
 ) Executor {
-	return NewExecutor(
-		command, args, env, cwd, stdin, false,
-	)
-}
-
-func NewExecutor(
-	command string,
-	args []string,
-	env map[string]string,
-	cwd string,
-	stdin io.Reader,
-	stream bool,
-) Executor {
 	return &executor{
 		Command: command,
 		Args:    args,
@@ -77,7 +64,28 @@ func NewExecutor(
 		Stdin:   stdin,
 
 		Shell:       false,
-		StreamStdio: stream,
+		StreamStdio: false,
+	}
+}
+
+func NewExecutor(
+	command string,
+	args []string,
+	env map[string]string,
+) Executor {
+	cwd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	return &executor{
+		Command: command,
+		Args:    args,
+		Env:     env,
+		Cwd:     cwd,
+		Stdin:   nil,
+
+		Shell:       false,
+		StreamStdio: false,
 	}
 }
 
