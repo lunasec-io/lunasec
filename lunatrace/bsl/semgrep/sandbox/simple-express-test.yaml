@@ -1,0 +1,16 @@
+rules:
+  - id: simple-express-test
+    patterns:
+      - pattern: |
+          {$IMPORT} = require('express');
+          ...
+          $IMPORT(...);
+      - metavariable-pattern:
+          metavariable: $IMPORT
+          patterns:
+            - pattern: foo;
+    message: should not import vulnerable
+    languages:
+      - typescript
+      - javascript
+    severity: ERROR
