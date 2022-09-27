@@ -1,0 +1,38 @@
+rules:
+  - id: tainted-sql-string
+    severity: WARNING
+    message: Detected user input used to manually construct a SQL string. This is
+      usually bad practice because manual construction could accidentally result
+      in a SQL injection. An attacker could use a SQL injection to steal or
+      modify contents of the database. Instead, use a parameterized query which
+      is available by default in most database engines. Alternatively, consider
+      using an object-relational mapper (ORM) such as Sequelize which will
+      protect your queries.
+    languages:
+      - javascript
+      - typescript
+    mode: taint
+    pattern-sanitizers:
+      - pattern: sanitizeInput(...)
+    pattern-sources:
+      - pattern: function $FUNCTION(..., $DATA, ...) {...}
+    pattern-sinks:
+      - patterns:
+          - pattern-inside: function $FUNCTION(..., $DATA, ...) {...}
+          - pattern-either:
+              - patterns:
+                  - pattern-either:
+                      - pattern: |
+                          "$SQLSTR" + $EXPR
+                      - pattern: |
+                          "$SQLSTR".concat(...)
+                      - pattern: util.format($SQLSTR, ...)
+                  - metavariable-regex:
+                      metavariable: $SQLSTR
+                      regex: .*\b(?i)(select|delete|insert|create|update|alter|drop)\b.*
+              - patterns:
+                  - pattern: |
+                      `...${...}...`
+                  - pattern-regex: >
+                      .*\b(?i)(select|delete|insert|create|update|alter|drop)\b.*
+

@@ -12,7 +12,7 @@
 package ingest
 
 import (
-	"fmt"
+	"github.com/rs/zerolog/log"
 
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
@@ -28,6 +28,15 @@ type Params struct {
 	Ingester metadata.Ingester
 }
 
+func sliceContainsPackage(packageSlice []string, packageName string) bool {
+	for _, p := range packageSlice {
+		if packageName == p {
+			return true
+		}
+	}
+	return false
+}
+
 func NewCommand(p Params) clifx.CommandResult {
 	return clifx.CommandResult{
 		Command: &cli.Command{
@@ -36,26 +45,40 @@ func NewCommand(p Params) clifx.CommandResult {
 			Action: func(ctx *cli.Context) error {
 				packageName := ctx.Args().First()
 
+				var ingestedPkgs []string
 				pkgs := []string{packageName}
-				for fetchedPkgs := 0; len(pkgs) > fetchedPkgs; fetchedPkgs++ {
-					fmt.Println(pkgs[fetchedPkgs])
-					newPkgs, err := p.Ingester.Ingest(ctx.Context, pkgs[fetchedPkgs])
-					fmt.Println(newPkgs)
+
+				for len(pkgs) > 0 {
+					packageToIngest := pkgs[0]
+					pkgs = pkgs[1:]
+
+					log.Info().
+						Str("package", packageToIngest).
+						Msg("ingesting package")
+
+					newPkgs, err := p.Ingester.Ingest(ctx.Context, packageToIngest)
 					if err != nil {
-						fmt.Println(err)
+						log.Error().
+							Err(err).
+							Msg("failed to ingest packages")
+						return err
 					}
-				out:
+					ingestedPkgs = append(ingestedPkgs, packageToIngest)
+
 					for _, newPkg := range newPkgs {
-						for _, oldPkg := range pkgs {
-							if newPkg == oldPkg {
-								continue out
-							}
+						// If the package to be scanned is already flagged to be ingested
+						// or the package has already been ingested, then skip flagging this package
+						if sliceContainsPackage(pkgs, newPkg) || sliceContainsPackage(ingestedPkgs, newPkg) {
+							continue
 						}
 						pkgs = append(pkgs, newPkg)
 					}
-					fmt.Println(len(pkgs) - fetchedPkgs)
-				}
 
+					log.Info().
+						Str("package", packageToIngest).
+						Strs("packages to ingest", pkgs).
+						Msg("successfully ingested package")
+				}
 				return nil
 			},
 		},

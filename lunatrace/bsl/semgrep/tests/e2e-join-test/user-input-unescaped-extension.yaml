@@ -1,0 +1,176 @@
+rules:
+  - id: log4j-message-lookup-injection
+    patterns:
+      - pattern-either:
+          - pattern: $W.fatal($X + $Y, ...);
+          - pattern: |
+              String $MSG = $X + $Y;
+              ...
+              $W.fatal($MSG, ...);
+          - pattern: |
+              String $MSG = $X;
+              ...
+              $MSG += $Y;
+              ...
+              $W.fatal($MSG, ...);
+          - pattern: $W.fatal(String.format($X, ...), ...);
+          - pattern: |
+              String $MSG = String.format($X, ...);
+              ...
+              $W.fatal($MSG, ...);
+          - pattern: |
+              String $MSG = $X;
+              ...
+              $MSG += String.format(...);
+              ...
+              $W.fatal($MSG, ...);
+          - pattern: $W.error($X + $Y, ...);
+          - pattern: |
+              String $MSG = $X + $Y;
+              ...
+              $W.error($MSG, ...);
+          - pattern: |
+              String $MSG = $X;
+              ...
+              $MSG += $Y;
+              ...
+              $W.error($MSG, ...);
+          - pattern: $W.error(String.format($X, ...), ...);
+          - pattern: |
+              String $MSG = String.format($X, ...);
+              ...
+              $W.error($MSG, ...);
+          - pattern: |
+              String $MSG = $X;
+              ...
+              $MSG += String.format(...);
+              ...
+              $W.error($MSG, ...);
+          - pattern: $W.warn($X + $Y, ...);
+          - pattern: |
+              String $MSG = $X + $Y;
+              ...
+              $W.warn($MSG, ...);
+          - pattern: |
+              String $MSG = $X;
+              ...
+              $MSG += $Y;
+              ...
+              $W.warn($MSG, ...);
+          - pattern: $W.warn(String.format($X, ...), ...);
+          - pattern: |
+              String $MSG = String.format($X, ...);
+              ...
+              $W.warn($MSG, ...);
+          - pattern: |
+              String $MSG = $X;
+              ...
+              $MSG += String.format(...);
+              ...
+              $W.warn($MSG, ...);
+          - pattern: $W.info($X + $Y, ...);
+          - pattern: |
+              String $MSG = $X + $Y;
+              ...
+              $W.info($MSG, ...);
+          - pattern: |
+              String $MSG = $X;
+              ...
+              $MSG += $Y;
+              ...
+              $W.info($MSG, ...);
+          - pattern: $W.info(String.format($X, ...), ...);
+          - pattern: |
+              String $MSG = String.format($X, ...);
+              ...
+              $W.info($MSG, ...);
+          - pattern: |
+              String $MSG = $X;
+              ...
+              $MSG += String.format(...);
+              ...
+              $W.info($MSG, ...);
+          - pattern: $W.debug($X + $Y, ...);
+          - pattern: |
+              String $MSG = $X + $Y;
+              ...
+              $W.debug($MSG, ...);
+          - pattern: |
+              String $MSG = $X;
+              ...
+              $MSG += $Y;
+              ...
+              $W.debug($MSG, ...);
+          - pattern: $W.debug(String.format($X, ...), ...);
+          - pattern: |
+              String $MSG = String.format($X, ...);
+              ...
+              $W.debug($MSG, ...);
+          - pattern: |
+              String $MSG = $X;
+              ...
+              $MSG += String.format(...);
+              ...
+              $W.debug($MSG, ...);
+          - pattern: $W.trace($X + $Y, ...);
+          - pattern: |
+              String $MSG = $X + $Y;
+              ...
+              $W.trace($MSG, ...);
+          - pattern: |
+              String $MSG = $X;
+              ...
+              $MSG += $Y;
+              ...
+              $W.trace($MSG, ...);
+          - pattern: $W.trace(String.format($X, ...), ...);
+          - pattern: |
+              String $MSG = String.format($X, ...);
+              ...
+              $W.trace($MSG, ...);
+          - pattern: |
+              String $MSG = $X;
+              ...
+              $MSG += String.format(...);
+              ...
+              $W.trace($MSG, ...);
+          - pattern: $W.log($LEVEL, $X + $Y, ...);
+          - pattern: |
+              String $MSG = $X + $Y;
+              ...
+              $W.log($LEVEL, $MSG, ...);
+          - pattern: |
+              String $MSG = $X;
+              ...
+              $MSG += $Y;
+              ...
+              $W.log($LEVEL, MSG, ...);
+          - pattern: $W.log($LEVEL, String.format($X, ...), ...);
+          - pattern: |
+              String $MSG = String.format($X, ...);
+              ...
+              $W.log($LEVEL, $MSG, ...);
+          - pattern: |
+              String $MSG = $X;
+              ...
+              $MSG += String.format(...);
+              ...
+              $W.log($LEVEL, $MSG, ...);
+    message: |
+      Possible Lookup injection into Log4j messages. Lookups provide a way to add values to the Log4j messages at arbitrary places. If the message parameter contains an attacker controlled string, the attacker could inject arbitrary lookups, for instance '${java:runtime}'. This cloud lead to information disclosure or even remove code execution if 'log4j2.formatMsgNoLookups' is enabled. This was enabled by default until version 2.15.0.
+    languages: [java]
+    severity: WARNING
+    metadata:
+      cwe: "CWE-74: Improper Neutralization of Special Elements in Output Used by a
+        Downstream Component ('Injection')"
+      owasp: "A1: Injection"
+      source-rule-url: https://www.lunasec.io/docs/blog/log4j-zero-day/
+      references:
+        - https://issues.apache.org/jira/browse/LOG4J2-3198
+        - https://www.lunasec.io/docs/blog/log4j-zero-day/
+        - https://logging.apache.org/log4j/2.x/manual/lookups.html
+      category: security
+      technology:
+        - java
+      confidence: MEDIUM
+      license: Commons Clause License Condition v1.0[LGPL-2.1-only]

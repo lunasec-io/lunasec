@@ -13,8 +13,8 @@ package ingester
 
 import (
 	"context"
-	"fmt"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
+	"github.com/rs/zerolog/log"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
@@ -50,27 +50,41 @@ func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]s
 		return nil, err
 	}
 	for _, pkg := range checkRes.Package {
-		fmt.Println(pkg)
 		if pkg.Last_successful_fetch != nil &&
 			pkg.Last_successful_fetch.After(time.Now().AddDate(0, 0, -refetchDays)) {
 			// bail out early
-			fmt.Println("bail out because we already have package")
+			log.Info().
+				Str("package", packageName).
+				Msg("package has already been ingested")
 			return nil, nil
 		}
 	}
 
 	pkg, err := h.deps.Fetcher.Fetch(ctx, packageName)
 	if err != nil {
+		log.Error().
+			Err(err).
+			Str("package", packageName).
+			Msg("failed to fetch package")
 		return nil, err
 	}
 
 	gqlPkg, err := mapper.Map(pkg)
 	if err != nil {
+		log.Error().
+			Err(err).
+			Str("package", packageName).
+			Msg("failed to map package")
 		return nil, err
 	}
 
 	res, err := gql.UpsertPackage(ctx, h.deps.GQLClient, gqlPkg, gql.PackageOnConflict)
 	if err != nil {
+		util.LogGraphqlError(
+			err,
+			"failed to upsert package",
+			util.GraphqlLogContext{Key: "package", Value: packageName},
+		)
 		return nil, err
 	}
 
