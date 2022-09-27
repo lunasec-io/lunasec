@@ -51,7 +51,9 @@ export const availableOrgsWithRepos: AvailableOrgsWithReposType = async (parent,
   }
 
   const orgs = orgsQuery.organizations;
-  console.log('LOADED ORGS', orgs);
+  log.info('loaded available organizations with repos', {
+    orgs,
+  });
 
   const orgDataWithNulls = await Promise.all(orgs.map(loadReposByOrganization));
   const orgData = orgDataWithNulls.filter((o) => o !== null) as OrgWithRepos[];

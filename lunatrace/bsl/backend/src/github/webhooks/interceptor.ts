@@ -71,22 +71,13 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
       throw new Error('Webhook signature verification failed');
     }
 
-    // "security_advisory.*" event does not have an installation id
-    if (options.name.startsWith('security_advisory')) {
-      log.info('Received security_advisory webhook', {
-        options,
-      });
-
-      // TODO (cthompson) how do we want to handle security advisories? We will have our own ingestor for these.
-      return;
-    }
-
     const installationId = this.getInstallationId(options);
     if (!installationId) {
-      log.error('Unable to get installation ID for received webhook', {
+      // (cthompson) This is not a critical error, but it is something to note in case we expected an installation ID to be present.
+      log.info('Unable to get installation ID for received webhook', {
         options,
       });
-      throw new Error('Installation ID is undefined');
+      return;
     }
 
     const insertedWebhookResult: Try<InsertWebhookToCacheMutation> = await catchError(
