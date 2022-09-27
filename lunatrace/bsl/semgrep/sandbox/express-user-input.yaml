@@ -1,0 +1,18 @@
+rules:
+  - id: express-sandbox-code-injection
+    mode: taint
+    pattern-sinks:
+      - patterns:
+          - pattern-inside: function ... ($REQ, $RES) {...}
+          - pattern: $FUNCTION($REQ.$BODY.$PARAM)
+    pattern-sources:
+      - patterns:
+          - pattern-inside: function ... ($REQ, $RES) {...}
+          - pattern-either:
+              - pattern: $REQ.$QUERY
+              - pattern: $REQ.$BODY.$PARAM
+    languages:
+      - typescript
+    message: Make sure that unverified user data can not reach `sandbox`.
+    severity: WARNING
+

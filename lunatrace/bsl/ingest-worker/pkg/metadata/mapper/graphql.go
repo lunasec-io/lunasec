@@ -29,20 +29,14 @@ func Map(p *metadata.PackageMetadata) (*gql.Package_insert_input, error) {
 		Description:           util.Ptr(p.Description),
 		Name:                  util.Ptr(p.Name),
 		Last_successful_fetch: util.Ptr(time.Now()),
-		Package_maintainers: &gql.Package_package_maintainer_arr_rel_insert_input{
-			Data:        mapMaintainers(p.Maintainers),
-			On_conflict: gql.PackageMaintainerOnConflict,
-		},
-		Package_manager: &npmV,
-		Releases: &gql.Package_release_arr_rel_insert_input{
-			Data:        mapReleases(p.Releases),
-			On_conflict: gql.ReleaseOnConflict,
-		},
+		Package_maintainers:   mapMaintainers(p.Maintainers),
+		Package_manager:       &npmV,
+		Releases:              mapReleases(p.Releases),
 	}
 	return r, nil
 }
 
-func mapReleases(r []metadata.Release) []*gql.Package_release_insert_input {
+func mapReleases(r []metadata.Release) *gql.Package_release_arr_rel_insert_input {
 	m := make([]*gql.Package_release_insert_input, len(r))
 	for i, rl := range r {
 		m[i] = &gql.Package_release_insert_input{
@@ -56,18 +50,22 @@ func mapReleases(r []metadata.Release) []*gql.Package_release_insert_input {
 
 			Fetched_time: util.Ptr(time.Now()),
 
-			Release_dependencies: &gql.Package_release_dependency_arr_rel_insert_input{
-				Data:        mapDependencies(rl.Dependencies),
-				On_conflict: gql.PackageReleaseDependencyOnConflict,
-			},
+			Release_dependencies: mapDependencies(rl.Dependencies),
 		}
 
 	}
 
-	return m
+	if len(m) == 0 {
+		return nil
+	}
+
+	return &gql.Package_release_arr_rel_insert_input{
+		Data:        m,
+		On_conflict: gql.ReleaseOnConflict,
+	}
 }
 
-func mapDependencies(ds []metadata.Dependency) []*gql.Package_release_dependency_insert_input {
+func mapDependencies(ds []metadata.Dependency) *gql.Package_release_dependency_arr_rel_insert_input {
 	m := make([]*gql.Package_release_dependency_insert_input, len(ds))
 	for i, dep := range ds {
 		m[i] = &gql.Package_release_dependency_insert_input{
@@ -83,10 +81,18 @@ func mapDependencies(ds []metadata.Dependency) []*gql.Package_release_dependency
 			Package_version_query: util.Ptr(dep.Version),
 		}
 	}
-	return m
+
+	if len(m) == 0 {
+		return nil
+	}
+
+	return &gql.Package_release_dependency_arr_rel_insert_input{
+		Data:        m,
+		On_conflict: gql.PackageReleaseDependencyOnConflict,
+	}
 }
 
-func mapMaintainers(p []metadata.Maintainer) []*gql.Package_package_maintainer_insert_input {
+func mapMaintainers(p []metadata.Maintainer) *gql.Package_package_maintainer_arr_rel_insert_input {
 	m := make([]*gql.Package_package_maintainer_insert_input, len(p))
 	for i, pm := range p {
 		m[i] = &gql.Package_package_maintainer_insert_input{
@@ -94,7 +100,15 @@ func mapMaintainers(p []metadata.Maintainer) []*gql.Package_package_maintainer_i
 		}
 
 	}
-	return m
+
+	if len(m) == 0 {
+		return nil
+	}
+
+	return &gql.Package_package_maintainer_arr_rel_insert_input{
+		Data:        m,
+		On_conflict: gql.PackageMaintainerOnConflict,
+	}
 }
 
 func mapMaintainer(pm metadata.Maintainer) *gql.Package_maintainer_obj_rel_insert_input {
