@@ -12,10 +12,10 @@
  *
  */
 import { hasura } from '../../hasura-api';
-import { InsertProjectsMutationVariables, Projects_Insert_Input } from '../../hasura-api/generated';
+import { Projects_Constraint, Projects_Insert_Input } from '../../hasura-api/generated';
 import { GithubRepositoryInfo } from '../../types/github';
 import { MaybeError } from '../../types/util';
-import { logError, newError, newResult } from '../../utils/errors';
+import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { catchError, threwError } from '../../utils/try';
 import { getInstallationAccessToken } from '../auth';
@@ -81,8 +81,15 @@ export async function installProjectsFromGithub(
     };
   });
 
-  const insertRes = await catchError(hasura.InsertProjects({ projects: hasuraProjectsObjects }));
-
+  const insertRes = await catchError(
+    hasura.InsertProjects({
+      projects: hasuraProjectsObjects,
+      on_conflict: {
+        constraint: Projects_Constraint.ProjectsNameOrganizationIdKey,
+        update_columns: [],
+      },
+    })
+  );
   if (threwError(insertRes)) {
     log.error('Error inserting new projects', { insertRes });
     return { error: true, msg: 'error inserting projects', rawError: insertRes };
@@ -93,7 +100,6 @@ export async function installProjectsFromGithub(
     installationId,
     insertRes,
   });
-  //
 
   // Now snapshot any new repos.  This will not snapshot repos with old builds, so only new repos will be snapshotted.
   const snapshotResp = await queueNewReposForSnapshot(installationId, githubRepos);

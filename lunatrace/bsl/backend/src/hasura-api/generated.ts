@@ -10900,6 +10900,7 @@ export type InsertPersonalProjectAndOrgMutation = { __typename?: 'mutation_root'
 
 export type InsertProjectsMutationVariables = Exact<{
   projects: Array<Projects_Insert_Input> | Projects_Insert_Input;
+  on_conflict: Projects_On_Conflict;
 }>;
 
 
@@ -11257,8 +11258,8 @@ export const InsertPersonalProjectAndOrgDocument = gql`
 }
     `;
 export const InsertProjectsDocument = gql`
-    mutation InsertProjects($projects: [projects_insert_input!]!) {
-  insert_projects(objects: $projects) {
+    mutation InsertProjects($projects: [projects_insert_input!]!, $on_conflict: projects_on_conflict!) {
+  insert_projects(objects: $projects, on_conflict: $on_conflict) {
     affected_rows
     returning {
       id

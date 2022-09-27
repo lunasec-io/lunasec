@@ -1,9 +1,9 @@
-mutation InsertProjects($projects: [projects_insert_input!]!) {
-    insert_projects(objects: $projects) {
-        affected_rows
-        returning {
-            id
-            name
-        }
+mutation InsertProjects($projects: [projects_insert_input!]!, $on_conflict: projects_on_conflict!) {
+  insert_projects(objects: $projects, on_conflict: $on_conflict) {
+    affected_rows
+    returning {
+      id
+      name
     }
+  }
 }
