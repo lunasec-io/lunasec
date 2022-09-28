@@ -11,49 +11,59 @@
  * limitations under the License.
  *
  */
+import { severityOrderOsv } from '@lunatrace/lunatrace-common';
 import semver from 'semver';
 
-import { AffectedByVulnerability, BuildDependencyPartial, DependencyChain } from './types';
+import { AffectedByVulnerability, DependencyChain, DependencyEdgePartial, VulnerableRelease } from './types';
 
 /**
- *  hasura and graphql doesn't allow us to fetch recursive stuff, so we build the tree ourselves on the client
- *  Note that the same dependency could appear multiple times in this tree if multiple things depend on it
  * @class DependencyTree
- * @public flatDeps The original set of dependencies that was passed in. Preserves types.
  */
-export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
-  public packageSlugToEdgeIds: Map<string, Set<string>> = new Map();
-  public childIdToParentIds: Map<string, Set<string>> = new Map();
-  public edgeById: Map<string, BuildDependency> = new Map();
+export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
+  public packageSlugToChildIds: Map<string, Set<string>> = new Map();
+  public nodeIdToParentIds: Map<string, Set<string>> = new Map();
+  public depNodesById: Map<string, DependencyEdge['child']> = new Map();
   public vulnIdToVulns: Map<string, Set<AffectedByVulnerability>> = new Map();
 
-  constructor(sourceDeps: Array<BuildDependency>) {
+  public depNodesByReleaseId: Map<string, Set<string>> = new Map();
+
+  // public vulnerableReleasesById: Map<string, VulnerableRelease<BuildDependency>> = new Map();
+
+  public vulnerableDepNodeIds: Set<string> = new Set();
+  // This builds the indexes and any useful data that show useful data about the tree
+  // Note that because we mostly extract information from the bottom of the tree upwards ( ex: show why a vulnerable package was installed)
+  constructor(sourceDeps: Array<DependencyEdge>) {
     // This is a hack to clone this object and unfreeze it, surprisingly tricky in JS
-    const flatEdges = JSON.parse(JSON.stringify(sourceDeps)) as Array<BuildDependency>;
+    const flatEdges = JSON.parse(JSON.stringify(sourceDeps)) as Array<DependencyEdge>;
 
     flatEdges.forEach((edge) => {
-      const versionSlug = `${edge.child.release.package.name}@${edge.child.release.version}`;
+      // flatten the parent id into the child so we can forget about edges as much as possible
+      const depNode = edge.child;
+      depNode.parent_id = edge.parent_id;
 
-      const edgesWithNameAndVersion = this.packageSlugToEdgeIds.get(edge.child_id) || new Set();
+      // Create a map from a given release to the list of depNodes
+      const existingNodesForThisRelease = this.depNodesByReleaseId.get(depNode.release_id);
+      if (existingNodesForThisRelease) {
+        // just add the depNodes to the existing release ID
+        existingNodesForThisRelease.add(depNode.id);
+      } else {
+        this.depNodesByReleaseId.set(depNode.release_id, new Set([depNode.id]));
+      }
 
-      edgesWithNameAndVersion.add(edge.child_id);
+      // Create a lookup of child IDs that map to a set of nodes that include them (parents).
+      const parentIdsToNode = this.nodeIdToParentIds.get(edge.child_id) || new Set();
 
-      // Create an index to make the lookup of the edge by its name and version faster later
-      this.packageSlugToEdgeIds.set(versionSlug, edgesWithNameAndVersion);
-
-      // Create a lookup of child IDs that map to a set of edges that include them (parents).
-      const parentIdsForEdge = this.childIdToParentIds.get(edge.child_id) || new Set();
-
-      if (edge.parent_id && edge.parent_id !== '00000000-0000-0000-0000-000000000000') {
-        parentIdsForEdge.add(edge.parent_id);
-        this.childIdToParentIds.set(edge.child_id, parentIdsForEdge);
+      if (depNode.parent_id && depNode.parent_id !== '00000000-0000-0000-0000-000000000000') {
+        parentIdsToNode.add(depNode.parent_id);
+        this.nodeIdToParentIds.set(depNode.id, parentIdsToNode);
       }
 
       // Create a separate lookup to directly map an ID to an edge
-      this.edgeById.set(edge.child_id, edge);
+      this.depNodesById.set(depNode.id, depNode);
 
-      edge.child.release.package.affected_by_vulnerability =
-        edge.child.release.package.affected_by_vulnerability.filter((vuln) => {
+      // delete the vulnerabilities that don't apply because of semver
+      depNode.release.package.affected_by_vulnerability = depNode.release.package.affected_by_vulnerability.filter(
+        (vuln) => {
           const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
           const isVulnerable = semver.satisfies(edge.child.release.version, vulnerableRange);
 
@@ -62,15 +72,96 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
 
           // Add to the lookup of vulns for later
           if (isVulnerable) {
-            const vulnerableEdgeSet = this.vulnIdToVulns.get(vuln.vulnerability.id) || new Set();
-            vulnerableEdgeSet.add(vuln);
-            this.vulnIdToVulns.set(vuln.vulnerability.id, vulnerableEdgeSet);
+            const vulnSet = this.vulnIdToVulns.get(vuln.vulnerability.id) || new Set();
+            vulnSet.add(vuln);
+            this.vulnIdToVulns.set(vuln.vulnerability.id, vulnSet);
+            // mark this edge for later postprossesing when the tree is done being built
+            this.vulnerableDepNodeIds.add(depNode.id);
           }
 
           return isVulnerable;
-        });
+        }
+      );
     });
   }
+
+  // this is the main function that we call to return useful information to the client about their vulnerabilities
+  public getVulnerableReleases(): VulnerableRelease<DependencyEdge>[] {
+    const vulnerableReleasesById = new Map<string, VulnerableRelease<DependencyEdge>>();
+
+    this.vulnerableDepNodeIds.forEach((nodeId) => {
+      const vulnerableDep = this.depNodesById.get(nodeId);
+      if (!vulnerableDep) {
+        throw new Error('failed to lookup depNode by id');
+      }
+
+      const release = vulnerableDep.release;
+
+      const chains = this.getDependencyChainsOfDepNode(vulnerableDep);
+      const devOnly = chains.every((chain) => {
+        const rootLabels = chain[0].labels;
+        if (rootLabels && 'scope' in rootLabels && rootLabels.scope === 'dev') {
+          return true;
+        }
+        return false;
+      });
+
+      const existingRelease = vulnerableReleasesById.get(release.id);
+
+      // there might be multiple vulnerabilities for one release so loop through them
+      // subsequent vulns on the same node will just merge together
+      vulnerableDep.release.package.affected_by_vulnerability.forEach((affectedByVuln) => {
+        //add the chains to the vulnerability
+        affectedByVuln.chains = chains;
+
+        const rawSeverity = affectedByVuln.vulnerability.severity_name;
+        // Clean the severity just in case of bad data or nulls, just in case
+        const severity = rawSeverity && severityOrderOsv.includes(rawSeverity) ? rawSeverity : 'Unknown';
+
+        // We arent tracking this release yet, make a new object
+        if (!existingRelease) {
+          const newRelease: VulnerableRelease<DependencyEdge> = {
+            release,
+            severity,
+            cvss: affectedByVuln.vulnerability.cvss_score || null,
+            devOnly,
+            affectedBy: [affectedByVuln],
+          };
+          vulnerableReleasesById.set(release.id, newRelease);
+          return;
+        }
+        // We are already tracking this release, just merge the new information
+
+        // devOnly will be false if ANY nodes aren't devOnly
+        existingRelease.devOnly = devOnly && existingRelease.devOnly;
+        // take the highest cvss
+        if (
+          affectedByVuln.vulnerability.cvss_score &&
+          (existingRelease.cvss || 0) < affectedByVuln.vulnerability.cvss_score
+        ) {
+          existingRelease.cvss = affectedByVuln.vulnerability.cvss_score;
+        }
+        // take the highest severity
+        if (severityOrderOsv.indexOf(severity) > severityOrderOsv.indexOf(existingRelease.severity)) {
+          existingRelease.severity = severity;
+        }
+        // add vuln to the release if its not being tracked yet
+        if (!existingRelease.affectedBy.some((v) => v.vulnerability.id === affectedByVuln.vulnerability.id)) {
+          existingRelease.affectedBy.push(affectedByVuln);
+        }
+      });
+
+      // merge node data into existing vulnerableRelease
+    });
+    return Object.values(vulnerableReleasesById);
+  }
+
+  // add this to the main list of vulnerabilities
+  //   const existingVulnerableRelease = this.vulnerableReleases.find((p) => p.releaseId === edge.child.release_id);
+  //   if (existingVulnerableRelease){
+  //     const vr = existingVulnerableRelease;
+  //     const existingVulnerability = vr.vulnerabilities.find((existingVulnerability) => existingVulnerability.vulnerability.id === vuln.vulnerability.id)
+  // }
 
   private precomputeVulnTriviallyUpdatable(requestedRange: string, vuln: AffectedByVulnerability): boolean {
     const fixedVersions: string[] = [];
@@ -125,7 +216,7 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
   }
 
   public checkIfPackageTriviallyUpdatable(packageName: string, version: string): 'yes' | 'partially' | 'no' {
-    const edgeSet = this.packageSlugToEdgeIds.get(`${packageName}@${version}`);
+    const edgeSet = this.packageSlugToChildIds.get(`${packageName}@${version}`);
 
     if (!edgeSet) {
       console.error(`failed to find a dependency with name and version in the tree for update check`, {
@@ -136,29 +227,28 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     }
 
     const matchingDeps = Array.from(edgeSet)
-      .map((edgeId) => this.edgeById.get(edgeId))
-      .filter((edge) => {
-        if (!edge) {
+      .map((childId) => this.depNodesById.get(childId))
+      .filter((child) => {
+        if (!child) {
           console.error(`failed to find a dependency with id for in the tree for update check`, {
-            id: edge,
             packageName,
             version,
           });
           return false;
         }
         return true;
-      }) as BuildDependency[];
+      }) as DependencyEdge['child'][];
 
     // also keep track of the vuln count in case we are checking a package with no vulns, which would not qualify as trivially updatable
     let totalVulnCount = 0;
     const fullyUpdatableDeps = matchingDeps.filter((dep) => {
-      return dep.child.release.package.affected_by_vulnerability.every((vuln) => {
+      return dep.release.package.affected_by_vulnerability.every((vuln) => {
         totalVulnCount++;
         return vuln.triviallyUpdatable;
       });
     });
     const atLeastPartiallyUpdatableDeps = matchingDeps.filter((dep) => {
-      return dep.child.release.package.affected_by_vulnerability.some((vuln) => vuln.triviallyUpdatable);
+      return dep.release.package.affected_by_vulnerability.some((vuln) => vuln.triviallyUpdatable);
     });
 
     const fullUpdateCount = fullyUpdatableDeps.length;
@@ -177,26 +267,18 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
     return 'no';
   }
 
-  // Show us how a dependency is being included by other dependencies by creating a "chain". It works from name and
-  // version of package, which is necessary because we are collating the legacy Grype-based  system against this tree
-  public showDependencyChainsOfPackage(
-    packageName: string,
-    packageVersion: string
-  ): DependencyChain<BuildDependency>[] {
-    const rootEdgeIds = this.packageSlugToEdgeIds.get(`${packageName}@${packageVersion}`);
-
-    if (!rootEdgeIds) {
-      console.error(`failed to find package in the tree`, { packageName, packageVersion });
-      return [];
-    }
-
-    const flattenedChains: DependencyChain<BuildDependency>[] = [];
+  // Show us how a dependency is being included by other dependencies by creating a "chain".
+  private getDependencyChainsOfDepNode(depNode: DependencyEdge['child']): DependencyChain<DependencyEdge['child']>[] {
+    const flattenedChains: DependencyChain<DependencyEdge['child']>[] = [];
 
     // Flatten the chains
-    const recursivelyGenerateChainsWithStack = (dep: BuildDependency, stack: DependencyChain<BuildDependency>) => {
-      // Fastest way to clone into a new array
+    const recursivelyGenerateChainsWithStack = (
+      dep: DependencyEdge['child'],
+      stack: DependencyChain<DependencyEdge['child']>
+    ) => {
+      // Fastest way to clone into a new array, with root at front and leaf at end
       const stackLength = stack.length;
-      const newStack = new Array<BuildDependency>(stackLength + 1);
+      const newStack = new Array<DependencyEdge['child']>(stackLength + 1);
       newStack[0] = dep;
       for (let i = 0; i < stackLength; i++) {
         newStack[i + 1] = stack[i];
@@ -207,38 +289,26 @@ export class DependencyTree<BuildDependency extends BuildDependencyPartial> {
         return;
       }
 
-      const parentEdges = this.childIdToParentIds.get(dep.child_id);
+      const parents = this.nodeIdToParentIds.get(dep.id);
 
-      if (!parentEdges) {
-        throw new Error(`Failed to find parent edges for child id ${dep.child_id} in the tree`);
+      if (!parents) {
+        throw new Error(`Failed to find parent edges for child id ${dep.id} in the tree`);
       }
 
-      parentEdges.forEach((parentEdgeId) => {
-        const parentEdge = this.edgeById.get(parentEdgeId);
+      parents.forEach((parentEdgeId) => {
+        const parentEdge = this.depNodesById.get(parentEdgeId);
         if (!parentEdge) {
-          throw new Error(`Failed to find parent edge with id ${parentEdgeId} for child id ${dep.child_id}`);
+          throw new Error(`Failed to find parent edge with id ${parentEdgeId} for child id ${dep.id}`);
         }
         recursivelyGenerateChainsWithStack(parentEdge, newStack);
       });
     };
 
-    rootEdgeIds.forEach((rootEdgeId) => {
-      const rootEdge = this.edgeById.get(rootEdgeId);
+    // start the recursive search
 
-      if (!rootEdge) {
-        throw new Error(`Failed to find root edge with id ${rootEdgeId} for package ${packageName}@${packageVersion}`);
-      }
+    const parentIds = this.nodeIdToParentIds.get(depNode.id);
 
-      const parentIds = this.childIdToParentIds.get(rootEdgeId);
-
-      // Handle direct dependency case
-      if (!parentIds) {
-        flattenedChains.push([rootEdge]);
-        return;
-      }
-
-      recursivelyGenerateChainsWithStack(rootEdge, []);
-    });
+    recursivelyGenerateChainsWithStack(depNode, []);
 
     return flattenedChains;
   }

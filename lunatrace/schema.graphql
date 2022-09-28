@@ -13,6 +13,10 @@ directive @cached(
   ttl: Int! = 60
 ) on QUERY
 
+type AuthenticatedRepoCloneUrlOutput {
+  url: String
+}
+
 """
 Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
 """
@@ -26,6 +30,10 @@ input Boolean_comparison_exp {
   _lte: Boolean
   _neq: Boolean
   _nin: [Boolean!]
+}
+
+type BuildVulnerabilitiesData {
+  devOnly: Boolean!
 }
 
 """
@@ -43,6 +51,23 @@ input Float_comparison_exp {
   _nin: [Float!]
 }
 
+type GithubRepository {
+  cloneUrl: String!
+  defaultBranch: String!
+  gitUrl: String!
+  orgId: Int!
+  orgName: String!
+  orgNodeId: String!
+  ownerType: String!
+  repoId: Int!
+  repoName: String!
+  repoNodeId: String!
+}
+
+type InstallSelectedReposResponse {
+  success: Boolean
+}
+
 """
 Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
 """
@@ -56,6 +81,29 @@ input Int_comparison_exp {
   _lte: Int
   _neq: Int
   _nin: [Int!]
+}
+
+type OrgWithRepos {
+  id: String!
+  organizationName: String!
+  repos: [GithubRepository!]!
+}
+
+input OrgsWithReposInput {
+  id: String!
+  repos: [Int!]!
+}
+
+type PresignedUrlResponse {
+  bucket: String!
+  headers: jsonb!
+  key: String!
+  url: String!
+}
+
+type SbomUploadUrlOutput {
+  error: Boolean!
+  uploadUrl: UploadUrl
 }
 
 """
@@ -109,6 +157,11 @@ input String_comparison_exp {
 
   """does the column match the given SQL regular expression"""
   _similar: String
+}
+
+type UploadUrl {
+  headers: jsonb!
+  url: String!
 }
 
 scalar _text
@@ -697,6 +750,7 @@ type builds {
     where: resolved_manifest_bool_exp
   ): [resolved_manifest!]!
   s3_url: String
+  s3_url_signed: String
 
   """An array relationship"""
   scans(
@@ -715,24 +769,6 @@ type builds {
     """filter the rows returned"""
     where: scans_bool_exp
   ): [scans!]!
-
-  """An aggregate relationship"""
-  scans_aggregate(
-    """distinct select on columns"""
-    distinct_on: [scans_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [scans_order_by!]
-
-    """filter the rows returned"""
-    where: scans_bool_exp
-  ): scans_aggregate!
   source_type: builds_source_type!
 }
 
@@ -1300,24 +1336,6 @@ type default_branch_builds {
     """filter the rows returned"""
     where: scans_bool_exp
   ): [scans!]!
-
-  """An aggregate relationship"""
-  scans_aggregate(
-    """distinct select on columns"""
-    distinct_on: [scans_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [scans_order_by!]
-
-    """filter the rows returned"""
-    where: scans_bool_exp
-  ): scans_aggregate!
   source_type: builds_source_type
 }
 
@@ -1937,6 +1955,7 @@ input fix_state_enum_comparison_exp {
 
 """Metadata about a github repository and where to find it."""
 type github_repositories {
+  authenticated_clone_url: AuthenticatedRepoCloneUrlOutput
   default_branch: String
   git_url: String!
   github_id: Int
@@ -2261,24 +2280,9 @@ columns and relationships of "guide_related_guides"
 type guide_related_guides {
   created_at: timestamptz!
   from_guide_id: uuid!
-
-  """An object relationship"""
-  guide: guides!
   id: uuid!
-
-  """An object relationship"""
-  parent_guide: guides!
   to_guide_unique_id: String!
   updated_at: timestamptz!
-}
-
-"""
-order by aggregate values of table "guide_related_guides"
-"""
-input guide_related_guides_aggregate_order_by {
-  count: order_by
-  max: guide_related_guides_max_order_by
-  min: guide_related_guides_min_order_by
 }
 
 """
@@ -2300,9 +2304,7 @@ input guide_related_guides_bool_exp {
   _or: [guide_related_guides_bool_exp!]
   created_at: timestamptz_comparison_exp
   from_guide_id: uuid_comparison_exp
-  guide: guides_bool_exp
   id: uuid_comparison_exp
-  parent_guide: guides_bool_exp
   to_guide_unique_id: String_comparison_exp
   updated_at: timestamptz_comparison_exp
 }
@@ -2336,28 +2338,6 @@ input guide_related_guides_insert_input {
 }
 
 """
-order by max() on columns of table "guide_related_guides"
-"""
-input guide_related_guides_max_order_by {
-  created_at: order_by
-  from_guide_id: order_by
-  id: order_by
-  to_guide_unique_id: order_by
-  updated_at: order_by
-}
-
-"""
-order by min() on columns of table "guide_related_guides"
-"""
-input guide_related_guides_min_order_by {
-  created_at: order_by
-  from_guide_id: order_by
-  id: order_by
-  to_guide_unique_id: order_by
-  updated_at: order_by
-}
-
-"""
 response of any mutation on the table "guide_related_guides"
 """
 type guide_related_guides_mutation_response {
@@ -2381,9 +2361,7 @@ input guide_related_guides_on_conflict {
 input guide_related_guides_order_by {
   created_at: order_by
   from_guide_id: order_by
-  guide: guides_order_by
   id: order_by
-  parent_guide: guides_order_by
   to_guide_unique_id: order_by
   updated_at: order_by
 }
@@ -2449,9 +2427,6 @@ columns and relationships of "guide_vulnerabilities"
 """
 type guide_vulnerabilities {
   created_at: timestamptz!
-
-  """An object relationship"""
-  guide: guides!
   guide_id: uuid!
   id: uuid!
   updated_at: timestamptz!
@@ -2488,7 +2463,6 @@ input guide_vulnerabilities_bool_exp {
   _not: guide_vulnerabilities_bool_exp
   _or: [guide_vulnerabilities_bool_exp!]
   created_at: timestamptz_comparison_exp
-  guide: guides_bool_exp
   guide_id: uuid_comparison_exp
   id: uuid_comparison_exp
   updated_at: timestamptz_comparison_exp
@@ -2569,7 +2543,6 @@ input guide_vulnerabilities_on_conflict {
 """Ordering options when selecting data from "guide_vulnerabilities"."""
 input guide_vulnerabilities_order_by {
   created_at: order_by
-  guide: guides_order_by
   guide_id: order_by
   id: order_by
   updated_at: order_by
@@ -2633,63 +2606,6 @@ enum guide_vulnerabilities_update_column {
   vulnerability_id
 }
 
-"""
-columns and relationships of "guides"
-"""
-type guides {
-  body: String!
-  created_at: timestamptz!
-  data_source_link: String!
-  guide_unique_id: String!
-
-  """An array relationship"""
-  guide_vulnerabilities(
-    """distinct select on columns"""
-    distinct_on: [guide_vulnerabilities_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [guide_vulnerabilities_order_by!]
-
-    """filter the rows returned"""
-    where: guide_vulnerabilities_bool_exp
-  ): [guide_vulnerabilities!]!
-  id: uuid!
-  metadata(
-    """JSON select path"""
-    path: String
-  ): jsonb!
-  metadata_schema_version: Int!
-
-  """An array relationship"""
-  related_guides(
-    """distinct select on columns"""
-    distinct_on: [guide_related_guides_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [guide_related_guides_order_by!]
-
-    """filter the rows returned"""
-    where: guide_related_guides_bool_exp
-  ): [guide_related_guides!]!
-  severity: severity_enum!
-  summary: String!
-  tags: _text!
-  title: String!
-  updated_at: timestamptz!
-}
-
 """append existing jsonb value of filtered columns with new jsonb value"""
 input guides_append_input {
   metadata: jsonb
@@ -2702,20 +2618,6 @@ input guides_bool_exp {
   _and: [guides_bool_exp!]
   _not: guides_bool_exp
   _or: [guides_bool_exp!]
-  body: String_comparison_exp
-  created_at: timestamptz_comparison_exp
-  data_source_link: String_comparison_exp
-  guide_unique_id: String_comparison_exp
-  guide_vulnerabilities: guide_vulnerabilities_bool_exp
-  id: uuid_comparison_exp
-  metadata: jsonb_comparison_exp
-  metadata_schema_version: Int_comparison_exp
-  related_guides: guide_related_guides_bool_exp
-  severity: severity_enum_comparison_exp
-  summary: String_comparison_exp
-  tags: _text_comparison_exp
-  title: String_comparison_exp
-  updated_at: timestamptz_comparison_exp
 }
 
 """
@@ -2792,9 +2694,6 @@ response of any mutation on the table "guides"
 type guides_mutation_response {
   """number of rows affected by the mutation"""
   affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [guides!]!
 }
 
 """
@@ -2816,73 +2715,9 @@ input guides_on_conflict {
   where: guides_bool_exp
 }
 
-"""Ordering options when selecting data from "guides"."""
-input guides_order_by {
-  body: order_by
-  created_at: order_by
-  data_source_link: order_by
-  guide_unique_id: order_by
-  guide_vulnerabilities_aggregate: guide_vulnerabilities_aggregate_order_by
-  id: order_by
-  metadata: order_by
-  metadata_schema_version: order_by
-  related_guides_aggregate: guide_related_guides_aggregate_order_by
-  severity: order_by
-  summary: order_by
-  tags: order_by
-  title: order_by
-  updated_at: order_by
-}
-
-"""primary key columns input for table: guides"""
-input guides_pk_columns_input {
-  id: uuid!
-}
-
 """prepend existing jsonb value of filtered columns with new jsonb value"""
 input guides_prepend_input {
   metadata: jsonb
-}
-
-"""
-select columns of table "guides"
-"""
-enum guides_select_column {
-  """column name"""
-  body
-
-  """column name"""
-  created_at
-
-  """column name"""
-  data_source_link
-
-  """column name"""
-  guide_unique_id
-
-  """column name"""
-  id
-
-  """column name"""
-  metadata
-
-  """column name"""
-  metadata_schema_version
-
-  """column name"""
-  severity
-
-  """column name"""
-  summary
-
-  """column name"""
-  tags
-
-  """column name"""
-  title
-
-  """column name"""
-  updated_at
 }
 
 """
@@ -4472,17 +4307,6 @@ type mutation_root {
   ): guides_mutation_response
 
   """
-  insert a single row into the table: "guides"
-  """
-  insert_guides_one(
-    """the row to be inserted"""
-    object: guides_insert_input!
-
-    """upsert condition"""
-    on_conflict: guides_on_conflict
-  ): guides
-
-  """
   insert data into the table: "manifest_dependency"
   """
   insert_manifest_dependency(
@@ -5075,6 +4899,10 @@ type mutation_root {
     """upsert condition"""
     on_conflict: webhook_cache_on_conflict
   ): webhook_cache
+  installSelectedRepos(orgs: [OrgsWithReposInput!]!): InstallSelectedReposResponse
+
+  """ get s3 presigned url for manifest upload, used only by the frontend """
+  presignManifestUpload(project_id: uuid!): PresignedUrlResponse
 
   """
   update data of the table: "build_dependency_relationship"
@@ -5326,39 +5154,6 @@ type mutation_root {
     """filter the rows which have to be updated"""
     where: guides_bool_exp!
   ): guides_mutation_response
-
-  """
-  update single row of the table: "guides"
-  """
-  update_guides_by_pk(
-    """append existing jsonb value of filtered columns with new jsonb value"""
-    _append: guides_append_input
-
-    """
-    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
-    """
-    _delete_at_path: guides_delete_at_path_input
-
-    """
-    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
-    """
-    _delete_elem: guides_delete_elem_input
-
-    """
-    delete key/value pair or string element. key/value pairs are matched based on their key value
-    """
-    _delete_key: guides_delete_key_input
-
-    """increments the numeric columns with given value of the filtered values"""
-    _inc: guides_inc_input
-
-    """prepend existing jsonb value of filtered columns with new jsonb value"""
-    _prepend: guides_prepend_input
-
-    """sets the columns of the filtered rows to the given values"""
-    _set: guides_set_input
-    pk_columns: guides_pk_columns_input!
-  ): guides
 
   """
   update data of the table: "manifest_dependency"
@@ -8930,6 +8725,10 @@ enum projects_update_column {
 }
 
 type query_root {
+  authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
+  availableOrgsWithRepos: [OrgWithRepos!]
+  buildVulnerabilities(buildId: uuid!): BuildVulnerabilitiesData
+
   """
   fetch data from the table: "build_dependency_relationship"
   """
@@ -9034,6 +8833,7 @@ type query_root {
     """filter the rows returned"""
     where: default_branch_builds_bool_exp
   ): [default_branch_builds!]!
+  fakeQueryToHackHasuraBeingABuggyMess: String
 
   """An array relationship"""
   findings(
@@ -9126,29 +8926,6 @@ type query_root {
   fetch data from the table: "guide_vulnerabilities" using primary key columns
   """
   guide_vulnerabilities_by_pk(id: uuid!): guide_vulnerabilities
-
-  """
-  fetch data from the table: "guides"
-  """
-  guides(
-    """distinct select on columns"""
-    distinct_on: [guides_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [guides_order_by!]
-
-    """filter the rows returned"""
-    where: guides_bool_exp
-  ): [guides!]!
-
-  """fetch data from the table: "guides" using primary key columns"""
-  guides_by_pk(id: uuid!): guides
 
   """
   fetch data from the table: "identities"
@@ -9582,6 +9359,9 @@ type query_root {
   """
   package_release_license_by_pk(id: uuid!): package_release_license
 
+  """ get s3 presigned url for manifest upload, used by the CLI """
+  presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
+
   """An array relationship"""
   project_access_tokens(
     """distinct select on columns"""
@@ -9668,6 +9448,7 @@ type query_root {
   fetch data from the table: "resolved_manifest" using primary key columns
   """
   resolved_manifest_by_pk(id: uuid!): resolved_manifest
+  sbomUrl(buildId: uuid!): String
 
   """An array relationship"""
   scans(
@@ -9686,24 +9467,6 @@ type query_root {
     """filter the rows returned"""
     where: scans_bool_exp
   ): [scans!]!
-
-  """An aggregate relationship"""
-  scans_aggregate(
-    """distinct select on columns"""
-    distinct_on: [scans_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [scans_order_by!]
-
-    """filter the rows returned"""
-    where: scans_bool_exp
-  ): scans_aggregate!
 
   """fetch data from the table: "scans" using primary key columns"""
   scans_by_pk(id: uuid!): scans
@@ -10279,31 +10042,6 @@ type scans {
 }
 
 """
-aggregated selection of "scans"
-"""
-type scans_aggregate {
-  aggregate: scans_aggregate_fields
-  nodes: [scans!]!
-}
-
-"""
-aggregate fields of "scans"
-"""
-type scans_aggregate_fields {
-  avg: scans_avg_fields
-  count(columns: [scans_select_column!], distinct: Boolean): Int!
-  max: scans_max_fields
-  min: scans_min_fields
-  stddev: scans_stddev_fields
-  stddev_pop: scans_stddev_pop_fields
-  stddev_samp: scans_stddev_samp_fields
-  sum: scans_sum_fields
-  var_pop: scans_var_pop_fields
-  var_samp: scans_var_samp_fields
-  variance: scans_variance_fields
-}
-
-"""
 order by aggregate values of table "scans"
 """
 input scans_aggregate_order_by {
@@ -10328,11 +10066,6 @@ input scans_arr_rel_insert_input {
 
   """upsert condition"""
   on_conflict: scans_on_conflict
-}
-
-"""aggregate avg on columns"""
-type scans_avg_fields {
-  scan_number: Float
 }
 
 """
@@ -10403,20 +10136,6 @@ input scans_insert_input {
   target: String
 }
 
-"""aggregate max on columns"""
-type scans_max_fields {
-  build_id: uuid
-  created_at: timestamp
-  db_date: date
-  distro_name: String
-  distro_version: String
-  grype_version: String
-  id: uuid
-  scan_number: Int
-  source_type: String
-  target: String
-}
-
 """
 order by max() on columns of table "scans"
 """
@@ -10431,20 +10150,6 @@ input scans_max_order_by {
   scan_number: order_by
   source_type: order_by
   target: order_by
-}
-
-"""aggregate min on columns"""
-type scans_min_fields {
-  build_id: uuid
-  created_at: timestamp
-  db_date: date
-  distro_name: String
-  distro_version: String
-  grype_version: String
-  id: uuid
-  scan_number: Int
-  source_type: String
-  target: String
 }
 
 """
@@ -10565,21 +10270,11 @@ input scans_set_input {
   target: String
 }
 
-"""aggregate stddev on columns"""
-type scans_stddev_fields {
-  scan_number: Float
-}
-
 """
 order by stddev() on columns of table "scans"
 """
 input scans_stddev_order_by {
   scan_number: order_by
-}
-
-"""aggregate stddev_pop on columns"""
-type scans_stddev_pop_fields {
-  scan_number: Float
 }
 
 """
@@ -10589,21 +10284,11 @@ input scans_stddev_pop_order_by {
   scan_number: order_by
 }
 
-"""aggregate stddev_samp on columns"""
-type scans_stddev_samp_fields {
-  scan_number: Float
-}
-
 """
 order by stddev_samp() on columns of table "scans"
 """
 input scans_stddev_samp_order_by {
   scan_number: order_by
-}
-
-"""aggregate sum on columns"""
-type scans_sum_fields {
-  scan_number: Int
 }
 
 """
@@ -10648,11 +10333,6 @@ enum scans_update_column {
   target
 }
 
-"""aggregate var_pop on columns"""
-type scans_var_pop_fields {
-  scan_number: Float
-}
-
 """
 order by var_pop() on columns of table "scans"
 """
@@ -10660,21 +10340,11 @@ input scans_var_pop_order_by {
   scan_number: order_by
 }
 
-"""aggregate var_samp on columns"""
-type scans_var_samp_fields {
-  scan_number: Float
-}
-
 """
 order by var_samp() on columns of table "scans"
 """
 input scans_var_samp_order_by {
   scan_number: order_by
-}
-
-"""aggregate variance on columns"""
-type scans_variance_fields {
-  scan_number: Float
 }
 
 """
@@ -10956,29 +10626,6 @@ type subscription_root {
   fetch data from the table: "guide_vulnerabilities" using primary key columns
   """
   guide_vulnerabilities_by_pk(id: uuid!): guide_vulnerabilities
-
-  """
-  fetch data from the table: "guides"
-  """
-  guides(
-    """distinct select on columns"""
-    distinct_on: [guides_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [guides_order_by!]
-
-    """filter the rows returned"""
-    where: guides_bool_exp
-  ): [guides!]!
-
-  """fetch data from the table: "guides" using primary key columns"""
-  guides_by_pk(id: uuid!): guides
 
   """
   fetch data from the table: "identities"
@@ -11517,24 +11164,6 @@ type subscription_root {
     where: scans_bool_exp
   ): [scans!]!
 
-  """An aggregate relationship"""
-  scans_aggregate(
-    """distinct select on columns"""
-    distinct_on: [scans_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [scans_order_by!]
-
-    """filter the rows returned"""
-    where: scans_bool_exp
-  ): scans_aggregate!
-
   """fetch data from the table: "scans" using primary key columns"""
   scans_by_pk(id: uuid!): scans
 
@@ -12035,6 +11664,9 @@ enum users_update_column {
   kratos_id
 }
 
+"""
+A field whose value is a generic Universally Unique Identifier: https://en.wikipedia.org/wiki/Universally_unique_identifier.
+"""
 scalar uuid
 
 """
@@ -12209,6 +11841,7 @@ type vulnerability {
     """filter the rows returned"""
     where: vulnerability_severity_bool_exp
   ): [vulnerability_severity!]!
+  severity_name: severity_enum
   source: String!
   source_id: String!
   summary: String
@@ -12980,6 +12613,7 @@ input vulnerability_bool_exp {
   references: vulnerability_reference_bool_exp
   reviewed_by_source: Boolean_comparison_exp
   severities: vulnerability_severity_bool_exp
+  severity_name: severity_enum_comparison_exp
   source: String_comparison_exp
   source_id: String_comparison_exp
   summary: String_comparison_exp
@@ -13359,6 +12993,7 @@ input vulnerability_insert_input {
   references: vulnerability_reference_arr_rel_insert_input
   reviewed_by_source: Boolean
   severities: vulnerability_severity_arr_rel_insert_input
+  severity_name: severity_enum
   source: String
   source_id: String
   summary: String
@@ -13415,6 +13050,7 @@ input vulnerability_order_by {
   references_aggregate: vulnerability_reference_aggregate_order_by
   reviewed_by_source: order_by
   severities_aggregate: vulnerability_severity_aggregate_order_by
+  severity_name: order_by
   source: order_by
   source_id: order_by
   summary: order_by
@@ -13798,6 +13434,9 @@ enum vulnerability_select_column {
   reviewed_by_source
 
   """column name"""
+  severity_name
+
+  """column name"""
   source
 
   """column name"""
@@ -13824,6 +13463,7 @@ input vulnerability_set_input {
   modified: timestamptz
   published: timestamptz
   reviewed_by_source: Boolean
+  severity_name: severity_enum
   source: String
   source_id: String
   summary: String
@@ -14038,6 +13678,9 @@ enum vulnerability_update_column {
 
   """column name"""
   reviewed_by_source
+
+  """column name"""
+  severity_name
 
   """column name"""
   source

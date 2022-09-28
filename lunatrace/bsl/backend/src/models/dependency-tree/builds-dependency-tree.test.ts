@@ -12,10 +12,10 @@
  *
  */
 import { DependencyTree } from './builds-dependency-tree';
-import { BuildDependencyPartial } from './types';
+import { DependencyEdgePartial } from './types';
 
 // TODO: Move this to a fixtures file
-const dependencies: Array<BuildDependencyPartial> = [
+const dependencies: Array<DependencyEdgePartial> = [
   {
     child_id: '1',
     parent_id: '00000000-0000-0000-0000-000000000000',
@@ -102,9 +102,9 @@ describe('The dependency tree', () => {
   it('should generate a dependency tree', () => {
     const tree = new DependencyTree(dependencies);
     expect(tree).toBeDefined();
-    expect(tree.edgeById.size).toEqual(4);
-    expect(tree.childIdToParentIds.size).toEqual(3);
-    expect(tree.packageSlugToEdgeIds.size).toEqual(5);
+    expect(tree.depNodesById.size).toEqual(4);
+    expect(tree.nodeIdToParentIds.size).toEqual(3);
+    expect(tree.packageSlugToChildIds.size).toEqual(5);
     expect(tree.vulnIdToVulns.size).toEqual(1);
 
     const chains = tree.showDependencyChainsOfPackage('qux', '1.0.2');
