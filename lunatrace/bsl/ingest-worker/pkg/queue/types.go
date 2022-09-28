@@ -9,22 +9,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package analysis
+package queue
 
 import (
 	"context"
 	"encoding/json"
+	"go.uber.org/fx"
 )
 
-type LicenseInfo struct {
-	// Licenses detected by this job
-	Licenses []string
-
-	// Metadata
-	ScanData json.RawMessage
+type Handler interface {
+	GetHandlerKey() string
+	HandleRecord(ctx context.Context, record json.RawMessage) error
 }
 
-type LicenseAnalyzer interface {
-	// Analyze will get licenses for a given url
-	Analyze(ctx context.Context, url string) (*LicenseInfo, error)
+type HandlerLookup map[string]Handler
+
+type Message struct {
+	MessageType string            `json:"type"`
+	Records     []json.RawMessage `json:"records"`
+}
+
+type HandlerResult struct {
+	fx.Out
+
+	Handler `group:"queue_handlers"`
 }
