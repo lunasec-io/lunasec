@@ -1,0 +1,4 @@
+table:
+  name: finding_type
+  schema: analysis
+is_enum: true
