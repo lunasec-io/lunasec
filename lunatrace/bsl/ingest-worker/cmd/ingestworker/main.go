@@ -13,13 +13,10 @@ package main
 
 import (
 	ingest "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/package-injest"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
-	"github.com/rs/zerolog/log"
-	"net/http"
-
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/vulnerability"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphql"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 
-	"github.com/Khan/genqlient/graphql"
 	"go.uber.org/fx"
 
 	clifx2 "github.com/ajvpot/clifx"
@@ -31,8 +28,6 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
 	vulnmanager "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/lunatracefx"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 )
 
 func main() {
@@ -44,29 +39,14 @@ func main() {
 			})
 		}),
 		// todo make a module
-		fx.Provide(func(appConfig types.LunaTraceConfig, hc *http.Client) graphql.Client {
-			if appConfig.GraphqlServer.Url == "" {
-				log.Error().Msg("graphql server url is not defined")
-				return nil
-			}
-
-			if appConfig.GraphqlServer.Secret == "" {
-				log.Error().Msg("graphql server secret is not defined")
-				return nil
-			}
-
-			lhc := hc
-			lhc.Transport = &gql.HeadersTransport{Headers: map[string]string{
-				"X-Hasura-Admin-Secret": appConfig.GraphqlServer.Secret,
-				"X-Hasura-Role":         "service",
-			}}
-			return graphql.NewClient(appConfig.GraphqlServer.Url, lhc)
-		}),
 		fx.Supply(&clifx2.AppConfig{
 			Name:    "ingestworker",
 			Usage:   "LunaTrace Ingest Worker",
 			Version: "0.0.1",
 		}),
+		fx.Provide(
+			graphql.NewGraphqlClient,
+		),
 		fx.Provide(
 			licensecheck.NewScanner,
 			packagejson.NewScanner,

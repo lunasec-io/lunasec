@@ -1409,6 +1409,50 @@ func (v *Float_comparison_exp) GetNeq() *float64 { return v.Neq }
 // GetNin returns Float_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Float_comparison_exp) GetNin() []float64 { return v.Nin }
 
+// GetPackageReleasePackage_release_by_pkPackage_release includes the requested fields of the GraphQL type package_release.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "package.release"
+type GetPackageReleasePackage_release_by_pkPackage_release struct {
+	Upstream_blob_url *string `json:"upstream_blob_url"`
+	// An object relationship
+	Package *GetPackageReleasePackage_release_by_pkPackage_releasePackage `json:"package"`
+}
+
+// GetUpstream_blob_url returns GetPackageReleasePackage_release_by_pkPackage_release.Upstream_blob_url, and is useful for accessing the field via an interface.
+func (v *GetPackageReleasePackage_release_by_pkPackage_release) GetUpstream_blob_url() *string {
+	return v.Upstream_blob_url
+}
+
+// GetPackage returns GetPackageReleasePackage_release_by_pkPackage_release.Package, and is useful for accessing the field via an interface.
+func (v *GetPackageReleasePackage_release_by_pkPackage_release) GetPackage() *GetPackageReleasePackage_release_by_pkPackage_releasePackage {
+	return v.Package
+}
+
+// GetPackageReleasePackage_release_by_pkPackage_releasePackage includes the requested fields of the GraphQL type package.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "package.package"
+type GetPackageReleasePackage_release_by_pkPackage_releasePackage struct {
+	Name string `json:"name"`
+}
+
+// GetName returns GetPackageReleasePackage_release_by_pkPackage_releasePackage.Name, and is useful for accessing the field via an interface.
+func (v *GetPackageReleasePackage_release_by_pkPackage_releasePackage) GetName() string {
+	return v.Name
+}
+
+// GetPackageReleaseResponse is returned by GetPackageRelease on success.
+type GetPackageReleaseResponse struct {
+	// fetch data from the table: "package.release" using primary key columns
+	Package_release_by_pk *GetPackageReleasePackage_release_by_pkPackage_release `json:"package_release_by_pk"`
+}
+
+// GetPackage_release_by_pk returns GetPackageReleaseResponse.Package_release_by_pk, and is useful for accessing the field via an interface.
+func (v *GetPackageReleaseResponse) GetPackage_release_by_pk() *GetPackageReleasePackage_release_by_pkPackage_release {
+	return v.Package_release_by_pk
+}
+
 // GetProjectInfoQueryProject_access_tokens includes the requested fields of the GraphQL type project_access_tokens.
 // The GraphQL type's documentation follows.
 //
@@ -7680,6 +7724,14 @@ type __DeleteBuildInput struct {
 // GetId returns __DeleteBuildInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteBuildInput) GetId() uuid.UUID { return v.Id }
 
+// __GetPackageReleaseInput is used internally by genqlient
+type __GetPackageReleaseInput struct {
+	Id uuid.UUID `json:"id,omitempty"`
+}
+
+// GetId returns __GetPackageReleaseInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetPackageReleaseInput) GetId() uuid.UUID { return v.Id }
+
 // __GetVulnerabilityInput is used internally by genqlient
 type __GetVulnerabilityInput struct {
 	Package_name    string               `json:"package_name,omitempty"`
@@ -7803,6 +7855,41 @@ mutation DeleteBuild ($id: uuid!) {
 	var err error
 
 	var data DeleteBuildResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
+
+func GetPackageRelease(
+	ctx context.Context,
+	client graphql.Client,
+	id uuid.UUID,
+) (*GetPackageReleaseResponse, error) {
+	req := &graphql.Request{
+		OpName: "GetPackageRelease",
+		Query: `
+query GetPackageRelease ($id: uuid!) {
+	package_release_by_pk(id: $id) {
+		upstream_blob_url
+		package {
+			name
+		}
+	}
+}
+`,
+		Variables: &__GetPackageReleaseInput{
+			Id: id,
+		},
+	}
+	var err error
+
+	var data GetPackageReleaseResponse
 	resp := &graphql.Response{Data: &data}
 
 	err = client.MakeRequest(

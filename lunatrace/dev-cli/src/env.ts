@@ -32,6 +32,7 @@ export const queueHandlerLogFilePath = {
 
 const smeeWebhookUrlEnv = process.env.SMEE_WEBHOOK_URL;
 const githubAppIdEnv = process.env.GITHUB_APP_ID;
+const queueNameEnv = process.env.QUEUE_NAME;
 
 if (!smeeWebhookUrlEnv) {
   throw new Error('Must define SMEE_WEBHOOK_URL');
@@ -39,6 +40,10 @@ if (!smeeWebhookUrlEnv) {
 
 if (!githubAppIdEnv) {
   throw new Error('Must define GITHUB_APP_ID');
+}
+
+if (!queueNameEnv) {
+  throw new Error('Must define QUEUE_NAME');
 }
 
 export const smeeWebhookUrl = smeeWebhookUrlEnv;
@@ -57,7 +62,12 @@ export const backendEnv = envVars({
 export const queueWorkerEnv = envVars({
   ...githubAppConfig,
   ...queueHandlerLogFilePath,
+  QUEUE_NAME: queueNameEnv,
   WORKER_TYPE: 'queue-handler',
+});
+
+export const goQueueHandlerEnv = envVars({
+  QUEUE_NAME: queueNameEnv,
 });
 
 export const dbUrlEnv = envVars({
