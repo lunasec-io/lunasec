@@ -155,11 +155,28 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
 
     new cdk.CfnOutput(context, lunatraceDevelopmentSqsQueue.node.id + 'Name', {
       value: lunatraceDevelopmentSqsQueue.queueName,
-      description: 'Queue Name for the development lunatrace queue',
+      description: 'Queue Name for the lunatrace development nodejs queue',
     });
 
     manifestBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(lunatraceDevelopmentSqsQueue));
     sbomBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(lunatraceDevelopmentSqsQueue));
+
+    const lunatraceDevelopmentGolangDeadLetterQueue = new Queue(context, 'LunaTraceDevelopmentGolangDeadLetterQueue', {
+      retentionPeriod: Duration.days(14),
+    });
+
+    const lunatraceDevelopmentGolangQueue = new Queue(context, 'LunaTraceDevelopmentGolangQueue', {
+      visibilityTimeout: Duration.minutes(1),
+      deadLetterQueue: {
+        queue: lunatraceDevelopmentGolangDeadLetterQueue,
+        maxReceiveCount: 10,
+      },
+    });
+
+    new cdk.CfnOutput(context, lunatraceDevelopmentGolangQueue.node.id + 'Name', {
+      value: lunatraceDevelopmentGolangQueue.queueName,
+      description: 'Queue Name for the lunatrace development golang queue',
+    });
   }
 
   /**

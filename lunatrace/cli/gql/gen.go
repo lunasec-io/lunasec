@@ -1409,48 +1409,124 @@ func (v *Float_comparison_exp) GetNeq() *float64 { return v.Neq }
 // GetNin returns Float_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Float_comparison_exp) GetNin() []float64 { return v.Nin }
 
-// GetPackageReleasePackage_release_by_pkPackage_release includes the requested fields of the GraphQL type package_release.
+// GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edge includes the requested fields of the GraphQL type manifest_dependency_edge.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "manifest_dependency_edge"
+type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edge struct {
+	// An object relationship
+	Child *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_node `json:"child"`
+	// An object relationship
+	Parent *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_node `json:"parent"`
+}
+
+// GetChild returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edge.Child, and is useful for accessing the field via an interface.
+func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edge) GetChild() *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_node {
+	return v.Child
+}
+
+// GetParent returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edge.Parent, and is useful for accessing the field via an interface.
+func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edge) GetParent() *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_node {
+	return v.Parent
+}
+
+// GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_node includes the requested fields of the GraphQL type manifest_dependency_node.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "manifest_dependency_node"
+type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_node struct {
+	// An object relationship
+	Release *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_release `json:"release"`
+}
+
+// GetRelease returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_node.Release, and is useful for accessing the field via an interface.
+func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_node) GetRelease() *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_release {
+	return v.Release
+}
+
+// GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_release includes the requested fields of the GraphQL type package_release.
 // The GraphQL type's documentation follows.
 //
 // columns and relationships of "package.release"
-type GetPackageReleasePackage_release_by_pkPackage_release struct {
-	Upstream_blob_url *string `json:"upstream_blob_url"`
+type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_release struct {
 	// An object relationship
-	Package *GetPackageReleasePackage_release_by_pkPackage_releasePackage `json:"package"`
+	Package *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_releasePackage `json:"package"`
 }
 
-// GetUpstream_blob_url returns GetPackageReleasePackage_release_by_pkPackage_release.Upstream_blob_url, and is useful for accessing the field via an interface.
-func (v *GetPackageReleasePackage_release_by_pkPackage_release) GetUpstream_blob_url() *string {
-	return v.Upstream_blob_url
-}
-
-// GetPackage returns GetPackageReleasePackage_release_by_pkPackage_release.Package, and is useful for accessing the field via an interface.
-func (v *GetPackageReleasePackage_release_by_pkPackage_release) GetPackage() *GetPackageReleasePackage_release_by_pkPackage_releasePackage {
+// GetPackage returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_release.Package, and is useful for accessing the field via an interface.
+func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_release) GetPackage() *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_releasePackage {
 	return v.Package
 }
 
-// GetPackageReleasePackage_release_by_pkPackage_releasePackage includes the requested fields of the GraphQL type package.
+// GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_releasePackage includes the requested fields of the GraphQL type package.
 // The GraphQL type's documentation follows.
 //
 // columns and relationships of "package.package"
-type GetPackageReleasePackage_release_by_pkPackage_releasePackage struct {
+type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_releasePackage struct {
 	Name string `json:"name"`
 }
 
-// GetName returns GetPackageReleasePackage_release_by_pkPackage_releasePackage.Name, and is useful for accessing the field via an interface.
-func (v *GetPackageReleasePackage_release_by_pkPackage_releasePackage) GetName() string {
+// GetName returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_releasePackage.Name, and is useful for accessing the field via an interface.
+func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_releasePackage) GetName() string {
 	return v.Name
 }
 
-// GetPackageReleaseResponse is returned by GetPackageRelease on success.
-type GetPackageReleaseResponse struct {
-	// fetch data from the table: "package.release" using primary key columns
-	Package_release_by_pk *GetPackageReleasePackage_release_by_pkPackage_release `json:"package_release_by_pk"`
+// GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_node includes the requested fields of the GraphQL type manifest_dependency_node.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "manifest_dependency_node"
+type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_node struct {
+	// An object relationship
+	Release *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release `json:"release"`
 }
 
-// GetPackage_release_by_pk returns GetPackageReleaseResponse.Package_release_by_pk, and is useful for accessing the field via an interface.
-func (v *GetPackageReleaseResponse) GetPackage_release_by_pk() *GetPackageReleasePackage_release_by_pkPackage_release {
-	return v.Package_release_by_pk
+// GetRelease returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_node.Release, and is useful for accessing the field via an interface.
+func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_node) GetRelease() *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release {
+	return v.Release
+}
+
+// GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release includes the requested fields of the GraphQL type package_release.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "package.release"
+type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release struct {
+	Upstream_blob_url *string `json:"upstream_blob_url"`
+	// An object relationship
+	Package *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_releasePackage `json:"package"`
+}
+
+// GetUpstream_blob_url returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release.Upstream_blob_url, and is useful for accessing the field via an interface.
+func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release) GetUpstream_blob_url() *string {
+	return v.Upstream_blob_url
+}
+
+// GetPackage returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release.Package, and is useful for accessing the field via an interface.
+func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release) GetPackage() *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_releasePackage {
+	return v.Package
+}
+
+// GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_releasePackage includes the requested fields of the GraphQL type package.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "package.package"
+type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_releasePackage struct {
+	Name string `json:"name"`
+}
+
+// GetName returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_releasePackage.Name, and is useful for accessing the field via an interface.
+func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_releasePackage) GetName() string {
+	return v.Name
+}
+
+// GetManifestDependencyEdgeResponse is returned by GetManifestDependencyEdge on success.
+type GetManifestDependencyEdgeResponse struct {
+	// fetch data from the table: "manifest_dependency_edge" using primary key columns
+	Manifest_dependency_edge_by_pk *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edge `json:"manifest_dependency_edge_by_pk"`
+}
+
+// GetManifest_dependency_edge_by_pk returns GetManifestDependencyEdgeResponse.Manifest_dependency_edge_by_pk, and is useful for accessing the field via an interface.
+func (v *GetManifestDependencyEdgeResponse) GetManifest_dependency_edge_by_pk() *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edge {
+	return v.Manifest_dependency_edge_by_pk
 }
 
 // GetProjectInfoQueryProject_access_tokens includes the requested fields of the GraphQL type project_access_tokens.
@@ -2867,6 +2943,7 @@ type Manifest_dependency_edge_bool_exp struct {
 	Or        []*Manifest_dependency_edge_bool_exp `json:"_or,omitempty"`
 	Child     *Manifest_dependency_node_bool_exp   `json:"child,omitempty"`
 	Child_id  *Uuid_comparison_exp                 `json:"child_id,omitempty"`
+	Id        *Uuid_comparison_exp                 `json:"id,omitempty"`
 	Parent    *Manifest_dependency_node_bool_exp   `json:"parent,omitempty"`
 	Parent_id *Uuid_comparison_exp                 `json:"parent_id,omitempty"`
 }
@@ -2890,6 +2967,9 @@ func (v *Manifest_dependency_edge_bool_exp) GetChild() *Manifest_dependency_node
 // GetChild_id returns Manifest_dependency_edge_bool_exp.Child_id, and is useful for accessing the field via an interface.
 func (v *Manifest_dependency_edge_bool_exp) GetChild_id() *Uuid_comparison_exp { return v.Child_id }
 
+// GetId returns Manifest_dependency_edge_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
 // GetParent returns Manifest_dependency_edge_bool_exp.Parent, and is useful for accessing the field via an interface.
 func (v *Manifest_dependency_edge_bool_exp) GetParent() *Manifest_dependency_node_bool_exp {
 	return v.Parent
@@ -2904,12 +2984,15 @@ type Manifest_dependency_edge_constraint string
 const (
 	// unique or primary key constraint on columns "child_id", "parent_id"
 	Manifest_dependency_edge_constraintManifestDependencyEdgeParentIdChildIdIdx Manifest_dependency_edge_constraint = "manifest_dependency_edge_parent_id_child_id_idx"
+	// unique or primary key constraint on columns "id"
+	Manifest_dependency_edge_constraintManifestDependencyEdgePkey Manifest_dependency_edge_constraint = "manifest_dependency_edge_pkey"
 )
 
 // input type for inserting data into table "manifest_dependency_edge"
 type Manifest_dependency_edge_insert_input struct {
 	Child     *Manifest_dependency_node_obj_rel_insert_input `json:"child,omitempty"`
 	Child_id  *uuid.UUID                                     `json:"child_id,omitempty"`
+	Id        *uuid.UUID                                     `json:"id,omitempty"`
 	Parent    *Manifest_dependency_node_obj_rel_insert_input `json:"parent,omitempty"`
 	Parent_id *uuid.UUID                                     `json:"parent_id,omitempty"`
 }
@@ -2921,6 +3004,9 @@ func (v *Manifest_dependency_edge_insert_input) GetChild() *Manifest_dependency_
 
 // GetChild_id returns Manifest_dependency_edge_insert_input.Child_id, and is useful for accessing the field via an interface.
 func (v *Manifest_dependency_edge_insert_input) GetChild_id() *uuid.UUID { return v.Child_id }
+
+// GetId returns Manifest_dependency_edge_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_insert_input) GetId() *uuid.UUID { return v.Id }
 
 // GetParent returns Manifest_dependency_edge_insert_input.Parent, and is useful for accessing the field via an interface.
 func (v *Manifest_dependency_edge_insert_input) GetParent() *Manifest_dependency_node_obj_rel_insert_input {
@@ -2958,6 +3044,8 @@ type Manifest_dependency_edge_update_column string
 const (
 	// column name
 	Manifest_dependency_edge_update_columnChildId Manifest_dependency_edge_update_column = "child_id"
+	// column name
+	Manifest_dependency_edge_update_columnId Manifest_dependency_edge_update_column = "id"
 	// column name
 	Manifest_dependency_edge_update_columnParentId Manifest_dependency_edge_update_column = "parent_id"
 )
@@ -7724,13 +7812,13 @@ type __DeleteBuildInput struct {
 // GetId returns __DeleteBuildInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteBuildInput) GetId() uuid.UUID { return v.Id }
 
-// __GetPackageReleaseInput is used internally by genqlient
-type __GetPackageReleaseInput struct {
+// __GetManifestDependencyEdgeInput is used internally by genqlient
+type __GetManifestDependencyEdgeInput struct {
 	Id uuid.UUID `json:"id,omitempty"`
 }
 
-// GetId returns __GetPackageReleaseInput.Id, and is useful for accessing the field via an interface.
-func (v *__GetPackageReleaseInput) GetId() uuid.UUID { return v.Id }
+// GetId returns __GetManifestDependencyEdgeInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetManifestDependencyEdgeInput) GetId() uuid.UUID { return v.Id }
 
 // __GetVulnerabilityInput is used internally by genqlient
 type __GetVulnerabilityInput struct {
@@ -7866,30 +7954,41 @@ mutation DeleteBuild ($id: uuid!) {
 	return &data, err
 }
 
-func GetPackageRelease(
+func GetManifestDependencyEdge(
 	ctx context.Context,
 	client graphql.Client,
 	id uuid.UUID,
-) (*GetPackageReleaseResponse, error) {
+) (*GetManifestDependencyEdgeResponse, error) {
 	req := &graphql.Request{
-		OpName: "GetPackageRelease",
+		OpName: "GetManifestDependencyEdge",
 		Query: `
-query GetPackageRelease ($id: uuid!) {
-	package_release_by_pk(id: $id) {
-		upstream_blob_url
-		package {
-			name
+query GetManifestDependencyEdge ($id: uuid!) {
+	manifest_dependency_edge_by_pk(id: $id) {
+		child {
+			release {
+				package {
+					name
+				}
+			}
+		}
+		parent {
+			release {
+				upstream_blob_url
+				package {
+					name
+				}
+			}
 		}
 	}
 }
 `,
-		Variables: &__GetPackageReleaseInput{
+		Variables: &__GetManifestDependencyEdgeInput{
 			Id: id,
 		},
 	}
 	var err error
 
-	var data GetPackageReleaseResponse
+	var data GetManifestDependencyEdgeResponse
 	resp := &graphql.Response{Data: &data}
 
 	err = client.MakeRequest(

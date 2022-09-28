@@ -3348,6 +3348,7 @@ type manifest_dependency_edge {
   """An object relationship"""
   child: manifest_dependency_node!
   child_id: uuid!
+  id: uuid!
 
   """An object relationship"""
   parent: manifest_dependency_node!
@@ -3382,6 +3383,7 @@ input manifest_dependency_edge_bool_exp {
   _or: [manifest_dependency_edge_bool_exp!]
   child: manifest_dependency_node_bool_exp
   child_id: uuid_comparison_exp
+  id: uuid_comparison_exp
   parent: manifest_dependency_node_bool_exp
   parent_id: uuid_comparison_exp
 }
@@ -3394,6 +3396,11 @@ enum manifest_dependency_edge_constraint {
   unique or primary key constraint on columns "child_id", "parent_id"
   """
   manifest_dependency_edge_parent_id_child_id_idx
+
+  """
+  unique or primary key constraint on columns "id"
+  """
+  manifest_dependency_edge_pkey
 }
 
 """
@@ -3402,6 +3409,7 @@ input type for inserting data into table "manifest_dependency_edge"
 input manifest_dependency_edge_insert_input {
   child: manifest_dependency_node_obj_rel_insert_input
   child_id: uuid
+  id: uuid
   parent: manifest_dependency_node_obj_rel_insert_input
   parent_id: uuid
 }
@@ -3411,6 +3419,7 @@ order by max() on columns of table "manifest_dependency_edge"
 """
 input manifest_dependency_edge_max_order_by {
   child_id: order_by
+  id: order_by
   parent_id: order_by
 }
 
@@ -3419,6 +3428,7 @@ order by min() on columns of table "manifest_dependency_edge"
 """
 input manifest_dependency_edge_min_order_by {
   child_id: order_by
+  id: order_by
   parent_id: order_by
 }
 
@@ -3446,8 +3456,14 @@ input manifest_dependency_edge_on_conflict {
 input manifest_dependency_edge_order_by {
   child: manifest_dependency_node_order_by
   child_id: order_by
+  id: order_by
   parent: manifest_dependency_node_order_by
   parent_id: order_by
+}
+
+"""primary key columns input for table: manifest_dependency_edge"""
+input manifest_dependency_edge_pk_columns_input {
+  id: uuid!
 }
 
 """
@@ -3458,6 +3474,9 @@ enum manifest_dependency_edge_select_column {
   child_id
 
   """column name"""
+  id
+
+  """column name"""
   parent_id
 }
 
@@ -3466,6 +3485,7 @@ input type for updating data in table "manifest_dependency_edge"
 """
 input manifest_dependency_edge_set_input {
   child_id: uuid
+  id: uuid
   parent_id: uuid
 }
 
@@ -3475,6 +3495,9 @@ update columns of table "manifest_dependency_edge"
 enum manifest_dependency_edge_update_column {
   """column name"""
   child_id
+
+  """column name"""
+  id
 
   """column name"""
   parent_id
@@ -5172,6 +5195,15 @@ type mutation_root {
     """filter the rows which have to be updated"""
     where: manifest_dependency_edge_bool_exp!
   ): manifest_dependency_edge_mutation_response
+
+  """
+  update single row of the table: "manifest_dependency_edge"
+  """
+  update_manifest_dependency_edge_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: manifest_dependency_edge_set_input
+    pk_columns: manifest_dependency_edge_pk_columns_input!
+  ): manifest_dependency_edge
 
   """
   update data of the table: "manifest_dependency_node"
@@ -9063,6 +9095,11 @@ type query_root {
   ): [manifest_dependency_edge!]!
 
   """
+  fetch data from the table: "manifest_dependency_edge" using primary key columns
+  """
+  manifest_dependency_edge_by_pk(id: uuid!): manifest_dependency_edge
+
+  """
   fetch data from the table: "manifest_dependency_node"
   """
   manifest_dependency_node(
@@ -10761,6 +10798,11 @@ type subscription_root {
     """filter the rows returned"""
     where: manifest_dependency_edge_bool_exp
   ): [manifest_dependency_edge!]!
+
+  """
+  fetch data from the table: "manifest_dependency_edge" using primary key columns
+  """
+  manifest_dependency_edge_by_pk(id: uuid!): manifest_dependency_edge
 
   """
   fetch data from the table: "manifest_dependency_node"

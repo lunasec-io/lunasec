@@ -44,7 +44,7 @@ func LivePatchCommand(c *cli.Context, globalBoolFlags *types.LunaTraceGlobalFlag
 	if payloadUrl == "" {
 		log.Info().
 			Str("defaultPayloadUrl", constants.DefaultPayloadUrl).
-			Msg("Payload URL (the LDAP Payload Target) not provided. Using localhost")
+			Msg("Payload Name (the LDAP Payload Target) not provided. Using localhost")
 		payloadUrl = constants.DefaultPayloadUrl
 	}
 
@@ -57,7 +57,7 @@ func LivePatchCommand(c *cli.Context, globalBoolFlags *types.LunaTraceGlobalFlag
 		log.Error().
 			Err(err).
 			Str("payloadUrl", payloadUrl).
-			Msg("Unable to parse provided payload server URL.")
+			Msg("Unable to parse provided payload server Name.")
 		return err
 	}
 

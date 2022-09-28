@@ -15,6 +15,8 @@ import (
 	ingest "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/package-injest"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/vulnerability"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphql"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 
 	"go.uber.org/fx"
@@ -22,8 +24,6 @@ import (
 	clifx2 "github.com/ajvpot/clifx"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/license"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/license/scanner/licensecheck"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/license/scanner/packagejson"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher/npm"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
 	vulnmanager "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability"
