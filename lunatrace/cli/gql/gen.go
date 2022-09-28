@@ -227,7 +227,7 @@ func (v *Build_dependency_relationship_bool_exp) GetRelease_id() *Uuid_compariso
 type Build_dependency_relationship_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Build_dependency_relationship_constraintBuildDependencyRelationshipPkey Build_dependency_relationship_constraint = "build_dependency_relationship_pkey"
 )
 
@@ -342,6 +342,160 @@ const (
 	Build_dependency_relationship_update_columnReleaseId Build_dependency_relationship_update_column = "release_id"
 )
 
+// input type for inserting array relation for remote table "build_log"
+type Build_log_arr_rel_insert_input struct {
+	Data []*Build_log_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Build_log_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Build_log_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Build_log_arr_rel_insert_input) GetData() []*Build_log_insert_input { return v.Data }
+
+// GetOn_conflict returns Build_log_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Build_log_arr_rel_insert_input) GetOn_conflict() *Build_log_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "build_log". All fields are combined with a logical 'AND'.
+type Build_log_bool_exp struct {
+	And        []*Build_log_bool_exp            `json:"_and,omitempty"`
+	Not        *Build_log_bool_exp              `json:"_not,omitempty"`
+	Or         []*Build_log_bool_exp            `json:"_or,omitempty"`
+	Build      *Builds_bool_exp                 `json:"build,omitempty"`
+	Build_id   *Uuid_comparison_exp             `json:"build_id,omitempty"`
+	Created_at *Timestamptz_comparison_exp      `json:"created_at,omitempty"`
+	Id         *Uuid_comparison_exp             `json:"id,omitempty"`
+	Message    *String_comparison_exp           `json:"message,omitempty"`
+	State      *Build_state_enum_comparison_exp `json:"state,omitempty"`
+}
+
+// GetAnd returns Build_log_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Build_log_bool_exp) GetAnd() []*Build_log_bool_exp { return v.And }
+
+// GetNot returns Build_log_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Build_log_bool_exp) GetNot() *Build_log_bool_exp { return v.Not }
+
+// GetOr returns Build_log_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Build_log_bool_exp) GetOr() []*Build_log_bool_exp { return v.Or }
+
+// GetBuild returns Build_log_bool_exp.Build, and is useful for accessing the field via an interface.
+func (v *Build_log_bool_exp) GetBuild() *Builds_bool_exp { return v.Build }
+
+// GetBuild_id returns Build_log_bool_exp.Build_id, and is useful for accessing the field via an interface.
+func (v *Build_log_bool_exp) GetBuild_id() *Uuid_comparison_exp { return v.Build_id }
+
+// GetCreated_at returns Build_log_bool_exp.Created_at, and is useful for accessing the field via an interface.
+func (v *Build_log_bool_exp) GetCreated_at() *Timestamptz_comparison_exp { return v.Created_at }
+
+// GetId returns Build_log_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Build_log_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetMessage returns Build_log_bool_exp.Message, and is useful for accessing the field via an interface.
+func (v *Build_log_bool_exp) GetMessage() *String_comparison_exp { return v.Message }
+
+// GetState returns Build_log_bool_exp.State, and is useful for accessing the field via an interface.
+func (v *Build_log_bool_exp) GetState() *Build_state_enum_comparison_exp { return v.State }
+
+// unique or primary key constraints on table "build_log"
+type Build_log_constraint string
+
+const (
+	// unique or primary key constraint on columns "id"
+	Build_log_constraintBuildLogPkey Build_log_constraint = "build_log_pkey"
+)
+
+// input type for inserting data into table "build_log"
+type Build_log_insert_input struct {
+	Build      *Builds_obj_rel_insert_input `json:"build,omitempty"`
+	Build_id   *uuid.UUID                   `json:"build_id,omitempty"`
+	Created_at *time.Time                   `json:"created_at,omitempty"`
+	Id         *uuid.UUID                   `json:"id,omitempty"`
+	Message    *string                      `json:"message,omitempty"`
+	State      *Build_state_enum            `json:"state,omitempty"`
+}
+
+// GetBuild returns Build_log_insert_input.Build, and is useful for accessing the field via an interface.
+func (v *Build_log_insert_input) GetBuild() *Builds_obj_rel_insert_input { return v.Build }
+
+// GetBuild_id returns Build_log_insert_input.Build_id, and is useful for accessing the field via an interface.
+func (v *Build_log_insert_input) GetBuild_id() *uuid.UUID { return v.Build_id }
+
+// GetCreated_at returns Build_log_insert_input.Created_at, and is useful for accessing the field via an interface.
+func (v *Build_log_insert_input) GetCreated_at() *time.Time { return v.Created_at }
+
+// GetId returns Build_log_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Build_log_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetMessage returns Build_log_insert_input.Message, and is useful for accessing the field via an interface.
+func (v *Build_log_insert_input) GetMessage() *string { return v.Message }
+
+// GetState returns Build_log_insert_input.State, and is useful for accessing the field via an interface.
+func (v *Build_log_insert_input) GetState() *Build_state_enum { return v.State }
+
+// on_conflict condition type for table "build_log"
+type Build_log_on_conflict struct {
+	Constraint     Build_log_constraint      `json:"constraint,omitempty"`
+	Update_columns []Build_log_update_column `json:"update_columns,omitempty"`
+	Where          *Build_log_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Build_log_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Build_log_on_conflict) GetConstraint() Build_log_constraint { return v.Constraint }
+
+// GetUpdate_columns returns Build_log_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Build_log_on_conflict) GetUpdate_columns() []Build_log_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Build_log_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Build_log_on_conflict) GetWhere() *Build_log_bool_exp { return v.Where }
+
+// placeholder for update columns of table "build_log" (current role has no relevant permissions)
+type Build_log_update_column string
+
+const (
+	// placeholder (do not use)
+	Build_log_update_columnPlaceholder Build_log_update_column = "_PLACEHOLDER"
+)
+
+type Build_state_enum string
+
+const (
+	Build_state_enumSnapshotCompleted     Build_state_enum = "snapshot_completed"
+	Build_state_enumSnapshotFailed        Build_state_enum = "snapshot_failed"
+	Build_state_enumSnapshotQueued        Build_state_enum = "snapshot_queued"
+	Build_state_enumSnapshotScanCompleted Build_state_enum = "snapshot_scan_completed"
+	Build_state_enumSnapshotScanFailed    Build_state_enum = "snapshot_scan_failed"
+	Build_state_enumSnapshotScanQueued    Build_state_enum = "snapshot_scan_queued"
+	Build_state_enumSnapshotScanStarted   Build_state_enum = "snapshot_scan_started"
+	Build_state_enumSnapshotStarted       Build_state_enum = "snapshot_started"
+)
+
+// Boolean expression to compare columns of type "build_state_enum". All fields are combined with logical 'AND'.
+type Build_state_enum_comparison_exp struct {
+	Eq      *Build_state_enum  `json:"_eq,omitempty"`
+	In      []Build_state_enum `json:"_in,omitempty"`
+	Is_null *bool              `json:"_is_null,omitempty"`
+	Neq     *Build_state_enum  `json:"_neq,omitempty"`
+	Nin     []Build_state_enum `json:"_nin,omitempty"`
+}
+
+// GetEq returns Build_state_enum_comparison_exp.Eq, and is useful for accessing the field via an interface.
+func (v *Build_state_enum_comparison_exp) GetEq() *Build_state_enum { return v.Eq }
+
+// GetIn returns Build_state_enum_comparison_exp.In, and is useful for accessing the field via an interface.
+func (v *Build_state_enum_comparison_exp) GetIn() []Build_state_enum { return v.In }
+
+// GetIs_null returns Build_state_enum_comparison_exp.Is_null, and is useful for accessing the field via an interface.
+func (v *Build_state_enum_comparison_exp) GetIs_null() *bool { return v.Is_null }
+
+// GetNeq returns Build_state_enum_comparison_exp.Neq, and is useful for accessing the field via an interface.
+func (v *Build_state_enum_comparison_exp) GetNeq() *Build_state_enum { return v.Neq }
+
+// GetNin returns Build_state_enum_comparison_exp.Nin, and is useful for accessing the field via an interface.
+func (v *Build_state_enum_comparison_exp) GetNin() []Build_state_enum { return v.Nin }
+
 // input type for inserting array relation for remote table "builds"
 type Builds_arr_rel_insert_input struct {
 	Data []*Builds_insert_input `json:"data,omitempty"`
@@ -362,6 +516,7 @@ type Builds_bool_exp struct {
 	Or                             []*Builds_bool_exp                      `json:"_or,omitempty"`
 	Agent_access_token             *Uuid_comparison_exp                    `json:"agent_access_token,omitempty"`
 	Build_dependency_relationships *Build_dependency_relationship_bool_exp `json:"build_dependency_relationships,omitempty"`
+	Build_logs                     *Build_log_bool_exp                     `json:"build_logs,omitempty"`
 	Build_number                   *Int_comparison_exp                     `json:"build_number,omitempty"`
 	Created_at                     *Timestamp_comparison_exp               `json:"created_at,omitempty"`
 	Existing_github_check_id       *Bigint_comparison_exp                  `json:"existing_github_check_id,omitempty"`
@@ -375,6 +530,7 @@ type Builds_bool_exp struct {
 	Project                        *Projects_bool_exp                      `json:"project,omitempty"`
 	Project_id                     *Uuid_comparison_exp                    `json:"project_id,omitempty"`
 	Pull_request_id                *String_comparison_exp                  `json:"pull_request_id,omitempty"`
+	Resolved_manifests             *Resolved_manifest_bool_exp             `json:"resolved_manifests,omitempty"`
 	S3_url                         *String_comparison_exp                  `json:"s3_url,omitempty"`
 	Scans                          *Scans_bool_exp                         `json:"scans,omitempty"`
 	Source_type                    *Builds_source_type_comparison_exp      `json:"source_type,omitempty"`
@@ -396,6 +552,9 @@ func (v *Builds_bool_exp) GetAgent_access_token() *Uuid_comparison_exp { return 
 func (v *Builds_bool_exp) GetBuild_dependency_relationships() *Build_dependency_relationship_bool_exp {
 	return v.Build_dependency_relationships
 }
+
+// GetBuild_logs returns Builds_bool_exp.Build_logs, and is useful for accessing the field via an interface.
+func (v *Builds_bool_exp) GetBuild_logs() *Build_log_bool_exp { return v.Build_logs }
 
 // GetBuild_number returns Builds_bool_exp.Build_number, and is useful for accessing the field via an interface.
 func (v *Builds_bool_exp) GetBuild_number() *Int_comparison_exp { return v.Build_number }
@@ -440,6 +599,11 @@ func (v *Builds_bool_exp) GetProject_id() *Uuid_comparison_exp { return v.Projec
 // GetPull_request_id returns Builds_bool_exp.Pull_request_id, and is useful for accessing the field via an interface.
 func (v *Builds_bool_exp) GetPull_request_id() *String_comparison_exp { return v.Pull_request_id }
 
+// GetResolved_manifests returns Builds_bool_exp.Resolved_manifests, and is useful for accessing the field via an interface.
+func (v *Builds_bool_exp) GetResolved_manifests() *Resolved_manifest_bool_exp {
+	return v.Resolved_manifests
+}
+
 // GetS3_url returns Builds_bool_exp.S3_url, and is useful for accessing the field via an interface.
 func (v *Builds_bool_exp) GetS3_url() *String_comparison_exp { return v.S3_url }
 
@@ -453,11 +617,11 @@ func (v *Builds_bool_exp) GetSource_type() *Builds_source_type_comparison_exp { 
 type Builds_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "agent_access_token"
 	Builds_constraintBuildsAgentAccessTokenKey Builds_constraint = "builds_agent_access_token_key"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "project_id", "build_number"
 	Builds_constraintBuildsBuildNumberProjectIdKey Builds_constraint = "builds_build_number_project_id_key"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Builds_constraintBuildsPkey Builds_constraint = "builds_pkey"
 )
 
@@ -465,6 +629,7 @@ const (
 type Builds_insert_input struct {
 	Agent_access_token             *uuid.UUID                                          `json:"agent_access_token,omitempty"`
 	Build_dependency_relationships *Build_dependency_relationship_arr_rel_insert_input `json:"build_dependency_relationships,omitempty"`
+	Build_logs                     *Build_log_arr_rel_insert_input                     `json:"build_logs,omitempty"`
 	Build_number                   *int                                                `json:"build_number,omitempty"`
 	Created_at                     *time.Time                                          `json:"created_at,omitempty"`
 	Existing_github_check_id       *int64                                              `json:"existing_github_check_id,omitempty"`
@@ -478,6 +643,7 @@ type Builds_insert_input struct {
 	Project                        *Projects_obj_rel_insert_input                      `json:"project,omitempty"`
 	Project_id                     *uuid.UUID                                          `json:"project_id,omitempty"`
 	Pull_request_id                *string                                             `json:"pull_request_id,omitempty"`
+	Resolved_manifests             *Resolved_manifest_arr_rel_insert_input             `json:"resolved_manifests,omitempty"`
 	S3_url                         *string                                             `json:"s3_url,omitempty"`
 	Scans                          *Scans_arr_rel_insert_input                         `json:"scans,omitempty"`
 	Source_type                    *string                                             `json:"source_type,omitempty"`
@@ -490,6 +656,9 @@ func (v *Builds_insert_input) GetAgent_access_token() *uuid.UUID { return v.Agen
 func (v *Builds_insert_input) GetBuild_dependency_relationships() *Build_dependency_relationship_arr_rel_insert_input {
 	return v.Build_dependency_relationships
 }
+
+// GetBuild_logs returns Builds_insert_input.Build_logs, and is useful for accessing the field via an interface.
+func (v *Builds_insert_input) GetBuild_logs() *Build_log_arr_rel_insert_input { return v.Build_logs }
 
 // GetBuild_number returns Builds_insert_input.Build_number, and is useful for accessing the field via an interface.
 func (v *Builds_insert_input) GetBuild_number() *int { return v.Build_number }
@@ -531,6 +700,11 @@ func (v *Builds_insert_input) GetProject_id() *uuid.UUID { return v.Project_id }
 
 // GetPull_request_id returns Builds_insert_input.Pull_request_id, and is useful for accessing the field via an interface.
 func (v *Builds_insert_input) GetPull_request_id() *string { return v.Pull_request_id }
+
+// GetResolved_manifests returns Builds_insert_input.Resolved_manifests, and is useful for accessing the field via an interface.
+func (v *Builds_insert_input) GetResolved_manifests() *Resolved_manifest_arr_rel_insert_input {
+	return v.Resolved_manifests
+}
 
 // GetS3_url returns Builds_insert_input.S3_url, and is useful for accessing the field via an interface.
 func (v *Builds_insert_input) GetS3_url() *string { return v.S3_url }
@@ -877,36 +1051,32 @@ func (v *Findings_arr_rel_insert_input) GetOn_conflict() *Findings_on_conflict {
 
 // Boolean expression to filter rows from the table "findings". All fields are combined with a logical 'AND'.
 type Findings_bool_exp struct {
-	And                      []*Findings_bool_exp             `json:"_and,omitempty"`
-	Not                      *Findings_bool_exp               `json:"_not,omitempty"`
-	Or                       []*Findings_bool_exp             `json:"_or,omitempty"`
-	Build                    *Builds_bool_exp                 `json:"build,omitempty"`
-	Build_id                 *Uuid_comparison_exp             `json:"build_id,omitempty"`
-	Created_at               *Timestamp_comparison_exp        `json:"created_at,omitempty"`
-	Dedupe_slug              *String_comparison_exp           `json:"dedupe_slug,omitempty"`
-	Default_branch_build     *Default_branch_builds_bool_exp  `json:"default_branch_build,omitempty"`
-	Fix_state                *Fix_state_enum_comparison_exp   `json:"fix_state,omitempty"`
-	Fix_versions             *Text_comparison_exp             `json:"fix_versions,omitempty"`
-	Id                       *Uuid_comparison_exp             `json:"id,omitempty"`
-	Language                 *String_comparison_exp           `json:"language,omitempty"`
-	Locations                *Text_comparison_exp             `json:"locations,omitempty"`
-	Matcher                  *String_comparison_exp           `json:"matcher,omitempty"`
-	Package_name             *String_comparison_exp           `json:"package_name,omitempty"`
-	Package_version          *Package_versions_bool_exp       `json:"package_version,omitempty"`
-	Package_version_id       *Uuid_comparison_exp             `json:"package_version_id,omitempty"`
-	Purl                     *String_comparison_exp           `json:"purl,omitempty"`
-	Scan                     *Scans_bool_exp                  `json:"scan,omitempty"`
-	Scan_id                  *Uuid_comparison_exp             `json:"scan_id,omitempty"`
-	Severity                 *Severity_enum_comparison_exp    `json:"severity,omitempty"`
-	Type                     *String_comparison_exp           `json:"type,omitempty"`
-	Updated_at               *Timestamptz_comparison_exp      `json:"updated_at,omitempty"`
-	Version                  *String_comparison_exp           `json:"version,omitempty"`
-	Version_matcher          *String_comparison_exp           `json:"version_matcher,omitempty"`
-	Virtual_path             *String_comparison_exp           `json:"virtual_path,omitempty"`
-	Vulnerability            *Vulnerability_bool_exp          `json:"vulnerability,omitempty"`
-	Vulnerability_id         *Uuid_comparison_exp             `json:"vulnerability_id,omitempty"`
-	Vulnerability_package    *Vulnerability_packages_bool_exp `json:"vulnerability_package,omitempty"`
-	Vulnerability_package_id *Uuid_comparison_exp             `json:"vulnerability_package_id,omitempty"`
+	And                  []*Findings_bool_exp            `json:"_and,omitempty"`
+	Not                  *Findings_bool_exp              `json:"_not,omitempty"`
+	Or                   []*Findings_bool_exp            `json:"_or,omitempty"`
+	Build                *Builds_bool_exp                `json:"build,omitempty"`
+	Build_id             *Uuid_comparison_exp            `json:"build_id,omitempty"`
+	Created_at           *Timestamp_comparison_exp       `json:"created_at,omitempty"`
+	Dedupe_slug          *String_comparison_exp          `json:"dedupe_slug,omitempty"`
+	Default_branch_build *Default_branch_builds_bool_exp `json:"default_branch_build,omitempty"`
+	Fix_state            *Fix_state_enum_comparison_exp  `json:"fix_state,omitempty"`
+	Fix_versions         *Text_comparison_exp            `json:"fix_versions,omitempty"`
+	Id                   *Uuid_comparison_exp            `json:"id,omitempty"`
+	Language             *String_comparison_exp          `json:"language,omitempty"`
+	Locations            *Text_comparison_exp            `json:"locations,omitempty"`
+	Matcher              *String_comparison_exp          `json:"matcher,omitempty"`
+	Package_name         *String_comparison_exp          `json:"package_name,omitempty"`
+	Purl                 *String_comparison_exp          `json:"purl,omitempty"`
+	Scan                 *Scans_bool_exp                 `json:"scan,omitempty"`
+	Scan_id              *Uuid_comparison_exp            `json:"scan_id,omitempty"`
+	Severity             *Severity_enum_comparison_exp   `json:"severity,omitempty"`
+	Type                 *String_comparison_exp          `json:"type,omitempty"`
+	Updated_at           *Timestamptz_comparison_exp     `json:"updated_at,omitempty"`
+	Version              *String_comparison_exp          `json:"version,omitempty"`
+	Version_matcher      *String_comparison_exp          `json:"version_matcher,omitempty"`
+	Virtual_path         *String_comparison_exp          `json:"virtual_path,omitempty"`
+	Vulnerability        *Vulnerability_bool_exp         `json:"vulnerability,omitempty"`
+	Vulnerability_id     *Uuid_comparison_exp            `json:"vulnerability_id,omitempty"`
 }
 
 // GetAnd returns Findings_bool_exp.And, and is useful for accessing the field via an interface.
@@ -956,12 +1126,6 @@ func (v *Findings_bool_exp) GetMatcher() *String_comparison_exp { return v.Match
 // GetPackage_name returns Findings_bool_exp.Package_name, and is useful for accessing the field via an interface.
 func (v *Findings_bool_exp) GetPackage_name() *String_comparison_exp { return v.Package_name }
 
-// GetPackage_version returns Findings_bool_exp.Package_version, and is useful for accessing the field via an interface.
-func (v *Findings_bool_exp) GetPackage_version() *Package_versions_bool_exp { return v.Package_version }
-
-// GetPackage_version_id returns Findings_bool_exp.Package_version_id, and is useful for accessing the field via an interface.
-func (v *Findings_bool_exp) GetPackage_version_id() *Uuid_comparison_exp { return v.Package_version_id }
-
 // GetPurl returns Findings_bool_exp.Purl, and is useful for accessing the field via an interface.
 func (v *Findings_bool_exp) GetPurl() *String_comparison_exp { return v.Purl }
 
@@ -995,55 +1159,41 @@ func (v *Findings_bool_exp) GetVulnerability() *Vulnerability_bool_exp { return 
 // GetVulnerability_id returns Findings_bool_exp.Vulnerability_id, and is useful for accessing the field via an interface.
 func (v *Findings_bool_exp) GetVulnerability_id() *Uuid_comparison_exp { return v.Vulnerability_id }
 
-// GetVulnerability_package returns Findings_bool_exp.Vulnerability_package, and is useful for accessing the field via an interface.
-func (v *Findings_bool_exp) GetVulnerability_package() *Vulnerability_packages_bool_exp {
-	return v.Vulnerability_package
-}
-
-// GetVulnerability_package_id returns Findings_bool_exp.Vulnerability_package_id, and is useful for accessing the field via an interface.
-func (v *Findings_bool_exp) GetVulnerability_package_id() *Uuid_comparison_exp {
-	return v.Vulnerability_package_id
-}
-
 // unique or primary key constraints on table "findings"
 type Findings_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "dedupe_slug", "build_id"
 	Findings_constraintFindingsDedupeSlugBuildIdKey Findings_constraint = "findings_dedupe_slug_build_id_key"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Findings_constraintFindingsPkey Findings_constraint = "findings_pkey"
 )
 
 // input type for inserting data into table "findings"
 type Findings_insert_input struct {
-	Build                    *Builds_obj_rel_insert_input                 `json:"build,omitempty"`
-	Build_id                 *uuid.UUID                                   `json:"build_id,omitempty"`
-	Created_at               *time.Time                                   `json:"created_at,omitempty"`
-	Dedupe_slug              *string                                      `json:"dedupe_slug,omitempty"`
-	Default_branch_build     *Default_branch_builds_obj_rel_insert_input  `json:"default_branch_build,omitempty"`
-	Fix_state                *string                                      `json:"fix_state,omitempty"`
-	Fix_versions             *string                                      `json:"fix_versions,omitempty"`
-	Id                       *uuid.UUID                                   `json:"id,omitempty"`
-	Language                 *string                                      `json:"language,omitempty"`
-	Locations                *string                                      `json:"locations,omitempty"`
-	Matcher                  *string                                      `json:"matcher,omitempty"`
-	Package_name             *string                                      `json:"package_name,omitempty"`
-	Package_version          *Package_versions_obj_rel_insert_input       `json:"package_version,omitempty"`
-	Package_version_id       *uuid.UUID                                   `json:"package_version_id,omitempty"`
-	Purl                     *string                                      `json:"purl,omitempty"`
-	Scan                     *Scans_obj_rel_insert_input                  `json:"scan,omitempty"`
-	Scan_id                  *uuid.UUID                                   `json:"scan_id,omitempty"`
-	Severity                 *string                                      `json:"severity,omitempty"`
-	Type                     *string                                      `json:"type,omitempty"`
-	Updated_at               *time.Time                                   `json:"updated_at,omitempty"`
-	Version                  *string                                      `json:"version,omitempty"`
-	Version_matcher          *string                                      `json:"version_matcher,omitempty"`
-	Virtual_path             *string                                      `json:"virtual_path,omitempty"`
-	Vulnerability            *Vulnerability_obj_rel_insert_input          `json:"vulnerability,omitempty"`
-	Vulnerability_id         *uuid.UUID                                   `json:"vulnerability_id,omitempty"`
-	Vulnerability_package    *Vulnerability_packages_obj_rel_insert_input `json:"vulnerability_package,omitempty"`
-	Vulnerability_package_id *uuid.UUID                                   `json:"vulnerability_package_id,omitempty"`
+	Build                *Builds_obj_rel_insert_input                `json:"build,omitempty"`
+	Build_id             *uuid.UUID                                  `json:"build_id,omitempty"`
+	Created_at           *time.Time                                  `json:"created_at,omitempty"`
+	Dedupe_slug          *string                                     `json:"dedupe_slug,omitempty"`
+	Default_branch_build *Default_branch_builds_obj_rel_insert_input `json:"default_branch_build,omitempty"`
+	Fix_state            *string                                     `json:"fix_state,omitempty"`
+	Fix_versions         *string                                     `json:"fix_versions,omitempty"`
+	Id                   *uuid.UUID                                  `json:"id,omitempty"`
+	Language             *string                                     `json:"language,omitempty"`
+	Locations            *string                                     `json:"locations,omitempty"`
+	Matcher              *string                                     `json:"matcher,omitempty"`
+	Package_name         *string                                     `json:"package_name,omitempty"`
+	Purl                 *string                                     `json:"purl,omitempty"`
+	Scan                 *Scans_obj_rel_insert_input                 `json:"scan,omitempty"`
+	Scan_id              *uuid.UUID                                  `json:"scan_id,omitempty"`
+	Severity             *string                                     `json:"severity,omitempty"`
+	Type                 *string                                     `json:"type,omitempty"`
+	Updated_at           *time.Time                                  `json:"updated_at,omitempty"`
+	Version              *string                                     `json:"version,omitempty"`
+	Version_matcher      *string                                     `json:"version_matcher,omitempty"`
+	Virtual_path         *string                                     `json:"virtual_path,omitempty"`
+	Vulnerability        *Vulnerability_obj_rel_insert_input         `json:"vulnerability,omitempty"`
+	Vulnerability_id     *uuid.UUID                                  `json:"vulnerability_id,omitempty"`
 }
 
 // GetBuild returns Findings_insert_input.Build, and is useful for accessing the field via an interface.
@@ -1084,14 +1234,6 @@ func (v *Findings_insert_input) GetMatcher() *string { return v.Matcher }
 // GetPackage_name returns Findings_insert_input.Package_name, and is useful for accessing the field via an interface.
 func (v *Findings_insert_input) GetPackage_name() *string { return v.Package_name }
 
-// GetPackage_version returns Findings_insert_input.Package_version, and is useful for accessing the field via an interface.
-func (v *Findings_insert_input) GetPackage_version() *Package_versions_obj_rel_insert_input {
-	return v.Package_version
-}
-
-// GetPackage_version_id returns Findings_insert_input.Package_version_id, and is useful for accessing the field via an interface.
-func (v *Findings_insert_input) GetPackage_version_id() *uuid.UUID { return v.Package_version_id }
-
 // GetPurl returns Findings_insert_input.Purl, and is useful for accessing the field via an interface.
 func (v *Findings_insert_input) GetPurl() *string { return v.Purl }
 
@@ -1126,16 +1268,6 @@ func (v *Findings_insert_input) GetVulnerability() *Vulnerability_obj_rel_insert
 
 // GetVulnerability_id returns Findings_insert_input.Vulnerability_id, and is useful for accessing the field via an interface.
 func (v *Findings_insert_input) GetVulnerability_id() *uuid.UUID { return v.Vulnerability_id }
-
-// GetVulnerability_package returns Findings_insert_input.Vulnerability_package, and is useful for accessing the field via an interface.
-func (v *Findings_insert_input) GetVulnerability_package() *Vulnerability_packages_obj_rel_insert_input {
-	return v.Vulnerability_package
-}
-
-// GetVulnerability_package_id returns Findings_insert_input.Vulnerability_package_id, and is useful for accessing the field via an interface.
-func (v *Findings_insert_input) GetVulnerability_package_id() *uuid.UUID {
-	return v.Vulnerability_package_id
-}
 
 // on_conflict condition type for table "findings"
 type Findings_on_conflict struct {
@@ -1178,8 +1310,6 @@ const (
 	// column name
 	Findings_update_columnPackageName Findings_update_column = "package_name"
 	// column name
-	Findings_update_columnPackageVersionId Findings_update_column = "package_version_id"
-	// column name
 	Findings_update_columnPurl Findings_update_column = "purl"
 	// column name
 	Findings_update_columnScanId Findings_update_column = "scan_id"
@@ -1197,8 +1327,6 @@ const (
 	Findings_update_columnVirtualPath Findings_update_column = "virtual_path"
 	// column name
 	Findings_update_columnVulnerabilityId Findings_update_column = "vulnerability_id"
-	// column name
-	Findings_update_columnVulnerabilityPackageId Findings_update_column = "vulnerability_package_id"
 )
 
 // Boolean expression to compare columns of type "fix_state_enum". All fields are combined with logical 'AND'.
@@ -1684,11 +1812,11 @@ func (v *Github_repositories_bool_exp) GetTraits() *Jsonb_comparison_exp { retur
 type Github_repositories_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "github_id"
 	Github_repositories_constraintGithubRepositoriesGithubIdKey Github_repositories_constraint = "github_repositories_github_id_key"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "github_node_id"
 	Github_repositories_constraintGithubRepositoriesGithubNodeIdKey Github_repositories_constraint = "github_repositories_github_node_id_key"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Github_repositories_constraintGithubRepositoriesPkey Github_repositories_constraint = "github_repositories_pkey"
 )
 
@@ -1846,9 +1974,9 @@ func (v *Guide_related_guides_bool_exp) GetUpdated_at() *Timestamptz_comparison_
 type Guide_related_guides_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Guide_related_guides_constraintGuideRelatedGuidesPkey Guide_related_guides_constraint = "guide_related_guides_pkey"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "to_guide_unique_id", "from_guide_id"
 	Guide_related_guides_constraintGuideRelatedGuidesUnique Guide_related_guides_constraint = "guide_related_guides_unique"
 )
 
@@ -1993,9 +2121,9 @@ func (v *Guide_vulnerabilities_bool_exp) GetVulnerability_id() *Uuid_comparison_
 type Guide_vulnerabilities_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Guide_vulnerabilities_constraintGuideVulnerabilitiesPkey Guide_vulnerabilities_constraint = "guide_vulnerabilities_pkey"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "vulnerability_id", "guide_id"
 	Guide_vulnerabilities_constraintGuideVulnerabilitiesUnique Guide_vulnerabilities_constraint = "guide_vulnerabilities_unique"
 )
 
@@ -2093,11 +2221,11 @@ func (v *Guides_bool_exp) GetOr() []*Guides_bool_exp { return v.Or }
 type Guides_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "data_source_link"
 	Guides_constraintGuidesDataSourceLinkKey Guides_constraint = "guides_data_source_link_key"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "guide_unique_id"
 	Guides_constraintGuidesGuideUniqueIdKey Guides_constraint = "guides_guide_unique_id_key"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Guides_constraintGuidesPkey Guides_constraint = "guides_pkey"
 )
 
@@ -2602,6 +2730,407 @@ func (v *License_source_comparison_exp) GetNeq() *types.LicenseSource { return v
 // GetNin returns License_source_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *License_source_comparison_exp) GetNin() []types.LicenseSource { return v.Nin }
 
+// input type for inserting array relation for remote table "manifest_dependency"
+type Manifest_dependency_arr_rel_insert_input struct {
+	Data []*Manifest_dependency_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Manifest_dependency_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Manifest_dependency_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_arr_rel_insert_input) GetData() []*Manifest_dependency_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Manifest_dependency_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_arr_rel_insert_input) GetOn_conflict() *Manifest_dependency_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "manifest_dependency". All fields are combined with a logical 'AND'.
+type Manifest_dependency_bool_exp struct {
+	And                         []*Manifest_dependency_bool_exp    `json:"_and,omitempty"`
+	Not                         *Manifest_dependency_bool_exp      `json:"_not,omitempty"`
+	Or                          []*Manifest_dependency_bool_exp    `json:"_or,omitempty"`
+	Child_edges_recursive       *Manifest_dependency_edge_bool_exp `json:"child_edges_recursive,omitempty"`
+	Manifest_dependency_node    *Manifest_dependency_node_bool_exp `json:"manifest_dependency_node,omitempty"`
+	Manifest_dependency_node_id *Uuid_comparison_exp               `json:"manifest_dependency_node_id,omitempty"`
+	Manifest_id                 *Uuid_comparison_exp               `json:"manifest_id,omitempty"`
+	Resolved_manifest           *Resolved_manifest_bool_exp        `json:"resolved_manifest,omitempty"`
+}
+
+// GetAnd returns Manifest_dependency_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_bool_exp) GetAnd() []*Manifest_dependency_bool_exp { return v.And }
+
+// GetNot returns Manifest_dependency_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_bool_exp) GetNot() *Manifest_dependency_bool_exp { return v.Not }
+
+// GetOr returns Manifest_dependency_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_bool_exp) GetOr() []*Manifest_dependency_bool_exp { return v.Or }
+
+// GetChild_edges_recursive returns Manifest_dependency_bool_exp.Child_edges_recursive, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_bool_exp) GetChild_edges_recursive() *Manifest_dependency_edge_bool_exp {
+	return v.Child_edges_recursive
+}
+
+// GetManifest_dependency_node returns Manifest_dependency_bool_exp.Manifest_dependency_node, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_bool_exp) GetManifest_dependency_node() *Manifest_dependency_node_bool_exp {
+	return v.Manifest_dependency_node
+}
+
+// GetManifest_dependency_node_id returns Manifest_dependency_bool_exp.Manifest_dependency_node_id, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_bool_exp) GetManifest_dependency_node_id() *Uuid_comparison_exp {
+	return v.Manifest_dependency_node_id
+}
+
+// GetManifest_id returns Manifest_dependency_bool_exp.Manifest_id, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_bool_exp) GetManifest_id() *Uuid_comparison_exp { return v.Manifest_id }
+
+// GetResolved_manifest returns Manifest_dependency_bool_exp.Resolved_manifest, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_bool_exp) GetResolved_manifest() *Resolved_manifest_bool_exp {
+	return v.Resolved_manifest
+}
+
+// unique or primary key constraints on table "manifest_dependency"
+type Manifest_dependency_constraint string
+
+const (
+	// unique or primary key constraint on columns "manifest_dependency_node_id", "manifest_id"
+	Manifest_dependency_constraintManifestDependencyManifestIdManifestDependencyNodeIdIdx Manifest_dependency_constraint = "manifest_dependency_manifest_id_manifest_dependency_node_id_idx"
+)
+
+// input type for inserting array relation for remote table "manifest_dependency_edge"
+type Manifest_dependency_edge_arr_rel_insert_input struct {
+	Data []*Manifest_dependency_edge_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Manifest_dependency_edge_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Manifest_dependency_edge_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_arr_rel_insert_input) GetData() []*Manifest_dependency_edge_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Manifest_dependency_edge_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_arr_rel_insert_input) GetOn_conflict() *Manifest_dependency_edge_on_conflict {
+	return v.On_conflict
+}
+
+// Boolean expression to filter rows from the table "manifest_dependency_edge". All fields are combined with a logical 'AND'.
+type Manifest_dependency_edge_bool_exp struct {
+	And       []*Manifest_dependency_edge_bool_exp `json:"_and,omitempty"`
+	Not       *Manifest_dependency_edge_bool_exp   `json:"_not,omitempty"`
+	Or        []*Manifest_dependency_edge_bool_exp `json:"_or,omitempty"`
+	Child     *Manifest_dependency_node_bool_exp   `json:"child,omitempty"`
+	Child_id  *Uuid_comparison_exp                 `json:"child_id,omitempty"`
+	Parent    *Manifest_dependency_node_bool_exp   `json:"parent,omitempty"`
+	Parent_id *Uuid_comparison_exp                 `json:"parent_id,omitempty"`
+}
+
+// GetAnd returns Manifest_dependency_edge_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_bool_exp) GetAnd() []*Manifest_dependency_edge_bool_exp {
+	return v.And
+}
+
+// GetNot returns Manifest_dependency_edge_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_bool_exp) GetNot() *Manifest_dependency_edge_bool_exp { return v.Not }
+
+// GetOr returns Manifest_dependency_edge_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_bool_exp) GetOr() []*Manifest_dependency_edge_bool_exp { return v.Or }
+
+// GetChild returns Manifest_dependency_edge_bool_exp.Child, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_bool_exp) GetChild() *Manifest_dependency_node_bool_exp {
+	return v.Child
+}
+
+// GetChild_id returns Manifest_dependency_edge_bool_exp.Child_id, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_bool_exp) GetChild_id() *Uuid_comparison_exp { return v.Child_id }
+
+// GetParent returns Manifest_dependency_edge_bool_exp.Parent, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_bool_exp) GetParent() *Manifest_dependency_node_bool_exp {
+	return v.Parent
+}
+
+// GetParent_id returns Manifest_dependency_edge_bool_exp.Parent_id, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_bool_exp) GetParent_id() *Uuid_comparison_exp { return v.Parent_id }
+
+// unique or primary key constraints on table "manifest_dependency_edge"
+type Manifest_dependency_edge_constraint string
+
+const (
+	// unique or primary key constraint on columns "child_id", "parent_id"
+	Manifest_dependency_edge_constraintManifestDependencyEdgeParentIdChildIdIdx Manifest_dependency_edge_constraint = "manifest_dependency_edge_parent_id_child_id_idx"
+)
+
+// input type for inserting data into table "manifest_dependency_edge"
+type Manifest_dependency_edge_insert_input struct {
+	Child     *Manifest_dependency_node_obj_rel_insert_input `json:"child,omitempty"`
+	Child_id  *uuid.UUID                                     `json:"child_id,omitempty"`
+	Parent    *Manifest_dependency_node_obj_rel_insert_input `json:"parent,omitempty"`
+	Parent_id *uuid.UUID                                     `json:"parent_id,omitempty"`
+}
+
+// GetChild returns Manifest_dependency_edge_insert_input.Child, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_insert_input) GetChild() *Manifest_dependency_node_obj_rel_insert_input {
+	return v.Child
+}
+
+// GetChild_id returns Manifest_dependency_edge_insert_input.Child_id, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_insert_input) GetChild_id() *uuid.UUID { return v.Child_id }
+
+// GetParent returns Manifest_dependency_edge_insert_input.Parent, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_insert_input) GetParent() *Manifest_dependency_node_obj_rel_insert_input {
+	return v.Parent
+}
+
+// GetParent_id returns Manifest_dependency_edge_insert_input.Parent_id, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_insert_input) GetParent_id() *uuid.UUID { return v.Parent_id }
+
+// on_conflict condition type for table "manifest_dependency_edge"
+type Manifest_dependency_edge_on_conflict struct {
+	Constraint     Manifest_dependency_edge_constraint      `json:"constraint,omitempty"`
+	Update_columns []Manifest_dependency_edge_update_column `json:"update_columns,omitempty"`
+	Where          *Manifest_dependency_edge_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Manifest_dependency_edge_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_on_conflict) GetConstraint() Manifest_dependency_edge_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Manifest_dependency_edge_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_on_conflict) GetUpdate_columns() []Manifest_dependency_edge_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Manifest_dependency_edge_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_on_conflict) GetWhere() *Manifest_dependency_edge_bool_exp {
+	return v.Where
+}
+
+// update columns of table "manifest_dependency_edge"
+type Manifest_dependency_edge_update_column string
+
+const (
+	// column name
+	Manifest_dependency_edge_update_columnChildId Manifest_dependency_edge_update_column = "child_id"
+	// column name
+	Manifest_dependency_edge_update_columnParentId Manifest_dependency_edge_update_column = "parent_id"
+)
+
+// input type for inserting data into table "manifest_dependency"
+type Manifest_dependency_insert_input struct {
+	Manifest_dependency_node *Manifest_dependency_node_obj_rel_insert_input `json:"manifest_dependency_node,omitempty"`
+	// entrypoint to dep tree
+	Manifest_dependency_node_id *uuid.UUID                              `json:"manifest_dependency_node_id,omitempty"`
+	Manifest_id                 *uuid.UUID                              `json:"manifest_id,omitempty"`
+	Resolved_manifest           *Resolved_manifest_obj_rel_insert_input `json:"resolved_manifest,omitempty"`
+}
+
+// GetManifest_dependency_node returns Manifest_dependency_insert_input.Manifest_dependency_node, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_insert_input) GetManifest_dependency_node() *Manifest_dependency_node_obj_rel_insert_input {
+	return v.Manifest_dependency_node
+}
+
+// GetManifest_dependency_node_id returns Manifest_dependency_insert_input.Manifest_dependency_node_id, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_insert_input) GetManifest_dependency_node_id() *uuid.UUID {
+	return v.Manifest_dependency_node_id
+}
+
+// GetManifest_id returns Manifest_dependency_insert_input.Manifest_id, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_insert_input) GetManifest_id() *uuid.UUID { return v.Manifest_id }
+
+// GetResolved_manifest returns Manifest_dependency_insert_input.Resolved_manifest, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_insert_input) GetResolved_manifest() *Resolved_manifest_obj_rel_insert_input {
+	return v.Resolved_manifest
+}
+
+// Boolean expression to filter rows from the table "manifest_dependency_node". All fields are combined with a logical 'AND'.
+type Manifest_dependency_node_bool_exp struct {
+	And                   []*Manifest_dependency_node_bool_exp `json:"_and,omitempty"`
+	Not                   *Manifest_dependency_node_bool_exp   `json:"_not,omitempty"`
+	Or                    []*Manifest_dependency_node_bool_exp `json:"_or,omitempty"`
+	Child_edges           *Manifest_dependency_edge_bool_exp   `json:"child_edges,omitempty"`
+	Child_edges_recursive *Manifest_dependency_edge_bool_exp   `json:"child_edges_recursive,omitempty"`
+	Id                    *Uuid_comparison_exp                 `json:"id,omitempty"`
+	Labels                *Jsonb_comparison_exp                `json:"labels,omitempty"`
+	Parent_edges          *Manifest_dependency_edge_bool_exp   `json:"parent_edges,omitempty"`
+	Range                 *String_comparison_exp               `json:"range,omitempty"`
+	Release               *Package_release_bool_exp            `json:"release,omitempty"`
+	Release_id            *Uuid_comparison_exp                 `json:"release_id,omitempty"`
+}
+
+// GetAnd returns Manifest_dependency_node_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_bool_exp) GetAnd() []*Manifest_dependency_node_bool_exp {
+	return v.And
+}
+
+// GetNot returns Manifest_dependency_node_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_bool_exp) GetNot() *Manifest_dependency_node_bool_exp { return v.Not }
+
+// GetOr returns Manifest_dependency_node_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_bool_exp) GetOr() []*Manifest_dependency_node_bool_exp { return v.Or }
+
+// GetChild_edges returns Manifest_dependency_node_bool_exp.Child_edges, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_bool_exp) GetChild_edges() *Manifest_dependency_edge_bool_exp {
+	return v.Child_edges
+}
+
+// GetChild_edges_recursive returns Manifest_dependency_node_bool_exp.Child_edges_recursive, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_bool_exp) GetChild_edges_recursive() *Manifest_dependency_edge_bool_exp {
+	return v.Child_edges_recursive
+}
+
+// GetId returns Manifest_dependency_node_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetLabels returns Manifest_dependency_node_bool_exp.Labels, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_bool_exp) GetLabels() *Jsonb_comparison_exp { return v.Labels }
+
+// GetParent_edges returns Manifest_dependency_node_bool_exp.Parent_edges, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_bool_exp) GetParent_edges() *Manifest_dependency_edge_bool_exp {
+	return v.Parent_edges
+}
+
+// GetRange returns Manifest_dependency_node_bool_exp.Range, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_bool_exp) GetRange() *String_comparison_exp { return v.Range }
+
+// GetRelease returns Manifest_dependency_node_bool_exp.Release, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_bool_exp) GetRelease() *Package_release_bool_exp { return v.Release }
+
+// GetRelease_id returns Manifest_dependency_node_bool_exp.Release_id, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_bool_exp) GetRelease_id() *Uuid_comparison_exp { return v.Release_id }
+
+// unique or primary key constraints on table "manifest_dependency_node"
+type Manifest_dependency_node_constraint string
+
+const (
+	// unique or primary key constraint on columns "id"
+	Manifest_dependency_node_constraintManifestDependencyNodePkey Manifest_dependency_node_constraint = "manifest_dependency_node_pkey"
+)
+
+// input type for inserting data into table "manifest_dependency_node"
+type Manifest_dependency_node_insert_input struct {
+	Child_edges *Manifest_dependency_edge_arr_rel_insert_input `json:"child_edges,omitempty"`
+	// merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID.
+	Id           *uuid.UUID                                     `json:"id,omitempty"`
+	Labels       *json.RawMessage                               `json:"labels,omitempty"`
+	Parent_edges *Manifest_dependency_edge_arr_rel_insert_input `json:"parent_edges,omitempty"`
+	Range        *string                                        `json:"range,omitempty"`
+	Release      *Package_release_obj_rel_insert_input          `json:"release,omitempty"`
+	Release_id   *uuid.UUID                                     `json:"release_id,omitempty"`
+}
+
+// GetChild_edges returns Manifest_dependency_node_insert_input.Child_edges, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_insert_input) GetChild_edges() *Manifest_dependency_edge_arr_rel_insert_input {
+	return v.Child_edges
+}
+
+// GetId returns Manifest_dependency_node_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetLabels returns Manifest_dependency_node_insert_input.Labels, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_insert_input) GetLabels() *json.RawMessage { return v.Labels }
+
+// GetParent_edges returns Manifest_dependency_node_insert_input.Parent_edges, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_insert_input) GetParent_edges() *Manifest_dependency_edge_arr_rel_insert_input {
+	return v.Parent_edges
+}
+
+// GetRange returns Manifest_dependency_node_insert_input.Range, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_insert_input) GetRange() *string { return v.Range }
+
+// GetRelease returns Manifest_dependency_node_insert_input.Release, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_insert_input) GetRelease() *Package_release_obj_rel_insert_input {
+	return v.Release
+}
+
+// GetRelease_id returns Manifest_dependency_node_insert_input.Release_id, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_insert_input) GetRelease_id() *uuid.UUID { return v.Release_id }
+
+// input type for inserting object relation for remote table "manifest_dependency_node"
+type Manifest_dependency_node_obj_rel_insert_input struct {
+	Data *Manifest_dependency_node_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Manifest_dependency_node_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Manifest_dependency_node_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_obj_rel_insert_input) GetData() *Manifest_dependency_node_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Manifest_dependency_node_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_obj_rel_insert_input) GetOn_conflict() *Manifest_dependency_node_on_conflict {
+	return v.On_conflict
+}
+
+// on_conflict condition type for table "manifest_dependency_node"
+type Manifest_dependency_node_on_conflict struct {
+	Constraint     Manifest_dependency_node_constraint      `json:"constraint,omitempty"`
+	Update_columns []Manifest_dependency_node_update_column `json:"update_columns,omitempty"`
+	Where          *Manifest_dependency_node_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Manifest_dependency_node_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_on_conflict) GetConstraint() Manifest_dependency_node_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Manifest_dependency_node_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_on_conflict) GetUpdate_columns() []Manifest_dependency_node_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Manifest_dependency_node_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_node_on_conflict) GetWhere() *Manifest_dependency_node_bool_exp {
+	return v.Where
+}
+
+// update columns of table "manifest_dependency_node"
+type Manifest_dependency_node_update_column string
+
+const (
+	// column name
+	Manifest_dependency_node_update_columnId Manifest_dependency_node_update_column = "id"
+	// column name
+	Manifest_dependency_node_update_columnLabels Manifest_dependency_node_update_column = "labels"
+	// column name
+	Manifest_dependency_node_update_columnRange Manifest_dependency_node_update_column = "range"
+	// column name
+	Manifest_dependency_node_update_columnReleaseId Manifest_dependency_node_update_column = "release_id"
+)
+
+// on_conflict condition type for table "manifest_dependency"
+type Manifest_dependency_on_conflict struct {
+	Constraint     Manifest_dependency_constraint      `json:"constraint,omitempty"`
+	Update_columns []Manifest_dependency_update_column `json:"update_columns,omitempty"`
+	Where          *Manifest_dependency_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Manifest_dependency_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_on_conflict) GetConstraint() Manifest_dependency_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Manifest_dependency_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_on_conflict) GetUpdate_columns() []Manifest_dependency_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Manifest_dependency_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_on_conflict) GetWhere() *Manifest_dependency_bool_exp { return v.Where }
+
+// update columns of table "manifest_dependency"
+type Manifest_dependency_update_column string
+
+const (
+	// column name
+	Manifest_dependency_update_columnManifestDependencyNodeId Manifest_dependency_update_column = "manifest_dependency_node_id"
+	// column name
+	Manifest_dependency_update_columnManifestId Manifest_dependency_update_column = "manifest_id"
+)
+
 // input type for inserting array relation for remote table "manifests"
 type Manifests_arr_rel_insert_input struct {
 	Data []*Manifests_insert_input `json:"data,omitempty"`
@@ -2681,9 +3210,9 @@ func (v *Manifests_bool_exp) GetStatus() *String_comparison_exp { return v.Statu
 type Manifests_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Manifests_constraintManifestsPkey Manifests_constraint = "manifests_pkey"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "s3_url"
 	Manifests_constraintManifestsS3UrlKey Manifests_constraint = "manifests_s3_url_key"
 )
 
@@ -2777,46 +3306,6 @@ const (
 	Manifests_update_columnStatus Manifests_update_column = "status"
 )
 
-// Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'.
-type Numeric_comparison_exp struct {
-	Eq      *float64  `json:"_eq,omitempty"`
-	Gt      *float64  `json:"_gt,omitempty"`
-	Gte     *float64  `json:"_gte,omitempty"`
-	In      []float64 `json:"_in,omitempty"`
-	Is_null *bool     `json:"_is_null,omitempty"`
-	Lt      *float64  `json:"_lt,omitempty"`
-	Lte     *float64  `json:"_lte,omitempty"`
-	Neq     *float64  `json:"_neq,omitempty"`
-	Nin     []float64 `json:"_nin,omitempty"`
-}
-
-// GetEq returns Numeric_comparison_exp.Eq, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetEq() *float64 { return v.Eq }
-
-// GetGt returns Numeric_comparison_exp.Gt, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetGt() *float64 { return v.Gt }
-
-// GetGte returns Numeric_comparison_exp.Gte, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetGte() *float64 { return v.Gte }
-
-// GetIn returns Numeric_comparison_exp.In, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetIn() []float64 { return v.In }
-
-// GetIs_null returns Numeric_comparison_exp.Is_null, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetIs_null() *bool { return v.Is_null }
-
-// GetLt returns Numeric_comparison_exp.Lt, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetLt() *float64 { return v.Lt }
-
-// GetLte returns Numeric_comparison_exp.Lte, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetLte() *float64 { return v.Lte }
-
-// GetNeq returns Numeric_comparison_exp.Neq, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetNeq() *float64 { return v.Neq }
-
-// GetNin returns Numeric_comparison_exp.Nin, and is useful for accessing the field via an interface.
-func (v *Numeric_comparison_exp) GetNin() []float64 { return v.Nin }
-
 // input type for inserting array relation for remote table "organization_user"
 type Organization_user_arr_rel_insert_input struct {
 	Data []*Organization_user_insert_input `json:"data,omitempty"`
@@ -2888,9 +3377,9 @@ func (v *Organization_user_bool_exp) GetUser_id() *Uuid_comparison_exp { return 
 type Organization_user_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Organization_user_constraintOrganizationUserPkey Organization_user_constraint = "organization_user_pkey"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "user_id", "organization_id"
 	Organization_user_constraintOrganizationUserUserIdOrganizationIdKey Organization_user_constraint = "organization_user_user_id_organization_id_key"
 )
 
@@ -3080,11 +3569,13 @@ func (v *Organizations_bool_exp) GetSettings_id() *Uuid_comparison_exp { return 
 type Organizations_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "installation_id"
+	Organizations_constraintInstallationIdUnique Organizations_constraint = "installation_id_unique"
+	// unique or primary key constraint on columns "github_id"
 	Organizations_constraintOrganizationsGithubIdKey Organizations_constraint = "organizations_github_id_key"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "github_node_id"
 	Organizations_constraintOrganizationsGithubNodeIdKey Organizations_constraint = "organizations_github_node_id_key"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Organizations_constraintOrganizationsPkey Organizations_constraint = "organizations_pkey"
 )
 
@@ -3223,20 +3714,20 @@ func (v *PackageFetchTimeResponse) GetPackage() []*PackageFetchTimePackage { ret
 
 // Boolean expression to filter rows from the table "package.package". All fields are combined with a logical 'AND'.
 type Package_bool_exp struct {
-	And                   []*Package_bool_exp                  `json:"_and,omitempty"`
-	Not                   *Package_bool_exp                    `json:"_not,omitempty"`
-	Or                    []*Package_bool_exp                  `json:"_or,omitempty"`
-	Custom_registry       *String_comparison_exp               `json:"custom_registry,omitempty"`
-	Description           *String_comparison_exp               `json:"description,omitempty"`
-	Id                    *Uuid_comparison_exp                 `json:"id,omitempty"`
-	Last_failed_fetch     *Timestamptz_comparison_exp          `json:"last_failed_fetch,omitempty"`
-	Last_successful_fetch *Timestamptz_comparison_exp          `json:"last_successful_fetch,omitempty"`
-	Name                  *String_comparison_exp               `json:"name,omitempty"`
-	Package_maintainers   *Package_package_maintainer_bool_exp `json:"package_maintainers,omitempty"`
-	Package_manager       *Package_manager_comparison_exp      `json:"package_manager,omitempty"`
-	Releases              *Package_release_bool_exp            `json:"releases,omitempty"`
-	Upstream_data         *Jsonb_comparison_exp                `json:"upstream_data,omitempty"`
-	Vulnerabilities       *Vulnerability_affected_bool_exp     `json:"vulnerabilities,omitempty"`
+	And                       []*Package_bool_exp                  `json:"_and,omitempty"`
+	Not                       *Package_bool_exp                    `json:"_not,omitempty"`
+	Or                        []*Package_bool_exp                  `json:"_or,omitempty"`
+	Affected_by_vulnerability *Vulnerability_affected_bool_exp     `json:"affected_by_vulnerability,omitempty"`
+	Custom_registry           *String_comparison_exp               `json:"custom_registry,omitempty"`
+	Description               *String_comparison_exp               `json:"description,omitempty"`
+	Id                        *Uuid_comparison_exp                 `json:"id,omitempty"`
+	Last_failed_fetch         *Timestamptz_comparison_exp          `json:"last_failed_fetch,omitempty"`
+	Last_successful_fetch     *Timestamptz_comparison_exp          `json:"last_successful_fetch,omitempty"`
+	Name                      *String_comparison_exp               `json:"name,omitempty"`
+	Package_maintainers       *Package_package_maintainer_bool_exp `json:"package_maintainers,omitempty"`
+	Package_manager           *Package_manager_comparison_exp      `json:"package_manager,omitempty"`
+	Releases                  *Package_release_bool_exp            `json:"releases,omitempty"`
+	Upstream_data             *Jsonb_comparison_exp                `json:"upstream_data,omitempty"`
 }
 
 // GetAnd returns Package_bool_exp.And, and is useful for accessing the field via an interface.
@@ -3247,6 +3738,11 @@ func (v *Package_bool_exp) GetNot() *Package_bool_exp { return v.Not }
 
 // GetOr returns Package_bool_exp.Or, and is useful for accessing the field via an interface.
 func (v *Package_bool_exp) GetOr() []*Package_bool_exp { return v.Or }
+
+// GetAffected_by_vulnerability returns Package_bool_exp.Affected_by_vulnerability, and is useful for accessing the field via an interface.
+func (v *Package_bool_exp) GetAffected_by_vulnerability() *Vulnerability_affected_bool_exp {
+	return v.Affected_by_vulnerability
+}
 
 // GetCustom_registry returns Package_bool_exp.Custom_registry, and is useful for accessing the field via an interface.
 func (v *Package_bool_exp) GetCustom_registry() *String_comparison_exp { return v.Custom_registry }
@@ -3286,34 +3782,34 @@ func (v *Package_bool_exp) GetReleases() *Package_release_bool_exp { return v.Re
 // GetUpstream_data returns Package_bool_exp.Upstream_data, and is useful for accessing the field via an interface.
 func (v *Package_bool_exp) GetUpstream_data() *Jsonb_comparison_exp { return v.Upstream_data }
 
-// GetVulnerabilities returns Package_bool_exp.Vulnerabilities, and is useful for accessing the field via an interface.
-func (v *Package_bool_exp) GetVulnerabilities() *Vulnerability_affected_bool_exp {
-	return v.Vulnerabilities
-}
-
 // unique or primary key constraints on table "package.package"
 type Package_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "name", "package_manager", "custom_registry"
 	Package_constraintPackagePackageManagerCustomRegistryNameIdx Package_constraint = "package_package_manager_custom_registry_name_idx"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Package_constraintPackagePkey Package_constraint = "package_pkey"
 )
 
 // input type for inserting data into table "package.package"
 type Package_insert_input struct {
-	Custom_registry       *string                                          `json:"custom_registry,omitempty"`
-	Description           *string                                          `json:"description,omitempty"`
-	Id                    *uuid.UUID                                       `json:"id,omitempty"`
-	Last_failed_fetch     *time.Time                                       `json:"last_failed_fetch,omitempty"`
-	Last_successful_fetch *time.Time                                       `json:"last_successful_fetch,omitempty"`
-	Name                  *string                                          `json:"name,omitempty"`
-	Package_maintainers   *Package_package_maintainer_arr_rel_insert_input `json:"package_maintainers,omitempty"`
-	Package_manager       *types.PackageManager                            `json:"package_manager,omitempty"`
-	Releases              *Package_release_arr_rel_insert_input            `json:"releases,omitempty"`
-	Upstream_data         *json.RawMessage                                 `json:"upstream_data,omitempty"`
-	Vulnerabilities       *Vulnerability_affected_arr_rel_insert_input     `json:"vulnerabilities,omitempty"`
+	Affected_by_vulnerability *Vulnerability_affected_arr_rel_insert_input     `json:"affected_by_vulnerability,omitempty"`
+	Custom_registry           *string                                          `json:"custom_registry,omitempty"`
+	Description               *string                                          `json:"description,omitempty"`
+	Id                        *uuid.UUID                                       `json:"id,omitempty"`
+	Last_failed_fetch         *time.Time                                       `json:"last_failed_fetch,omitempty"`
+	Last_successful_fetch     *time.Time                                       `json:"last_successful_fetch,omitempty"`
+	Name                      *string                                          `json:"name,omitempty"`
+	Package_maintainers       *Package_package_maintainer_arr_rel_insert_input `json:"package_maintainers,omitempty"`
+	Package_manager           *types.PackageManager                            `json:"package_manager,omitempty"`
+	Releases                  *Package_release_arr_rel_insert_input            `json:"releases,omitempty"`
+	Upstream_data             *json.RawMessage                                 `json:"upstream_data,omitempty"`
+}
+
+// GetAffected_by_vulnerability returns Package_insert_input.Affected_by_vulnerability, and is useful for accessing the field via an interface.
+func (v *Package_insert_input) GetAffected_by_vulnerability() *Vulnerability_affected_arr_rel_insert_input {
+	return v.Affected_by_vulnerability
 }
 
 // GetCustom_registry returns Package_insert_input.Custom_registry, and is useful for accessing the field via an interface.
@@ -3347,11 +3843,6 @@ func (v *Package_insert_input) GetReleases() *Package_release_arr_rel_insert_inp
 
 // GetUpstream_data returns Package_insert_input.Upstream_data, and is useful for accessing the field via an interface.
 func (v *Package_insert_input) GetUpstream_data() *json.RawMessage { return v.Upstream_data }
-
-// GetVulnerabilities returns Package_insert_input.Vulnerabilities, and is useful for accessing the field via an interface.
-func (v *Package_insert_input) GetVulnerabilities() *Vulnerability_affected_arr_rel_insert_input {
-	return v.Vulnerabilities
-}
 
 // Boolean expression to filter rows from the table "package.license". All fields are combined with a logical 'AND'.
 type Package_license_bool_exp struct {
@@ -3387,9 +3878,9 @@ func (v *Package_license_bool_exp) GetRelease_licenses() *Package_release_licens
 type Package_license_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "name"
 	Package_license_constraintLicenseNameIdx Package_license_constraint = "license_name_idx"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Package_license_constraintLicensePkey Package_license_constraint = "license_pkey"
 )
 
@@ -3504,9 +3995,9 @@ func (v *Package_maintainer_bool_exp) GetPublished_releases() *Package_release_b
 type Package_maintainer_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "email", "package_manager"
 	Package_maintainer_constraintMaintainerPackageManagerEmailIdx Package_maintainer_constraint = "maintainer_package_manager_email_idx"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Package_maintainer_constraintMaintainerPkey Package_maintainer_constraint = "maintainer_pkey"
 )
 
@@ -3729,7 +4220,7 @@ func (v *Package_package_maintainer_bool_exp) GetPackage_id() *Uuid_comparison_e
 type Package_package_maintainer_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "maintainer_id", "package_id"
 	Package_package_maintainer_constraintPackageMaintainerPackageIdMaintainerIdIdx Package_package_maintainer_constraint = "package_maintainer_package_id_maintainer_id_idx"
 )
 
@@ -3918,9 +4409,9 @@ func (v *Package_release_bool_exp) GetVersion() *String_comparison_exp { return 
 type Package_release_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "package_id", "version"
 	Package_release_constraintReleasePackageIdVersionIdx Package_release_constraint = "release_package_id_version_idx"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Package_release_constraintReleasePkey Package_release_constraint = "release_pkey"
 )
 
@@ -4019,9 +4510,9 @@ func (v *Package_release_dependency_bool_exp) GetRelease_id() *Uuid_comparison_e
 type Package_release_dependency_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Package_release_dependency_constraintReleaseDependencyPkey Package_release_dependency_constraint = "release_dependency_pkey"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "package_version_query", "package_name", "release_id"
 	Package_release_dependency_constraintReleaseDependencyReleaseIdPackageNamePackageVersionIdx Package_release_dependency_constraint = "release_dependency_release_id_package_name_package_version__idx"
 )
 
@@ -4272,7 +4763,7 @@ func (v *Package_release_license_bool_exp) GetSource() *License_source_compariso
 type Package_release_license_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Package_release_license_constraintReleaseLicensePkey Package_release_license_constraint = "release_license_pkey"
 )
 
@@ -4435,162 +4926,6 @@ const (
 	Package_update_columnUpstreamData Package_update_column = "upstream_data"
 )
 
-// input type for inserting array relation for remote table "package_versions"
-type Package_versions_arr_rel_insert_input struct {
-	Data []*Package_versions_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Package_versions_on_conflict `json:"on_conflict,omitempty"`
-}
-
-// GetData returns Package_versions_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
-func (v *Package_versions_arr_rel_insert_input) GetData() []*Package_versions_insert_input {
-	return v.Data
-}
-
-// GetOn_conflict returns Package_versions_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
-func (v *Package_versions_arr_rel_insert_input) GetOn_conflict() *Package_versions_on_conflict {
-	return v.On_conflict
-}
-
-// Boolean expression to filter rows from the table "package_versions". All fields are combined with a logical 'AND'.
-type Package_versions_bool_exp struct {
-	And                   []*Package_versions_bool_exp     `json:"_and,omitempty"`
-	Not                   *Package_versions_bool_exp       `json:"_not,omitempty"`
-	Or                    []*Package_versions_bool_exp     `json:"_or,omitempty"`
-	Cpes                  *Text_comparison_exp             `json:"cpes,omitempty"`
-	Findings              *Findings_bool_exp               `json:"findings,omitempty"`
-	Fix_state             *String_comparison_exp           `json:"fix_state,omitempty"`
-	Fixed_in_versions     *Text_comparison_exp             `json:"fixed_in_versions,omitempty"`
-	Id                    *Uuid_comparison_exp             `json:"id,omitempty"`
-	Pkg_slug              *String_comparison_exp           `json:"pkg_slug,omitempty"`
-	Slug                  *String_comparison_exp           `json:"slug,omitempty"`
-	Version_constraint    *String_comparison_exp           `json:"version_constraint,omitempty"`
-	Version_format        *String_comparison_exp           `json:"version_format,omitempty"`
-	Vulnerability_package *Vulnerability_packages_bool_exp `json:"vulnerability_package,omitempty"`
-}
-
-// GetAnd returns Package_versions_bool_exp.And, and is useful for accessing the field via an interface.
-func (v *Package_versions_bool_exp) GetAnd() []*Package_versions_bool_exp { return v.And }
-
-// GetNot returns Package_versions_bool_exp.Not, and is useful for accessing the field via an interface.
-func (v *Package_versions_bool_exp) GetNot() *Package_versions_bool_exp { return v.Not }
-
-// GetOr returns Package_versions_bool_exp.Or, and is useful for accessing the field via an interface.
-func (v *Package_versions_bool_exp) GetOr() []*Package_versions_bool_exp { return v.Or }
-
-// GetCpes returns Package_versions_bool_exp.Cpes, and is useful for accessing the field via an interface.
-func (v *Package_versions_bool_exp) GetCpes() *Text_comparison_exp { return v.Cpes }
-
-// GetFindings returns Package_versions_bool_exp.Findings, and is useful for accessing the field via an interface.
-func (v *Package_versions_bool_exp) GetFindings() *Findings_bool_exp { return v.Findings }
-
-// GetFix_state returns Package_versions_bool_exp.Fix_state, and is useful for accessing the field via an interface.
-func (v *Package_versions_bool_exp) GetFix_state() *String_comparison_exp { return v.Fix_state }
-
-// GetFixed_in_versions returns Package_versions_bool_exp.Fixed_in_versions, and is useful for accessing the field via an interface.
-func (v *Package_versions_bool_exp) GetFixed_in_versions() *Text_comparison_exp {
-	return v.Fixed_in_versions
-}
-
-// GetId returns Package_versions_bool_exp.Id, and is useful for accessing the field via an interface.
-func (v *Package_versions_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
-
-// GetPkg_slug returns Package_versions_bool_exp.Pkg_slug, and is useful for accessing the field via an interface.
-func (v *Package_versions_bool_exp) GetPkg_slug() *String_comparison_exp { return v.Pkg_slug }
-
-// GetSlug returns Package_versions_bool_exp.Slug, and is useful for accessing the field via an interface.
-func (v *Package_versions_bool_exp) GetSlug() *String_comparison_exp { return v.Slug }
-
-// GetVersion_constraint returns Package_versions_bool_exp.Version_constraint, and is useful for accessing the field via an interface.
-func (v *Package_versions_bool_exp) GetVersion_constraint() *String_comparison_exp {
-	return v.Version_constraint
-}
-
-// GetVersion_format returns Package_versions_bool_exp.Version_format, and is useful for accessing the field via an interface.
-func (v *Package_versions_bool_exp) GetVersion_format() *String_comparison_exp {
-	return v.Version_format
-}
-
-// GetVulnerability_package returns Package_versions_bool_exp.Vulnerability_package, and is useful for accessing the field via an interface.
-func (v *Package_versions_bool_exp) GetVulnerability_package() *Vulnerability_packages_bool_exp {
-	return v.Vulnerability_package
-}
-
-// unique or primary key constraints on table "package_versions"
-type Package_versions_constraint string
-
-const (
-	// unique or primary key constraint
-	Package_versions_constraintPackageVersionsPkey Package_versions_constraint = "package_versions_pkey"
-	// unique or primary key constraint
-	Package_versions_constraintPackageVersionsSlugKey Package_versions_constraint = "package_versions_slug_key"
-)
-
-// input type for inserting data into table "package_versions"
-type Package_versions_insert_input struct {
-	Findings              *Findings_arr_rel_insert_input               `json:"findings,omitempty"`
-	Slug                  *string                                      `json:"slug,omitempty"`
-	Vulnerability_package *Vulnerability_packages_obj_rel_insert_input `json:"vulnerability_package,omitempty"`
-}
-
-// GetFindings returns Package_versions_insert_input.Findings, and is useful for accessing the field via an interface.
-func (v *Package_versions_insert_input) GetFindings() *Findings_arr_rel_insert_input {
-	return v.Findings
-}
-
-// GetSlug returns Package_versions_insert_input.Slug, and is useful for accessing the field via an interface.
-func (v *Package_versions_insert_input) GetSlug() *string { return v.Slug }
-
-// GetVulnerability_package returns Package_versions_insert_input.Vulnerability_package, and is useful for accessing the field via an interface.
-func (v *Package_versions_insert_input) GetVulnerability_package() *Vulnerability_packages_obj_rel_insert_input {
-	return v.Vulnerability_package
-}
-
-// input type for inserting object relation for remote table "package_versions"
-type Package_versions_obj_rel_insert_input struct {
-	Data *Package_versions_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Package_versions_on_conflict `json:"on_conflict,omitempty"`
-}
-
-// GetData returns Package_versions_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
-func (v *Package_versions_obj_rel_insert_input) GetData() *Package_versions_insert_input {
-	return v.Data
-}
-
-// GetOn_conflict returns Package_versions_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
-func (v *Package_versions_obj_rel_insert_input) GetOn_conflict() *Package_versions_on_conflict {
-	return v.On_conflict
-}
-
-// on_conflict condition type for table "package_versions"
-type Package_versions_on_conflict struct {
-	Constraint     Package_versions_constraint      `json:"constraint,omitempty"`
-	Update_columns []Package_versions_update_column `json:"update_columns,omitempty"`
-	Where          *Package_versions_bool_exp       `json:"where,omitempty"`
-}
-
-// GetConstraint returns Package_versions_on_conflict.Constraint, and is useful for accessing the field via an interface.
-func (v *Package_versions_on_conflict) GetConstraint() Package_versions_constraint {
-	return v.Constraint
-}
-
-// GetUpdate_columns returns Package_versions_on_conflict.Update_columns, and is useful for accessing the field via an interface.
-func (v *Package_versions_on_conflict) GetUpdate_columns() []Package_versions_update_column {
-	return v.Update_columns
-}
-
-// GetWhere returns Package_versions_on_conflict.Where, and is useful for accessing the field via an interface.
-func (v *Package_versions_on_conflict) GetWhere() *Package_versions_bool_exp { return v.Where }
-
-// update columns of table "package_versions"
-type Package_versions_update_column string
-
-const (
-	// column name
-	Package_versions_update_columnSlug Package_versions_update_column = "slug"
-)
-
 // Boolean expression to filter rows from the table "project_access_tokens". All fields are combined with a logical 'AND'.
 type Project_access_tokens_bool_exp struct {
 	And             []*Project_access_tokens_bool_exp `json:"_and,omitempty"`
@@ -4740,9 +5075,9 @@ func (v *Projects_bool_exp) GetSettings_id() *Uuid_comparison_exp { return v.Set
 type Projects_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "name", "organization_id"
 	Projects_constraintProjectsNameOrganizationIdKey Projects_constraint = "projects_name_organization_id_key"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Projects_constraintProjectsPkey Projects_constraint = "projects_pkey"
 )
 
@@ -4893,53 +5228,152 @@ func (v *Reference_type_comparison_exp) GetNeq() *types.ReferenceType { return v
 // GetNin returns Reference_type_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Reference_type_comparison_exp) GetNin() []types.ReferenceType { return v.Nin }
 
-// Boolean expression to filter rows from the table "related_vulnerabilities". All fields are combined with a logical 'AND'.
-type Related_vulnerabilities_bool_exp struct {
-	And                              []*Related_vulnerabilities_bool_exp `json:"_and,omitempty"`
-	Not                              *Related_vulnerabilities_bool_exp   `json:"_not,omitempty"`
-	Or                               []*Related_vulnerabilities_bool_exp `json:"_or,omitempty"`
-	Id                               *Uuid_comparison_exp                `json:"id,omitempty"`
-	Parent                           *Vulnerabilities_bool_exp           `json:"parent,omitempty"`
-	Related_vulnerability_slug       *String_comparison_exp              `json:"related_vulnerability_slug,omitempty"`
-	Vulnerability                    *Vulnerabilities_bool_exp           `json:"vulnerability,omitempty"`
-	VulnerabilityByVulnerabilitySlug *Vulnerabilities_bool_exp           `json:"vulnerabilityByVulnerabilitySlug,omitempty"`
-	Vulnerability_slug               *String_comparison_exp              `json:"vulnerability_slug,omitempty"`
+// input type for inserting array relation for remote table "resolved_manifest"
+type Resolved_manifest_arr_rel_insert_input struct {
+	Data []*Resolved_manifest_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Resolved_manifest_on_conflict `json:"on_conflict,omitempty"`
 }
 
-// GetAnd returns Related_vulnerabilities_bool_exp.And, and is useful for accessing the field via an interface.
-func (v *Related_vulnerabilities_bool_exp) GetAnd() []*Related_vulnerabilities_bool_exp { return v.And }
-
-// GetNot returns Related_vulnerabilities_bool_exp.Not, and is useful for accessing the field via an interface.
-func (v *Related_vulnerabilities_bool_exp) GetNot() *Related_vulnerabilities_bool_exp { return v.Not }
-
-// GetOr returns Related_vulnerabilities_bool_exp.Or, and is useful for accessing the field via an interface.
-func (v *Related_vulnerabilities_bool_exp) GetOr() []*Related_vulnerabilities_bool_exp { return v.Or }
-
-// GetId returns Related_vulnerabilities_bool_exp.Id, and is useful for accessing the field via an interface.
-func (v *Related_vulnerabilities_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
-
-// GetParent returns Related_vulnerabilities_bool_exp.Parent, and is useful for accessing the field via an interface.
-func (v *Related_vulnerabilities_bool_exp) GetParent() *Vulnerabilities_bool_exp { return v.Parent }
-
-// GetRelated_vulnerability_slug returns Related_vulnerabilities_bool_exp.Related_vulnerability_slug, and is useful for accessing the field via an interface.
-func (v *Related_vulnerabilities_bool_exp) GetRelated_vulnerability_slug() *String_comparison_exp {
-	return v.Related_vulnerability_slug
+// GetData returns Resolved_manifest_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_arr_rel_insert_input) GetData() []*Resolved_manifest_insert_input {
+	return v.Data
 }
 
-// GetVulnerability returns Related_vulnerabilities_bool_exp.Vulnerability, and is useful for accessing the field via an interface.
-func (v *Related_vulnerabilities_bool_exp) GetVulnerability() *Vulnerabilities_bool_exp {
-	return v.Vulnerability
+// GetOn_conflict returns Resolved_manifest_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_arr_rel_insert_input) GetOn_conflict() *Resolved_manifest_on_conflict {
+	return v.On_conflict
 }
 
-// GetVulnerabilityByVulnerabilitySlug returns Related_vulnerabilities_bool_exp.VulnerabilityByVulnerabilitySlug, and is useful for accessing the field via an interface.
-func (v *Related_vulnerabilities_bool_exp) GetVulnerabilityByVulnerabilitySlug() *Vulnerabilities_bool_exp {
-	return v.VulnerabilityByVulnerabilitySlug
+// Boolean expression to filter rows from the table "resolved_manifest". All fields are combined with a logical 'AND'.
+type Resolved_manifest_bool_exp struct {
+	And                   []*Resolved_manifest_bool_exp      `json:"_and,omitempty"`
+	Not                   *Resolved_manifest_bool_exp        `json:"_not,omitempty"`
+	Or                    []*Resolved_manifest_bool_exp      `json:"_or,omitempty"`
+	Build                 *Builds_bool_exp                   `json:"build,omitempty"`
+	Build_id              *Uuid_comparison_exp               `json:"build_id,omitempty"`
+	Child_edges_recursive *Manifest_dependency_edge_bool_exp `json:"child_edges_recursive,omitempty"`
+	Id                    *Uuid_comparison_exp               `json:"id,omitempty"`
+	Manifest_dependencies *Manifest_dependency_bool_exp      `json:"manifest_dependencies,omitempty"`
+	Path                  *String_comparison_exp             `json:"path,omitempty"`
 }
 
-// GetVulnerability_slug returns Related_vulnerabilities_bool_exp.Vulnerability_slug, and is useful for accessing the field via an interface.
-func (v *Related_vulnerabilities_bool_exp) GetVulnerability_slug() *String_comparison_exp {
-	return v.Vulnerability_slug
+// GetAnd returns Resolved_manifest_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_bool_exp) GetAnd() []*Resolved_manifest_bool_exp { return v.And }
+
+// GetNot returns Resolved_manifest_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_bool_exp) GetNot() *Resolved_manifest_bool_exp { return v.Not }
+
+// GetOr returns Resolved_manifest_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_bool_exp) GetOr() []*Resolved_manifest_bool_exp { return v.Or }
+
+// GetBuild returns Resolved_manifest_bool_exp.Build, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_bool_exp) GetBuild() *Builds_bool_exp { return v.Build }
+
+// GetBuild_id returns Resolved_manifest_bool_exp.Build_id, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_bool_exp) GetBuild_id() *Uuid_comparison_exp { return v.Build_id }
+
+// GetChild_edges_recursive returns Resolved_manifest_bool_exp.Child_edges_recursive, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_bool_exp) GetChild_edges_recursive() *Manifest_dependency_edge_bool_exp {
+	return v.Child_edges_recursive
 }
+
+// GetId returns Resolved_manifest_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetManifest_dependencies returns Resolved_manifest_bool_exp.Manifest_dependencies, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_bool_exp) GetManifest_dependencies() *Manifest_dependency_bool_exp {
+	return v.Manifest_dependencies
+}
+
+// GetPath returns Resolved_manifest_bool_exp.Path, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_bool_exp) GetPath() *String_comparison_exp { return v.Path }
+
+// unique or primary key constraints on table "resolved_manifest"
+type Resolved_manifest_constraint string
+
+const (
+	// unique or primary key constraint on columns "build_id", "path"
+	Resolved_manifest_constraintManifestBuildIdPathIdx Resolved_manifest_constraint = "manifest_build_id_path_idx"
+	// unique or primary key constraint on columns "id"
+	Resolved_manifest_constraintManifestPkey Resolved_manifest_constraint = "manifest_pkey"
+)
+
+// input type for inserting data into table "resolved_manifest"
+type Resolved_manifest_insert_input struct {
+	Build                 *Builds_obj_rel_insert_input              `json:"build,omitempty"`
+	Build_id              *uuid.UUID                                `json:"build_id,omitempty"`
+	Id                    *uuid.UUID                                `json:"id,omitempty"`
+	Manifest_dependencies *Manifest_dependency_arr_rel_insert_input `json:"manifest_dependencies,omitempty"`
+	// path in repo of manifest file. empty string if the ecosystem does not have a manifest file.
+	Path *string `json:"path,omitempty"`
+}
+
+// GetBuild returns Resolved_manifest_insert_input.Build, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_insert_input) GetBuild() *Builds_obj_rel_insert_input { return v.Build }
+
+// GetBuild_id returns Resolved_manifest_insert_input.Build_id, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_insert_input) GetBuild_id() *uuid.UUID { return v.Build_id }
+
+// GetId returns Resolved_manifest_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetManifest_dependencies returns Resolved_manifest_insert_input.Manifest_dependencies, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_insert_input) GetManifest_dependencies() *Manifest_dependency_arr_rel_insert_input {
+	return v.Manifest_dependencies
+}
+
+// GetPath returns Resolved_manifest_insert_input.Path, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_insert_input) GetPath() *string { return v.Path }
+
+// input type for inserting object relation for remote table "resolved_manifest"
+type Resolved_manifest_obj_rel_insert_input struct {
+	Data *Resolved_manifest_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Resolved_manifest_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Resolved_manifest_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_obj_rel_insert_input) GetData() *Resolved_manifest_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Resolved_manifest_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_obj_rel_insert_input) GetOn_conflict() *Resolved_manifest_on_conflict {
+	return v.On_conflict
+}
+
+// on_conflict condition type for table "resolved_manifest"
+type Resolved_manifest_on_conflict struct {
+	Constraint     Resolved_manifest_constraint      `json:"constraint,omitempty"`
+	Update_columns []Resolved_manifest_update_column `json:"update_columns,omitempty"`
+	Where          *Resolved_manifest_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Resolved_manifest_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_on_conflict) GetConstraint() Resolved_manifest_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Resolved_manifest_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_on_conflict) GetUpdate_columns() []Resolved_manifest_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Resolved_manifest_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_on_conflict) GetWhere() *Resolved_manifest_bool_exp { return v.Where }
+
+// update columns of table "resolved_manifest"
+type Resolved_manifest_update_column string
+
+const (
+	// column name
+	Resolved_manifest_update_columnBuildId Resolved_manifest_update_column = "build_id"
+	// column name
+	Resolved_manifest_update_columnId Resolved_manifest_update_column = "id"
+	// column name
+	Resolved_manifest_update_columnPath Resolved_manifest_update_column = "path"
+)
 
 // input type for inserting array relation for remote table "scans"
 type Scans_arr_rel_insert_input struct {
@@ -5022,9 +5456,9 @@ func (v *Scans_bool_exp) GetTarget() *String_comparison_exp { return v.Target }
 type Scans_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Scans_constraintScansPkey Scans_constraint = "scans_pkey"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "scan_number", "build_id"
 	Scans_constraintScansScanNumberBuildIdKey Scans_constraint = "scans_scan_number_build_id_key"
 )
 
@@ -5671,13 +6105,13 @@ func (v *Users_bool_exp) GetRole() *User_role_comparison_exp { return v.Role }
 type Users_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "github_id"
 	Users_constraintUsersGithubIdKey Users_constraint = "users_github_id_key"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "github_node_id"
 	Users_constraintUsersGithubNodeIdKey Users_constraint = "users_github_node_id_key"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "kratos_id"
 	Users_constraintUsersKratosIdUnique Users_constraint = "users_kratos_id_unique"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Users_constraintUsersPkey Users_constraint = "users_pkey"
 )
 
@@ -5784,173 +6218,6 @@ func (v *Uuid_comparison_exp) GetNeq() *uuid.UUID { return v.Neq }
 // GetNin returns Uuid_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Uuid_comparison_exp) GetNin() []uuid.UUID { return v.Nin }
 
-// Boolean expression to filter rows from the table "vulnerabilities". All fields are combined with a logical 'AND'.
-type Vulnerabilities_bool_exp struct {
-	And                             []*Vulnerabilities_bool_exp       `json:"_and,omitempty"`
-	Not                             *Vulnerabilities_bool_exp         `json:"_not,omitempty"`
-	Or                              []*Vulnerabilities_bool_exp       `json:"_or,omitempty"`
-	Created_at                      *Timestamp_comparison_exp         `json:"created_at,omitempty"`
-	Cvss_exploitability_score       *Numeric_comparison_exp           `json:"cvss_exploitability_score,omitempty"`
-	Cvss_impact_score               *Numeric_comparison_exp           `json:"cvss_impact_score,omitempty"`
-	Cvss_inferred                   *Boolean_comparison_exp           `json:"cvss_inferred,omitempty"`
-	Cvss_score                      *Numeric_comparison_exp           `json:"cvss_score,omitempty"`
-	Cvss_version                    *String_comparison_exp            `json:"cvss_version,omitempty"`
-	Data_source                     *String_comparison_exp            `json:"data_source,omitempty"`
-	Description                     *String_comparison_exp            `json:"description,omitempty"`
-	Id                              *Uuid_comparison_exp              `json:"id,omitempty"`
-	Name                            *String_comparison_exp            `json:"name,omitempty"`
-	Namespace                       *String_comparison_exp            `json:"namespace,omitempty"`
-	Record_source                   *String_comparison_exp            `json:"record_source,omitempty"`
-	Related_vulnerabilities         *Related_vulnerabilities_bool_exp `json:"related_vulnerabilities,omitempty"`
-	Reverse_related_vulnerabilities *Related_vulnerabilities_bool_exp `json:"reverse_related_vulnerabilities,omitempty"`
-	Severity                        *Severity_enum_comparison_exp     `json:"severity,omitempty"`
-	Slug                            *String_comparison_exp            `json:"slug,omitempty"`
-	Topic_id                        *Uuid_comparison_exp              `json:"topic_id,omitempty"`
-	Urls                            *Text_comparison_exp              `json:"urls,omitempty"`
-	Vulnerability_packages          *Vulnerability_packages_bool_exp  `json:"vulnerability_packages,omitempty"`
-}
-
-// GetAnd returns Vulnerabilities_bool_exp.And, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetAnd() []*Vulnerabilities_bool_exp { return v.And }
-
-// GetNot returns Vulnerabilities_bool_exp.Not, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetNot() *Vulnerabilities_bool_exp { return v.Not }
-
-// GetOr returns Vulnerabilities_bool_exp.Or, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetOr() []*Vulnerabilities_bool_exp { return v.Or }
-
-// GetCreated_at returns Vulnerabilities_bool_exp.Created_at, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetCreated_at() *Timestamp_comparison_exp { return v.Created_at }
-
-// GetCvss_exploitability_score returns Vulnerabilities_bool_exp.Cvss_exploitability_score, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetCvss_exploitability_score() *Numeric_comparison_exp {
-	return v.Cvss_exploitability_score
-}
-
-// GetCvss_impact_score returns Vulnerabilities_bool_exp.Cvss_impact_score, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetCvss_impact_score() *Numeric_comparison_exp {
-	return v.Cvss_impact_score
-}
-
-// GetCvss_inferred returns Vulnerabilities_bool_exp.Cvss_inferred, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetCvss_inferred() *Boolean_comparison_exp { return v.Cvss_inferred }
-
-// GetCvss_score returns Vulnerabilities_bool_exp.Cvss_score, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetCvss_score() *Numeric_comparison_exp { return v.Cvss_score }
-
-// GetCvss_version returns Vulnerabilities_bool_exp.Cvss_version, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetCvss_version() *String_comparison_exp { return v.Cvss_version }
-
-// GetData_source returns Vulnerabilities_bool_exp.Data_source, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetData_source() *String_comparison_exp { return v.Data_source }
-
-// GetDescription returns Vulnerabilities_bool_exp.Description, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetDescription() *String_comparison_exp { return v.Description }
-
-// GetId returns Vulnerabilities_bool_exp.Id, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
-
-// GetName returns Vulnerabilities_bool_exp.Name, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetName() *String_comparison_exp { return v.Name }
-
-// GetNamespace returns Vulnerabilities_bool_exp.Namespace, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetNamespace() *String_comparison_exp { return v.Namespace }
-
-// GetRecord_source returns Vulnerabilities_bool_exp.Record_source, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetRecord_source() *String_comparison_exp { return v.Record_source }
-
-// GetRelated_vulnerabilities returns Vulnerabilities_bool_exp.Related_vulnerabilities, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetRelated_vulnerabilities() *Related_vulnerabilities_bool_exp {
-	return v.Related_vulnerabilities
-}
-
-// GetReverse_related_vulnerabilities returns Vulnerabilities_bool_exp.Reverse_related_vulnerabilities, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetReverse_related_vulnerabilities() *Related_vulnerabilities_bool_exp {
-	return v.Reverse_related_vulnerabilities
-}
-
-// GetSeverity returns Vulnerabilities_bool_exp.Severity, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetSeverity() *Severity_enum_comparison_exp { return v.Severity }
-
-// GetSlug returns Vulnerabilities_bool_exp.Slug, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetSlug() *String_comparison_exp { return v.Slug }
-
-// GetTopic_id returns Vulnerabilities_bool_exp.Topic_id, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetTopic_id() *Uuid_comparison_exp { return v.Topic_id }
-
-// GetUrls returns Vulnerabilities_bool_exp.Urls, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetUrls() *Text_comparison_exp { return v.Urls }
-
-// GetVulnerability_packages returns Vulnerabilities_bool_exp.Vulnerability_packages, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_bool_exp) GetVulnerability_packages() *Vulnerability_packages_bool_exp {
-	return v.Vulnerability_packages
-}
-
-// unique or primary key constraints on table "vulnerabilities"
-type Vulnerabilities_constraint string
-
-const (
-	// unique or primary key constraint
-	Vulnerabilities_constraintVulnerabilitiesPkey Vulnerabilities_constraint = "vulnerabilities_pkey"
-	// unique or primary key constraint
-	Vulnerabilities_constraintVulnerabilitiesSlugKey Vulnerabilities_constraint = "vulnerabilities_slug_key"
-)
-
-// input type for inserting data into table "vulnerabilities"
-type Vulnerabilities_insert_input struct {
-	Slug                   *string                                      `json:"slug,omitempty"`
-	Vulnerability_packages *Vulnerability_packages_arr_rel_insert_input `json:"vulnerability_packages,omitempty"`
-}
-
-// GetSlug returns Vulnerabilities_insert_input.Slug, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_insert_input) GetSlug() *string { return v.Slug }
-
-// GetVulnerability_packages returns Vulnerabilities_insert_input.Vulnerability_packages, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_insert_input) GetVulnerability_packages() *Vulnerability_packages_arr_rel_insert_input {
-	return v.Vulnerability_packages
-}
-
-// input type for inserting object relation for remote table "vulnerabilities"
-type Vulnerabilities_obj_rel_insert_input struct {
-	Data *Vulnerabilities_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Vulnerabilities_on_conflict `json:"on_conflict,omitempty"`
-}
-
-// GetData returns Vulnerabilities_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_obj_rel_insert_input) GetData() *Vulnerabilities_insert_input { return v.Data }
-
-// GetOn_conflict returns Vulnerabilities_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_obj_rel_insert_input) GetOn_conflict() *Vulnerabilities_on_conflict {
-	return v.On_conflict
-}
-
-// on_conflict condition type for table "vulnerabilities"
-type Vulnerabilities_on_conflict struct {
-	Constraint     Vulnerabilities_constraint      `json:"constraint,omitempty"`
-	Update_columns []Vulnerabilities_update_column `json:"update_columns,omitempty"`
-	Where          *Vulnerabilities_bool_exp       `json:"where,omitempty"`
-}
-
-// GetConstraint returns Vulnerabilities_on_conflict.Constraint, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_on_conflict) GetConstraint() Vulnerabilities_constraint { return v.Constraint }
-
-// GetUpdate_columns returns Vulnerabilities_on_conflict.Update_columns, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_on_conflict) GetUpdate_columns() []Vulnerabilities_update_column {
-	return v.Update_columns
-}
-
-// GetWhere returns Vulnerabilities_on_conflict.Where, and is useful for accessing the field via an interface.
-func (v *Vulnerabilities_on_conflict) GetWhere() *Vulnerabilities_bool_exp { return v.Where }
-
-// update columns of table "vulnerabilities"
-type Vulnerabilities_update_column string
-
-const (
-	// column name
-	Vulnerabilities_update_columnSlug Vulnerabilities_update_column = "slug"
-)
-
 // input type for inserting array relation for remote table "vulnerability.affected"
 type Vulnerability_affected_arr_rel_insert_input struct {
 	Data []*Vulnerability_affected_insert_input `json:"data,omitempty"`
@@ -6040,9 +6307,9 @@ func (v *Vulnerability_affected_bool_exp) GetVulnerability_id() *Uuid_comparison
 type Vulnerability_affected_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Vulnerability_affected_constraintAffectedPkey Vulnerability_affected_constraint = "affected_pkey"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "vulnerability_id", "package_id"
 	Vulnerability_affected_constraintAffectedVulnerabilityIdPackageIdIdx Vulnerability_affected_constraint = "affected_vulnerability_id_package_id_idx"
 )
 
@@ -6228,9 +6495,9 @@ func (v *Vulnerability_affected_range_event_bool_exp) GetVersion() *String_compa
 type Vulnerability_affected_range_event_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "type", "affected_id", "event", "version"
 	Vulnerability_affected_range_event_constraintAffectedRangeEventAffectedIdTypeEventVersionIdx Vulnerability_affected_range_event_constraint = "affected_range_event_affected_id_type_event_version_idx"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Vulnerability_affected_range_event_constraintAffectedRangeEventPkey Vulnerability_affected_range_event_constraint = "affected_range_event_pkey"
 )
 
@@ -6401,9 +6668,9 @@ func (v *Vulnerability_affected_version_bool_exp) GetVersion() *String_compariso
 type Vulnerability_affected_version_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "affected_id", "version"
 	Vulnerability_affected_version_constraintAffectedVersionAffectedIdTypeVersion Vulnerability_affected_version_constraint = "affected_version_affected_id_type_version"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Vulnerability_affected_version_constraintAffectedVersionPkey Vulnerability_affected_version_constraint = "affected_version_pkey"
 )
 
@@ -6493,6 +6760,7 @@ type Vulnerability_bool_exp struct {
 	References              *Vulnerability_reference_bool_exp  `json:"references,omitempty"`
 	Reviewed_by_source      *Boolean_comparison_exp            `json:"reviewed_by_source,omitempty"`
 	Severities              *Vulnerability_severity_bool_exp   `json:"severities,omitempty"`
+	Severity_name           *Severity_enum_comparison_exp      `json:"severity_name,omitempty"`
 	Source                  *String_comparison_exp             `json:"source,omitempty"`
 	Source_id               *String_comparison_exp             `json:"source_id,omitempty"`
 	Summary                 *String_comparison_exp             `json:"summary,omitempty"`
@@ -6568,6 +6836,11 @@ func (v *Vulnerability_bool_exp) GetSeverities() *Vulnerability_severity_bool_ex
 	return v.Severities
 }
 
+// GetSeverity_name returns Vulnerability_bool_exp.Severity_name, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetSeverity_name() *Severity_enum_comparison_exp {
+	return v.Severity_name
+}
+
 // GetSource returns Vulnerability_bool_exp.Source, and is useful for accessing the field via an interface.
 func (v *Vulnerability_bool_exp) GetSource() *String_comparison_exp { return v.Source }
 
@@ -6587,9 +6860,9 @@ func (v *Vulnerability_bool_exp) GetWithdrawn() *Timestamptz_comparison_exp { re
 type Vulnerability_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Vulnerability_constraintVulnerabilityPkey Vulnerability_constraint = "vulnerability_pkey"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "source", "source_id"
 	Vulnerability_constraintVulnerabilitySourceSourceIdIdx Vulnerability_constraint = "vulnerability_source_source_id_idx"
 )
 
@@ -6654,9 +6927,9 @@ func (v *Vulnerability_credit_bool_exp) GetVulnerability_id() *Uuid_comparison_e
 type Vulnerability_credit_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Vulnerability_credit_constraintCreditPkey Vulnerability_credit_constraint = "credit_pkey"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "name", "vulnerability_id"
 	Vulnerability_credit_constraintCreditVulnerabilityIdName Vulnerability_credit_constraint = "credit_vulnerability_id_name"
 )
 
@@ -6781,7 +7054,7 @@ func (v *Vulnerability_equivalent_bool_exp) GetVulnerability() *Vulnerability_bo
 type Vulnerability_equivalent_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "a", "b"
 	Vulnerability_equivalent_constraintEquivalentABIdx Vulnerability_equivalent_constraint = "equivalent_a_b_idx"
 )
 
@@ -6857,6 +7130,7 @@ type Vulnerability_insert_input struct {
 	References            *Vulnerability_reference_arr_rel_insert_input  `json:"references,omitempty"`
 	Reviewed_by_source    *bool                                          `json:"reviewed_by_source,omitempty"`
 	Severities            *Vulnerability_severity_arr_rel_insert_input   `json:"severities,omitempty"`
+	Severity_name         *string                                        `json:"severity_name,omitempty"`
 	Source                *string                                        `json:"source,omitempty"`
 	Source_id             *string                                        `json:"source_id,omitempty"`
 	Summary               *string                                        `json:"summary,omitempty"`
@@ -6920,6 +7194,9 @@ func (v *Vulnerability_insert_input) GetSeverities() *Vulnerability_severity_arr
 	return v.Severities
 }
 
+// GetSeverity_name returns Vulnerability_insert_input.Severity_name, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetSeverity_name() *string { return v.Severity_name }
+
 // GetSource returns Vulnerability_insert_input.Source, and is useful for accessing the field via an interface.
 func (v *Vulnerability_insert_input) GetSource() *string { return v.Source }
 
@@ -6968,158 +7245,6 @@ func (v *Vulnerability_on_conflict) GetUpdate_columns() []Vulnerability_update_c
 // GetWhere returns Vulnerability_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Vulnerability_on_conflict) GetWhere() *Vulnerability_bool_exp { return v.Where }
 
-// input type for inserting array relation for remote table "vulnerability_packages"
-type Vulnerability_packages_arr_rel_insert_input struct {
-	Data []*Vulnerability_packages_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Vulnerability_packages_on_conflict `json:"on_conflict,omitempty"`
-}
-
-// GetData returns Vulnerability_packages_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_arr_rel_insert_input) GetData() []*Vulnerability_packages_insert_input {
-	return v.Data
-}
-
-// GetOn_conflict returns Vulnerability_packages_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_arr_rel_insert_input) GetOn_conflict() *Vulnerability_packages_on_conflict {
-	return v.On_conflict
-}
-
-// Boolean expression to filter rows from the table "vulnerability_packages". All fields are combined with a logical 'AND'.
-type Vulnerability_packages_bool_exp struct {
-	And              []*Vulnerability_packages_bool_exp `json:"_and,omitempty"`
-	Not              *Vulnerability_packages_bool_exp   `json:"_not,omitempty"`
-	Or               []*Vulnerability_packages_bool_exp `json:"_or,omitempty"`
-	Advisories       *String_comparison_exp             `json:"advisories,omitempty"`
-	Findings         *Findings_bool_exp                 `json:"findings,omitempty"`
-	Id               *Uuid_comparison_exp               `json:"id,omitempty"`
-	Name             *String_comparison_exp             `json:"name,omitempty"`
-	Package_versions *Package_versions_bool_exp         `json:"package_versions,omitempty"`
-	Slug             *String_comparison_exp             `json:"slug,omitempty"`
-	Vuln_slug        *String_comparison_exp             `json:"vuln_slug,omitempty"`
-	Vulnerability    *Vulnerabilities_bool_exp          `json:"vulnerability,omitempty"`
-}
-
-// GetAnd returns Vulnerability_packages_bool_exp.And, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_bool_exp) GetAnd() []*Vulnerability_packages_bool_exp { return v.And }
-
-// GetNot returns Vulnerability_packages_bool_exp.Not, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_bool_exp) GetNot() *Vulnerability_packages_bool_exp { return v.Not }
-
-// GetOr returns Vulnerability_packages_bool_exp.Or, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_bool_exp) GetOr() []*Vulnerability_packages_bool_exp { return v.Or }
-
-// GetAdvisories returns Vulnerability_packages_bool_exp.Advisories, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_bool_exp) GetAdvisories() *String_comparison_exp { return v.Advisories }
-
-// GetFindings returns Vulnerability_packages_bool_exp.Findings, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_bool_exp) GetFindings() *Findings_bool_exp { return v.Findings }
-
-// GetId returns Vulnerability_packages_bool_exp.Id, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
-
-// GetName returns Vulnerability_packages_bool_exp.Name, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_bool_exp) GetName() *String_comparison_exp { return v.Name }
-
-// GetPackage_versions returns Vulnerability_packages_bool_exp.Package_versions, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_bool_exp) GetPackage_versions() *Package_versions_bool_exp {
-	return v.Package_versions
-}
-
-// GetSlug returns Vulnerability_packages_bool_exp.Slug, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_bool_exp) GetSlug() *String_comparison_exp { return v.Slug }
-
-// GetVuln_slug returns Vulnerability_packages_bool_exp.Vuln_slug, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_bool_exp) GetVuln_slug() *String_comparison_exp { return v.Vuln_slug }
-
-// GetVulnerability returns Vulnerability_packages_bool_exp.Vulnerability, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_bool_exp) GetVulnerability() *Vulnerabilities_bool_exp {
-	return v.Vulnerability
-}
-
-// unique or primary key constraints on table "vulnerability_packages"
-type Vulnerability_packages_constraint string
-
-const (
-	// unique or primary key constraint
-	Vulnerability_packages_constraintVulnerabilityPackagesPkey Vulnerability_packages_constraint = "vulnerability_packages_pkey"
-	// unique or primary key constraint
-	Vulnerability_packages_constraintVulnerabilityPackagesSlugKey Vulnerability_packages_constraint = "vulnerability_packages_slug_key"
-)
-
-// input type for inserting data into table "vulnerability_packages"
-type Vulnerability_packages_insert_input struct {
-	Findings         *Findings_arr_rel_insert_input         `json:"findings,omitempty"`
-	Package_versions *Package_versions_arr_rel_insert_input `json:"package_versions,omitempty"`
-	Slug             *string                                `json:"slug,omitempty"`
-	Vulnerability    *Vulnerabilities_obj_rel_insert_input  `json:"vulnerability,omitempty"`
-}
-
-// GetFindings returns Vulnerability_packages_insert_input.Findings, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_insert_input) GetFindings() *Findings_arr_rel_insert_input {
-	return v.Findings
-}
-
-// GetPackage_versions returns Vulnerability_packages_insert_input.Package_versions, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_insert_input) GetPackage_versions() *Package_versions_arr_rel_insert_input {
-	return v.Package_versions
-}
-
-// GetSlug returns Vulnerability_packages_insert_input.Slug, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_insert_input) GetSlug() *string { return v.Slug }
-
-// GetVulnerability returns Vulnerability_packages_insert_input.Vulnerability, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_insert_input) GetVulnerability() *Vulnerabilities_obj_rel_insert_input {
-	return v.Vulnerability
-}
-
-// input type for inserting object relation for remote table "vulnerability_packages"
-type Vulnerability_packages_obj_rel_insert_input struct {
-	Data *Vulnerability_packages_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Vulnerability_packages_on_conflict `json:"on_conflict,omitempty"`
-}
-
-// GetData returns Vulnerability_packages_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_obj_rel_insert_input) GetData() *Vulnerability_packages_insert_input {
-	return v.Data
-}
-
-// GetOn_conflict returns Vulnerability_packages_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_obj_rel_insert_input) GetOn_conflict() *Vulnerability_packages_on_conflict {
-	return v.On_conflict
-}
-
-// on_conflict condition type for table "vulnerability_packages"
-type Vulnerability_packages_on_conflict struct {
-	Constraint     Vulnerability_packages_constraint      `json:"constraint,omitempty"`
-	Update_columns []Vulnerability_packages_update_column `json:"update_columns,omitempty"`
-	Where          *Vulnerability_packages_bool_exp       `json:"where,omitempty"`
-}
-
-// GetConstraint returns Vulnerability_packages_on_conflict.Constraint, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_on_conflict) GetConstraint() Vulnerability_packages_constraint {
-	return v.Constraint
-}
-
-// GetUpdate_columns returns Vulnerability_packages_on_conflict.Update_columns, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_on_conflict) GetUpdate_columns() []Vulnerability_packages_update_column {
-	return v.Update_columns
-}
-
-// GetWhere returns Vulnerability_packages_on_conflict.Where, and is useful for accessing the field via an interface.
-func (v *Vulnerability_packages_on_conflict) GetWhere() *Vulnerability_packages_bool_exp {
-	return v.Where
-}
-
-// update columns of table "vulnerability_packages"
-type Vulnerability_packages_update_column string
-
-const (
-	// column name
-	Vulnerability_packages_update_columnSlug Vulnerability_packages_update_column = "slug"
-)
-
 // input type for inserting array relation for remote table "vulnerability.range"
 type Vulnerability_range_arr_rel_insert_input struct {
 	Data []*Vulnerability_range_insert_input `json:"data,omitempty"`
@@ -7139,13 +7264,14 @@ func (v *Vulnerability_range_arr_rel_insert_input) GetOn_conflict() *Vulnerabili
 
 // Boolean expression to filter rows from the table "vulnerability.range". All fields are combined with a logical 'AND'.
 type Vulnerability_range_bool_exp struct {
-	And         []*Vulnerability_range_bool_exp `json:"_and,omitempty"`
-	Not         *Vulnerability_range_bool_exp   `json:"_not,omitempty"`
-	Or          []*Vulnerability_range_bool_exp `json:"_or,omitempty"`
-	Affected_id *Uuid_comparison_exp            `json:"affected_id,omitempty"`
-	Fixed       *String_comparison_exp          `json:"fixed,omitempty"`
-	Id          *Uuid_comparison_exp            `json:"id,omitempty"`
-	Introduced  *String_comparison_exp          `json:"introduced,omitempty"`
+	And         []*Vulnerability_range_bool_exp  `json:"_and,omitempty"`
+	Not         *Vulnerability_range_bool_exp    `json:"_not,omitempty"`
+	Or          []*Vulnerability_range_bool_exp  `json:"_or,omitempty"`
+	Affected    *Vulnerability_affected_bool_exp `json:"affected,omitempty"`
+	Affected_id *Uuid_comparison_exp             `json:"affected_id,omitempty"`
+	Fixed       *String_comparison_exp           `json:"fixed,omitempty"`
+	Id          *Uuid_comparison_exp             `json:"id,omitempty"`
+	Introduced  *String_comparison_exp           `json:"introduced,omitempty"`
 }
 
 // GetAnd returns Vulnerability_range_bool_exp.And, and is useful for accessing the field via an interface.
@@ -7156,6 +7282,11 @@ func (v *Vulnerability_range_bool_exp) GetNot() *Vulnerability_range_bool_exp { 
 
 // GetOr returns Vulnerability_range_bool_exp.Or, and is useful for accessing the field via an interface.
 func (v *Vulnerability_range_bool_exp) GetOr() []*Vulnerability_range_bool_exp { return v.Or }
+
+// GetAffected returns Vulnerability_range_bool_exp.Affected, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_bool_exp) GetAffected() *Vulnerability_affected_bool_exp {
+	return v.Affected
+}
 
 // GetAffected_id returns Vulnerability_range_bool_exp.Affected_id, and is useful for accessing the field via an interface.
 func (v *Vulnerability_range_bool_exp) GetAffected_id() *Uuid_comparison_exp { return v.Affected_id }
@@ -7173,18 +7304,24 @@ func (v *Vulnerability_range_bool_exp) GetIntroduced() *String_comparison_exp { 
 type Vulnerability_range_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Vulnerability_range_constraintRangePkey Vulnerability_range_constraint = "range_pkey"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "affected_id", "fixed", "introduced"
 	Vulnerability_range_constraintRangeUniq Vulnerability_range_constraint = "range_uniq"
 )
 
 // input type for inserting data into table "vulnerability.range"
 type Vulnerability_range_insert_input struct {
-	Affected_id *uuid.UUID `json:"affected_id,omitempty"`
-	Fixed       *string    `json:"fixed,omitempty"`
-	Id          *uuid.UUID `json:"id,omitempty"`
-	Introduced  *string    `json:"introduced,omitempty"`
+	Affected    *Vulnerability_affected_obj_rel_insert_input `json:"affected,omitempty"`
+	Affected_id *uuid.UUID                                   `json:"affected_id,omitempty"`
+	Fixed       *string                                      `json:"fixed,omitempty"`
+	Id          *uuid.UUID                                   `json:"id,omitempty"`
+	Introduced  *string                                      `json:"introduced,omitempty"`
+}
+
+// GetAffected returns Vulnerability_range_insert_input.Affected, and is useful for accessing the field via an interface.
+func (v *Vulnerability_range_insert_input) GetAffected() *Vulnerability_affected_obj_rel_insert_input {
+	return v.Affected
 }
 
 // GetAffected_id returns Vulnerability_range_insert_input.Affected_id, and is useful for accessing the field via an interface.
@@ -7294,9 +7431,9 @@ func (v *Vulnerability_reference_bool_exp) GetVulnerability_id() *Uuid_compariso
 type Vulnerability_reference_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Vulnerability_reference_constraintReferencePkey Vulnerability_reference_constraint = "reference_pkey"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "type", "vulnerability_id", "url"
 	Vulnerability_reference_constraintReferenceVulnerabilityIdTypeUrlIdx Vulnerability_reference_constraint = "reference_vulnerability_id_type_url_idx"
 )
 
@@ -7429,9 +7566,9 @@ func (v *Vulnerability_severity_bool_exp) GetVulnerability_id() *Uuid_comparison
 type Vulnerability_severity_constraint string
 
 const (
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "id"
 	Vulnerability_severity_constraintSeverityPkey Vulnerability_severity_constraint = "severity_pkey"
-	// unique or primary key constraint
+	// unique or primary key constraint on columns "source", "type", "vulnerability_id"
 	Vulnerability_severity_constraintSeverityVulnerabilityIdSourceTypeIdx Vulnerability_severity_constraint = "severity_vulnerability_id_source_type_idx"
 )
 
@@ -7523,6 +7660,8 @@ const (
 	Vulnerability_update_columnPublished Vulnerability_update_column = "published"
 	// column name
 	Vulnerability_update_columnReviewedBySource Vulnerability_update_column = "reviewed_by_source"
+	// column name
+	Vulnerability_update_columnSeverityName Vulnerability_update_column = "severity_name"
 	// column name
 	Vulnerability_update_columnSource Vulnerability_update_column = "source"
 	// column name

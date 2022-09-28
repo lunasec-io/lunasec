@@ -24,7 +24,7 @@ import { log } from '../utils/log';
 
 import { resolvers } from './resolvers';
 
-const schema = loadSchemaSync(join(__dirname, 'merged-schema.graphql'), { loaders: [new GraphQLFileLoader()] });
+const schema = loadSchemaSync(join(__dirname, 'schema.graphql'), { loaders: [new GraphQLFileLoader()] });
 
 const schemaWithResolvers = addResolversToSchema(schema, resolvers);
 
