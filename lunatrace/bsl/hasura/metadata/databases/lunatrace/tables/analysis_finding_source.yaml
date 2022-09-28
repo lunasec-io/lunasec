@@ -1,0 +1,4 @@
+table:
+  name: finding_source
+  schema: analysis
+is_enum: true

@@ -1,0 +1,3 @@
+table:
+  name: release_analysis_result
+  schema: package

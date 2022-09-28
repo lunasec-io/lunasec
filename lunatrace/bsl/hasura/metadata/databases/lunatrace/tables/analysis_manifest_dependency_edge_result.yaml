@@ -1,0 +1,3 @@
+table:
+  name: manifest_dependency_edge_result
+  schema: analysis
