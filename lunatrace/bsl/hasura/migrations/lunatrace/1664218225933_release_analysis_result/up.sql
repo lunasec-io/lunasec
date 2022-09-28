@@ -8,8 +8,8 @@ CREATE TABLE analysis.finding_type
 INSERT INTO analysis.finding_type (value)
 VALUES ('not_vulnerable'),
        ('vulnerable'),
-       ('not_vulnerable_not_imported'),
-       ('not_vulnerable_not_called');
+       ('error'),
+       ('unknown');
 
 CREATE TABLE analysis.finding_source
 (
