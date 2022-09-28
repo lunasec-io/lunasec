@@ -12,16 +12,41 @@
 package main
 
 import (
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphql"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher/npm"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queue"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis"
 	"go.uber.org/fx"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/handlers/ingest"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/lunatracefx"
 )
+
+type QueueHandlerProps struct {
+	fx.In
+
+	Handlers []queue.Handler `group:"queue_handlers"`
+}
 
 func main() {
 	app := fx.New(
 		lunatracefx.Module,
-		ingest.Module,
+		fx.Provide(
+			graphql.NewGraphqlClient,
+			npm.NewNPMFetcher,
+			ingester.NewHasuraIngester,
+
+			staticanalysis.NewStaticAnalysisQueueHandler,
+			fx.Provide(func(props QueueHandlerProps) queue.HandlerLookup {
+				handlers := queue.HandlerLookup{}
+				for _, handler := range props.Handlers {
+					handlers[handler.GetHandlerKey()] = handler
+				}
+				return handlers
+			}),
+
+			queue.NewQueueRunner,
+		),
 	)
 
 	app.Run()

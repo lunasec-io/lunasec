@@ -1,0 +1,8 @@
+query GetPackageRelease($id: uuid!) {
+    package_release_by_pk(id: $id) {
+        upstream_blob_url
+        package {
+          name
+        }
+    }
+}

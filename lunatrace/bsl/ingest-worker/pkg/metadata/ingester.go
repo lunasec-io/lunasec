@@ -19,4 +19,5 @@ import (
 // It may return a list of suggestions for further packages to fetch.
 type Ingester interface {
 	Ingest(ctx context.Context, packageName string) ([]string, error)
+	IngestPackageAndDependencies(ctx context.Context, packageName string) error
 }
