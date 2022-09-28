@@ -25,7 +25,7 @@ The Log4Shell CLI can be found [here](cmd/log4shell/README.md).
 ```shell 
 yarn run gq http://localhost:8080/v1/graphql -H "X-Hasura-Admin-Secret: myadminsecretkey" -H "X-Hasura-Role: service" --introspect > ../schema.graphql
 
-
+go run github.com/Khan/genqlient genqlient.yaml
 ```
 
 ### LunaTrace

@@ -17,6 +17,7 @@ type Query {
     ): AuthenticatedRepoCloneUrlOutput
     fakeQueryToHackHasuraBeingABuggyMess: String
     availableOrgsWithRepos: [OrgWithRepos!]
+    vulnerableReleasesFromBuild(buildId: uuid!): VulnerableReleases
 }
 
 type Mutation {
@@ -84,8 +85,66 @@ type OrgWithRepos {
     repos: [GithubRepository!]!
 }
 
-type VulnerabilityData {
-    vulnerability: vulnerability!
+
+
+type BuildData_VulnerableReleases {
     devOnly: Boolean!
+    severity: String
+    cvss: Float
+    affectedBy: [BuildData_AffectedByVulnerability!]!
+    release: Release
+}
+
+
+type BuildData_AffectedByVulnerability {
+    vulnerability: BuildData_Vulnerability!
+    ranges: [BuildData_Range]
+    triviallyUpdatable: Boolean
+    chains: [[BuildData_DependencyNode!]!]!
+}
+
+type BuildData_DependencyNode {
+    id: String
+}
+
+type BuildData_Range {
+    introduced: String
+    fixed: String
+}
+
+# interface Release {
+#  id: string;
+#  version: string;
+#  package: Package;
+#}
+
+type BuildData_Release {
+    id: String!
+    version: String!
+    package: BuildData_Package!
+}
+
+#interface Package {
+#  affected_by_vulnerability: Array<AffectedByVulnerability>;
+#  name: string;
+#  package_manager: string;
+#}
+type BuildData_Package {
+    name: String!
+    package_manager: String!
+    affected_by_vulnerability: [BuildData_AffectedByVulnerability!]
+}
+
+
+type BuildData_Vulnerability {
+    id: String!
+    severity_name: String
+    cvss_score: Float
+}
+
+type BuildData_AffectedByVulnerability {
+
+}
+type BuildData_AffectedByVulnerability {
 
 }

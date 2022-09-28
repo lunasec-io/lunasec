@@ -11,16 +11,3 @@
  * limitations under the License.
  *
  */
-import { Build_State_Enum } from '../generated';
-import { hasura } from '../index';
-
-// insertBuildLog inserts a build log asynchronously, without waiting for a response.
-export function updateBuildStatus(buildId: string, state: Build_State_Enum, message?: string) {
-  // void hasura.InsertBuildLog({
-  //   build_log: {
-  //     build_id: buildId,
-  //     state,
-  //     message,
-  //   },
-  // });
-}

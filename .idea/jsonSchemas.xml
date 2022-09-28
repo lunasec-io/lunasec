@@ -3,6 +3,22 @@
   <component name="JsonSchemaMappingsProjectConfiguration">
     <state>
       <map>
+        <entry key="GraphQL Code Generator">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="GraphQL Code Generator" />
+              <option name="relativePathToSchema" value="https://www.graphql-code-generator.com/config.schema.json" />
+              <option name="applicationDefined" value="true" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="lunatrace/bsl/backend/codegen.lunatrace-custom.yml" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
         <entry key="Ory Kratos configuration">
           <value>
             <SchemaInfo>

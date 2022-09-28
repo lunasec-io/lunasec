@@ -13,6 +13,8 @@
  */
 export const severityOrder = ['unknown', 'negligible', 'low', 'medium', 'high', 'critical'];
 
+export const severityOrderOsv = ['Unknown', 'Negligible', 'Low', 'Medium', 'High', 'Critical'];
+
 export interface Finding {
   created_at: string;
   purl: string;
