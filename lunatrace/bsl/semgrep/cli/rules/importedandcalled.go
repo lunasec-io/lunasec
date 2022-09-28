@@ -34,6 +34,10 @@ func CallsitesOfDependencyInCode(dependency, codeDir string) (bool, error) {
 	defer os.Remove(f.Name())
 
 	semgrepRuleTemplate, err := template.New("imported-and-called-semgrep-rule").ParseFS(tpl.RuleTemplates, "importedandcalled.yaml.tpl")
+	if err != nil {
+		log.Error().Err(err).Msg("failed to parse semgrep rule")
+		return false, err
+	}
 
 	templateVariables := ImportedAndCalledSemgrepRuleVariables{
 		PackageName: dependency,
