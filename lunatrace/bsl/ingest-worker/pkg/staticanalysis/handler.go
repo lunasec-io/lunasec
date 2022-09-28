@@ -17,7 +17,7 @@ import (
 	"github.com/Khan/genqlient/graphql"
 	"github.com/google/uuid"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queue"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queuefx"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 	"github.com/rs/zerolog/log"
@@ -25,8 +25,8 @@ import (
 )
 
 type QueueRecord struct {
-	VulnerabilityID  string `json:"vulnerability_id"`
-	PackageReleaseID string `json:"package_release_id"`
+	VulnerabilityID          string `json:"vulnerability_id"`
+	ManifestDependencyEdgeId string `json:"manifest_dependency_edge_id"`
 }
 
 type Params struct {
@@ -40,8 +40,8 @@ type staticAnalysisQueueHandler struct {
 	Params
 }
 
-func NewStaticAnalysisQueueHandler(p Params) queue.HandlerResult {
-	return queue.HandlerResult{
+func NewStaticAnalysisQueueHandler(p Params) queuefx.HandlerResult {
+	return queuefx.HandlerResult{
 		Handler: &staticAnalysisQueueHandler{
 			Params: p,
 		},
@@ -52,6 +52,22 @@ func (s *staticAnalysisQueueHandler) GetHandlerKey() string {
 	return "static-analysis"
 }
 
+func (s *staticAnalysisQueueHandler) getManifestDependencyEdge(ctx context.Context, manifestDependencyEdgeUUID uuid.UUID) (*gql.GetManifestDependencyEdgeResponse, error) {
+	resp, err := gql.GetManifestDependencyEdge(ctx, s.GQLClient, manifestDependencyEdgeUUID)
+	if err != nil {
+		util.LogGraphqlError(
+			err,
+			"failed to get manifest dependency edge",
+			util.GraphqlLogContext{
+				Key:   "manifest dependency edge",
+				Value: manifestDependencyEdgeUUID.String(),
+			},
+		)
+		return nil, err
+	}
+	return resp, nil
+}
+
 func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record json.RawMessage) error {
 	var queueRecord QueueRecord
 	err := json.Unmarshal(record, &queueRecord)
@@ -60,32 +76,54 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 		return err
 	}
 
-	packageReleaseUUID, err := uuid.Parse(queueRecord.PackageReleaseID)
+	manifestDependencyEdgeUUID, err := uuid.Parse(queueRecord.ManifestDependencyEdgeId)
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("package release id", queueRecord.PackageReleaseID).
+			Str("package release id", queueRecord.ManifestDependencyEdgeId).
 			Msg("failed to parse package release id as uuid")
 		return err
 	}
 
-	resp, err := gql.GetPackageRelease(ctx, s.GQLClient, packageReleaseUUID)
+	resp, err := s.getManifestDependencyEdge(ctx, manifestDependencyEdgeUUID)
 	if err != nil {
-		util.LogGraphqlError(
-			err,
-			"failed to get package release",
-			util.GraphqlLogContext{
-				Key:   "package release id",
-				Value: queueRecord.PackageReleaseID,
-			},
-		)
-
+		return err
 	}
 
-	if resp.Package_release_by_pk.Upstream_blob_url != nil {
-		s.Ingester.IngestPackageAndDependencies(ctx)
+	parentPackageName := resp.Manifest_dependency_edge_by_pk.Parent.Release.Package.Name
+	childPackageName := resp.Manifest_dependency_edge_by_pk.Child.Release.Package.Name
+
+	upstreamBlobUrl := resp.Manifest_dependency_edge_by_pk.Parent.Release.Upstream_blob_url
+	if upstreamBlobUrl == nil {
+		err = s.Ingester.IngestPackageAndDependencies(ctx, parentPackageName)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Str("parent package", parentPackageName).
+				Msg("failed to ingest package and dependencies for package")
+			return err
+		}
+
+		resp, err = s.getManifestDependencyEdge(ctx, manifestDependencyEdgeUUID)
+		if err != nil {
+			return err
+		}
+
+		upstreamBlobUrl = resp.Manifest_dependency_edge_by_pk.Parent.Release.Upstream_blob_url
+		if upstreamBlobUrl == nil {
+			log.Error().
+				Err(err).
+				Str("parent package", parentPackageName).
+				Msg("failed to ingest package and dependencies for package")
+			return err
+		}
 	}
 
-	s.Ingester.IngestPackageAndDependencies()
+	log.Info().
+		Str("parent package", parentPackageName).
+		Str("parent package code", *upstreamBlobUrl).
+		Str("child package", childPackageName).
+		Msg("statically analyzing parent child relationship")
+
 	return nil
 }

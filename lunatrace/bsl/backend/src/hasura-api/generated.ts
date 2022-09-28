@@ -2728,6 +2728,7 @@ export type Manifest_Dependency_Edge = {
   /** An object relationship */
   child: Manifest_Dependency_Node;
   child_id: Scalars['uuid'];
+  id: Scalars['uuid'];
   /** An object relationship */
   parent: Manifest_Dependency_Node;
   parent_id: Scalars['uuid'];
@@ -2754,6 +2755,7 @@ export type Manifest_Dependency_Edge_Bool_Exp = {
   _or?: InputMaybe<Array<Manifest_Dependency_Edge_Bool_Exp>>;
   child?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   child_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
   parent?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   parent_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
@@ -2761,13 +2763,16 @@ export type Manifest_Dependency_Edge_Bool_Exp = {
 /** unique or primary key constraints on table "manifest_dependency_edge" */
 export enum Manifest_Dependency_Edge_Constraint {
   /** unique or primary key constraint on columns "child_id", "parent_id" */
-  ManifestDependencyEdgeParentIdChildIdIdx = 'manifest_dependency_edge_parent_id_child_id_idx'
+  ManifestDependencyEdgeParentIdChildIdIdx = 'manifest_dependency_edge_parent_id_child_id_idx',
+  /** unique or primary key constraint on columns "id" */
+  ManifestDependencyEdgePkey = 'manifest_dependency_edge_pkey'
 }
 
 /** input type for inserting data into table "manifest_dependency_edge" */
 export type Manifest_Dependency_Edge_Insert_Input = {
   child?: InputMaybe<Manifest_Dependency_Node_Obj_Rel_Insert_Input>;
   child_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
   parent?: InputMaybe<Manifest_Dependency_Node_Obj_Rel_Insert_Input>;
   parent_id?: InputMaybe<Scalars['uuid']>;
 };
@@ -2775,12 +2780,14 @@ export type Manifest_Dependency_Edge_Insert_Input = {
 /** order by max() on columns of table "manifest_dependency_edge" */
 export type Manifest_Dependency_Edge_Max_Order_By = {
   child_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   parent_id?: InputMaybe<Order_By>;
 };
 
 /** order by min() on columns of table "manifest_dependency_edge" */
 export type Manifest_Dependency_Edge_Min_Order_By = {
   child_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   parent_id?: InputMaybe<Order_By>;
 };
 
@@ -2804,8 +2811,14 @@ export type Manifest_Dependency_Edge_On_Conflict = {
 export type Manifest_Dependency_Edge_Order_By = {
   child?: InputMaybe<Manifest_Dependency_Node_Order_By>;
   child_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   parent?: InputMaybe<Manifest_Dependency_Node_Order_By>;
   parent_id?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: manifest_dependency_edge */
+export type Manifest_Dependency_Edge_Pk_Columns_Input = {
+  id: Scalars['uuid'];
 };
 
 /** select columns of table "manifest_dependency_edge" */
@@ -2813,12 +2826,15 @@ export enum Manifest_Dependency_Edge_Select_Column {
   /** column name */
   ChildId = 'child_id',
   /** column name */
+  Id = 'id',
+  /** column name */
   ParentId = 'parent_id'
 }
 
 /** input type for updating data in table "manifest_dependency_edge" */
 export type Manifest_Dependency_Edge_Set_Input = {
   child_id?: InputMaybe<Scalars['uuid']>;
+  id?: InputMaybe<Scalars['uuid']>;
   parent_id?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -2826,6 +2842,8 @@ export type Manifest_Dependency_Edge_Set_Input = {
 export enum Manifest_Dependency_Edge_Update_Column {
   /** column name */
   ChildId = 'child_id',
+  /** column name */
+  Id = 'id',
   /** column name */
   ParentId = 'parent_id'
 }
@@ -3477,6 +3495,8 @@ export type Mutation_Root = {
   update_manifest_dependency?: Maybe<Manifest_Dependency_Mutation_Response>;
   /** update data of the table: "manifest_dependency_edge" */
   update_manifest_dependency_edge?: Maybe<Manifest_Dependency_Edge_Mutation_Response>;
+  /** update single row of the table: "manifest_dependency_edge" */
+  update_manifest_dependency_edge_by_pk?: Maybe<Manifest_Dependency_Edge>;
   /** update data of the table: "manifest_dependency_node" */
   update_manifest_dependency_node?: Maybe<Manifest_Dependency_Node_Mutation_Response>;
   /** update single row of the table: "manifest_dependency_node" */
@@ -4275,6 +4295,13 @@ export type Mutation_RootUpdate_Manifest_DependencyArgs = {
 export type Mutation_RootUpdate_Manifest_Dependency_EdgeArgs = {
   _set?: InputMaybe<Manifest_Dependency_Edge_Set_Input>;
   where: Manifest_Dependency_Edge_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Manifest_Dependency_Edge_By_PkArgs = {
+  _set?: InputMaybe<Manifest_Dependency_Edge_Set_Input>;
+  pk_columns: Manifest_Dependency_Edge_Pk_Columns_Input;
 };
 
 
@@ -6933,6 +6960,8 @@ export type Query_Root = {
   manifest_dependency: Array<Manifest_Dependency>;
   /** fetch data from the table: "manifest_dependency_edge" */
   manifest_dependency_edge: Array<Manifest_Dependency_Edge>;
+  /** fetch data from the table: "manifest_dependency_edge" using primary key columns */
+  manifest_dependency_edge_by_pk?: Maybe<Manifest_Dependency_Edge>;
   /** fetch data from the table: "manifest_dependency_node" */
   manifest_dependency_node: Array<Manifest_Dependency_Node>;
   /** fetch data from the table: "manifest_dependency_node" using primary key columns */
@@ -7236,6 +7265,11 @@ export type Query_RootManifest_Dependency_EdgeArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
   where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+};
+
+
+export type Query_RootManifest_Dependency_Edge_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -8205,6 +8239,8 @@ export type Subscription_Root = {
   manifest_dependency: Array<Manifest_Dependency>;
   /** fetch data from the table: "manifest_dependency_edge" */
   manifest_dependency_edge: Array<Manifest_Dependency_Edge>;
+  /** fetch data from the table: "manifest_dependency_edge" using primary key columns */
+  manifest_dependency_edge_by_pk?: Maybe<Manifest_Dependency_Edge>;
   /** fetch data from the table: "manifest_dependency_node" */
   manifest_dependency_node: Array<Manifest_Dependency_Node>;
   /** fetch data from the table: "manifest_dependency_node" using primary key columns */
@@ -8500,6 +8536,11 @@ export type Subscription_RootManifest_Dependency_EdgeArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
   where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+};
+
+
+export type Subscription_RootManifest_Dependency_Edge_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
