@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package service
 
 import (
@@ -68,11 +67,7 @@ func NewExecutorWithoutStreaming(
 	}
 }
 
-func NewExecutor(
-	command string,
-	args []string,
-	env map[string]string,
-) Executor {
+func NewExecutor(command string, args []string, env map[string]string, stdin io.Reader) Executor {
 	cwd, err := os.Getwd()
 	if err != nil {
 		panic(err)
@@ -82,7 +77,7 @@ func NewExecutor(
 		Args:    args,
 		Env:     env,
 		Cwd:     cwd,
-		Stdin:   nil,
+		Stdin:   stdin,
 
 		Shell:       false,
 		StreamStdio: false,

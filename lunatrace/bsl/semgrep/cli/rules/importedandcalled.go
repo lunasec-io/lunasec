@@ -11,7 +11,7 @@
 package rules
 
 import (
-	"os"
+	"io"
 	"text/template"
 
 	"github.com/rs/zerolog/log"
@@ -24,16 +24,7 @@ type ImportedAndCalledSemgrepRuleVariables struct {
 }
 
 func CallsitesOfDependencyInCode(dependency, codeDir string) (bool, error) {
-	f, err := os.CreateTemp("", "lunatrace-semgrep-rule-")
-	if err != nil {
-		log.Error().Err(err).Msg("failed to create temporary file")
-		return false, err
-	}
-
-	defer f.Close()
-	defer os.Remove(f.Name())
-
-	semgrepRuleTemplate, err := template.New("imported-and-called-semgrep-rule").ParseFS(tpl.RuleTemplates, "importedandcalled.yaml.tpl")
+	semgrepRuleTemplate, err := template.ParseFS(tpl.RuleTemplates, "importedandcalled.yaml.tpl")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to parse semgrep rule")
 		return false, err
@@ -43,13 +34,23 @@ func CallsitesOfDependencyInCode(dependency, codeDir string) (bool, error) {
 		PackageName: dependency,
 	}
 
-	err = semgrepRuleTemplate.Execute(f, templateVariables)
-	if err != nil {
-		log.Error().Err(err).Msg("failed to execute template and write rule to file")
-		return false, err
-	}
+	ruleReader, ruleWriter := io.Pipe()
 
-	results, err := runSemgrepRule(f.Name(), codeDir)
+	go func() {
+		err = semgrepRuleTemplate.Execute(ruleWriter, templateVariables)
+		if err != nil {
+			log.Error().Err(err).Msg("failed to execute template and write rule to fd")
+			_ = ruleWriter.CloseWithError(err)
+			return
+		}
+		err = ruleWriter.Close()
+		if err != nil {
+			log.Error().Err(err).Msg("failed to close semgrep stdin")
+			return
+		}
+	}()
+
+	results, err := runSemgrepRule(ruleReader, codeDir)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to run semgrep rule")
 		return false, err
