@@ -26,7 +26,7 @@ CREATE TABLE analysis.manifest_dependency_edge_result
     manifest_dependency_edge_id uuid        NOT NULL,
     vulnerability_id            uuid        NOT NULL,
     finding_type                TEXT        NOT NULL REFERENCES analysis.finding_type,
-    finding_source              TEXT        NOT NULL REFERENCES analysis.finding_type,
+    finding_source              TEXT        NOT NULL REFERENCES analysis.finding_source,
     created_at                  timestamptz NOT NULL
 );
 
