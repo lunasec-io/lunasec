@@ -13,37 +13,87 @@ package queuefx
 
 import (
 	"context"
-
+	"encoding/json"
+	"errors"
+	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
 	"gocloud.dev/pubsub"
 )
 
-func _() {
+type Params struct {
+	fx.In
 
+	Config
+	Handlers HandlerLookup
 }
 
-/*
-for each subscription in config
-create a subscription
-annotate it with the name
-
-*/
-
-type SubscriptionConfig struct {
-	Enabled bool   `yaml:"enabled"`
-	URL     string `yaml:"url"`
+type Subscriber struct {
+	p   Params
+	Sub *pubsub.Subscription
 }
 
-func NewSubscription(cfg SubscriptionConfig, lc fx.Lifecycle) (*pubsub.Subscription, error) {
+func NewQueueSubscriber(p Params, lc fx.Lifecycle) (*Subscriber, error) {
 	ctx := context.Background()
-	subs, err := pubsub.OpenSubscription(ctx, cfg.URL)
+	sub, err := pubsub.OpenSubscription(ctx, p.Config.Name)
 	if err != nil {
 		return nil, err
 	}
 
 	lc.Append(fx.Hook{OnStop: func(ctx context.Context) error {
-		return subs.Shutdown(ctx)
+		return sub.Shutdown(ctx)
 	}})
 
-	return subs, nil
+	return &Subscriber{
+		p:   p,
+		Sub: sub,
+	}, nil
+}
+
+func (s *Subscriber) Run(ctx context.Context) error {
+	for {
+		msg, err := s.Sub.Receive(ctx)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Msg("failed to receive message")
+			return err
+		}
+
+		err = s.dispatchMessage(ctx, msg)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Msg("failed to dispatch message")
+			return err
+		}
+	}
+}
+
+func (s *Subscriber) dispatchMessage(ctx context.Context, msg *pubsub.Message) error {
+	var queueMessage Message
+	err := json.Unmarshal(msg.Body, &queueMessage)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to parse message from queue")
+		return err
+	}
+
+	handler, ok := s.p.Handlers[queueMessage.MessageType]
+	if !ok {
+		log.Error().
+			Str("message type", queueMessage.MessageType).
+			Msg("failed to locate handler for type")
+		return errors.New("failed to locate handler for type")
+	}
+
+	for _, record := range queueMessage.Records {
+		err = handler.HandleRecord(ctx, record)
+		if err != nil {
+			log.Error().
+				Str("message type", queueMessage.MessageType).
+				Interface("record", record).
+				Msg("failed to handle record for message type")
+			return errors.New("failed to handle record for queue message")
+		}
+	}
+	return nil
 }
