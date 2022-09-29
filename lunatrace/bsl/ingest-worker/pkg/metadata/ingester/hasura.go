@@ -13,6 +13,7 @@ package ingester
 
 import (
 	"context"
+	util2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 	"github.com/rs/zerolog/log"
 	"time"
@@ -41,6 +42,15 @@ type hasuraNPMIngester struct {
 }
 
 var npmV types.PackageManager = types.NPM
+
+func sliceContainsPackage(packageSlice []string, packageName string) bool {
+	for _, p := range packageSlice {
+		if packageName == p {
+			return true
+		}
+	}
+	return false
+}
 
 func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]string, error) {
 	// todo make sure this isn't too restrictive
@@ -80,10 +90,10 @@ func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]s
 
 	res, err := gql.UpsertPackage(ctx, h.deps.GQLClient, gqlPkg, gql.PackageOnConflict)
 	if err != nil {
-		util.LogGraphqlError(
+		util2.LogGraphqlError(
 			err,
 			"failed to upsert package",
-			util.GraphqlLogContext{Key: "package", Value: packageName},
+			util2.GraphqlLogContext{Key: "package", Value: packageName},
 		)
 		return nil, err
 	}
@@ -106,6 +116,47 @@ func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]s
 	}
 
 	return checkList, nil
+}
+
+func (h *hasuraNPMIngester) IngestPackageAndDependencies(
+	ctx context.Context,
+	packageName string,
+) error {
+	var ingestedPkgs []string
+	pkgs := []string{packageName}
+
+	for len(pkgs) > 0 {
+		packageToIngest := pkgs[0]
+		pkgs = pkgs[1:]
+
+		log.Info().
+			Str("package", packageToIngest).
+			Msg("ingesting package")
+
+		newPkgs, err := h.Ingest(ctx, packageToIngest)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Msg("failed to ingest packages")
+			return err
+		}
+		ingestedPkgs = append(ingestedPkgs, packageToIngest)
+
+		for _, newPkg := range newPkgs {
+			// If the package to be scanned is already flagged to be ingested
+			// or the package has already been ingested, then skip flagging this package
+			if sliceContainsPackage(pkgs, newPkg) || sliceContainsPackage(ingestedPkgs, newPkg) {
+				continue
+			}
+			pkgs = append(pkgs, newPkg)
+		}
+
+		log.Info().
+			Str("package", packageToIngest).
+			Strs("packages to ingest", pkgs).
+			Msg("successfully ingested package")
+	}
+	return nil
 }
 
 func NewHasuraIngester(p Params) (metadata2.Ingester, error) {
