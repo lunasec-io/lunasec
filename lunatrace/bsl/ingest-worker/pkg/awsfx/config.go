@@ -9,15 +9,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package metadata
+package awsfx
 
 import (
-	"context"
+	"github.com/rs/zerolog/log"
+	"go.uber.org/config"
 )
 
-// Ingester ingests and upserts a single package from a datasource.
-// It may return a list of suggestions for further packages to fetch.
-type Ingester interface {
-	Ingest(ctx context.Context, packageName string) ([]string, error)
-	IngestPackageAndDependencies(ctx context.Context, packageName string) error
+type Config struct {
+	Region string `yaml:"region"`
+}
+
+func NewConfig(provider config.Provider) (config Config, err error) {
+	value := provider.Get("aws")
+
+	err = value.Populate(&config)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable populate aws config")
+		return
+	}
+	return
 }

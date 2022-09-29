@@ -9,17 +9,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package ingest
+package queuefx
 
 import (
-	"go.uber.org/fx"
-
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queuefx"
+	"github.com/rs/zerolog/log"
+	"go.uber.org/config"
 )
 
-type PackageIngestConfig struct {
-	Enabled bool
-	Queue   queuefx.SubscriptionConfig
+type Config struct {
+	Name string `yaml:"url"`
 }
 
-var Module = fx.Options()
+func NewConfig(provider config.Provider) (config Config, err error) {
+	value := provider.Get("queue")
+
+	err = value.Populate(&config)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable populate queue config")
+		return
+	}
+	return
+}

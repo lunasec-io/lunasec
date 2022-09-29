@@ -15,10 +15,10 @@ import { filterFindingsNotIgnored, Finding, groupByPackage, VulnerablePackage } 
 import markdownTable from 'markdown-table';
 import { Octokit } from 'octokit';
 
+import { InsertedScan } from '../../analysis/scan';
 import { hasura } from '../../hasura-api';
 import { updateBuildStatus } from '../../hasura-api/actions/update-build-status';
 import { GetBuildQuery } from '../../hasura-api/generated';
-import { InsertedScan } from '../../models/scan';
 import { newError } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { generateGithubGraphqlClient } from '../api';

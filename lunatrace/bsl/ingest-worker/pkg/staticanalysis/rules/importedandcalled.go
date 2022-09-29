@@ -11,19 +11,18 @@
 package rules
 
 import (
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules/tpl"
 	"io"
 	"text/template"
 
 	"github.com/rs/zerolog/log"
-
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/semgrep/cli/rules/tpl"
 )
 
 type ImportedAndCalledSemgrepRuleVariables struct {
 	PackageName string
 }
 
-func CallsitesOfDependencyInCode(dependency, codeDir string) (bool, error) {
+func DependencyIsImportedAndCalledInCode(dependency, codeDir string) (bool, error) {
 	semgrepRuleTemplate, err := template.ParseFS(tpl.RuleTemplates, "importedandcalled.yaml.tpl")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to parse semgrep rule")
