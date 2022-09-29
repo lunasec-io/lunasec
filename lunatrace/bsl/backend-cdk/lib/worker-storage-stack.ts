@@ -29,6 +29,7 @@ interface WorkerQueues {
   processSbomSqsQueue: Queue | null;
   processWebhookSqsQueue: Queue | null;
   processRepositorySqsQueue: Queue | null;
+  staticAnalysisSqsQueue: Queue | null;
 }
 
 export interface WorkerStorageStackState extends WorkerQueues {
@@ -45,6 +46,7 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
   public processSbomSqsQueue: Queue | null;
   public processWebhookSqsQueue: Queue | null;
   public processRepositorySqsQueue: Queue | null;
+  public staticAnalysisSqsQueue: Queue | null;
 
   constructor(scope: cdk.Construct, id: string, props: WorkerStorageStackProps) {
     super(scope, id, props);
@@ -58,6 +60,7 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
     this.processSbomSqsQueue = stackState.processSbomSqsQueue;
     this.processWebhookSqsQueue = stackState.processWebhookSqsQueue;
     this.processRepositorySqsQueue = stackState.processWebhookSqsQueue;
+    this.staticAnalysisSqsQueue = stackState.staticAnalysisSqsQueue;
   }
 
   private static createProductionQueues(context: Construct, manifestBucket: Bucket, sbomBucket: Bucket): WorkerQueues {
@@ -109,6 +112,18 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
       },
     });
 
+    const staticAnalysisDeadLetterQueue = new Queue(context, 'StaticAnalysisDeadLetterQueue', {
+      retentionPeriod: Duration.days(14),
+    });
+
+    const staticAnalysisSqsQueue = new Queue(context, 'staticAnalysisQueue', {
+      visibilityTimeout: Duration.minutes(1),
+      deadLetterQueue: {
+        queue: staticAnalysisDeadLetterQueue,
+        maxReceiveCount: 10,
+      },
+    });
+
     manifestBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(processManifestSqsQueue));
     sbomBucket.addEventNotification(EventType.OBJECT_CREATED, new SqsDestination(processSbomSqsQueue));
 
@@ -132,11 +147,17 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
       description: 'Queue Name for the Process Repository Queue',
     });
 
+    new cdk.CfnOutput(context, staticAnalysisSqsQueue.node.id + 'Name', {
+      value: staticAnalysisSqsQueue.queueName,
+      description: 'Queue Name for the Static Analysis Queue',
+    });
+
     return {
       processManifestSqsQueue,
       processSbomSqsQueue,
       processWebhookSqsQueue,
       processRepositorySqsQueue,
+      staticAnalysisSqsQueue,
     };
   }
 
@@ -209,6 +230,7 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
       processRepositorySqsQueue: null,
       processSbomSqsQueue: null,
       processWebhookSqsQueue: null,
+      staticAnalysisSqsQueue: null,
     };
 
     if (props.development) {
