@@ -22,9 +22,60 @@ export type AuthenticatedRepoCloneUrlOutput = {
   url?: Maybe<Scalars['String']>;
 };
 
-export type BuildVulnerabilitiesData = {
-  __typename?: 'BuildVulnerabilitiesData';
+export type BuildData_AffectedByVulnerability = {
+  __typename?: 'BuildData_AffectedByVulnerability';
+  chains?: Maybe<Array<Array<BuildData_DependencyNode>>>;
+  ranges?: Maybe<Array<Maybe<BuildData_Range>>>;
+  triviallyUpdatable?: Maybe<Scalars['Boolean']>;
+  vulnerability: BuildData_Vulnerability;
+};
+
+export type BuildData_DependencyNode = {
+  __typename?: 'BuildData_DependencyNode';
+  id: Scalars['String'];
+  range: Scalars['String'];
+  release: BuildData_Release;
+  release_id: Scalars['String'];
+};
+
+export type BuildData_Package = {
+  __typename?: 'BuildData_Package';
+  affected_by_vulnerability?: Maybe<Array<BuildData_AffectedByVulnerability>>;
+  name: Scalars['String'];
+  package_manager: Scalars['String'];
+};
+
+export type BuildData_Range = {
+  __typename?: 'BuildData_Range';
+  fixed?: Maybe<Scalars['String']>;
+  introduced?: Maybe<Scalars['String']>;
+};
+
+export type BuildData_Release = {
+  __typename?: 'BuildData_Release';
+  id: Scalars['String'];
+  package: BuildData_Package;
+  version: Scalars['String'];
+};
+
+export type BuildData_Vulnerability = {
+  __typename?: 'BuildData_Vulnerability';
+  cvss_score?: Maybe<Scalars['Float']>;
+  id: Scalars['String'];
+  severity_name?: Maybe<Scalars['String']>;
+  source: Scalars['String'];
+  source_id: Scalars['String'];
+};
+
+export type BuildData_VulnerableRelease = {
+  __typename?: 'BuildData_VulnerableRelease';
+  affectedBy: Array<BuildData_AffectedByVulnerability>;
+  chains: Array<Array<BuildData_DependencyNode>>;
+  cvss?: Maybe<Scalars['Float']>;
   devOnly: Scalars['Boolean'];
+  release?: Maybe<BuildData_Release>;
+  severity?: Maybe<Scalars['String']>;
+  triviallyUpdatable: Scalars['String'];
 };
 
 export type GithubRepository = {
@@ -87,21 +138,16 @@ export type Query = {
   __typename?: 'Query';
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   availableOrgsWithRepos?: Maybe<Array<OrgWithRepos>>;
-  buildVulnerabilities?: Maybe<BuildVulnerabilitiesData>;
   fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /**  get s3 presigned url for manifest upload, used by the CLI  */
   presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   sbomUrl?: Maybe<Scalars['String']>;
+  vulnerableReleasesFromBuild?: Maybe<Array<BuildData_VulnerableRelease>>;
 };
 
 
 export type QueryAuthenticatedRepoCloneUrlArgs = {
   repoGithubId: Scalars['Int'];
-};
-
-
-export type QueryBuildVulnerabilitiesArgs = {
-  buildId: Scalars['uuid'];
 };
 
 
@@ -112,6 +158,11 @@ export type QueryPresignSbomUploadArgs = {
 
 
 export type QuerySbomUrlArgs = {
+  buildId: Scalars['uuid'];
+};
+
+
+export type QueryVulnerableReleasesFromBuildArgs = {
   buildId: Scalars['uuid'];
 };
 
@@ -203,7 +254,14 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   AuthenticatedRepoCloneUrlOutput: ResolverTypeWrapper<AuthenticatedRepoCloneUrlOutput>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  BuildVulnerabilitiesData: ResolverTypeWrapper<BuildVulnerabilitiesData>;
+  BuildData_AffectedByVulnerability: ResolverTypeWrapper<BuildData_AffectedByVulnerability>;
+  BuildData_DependencyNode: ResolverTypeWrapper<BuildData_DependencyNode>;
+  BuildData_Package: ResolverTypeWrapper<BuildData_Package>;
+  BuildData_Range: ResolverTypeWrapper<BuildData_Range>;
+  BuildData_Release: ResolverTypeWrapper<BuildData_Release>;
+  BuildData_Vulnerability: ResolverTypeWrapper<BuildData_Vulnerability>;
+  BuildData_VulnerableRelease: ResolverTypeWrapper<BuildData_VulnerableRelease>;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
   GithubRepository: ResolverTypeWrapper<GithubRepository>;
   InstallSelectedReposResponse: ResolverTypeWrapper<InstallSelectedReposResponse>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -224,7 +282,14 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   AuthenticatedRepoCloneUrlOutput: AuthenticatedRepoCloneUrlOutput;
   Boolean: Scalars['Boolean'];
-  BuildVulnerabilitiesData: BuildVulnerabilitiesData;
+  BuildData_AffectedByVulnerability: BuildData_AffectedByVulnerability;
+  BuildData_DependencyNode: BuildData_DependencyNode;
+  BuildData_Package: BuildData_Package;
+  BuildData_Range: BuildData_Range;
+  BuildData_Release: BuildData_Release;
+  BuildData_Vulnerability: BuildData_Vulnerability;
+  BuildData_VulnerableRelease: BuildData_VulnerableRelease;
+  Float: Scalars['Float'];
   GithubRepository: GithubRepository;
   InstallSelectedReposResponse: InstallSelectedReposResponse;
   Int: Scalars['Int'];
@@ -246,8 +311,59 @@ export type AuthenticatedRepoCloneUrlOutputResolvers<ContextType = Context, Pare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type BuildVulnerabilitiesDataResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildVulnerabilitiesData'] = ResolversParentTypes['BuildVulnerabilitiesData']> = {
+export type BuildData_AffectedByVulnerabilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_AffectedByVulnerability'] = ResolversParentTypes['BuildData_AffectedByVulnerability']> = {
+  chains?: Resolver<Maybe<Array<Array<ResolversTypes['BuildData_DependencyNode']>>>, ParentType, ContextType>;
+  ranges?: Resolver<Maybe<Array<Maybe<ResolversTypes['BuildData_Range']>>>, ParentType, ContextType>;
+  triviallyUpdatable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  vulnerability?: Resolver<ResolversTypes['BuildData_Vulnerability'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BuildData_DependencyNodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_DependencyNode'] = ResolversParentTypes['BuildData_DependencyNode']> = {
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  range?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  release?: Resolver<ResolversTypes['BuildData_Release'], ParentType, ContextType>;
+  release_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BuildData_PackageResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_Package'] = ResolversParentTypes['BuildData_Package']> = {
+  affected_by_vulnerability?: Resolver<Maybe<Array<ResolversTypes['BuildData_AffectedByVulnerability']>>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  package_manager?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BuildData_RangeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_Range'] = ResolversParentTypes['BuildData_Range']> = {
+  fixed?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  introduced?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BuildData_ReleaseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_Release'] = ResolversParentTypes['BuildData_Release']> = {
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  package?: Resolver<ResolversTypes['BuildData_Package'], ParentType, ContextType>;
+  version?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BuildData_VulnerabilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_Vulnerability'] = ResolversParentTypes['BuildData_Vulnerability']> = {
+  cvss_score?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  severity_name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  source?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  source_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BuildData_VulnerableReleaseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_VulnerableRelease'] = ResolversParentTypes['BuildData_VulnerableRelease']> = {
+  affectedBy?: Resolver<Array<ResolversTypes['BuildData_AffectedByVulnerability']>, ParentType, ContextType>;
+  chains?: Resolver<Array<Array<ResolversTypes['BuildData_DependencyNode']>>, ParentType, ContextType>;
+  cvss?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   devOnly?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  release?: Resolver<Maybe<ResolversTypes['BuildData_Release']>, ParentType, ContextType>;
+  severity?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  triviallyUpdatable?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -293,10 +409,10 @@ export type PresignedUrlResponseResolvers<ContextType = Context, ParentType exte
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   authenticatedRepoCloneUrl?: Resolver<Maybe<ResolversTypes['AuthenticatedRepoCloneUrlOutput']>, ParentType, ContextType, RequireFields<QueryAuthenticatedRepoCloneUrlArgs, 'repoGithubId'>>;
   availableOrgsWithRepos?: Resolver<Maybe<Array<ResolversTypes['OrgWithRepos']>>, ParentType, ContextType>;
-  buildVulnerabilities?: Resolver<Maybe<ResolversTypes['BuildVulnerabilitiesData']>, ParentType, ContextType, RequireFields<QueryBuildVulnerabilitiesArgs, 'buildId'>>;
   fakeQueryToHackHasuraBeingABuggyMess?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   presignSbomUpload?: Resolver<Maybe<ResolversTypes['SbomUploadUrlOutput']>, ParentType, ContextType, RequireFields<QueryPresignSbomUploadArgs, 'buildId' | 'orgId'>>;
   sbomUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<QuerySbomUrlArgs, 'buildId'>>;
+  vulnerableReleasesFromBuild?: Resolver<Maybe<Array<ResolversTypes['BuildData_VulnerableRelease']>>, ParentType, ContextType, RequireFields<QueryVulnerableReleasesFromBuildArgs, 'buildId'>>;
 };
 
 export type SbomUploadUrlOutputResolvers<ContextType = Context, ParentType extends ResolversParentTypes['SbomUploadUrlOutput'] = ResolversParentTypes['SbomUploadUrlOutput']> = {
@@ -321,7 +437,13 @@ export interface UuidScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 
 export type Resolvers<ContextType = Context> = {
   AuthenticatedRepoCloneUrlOutput?: AuthenticatedRepoCloneUrlOutputResolvers<ContextType>;
-  BuildVulnerabilitiesData?: BuildVulnerabilitiesDataResolvers<ContextType>;
+  BuildData_AffectedByVulnerability?: BuildData_AffectedByVulnerabilityResolvers<ContextType>;
+  BuildData_DependencyNode?: BuildData_DependencyNodeResolvers<ContextType>;
+  BuildData_Package?: BuildData_PackageResolvers<ContextType>;
+  BuildData_Range?: BuildData_RangeResolvers<ContextType>;
+  BuildData_Release?: BuildData_ReleaseResolvers<ContextType>;
+  BuildData_Vulnerability?: BuildData_VulnerabilityResolvers<ContextType>;
+  BuildData_VulnerableRelease?: BuildData_VulnerableReleaseResolvers<ContextType>;
   GithubRepository?: GithubRepositoryResolvers<ContextType>;
   InstallSelectedReposResponse?: InstallSelectedReposResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;

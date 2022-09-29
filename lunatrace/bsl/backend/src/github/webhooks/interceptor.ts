@@ -28,7 +28,7 @@ import { InsertWebhookToCacheMutation } from '../../hasura-api/generated';
 import { LunaTraceSqsMessage, ProcessGithubWebhookRequest } from '../../types/sqs';
 import { logError } from '../../utils/errors';
 import { log } from '../../utils/log';
-import { catchError, threwError, Try } from '../../utils/try';
+import { catchError, ErrorOrResult, threwError } from '../../utils/try';
 
 export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransformed> {
   webhookQueueUrl: string;
@@ -89,7 +89,7 @@ export class WebhookInterceptor<TTransformed = unknown> extends Webhooks<TTransf
       throw new Error('Installation ID is undefined');
     }
 
-    const insertedWebhookResult: Try<InsertWebhookToCacheMutation> = await catchError(
+    const insertedWebhookResult: ErrorOrResult<InsertWebhookToCacheMutation> = await catchError(
       this.hasura.InsertWebhookToCache({
         // TODO: Figure out what the correct types should be coming from GitHub
         data: options.payload as any,

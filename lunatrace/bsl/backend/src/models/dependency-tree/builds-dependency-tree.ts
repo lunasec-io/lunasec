@@ -25,7 +25,7 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
   public depNodesById: Map<string, DependencyEdge['child']> = new Map();
   public vulnIdToVulns: Map<string, Set<AffectedByVulnerability>> = new Map();
 
-  public depNodesByReleaseId: Map<string, Set<string>> = new Map();
+  public depNodeIdsByReleaseId: Map<string, Set<string>> = new Map();
 
   // public vulnerableReleasesById: Map<string, VulnerableRelease<BuildDependency>> = new Map();
 
@@ -42,12 +42,12 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
       depNode.parent_id = edge.parent_id;
 
       // Create a map from a given release to the list of depNodes
-      const existingNodesForThisRelease = this.depNodesByReleaseId.get(depNode.release_id);
+      const existingNodesForThisRelease = this.depNodeIdsByReleaseId.get(depNode.release_id);
       if (existingNodesForThisRelease) {
         // just add the depNodes to the existing release ID
         existingNodesForThisRelease.add(depNode.id);
       } else {
-        this.depNodesByReleaseId.set(depNode.release_id, new Set([depNode.id]));
+        this.depNodeIdsByReleaseId.set(depNode.release_id, new Set([depNode.id]));
       }
 
       // Create a lookup of child IDs that map to a set of nodes that include them (parents).
@@ -67,11 +67,11 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
           const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
           const isVulnerable = semver.satisfies(edge.child.release.version, vulnerableRange);
 
-          // Mark the vulns that can be trivially updated
-          vuln.triviallyUpdatable = this.precomputeVulnTriviallyUpdatable(edge.child.range, vuln);
-
           // Add to the lookup of vulns for later
           if (isVulnerable) {
+            // Mark the vulns that can be trivially updated
+            vuln.triviallyUpdatable = this.precomputeVulnTriviallyUpdatable(edge.child.range, vuln);
+
             const vulnSet = this.vulnIdToVulns.get(vuln.vulnerability.id) || new Set();
             vulnSet.add(vuln);
             this.vulnIdToVulns.set(vuln.vulnerability.id, vulnSet);
@@ -86,11 +86,14 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
   }
 
   // this is the main function that we call to return useful information to the client about their vulnerabilities
-  public getVulnerableReleases(): VulnerableRelease<DependencyEdge>[] {
-    const vulnerableReleasesById = new Map<string, VulnerableRelease<DependencyEdge>>();
+  // Todo: The nice generic typing in the return type has been given up on for now (DependencyEdgePartial instead of DependencyEdge), it would be nice to fix it, but its maybe not worth it
+  // Also this method is too long but also really hard to break up because of all the computed state from various steps
+  public getVulnerableReleases(): VulnerableRelease<DependencyEdgePartial>[] {
+    const vulnerableReleasesById: Record<string, VulnerableRelease<DependencyEdge>> = {};
 
     this.vulnerableDepNodeIds.forEach((nodeId) => {
       const vulnerableDep = this.depNodesById.get(nodeId);
+
       if (!vulnerableDep) {
         throw new Error('failed to lookup depNode by id');
       }
@@ -106,11 +109,11 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
         return false;
       });
 
-      const existingRelease = vulnerableReleasesById.get(release.id);
+      const existingRelease = vulnerableReleasesById[release.id];
 
       // there might be multiple vulnerabilities for one release so loop through them
       // subsequent vulns on the same node will just merge together
-      vulnerableDep.release.package.affected_by_vulnerability.forEach((affectedByVuln) => {
+      vulnerableDep.release.package.affected_by_vulnerability.forEach((affectedByVuln, vulnIndex) => {
         //add the chains to the vulnerability
         affectedByVuln.chains = chains;
 
@@ -120,14 +123,16 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
 
         // We arent tracking this release yet, make a new object
         if (!existingRelease) {
-          const newRelease: VulnerableRelease<DependencyEdge> = {
+          const newVulnerableRelease: VulnerableRelease<DependencyEdge> = {
             release,
             severity,
             cvss: affectedByVuln.vulnerability.cvss_score || null,
             devOnly,
+            chains,
+            triviallyUpdatable: this.checkIfReleaseTriviallyUpdatable(release.id),
             affectedBy: [affectedByVuln],
           };
-          vulnerableReleasesById.set(release.id, newRelease);
+          vulnerableReleasesById[release.id] = newVulnerableRelease;
           return;
         }
         // We are already tracking this release, just merge the new information
@@ -149,19 +154,14 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
         if (!existingRelease.affectedBy.some((v) => v.vulnerability.id === affectedByVuln.vulnerability.id)) {
           existingRelease.affectedBy.push(affectedByVuln);
         }
+        // add chains to the top level list of chains on the release, if this is the first vuln we have process on the edge (because we only want to do this once per edge)
+        if (vulnIndex === 0) {
+          existingRelease.chains = [...existingRelease.chains, ...chains];
+        }
       });
-
-      // merge node data into existing vulnerableRelease
     });
     return Object.values(vulnerableReleasesById);
   }
-
-  // add this to the main list of vulnerabilities
-  //   const existingVulnerableRelease = this.vulnerableReleases.find((p) => p.releaseId === edge.child.release_id);
-  //   if (existingVulnerableRelease){
-  //     const vr = existingVulnerableRelease;
-  //     const existingVulnerability = vr.vulnerabilities.find((existingVulnerability) => existingVulnerability.vulnerability.id === vuln.vulnerability.id)
-  // }
 
   private precomputeVulnTriviallyUpdatable(requestedRange: string, vuln: AffectedByVulnerability): boolean {
     const fixedVersions: string[] = [];
@@ -189,66 +189,30 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
     return semverRange;
   }
 
-  // This will no longer be needed once the UI is only using this tree to show vulnerabilities
-  // for now, since Grype is still in the loop, we need to cross-reference information out of this tree using vuln ids
-  public checkIfVulnInstancesTriviallyUpdatable(vulnId: string): 'yes' | 'partially' | 'no' | 'not-found' {
-    const vulns = this.vulnIdToVulns.get(vulnId);
-    if (!vulns || vulns.size === 0) {
-      console.warn(
-        `failed to find a vuln with id in the tree. Tree maybe determined this vulnerability did not apply.`,
-        { vulnId }
-      );
-      return 'not-found';
-    }
-    const vulnsUpdatable = Array.from(vulns).filter(
-      (vuln) => vuln.vulnerability.id === vulnId && vuln.triviallyUpdatable
-    );
-
-    if (vulnsUpdatable.length === vulns.size) {
-      return 'yes';
+  private checkIfReleaseTriviallyUpdatable(releaseId: string): 'yes' | 'partially' | 'no' {
+    const matchingDepIds = this.depNodeIdsByReleaseId.get(releaseId);
+    if (!matchingDepIds) {
+      throw new Error('Failed to find release while checking triviallyUpdatable');
     }
 
-    if (vulnsUpdatable.length === 0) {
-      return 'no';
-    }
+    const matchingDeps = [...matchingDepIds].map((depId) => {
+      const depNode = this.depNodesById.get(depId);
+      if (!depNode) {
+        throw new Error('Missing dep node for dep id while checking triviallyUpdatable');
+      }
+      return depNode;
+    });
 
-    return 'partially';
-  }
-
-  public checkIfPackageTriviallyUpdatable(packageName: string, version: string): 'yes' | 'partially' | 'no' {
-    const edgeSet = this.packageSlugToChildIds.get(`${packageName}@${version}`);
-
-    if (!edgeSet) {
-      console.error(`failed to find a dependency with name and version in the tree for update check`, {
-        packageName,
-        version,
-      });
-      return 'no';
-    }
-
-    const matchingDeps = Array.from(edgeSet)
-      .map((childId) => this.depNodesById.get(childId))
-      .filter((child) => {
-        if (!child) {
-          console.error(`failed to find a dependency with id for in the tree for update check`, {
-            packageName,
-            version,
-          });
-          return false;
-        }
-        return true;
-      }) as DependencyEdge['child'][];
-
-    // also keep track of the vuln count in case we are checking a package with no vulns, which would not qualify as trivially updatable
     let totalVulnCount = 0;
+
     const fullyUpdatableDeps = matchingDeps.filter((dep) => {
-      return dep.release.package.affected_by_vulnerability.every((vuln) => {
-        totalVulnCount++;
-        return vuln.triviallyUpdatable;
+      return dep.release.package.affected_by_vulnerability.every((affectedByVuln) => {
+        totalVulnCount++; // also keep track of the vuln count while we are in this loop
+        return affectedByVuln.triviallyUpdatable;
       });
     });
     const atLeastPartiallyUpdatableDeps = matchingDeps.filter((dep) => {
-      return dep.release.package.affected_by_vulnerability.some((vuln) => vuln.triviallyUpdatable);
+      return dep.release.package.affected_by_vulnerability.some((affectedByVuln) => affectedByVuln.triviallyUpdatable);
     });
 
     const fullUpdateCount = fullyUpdatableDeps.length;
