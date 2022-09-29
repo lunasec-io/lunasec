@@ -52,6 +52,59 @@ func (v *Affected_range_type_comparison_exp) GetNeq() *types.AffectedRangeType {
 // GetNin returns Affected_range_type_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Affected_range_type_comparison_exp) GetNin() []types.AffectedRangeType { return v.Nin }
 
+type Analysis_finding_source_enum string
+
+const (
+	Analysis_finding_source_enumSemgrepImportedCalled Analysis_finding_source_enum = "semgrep_imported_called"
+)
+
+type Analysis_finding_type_enum string
+
+const (
+	Analysis_finding_type_enumError         Analysis_finding_type_enum = "error"
+	Analysis_finding_type_enumNotVulnerable Analysis_finding_type_enum = "not_vulnerable"
+	Analysis_finding_type_enumUnknown       Analysis_finding_type_enum = "unknown"
+	Analysis_finding_type_enumVulnerable    Analysis_finding_type_enum = "vulnerable"
+)
+
+// input type for inserting data into table "analysis.manifest_dependency_edge_result"
+type Analysis_manifest_dependency_edge_result_insert_input struct {
+	Created_at                  *time.Time                    `json:"created_at,omitempty"`
+	Finding_source              *Analysis_finding_source_enum `json:"finding_source,omitempty"`
+	Finding_type                *Analysis_finding_type_enum   `json:"finding_type,omitempty"`
+	Id                          *uuid.UUID                    `json:"id,omitempty"`
+	Manifest_dependency_edge_id *uuid.UUID                    `json:"manifest_dependency_edge_id,omitempty"`
+	Vulnerability_id            *uuid.UUID                    `json:"vulnerability_id,omitempty"`
+}
+
+// GetCreated_at returns Analysis_manifest_dependency_edge_result_insert_input.Created_at, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_insert_input) GetCreated_at() *time.Time {
+	return v.Created_at
+}
+
+// GetFinding_source returns Analysis_manifest_dependency_edge_result_insert_input.Finding_source, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_insert_input) GetFinding_source() *Analysis_finding_source_enum {
+	return v.Finding_source
+}
+
+// GetFinding_type returns Analysis_manifest_dependency_edge_result_insert_input.Finding_type, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_insert_input) GetFinding_type() *Analysis_finding_type_enum {
+	return v.Finding_type
+}
+
+// GetId returns Analysis_manifest_dependency_edge_result_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetManifest_dependency_edge_id returns Analysis_manifest_dependency_edge_result_insert_input.Manifest_dependency_edge_id, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_insert_input) GetManifest_dependency_edge_id() *uuid.UUID {
+	return v.Manifest_dependency_edge_id
+}
+
+// GetVulnerability_id returns Analysis_manifest_dependency_edge_result_insert_input.Vulnerability_id, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_insert_input) GetVulnerability_id() *uuid.UUID {
+	return v.Vulnerability_id
+}
+
 // Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'.
 type Bigint_comparison_exp struct {
 	Eq      *int64  `json:"_eq,omitempty"`
@@ -2664,6 +2717,30 @@ func (v *Ignored_vulnerabilities_bool_exp) GetVulnerability() *Vulnerability_boo
 // GetVulnerability_id returns Ignored_vulnerabilities_bool_exp.Vulnerability_id, and is useful for accessing the field via an interface.
 func (v *Ignored_vulnerabilities_bool_exp) GetVulnerability_id() *Uuid_comparison_exp {
 	return v.Vulnerability_id
+}
+
+// InsertManifestDependencyEdgeAnalysisInsert_analysis_manifest_dependency_edge_result_oneAnalysis_manifest_dependency_edge_result includes the requested fields of the GraphQL type analysis_manifest_dependency_edge_result.
+// The GraphQL type's documentation follows.
+//
+// columns and relationships of "analysis.manifest_dependency_edge_result"
+type InsertManifestDependencyEdgeAnalysisInsert_analysis_manifest_dependency_edge_result_oneAnalysis_manifest_dependency_edge_result struct {
+	Id uuid.UUID `json:"id"`
+}
+
+// GetId returns InsertManifestDependencyEdgeAnalysisInsert_analysis_manifest_dependency_edge_result_oneAnalysis_manifest_dependency_edge_result.Id, and is useful for accessing the field via an interface.
+func (v *InsertManifestDependencyEdgeAnalysisInsert_analysis_manifest_dependency_edge_result_oneAnalysis_manifest_dependency_edge_result) GetId() uuid.UUID {
+	return v.Id
+}
+
+// InsertManifestDependencyEdgeAnalysisResponse is returned by InsertManifestDependencyEdgeAnalysis on success.
+type InsertManifestDependencyEdgeAnalysisResponse struct {
+	// insert a single row into the table: "analysis.manifest_dependency_edge_result"
+	Insert_analysis_manifest_dependency_edge_result_one *InsertManifestDependencyEdgeAnalysisInsert_analysis_manifest_dependency_edge_result_oneAnalysis_manifest_dependency_edge_result `json:"insert_analysis_manifest_dependency_edge_result_one"`
+}
+
+// GetInsert_analysis_manifest_dependency_edge_result_one returns InsertManifestDependencyEdgeAnalysisResponse.Insert_analysis_manifest_dependency_edge_result_one, and is useful for accessing the field via an interface.
+func (v *InsertManifestDependencyEdgeAnalysisResponse) GetInsert_analysis_manifest_dependency_edge_result_one() *InsertManifestDependencyEdgeAnalysisInsert_analysis_manifest_dependency_edge_result_oneAnalysis_manifest_dependency_edge_result {
+	return v.Insert_analysis_manifest_dependency_edge_result_one
 }
 
 // InsertNewBuildQueryInsert_builds_oneBuilds includes the requested fields of the GraphQL type builds.
@@ -7840,6 +7917,16 @@ type __GetVulnerabilityMetadataInput struct {
 // GetId returns __GetVulnerabilityMetadataInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetVulnerabilityMetadataInput) GetId() uuid.UUID { return v.Id }
 
+// __InsertManifestDependencyEdgeAnalysisInput is used internally by genqlient
+type __InsertManifestDependencyEdgeAnalysisInput struct {
+	Result *Analysis_manifest_dependency_edge_result_insert_input `json:"result,omitempty"`
+}
+
+// GetResult returns __InsertManifestDependencyEdgeAnalysisInput.Result, and is useful for accessing the field via an interface.
+func (v *__InsertManifestDependencyEdgeAnalysisInput) GetResult() *Analysis_manifest_dependency_edge_result_insert_input {
+	return v.Result
+}
+
 // __InsertNewBuildQueryInput is used internally by genqlient
 type __InsertNewBuildQueryInput struct {
 	Project_id *uuid.UUID `json:"project_id,omitempty"`
@@ -8124,6 +8211,38 @@ query GetVulnerabilityMetadata ($id: uuid!) {
 	var err error
 
 	var data GetVulnerabilityMetadataResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
+
+func InsertManifestDependencyEdgeAnalysis(
+	ctx context.Context,
+	client graphql.Client,
+	result *Analysis_manifest_dependency_edge_result_insert_input,
+) (*InsertManifestDependencyEdgeAnalysisResponse, error) {
+	req := &graphql.Request{
+		OpName: "InsertManifestDependencyEdgeAnalysis",
+		Query: `
+mutation InsertManifestDependencyEdgeAnalysis ($result: analysis_manifest_dependency_edge_result_insert_input!) {
+	insert_analysis_manifest_dependency_edge_result_one(object: $result, on_conflict: {constraint:manifest_dependency_edge_result_manifest_dependency_edge_id_vul,update_columns:[vulnerability_id,manifest_dependency_edge_id,finding_source]}) {
+		id
+	}
+}
+`,
+		Variables: &__InsertManifestDependencyEdgeAnalysisInput{
+			Result: result,
+		},
+	}
+	var err error
+
+	var data InsertManifestDependencyEdgeAnalysisResponse
 	resp := &graphql.Response{Data: &data}
 
 	err = client.MakeRequest(

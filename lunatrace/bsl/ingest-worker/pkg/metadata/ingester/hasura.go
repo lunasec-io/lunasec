@@ -13,6 +13,7 @@ package ingester
 
 import (
 	"context"
+	util2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 	"github.com/rs/zerolog/log"
 	"time"
@@ -89,10 +90,10 @@ func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]s
 
 	res, err := gql.UpsertPackage(ctx, h.deps.GQLClient, gqlPkg, gql.PackageOnConflict)
 	if err != nil {
-		util.LogGraphqlError(
+		util2.LogGraphqlError(
 			err,
 			"failed to upsert package",
-			util.GraphqlLogContext{Key: "package", Value: packageName},
+			util2.GraphqlLogContext{Key: "package", Value: packageName},
 		)
 		return nil, err
 	}

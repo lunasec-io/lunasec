@@ -1,3 +1,37 @@
 table:
   name: manifest_dependency_edge_result
   schema: analysis
+insert_permissions:
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - finding_source
+        - finding_type
+        - created_at
+        - id
+        - manifest_dependency_edge_id
+        - vulnerability_id
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - finding_source
+        - finding_type
+        - created_at
+        - id
+        - manifest_dependency_edge_id
+        - vulnerability_id
+      filter: {}
+update_permissions:
+  - role: service
+    permission:
+      columns:
+        - finding_source
+        - finding_type
+        - created_at
+        - id
+        - manifest_dependency_edge_id
+        - vulnerability_id
+      filter: {}
+      check: null

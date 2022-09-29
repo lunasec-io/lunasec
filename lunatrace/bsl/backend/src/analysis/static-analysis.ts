@@ -15,6 +15,7 @@ import { SendMessageCommand } from '@aws-sdk/client-sqs';
 
 import { sqsClient } from '../aws/sqs-client';
 import { getStaticAnalysisConfig } from '../config';
+import { hasura } from '../hasura-api';
 import { LunaTraceStaticAnalysisSqsMessage, ProcessStaticAnalysisRequest } from '../types/sqs';
 import { MaybeErrorVoid } from '../types/util';
 import { newError, newResult } from '../utils/errors';
@@ -26,6 +27,23 @@ export async function queueManifestDependencyEdgeForStaticAnalysis(
   vulnerabilityId: string,
   manifestDependencyEdgeId: string
 ): Promise<MaybeErrorVoid> {
+  const cacheResult = await catchError(
+    hasura.GetManifestDependencyEdgeAnalysisResult({
+      vulnerability_id: vulnerabilityId,
+      manifest_dependency_edge_id: manifestDependencyEdgeId,
+    })
+  );
+  if (threwError(cacheResult)) {
+    return newError('Failed to lookup project when using repository id');
+  }
+  if (cacheResult.analysis_manifest_dependency_edge_result.length > 0) {
+    log.info('found cached analysis result for manifest dependency edge analysis', {
+      vulnerabilityId,
+      manifestDependencyEdgeId,
+    });
+    return newResult(undefined);
+  }
+
   const staticAnalysisConfig = getStaticAnalysisConfig();
 
   const staticAnalysisQueueUrl = await catchError(getSqsUrlFromName(staticAnalysisConfig.queueName));
