@@ -21,7 +21,7 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queuefx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/gen/gql"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
 	"io/ioutil"
