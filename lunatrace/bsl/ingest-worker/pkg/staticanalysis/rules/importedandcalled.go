@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -8,62 +8,23 @@
 //
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package rules
 
 import (
-	"github.com/rs/zerolog/log"
-	"os"
+	"io"
 	"text/template"
-)
 
-const ImportedAndCalledSemgrepRule = `
-rules:
-  - id: imported-and-called
-    options:
-      symbolic_propagation: true
-    patterns:
-      - pattern-either:
-          - pattern-inside: |
-              $IMPORT = require("{{ .PackageName }}")
-              ...
-          - pattern-inside: |
-              import $IMPORT from "{{ .PackageName }}"
-              ...
-          - pattern-inside: |
-              import * as $IMPORT from "{{ .PackageName }}"
-              ...
-          - pattern-inside: |
-              import { ..., $IMPORT,... } from "{{ .PackageName }}"
-              ...
-          - pattern-inside: |
-              import { ..., $X as $IMPORT,... } from "{{ .PackageName }}"
-              ...
-      - pattern-either:
-        - pattern-inside: $IMPORT.$FUNC()
-        - pattern-inside: $IMPORT()
-    message: A vulnerable package was imported and called.
-    languages:
-      - javascript
-      - typescript
-    severity: ERROR
-`
+	"github.com/rs/zerolog/log"
+
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/semgrep/cli/rules/tpl"
+)
 
 type ImportedAndCalledSemgrepRuleVariables struct {
 	PackageName string
 }
 
 func CallsitesOfDependencyInCode(dependency, codeDir string) (bool, error) {
-	f, err := os.CreateTemp("", "lunatrace-semgrep-rule-")
-	if err != nil {
-		log.Error().Err(err).Msg("failed to create temporary file")
-		return false, err
-	}
-
-	defer f.Close()
-	defer os.Remove(f.Name())
-
-	semgrepRuleTemplate, err := template.New("imported-and-called-semgrep-rule").Parse(ImportedAndCalledSemgrepRule)
+	semgrepRuleTemplate, err := template.ParseFS(tpl.RuleTemplates, "importedandcalled.yaml.tpl")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to parse semgrep rule")
 		return false, err
@@ -73,13 +34,23 @@ func CallsitesOfDependencyInCode(dependency, codeDir string) (bool, error) {
 		PackageName: dependency,
 	}
 
-	err = semgrepRuleTemplate.Execute(f, templateVariables)
-	if err != nil {
-		log.Error().Err(err).Msg("failed to execute template and write rule to file")
-		return false, err
-	}
+	ruleReader, ruleWriter := io.Pipe()
 
-	results, err := runSemgrepRule(f.Name(), codeDir)
+	go func() {
+		err = semgrepRuleTemplate.Execute(ruleWriter, templateVariables)
+		if err != nil {
+			log.Error().Err(err).Msg("failed to execute template and write rule to fd")
+			_ = ruleWriter.CloseWithError(err)
+			return
+		}
+		err = ruleWriter.Close()
+		if err != nil {
+			log.Error().Err(err).Msg("failed to close semgrep stdin")
+			return
+		}
+	}()
+
+	results, err := runSemgrepRule(ruleReader, codeDir)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to run semgrep rule")
 		return false, err
