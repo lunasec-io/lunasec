@@ -14,8 +14,8 @@ package ingester
 import (
 	"context"
 	util2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
-	gql2 "github.com/lunasec-io/lunasec/lunatrace/gen/gql"
-	"github.com/lunasec-io/lunasec/lunatrace/gen/gql/types"
+	gql2 "github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 	"github.com/rs/zerolog/log"
 	"time"
 

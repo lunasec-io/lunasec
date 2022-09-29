@@ -9,7 +9,7 @@ import (
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/google/uuid"
-	"github.com/lunasec-io/lunasec/lunatrace/gen/gql/types"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 )
 
 // Boolean expression to compare columns of type "affected_range_type". All fields are combined with logical 'AND'.
