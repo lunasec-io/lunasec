@@ -1,0 +1,14 @@
+{
+  "name": "gen",
+  "private": true,
+  "packageManager": "yarn@3.2.2",
+  "scripts": {
+    "generate:gql:schema": "yarn run gq http://localhost:8080/v1/graphql -H \"X-Hasura-Admin-Secret: myadminsecretkey\" -H \"X-Hasura-Role: service\" --introspect > gql/schema.graphql",
+    "generate:gql:go": "go run github.com/Khan/genqlient genqlient.yaml",
+    "generate:gql": "yarn run generate:gql:schema && yarn run generate:gql:go",
+    "generate": "yarn generate:gql"
+  },
+  "dependencies": {
+    "graphqurl": "~1.0.1"
+  }
+}
