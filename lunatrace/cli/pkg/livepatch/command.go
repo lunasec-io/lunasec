@@ -44,7 +44,7 @@ func LivePatchCommand(c *cli.Context, globalBoolFlags *types.LunaTraceGlobalFlag
 	if payloadUrl == "" {
 		log.Info().
 			Str("defaultPayloadUrl", constants.DefaultPayloadUrl).
-			Msg("Payload Name (the LDAP Payload Target) not provided. Using localhost")
+			Msg("Payload URL (the LDAP Payload Target) not provided. Using localhost")
 		payloadUrl = constants.DefaultPayloadUrl
 	}
 
