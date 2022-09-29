@@ -31443,6 +31443,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"gen@workspace:lunatrace/gen":
+  version: 0.0.0-use.local
+  resolution: "gen@workspace:lunatrace/gen"
+  dependencies:
+    graphqurl: ~1.0.1
+  languageName: unknown
+  linkType: soft
+
 "generate-lockfile@npm:^0.0.11":
   version: 0.0.11
   resolution: "generate-lockfile@npm:0.0.11"

@@ -16,6 +16,8 @@ package gqlstorefx
 
 import (
 	"fmt"
+	"github.com/lunasec-io/lunasec/lunatrace/gen/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/gen/gql/types"
 	"net/url"
 	"sort"
 	"strings"
@@ -23,8 +25,6 @@ import (
 	v3 "github.com/anchore/grype/grype/db/v3"
 	"github.com/blang/semver/v4"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/advisory"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 

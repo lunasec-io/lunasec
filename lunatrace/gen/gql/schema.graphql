@@ -6,11 +6,11 @@ schema {
 
 """whether this query should be cached (Hasura Cloud only)"""
 directive @cached(
-  """refresh the cache entry"""
-  refresh: Boolean! = false
-
   """measured in seconds"""
   ttl: Int! = 60
+
+  """refresh the cache entry"""
+  refresh: Boolean! = false
 ) on QUERY
 
 type AuthenticatedRepoCloneUrlOutput {
@@ -14138,3 +14138,4 @@ enum webhook_cache_update_column {
   """column name"""
   sqs_message_id
 }
+
