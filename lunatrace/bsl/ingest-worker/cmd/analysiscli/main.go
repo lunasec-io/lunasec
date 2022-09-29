@@ -39,7 +39,7 @@ func main() {
 					codeDir := c.Args().First()
 					dependency := c.String("dependency")
 
-					_, err := rules.CallsitesOfDependencyInCode(dependency, codeDir)
+					_, err := rules.DependencyIsImportedAndCalledInCode(dependency, codeDir)
 					return err
 				},
 			},
