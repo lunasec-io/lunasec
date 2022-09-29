@@ -28,7 +28,6 @@ export type Scalars = {
   timestamp: string;
   timestamptz: string;
   user_role: 'organization_user'|'lunatrace_admin';
-  /** A field whose value is a generic Universally Unique Identifier: https://en.wikipedia.org/wiki/Universally_unique_identifier. */
   uuid: string;
 };
 
@@ -50,9 +49,61 @@ export type Boolean_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Boolean']>>;
 };
 
-export type BuildVulnerabilitiesData = {
-  __typename?: 'BuildVulnerabilitiesData';
+export type BuildData_AffectedByVulnerability = {
+  __typename?: 'BuildData_AffectedByVulnerability';
+  chains?: Maybe<Array<Array<BuildData_DependencyNode>>>;
+  ranges?: Maybe<Array<Maybe<BuildData_Range>>>;
+  triviallyUpdatable?: Maybe<Scalars['Boolean']>;
+  vulnerability: BuildData_Vulnerability;
+};
+
+export type BuildData_DependencyNode = {
+  __typename?: 'BuildData_DependencyNode';
+  id: Scalars['String'];
+  range: Scalars['String'];
+  release: BuildData_Release;
+  release_id: Scalars['String'];
+};
+
+export type BuildData_Package = {
+  __typename?: 'BuildData_Package';
+  affected_by_vulnerability?: Maybe<Array<BuildData_AffectedByVulnerability>>;
+  name: Scalars['String'];
+  package_manager: Scalars['String'];
+};
+
+export type BuildData_Range = {
+  __typename?: 'BuildData_Range';
+  fixed?: Maybe<Scalars['String']>;
+  introduced?: Maybe<Scalars['String']>;
+};
+
+export type BuildData_Release = {
+  __typename?: 'BuildData_Release';
+  id: Scalars['String'];
+  package: BuildData_Package;
+  version: Scalars['String'];
+};
+
+export type BuildData_Vulnerability = {
+  __typename?: 'BuildData_Vulnerability';
+  cvss_score?: Maybe<Scalars['Float']>;
+  id: Scalars['String'];
+  severity_name?: Maybe<Scalars['String']>;
+  source: Scalars['String'];
+  source_id: Scalars['String'];
+  triviallyUpdatable?: Maybe<Scalars['String']>;
+};
+
+export type BuildData_VulnerableRelease = {
+  __typename?: 'BuildData_VulnerableRelease';
+  affectedBy: Array<BuildData_AffectedByVulnerability>;
+  chains: Array<Array<BuildData_DependencyNode>>;
+  cvss?: Maybe<Scalars['Float']>;
   devOnly: Scalars['Boolean'];
+  release?: Maybe<BuildData_Release>;
+  severity?: Maybe<Scalars['String']>;
+  triviallyUpdatable: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'. */
@@ -6879,7 +6930,6 @@ export type Query_Root = {
   __typename?: 'query_root';
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   availableOrgsWithRepos?: Maybe<Array<OrgWithRepos>>;
-  buildVulnerabilities?: Maybe<BuildVulnerabilitiesData>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -7040,6 +7090,7 @@ export type Query_Root = {
   vulnerability_severity: Array<Vulnerability_Severity>;
   /** fetch data from the table: "vulnerability.severity" using primary key columns */
   vulnerability_severity_by_pk?: Maybe<Vulnerability_Severity>;
+  vulnerableReleasesFromBuild?: Maybe<Array<BuildData_VulnerableRelease>>;
   /** fetch data from the table: "webhook_cache" */
   webhook_cache: Array<Webhook_Cache>;
   /** fetch data from the table: "webhook_cache" using primary key columns */
@@ -7049,11 +7100,6 @@ export type Query_Root = {
 
 export type Query_RootAuthenticatedRepoCloneUrlArgs = {
   repoGithubId: Scalars['Int'];
-};
-
-
-export type Query_RootBuildVulnerabilitiesArgs = {
-  buildId: Scalars['uuid'];
 };
 
 
@@ -7631,6 +7677,11 @@ export type Query_RootVulnerability_SeverityArgs = {
 
 export type Query_RootVulnerability_Severity_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootVulnerableReleasesFromBuildArgs = {
+  buildId: Scalars['uuid'];
 };
 
 

@@ -15,7 +15,7 @@ import { SnapshotBuildInfo } from '../../types/sqs';
 import { MaybeError } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
-import { catchError, threwError, Try } from '../../utils/try';
+import { catchError, ErrorOrResult, threwError } from '../../utils/try';
 import { InsertBuildMutation, Scalars } from '../generated';
 import { hasura } from '../index';
 
@@ -50,7 +50,7 @@ export async function createNewBuild(repoGithubId: number, buildInfo: SnapshotBu
     return projectIdResult;
   }
 
-  const insertBuildResponse: Try<InsertBuildMutation> = await catchError(
+  const insertBuildResponse: ErrorOrResult<InsertBuildMutation> = await catchError(
     async () =>
       await hasura.InsertBuild({
         build: {

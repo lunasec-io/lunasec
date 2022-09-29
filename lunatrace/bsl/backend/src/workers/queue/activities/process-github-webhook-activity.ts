@@ -21,7 +21,7 @@ import { ProcessGithubWebhookRequest } from '../../../types/sqs';
 import { MaybeError } from '../../../types/util';
 import { newError, newResult } from '../../../utils/errors';
 import { log } from '../../../utils/log';
-import { catchError, threwError, Try } from '../../../utils/try';
+import { catchError, ErrorOrResult, threwError } from '../../../utils/try';
 
 type WebhookHandlerFunc = (message: ProcessGithubWebhookRequest) => Promise<MaybeError<undefined>>;
 
@@ -36,7 +36,7 @@ export function processGithubWebhookActivity(webhooks: WebhookInterceptor): Webh
 
     return await log.provideFields({ deliveryId }, async () => {
       try {
-        const webhookData: Try<GetWebhookCacheByDeliveryIdQuery | null> = await catchError(
+        const webhookData: ErrorOrResult<GetWebhookCacheByDeliveryIdQuery | null> = await catchError(
           async () =>
             await hasura.GetWebhookCacheByDeliveryId({
               delivery_id: deliveryId,

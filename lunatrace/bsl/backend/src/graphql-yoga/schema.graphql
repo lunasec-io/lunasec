@@ -17,7 +17,7 @@ type Query {
     ): AuthenticatedRepoCloneUrlOutput
     fakeQueryToHackHasuraBeingABuggyMess: String
     availableOrgsWithRepos: [OrgWithRepos!]
-    vulnerableReleasesFromBuild(buildId: uuid!): VulnerableReleases
+    vulnerableReleasesFromBuild(buildId: uuid!): [BuildData_VulnerableRelease!]
 }
 
 type Mutation {
@@ -86,13 +86,16 @@ type OrgWithRepos {
 }
 
 
-
-type BuildData_VulnerableReleases {
+# ------- BEGIN VULNERABLE RELEASE RESPONSE TYPES BELOW, these reference the dependency-tree/types.ts
+# todo: awful mixing of camelcase and underscores here, need to fix the data to be all underscores
+type BuildData_VulnerableRelease {
     devOnly: Boolean!
     severity: String
     cvss: Float
+    chains: [[BuildData_DependencyNode!]!]!
     affectedBy: [BuildData_AffectedByVulnerability!]!
-    release: Release
+    release: BuildData_Release
+    triviallyUpdatable: String!
 }
 
 
@@ -100,11 +103,14 @@ type BuildData_AffectedByVulnerability {
     vulnerability: BuildData_Vulnerability!
     ranges: [BuildData_Range]
     triviallyUpdatable: Boolean
-    chains: [[BuildData_DependencyNode!]!]!
+    chains: [[BuildData_DependencyNode!]!] # each vuln has its own sublist of chains in addition to the global list in the main body of the release. This is in case some have been eliminated by false-positive analysis for only this vuln
 }
 
 type BuildData_DependencyNode {
-    id: String
+    id: String!
+    range: String!
+    release_id: String!
+    release: BuildData_Release!
 }
 
 type BuildData_Range {
@@ -112,23 +118,12 @@ type BuildData_Range {
     fixed: String
 }
 
-# interface Release {
-#  id: string;
-#  version: string;
-#  package: Package;
-#}
-
 type BuildData_Release {
     id: String!
     version: String!
     package: BuildData_Package!
 }
 
-#interface Package {
-#  affected_by_vulnerability: Array<AffectedByVulnerability>;
-#  name: string;
-#  package_manager: string;
-#}
 type BuildData_Package {
     name: String!
     package_manager: String!
@@ -140,11 +135,7 @@ type BuildData_Vulnerability {
     id: String!
     severity_name: String
     cvss_score: Float
+    source: String!
+    source_id: String!
 }
 
-type BuildData_AffectedByVulnerability {
-
-}
-type BuildData_AffectedByVulnerability {
-
-}
