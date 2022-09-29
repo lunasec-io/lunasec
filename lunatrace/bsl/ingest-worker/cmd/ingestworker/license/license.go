@@ -13,14 +13,13 @@ package license
 
 import (
 	"fmt"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner"
 	"io/ioutil"
 
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
 
 	"github.com/ajvpot/clifx"
-
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/license/scanner"
 )
 
 type Params struct {

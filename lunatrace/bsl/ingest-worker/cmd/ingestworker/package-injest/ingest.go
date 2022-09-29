@@ -12,8 +12,6 @@
 package ingest
 
 import (
-	"github.com/rs/zerolog/log"
-
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
 
@@ -28,15 +26,6 @@ type Params struct {
 	Ingester metadata.Ingester
 }
 
-func sliceContainsPackage(packageSlice []string, packageName string) bool {
-	for _, p := range packageSlice {
-		if packageName == p {
-			return true
-		}
-	}
-	return false
-}
-
 func NewCommand(p Params) clifx.CommandResult {
 	return clifx.CommandResult{
 		Command: &cli.Command{
@@ -45,41 +34,7 @@ func NewCommand(p Params) clifx.CommandResult {
 			Action: func(ctx *cli.Context) error {
 				packageName := ctx.Args().First()
 
-				var ingestedPkgs []string
-				pkgs := []string{packageName}
-
-				for len(pkgs) > 0 {
-					packageToIngest := pkgs[0]
-					pkgs = pkgs[1:]
-
-					log.Info().
-						Str("package", packageToIngest).
-						Msg("ingesting package")
-
-					newPkgs, err := p.Ingester.Ingest(ctx.Context, packageToIngest)
-					if err != nil {
-						log.Error().
-							Err(err).
-							Msg("failed to ingest packages")
-						return err
-					}
-					ingestedPkgs = append(ingestedPkgs, packageToIngest)
-
-					for _, newPkg := range newPkgs {
-						// If the package to be scanned is already flagged to be ingested
-						// or the package has already been ingested, then skip flagging this package
-						if sliceContainsPackage(pkgs, newPkg) || sliceContainsPackage(ingestedPkgs, newPkg) {
-							continue
-						}
-						pkgs = append(pkgs, newPkg)
-					}
-
-					log.Info().
-						Str("package", packageToIngest).
-						Strs("packages to ingest", pkgs).
-						Msg("successfully ingested package")
-				}
-				return nil
+				return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName)
 			},
 		},
 	}

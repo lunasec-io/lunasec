@@ -9,22 +9,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package analysis
+package graphqlfx
 
 import (
-	"context"
-	"encoding/json"
+	"github.com/rs/zerolog/log"
+	"go.uber.org/config"
 )
 
-type LicenseInfo struct {
-	// Licenses detected by this job
-	Licenses []string
-
-	// Metadata
-	ScanData json.RawMessage
+type Config struct {
+	Url    string `yaml:"url"`
+	Secret string `yaml:"secret"`
 }
 
-type LicenseAnalyzer interface {
-	// Analyze will get licenses for a given url
-	Analyze(ctx context.Context, url string) (*LicenseInfo, error)
+func NewConfig(provider config.Provider) (config Config, err error) {
+	value := provider.Get("graphql")
+
+	err = value.Populate(&config)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable populate queue config")
+		return
+	}
+	return
 }

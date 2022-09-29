@@ -12,7 +12,7 @@
 package main
 
 import (
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/semgrep/cli/rules"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
@@ -39,7 +39,7 @@ func main() {
 					codeDir := c.Args().First()
 					dependency := c.String("dependency")
 
-					_, err := rules.CallsitesOfDependencyInCode(dependency, codeDir)
+					_, err := rules.DependencyIsImportedAndCalledInCode(dependency, codeDir)
 					return err
 				},
 			},
