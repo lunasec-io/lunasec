@@ -17,7 +17,7 @@ package gqlstorefx
 import (
 	"context"
 	"errors"
-	"github.com/lunasec-io/lunasec/lunatrace/gen/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 	"github.com/rs/zerolog/log"
 	"strings"
 	"time"

@@ -15,7 +15,7 @@
 package config
 
 import (
-	"github.com/lunasec-io/lunasec/lunatrace/gen/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 	"net/http"
 	"os"
 

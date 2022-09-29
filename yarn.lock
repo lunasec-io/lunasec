@@ -31443,9 +31443,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gen@workspace:lunatrace/gen":
+"gen@workspace:lunatrace/gogen":
   version: 0.0.0-use.local
-  resolution: "gen@workspace:lunatrace/gen"
+  resolution: "gen@workspace:lunatrace/gogen"
   dependencies:
     graphqurl: ~1.0.1
   languageName: unknown
