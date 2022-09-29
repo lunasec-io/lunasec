@@ -32,8 +32,54 @@ input Boolean_comparison_exp {
   _nin: [Boolean!]
 }
 
-type BuildVulnerabilitiesData {
+type BuildData_AffectedByVulnerability {
+  chains: [[BuildData_DependencyNode!]!]
+  ranges: [BuildData_Range]
+  triviallyUpdatable: Boolean
+  vulnerability: BuildData_Vulnerability!
+}
+
+type BuildData_DependencyNode {
+  id: String!
+  range: String!
+  release: BuildData_Release!
+  release_id: String!
+}
+
+type BuildData_Package {
+  affected_by_vulnerability: [BuildData_AffectedByVulnerability!]
+  name: String!
+  package_manager: String!
+}
+
+type BuildData_Range {
+  fixed: String
+  introduced: String
+}
+
+type BuildData_Release {
+  id: String!
+  package: BuildData_Package!
+  version: String!
+}
+
+type BuildData_Vulnerability {
+  cvss_score: Float
+  id: String!
+  severity_name: String
+  source: String!
+  source_id: String!
+  triviallyUpdatable: String
+}
+
+type BuildData_VulnerableRelease {
+  affectedBy: [BuildData_AffectedByVulnerability!]!
+  chains: [[BuildData_DependencyNode!]!]!
+  cvss: Float
   devOnly: Boolean!
+  release: BuildData_Release
+  severity: String
+  triviallyUpdatable: String!
 }
 
 """
@@ -8727,7 +8773,6 @@ enum projects_update_column {
 type query_root {
   authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
   availableOrgsWithRepos: [OrgWithRepos!]
-  buildVulnerabilities(buildId: uuid!): BuildVulnerabilitiesData
 
   """
   fetch data from the table: "build_dependency_relationship"
@@ -9736,6 +9781,7 @@ type query_root {
   fetch data from the table: "vulnerability.severity" using primary key columns
   """
   vulnerability_severity_by_pk(id: uuid!): vulnerability_severity
+  vulnerableReleasesFromBuild(buildId: uuid!): [BuildData_VulnerableRelease!]
 
   """
   fetch data from the table: "webhook_cache"
@@ -11664,9 +11710,6 @@ enum users_update_column {
   kratos_id
 }
 
-"""
-A field whose value is a generic Universally Unique Identifier: https://en.wikipedia.org/wiki/Universally_unique_identifier.
-"""
 scalar uuid
 
 """
