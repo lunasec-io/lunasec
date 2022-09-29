@@ -16,11 +16,11 @@ import zlib from 'zlib';
 
 import validate from 'validator';
 
+import { InsertedScan, performSnapshotScanAndCollectReport } from '../../../analysis/scan';
 import { interactWithPR } from '../../../github/actions/pr-comment-generator';
 import { updateBuildStatus } from '../../../hasura-api/actions/update-build-status';
 import { updateManifestStatus } from '../../../hasura-api/actions/update-manifest-status';
 import { Build_State_Enum } from '../../../hasura-api/generated';
-import { InsertedScan, performSnapshotScanAndCollectReport } from '../../../models/scan';
 import { S3ObjectMetadata } from '../../../types/s3';
 import { SbomBucketInfo } from '../../../types/scan';
 import { MaybeError } from '../../../types/util';

@@ -14,7 +14,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { runLunaTraceScan } from '../models/scan';
+import { runLunaTraceScan } from '../analysis/scan';
 import { log } from '../utils/log';
 
 jest.setTimeout(20000);

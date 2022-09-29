@@ -13,6 +13,7 @@
  */
 import { Command } from 'commander';
 
+import { queueManifestDependencyEdgeForStaticAnalysis } from '../analysis/static-analysis';
 import { getRepoCloneUrlWithAuth } from '../github/actions/get-repo-clone-url-with-auth';
 import { createNewBuild } from '../hasura-api/actions/create-new-build';
 import { SnapshotBuildInfo, SnapshotForRepositoryRequest } from '../types/sqs';
@@ -109,6 +110,16 @@ program
       key,
       region,
     });
+  });
+
+program
+  .command('static-analysis')
+  .requiredOption('--vuln-id <string>', 'vulnerability id to check the presence of')
+  .requiredOption('--edge-id <string>', 'manifest dependency edge id to statically analyze')
+  .action(async (options) => {
+    const vulnerabilityId = options.vulnId;
+    const manifestDependencyEdgeId = options.edgeId;
+    await queueManifestDependencyEdgeForStaticAnalysis(vulnerabilityId, manifestDependencyEdgeId);
   });
 
 program.parse();

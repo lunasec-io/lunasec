@@ -43,8 +43,18 @@ export interface LunaTraceProcessWebhookSqsMessage {
   records: ProcessGithubWebhookRequest[];
 }
 
+export interface LunaTraceStaticAnalysisSqsMessage {
+  type: 'static-analysis';
+  records: ProcessStaticAnalysisRequest[];
+}
+
 export interface ProcessGithubWebhookRequest {
   delivery_id: string;
+}
+
+export interface ProcessStaticAnalysisRequest {
+  vulnerability_id: string;
+  manifest_dependency_edge_id: string;
 }
 
 export interface SnapshotBuildInfo {

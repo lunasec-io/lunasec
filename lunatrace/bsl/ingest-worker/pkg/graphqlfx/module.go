@@ -9,31 +9,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package graphql
+package graphqlfx
 
 import (
 	"github.com/Khan/genqlient/graphql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"github.com/rs/zerolog/log"
 	"net/http"
 )
 
-func NewGraphqlClient(appConfig types.LunaTraceConfig, hc *http.Client) graphql.Client {
-	if appConfig.GraphqlServer.Url == "" {
+func NewGraphqlClient(config Config, hc *http.Client) graphql.Client {
+	if config.Url == "" {
 		log.Error().Msg("graphql server url is not defined")
 		return nil
 	}
 
-	if appConfig.GraphqlServer.Secret == "" {
+	if config.Secret == "" {
 		log.Error().Msg("graphql server secret is not defined")
 		return nil
 	}
 
 	lhc := hc
 	lhc.Transport = &gql.HeadersTransport{Headers: map[string]string{
-		"X-Hasura-Admin-Secret": appConfig.GraphqlServer.Secret,
+		"X-Hasura-Admin-Secret": config.Secret,
 		"X-Hasura-Role":         "service",
 	}}
-	return graphql.NewClient(appConfig.GraphqlServer.Url, lhc)
+	return graphql.NewClient(config.Url, lhc)
 }
