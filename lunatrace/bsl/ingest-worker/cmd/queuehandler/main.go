@@ -12,13 +12,16 @@
 package main
 
 import (
+	"context"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/awsfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphql"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher/npm"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queuefx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis"
 	"go.uber.org/fx"
+	"net/http"
 )
 
 type QueueHandlerProps struct {
@@ -29,26 +32,33 @@ type QueueHandlerProps struct {
 
 func main() {
 	app := fx.New(
-		fx.Options(
-			fx.Provide(
-				config.NewQueueHandlerConfigProvider,
-				queuefx.NewQueueConfig,
+		fx.Supply(http.DefaultClient),
+		fx.Provide(
+			config.NewQueueHandlerConfigProvider,
+			queuefx.NewConfig,
+			graphqlfx.NewConfig,
+			awsfx.NewConfig,
 
-				graphql.NewGraphqlClient,
-				npm.NewNPMFetcher,
-				ingester.NewHasuraIngester,
+			awsfx.NewSession,
+			graphqlfx.NewGraphqlClient,
+			npm.NewNPMFetcher,
+			ingester.NewHasuraIngester,
 
-				staticanalysis.NewStaticAnalysisQueueHandler,
-				func(props QueueHandlerProps) queuefx.HandlerLookup {
-					handlerLookup := queuefx.HandlerLookup{}
-					for _, handler := range props.Handlers {
-						handlerLookup[handler.GetHandlerKey()] = handler
-					}
-					return handlerLookup
-				},
-				queuefx.NewQueueSubscriber,
-			),
+			staticanalysis.NewStaticAnalysisQueueHandler,
+			func(props QueueHandlerProps) queuefx.HandlerLookup {
+				handlerLookup := queuefx.HandlerLookup{}
+				for _, handler := range props.Handlers {
+					handlerLookup[handler.GetHandlerKey()] = handler
+				}
+				return handlerLookup
+			},
+			queuefx.NewQueueSubscriber,
 		),
+
+		fx.Invoke(func(queueSub *queuefx.Subscriber) error {
+			ctx := context.Background()
+			return queueSub.Run(ctx)
+		}),
 	)
 
 	app.Run()

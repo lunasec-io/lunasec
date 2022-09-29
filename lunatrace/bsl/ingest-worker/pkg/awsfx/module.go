@@ -9,28 +9,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package queuefx
+package awsfx
 
 import (
-	"context"
-	"encoding/json"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"go.uber.org/fx"
 )
 
-type Handler interface {
-	GetHandlerKey() string
-	HandleRecord(ctx context.Context, record json.RawMessage) error
-}
-
-type HandlerLookup map[string]Handler
-
-type Message struct {
-	MessageType string            `json:"type"`
-	Records     []json.RawMessage `json:"records"`
-}
-
-type HandlerResult struct {
+type AwsSessionResult struct {
 	fx.Out
 
-	Handler `group:"queue_handlers"`
+	AwsSession *session.Session
+}
+
+func NewSession(config Config) AwsSessionResult {
+	awsSession := session.Must(session.NewSession(&aws.Config{
+		Region: aws.String(config.Region),
+	}))
+	return AwsSessionResult{
+		AwsSession: awsSession,
+	}
 }

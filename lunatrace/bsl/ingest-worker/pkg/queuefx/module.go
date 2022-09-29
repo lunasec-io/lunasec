@@ -15,16 +15,22 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
 	"gocloud.dev/pubsub"
+	_ "gocloud.dev/pubsub/awssnssqs"
+	"net/url"
 )
 
 type Params struct {
 	fx.In
 
 	Config
-	Handlers HandlerLookup
+	AwsSession *session.Session
+	Handlers   HandlerLookup
 }
 
 type Subscriber struct {
@@ -32,12 +38,42 @@ type Subscriber struct {
 	Sub *pubsub.Subscription
 }
 
+func getSqsSubscriptionUrl(awsSession *session.Session, queueName string) (string, error) {
+	svc := sqs.New(awsSession)
+
+	output, err := svc.GetQueueUrl(&sqs.GetQueueUrlInput{
+		QueueName: aws.String(queueName),
+	})
+	if err != nil {
+		log.Error().Err(err).Msg("failed to get SQS queue url")
+		return "", err
+	}
+
+	queueUrl, err := url.Parse(*output.QueueUrl)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to parse SQS queue url")
+		return "", err
+	}
+
+	queueUrl.Scheme = "awssqs"
+	return queueUrl.String(), nil
+}
+
 func NewQueueSubscriber(p Params, lc fx.Lifecycle) (*Subscriber, error) {
-	ctx := context.Background()
-	sub, err := pubsub.OpenSubscription(ctx, p.Config.Name)
+	queueUrl, err := getSqsSubscriptionUrl(p.AwsSession, p.Config.Name)
 	if err != nil {
 		return nil, err
 	}
+
+	ctx := context.Background()
+	sub, err := pubsub.OpenSubscription(ctx, queueUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Info().
+		Str("queue url", queueUrl).
+		Msg("listening for messages on queue")
 
 	lc.Append(fx.Hook{OnStop: func(ctx context.Context) error {
 		return sub.Shutdown(ctx)
@@ -61,11 +97,13 @@ func (s *Subscriber) Run(ctx context.Context) error {
 
 		err = s.dispatchMessage(ctx, msg)
 		if err != nil {
+			msg.Nack()
 			log.Error().
 				Err(err).
 				Msg("failed to dispatch message")
 			return err
 		}
+		msg.Ack()
 	}
 }
 
@@ -76,6 +114,10 @@ func (s *Subscriber) dispatchMessage(ctx context.Context, msg *pubsub.Message) e
 		log.Error().Err(err).Msg("failed to parse message from queue")
 		return err
 	}
+
+	log.Info().
+		Str("type", queueMessage.MessageType).
+		Msg("received message from queue")
 
 	handler, ok := s.p.Handlers[queueMessage.MessageType]
 	if !ok {

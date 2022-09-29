@@ -16,7 +16,11 @@ import (
 	"go.uber.org/config"
 )
 
-func NewQueueConfig(provider config.Provider) (config Config, err error) {
+type Config struct {
+	Name string `yaml:"url"`
+}
+
+func NewConfig(provider config.Provider) (config Config, err error) {
 	value := provider.Get("queue")
 
 	err = value.Populate(&config)

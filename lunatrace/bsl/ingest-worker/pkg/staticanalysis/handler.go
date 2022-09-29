@@ -93,9 +93,14 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 	parentPackageName := resp.Manifest_dependency_edge_by_pk.Parent.Release.Package.Name
 	childPackageName := resp.Manifest_dependency_edge_by_pk.Child.Release.Package.Name
 
+	log.Info().
+		Str("parent package", parentPackageName).
+		Str("child package", childPackageName).
+		Msg("statically analyzing parent child relationship")
+
 	upstreamBlobUrl := resp.Manifest_dependency_edge_by_pk.Parent.Release.Upstream_blob_url
 	if upstreamBlobUrl == nil {
-		err = s.Ingester.IngestPackageAndDependencies(ctx, parentPackageName)
+		_, err = s.Ingester.Ingest(ctx, parentPackageName)
 		if err != nil {
 			log.Error().
 				Err(err).
@@ -123,7 +128,7 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 		Str("parent package", parentPackageName).
 		Str("parent package code", *upstreamBlobUrl).
 		Str("child package", childPackageName).
-		Msg("statically analyzing parent child relationship")
+		Msg("statically analyzing parent's code")
 
 	return nil
 }
