@@ -24,7 +24,7 @@ import {
   RepositoryQueueConfig,
   ServerConfig,
   SqsQueueConfig,
-  VulnerabilityUpdateConfig,
+  StaticAnalysisConfig,
   WebhookConfig,
   WorkerBucketConfig,
 } from './types/config';
@@ -152,11 +152,16 @@ export function getWorkerBucketConfig(): WorkerBucketConfig {
   };
 }
 
-export function getVulnerabilityUpdateConfig(): VulnerabilityUpdateConfig {
-  const grypeDatabaseBucket = checkEnvVar('GRYPE_DATABASE_BUCKET');
+export function getStaticAnalysisConfig(): StaticAnalysisConfig {
+  const developmentQueueName = checkEnvVar('GOLANG_QUEUE_NAME', notSet);
+
+  // In production, this queue will be specifically set since it references a different queue.
+  // In development, since there is only one queue, this will be set with QUEUE_NAME.
+  // If neither are set, throw an error
+  const queueName = checkEnvVar('STATIC_ANALYSIS_QUEUE', developmentQueueName);
 
   return {
-    grypeDatabaseBucket,
+    queueName,
   };
 }
 

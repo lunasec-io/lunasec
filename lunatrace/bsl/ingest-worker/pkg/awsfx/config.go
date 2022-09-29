@@ -9,28 +9,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package queuefx
+package awsfx
 
 import (
-	"context"
-	"encoding/json"
-	"go.uber.org/fx"
+	"github.com/rs/zerolog/log"
+	"go.uber.org/config"
 )
 
-type Handler interface {
-	GetHandlerKey() string
-	HandleRecord(ctx context.Context, record json.RawMessage) error
+type Config struct {
+	Region string `yaml:"region"`
 }
 
-type HandlerLookup map[string]Handler
+func NewConfig(provider config.Provider) (config Config, err error) {
+	value := provider.Get("aws")
 
-type Message struct {
-	MessageType string            `json:"type"`
-	Records     []json.RawMessage `json:"records"`
-}
-
-type HandlerResult struct {
-	fx.Out
-
-	Handler `group:"queue_handlers"`
+	err = value.Populate(&config)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable populate aws config")
+		return
+	}
+	return
 }
