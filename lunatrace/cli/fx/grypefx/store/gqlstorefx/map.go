@@ -16,8 +16,8 @@ package gqlstorefx
 
 import (
 	"fmt"
-	"github.com/lunasec-io/lunasec/lunatrace/gen/gql"
-	"github.com/lunasec-io/lunasec/lunatrace/gen/gql/types"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 	"net/url"
 	"sort"
 	"strings"

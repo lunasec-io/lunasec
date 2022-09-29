@@ -111,7 +111,7 @@
       "./lunatrace/bsl/logger",
       "./lunatrace/bsl/frontend",
       "./lunatrace/dev-cli",
-      "./lunatrace/gen"
+      "./lunatrace/gogen"
     ]
   },
   "packageManager": "yarn@3.2.2",

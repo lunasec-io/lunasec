@@ -16,7 +16,7 @@ package lunatracefx
 
 import (
 	"context"
-	"github.com/lunasec-io/lunasec/lunatrace/gen/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 	"net/http"
 
 	"github.com/Khan/genqlient/graphql"
