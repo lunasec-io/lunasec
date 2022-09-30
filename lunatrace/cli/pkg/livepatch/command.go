@@ -57,7 +57,7 @@ func LivePatchCommand(c *cli.Context, globalBoolFlags *types.LunaTraceGlobalFlag
 		log.Error().
 			Err(err).
 			Str("payloadUrl", payloadUrl).
-			Msg("Unable to parse provided payload server URL.")
+			Msg("Unable to parse provided payload server Name.")
 		return err
 	}
 

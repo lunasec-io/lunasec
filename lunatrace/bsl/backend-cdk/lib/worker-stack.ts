@@ -95,14 +95,20 @@ export class WorkerStack extends cdk.Stack {
     const repositoryQueue = storageStack.processRepositorySqsQueue;
     const manifestQueue = storageStack.processManifestSqsQueue;
     const sbomQueue = storageStack.processSbomSqsQueue;
+    const staticAnalysisQueue = storageStack.staticAnalysisSqsQueue;
 
-    if (!repositoryQueue || !webhookQueue || !manifestQueue || !sbomQueue) {
+    if (!repositoryQueue || !webhookQueue || !manifestQueue || !sbomQueue || !staticAnalysisQueue) {
       throw new Error(`expected non-null storage stack queues: ${inspect(storageStack)}`);
     }
 
     const workerContainerImage = ContainerImage.fromAsset('../backend', {
       ...commonBuildProps,
       target: 'backend-queue-processor',
+    });
+
+    const golangWorkerImage = ContainerImage.fromAsset('../ingest-worker', {
+      ...commonBuildProps,
+      file: 'docker/queuehandler.dockerfile',
     });
 
     // common environment variables used by queue processors
@@ -158,6 +164,16 @@ export class WorkerStack extends cdk.Stack {
         scalingSteps,
       },
       {
+        name: 'StaticAnalysisQueue',
+        queue: staticAnalysisQueue,
+        visibility: 600,
+        ram: 8 * gb,
+        cpu: 4 * gb,
+        capacityProviderStrategies,
+        ephemeralStorageGiB: 200,
+        scalingSteps,
+      },
+      {
         name: 'ProcessWebhookQueue',
         queue: webhookQueue,
       },
@@ -182,8 +198,8 @@ export class WorkerStack extends cdk.Stack {
 
       const queueFargateService = new QueueProcessingFargateService(context, name + 'Service', {
         cluster: fargateCluster,
-        image: workerContainerImage,
         cpu: queueService.cpu,
+        image: workerContainerImage,
         memoryLimitMiB: queueService.ram || 2 * gb,
         queue: queue, // will pass queue_name env var automatically
         assignPublicIp: true,
@@ -224,7 +240,6 @@ export class WorkerStack extends cdk.Stack {
 
     const ingestWorkerImage = ContainerImage.fromAsset('../ingest-worker', {
       ...commonBuildProps,
-      target: 'backend-queue-processor',
       file: 'docker/ingestworker.dockerfile',
     });
 
@@ -254,5 +269,6 @@ export class WorkerStack extends cdk.Stack {
         },
       },
     });
+    addDatadogToTaskDefinition(context, updateVulnerabilitiesJob.taskDefinition, datadogApiKeyArn);
   }
 }
