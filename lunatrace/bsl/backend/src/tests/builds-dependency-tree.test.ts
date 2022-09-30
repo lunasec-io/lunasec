@@ -11,106 +11,13 @@
  * limitations under the License.
  *
  */
-import util from 'util';
 
+import { fakeDependencyTreeHasuraOutputFixture } from '../fixtures/manifests/fake-dependency-tree-hasura-output-fixture';
 import { DependencyTree } from '../models/dependency-tree/builds-dependency-tree';
-import { DependencyEdgePartial } from '../models/dependency-tree/types';
-
-// TODO: Move this to a fixtures file
-const dependencies: Array<DependencyEdgePartial> = [
-  {
-    child_id: '1',
-    parent_id: '00000000-0000-0000-0000-000000000000',
-    child: {
-      id: '1',
-      range: '1.0.0',
-      release_id: '1',
-      release: {
-        id: '1',
-        version: '1.0.0',
-        package: {
-          affected_by_vulnerability: [],
-          name: 'foo',
-          package_manager: 'npm',
-        },
-      },
-    },
-  },
-  {
-    child_id: '2',
-    parent_id: '1',
-    child: {
-      id: '2',
-      range: '1.0.0',
-      release_id: '2',
-      release: {
-        id: '2',
-        version: '1.0.0',
-        package: {
-          affected_by_vulnerability: [],
-          name: 'bar',
-          package_manager: 'npm',
-        },
-      },
-    },
-  },
-  {
-    child_id: '3',
-    parent_id: '2',
-    child: {
-      id: '3',
-      range: '1.0.0',
-      release_id: '3',
-      release: {
-        id: '3',
-        version: '1.0.0',
-        package: {
-          affected_by_vulnerability: [],
-          name: 'baz',
-          package_manager: 'npm',
-        },
-      },
-    },
-  },
-  {
-    child_id: '4',
-    parent_id: '3',
-    child: {
-      id: '4',
-      range: '^1.0.0',
-      release_id: '4',
-      release: {
-        version: '1.0.2',
-        id: '4',
-        package: {
-          affected_by_vulnerability: [
-            {
-              vulnerability: {
-                severity_name: 'Medium',
-                cvss_score: 7.2,
-                source: 'github',
-                source_id: 'GHSA123ABC',
-                id: 'a',
-              },
-              ranges: [
-                {
-                  fixed: '1.0.3',
-                  introduced: '1.0.0',
-                },
-              ],
-            },
-          ],
-          name: 'qux',
-          package_manager: 'npm',
-        },
-      },
-    },
-  },
-];
 
 describe('The dependency tree', () => {
   it('should generate a dependency tree', () => {
-    const tree = new DependencyTree(dependencies);
+    const tree = new DependencyTree(fakeDependencyTreeHasuraOutputFixture);
     expect(tree).toBeDefined();
     expect(tree.depNodesById.size).toEqual(4);
     expect(tree.nodeIdToParentIds.size).toEqual(3);
