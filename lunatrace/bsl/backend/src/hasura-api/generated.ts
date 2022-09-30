@@ -31,11 +31,6 @@ export type Scalars = {
   uuid: string;
 };
 
-export type AuthenticatedRepoCloneUrlOutput = {
-  __typename?: 'AuthenticatedRepoCloneUrlOutput';
-  url?: Maybe<Scalars['String']>;
-};
-
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
 export type Boolean_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Boolean']>;
@@ -62,25 +57,6 @@ export type Float_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Float']>>;
 };
 
-export type GithubRepository = {
-  __typename?: 'GithubRepository';
-  cloneUrl: Scalars['String'];
-  defaultBranch: Scalars['String'];
-  gitUrl: Scalars['String'];
-  orgId: Scalars['Int'];
-  orgName: Scalars['String'];
-  orgNodeId: Scalars['String'];
-  ownerType: Scalars['String'];
-  repoId: Scalars['Int'];
-  repoName: Scalars['String'];
-  repoNodeId: Scalars['String'];
-};
-
-export type InstallSelectedReposResponse = {
-  __typename?: 'InstallSelectedReposResponse';
-  success?: Maybe<Scalars['Boolean']>;
-};
-
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Int']>;
@@ -92,32 +68,6 @@ export type Int_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Int']>;
   _neq?: InputMaybe<Scalars['Int']>;
   _nin?: InputMaybe<Array<Scalars['Int']>>;
-};
-
-export type OrgWithRepos = {
-  __typename?: 'OrgWithRepos';
-  id: Scalars['String'];
-  organizationName: Scalars['String'];
-  repos: Array<GithubRepository>;
-};
-
-export type OrgsWithReposInput = {
-  id: Scalars['String'];
-  repos: Array<Scalars['Int']>;
-};
-
-export type PresignedUrlResponse = {
-  __typename?: 'PresignedUrlResponse';
-  bucket: Scalars['String'];
-  headers: Scalars['jsonb'];
-  key: Scalars['String'];
-  url: Scalars['String'];
-};
-
-export type SbomUploadUrlOutput = {
-  __typename?: 'SbomUploadUrlOutput';
-  error: Scalars['Boolean'];
-  uploadUrl?: Maybe<UploadUrl>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -151,12 +101,6 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
-};
-
-export type UploadUrl = {
-  __typename?: 'UploadUrl';
-  headers: Scalars['jsonb'];
-  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
@@ -715,7 +659,6 @@ export type Builds = {
   /** An array relationship */
   resolved_manifests: Array<Resolved_Manifest>;
   s3_url?: Maybe<Scalars['String']>;
-  s3_url_signed?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
   source_type: Scalars['builds_source_type'];
@@ -1766,7 +1709,6 @@ export type Fix_State_Enum_Comparison_Exp = {
 /** Metadata about a github repository and where to find it. */
 export type Github_Repositories = {
   __typename?: 'github_repositories';
-  authenticated_clone_url?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   default_branch?: Maybe<Scalars['String']>;
   git_url: Scalars['String'];
   github_id?: Maybe<Scalars['Int']>;
@@ -3610,9 +3552,6 @@ export type Mutation_Root = {
   insert_webhook_cache?: Maybe<Webhook_Cache_Mutation_Response>;
   /** insert a single row into the table: "webhook_cache" */
   insert_webhook_cache_one?: Maybe<Webhook_Cache>;
-  installSelectedRepos?: Maybe<InstallSelectedReposResponse>;
-  /**  get s3 presigned url for manifest upload, used only by the frontend  */
-  presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** update data of the table: "analysis.manifest_dependency_edge_result" */
   update_analysis_manifest_dependency_edge_result?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Mutation_Response>;
   /** update single row of the table: "analysis.manifest_dependency_edge_result" */
@@ -4314,18 +4253,6 @@ export type Mutation_RootInsert_Webhook_CacheArgs = {
 export type Mutation_RootInsert_Webhook_Cache_OneArgs = {
   object: Webhook_Cache_Insert_Input;
   on_conflict?: InputMaybe<Webhook_Cache_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInstallSelectedReposArgs = {
-  orgs: Array<OrgsWithReposInput>;
-};
-
-
-/** mutation root */
-export type Mutation_RootPresignManifestUploadArgs = {
-  project_id: Scalars['uuid'];
 };
 
 
@@ -7091,8 +7018,6 @@ export type Query_Root = {
   analysis_manifest_dependency_edge_result: Array<Analysis_Manifest_Dependency_Edge_Result>;
   /** fetch data from the table: "analysis.manifest_dependency_edge_result" using primary key columns */
   analysis_manifest_dependency_edge_result_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result>;
-  authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
-  availableOrgsWithRepos?: Maybe<Array<OrgWithRepos>>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -7109,7 +7034,6 @@ export type Query_Root = {
   builds_by_pk?: Maybe<Builds>;
   /** An array relationship */
   default_branch_builds: Array<Default_Branch_Builds>;
-  fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
   /** fetch data from the table: "findings" using primary key columns */
@@ -7192,8 +7116,6 @@ export type Query_Root = {
   package_release_license: Array<Package_Release_License>;
   /** fetch data from the table: "package.release_license" using primary key columns */
   package_release_license_by_pk?: Maybe<Package_Release_License>;
-  /**  get s3 presigned url for manifest upload, used by the CLI  */
-  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
@@ -7208,7 +7130,6 @@ export type Query_Root = {
   resolved_manifest: Array<Resolved_Manifest>;
   /** fetch data from the table: "resolved_manifest" using primary key columns */
   resolved_manifest_by_pk?: Maybe<Resolved_Manifest>;
-  sbomUrl?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
@@ -7273,11 +7194,6 @@ export type Query_RootAnalysis_Manifest_Dependency_Edge_ResultArgs = {
 
 export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootAuthenticatedRepoCloneUrlArgs = {
-  repoGithubId: Scalars['Int'];
 };
 
 
@@ -7638,12 +7554,6 @@ export type Query_RootPackage_Release_License_By_PkArgs = {
 };
 
 
-export type Query_RootPresignSbomUploadArgs = {
-  buildId: Scalars['uuid'];
-  orgId: Scalars['uuid'];
-};
-
-
 export type Query_RootProject_Access_TokensArgs = {
   distinct_on?: InputMaybe<Array<Project_Access_Tokens_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -7692,11 +7602,6 @@ export type Query_RootResolved_ManifestArgs = {
 
 export type Query_RootResolved_Manifest_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootSbomUrlArgs = {
-  buildId: Scalars['uuid'];
 };
 
 
@@ -9349,6 +9254,7 @@ export type Vulnerability = {
   reviewed_by_source?: Maybe<Scalars['Boolean']>;
   /** An array relationship */
   severities: Array<Vulnerability_Severity>;
+  severity_name?: Maybe<Scalars['severity_enum']>;
   source: Scalars['String'];
   source_id: Scalars['String'];
   summary?: Maybe<Scalars['String']>;
@@ -10056,6 +9962,7 @@ export type Vulnerability_Bool_Exp = {
   references?: InputMaybe<Vulnerability_Reference_Bool_Exp>;
   reviewed_by_source?: InputMaybe<Boolean_Comparison_Exp>;
   severities?: InputMaybe<Vulnerability_Severity_Bool_Exp>;
+  severity_name?: InputMaybe<Severity_Enum_Comparison_Exp>;
   source?: InputMaybe<String_Comparison_Exp>;
   source_id?: InputMaybe<String_Comparison_Exp>;
   summary?: InputMaybe<String_Comparison_Exp>;
@@ -10348,6 +10255,7 @@ export type Vulnerability_Insert_Input = {
   references?: InputMaybe<Vulnerability_Reference_Arr_Rel_Insert_Input>;
   reviewed_by_source?: InputMaybe<Scalars['Boolean']>;
   severities?: InputMaybe<Vulnerability_Severity_Arr_Rel_Insert_Input>;
+  severity_name?: InputMaybe<Scalars['severity_enum']>;
   source?: InputMaybe<Scalars['String']>;
   source_id?: InputMaybe<Scalars['String']>;
   summary?: InputMaybe<Scalars['String']>;
@@ -10395,6 +10303,7 @@ export type Vulnerability_Order_By = {
   references_aggregate?: InputMaybe<Vulnerability_Reference_Aggregate_Order_By>;
   reviewed_by_source?: InputMaybe<Order_By>;
   severities_aggregate?: InputMaybe<Vulnerability_Severity_Aggregate_Order_By>;
+  severity_name?: InputMaybe<Order_By>;
   source?: InputMaybe<Order_By>;
   source_id?: InputMaybe<Order_By>;
   summary?: InputMaybe<Order_By>;
@@ -10694,6 +10603,8 @@ export enum Vulnerability_Select_Column {
   /** column name */
   ReviewedBySource = 'reviewed_by_source',
   /** column name */
+  SeverityName = 'severity_name',
+  /** column name */
   Source = 'source',
   /** column name */
   SourceId = 'source_id',
@@ -10714,6 +10625,7 @@ export type Vulnerability_Set_Input = {
   modified?: InputMaybe<Scalars['timestamptz']>;
   published?: InputMaybe<Scalars['timestamptz']>;
   reviewed_by_source?: InputMaybe<Scalars['Boolean']>;
+  severity_name?: InputMaybe<Scalars['severity_enum']>;
   source?: InputMaybe<Scalars['String']>;
   source_id?: InputMaybe<Scalars['String']>;
   summary?: InputMaybe<Scalars['String']>;
@@ -10880,6 +10792,8 @@ export enum Vulnerability_Update_Column {
   Published = 'published',
   /** column name */
   ReviewedBySource = 'reviewed_by_source',
+  /** column name */
+  SeverityName = 'severity_name',
   /** column name */
   Source = 'source',
   /** column name */
@@ -11092,6 +11006,13 @@ export type GetProjectFromRepoIdQueryVariables = Exact<{
 
 export type GetProjectFromRepoIdQuery = { __typename?: 'query_root', github_repositories: Array<{ __typename?: 'github_repositories', project: { __typename?: 'projects', id: any } }> };
 
+export type GetTreeFromBuildQueryVariables = Exact<{
+  build_id: Scalars['uuid'];
+}>;
+
+
+export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', parent_id: any, child_id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null } | null };
+
 export type GetUserGitHubDataQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
 }>;
@@ -11105,6 +11026,14 @@ export type GetUserRoleQueryVariables = Exact<{
 
 
 export type GetUserRoleQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', role: any, id: any }> };
+
+export type GetUsersBuildsQueryVariables = Exact<{
+  build_ids: Array<Scalars['uuid']> | Scalars['uuid'];
+  user_id: Scalars['uuid'];
+}>;
+
+
+export type GetUsersBuildsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', id: any }> };
 
 export type GetUsersProjectsQueryVariables = Exact<{
   user_id: Scalars['uuid'];
@@ -11437,6 +11366,60 @@ export const GetProjectFromRepoIdDocument = gql`
   }
 }
     `;
+export const GetTreeFromBuildDocument = gql`
+    query GetTreeFromBuild($build_id: uuid!) {
+  builds_by_pk(id: $build_id) {
+    resolved_manifests {
+      id
+      path
+      child_edges_recursive {
+        parent_id
+        child_id
+        child {
+          id
+          range
+          labels
+          release_id
+          release {
+            id
+            fetched_time
+            version
+            package {
+              name
+              last_successful_fetch
+              package_manager
+              affected_by_vulnerability {
+                vulnerability {
+                  id
+                  source_id
+                  source
+                  severity_name
+                  cvss_score
+                }
+                ranges {
+                  introduced
+                  fixed
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    project {
+      name
+      ignored_vulnerabilities {
+        id
+        creator_id
+        locations
+        note
+        project_id
+        vulnerability_id
+      }
+    }
+  }
+}
+    `;
 export const GetUserGitHubDataDocument = gql`
     query GetUserGitHubData($kratos_id: uuid) {
   users(where: {kratos_id: {_eq: $kratos_id}}) {
@@ -11451,6 +11434,15 @@ export const GetUserRoleDocument = gql`
     query GetUserRole($kratos_id: uuid) {
   users(where: {kratos_id: {_eq: $kratos_id}}) {
     role
+    id
+  }
+}
+    `;
+export const GetUsersBuildsDocument = gql`
+    query GetUsersBuilds($build_ids: [uuid!]!, $user_id: uuid!) {
+  builds(
+    where: {_and: {id: {_in: $build_ids}, project: {organization: {organization_users: {user_id: {_eq: $user_id}}}}}}
+  ) {
     id
   }
 }
@@ -11772,11 +11764,17 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetProjectFromRepoId(variables: GetProjectFromRepoIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetProjectFromRepoIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetProjectFromRepoIdQuery>(GetProjectFromRepoIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetProjectFromRepoId', 'query');
     },
+    GetTreeFromBuild(variables: GetTreeFromBuildQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetTreeFromBuildQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetTreeFromBuildQuery>(GetTreeFromBuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetTreeFromBuild', 'query');
+    },
     GetUserGitHubData(variables?: GetUserGitHubDataQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserGitHubDataQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserGitHubDataQuery>(GetUserGitHubDataDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserGitHubData', 'query');
     },
     GetUserRole(variables?: GetUserRoleQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserRoleQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserRoleQuery>(GetUserRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserRole', 'query');
+    },
+    GetUsersBuilds(variables: GetUsersBuildsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUsersBuildsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetUsersBuildsQuery>(GetUsersBuildsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUsersBuilds', 'query');
     },
     GetUsersProjects(variables: GetUsersProjectsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUsersProjectsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUsersProjectsQuery>(GetUsersProjectsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUsersProjects', 'query');
