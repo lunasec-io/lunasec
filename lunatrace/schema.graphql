@@ -13,10 +13,6 @@ directive @cached(
   ttl: Int! = 60
 ) on QUERY
 
-type AuthenticatedRepoCloneUrlOutput {
-  url: String
-}
-
 """
 Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
 """
@@ -30,56 +26,6 @@ input Boolean_comparison_exp {
   _lte: Boolean
   _neq: Boolean
   _nin: [Boolean!]
-}
-
-type BuildData_AffectedByVulnerability {
-  chains: [[BuildData_DependencyNode!]!]
-  ranges: [BuildData_Range]
-  triviallyUpdatable: Boolean
-  vulnerability: BuildData_Vulnerability!
-}
-
-type BuildData_DependencyNode {
-  id: String!
-  range: String!
-  release: BuildData_Release!
-  release_id: String!
-}
-
-type BuildData_Package {
-  affected_by_vulnerability: [BuildData_AffectedByVulnerability!]
-  name: String!
-  package_manager: String!
-}
-
-type BuildData_Range {
-  fixed: String
-  introduced: String
-}
-
-type BuildData_Release {
-  id: String!
-  package: BuildData_Package!
-  version: String!
-}
-
-type BuildData_Vulnerability {
-  cvss_score: Float
-  id: String!
-  severity_name: String
-  source: String!
-  source_id: String!
-  triviallyUpdatable: String
-}
-
-type BuildData_VulnerableRelease {
-  affectedBy: [BuildData_AffectedByVulnerability!]!
-  chains: [[BuildData_DependencyNode!]!]!
-  cvss: Float
-  devOnly: Boolean!
-  release: BuildData_Release
-  severity: String
-  triviallyUpdatable: String!
 }
 
 """
@@ -97,23 +43,6 @@ input Float_comparison_exp {
   _nin: [Float!]
 }
 
-type GithubRepository {
-  cloneUrl: String!
-  defaultBranch: String!
-  gitUrl: String!
-  orgId: Int!
-  orgName: String!
-  orgNodeId: String!
-  ownerType: String!
-  repoId: Int!
-  repoName: String!
-  repoNodeId: String!
-}
-
-type InstallSelectedReposResponse {
-  success: Boolean
-}
-
 """
 Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
 """
@@ -127,29 +56,6 @@ input Int_comparison_exp {
   _lte: Int
   _neq: Int
   _nin: [Int!]
-}
-
-type OrgWithRepos {
-  id: String!
-  organizationName: String!
-  repos: [GithubRepository!]!
-}
-
-input OrgsWithReposInput {
-  id: String!
-  repos: [Int!]!
-}
-
-type PresignedUrlResponse {
-  bucket: String!
-  headers: jsonb!
-  key: String!
-  url: String!
-}
-
-type SbomUploadUrlOutput {
-  error: Boolean!
-  uploadUrl: UploadUrl
 }
 
 """
@@ -205,11 +111,6 @@ input String_comparison_exp {
   _similar: String
 }
 
-type UploadUrl {
-  headers: jsonb!
-  url: String!
-}
-
 scalar _text
 
 """
@@ -242,6 +143,190 @@ input affected_range_type_comparison_exp {
   _lte: affected_range_type
   _neq: affected_range_type
   _nin: [affected_range_type!]
+}
+
+enum analysis_finding_source_enum {
+  semgrep_imported_called
+}
+
+"""
+Boolean expression to compare columns of type "analysis_finding_source_enum". All fields are combined with logical 'AND'.
+"""
+input analysis_finding_source_enum_comparison_exp {
+  _eq: analysis_finding_source_enum
+  _in: [analysis_finding_source_enum!]
+  _is_null: Boolean
+  _neq: analysis_finding_source_enum
+  _nin: [analysis_finding_source_enum!]
+}
+
+enum analysis_finding_type_enum {
+  error
+  not_vulnerable
+  unknown
+  vulnerable
+}
+
+"""
+Boolean expression to compare columns of type "analysis_finding_type_enum". All fields are combined with logical 'AND'.
+"""
+input analysis_finding_type_enum_comparison_exp {
+  _eq: analysis_finding_type_enum
+  _in: [analysis_finding_type_enum!]
+  _is_null: Boolean
+  _neq: analysis_finding_type_enum
+  _nin: [analysis_finding_type_enum!]
+}
+
+"""
+columns and relationships of "analysis.manifest_dependency_edge_result"
+"""
+type analysis_manifest_dependency_edge_result {
+  created_at: timestamptz!
+  finding_source: analysis_finding_source_enum!
+  finding_type: analysis_finding_type_enum!
+  id: uuid!
+  manifest_dependency_edge_id: uuid!
+  vulnerability_id: uuid!
+}
+
+"""
+Boolean expression to filter rows from the table "analysis.manifest_dependency_edge_result". All fields are combined with a logical 'AND'.
+"""
+input analysis_manifest_dependency_edge_result_bool_exp {
+  _and: [analysis_manifest_dependency_edge_result_bool_exp!]
+  _not: analysis_manifest_dependency_edge_result_bool_exp
+  _or: [analysis_manifest_dependency_edge_result_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  finding_source: analysis_finding_source_enum_comparison_exp
+  finding_type: analysis_finding_type_enum_comparison_exp
+  id: uuid_comparison_exp
+  manifest_dependency_edge_id: uuid_comparison_exp
+  vulnerability_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "analysis.manifest_dependency_edge_result"
+"""
+enum analysis_manifest_dependency_edge_result_constraint {
+  """
+  unique or primary key constraint on columns "manifest_dependency_edge_id", "vulnerability_id"
+  """
+  manifest_dependency_edge_result_manifest_dependency_edge_id_vul
+
+  """
+  unique or primary key constraint on columns "id"
+  """
+  manifest_dependency_edge_result_pkey
+}
+
+"""
+input type for inserting data into table "analysis.manifest_dependency_edge_result"
+"""
+input analysis_manifest_dependency_edge_result_insert_input {
+  created_at: timestamptz
+  finding_source: analysis_finding_source_enum
+  finding_type: analysis_finding_type_enum
+  id: uuid
+  manifest_dependency_edge_id: uuid
+  vulnerability_id: uuid
+}
+
+"""
+response of any mutation on the table "analysis.manifest_dependency_edge_result"
+"""
+type analysis_manifest_dependency_edge_result_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [analysis_manifest_dependency_edge_result!]!
+}
+
+"""
+on_conflict condition type for table "analysis.manifest_dependency_edge_result"
+"""
+input analysis_manifest_dependency_edge_result_on_conflict {
+  constraint: analysis_manifest_dependency_edge_result_constraint!
+  update_columns: [analysis_manifest_dependency_edge_result_update_column!]! = []
+  where: analysis_manifest_dependency_edge_result_bool_exp
+}
+
+"""
+Ordering options when selecting data from "analysis.manifest_dependency_edge_result".
+"""
+input analysis_manifest_dependency_edge_result_order_by {
+  created_at: order_by
+  finding_source: order_by
+  finding_type: order_by
+  id: order_by
+  manifest_dependency_edge_id: order_by
+  vulnerability_id: order_by
+}
+
+"""
+primary key columns input for table: analysis_manifest_dependency_edge_result
+"""
+input analysis_manifest_dependency_edge_result_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "analysis.manifest_dependency_edge_result"
+"""
+enum analysis_manifest_dependency_edge_result_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  finding_source
+
+  """column name"""
+  finding_type
+
+  """column name"""
+  id
+
+  """column name"""
+  manifest_dependency_edge_id
+
+  """column name"""
+  vulnerability_id
+}
+
+"""
+input type for updating data in table "analysis.manifest_dependency_edge_result"
+"""
+input analysis_manifest_dependency_edge_result_set_input {
+  created_at: timestamptz
+  finding_source: analysis_finding_source_enum
+  finding_type: analysis_finding_type_enum
+  id: uuid
+  manifest_dependency_edge_id: uuid
+  vulnerability_id: uuid
+}
+
+"""
+update columns of table "analysis.manifest_dependency_edge_result"
+"""
+enum analysis_manifest_dependency_edge_result_update_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  finding_source
+
+  """column name"""
+  finding_type
+
+  """column name"""
+  id
+
+  """column name"""
+  manifest_dependency_edge_id
+
+  """column name"""
+  vulnerability_id
 }
 
 scalar bigint
@@ -796,7 +881,6 @@ type builds {
     where: resolved_manifest_bool_exp
   ): [resolved_manifest!]!
   s3_url: String
-  s3_url_signed: String
 
   """An array relationship"""
   scans(
@@ -2001,7 +2085,6 @@ input fix_state_enum_comparison_exp {
 
 """Metadata about a github repository and where to find it."""
 type github_repositories {
-  authenticated_clone_url: AuthenticatedRepoCloneUrlOutput
   default_branch: String
   git_url: String!
   github_id: Int
@@ -3398,6 +3481,7 @@ type manifest_dependency_edge {
   """An object relationship"""
   child: manifest_dependency_node!
   child_id: uuid!
+  id: uuid!
 
   """An object relationship"""
   parent: manifest_dependency_node!
@@ -3432,6 +3516,7 @@ input manifest_dependency_edge_bool_exp {
   _or: [manifest_dependency_edge_bool_exp!]
   child: manifest_dependency_node_bool_exp
   child_id: uuid_comparison_exp
+  id: uuid_comparison_exp
   parent: manifest_dependency_node_bool_exp
   parent_id: uuid_comparison_exp
 }
@@ -3444,6 +3529,11 @@ enum manifest_dependency_edge_constraint {
   unique or primary key constraint on columns "child_id", "parent_id"
   """
   manifest_dependency_edge_parent_id_child_id_idx
+
+  """
+  unique or primary key constraint on columns "id"
+  """
+  manifest_dependency_edge_pkey
 }
 
 """
@@ -3452,6 +3542,7 @@ input type for inserting data into table "manifest_dependency_edge"
 input manifest_dependency_edge_insert_input {
   child: manifest_dependency_node_obj_rel_insert_input
   child_id: uuid
+  id: uuid
   parent: manifest_dependency_node_obj_rel_insert_input
   parent_id: uuid
 }
@@ -3461,6 +3552,7 @@ order by max() on columns of table "manifest_dependency_edge"
 """
 input manifest_dependency_edge_max_order_by {
   child_id: order_by
+  id: order_by
   parent_id: order_by
 }
 
@@ -3469,6 +3561,7 @@ order by min() on columns of table "manifest_dependency_edge"
 """
 input manifest_dependency_edge_min_order_by {
   child_id: order_by
+  id: order_by
   parent_id: order_by
 }
 
@@ -3496,8 +3589,14 @@ input manifest_dependency_edge_on_conflict {
 input manifest_dependency_edge_order_by {
   child: manifest_dependency_node_order_by
   child_id: order_by
+  id: order_by
   parent: manifest_dependency_node_order_by
   parent_id: order_by
+}
+
+"""primary key columns input for table: manifest_dependency_edge"""
+input manifest_dependency_edge_pk_columns_input {
+  id: uuid!
 }
 
 """
@@ -3508,6 +3607,9 @@ enum manifest_dependency_edge_select_column {
   child_id
 
   """column name"""
+  id
+
+  """column name"""
   parent_id
 }
 
@@ -3516,6 +3618,7 @@ input type for updating data in table "manifest_dependency_edge"
 """
 input manifest_dependency_edge_set_input {
   child_id: uuid
+  id: uuid
   parent_id: uuid
 }
 
@@ -3525,6 +3628,9 @@ update columns of table "manifest_dependency_edge"
 enum manifest_dependency_edge_update_column {
   """column name"""
   child_id
+
+  """column name"""
+  id
 
   """column name"""
   parent_id
@@ -4186,6 +4292,28 @@ type mutation_root {
   delete single row from the table: "vulnerability.range"
   """
   delete_vulnerability_range_by_pk(id: uuid!): vulnerability_range
+
+  """
+  insert data into the table: "analysis.manifest_dependency_edge_result"
+  """
+  insert_analysis_manifest_dependency_edge_result(
+    """the rows to be inserted"""
+    objects: [analysis_manifest_dependency_edge_result_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: analysis_manifest_dependency_edge_result_on_conflict
+  ): analysis_manifest_dependency_edge_result_mutation_response
+
+  """
+  insert a single row into the table: "analysis.manifest_dependency_edge_result"
+  """
+  insert_analysis_manifest_dependency_edge_result_one(
+    """the row to be inserted"""
+    object: analysis_manifest_dependency_edge_result_insert_input!
+
+    """upsert condition"""
+    on_conflict: analysis_manifest_dependency_edge_result_on_conflict
+  ): analysis_manifest_dependency_edge_result
 
   """
   insert data into the table: "build_dependency_relationship"
@@ -4945,10 +5073,26 @@ type mutation_root {
     """upsert condition"""
     on_conflict: webhook_cache_on_conflict
   ): webhook_cache
-  installSelectedRepos(orgs: [OrgsWithReposInput!]!): InstallSelectedReposResponse
 
-  """ get s3 presigned url for manifest upload, used only by the frontend """
-  presignManifestUpload(project_id: uuid!): PresignedUrlResponse
+  """
+  update data of the table: "analysis.manifest_dependency_edge_result"
+  """
+  update_analysis_manifest_dependency_edge_result(
+    """sets the columns of the filtered rows to the given values"""
+    _set: analysis_manifest_dependency_edge_result_set_input
+
+    """filter the rows which have to be updated"""
+    where: analysis_manifest_dependency_edge_result_bool_exp!
+  ): analysis_manifest_dependency_edge_result_mutation_response
+
+  """
+  update single row of the table: "analysis.manifest_dependency_edge_result"
+  """
+  update_analysis_manifest_dependency_edge_result_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: analysis_manifest_dependency_edge_result_set_input
+    pk_columns: analysis_manifest_dependency_edge_result_pk_columns_input!
+  ): analysis_manifest_dependency_edge_result
 
   """
   update data of the table: "build_dependency_relationship"
@@ -5222,6 +5366,15 @@ type mutation_root {
     """filter the rows which have to be updated"""
     where: manifest_dependency_edge_bool_exp!
   ): manifest_dependency_edge_mutation_response
+
+  """
+  update single row of the table: "manifest_dependency_edge"
+  """
+  update_manifest_dependency_edge_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: manifest_dependency_edge_set_input
+    pk_columns: manifest_dependency_edge_pk_columns_input!
+  ): manifest_dependency_edge
 
   """
   update data of the table: "manifest_dependency_node"
@@ -7575,6 +7728,7 @@ type package_release_dependency {
   dependency_release: package_release
   dependency_release_id: uuid
   id: uuid!
+  is_dev: Boolean!
   package_name: String!
   package_version_query: String!
 
@@ -7614,6 +7768,7 @@ input package_release_dependency_bool_exp {
   dependency_release: package_release_bool_exp
   dependency_release_id: uuid_comparison_exp
   id: uuid_comparison_exp
+  is_dev: Boolean_comparison_exp
   package_name: String_comparison_exp
   package_version_query: String_comparison_exp
   release: package_release_bool_exp
@@ -7644,6 +7799,7 @@ input package_release_dependency_insert_input {
   dependency_release: package_release_obj_rel_insert_input
   dependency_release_id: uuid
   id: uuid
+  is_dev: Boolean
   package_name: String
   package_version_query: String
   release: package_release_obj_rel_insert_input
@@ -7703,6 +7859,7 @@ input package_release_dependency_order_by {
   dependency_release: package_release_order_by
   dependency_release_id: order_by
   id: order_by
+  is_dev: order_by
   package_name: order_by
   package_version_query: order_by
   release: package_release_order_by
@@ -7728,6 +7885,9 @@ enum package_release_dependency_select_column {
   id
 
   """column name"""
+  is_dev
+
+  """column name"""
   package_name
 
   """column name"""
@@ -7744,6 +7904,7 @@ input package_release_dependency_set_input {
   dependency_package_id: uuid
   dependency_release_id: uuid
   id: uuid
+  is_dev: Boolean
   package_name: String
   package_version_query: String
   release_id: uuid
@@ -7761,6 +7922,9 @@ enum package_release_dependency_update_column {
 
   """column name"""
   id
+
+  """column name"""
+  is_dev
 
   """column name"""
   package_name
@@ -8771,8 +8935,30 @@ enum projects_update_column {
 }
 
 type query_root {
-  authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
-  availableOrgsWithRepos: [OrgWithRepos!]
+  """
+  fetch data from the table: "analysis.manifest_dependency_edge_result"
+  """
+  analysis_manifest_dependency_edge_result(
+    """distinct select on columns"""
+    distinct_on: [analysis_manifest_dependency_edge_result_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [analysis_manifest_dependency_edge_result_order_by!]
+
+    """filter the rows returned"""
+    where: analysis_manifest_dependency_edge_result_bool_exp
+  ): [analysis_manifest_dependency_edge_result!]!
+
+  """
+  fetch data from the table: "analysis.manifest_dependency_edge_result" using primary key columns
+  """
+  analysis_manifest_dependency_edge_result_by_pk(id: uuid!): analysis_manifest_dependency_edge_result
 
   """
   fetch data from the table: "build_dependency_relationship"
@@ -8878,7 +9064,6 @@ type query_root {
     """filter the rows returned"""
     where: default_branch_builds_bool_exp
   ): [default_branch_builds!]!
-  fakeQueryToHackHasuraBeingABuggyMess: String
 
   """An array relationship"""
   findings(
@@ -9100,6 +9285,11 @@ type query_root {
     """filter the rows returned"""
     where: manifest_dependency_edge_bool_exp
   ): [manifest_dependency_edge!]!
+
+  """
+  fetch data from the table: "manifest_dependency_edge" using primary key columns
+  """
+  manifest_dependency_edge_by_pk(id: uuid!): manifest_dependency_edge
 
   """
   fetch data from the table: "manifest_dependency_node"
@@ -9404,9 +9594,6 @@ type query_root {
   """
   package_release_license_by_pk(id: uuid!): package_release_license
 
-  """ get s3 presigned url for manifest upload, used by the CLI """
-  presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
-
   """An array relationship"""
   project_access_tokens(
     """distinct select on columns"""
@@ -9493,7 +9680,6 @@ type query_root {
   fetch data from the table: "resolved_manifest" using primary key columns
   """
   resolved_manifest_by_pk(id: uuid!): resolved_manifest
-  sbomUrl(buildId: uuid!): String
 
   """An array relationship"""
   scans(
@@ -9781,7 +9967,6 @@ type query_root {
   fetch data from the table: "vulnerability.severity" using primary key columns
   """
   vulnerability_severity_by_pk(id: uuid!): vulnerability_severity
-  vulnerableReleasesFromBuild(buildId: uuid!): [BuildData_VulnerableRelease!]
 
   """
   fetch data from the table: "webhook_cache"
@@ -10477,6 +10662,31 @@ input severity_enum_comparison_exp {
 
 type subscription_root {
   """
+  fetch data from the table: "analysis.manifest_dependency_edge_result"
+  """
+  analysis_manifest_dependency_edge_result(
+    """distinct select on columns"""
+    distinct_on: [analysis_manifest_dependency_edge_result_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [analysis_manifest_dependency_edge_result_order_by!]
+
+    """filter the rows returned"""
+    where: analysis_manifest_dependency_edge_result_bool_exp
+  ): [analysis_manifest_dependency_edge_result!]!
+
+  """
+  fetch data from the table: "analysis.manifest_dependency_edge_result" using primary key columns
+  """
+  analysis_manifest_dependency_edge_result_by_pk(id: uuid!): analysis_manifest_dependency_edge_result
+
+  """
   fetch data from the table: "build_dependency_relationship"
   """
   build_dependency_relationship(
@@ -10801,6 +11011,11 @@ type subscription_root {
     """filter the rows returned"""
     where: manifest_dependency_edge_bool_exp
   ): [manifest_dependency_edge!]!
+
+  """
+  fetch data from the table: "manifest_dependency_edge" using primary key columns
+  """
+  manifest_dependency_edge_by_pk(id: uuid!): manifest_dependency_edge
 
   """
   fetch data from the table: "manifest_dependency_node"

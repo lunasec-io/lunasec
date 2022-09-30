@@ -1,0 +1,5 @@
+graphql:
+  url: http://localhost:4455/v1/graphql
+  secret: myadminsecretkey
+aws:
+  region: us-west-2

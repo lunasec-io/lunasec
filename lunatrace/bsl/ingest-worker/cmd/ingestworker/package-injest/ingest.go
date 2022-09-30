@@ -12,8 +12,6 @@
 package ingest
 
 import (
-	"fmt"
-
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
 
@@ -36,27 +34,7 @@ func NewCommand(p Params) clifx.CommandResult {
 			Action: func(ctx *cli.Context) error {
 				packageName := ctx.Args().First()
 
-				pkgs := []string{packageName}
-				for fetchedPkgs := 0; len(pkgs) > fetchedPkgs; fetchedPkgs++ {
-					fmt.Println(pkgs[fetchedPkgs])
-					newPkgs, err := p.Ingester.Ingest(ctx.Context, pkgs[fetchedPkgs])
-					fmt.Println(newPkgs)
-					if err != nil {
-						fmt.Println(err)
-					}
-				out:
-					for _, newPkg := range newPkgs {
-						for _, oldPkg := range pkgs {
-							if newPkg == oldPkg {
-								continue out
-							}
-						}
-						pkgs = append(pkgs, newPkg)
-					}
-					fmt.Println(len(pkgs) - fetchedPkgs)
-				}
-
-				return nil
+				return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName)
 			},
 		},
 	}

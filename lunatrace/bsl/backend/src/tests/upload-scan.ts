@@ -13,7 +13,7 @@
  */
 import fs from 'fs';
 
-import { performSnapshotScanAndCollectReport } from '../models/scan';
+import { performSnapshotScanAndCollectReport } from '../analysis/scan';
 import { log } from '../utils/log';
 
 import { scaffoldBuild } from './scaffold-project-and-build';

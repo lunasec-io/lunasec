@@ -22,8 +22,8 @@ export interface WorkerBucketConfig {
   manifestBucket: string;
 }
 
-export interface VulnerabilityUpdateConfig {
-  grypeDatabaseBucket: string;
+export interface StaticAnalysisConfig {
+  queueName: string;
 }
 
 export type WorkerType = 'queue-handler' | 'job-runner';
