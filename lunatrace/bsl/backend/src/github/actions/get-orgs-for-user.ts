@@ -15,7 +15,7 @@ import deepmerge from 'deepmerge';
 
 import { logError } from '../../utils/errors';
 import { log } from '../../utils/log';
-import { catchError, threwError, Try } from '../../utils/try';
+import { catchError, ErrorOrResult, threwError } from '../../utils/try';
 import { GetUserOrganizationsQuery } from '../api/generated';
 import { getGithubGraphqlClient } from '../auth';
 
@@ -30,7 +30,7 @@ export async function getOrgsForUser(userId: string, accessToken: string) {
   while (moreDataAvailable) {
     log.info(`[user: ${userId}] Requesting Github user's organizations page`);
 
-    const userOrgs: Try<GetUserOrganizationsQuery> = await catchError(
+    const userOrgs: ErrorOrResult<GetUserOrganizationsQuery> = await catchError(
       async () =>
         await github.GetUserOrganizations({
           orgsAfter: orgsAfter,

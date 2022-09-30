@@ -26,7 +26,6 @@ export async function pushHandler(event: EmitterWebhookEvent<'push'>) {
     return;
   }
   const projectId = getRepositoryResponse.github_repositories[0].project.id;
-
   const ref = event.payload.ref;
   const branchOrTagName = ref.split('/').pop();
   const defaultBranch = event.payload.repository.default_branch;

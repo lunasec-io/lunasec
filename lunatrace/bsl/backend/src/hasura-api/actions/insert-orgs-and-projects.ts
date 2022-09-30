@@ -16,7 +16,7 @@ import { OrganizationInputLookup, UpsertOrganizationResponse } from '../../types
 import { MaybeError } from '../../types/util';
 import { logError } from '../../utils/errors';
 import { log } from '../../utils/log';
-import { catchError, threwError, Try } from '../../utils/try';
+import { catchError, ErrorOrResult, threwError } from '../../utils/try';
 import {
   Github_Repositories_Constraint,
   Github_Repositories_On_Conflict,
@@ -119,7 +119,7 @@ export async function insertOrgsAndProjects(
     ],
   };
 
-  const createOrgsRes: Try<UpsertOrganizationsMutation> = await catchError(
+  const createOrgsRes: ErrorOrResult<UpsertOrganizationsMutation> = await catchError(
     async () =>
       await hasura.UpsertOrganizations({
         object: orgObjectList,
