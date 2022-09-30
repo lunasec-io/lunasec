@@ -24,6 +24,10 @@ import { log } from '../../utils/log';
 import { getInstallationAccessToken } from '../auth';
 
 export async function installOrganizationFromGithub(newOrg: WebHookOrgData) {
+  log.info('Handling github install for organization', {
+    newOrg,
+  });
+
   const installationAccessTokenRes = await getInstallationAccessToken(newOrg.id);
   if (installationAccessTokenRes.error) {
     log.error('Failed to fetch installation access token', { installationAccessTokenRes });
@@ -57,7 +61,7 @@ export async function installOrganizationFromGithub(newOrg: WebHookOrgData) {
 
   const orgUpsertResult = await hasura.UpsertOrganization({ object: orgInHasuraFormat, on_conflict: onOrgConflict });
 
-  log.info('Org upsert result ', { orgUpsertResult });
+  log.info('Upserted organization for installation', { orgUpsertResult });
   if (!orgUpsertResult.insert_organizations_one) {
     throw new Error('Failed to upsert org, hasura rejected it');
   }

@@ -1,0 +1,12 @@
+rules:
+  - id: express-import-test
+    pattern-either:
+      - pattern: foo.vulnerable()
+      - pattern: foo.vulnerable(...)
+    r2c-internal-project-depends-on:
+      namespace: npm
+      package: express
+      version: ">=4.0.0"
+    message: test express import
+    languages: [javascript, typescript]
+    severity: WARNING
