@@ -28,13 +28,37 @@
               <option name="patterns">
                 <list>
                   <Item>
-                    <option name="path" value="lunatrace/bsl/ory/kratos/config.production.yaml" />
-                  </Item>
-                  <Item>
                     <option name="path" value="lunatrace/bsl/ory/kratos/config.dev.yaml" />
                   </Item>
                   <Item>
+                    <option name="path" value="lunatrace/bsl/ory/kratos/config.production.yaml" />
+                  </Item>
+                  <Item>
                     <option name="path" value="lunatrace/bsl/ory/kratos/config.yaml" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+        <entry key="Semgrep">
+          <value>
+            <SchemaInfo>
+              <option name="generatedName" value="New Schema" />
+              <option name="name" value="Semgrep" />
+              <option name="relativePathToSchema" value="https://raw.githubusercontent.com/returntocorp/semgrep-interfaces/main/rule_schema.yaml" />
+              <option name="schemaVersion" value="JSON Schema version 7" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="directory" value="true" />
+                    <option name="path" value="lunatrace/bsl/semgrep/incubator" />
+                    <option name="mappingKind" value="Directory" />
+                  </Item>
+                  <Item>
+                    <option name="directory" value="true" />
+                    <option name="path" value="lunatrace/bsl/semgrep/sandbox" />
+                    <option name="mappingKind" value="Directory" />
                   </Item>
                 </list>
               </option>

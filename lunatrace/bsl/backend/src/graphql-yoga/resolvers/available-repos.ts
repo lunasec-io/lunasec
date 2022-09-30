@@ -37,7 +37,7 @@ interface OrgWithRepos {
  * Because the github API is clunky and we cant directly fetch the repos without knowing the installations, we first fetch the installationIds authenticated as the user,
  * and then fetch the repo list for each installation in parallel, authenticated as the installation
  */
-export const availableOrgsWithReposResolver: AvailableOrgsWithReposType = async (parent, args, ctx, info) => {
+export const availableOrgsWithRepos: AvailableOrgsWithReposType = async (parent, args, ctx, info) => {
   if (!isAuthenticated(ctx)) {
     log.warn('No parsed JWT claims with a user ID on route that required authorization, throwing a graphql error');
     throw new GraphQLYogaError('Unauthorized');
@@ -51,6 +51,9 @@ export const availableOrgsWithReposResolver: AvailableOrgsWithReposType = async 
   }
 
   const orgs = orgsQuery.organizations;
+  log.info('loaded available organizations with repos', {
+    orgs,
+  });
 
   const orgDataWithNulls = await Promise.all(orgs.map(loadReposByOrganization));
   const orgData = orgDataWithNulls.filter((o) => o !== null) as OrgWithRepos[];

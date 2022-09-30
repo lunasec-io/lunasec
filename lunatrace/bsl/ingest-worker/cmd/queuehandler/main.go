@@ -12,16 +12,53 @@
 package main
 
 import (
+	"context"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/awsfx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher/npm"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queuefx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis"
 	"go.uber.org/fx"
-
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/handlers/ingest"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/lunatracefx"
+	"net/http"
 )
+
+type QueueHandlerProps struct {
+	fx.In
+
+	Handlers []queuefx.Handler `group:"queue_handlers"`
+}
 
 func main() {
 	app := fx.New(
-		lunatracefx.Module,
-		ingest.Module,
+		fx.Supply(http.DefaultClient),
+		fx.Provide(
+			config.NewQueueHandlerConfigProvider,
+			queuefx.NewConfig,
+			graphqlfx.NewConfig,
+			awsfx.NewConfig,
+
+			awsfx.NewSession,
+			graphqlfx.NewGraphqlClient,
+			npm.NewNPMFetcher,
+			ingester.NewHasuraIngester,
+
+			staticanalysis.NewStaticAnalysisQueueHandler,
+			func(props QueueHandlerProps) queuefx.HandlerLookup {
+				handlerLookup := queuefx.HandlerLookup{}
+				for _, handler := range props.Handlers {
+					handlerLookup[handler.GetHandlerKey()] = handler
+				}
+				return handlerLookup
+			},
+			queuefx.NewQueueSubscriber,
+		),
+
+		fx.Invoke(func(queueSub *queuefx.Subscriber) error {
+			ctx := context.Background()
+			return queueSub.Run(ctx)
+		}),
 	)
 
 	app.Run()

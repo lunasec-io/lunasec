@@ -20,6 +20,7 @@ import { writeFile } from 'fs/promises';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: './.env.dev' });
+dotenv.config({ path: '../bsl/backend/.env.dev' });
 dotenv.config();
 
 import { dump } from 'js-yaml';
@@ -31,6 +32,7 @@ import {
   frontend,
   generateCommon,
   generateLogger,
+  goQueueHandler,
   hasura,
   queueWorker,
   smeeWebhook,
@@ -39,7 +41,7 @@ import { tmuxpConfig, tmuxWindow } from './tmux';
 
 const servicesWindow = tmuxWindow('services', [hasura, frontend, dockerCompose]);
 
-const workerWindow = tmuxWindow('workers', [queueWorker]);
+const workerWindow = tmuxWindow('workers', [queueWorker, goQueueHandler]);
 
 const backendWindow = tmuxWindow('backend', [smeeWebhook, backend]);
 
