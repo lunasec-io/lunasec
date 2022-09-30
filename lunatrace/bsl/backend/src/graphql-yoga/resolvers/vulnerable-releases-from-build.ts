@@ -34,7 +34,7 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
 
   const startTime = Date.now();
 
-  const rawManifests = rawBuildData.resolved_manifests as Omit<typeof rawBuildData['resolved_manifests'], '__typename'>;
+  const rawManifests = rawBuildData.resolved_manifests;
 
   const depTree = buildTreeFromRawData(rawManifests);
   if (!depTree) {
