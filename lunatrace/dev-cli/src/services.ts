@@ -15,7 +15,7 @@
  *
  */
 import { waitForItScript } from './constants';
-import { backendEnv, queueWorkerEnv, smeeWebhookUrl } from './env';
+import { backendEnv, goQueueHandlerEnv, queueWorkerEnv, smeeWebhookUrl } from './env';
 import { tmuxPane } from './tmux';
 
 function waitForItCmd(host: string, port: number) {
@@ -46,3 +46,5 @@ export const smeeWebhook = tmuxPane([`smee -u ${smeeWebhookUrl} -p 3002 -P /gith
 export const generateCommon = tmuxPane([`cd common`, `yarn start`]);
 
 export const generateLogger = tmuxPane([`cd logger`, `yarn start`]);
+
+export const goQueueHandler = tmuxPane([`cd ingest-worker`, `${goQueueHandlerEnv} air`]);
