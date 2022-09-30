@@ -20,13 +20,11 @@ import { AffectedByVulnerability, DependencyChain, DependencyEdgePartial, Vulner
  * @class DependencyTree
  */
 export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
+  // The following indexes are how the tree is "built". They allow high speed querying against the tree data without ever building a full tree in memory
   public nodeIdToParentIds: Map<string, Set<string>> = new Map();
   public depNodesById: Map<string, DependencyEdge['child']> = new Map();
   public vulnIdToVulns: Map<string, Set<AffectedByVulnerability>> = new Map();
   public depNodeIdsByReleaseId: Map<string, Set<string>> = new Map();
-
-  // public vulnerableReleasesById: Map<string, VulnerableRelease<BuildDependency>> = new Map();
-
   public vulnerableDepNodeIds: Set<string> = new Set();
   // This builds the indexes and any useful data that show useful data about the tree
   // Note that because we mostly extract information from the bottom of the tree upwards ( ex: show why a vulnerable package was installed)
