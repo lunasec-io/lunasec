@@ -62,6 +62,17 @@ export async function checkProjectIsAuthorized(projectId: string, ctx: Context):
   return;
 }
 
+export async function checkBuildsAreAuthorized(buildIds: string[], ctx: Context): Promise<void> {
+  const userId = getUserId(ctx);
+  const existingBuildsRes = await hasura.GetUsersBuilds({ build_ids: buildIds, user_id: userId });
+  if (!existingBuildsRes.builds) {
+    throw new GraphQLYogaError('Error fetching existing builds for user');
+  }
+  if (existingBuildsRes.builds.length < buildIds.length) {
+    throw new GraphQLYogaError('Not authorized for the given build');
+  }
+}
+
 export async function getGithubUserToken(ctx: Context): Promise<string> {
   const userId = getUserId(ctx);
   const githubUserTokenRes = await getGithubAccessTokenFromKratos(userId);

@@ -1,0 +1,49 @@
+query GetVulnerableReleasesFromBuild($build_id: uuid!) {
+    vulnerableReleasesFromBuild(buildId: $build_id) {
+        triviallyUpdatable
+        cvss
+        severity
+        devOnly
+        chains {
+            id
+            range
+            release {
+                id
+                package {
+                    name
+                }
+                version
+            }
+        }
+        release {
+            version
+            package {
+                name
+            }
+        }
+        affectedBy {
+            triviallyUpdatable
+            vulnerability{
+                severity_name
+                cvss_score
+                source
+                source_id
+            }
+            chains {
+                id
+                range
+                release {
+                    id
+                    package {
+                        name
+                    }
+                    version
+                }
+            }
+        }
+        devOnly
+        release {
+            id
+        }
+    }
+}

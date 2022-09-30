@@ -1,0 +1,5 @@
+query GetUsersBuilds($build_ids: [uuid!]!, $user_id: uuid!) {
+    builds(where: {_and: {id: {_in: $build_ids}, project: {organization: {organization_users: {user_id: {_eq: $user_id}}}}}}) {
+        id
+    }
+}

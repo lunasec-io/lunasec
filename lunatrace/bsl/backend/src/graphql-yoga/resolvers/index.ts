@@ -16,18 +16,20 @@ import { GraphQLJSON, GraphQLUUID } from 'graphql-scalars';
 import { Resolvers } from '../generated-resolver-types';
 
 import { authenticatedRepoCloneUrlResolver } from './authenticated-repo-clone-url';
-import { availableOrgsWithRepos } from './available-repos';
+import { availableOrgsWithReposResolver } from './available-repos';
 import { installSelectedReposResolver } from './install-selected-repos';
 import { presignManifestUploadResolver } from './presign-manifest-upload';
 import { presignSbomUploadResolver } from './presign-sbom-upload';
 import { sbomUrlResolver } from './sbom-url';
+import { vulnerableReleasesFromBuildResolver } from './vulnerable-releases-from-build';
 
 export const resolvers: Resolvers = {
   Query: {
     presignSbomUpload: presignSbomUploadResolver,
     authenticatedRepoCloneUrl: authenticatedRepoCloneUrlResolver,
     sbomUrl: sbomUrlResolver,
-    availableOrgsWithRepos: availableOrgsWithRepos,
+    availableOrgsWithRepos: availableOrgsWithReposResolver,
+    vulnerableReleasesFromBuild: vulnerableReleasesFromBuildResolver,
   },
   Mutation: {
     presignManifestUpload: presignManifestUploadResolver,

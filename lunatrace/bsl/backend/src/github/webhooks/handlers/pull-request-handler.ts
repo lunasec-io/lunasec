@@ -73,7 +73,6 @@ export async function pullRequestHandler(event: EmitterWebhookEvent<'pull_reques
     }
 
     const projectId = getRepositoryResponse.github_repositories[0].project.id;
-
     log.info('snapshotting repository for pull request');
 
     // TODO (cthompson) we need to start the github PR check here, and then in pr-comment-generator.ts, that is where
