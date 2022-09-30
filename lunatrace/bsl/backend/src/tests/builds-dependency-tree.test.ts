@@ -11,8 +11,10 @@
  * limitations under the License.
  *
  */
-import { DependencyTree } from './builds-dependency-tree';
-import { DependencyEdgePartial } from './types';
+import util from 'util';
+
+import { DependencyTree } from '../models/dependency-tree/builds-dependency-tree';
+import { DependencyEdgePartial } from '../models/dependency-tree/types';
 
 // TODO: Move this to a fixtures file
 const dependencies: Array<DependencyEdgePartial> = [
@@ -24,6 +26,7 @@ const dependencies: Array<DependencyEdgePartial> = [
       range: '1.0.0',
       release_id: '1',
       release: {
+        id: '1',
         version: '1.0.0',
         package: {
           affected_by_vulnerability: [],
@@ -41,6 +44,7 @@ const dependencies: Array<DependencyEdgePartial> = [
       range: '1.0.0',
       release_id: '2',
       release: {
+        id: '2',
         version: '1.0.0',
         package: {
           affected_by_vulnerability: [],
@@ -58,6 +62,7 @@ const dependencies: Array<DependencyEdgePartial> = [
       range: '1.0.0',
       release_id: '3',
       release: {
+        id: '3',
         version: '1.0.0',
         package: {
           affected_by_vulnerability: [],
@@ -76,10 +81,15 @@ const dependencies: Array<DependencyEdgePartial> = [
       release_id: '4',
       release: {
         version: '1.0.2',
+        id: '4',
         package: {
           affected_by_vulnerability: [
             {
               vulnerability: {
+                severity_name: 'Medium',
+                cvss_score: 7.2,
+                source: 'github',
+                source_id: 'GHSA123ABC',
                 id: 'a',
               },
               ranges: [
@@ -104,18 +114,16 @@ describe('The dependency tree', () => {
     expect(tree).toBeDefined();
     expect(tree.depNodesById.size).toEqual(4);
     expect(tree.nodeIdToParentIds.size).toEqual(3);
-    expect(tree.packageSlugToChildIds.size).toEqual(5);
     expect(tree.vulnIdToVulns.size).toEqual(1);
+    // parse out vulnerable releases and check the data
+    const vulnReleases = tree.getVulnerableReleases();
+    expect(vulnReleases.length).toEqual(1);
 
-    const chains = tree.showDependencyChainsOfPackage('qux', '1.0.2');
-    expect(chains.length).toEqual(1);
-    expect(chains[0].length).toEqual(4);
-    expect(chains[0][0].child.release.package.name).toEqual('foo');
-    expect(chains[0][1].child.release.package.name).toEqual('bar');
-    expect(chains[0][2].child.release.package.name).toEqual('baz');
-    expect(chains[0][3].child.release.package.name).toEqual('qux');
+    const vulnQux = vulnReleases[0];
+    expect(vulnQux.triviallyUpdatable).toEqual('yes');
+    expect(vulnQux.chains.length).toEqual(1);
 
-    const vulnTriviallyUpdatable = tree.checkIfVulnInstancesTriviallyUpdatable('a');
-    expect(vulnTriviallyUpdatable).toEqual('yes');
+    const chainPackageNames = vulnQux.chains[0].map((dep) => dep.release.package.name);
+    expect(chainPackageNames).toEqual(['foo', 'bar', 'baz', 'qux']);
   });
 });

@@ -20,11 +20,9 @@ import { AffectedByVulnerability, DependencyChain, DependencyEdgePartial, Vulner
  * @class DependencyTree
  */
 export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
-  public packageSlugToChildIds: Map<string, Set<string>> = new Map();
   public nodeIdToParentIds: Map<string, Set<string>> = new Map();
   public depNodesById: Map<string, DependencyEdge['child']> = new Map();
   public vulnIdToVulns: Map<string, Set<AffectedByVulnerability>> = new Map();
-
   public depNodeIdsByReleaseId: Map<string, Set<string>> = new Map();
 
   // public vulnerableReleasesById: Map<string, VulnerableRelease<BuildDependency>> = new Map();
@@ -47,7 +45,7 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
         // just add the depNodes to the existing release ID
         existingNodesForThisRelease.add(depNode.id);
       } else {
-        this.depNodeIdsByReleaseId.set(depNode.release_id, new Set([depNode.id]));
+        this.depNodeIdsByReleaseId.set(depNode.release.id, new Set([depNode.id]));
       }
 
       // Create a lookup of child IDs that map to a set of nodes that include them (parents).
@@ -192,7 +190,7 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
   private checkIfReleaseTriviallyUpdatable(releaseId: string): 'yes' | 'partially' | 'no' {
     const matchingDepIds = this.depNodeIdsByReleaseId.get(releaseId);
     if (!matchingDepIds) {
-      throw new Error('Failed to find release while checking triviallyUpdatable');
+      throw new Error(`Failed to find release for id ${releaseId} while checking triviallyUpdatable`);
     }
 
     const matchingDeps = [...matchingDepIds].map((depId) => {
@@ -269,9 +267,6 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
     };
 
     // start the recursive search
-
-    const parentIds = this.nodeIdToParentIds.get(depNode.id);
-
     recursivelyGenerateChainsWithStack(depNode, []);
 
     return flattenedChains;

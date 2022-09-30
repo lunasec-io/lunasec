@@ -12,7 +12,8 @@
  *
  */
 
-// Represents a subset of the incoming data about a tree element
+// Represents a subset of the incoming data from hasura about a tree element
+
 export interface DependencyEdgePartial {
   // multiple edges could have the same child id/ the same child
   child_id: string;
@@ -58,7 +59,7 @@ export interface AffectedByVulnerability {
 
 export type DependencyChain<D extends DependencyEdgePartial['child']> = Array<D>;
 
-// This is the RESPONSE type that we generate from the tree (from the above data types) and return to the client or consumer.
+// This is the OUTPUT/RESPONSE type that we generate from the tree (from the above data types) and return to the client or consumer.
 // Note that it references many of the same types as above, as this is essentially just a reorganization and subset of the above data, with some additional computed fields such as devOnly
 export interface VulnerableRelease<DependencyEdge extends DependencyEdgePartial> {
   release: Release;
