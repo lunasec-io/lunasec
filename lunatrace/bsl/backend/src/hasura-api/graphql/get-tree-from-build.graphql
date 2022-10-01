@@ -1,5 +1,3 @@
-
-
 query GetTreeFromBuild($build_id: uuid!) {
     builds_by_pk(id: $build_id) {
         resolved_manifests {
@@ -39,7 +37,6 @@ query GetTreeFromBuild($build_id: uuid!) {
                 }
             }
         }
-
         project {
             name
             ignored_vulnerabilities {
@@ -51,7 +48,5 @@ query GetTreeFromBuild($build_id: uuid!) {
                 vulnerability_id
             }
         }
-
-
     }
 }

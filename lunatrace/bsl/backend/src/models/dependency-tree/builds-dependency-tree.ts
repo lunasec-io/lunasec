@@ -14,6 +14,8 @@
 import { severityOrderOsv } from '@lunatrace/lunatrace-common';
 import semver from 'semver';
 
+import { log } from '../../utils/log';
+
 import { AffectedByVulnerability, DependencyChain, DependencyEdgePartial, VulnerableRelease } from './types';
 
 /**
@@ -25,7 +27,7 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
   public depNodesById: Map<string, DependencyEdge['child']> = new Map();
   public vulnIdToVulns: Map<string, Set<AffectedByVulnerability>> = new Map();
   public depNodeIdsByReleaseId: Map<string, Set<string>> = new Map();
-  public vulnerableDepNodeIds: Set<string> = new Set();
+  public vulnerableDeps: Set<{ depNode: DependencyEdge['child']; vulnerabilityId: string }> = new Set();
   // This builds the indexes and any useful data that show useful data about the tree
   // Note that because we mostly extract information from the bottom of the tree upwards ( ex: show why a vulnerable package was installed)
   constructor(sourceDeps: Array<DependencyEdge>) {
@@ -35,6 +37,14 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
     flatEdges.forEach((edge) => {
       // flatten the parent id into the child so we can forget about edges as much as possible
       const depNode = edge.child;
+
+      if (!depNode) {
+        log.warn('child node of edge is null', {
+          edge,
+        });
+        return;
+      }
+
       depNode.parent_id = edge.parent_id;
 
       // Create a map from a given release to the list of depNodes
@@ -72,7 +82,7 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
             vulnSet.add(vuln);
             this.vulnIdToVulns.set(vuln.vulnerability.id, vulnSet);
             // mark this edge for later postprossesing when the tree is done being built
-            this.vulnerableDepNodeIds.add(depNode.id);
+            this.vulnerableDeps.add({ depNode, vulnerabilityId: vuln.vulnerability.id });
           }
 
           return isVulnerable;
@@ -81,19 +91,25 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
     });
   }
 
+  public getVulnerableDependencyChainsByEdgeId(): Record<string, string[][]> {
+    const vulnerabilityToChains: Record<string, string[][]> = {};
+    this.vulnerableDeps.forEach((vulnerableDepInfo) => {
+      const vulnerableDep = vulnerableDepInfo.depNode;
+      const chains = this.getDependencyChainsOfDepNode(vulnerableDep);
+      const chainsForVulnerability = chains.map((chain) => chain.map((edge) => edge.id));
+      vulnerabilityToChains[vulnerableDepInfo.vulnerabilityId] = chainsForVulnerability;
+    });
+    return vulnerabilityToChains;
+  }
+
   // this is the main function that we call to return useful information to the client about their vulnerabilities
   // Todo: The nice generic typing in the return type has been given up on for now (DependencyEdgePartial instead of DependencyEdge), it would be nice to fix it, but its maybe not worth it
   // Also this method is too long but also really hard to break up because of all the computed state from various steps
   public getVulnerableReleases(): VulnerableRelease<DependencyEdgePartial>[] {
     const vulnerableReleasesById: Record<string, VulnerableRelease<DependencyEdge>> = {};
 
-    this.vulnerableDepNodeIds.forEach((nodeId) => {
-      const vulnerableDep = this.depNodesById.get(nodeId);
-
-      if (!vulnerableDep) {
-        throw new Error('failed to lookup depNode by id');
-      }
-
+    this.vulnerableDeps.forEach((vulnerableDepInfo) => {
+      const vulnerableDep = vulnerableDepInfo.depNode;
       const release = vulnerableDep.release;
 
       const chains = this.getDependencyChainsOfDepNode(vulnerableDep);
@@ -181,8 +197,7 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
       }
     });
     const vulnerableRangesString = vulnerableRanges.join(' || '); // Just put them all in one big range and let semver figure it out
-    const semverRange = new semver.Range(vulnerableRangesString);
-    return semverRange;
+    return new semver.Range(vulnerableRangesString);
   }
 
   private checkIfReleaseTriviallyUpdatable(releaseId: string): 'yes' | 'partially' | 'no' {
@@ -250,7 +265,6 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
       }
 
       const parents = this.nodeIdToParentIds.get(dep.id);
-
       if (!parents) {
         throw new Error(`Failed to find parent edges for child id ${dep.id} in the tree`);
       }
