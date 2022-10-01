@@ -16,6 +16,7 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
+	"github.com/rs/zerolog/log"
 	"io"
 	"os"
 	"path"
@@ -40,26 +41,43 @@ func ExtractTarGz(gzipStream io.Reader, dir string) error {
 			return err
 		}
 
+		outFilePath := path.Join(dir, header.Name)
+
 		switch header.Typeflag {
 		case tar.TypeDir:
-			if err := os.Mkdir(header.Name, 0755); err != nil {
+			if err := os.Mkdir(outFilePath, 0755); err != nil {
+				log.Error().
+					Err(err).
+					Str("out file path", outFilePath).
+					Msg("unable to make directory for tar dir")
 				return err
 			}
 		case tar.TypeReg:
-			outFilePath := path.Join(dir, header.Name)
 			outFileDir, _ := path.Split(outFilePath)
 			err = os.MkdirAll(outFileDir, 0755)
 			if err != nil {
+				log.Error().
+					Err(err).
+					Str("out dir", outFileDir).
+					Msg("unable to make directory for tar file path")
 				return err
 			}
 
 			outFile, err := os.Create(outFilePath)
 			if err != nil {
+				log.Error().
+					Err(err).
+					Str("out dir", outFilePath).
+					Msg("unable to create file for tar file path")
 				return err
 			}
 
 			if _, err := io.Copy(outFile, tarReader); err != nil {
 				outFile.Close()
+				log.Error().
+					Err(err).
+					Str("out file", outFile.Name()).
+					Msg("unable to copy contents of tar file path")
 				return err
 			}
 			outFile.Close()

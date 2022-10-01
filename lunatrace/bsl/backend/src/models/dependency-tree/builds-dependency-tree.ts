@@ -61,7 +61,10 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
         this.childIdToParentIds.set(edgeChild.id, parentIdsToNode);
 
         // Given a parent and a child relationship, determine the corresponding edge
-        this.parentChildToEdgeLookup.set(this.parentChildEdgeIdLookupKey(edgeChild.parent_id, edge.child_id), edge);
+        this.parentChildToEdgeLookup.set(
+          DependencyTree.parentChildEdgeIdLookupKey(edgeChild.parent_id, edge.child_id),
+          edge
+        );
       }
 
       // Create a separate lookup to directly map an ID to an edge
@@ -91,7 +94,7 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
     });
   }
 
-  private parentChildEdgeIdLookupKey(parentId: string, childId: string) {
+  private static parentChildEdgeIdLookupKey(parentId: string, childId: string) {
     return parentId + childId;
   }
 
@@ -107,7 +110,7 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
               return undefined;
             }
 
-            const edgeLookupKey = this.parentChildEdgeIdLookupKey(dep.parent_id, dep.id);
+            const edgeLookupKey = DependencyTree.parentChildEdgeIdLookupKey(dep.parent_id, dep.id);
             return this.parentChildToEdgeLookup.get(edgeLookupKey)?.id;
           })
           .filter(notEmpty)
