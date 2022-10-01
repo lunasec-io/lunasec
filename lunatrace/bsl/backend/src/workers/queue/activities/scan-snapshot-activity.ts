@@ -110,9 +110,16 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
     vulnerableDependencyChains,
   });
 
+  const queuedStaticAnalyses: Map<string, boolean> = new Map<string, boolean>();
   Object.entries(vulnerableDependencyChains).forEach(([vulnerabilityId, dependencyChains]) => {
     dependencyChains.forEach((chain) => {
       chain.forEach(async (edgeId) => {
+        const key = vulnerabilityId + edgeId;
+        if (queuedStaticAnalyses.get(key)) {
+          return;
+        }
+
+        queuedStaticAnalyses.set(key, true);
         const resp = await queueManifestDependencyEdgeForStaticAnalysis(vulnerabilityId, edgeId);
         if (resp.error) {
           log.error('failed to queue vulnerable edge for analysis', {
