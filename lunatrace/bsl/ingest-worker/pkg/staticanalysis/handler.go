@@ -119,7 +119,7 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("package release id", queueRecord.ManifestDependencyEdgeId).
+			Str("manifest dependency edge id", queueRecord.ManifestDependencyEdgeId).
 			Msg("failed to parse package release id as uuid")
 		return err
 	}
@@ -128,7 +128,7 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("package release id", queueRecord.VulnerabilityID).
+			Str("vulnerability id", queueRecord.VulnerabilityID).
 			Msg("failed to parse vulnerability id as uuid")
 		return err
 	}
@@ -138,8 +138,47 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 		return err
 	}
 
-	parentPackageName := resp.Manifest_dependency_edge_by_pk.Parent.Release.Package.Name
+	if resp.Manifest_dependency_edge_by_pk == nil {
+		log.Error().
+			Err(err).
+			Msg("manifest dependency edge is nil")
+		return errors.New("manifest dependency edge nil")
+	}
+
+	if resp.Manifest_dependency_edge_by_pk.Child == nil {
+		log.Error().
+			Err(err).
+			Interface("manifest dependency edge", resp.Manifest_dependency_edge_by_pk).
+			Msg("child dependency is nil")
+		return errors.New("child dependency is nil")
+	}
 	childPackageName := resp.Manifest_dependency_edge_by_pk.Child.Release.Package.Name
+
+	if resp.Manifest_dependency_edge_by_pk.Parent == nil {
+		log.Error().
+			Err(err).
+			Interface("manifest dependency edge", resp.Manifest_dependency_edge_by_pk).
+			Msg("parent dependency is nil")
+		return errors.New("child dependency is nil")
+	}
+
+	if resp.Manifest_dependency_edge_by_pk.Parent.Release == nil {
+		log.Error().
+			Err(err).
+			Interface("manifest dependency edge", resp.Manifest_dependency_edge_by_pk).
+			Msg("parent dependency release is nil")
+		return errors.New("parent dependency release is nil")
+	}
+
+	parentPackageName := resp.Manifest_dependency_edge_by_pk.Parent.Release.Package.Name
+	upstreamBlobUrl := resp.Manifest_dependency_edge_by_pk.Parent.Release.Upstream_blob_url
+
+	if upstreamBlobUrl == nil {
+		upstreamBlobUrl, err = s.ingestPackageAndGetUpstreamUrl(ctx, manifestDependencyEdgeUUID, parentPackageName)
+		if err != nil {
+			return err
+		}
+	}
 
 	logInfo := log.Info().
 		Str("parent package", parentPackageName).
@@ -151,14 +190,6 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 
 	logInfo.Msg("statically analyzing parent child relationship")
 
-	upstreamBlobUrl := resp.Manifest_dependency_edge_by_pk.Parent.Release.Upstream_blob_url
-	if upstreamBlobUrl == nil {
-		upstreamBlobUrl, err = s.ingestPackageAndGetUpstreamUrl(ctx, manifestDependencyEdgeUUID, parentPackageName)
-		if err != nil {
-			return err
-		}
-	}
-
 	upstreamUrlResp, err := http.Get(*upstreamBlobUrl)
 	if err != nil {
 		logError.
@@ -168,7 +199,7 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 		return err
 	}
 
-	tmpDir, err := ioutil.TempDir("", "")
+	tmpDir, err := ioutil.TempDir("", uuid.NewString())
 	if err != nil {
 		logError.
 			Err(err).
@@ -179,6 +210,7 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 
 	logInfo.
 		Str("upstream url", *upstreamBlobUrl).
+		Str("tmp dir", tmpDir).
 		Msg("extracting package code")
 
 	err = util.ExtractTarGz(upstreamUrlResp.Body, tmpDir)
