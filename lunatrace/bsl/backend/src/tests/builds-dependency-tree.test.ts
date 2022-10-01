@@ -20,7 +20,7 @@ describe('The dependency tree', () => {
     const tree = new DependencyTree(fakeDependencyTreeHasuraOutputFixture);
     expect(tree).toBeDefined();
     expect(tree.depNodesById.size).toEqual(4);
-    expect(tree.nodeIdToParentIds.size).toEqual(3);
+    expect(tree.childIdToParentIds.size).toEqual(3);
     expect(tree.vulnIdToVulns.size).toEqual(1);
     // parse out vulnerable releases and check the data
     const vulnReleases = tree.getVulnerableReleases();
