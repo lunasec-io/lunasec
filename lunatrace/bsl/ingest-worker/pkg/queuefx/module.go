@@ -23,6 +23,7 @@ import (
 	"gocloud.dev/pubsub"
 	_ "gocloud.dev/pubsub/awssnssqs"
 	"net/url"
+	"runtime/debug"
 )
 
 type Params struct {
@@ -101,13 +102,22 @@ func (s *Subscriber) Run(ctx context.Context) error {
 			log.Error().
 				Err(err).
 				Msg("failed to dispatch message")
-			return err
+			continue
 		}
 		msg.Ack()
 	}
 }
 
 func (s *Subscriber) dispatchMessage(ctx context.Context, msg *pubsub.Message) error {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Error().
+				Interface("error", err).
+				Str("stack", string(debug.Stack())).
+				Msg("recovered error from dispatched message")
+		}
+	}()
+
 	var queueMessage Message
 	err := json.Unmarshal(msg.Body, &queueMessage)
 	if err != nil {

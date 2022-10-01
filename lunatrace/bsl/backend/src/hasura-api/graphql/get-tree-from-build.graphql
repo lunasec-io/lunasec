@@ -4,6 +4,7 @@ query GetTreeFromBuild($build_id: uuid!) {
             id
             path
             child_edges_recursive {
+                id
                 parent_id
                 child_id
                 child {

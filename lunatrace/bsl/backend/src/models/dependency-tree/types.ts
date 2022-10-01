@@ -15,6 +15,7 @@
 // Represents a subset of the incoming data from hasura about a tree element
 
 export interface DependencyEdgePartial {
+  id: string;
   // multiple edges could have the same child id/ the same child
   child_id: string;
   // multiple edges could have the same parent, but no edges can have the same child and parent
