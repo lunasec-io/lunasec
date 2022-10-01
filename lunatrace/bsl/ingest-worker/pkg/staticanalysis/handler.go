@@ -24,7 +24,6 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
-	"io/ioutil"
 	"net/http"
 	"os"
 )
@@ -180,53 +179,58 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 		}
 	}
 
-	logInfo := log.Info().
+	log.Info().
 		Str("parent package", parentPackageName).
-		Str("child package", childPackageName)
-
-	logError := log.Error().
-		Str("parent package", parentPackageName).
-		Str("child package", childPackageName)
-
-	logInfo.Msg("statically analyzing parent child relationship")
+		Str("child package", childPackageName).
+		Msg("statically analyzing parent child relationship")
 
 	upstreamUrlResp, err := http.Get(*upstreamBlobUrl)
 	if err != nil {
-		logError.
+		log.Error().
 			Err(err).
+			Str("parent package", parentPackageName).
+			Str("child package", childPackageName).
 			Str("parent package code", *upstreamBlobUrl).
 			Msg("failed to download package blob")
 		return err
 	}
 
-	tmpDir, err := ioutil.TempDir("", uuid.NewString())
+	tmpDir, err := os.MkdirTemp("", "")
 	if err != nil {
-		logError.
+		log.Error().
+			Str("parent package", parentPackageName).
+			Str("child package", childPackageName).
 			Err(err).
 			Msg("failed to create temporary directory for parent package code")
 		return err
 	}
 	defer os.RemoveAll(tmpDir)
 
-	logInfo.
+	log.Info().
 		Str("upstream url", *upstreamBlobUrl).
 		Str("tmp dir", tmpDir).
 		Msg("extracting package code")
 
 	err = util.ExtractTarGz(upstreamUrlResp.Body, tmpDir)
 	if err != nil {
-		logError.
+		log.Error().
+			Str("parent package", parentPackageName).
+			Str("child package", childPackageName).
 			Err(err).
 			Msg("failed to extract parent package code to directory")
 		return err
 	}
 
-	logInfo.
+	log.Info().
+		Str("parent package", parentPackageName).
+		Str("child package", childPackageName).
 		Msg("analyzing code for usages of child in parent")
 
 	importedAndCalled, err := rules.DependencyIsImportedAndCalledInCode(childPackageName, tmpDir)
 	if err != nil {
-		logError.
+		log.Error().
+			Str("parent package", parentPackageName).
+			Str("child package", childPackageName).
 			Err(err).
 			Msg("failed to determine if child is imported and called by parent")
 	}
@@ -238,7 +242,9 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 		return gql.Analysis_finding_type_enumNotVulnerable
 	}()
 
-	logInfo.
+	log.Info().
+		Str("parent package", parentPackageName).
+		Str("child package", childPackageName).
 		Str("finding type", string(findingType)).
 		Msg("saving results of analysis")
 
@@ -268,7 +274,9 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 
 	insertedAnalysisID := analysisResp.GetInsert_analysis_manifest_dependency_edge_result_one().GetId().String()
 
-	logInfo.
+	log.Info().
+		Str("parent package", parentPackageName).
+		Str("child package", childPackageName).
 		Str("results id", insertedAnalysisID).
 		Msg("inserted edge analysis results")
 
