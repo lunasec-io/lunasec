@@ -15,6 +15,7 @@ import { DependencyEdgePartial } from '../../models/dependency-tree/types';
 
 export const fakeDependencyTreeHasuraOutputFixture: Array<DependencyEdgePartial> = [
   {
+    id: '1',
     child_id: '1',
     parent_id: '00000000-0000-0000-0000-000000000000',
     child: {
@@ -33,6 +34,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<DependencyEdgePartial>
     },
   },
   {
+    id: '1',
     child_id: '2',
     parent_id: '1',
     child: {
@@ -51,6 +53,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<DependencyEdgePartial>
     },
   },
   {
+    id: '1',
     child_id: '3',
     parent_id: '2',
     child: {
@@ -69,6 +72,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<DependencyEdgePartial>
     },
   },
   {
+    id: '1',
     child_id: '4',
     parent_id: '3',
     child: {
