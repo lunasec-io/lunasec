@@ -37,7 +37,7 @@ describe('LunaLogger', () => {
   it('appends any object properties from the first argument', () => {
     log.info({ test: 'field' });
     const output = consoleMock.mock.calls[0][0];
-    parseAndCheckParams(output, 0, 'test', 'field');
+    parseAndCheckParams(output, 'test', 'field');
   });
 
   it('stringifies anything else into message', () => {
@@ -117,7 +117,7 @@ function parseAndCheckContext(jsonString: string, key: string, value: unknown) {
   expect(parsed['context'][key]).toEqual(value);
 }
 
-function parseAndCheckParams(jsonString: string, index: number, key: string, value: unknown) {
+function parseAndCheckParams(jsonString: string, key: string | number | symbol, value: unknown) {
   const parsed = JSON.parse(jsonString); // This breaks if we use color, interestingly
-  expect(parsed['params'][index][key]).toEqual(value);
+  expect(parsed['params'][key]).toEqual(value);
 }
