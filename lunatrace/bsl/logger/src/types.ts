@@ -28,8 +28,8 @@ export interface LogObj {
   timePretty: string;
   name: string;
   message: string;
-  context: object;
-  params?: unknown[];
+  context: Record<string | number | symbol, unknown>;
+  params: Record<string | number | symbol, unknown>;
   errors?: string[];
 }
 
