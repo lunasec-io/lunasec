@@ -26,32 +26,42 @@ type InstallSelectedReposType = NonNullable<MutationResolvers['installSelectedRe
  * Installs the repos the user selected in the GUIG
  */
 export const installSelectedReposResolver: InstallSelectedReposType = async (parent, args, ctx, _info) => {
-  if (!isAuthenticated(ctx)) {
-    log.warn('No parsed JWT claims with a user ID on route that required authorization, throwing a graphql error');
-    throw new GraphQLYogaError('Unauthorized');
-  }
-  const newReposByOrg = args.orgs;
-  if (!newReposByOrg) {
-    throw new GraphQLYogaError('No array of orgs provided');
-  }
-  const userId = ctx.req.user['https://hasura.io/jwt/claims']['x-hasura-real-user-id'];
-  if (newReposByOrg.length === 0) {
+  try {
+    if (!isAuthenticated(ctx)) {
+      log.warn('No parsed JWT claims with a user ID on route that required authorization, throwing a graphql error');
+      throw new GraphQLYogaError('Unauthorized');
+    }
+    const newReposByOrg = args.orgs;
+    if (!newReposByOrg) {
+      throw new GraphQLYogaError('No array of orgs provided');
+    }
+    const userId = ctx.req.user['https://hasura.io/jwt/claims']['x-hasura-real-user-id'];
+    if (newReposByOrg.length === 0) {
+      return { success: true };
+    }
+    const authenticatedOrgs = await authenticateOrgsAndLoadInstallationIds(newReposByOrg, userId);
+    ``;
+    // Go through each org and add the repos from it
+    await Promise.all(
+      authenticatedOrgs.map(async (org) => {
+        log.info('Attempting to upsert selected repos from org ', { org });
+        const result = await installProjectsFromGithub(org.id, org.installationId, org.repos);
+        if (result.error) {
+          log.error('Failure during project installation', result.msg);
+          throw new GraphQLYogaError(`Failed to install repos from organization: ${result.msg}`);
+        }
+      })
+    );
     return { success: true };
+  } catch (error) {
+    // TODO: temporary error handler until i figure out how to deal with global errors in yoga which seems maybe impossible
+    if (error instanceof GraphQLYogaError) {
+      log.warn('handled graphql yoga error, returning error to client', { error });
+    } else {
+      log.error('UNKNOWN ERROR IN GRAPHQL RESOLVER', { e: error });
+    }
+    throw error;
   }
-  const authenticatedOrgs = await authenticateOrgsAndLoadInstallationIds(newReposByOrg, userId);
-  ``;
-  // Go through each org and add the repos from it
-  await Promise.all(
-    authenticatedOrgs.map(async (org) => {
-      log.info('Attempting to upsert selected repos from org ', { org });
-      const result = await installProjectsFromGithub(org.id, org.installationId, org.repos);
-      if (result.error) {
-        log.error('Failure during project installation', result.msg);
-        throw new GraphQLYogaError(`Failed to install repos from organization: ${result.msg}`);
-      }
-    })
-  );
-  return { success: true };
 };
 
 // TODO: Not sure if this security check is necessary
