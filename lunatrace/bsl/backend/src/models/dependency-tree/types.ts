@@ -12,9 +12,10 @@
  *
  */
 
-// Represents a subset of the incoming data from hasura about a tree element
+/* -------------------------------------------------------------------------- */
+/*              Below are input data as it comes from the database            */
+/* -------------------------------------------------------------------------- */
 
-// ----------- RAW INPUT DATA, LIKE WE EXPECT TO GET IT FROM HASURA -----------------------------------------------------------------------------
 export interface RawEdge {
   child_id: string;
   parent_id?: string;
@@ -58,6 +59,10 @@ export interface RawVulnMeta {
 }
 
 // ------------------ COMPUTED OUTPUT DATA, WITH FIELDS OUR USERS WANT --------------------------
+
+/* -------------------------------------------------------------------------- */
+/*              Below are output data that we return from the tree            */
+/* -------------------------------------------------------------------------- */
 
 export interface BuiltNode extends RawNode {
   // we dump these in here as we build the tree so we can forget about edges, because edges are confusing
