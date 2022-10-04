@@ -54,12 +54,6 @@ export async function queueRepositoryForSnapshot(
   };
 
   const repoQueueConfig = getRepositoryQueueConfig();
-  if (!repoQueueConfig) {
-    log.error(
-      'unable to load repository queue name, in production it should be set as ENV var PROCESS_REPOSITORY_QUEUE'
-    );
-    return newError('unable to get queue name');
-  }
 
   const repositoryQueueUrl = await catchError(getSqsUrlFromName(repoQueueConfig.queueName));
 
