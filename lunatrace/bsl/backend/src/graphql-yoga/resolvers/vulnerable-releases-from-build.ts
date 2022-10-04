@@ -41,7 +41,7 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
     return null; // tells the client that we didnt get any tree info back and to fall back to grype (for now)
   }
 
-  const vulnerableReleases = depTree.getVulnerableReleases();
+  const vulnerableReleases = depTree.vulnerableReleases;
 
   const totalTime = Date.now() - startTime;
   log.info(`spent ${totalTime}ms processing tree`);
@@ -52,7 +52,7 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
 type ManifestData = NonNullable<NonNullable<GetTreeFromBuildQuery['builds_by_pk']>['resolved_manifests']>;
 type NodeData = NonNullable<ManifestData[number]['child_edges_recursive']>[number];
 
-export function buildTreeFromRawData<iManifestData>(rawManifestData: ManifestData): DependencyTree<NodeData> | null {
+export function buildTreeFromRawData<iManifestData>(rawManifestData: ManifestData): DependencyTree | null {
   if (!rawManifestData || rawManifestData.length === 0) {
     return null;
   }
