@@ -12,36 +12,39 @@
  *
  */
 
-// Represents a subset of the incoming data from hasura about a tree element
+/* -------------------------------------------------------------------------- */
+/*                    Input data as it comes from the database                */
+/* -------------------------------------------------------------------------- */
 
-export interface DependencyEdgePartial {
-  // multiple edges could have the same child id/ the same child
+export interface RawEdge {
   child_id: string;
-  // multiple edges could have the same parent, but no edges can have the same child and parent
   parent_id?: string;
-  child: {
-    id: string;
-    parent_id?: string; // we dump this in here as we build the tree so we can forget about edges
-    range: string;
-    release_id: string;
-    release: Release;
-    labels?: Record<string | number | symbol, unknown>;
-  };
+  id: string;
+  child: RawNode;
 }
 
-interface Release {
+// Referred to as a "manifest_dependency_node" in the database, which we shorted here to "node"
+export interface RawNode {
+  id: string;
+  range: string;
+  release_id: string;
+  release: RawRelease;
+  labels?: Record<string | number | symbol, unknown>;
+}
+
+interface RawRelease {
   id: string;
   version: string;
-  package: Package;
+  package: RawPackage;
 }
 
-interface Package {
-  affected_by_vulnerability: Array<AffectedByVulnerability>;
+interface RawPackage {
+  affected_by_vulnerability: Array<RawVulnMeta>;
   name: string;
   package_manager: string;
 }
 
-export interface AffectedByVulnerability {
+export interface RawVulnMeta {
   vulnerability: {
     id: string;
     severity_name?: string;
@@ -53,20 +56,42 @@ export interface AffectedByVulnerability {
     introduced?: string | null;
     fixed?: string | null;
   }>;
-  triviallyUpdatable?: boolean; // We add this by determining something can be updated to a non-vulnerable version without violating semver
-  chains?: DependencyChain<DependencyEdgePartial['child']>[]; // each vuln has its own sublist of chains in addition to the global list in the main body of the release. This is in case some have been eliminated by false-positive analysis for only this vuln
 }
 
-export type DependencyChain<D extends DependencyEdgePartial['child']> = Array<D>;
+/* -------------------------------------------------------------------------- */
+/*                  Output data that is returned from the tree                */
+/* -------------------------------------------------------------------------- */
+
+export interface BuiltNode extends RawNode {
+  // we dump these in here as we build the tree so we can forget about edges, because edges are confusing
+  edge_id: string;
+  parent_id?: string;
+  release: BuiltRelease;
+}
+
+export interface BuiltRelease extends RawRelease {
+  package: BuiltPackage;
+}
+
+interface BuiltPackage extends RawPackage {
+  affected_by_vulnerability: Array<BuiltVulnMeta>;
+}
+
+export interface BuiltVulnMeta extends RawVulnMeta {
+  trivially_updatable: boolean; // We add this by determining something can be updated to a non-vulnerable version without violating semver
+  chains: DependencyChain[]; // each vuln has its own sublist of chains in addition to the global list in the main body of the release. This is in case some have been eliminated by false-positive analysis for only this vuln
+}
+
+export type DependencyChain = Array<BuiltNode>;
 
 // This is the OUTPUT/RESPONSE type that we generate from the tree (from the above data types) and return to the client or consumer.
 // Note that it references many of the same types as above, as this is essentially just a reorganization and subset of the above data, with some additional computed fields such as devOnly
-export interface VulnerableRelease<DependencyEdge extends DependencyEdgePartial> {
-  release: Release;
+export interface VulnerableRelease {
+  release: BuiltRelease;
   severity: string;
-  chains: DependencyChain<DependencyEdge['child']>[];
+  chains: DependencyChain[];
   cvss: number | null; // the highest rating from all the vulns on the release, used for giving the user an at-a-glance rating
-  devOnly: boolean;
-  affectedBy: Array<AffectedByVulnerability>;
-  triviallyUpdatable: 'no' | 'partially' | 'yes';
+  dev_only: boolean;
+  affected_by: Array<BuiltVulnMeta>;
+  trivially_updatable: 'no' | 'partially' | 'yes';
 }
