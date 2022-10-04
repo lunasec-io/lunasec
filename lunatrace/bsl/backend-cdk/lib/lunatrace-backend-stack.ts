@@ -246,6 +246,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         S3_SBOM_BUCKET: storageStackStage.sbomBucket.bucketName,
         S3_MANIFEST_BUCKET: storageStackStage.manifestBucket.bucketName,
         PROCESS_WEBHOOK_QUEUE: storageStackStage.processWebhookSqsQueue.queueName,
+        PROCESS_REPOSITORY_QUEUE: storageStackStage.processRepositorySqsQueue.queueName,
         SITE_PUBLIC_URL: publicBaseUrl,
         PORT: '3002',
         NODE_ENV: 'production',
