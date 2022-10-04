@@ -13,7 +13,7 @@
  */
 
 /* -------------------------------------------------------------------------- */
-/*              Below are input data as it comes from the database            */
+/*                    Input data as it comes from the database                */
 /* -------------------------------------------------------------------------- */
 
 export interface RawEdge {
@@ -58,10 +58,8 @@ export interface RawVulnMeta {
   }>;
 }
 
-// ------------------ COMPUTED OUTPUT DATA, WITH FIELDS OUR USERS WANT --------------------------
-
 /* -------------------------------------------------------------------------- */
-/*              Below are output data that we return from the tree            */
+/*                  Output data that is returned from the tree                */
 /* -------------------------------------------------------------------------- */
 
 export interface BuiltNode extends RawNode {
