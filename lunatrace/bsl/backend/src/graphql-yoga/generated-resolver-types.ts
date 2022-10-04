@@ -26,7 +26,7 @@ export type BuildData_AffectedByVulnerability = {
   __typename?: 'BuildData_AffectedByVulnerability';
   chains?: Maybe<Array<Array<BuildData_DependencyNode>>>;
   ranges?: Maybe<Array<Maybe<BuildData_Range>>>;
-  triviallyUpdatable?: Maybe<Scalars['Boolean']>;
+  trivially_updatable?: Maybe<Scalars['Boolean']>;
   vulnerability: BuildData_Vulnerability;
 };
 
@@ -69,13 +69,13 @@ export type BuildData_Vulnerability = {
 
 export type BuildData_VulnerableRelease = {
   __typename?: 'BuildData_VulnerableRelease';
-  affectedBy: Array<BuildData_AffectedByVulnerability>;
+  affected_by: Array<BuildData_AffectedByVulnerability>;
   chains: Array<Array<BuildData_DependencyNode>>;
   cvss?: Maybe<Scalars['Float']>;
-  devOnly: Scalars['Boolean'];
+  dev_only: Scalars['Boolean'];
   release?: Maybe<BuildData_Release>;
   severity?: Maybe<Scalars['String']>;
-  triviallyUpdatable: Scalars['String'];
+  trivially_updatable: Scalars['String'];
 };
 
 export type GithubRepository = {
@@ -314,7 +314,7 @@ export type AuthenticatedRepoCloneUrlOutputResolvers<ContextType = Context, Pare
 export type BuildData_AffectedByVulnerabilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_AffectedByVulnerability'] = ResolversParentTypes['BuildData_AffectedByVulnerability']> = {
   chains?: Resolver<Maybe<Array<Array<ResolversTypes['BuildData_DependencyNode']>>>, ParentType, ContextType>;
   ranges?: Resolver<Maybe<Array<Maybe<ResolversTypes['BuildData_Range']>>>, ParentType, ContextType>;
-  triviallyUpdatable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  trivially_updatable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   vulnerability?: Resolver<ResolversTypes['BuildData_Vulnerability'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -357,13 +357,13 @@ export type BuildData_VulnerabilityResolvers<ContextType = Context, ParentType e
 };
 
 export type BuildData_VulnerableReleaseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_VulnerableRelease'] = ResolversParentTypes['BuildData_VulnerableRelease']> = {
-  affectedBy?: Resolver<Array<ResolversTypes['BuildData_AffectedByVulnerability']>, ParentType, ContextType>;
+  affected_by?: Resolver<Array<ResolversTypes['BuildData_AffectedByVulnerability']>, ParentType, ContextType>;
   chains?: Resolver<Array<Array<ResolversTypes['BuildData_DependencyNode']>>, ParentType, ContextType>;
   cvss?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  devOnly?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  dev_only?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   release?: Resolver<Maybe<ResolversTypes['BuildData_Release']>, ParentType, ContextType>;
   severity?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  triviallyUpdatable?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  trivially_updatable?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
