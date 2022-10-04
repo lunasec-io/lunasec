@@ -19,8 +19,10 @@ export interface DependencyEdgePartial {
   child_id: string;
   // multiple edges could have the same parent, but no edges can have the same child and parent
   parent_id?: string;
+  id: string;
   child: {
     id: string;
+    edge_id: string;
     parent_id?: string; // we dump this in here as we build the tree so we can forget about edges
     range: string;
     release_id: string;
@@ -36,12 +38,12 @@ interface Release {
 }
 
 interface Package {
-  affected_by_vulnerability: Array<AffectedByVulnerability>;
+  affected_by_vulnerability: Array<VulnWithMetadata>;
   name: string;
   package_manager: string;
 }
 
-export interface AffectedByVulnerability {
+export interface VulnWithMetadata {
   vulnerability: {
     id: string;
     severity_name?: string;
@@ -67,6 +69,6 @@ export interface VulnerableRelease<DependencyEdge extends DependencyEdgePartial>
   chains: DependencyChain<DependencyEdge['child']>[];
   cvss: number | null; // the highest rating from all the vulns on the release, used for giving the user an at-a-glance rating
   devOnly: boolean;
-  affectedBy: Array<AffectedByVulnerability>;
+  affectedBy: Array<VulnWithMetadata>;
   triviallyUpdatable: 'no' | 'partially' | 'yes';
 }
