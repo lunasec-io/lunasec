@@ -11011,7 +11011,7 @@ export type GetTreeFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', parent_id: any, child_id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null } | null };
+export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', parent_id: any, child_id: any, id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null } | null };
 
 export type GetUserGitHubDataQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
@@ -11375,6 +11375,7 @@ export const GetTreeFromBuildDocument = gql`
       child_edges_recursive {
         parent_id
         child_id
+        id
         child {
           id
           range
