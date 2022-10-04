@@ -14,7 +14,7 @@
 import { severityOrderOsv } from '@lunatrace/lunatrace-common';
 import semver from 'semver';
 
-import { AffectedByVulnerability, DependencyChain, DependencyEdgePartial, VulnerableRelease } from './types';
+import { DependencyChain, DependencyEdgePartial, VulnerableRelease, VulnWithMetadata } from './types';
 
 /**
  * @class DependencyTree
@@ -23,9 +23,12 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
   // The following indexes are how the tree is "built". They allow high speed querying against the tree data without ever building a full tree in memory
   public nodeIdToParentIds: Map<string, Set<string>> = new Map();
   public depNodesById: Map<string, DependencyEdge['child']> = new Map();
-  public vulnIdToVulns: Map<string, Set<AffectedByVulnerability>> = new Map();
+  public vulnIdToVulns: Map<string, Set<VulnWithMetadata>> = new Map();
   public depNodeIdsByReleaseId: Map<string, Set<string>> = new Map();
+  // public depNodeIdsByVulnerabilityId: Map<string, Set<string>> = new Map();
+  // public vulnerabilities: Array<AffectedByVulnerability>
   public vulnerableDepNodeIds: Set<string> = new Set();
+  public vulnerableReleases: VulnerableRelease<DependencyEdgePartial>[];
   // This builds the indexes and any useful data that show useful data about the tree
   // Note that because we mostly extract information from the bottom of the tree upwards ( ex: show why a vulnerable package was installed)
   constructor(sourceDeps: Array<DependencyEdge>) {
@@ -57,6 +60,7 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
       // Create a separate lookup to directly map an ID to an edge
       this.depNodesById.set(depNode.id, depNode);
 
+      // TODO SEPERATE HERE, EVERYTHING BELOW IS COMPUTED OUTPUT DATA
       // delete the vulnerabilities that don't apply because of semver
       depNode.release.package.affected_by_vulnerability = depNode.release.package.affected_by_vulnerability.filter(
         (vuln) => {
@@ -79,12 +83,33 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
         }
       );
     });
+    this.vulnerableReleases = this.getVulnerableReleases();
+  }
+
+  // Calls getVulnerableReleases and changes the data shape to just be a list of vulns and their chains
+  public getVulnerabilities(): Array<VulnWithMetadata> {
+    const vulnsWithMetadata: Array<VulnWithMetadata> = [];
+
+    this.vulnerableReleases.forEach((release) => {
+      release.affectedBy.forEach((newVuln) => {
+        const existingVuln = vulnsWithMetadata.find((v) => v.vulnerability.id === newVuln.vulnerability.id);
+        if (!existingVuln) {
+          // its a new vuln, just add it to the list
+          vulnsWithMetadata.push(newVuln);
+          return;
+        }
+        // just merge the vulnData into the main vuln
+        existingVuln.chains = [...(existingVuln.chains || []), ...(newVuln.chains || [])];
+        existingVuln.triviallyUpdatable = existingVuln.triviallyUpdatable && newVuln.triviallyUpdatable;
+      });
+    });
+    return vulnsWithMetadata;
   }
 
   // this is the main function that we call to return useful information to the client about their vulnerabilities
   // Todo: The nice generic typing in the return type has been given up on for now (DependencyEdgePartial instead of DependencyEdge), it would be nice to fix it, but its maybe not worth it
   // Also this method is too long but also really hard to break up because of all the computed state from various steps
-  public getVulnerableReleases(): VulnerableRelease<DependencyEdgePartial>[] {
+  private getVulnerableReleases(): VulnerableRelease<DependencyEdgePartial>[] {
     const vulnerableReleasesById: Record<string, VulnerableRelease<DependencyEdge>> = {};
 
     this.vulnerableDepNodeIds.forEach((nodeId) => {
@@ -159,7 +184,17 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
     return Object.values(vulnerableReleasesById);
   }
 
-  private precomputeVulnTriviallyUpdatable(requestedRange: string, vuln: AffectedByVulnerability): boolean {
+  private chainsAreIdentical(
+    firstChain: DependencyChain<DependencyEdge['child']>,
+    secondChain: DependencyChain<DependencyEdge['child']>
+  ): boolean {
+    if (firstChain.length !== secondChain.length) {
+      return false;
+    }
+    return !firstChain.some((dep, i) => dep.id !== secondChain[i].id);
+  }
+
+  private precomputeVulnTriviallyUpdatable(requestedRange: string, vuln: VulnWithMetadata): boolean {
     const fixedVersions: string[] = [];
     vuln.ranges.forEach((range) => {
       if (range.fixed) {
@@ -171,7 +206,7 @@ export class DependencyTree<DependencyEdge extends DependencyEdgePartial> {
     });
   }
 
-  public convertRangesToSemverRange(ranges: AffectedByVulnerability['ranges']): semver.Range {
+  public convertRangesToSemverRange(ranges: VulnWithMetadata['ranges']): semver.Range {
     const vulnerableRanges: string[] = [];
     ranges.forEach((range) => {
       if (range.introduced && range.fixed) {
