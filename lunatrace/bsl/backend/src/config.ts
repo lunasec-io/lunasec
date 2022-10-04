@@ -32,7 +32,7 @@ import { tryParseInt, validateBooleanString } from './utils/parse';
 
 const notSet = 'not-set';
 
-export const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
+export const checkEnvVar = (envVarKey: string, defaultValue?: string | null) => {
   const envVar = process.env[envVarKey];
 
   // If the environment variable is not set, and the value must come from the environment,
@@ -117,16 +117,14 @@ export function getWebhookConfig(): WebhookConfig {
   };
 }
 
-export function getRepositoryQueueConfig(): RepositoryQueueConfig {
-  const developmentQueueName = checkEnvVar('QUEUE_NAME', notSet);
+export function getRepositoryQueueConfig(): RepositoryQueueConfig | null {
+  const developmentQueueName = checkEnvVar('QUEUE_NAME', null);
+  const productionQueueName = checkEnvVar('PROCESS_REPOSITORY_QUEUE', null);
 
-  // In production, this queue will be specifically set since it references a different queue.
-  // In development, since there is only one queue, this will be set with QUEUE_NAME.
-  // If neither are set, throw an error
-  const queueName = checkEnvVar('PROCESS_REPOSITORY_QUEUE', developmentQueueName);
+  const queueName = productionQueueName || developmentQueueName;
 
-  if (queueName === notSet) {
-    throw new Error('PROCESS_REPOSITORY_QUEUE is not set and QUEUE_NAME for development is not set');
+  if (queueName) {
+    return null;
   }
   return {
     queueName,
