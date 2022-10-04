@@ -26,6 +26,7 @@ void (async () => {
     });
   } catch (e) {
     log.error('UNCAUGHT TOP LEVEL ERROR, PROCESS WILL EXIT', { error: e });
+    throw e;
   }
 })().catch((e) => {
   log.error('unable to start server', {
