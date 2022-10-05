@@ -34,7 +34,7 @@ import { DnsRecordType, PrivateDnsNamespace } from '@aws-cdk/aws-servicediscover
 import * as cdk from '@aws-cdk/core';
 import { Duration } from '@aws-cdk/core';
 
-import { StackInputs } from '../stack-inputs';
+import { StackInputs } from '../inputs/types';
 
 import { commonBuildProps } from './constants';
 import { addDatadogToTaskDefinition, datadogLogDriverForService } from './datadog-fargate-integration';
@@ -108,12 +108,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       props.databaseSecretArn
     );
 
-    const hasuraAdminSecret = new Secret(this, 'HasuraAdminSecret', {
-      secretName: `${props.appName}-HasuraAdminSecret`,
-      generateSecretString: {
-        passwordLength: 16,
-      },
-    });
+    const hasuraAdminSecret = Secret.fromSecretCompleteArn(this, 'HasuraAdminSecret', props.hasuraAdminSecretArn);
 
     const backendStaticSecret = Secret.fromSecretCompleteArn(this, 'BackendStaticSecret', props.backendStaticSecretArn);
     const gitHubAppPrivateKey = Secret.fromSecretCompleteArn(this, 'GitHubAppPrivateKey', props.gitHubAppPrivateKey);
