@@ -11,7 +11,9 @@
  * limitations under the License.
  *
  */
-export const stackInputs = {
+import { StackInputs } from './types';
+
+export const stackInputs: StackInputs = {
   cdkDefaultRegion: 'us-west-2',
   cdkDefaultAccount: '134071937287',
   appName: 'lunatrace',
@@ -27,6 +29,7 @@ export const stackInputs = {
   gitHubAppWebHookSecret: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceGitHubAppWebHookSecret-3YTJBv',
   kratosCookieSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceKratosCookieSecret-znMFAC',
   kratosCipherSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceKratosCipherSecret-ehfsGT',
+  hasuraAdminSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:lunatrace-HasuraAdminSecret-pJLyHB',
   datadogApiKeyArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:lunatrace-DatadogAPIKey-S19XEK',
   githubOauthAppLoginSecretArn:
     'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceKratosGitHubOAuthAppLoginSecret-zrd4WX',
@@ -34,5 +37,3 @@ export const stackInputs = {
     'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceKratosGitHubOAuthAppLoginClientId-ryyGXL',
   kratosSlackSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:KratosSlackSecret-W5WX6d',
 };
-
-export type StackInputs = typeof stackInputs;
