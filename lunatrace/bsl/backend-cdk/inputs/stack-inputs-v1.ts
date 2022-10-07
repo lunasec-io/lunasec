@@ -13,7 +13,7 @@
  */
 import { StackInputs } from './types';
 
-export const stackInputs: StackInputs = {
+export const stackInputsV1: StackInputs = {
   cdkDefaultRegion: 'us-west-2',
   cdkDefaultAccount: '134071937287',
   appName: 'lunatrace',
@@ -36,4 +36,5 @@ export const stackInputs: StackInputs = {
   githubOauthAppLoginClientIdArn:
     'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceKratosGitHubOAuthAppLoginClientId-ryyGXL',
   kratosSlackSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:KratosSlackSecret-W5WX6d',
+  dbSecurityGroup: 'sg-05b9e1c5e5c1b123a',
 };

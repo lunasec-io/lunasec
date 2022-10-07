@@ -62,7 +62,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     const dbSecurityGroup = SecurityGroup.fromSecurityGroupId(
       this,
       'DatabaseClusterSecurityGroup',
-      'sg-05b9e1c5e5c1b123a'
+      props.dbSecurityGroup
     );
 
     const vpcDbSecurityGroup = new SecurityGroup(this, 'sg', {
