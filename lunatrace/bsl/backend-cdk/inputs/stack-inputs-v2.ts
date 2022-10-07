@@ -13,9 +13,9 @@
  */
 import { StackInputs } from './types';
 
-export const newStackInputs: StackInputs = {
+export const stackInputsV2: StackInputs = {
   cdkDefaultRegion: 'us-west-2',
-  cdkDefaultAccount: '134071937287',
+  cdkDefaultAccount: '916430638549',
   appName: 'lunatrace',
   domainName: 'lunatrace.lunasec.io',
   domainZoneId: 'Z02734621G6X08KHKD0NL',
@@ -26,7 +26,8 @@ export const newStackInputs: StackInputs = {
   databaseSecretArn: 'arn:aws:secretsmanager:us-west-2:916430638549:secret:lunatrace-HasuraDatabaseUrlSecret-zOcgEE',
   gitHubAppId: '180838',
   gitHubAppPrivateKey: 'arn:aws:secretsmanager:us-west-2:916430638549:secret:lunatrace-GitHubAppPrivateKey-fyW3ZR',
-  gitHubAppWebHookSecret: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceGitHubAppWebHookSecret-3YTJBv',
+  gitHubAppWebHookSecret:
+    'arn:aws:secretsmanager:us-west-2:916430638549:secret:lunatrace-GitHubAppWebHookSecret-DHxcI3',
   kratosCookieSecretArn: 'arn:aws:secretsmanager:us-west-2:916430638549:secret:lunatrace-KratosCookieSecret-0ElF6d',
   kratosCipherSecretArn: 'arn:aws:secretsmanager:us-west-2:916430638549:secret:lunatrace-KratosCipherSecret-zG99xR',
   hasuraAdminSecretArn: 'arn:aws:secretsmanager:us-west-2:916430638549:secret:lunatrace-HasuraAdminSecret-l1hzOI',
@@ -36,4 +37,5 @@ export const newStackInputs: StackInputs = {
   githubOauthAppLoginSecretArn:
     'arn:aws:secretsmanager:us-west-2:916430638549:secret:lunatrace-KratosGitHubOAuthAppLoginSecret-u68tIZ',
   kratosSlackSecretArn: 'arn:aws:secretsmanager:us-west-2:916430638549:secret:lunatrace-KratosSlackSecret-59l0Fh',
+  dbSecurityGroup: 'sg-05388fbc5f53890fd',
 };

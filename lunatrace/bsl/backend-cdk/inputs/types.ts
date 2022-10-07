@@ -32,4 +32,5 @@ export interface StackInputs {
   hasuraAdminSecretArn: string;
   oathkeeperConfigBucketArn: string;
   vpcId: string;
+  dbSecurityGroup: string;
 }
