@@ -8,6 +8,7 @@ query GetTreeFromBuild($build_id: uuid!) {
             child_edges_recursive {
                 parent_id
                 child_id
+                id
                 child {
                     id
                     range
