@@ -31,7 +31,7 @@ import { Schedule } from '@aws-cdk/aws-events';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
-import { Construct } from '@aws-cdk/core';
+import { Construct, Duration } from '@aws-cdk/core';
 
 import { QueueProcessingFargateService } from './aws/queue-processing-fargate-service';
 import { commonBuildProps } from './constants';
@@ -50,6 +50,7 @@ interface WorkerStackProps extends cdk.StackProps {
   datadogApiKeyArn: string;
   storageStack: WorkerStorageStackState;
   servicesSecurityGroup: SecurityGroup;
+  vpcDbSecurityGroup: SecurityGroup;
 }
 
 interface QueueService extends Partial<QueueProcessingFargateServiceProps> {
@@ -89,6 +90,7 @@ export class WorkerStack extends cdk.Stack {
       storageStack,
       datadogApiKeyArn,
       servicesSecurityGroup,
+      vpcDbSecurityGroup,
     } = props;
 
     const webhookQueue = storageStack.processWebhookSqsQueue;
@@ -209,7 +211,7 @@ export class WorkerStack extends cdk.Stack {
           ...processQueueCommonEnvVars,
           ...(visibility ? { QUEUE_VISIBILITY: visibility.toString() } : {}),
         },
-        securityGroups: [servicesSecurityGroup],
+        securityGroups: [vpcDbSecurityGroup, servicesSecurityGroup],
         secrets: processQueueCommonSecrets,
         containerName: name + 'Container',
         circuitBreaker: {
@@ -245,25 +247,21 @@ export class WorkerStack extends cdk.Stack {
 
     // Update vulnerabilities job
     const updateVulnerabilitiesJob = new ScheduledFargateTask(context, 'UpdateVulnerabilitesJob', {
-      cluster: props.fargateCluster,
+      cluster: fargateCluster,
       platformVersion: FargatePlatformVersion.LATEST,
       desiredTaskCount: 1,
-      schedule: Schedule.cron({
-        minute: '0',
-        hour: '0',
-        day: '*',
-        month: '*',
-        year: '*',
-      }),
+      schedule: Schedule.rate(Duration.minutes(10)),
+      securityGroups: [vpcDbSecurityGroup, servicesSecurityGroup],
       subnetSelection: { subnetType: SubnetType.PUBLIC },
       scheduledFargateTaskImageOptions: {
         memoryLimitMiB: 8 * 1024,
         cpu: 4 * 1024,
         image: ingestWorkerImage,
-        logDriver: datadogLogDriverForService('lunatrace', 'update-vulnerabilities-job'),
+        logDriver: datadogLogDriverForService('lunatrace', 'UpdateVulnerabilitiesJob'),
         environment: {
           ...processQueueCommonEnvVars,
         },
+        command: ['vulnerability', 'ingest', '--source', 'ghsa'],
         secrets: {
           LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
         },

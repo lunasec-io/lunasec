@@ -26,6 +26,7 @@ export const stackInputsV1: StackInputs = {
   databaseSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:lunatrace-HasuraDatabaseUrlSecret-v2-HdcJ1q',
   gitHubAppId: '180838',
   gitHubAppPrivateKey: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceGitHubAppPrivateKey-iAHHOb',
+  gitHubAppLink: 'https://github.com/apps/lunatrace-by-lunasec/installations/new',
   gitHubAppWebHookSecret: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceGitHubAppWebHookSecret-3YTJBv',
   kratosCookieSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceKratosCookieSecret-znMFAC',
   kratosCipherSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceKratosCipherSecret-ehfsGT',
