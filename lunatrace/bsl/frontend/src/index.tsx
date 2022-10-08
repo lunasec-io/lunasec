@@ -23,24 +23,22 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-console.log(process.env.REACT_DATADOG_RUM_PROXY_URI);
-
-// if (process.env.NODE_ENV !== 'development') {
-datadogRum.init({
-  applicationId: '9e9042c6-1fd6-4314-a628-782d4fd6810f',
-  clientToken: 'pub571912fab56c24ef6732d75a65230513',
-  site: 'datadoghq.com',
-  proxyUrl: 'http://localhost:5166/proxy',
-  service: 'lunatrace',
-  env: process.env.NODE_ENV,
-  // Specify a version number to identify the deployed version of your application in Datadog
-  // version: '1.0.0',
-  sampleRate: 100,
-  premiumSampleRate: 100,
-  trackInteractions: true,
-  defaultPrivacyLevel: 'mask-user-input',
-});
-// }
+if (process.env.NODE_ENV !== 'development') {
+  datadogRum.init({
+    applicationId: '9e9042c6-1fd6-4314-a628-782d4fd6810f',
+    clientToken: 'pub571912fab56c24ef6732d75a65230513',
+    site: 'datadoghq.com',
+    proxyUrl: process.env.REACT_DATADOG_RUM_PROXY_URI,
+    service: 'lunatrace',
+    env: process.env.NODE_ENV,
+    // Specify a version number to identify the deployed version of your application in Datadog
+    // version: '1.0.0',
+    sampleRate: 100,
+    premiumSampleRate: 100,
+    trackInteractions: true,
+    defaultPrivacyLevel: 'mask-user-input',
+  });
+}
 
 datadogRum.startSessionReplayRecording();
 
