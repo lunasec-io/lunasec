@@ -210,6 +210,7 @@ export class WorkerStack extends cdk.Stack {
         environment: {
           ...processQueueCommonEnvVars,
           ...(visibility ? { QUEUE_VISIBILITY: visibility.toString() } : {}),
+          REDEPLOY: '1',
         },
         securityGroups: [vpcDbSecurityGroup, servicesSecurityGroup],
         secrets: processQueueCommonSecrets,

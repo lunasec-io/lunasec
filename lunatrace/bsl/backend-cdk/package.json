@@ -9,10 +9,10 @@
     "test": "jest",
     "cdk": "cdk",
     "cdk:deploy:dev": "DEVELOPMENT=true DEV_USER=$USER cdk deploy --all",
-    "cdk:deploy:prod:all": "DATADOG_API_KEY=$(aws secretsmanager get-secret-value --secret-id lunatrace-DatadogAPIKey | jq -r .SecretString) cdk deploy --profile new-account --all --require-approval never",
+    "cdk:deploy:prod:all": "DATADOG_API_KEY=$(aws secretsmanager get-secret-value --secret-id lunatrace-DatadogAPIKey | jq -r .SecretString) cdk deploy --profile new-account -f --all --require-approval never",
     "cdk:deploy:prod:cleanup": "rm cdk.out/*.tar || true",
     "cdk:deploy:prod:run": "echo 'deploying...' && yarn run cdk:deploy:prod:cleanup && ./build-containers.sh && yarn run cdk:deploy:prod:all && yarn run hasura:metadata:reload",
-    "cdk:deploy:prod": "yarn run cdk:deploy:prod:v1",
+    "cdk:deploy:prod": "yarn run cdk:deploy:prod:v2",
     "cdk:deploy:prod:v1": "STACK_VERSION=V1 yarn run cdk:deploy:prod:run",
     "cdk:deploy:prod:v2": "STACK_VERSION=V2 yarn run cdk:deploy:prod:run",
     "hasura:metadata:reload": "cd ../hasura && ./scripts/hasura-metadata-reload.sh"
