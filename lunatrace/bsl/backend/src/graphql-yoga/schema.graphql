@@ -87,22 +87,21 @@ type OrgWithRepos {
 
 
 # ------- BEGIN VULNERABLE RELEASE RESPONSE TYPES BELOW, these reference the dependency-tree/types.ts
-# todo: awful mixing of camelcase and underscores here, need to fix the data to be all underscores
 type BuildData_VulnerableRelease {
-    devOnly: Boolean!
+    dev_only: Boolean!
     severity: String
     cvss: Float
     chains: [[BuildData_DependencyNode!]!]!
-    affectedBy: [BuildData_AffectedByVulnerability!]!
+    affected_by: [BuildData_AffectedByVulnerability!]!
     release: BuildData_Release
-    triviallyUpdatable: String!
+    trivially_updatable: String!
 }
 
 
 type BuildData_AffectedByVulnerability {
     vulnerability: BuildData_Vulnerability!
     ranges: [BuildData_Range]
-    triviallyUpdatable: Boolean
+    trivially_updatable: Boolean
     chains: [[BuildData_DependencyNode!]!] # each vuln has its own sublist of chains in addition to the global list in the main body of the release. This is in case some have been eliminated by false-positive analysis for only this vuln
 }
 
