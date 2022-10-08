@@ -148,6 +148,11 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const frontendContainerImage = ContainerImage.fromAsset('../frontend', {
       ...commonBuildProps,
+      buildArgs: {
+        REACT_APP_GRAPHQL_URL: `https://${props.domainName}/v1/graphql`,
+        REACT_APP_KRATOS_URL: `https://${props.domainName}/api/kratos`,
+        REACT_APP_GITHUB_APP_LINK: props.gitHubAppLink,
+      },
     });
 
     const frontend = taskDef.addContainer('FrontendContainer', {
@@ -160,14 +165,15 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
-    const oathkeeperContainerImage = ContainerImage.fromAsset('../ory/oathkeeper', {
+    const oathkeeperContainerImage = ContainerImage.fromAsset('../ory', {
       ...commonBuildProps,
+      file: 'docker/oathkeeper.dockerfile',
       buildArgs: {
         OATHKEEPER_FRONTEND_URL: 'http://localhost:3000',
         OATHKEEPER_BACKEND_URL: 'http://localhost:3002',
         OATHKEEPER_HASURA_URL: 'http://localhost:8080',
         OATHKEEPER_KRATOS_URL: 'http://localhost:4433',
-        OATHKEEPER_MATCH_URL: '<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>',
+        OATHKEEPER_MATCH_URL: `<https|http|ws>://<localhost:4455|${props.domainName}>`,
       },
     });
 
@@ -176,7 +182,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       image: oathkeeperContainerImage,
       portMappings: [{ containerPort: 4455 }],
       logging: datadogLogDriverForService('lunatrace', 'oathkeeper'),
-      command: ['--config', '/generated/config.yaml', 'serve'],
+      entryPoint: ['oathkeeper', '--config', '/config/generated/config.yaml', 'serve'],
       environment: {
         MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: oryConfigBucket.s3UrlForObject(oathkeeperJwksFile),
       },
@@ -185,7 +191,13 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
-    const kratosContainerImage = ContainerImage.fromAsset('../ory/kratos', commonBuildProps);
+    const kratosContainerImage = ContainerImage.fromAsset('../ory', {
+      ...commonBuildProps,
+      file: 'docker/kratos.dockerfile',
+      buildArgs: {
+        KRATOS_DOMAIN_NAME: props.domainName,
+      },
+    });
 
     const githubOauthAppLoginClientId = Secret.fromSecretCompleteArn(
       this,
@@ -206,7 +218,14 @@ export class LunatraceBackendStack extends cdk.Stack {
       image: kratosContainerImage,
       portMappings: [{ containerPort: 4433 }],
       logging: datadogLogDriverForService('lunatrace', 'kratos'),
-      command: ['--config', '/config/config.yaml', '--config', '/config/config.production.yaml', 'serve'],
+      entryPoint: [
+        'kratos',
+        '--config',
+        '/config/config.yaml',
+        '--config',
+        '/config/generated/config.production.yaml',
+        'serve',
+      ],
       environment: {
         // Set this to 'trace' if you need more data
         LOG_LEVEL: 'debug',
@@ -398,6 +417,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       backendStaticSecret,
       datadogApiKeyArn: props.datadogApiKeyArn,
       servicesSecurityGroup,
+      vpcDbSecurityGroup,
     });
   }
 }

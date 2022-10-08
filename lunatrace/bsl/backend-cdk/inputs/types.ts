@@ -23,6 +23,7 @@ export interface StackInputs {
   certificateArn: string;
   gitHubAppId: string;
   gitHubAppPrivateKey: string;
+  gitHubAppLink: string;
   gitHubAppWebHookSecret: string;
   githubOauthAppLoginClientIdArn: string;
   githubOauthAppLoginSecretArn: string;
