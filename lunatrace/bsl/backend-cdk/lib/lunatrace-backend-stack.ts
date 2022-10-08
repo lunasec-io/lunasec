@@ -153,6 +153,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         REACT_APP_KRATOS_URL: `https://${props.domainName}/api/kratos`,
         REACT_APP_GITHUB_APP_LINK: props.gitHubAppLink,
       },
+      extraHash: 'TODO-REPLACE-ME',
     });
 
     const frontend = taskDef.addContainer('FrontendContainer', {
@@ -161,7 +162,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       portMappings: [{ containerPort: 80 }],
       logging: datadogLogDriverForService('lunatrace', 'frontend'),
       healthCheck: {
-        command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost || exit 1'],
+        command: ['CMD-SHELL', 'wget  --no-verbose --tries=1 --spider http://localhost || exit 1'],
       },
     });
 
@@ -175,6 +176,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         OATHKEEPER_KRATOS_URL: 'http://localhost:4433',
         OATHKEEPER_MATCH_URL: `<https|http|ws>://<localhost:4455|${props.domainName}>`,
       },
+      extraHash: 'TODO-REPLACE-ME',
     });
 
     const oathkeeper = taskDef.addContainer('OathkeeperContainer', {
@@ -197,6 +199,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       buildArgs: {
         KRATOS_DOMAIN_NAME: props.domainName,
       },
+      extraHash: 'TODO-REPLACE-ME',
     });
 
     const githubOauthAppLoginClientId = Secret.fromSecretCompleteArn(
@@ -248,6 +251,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     const backendContainerImage = ContainerImage.fromAsset('../backend', {
       ...commonBuildProps,
       target: 'backend-express-server',
+      extraHash: 'TODO-REPLACE-ME',
     });
 
     const backend = taskDef.addContainer('BackendContainer', {
@@ -285,6 +289,7 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const hasuraContainerImage = ContainerImage.fromAsset('../hasura', {
       ...commonBuildProps,
+      extraHash: 'TODO-REPLACE-ME',
     });
 
     const hasura = taskDef.addContainer('HasuraContainer', {
