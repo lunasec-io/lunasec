@@ -11,11 +11,8 @@ ARG OATHKEEPER_HASURA_URL
 ARG OATHKEEPER_KRATOS_URL
 ARG OATHKEEPER_MATCH_URL
 
-ADD templates /templates
-ADD build-config.sh /
-ADD entrypoint.sh /
+ADD oathkeeper /config/
+ADD scripts /scripts/
 
 # Builds /generated/rules.yaml and /generated/config.yaml
-RUN ./build-config.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
+RUN cd config && /scripts/build-config.sh
