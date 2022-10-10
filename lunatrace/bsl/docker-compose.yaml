@@ -21,7 +21,8 @@ services:
       - ./datadog/:/etc/datadog-agent/conf.d/lunatrace.d/:ro
   oathkeeper:
     build:
-      context: ./ory/oathkeeper
+      context: ./ory
+      dockerfile: docker/oathkeeper.dockerfile
       args:
         OATHKEEPER_HASURA_URL: "http://graphql-engine:8080"
         OATHKEEPER_FRONTEND_URL: "http://host.docker.internal:3000"
@@ -32,9 +33,9 @@ services:
     ports:
       - "4455:4455" # public
       - "4456:4456" # admin
-    command: '--config /generated/config.yaml serve'
+    entrypoint: /scripts/entrypoint.sh
+    command: 'oathkeeper --config /config/generated/config.yaml serve'
     environment:
-      ACCESS_RULES_REPOSITORIES: file:///generated/rules.yaml
       MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: file:///config/jwks.dev.json
       OATHKEEPER_HASURA_URL: "http://graphql-engine:8080"
       OATHKEEPER_FRONTEND_URL: "http://host.docker.internal:3000"
@@ -49,20 +50,22 @@ services:
       - "host.docker.internal:host-gateway"
 
   kratos-migrate:
-    build: ./ory/kratos
-    image: lunatrace-kratos:lunatrace-dev
+    build:
+      context: ./ory
+      dockerfile: docker/kratos.dockerfile
     depends_on:
       - postgres
     environment:
       DSN: postgres://postgres:postgrespassword@postgres:5432/lunatrace
     volumes:
       - ./ory/kratos:/config
-    command: -c /config/config.yaml migrate sql -e --yes
+    command: '-c /config/config.yaml migrate sql -e --yes'
     restart: on-failure
 
   kratos:
-    build: ./ory/kratos
-    image: lunatrace-kratos
+    build:
+      context: ./ory
+      dockerfile: docker/kratos.dockerfile
     depends_on:
       - postgres
     ports:
@@ -73,9 +76,11 @@ services:
       DSN: postgres://postgres:postgrespassword@postgres:5432/lunatrace
       LOG_LEVEL: trace
       KRATOS_ADMIN_URL: http://localhost:4434
-    command: serve -c /config/config.yaml -c /config/config.dev.yaml --dev --watch-courier
+      KRATOS_DOMAIN_NAME: localhost:4433
+    entrypoint: /scripts/entrypoint.sh
+    command: 'kratos serve -c /config/config.yaml -c /config/config.dev.yaml --dev --watch-courier'
     volumes:
-      - ./ory/kratos:/config
+      - './ory/kratos:/config'
     healthcheck:
       test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:4434/health/ready || exit 1']
     extra_hosts:
