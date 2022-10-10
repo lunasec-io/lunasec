@@ -15,7 +15,7 @@ import { RawEdge } from '../../models/dependency-tree/types';
 
 export const fakeDependencyTreeHasuraOutputFixture: Array<RawEdge> = [
   {
-    id: '1',
+    id: 'e1',
     child_id: '1',
     parent_id: '00000000-0000-0000-0000-000000000000',
     child: {
@@ -34,8 +34,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<RawEdge> = [
     },
   },
   {
-    id: '2',
-
+    id: 'e2',
     child_id: '2',
     parent_id: '1',
     child: {
@@ -54,8 +53,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<RawEdge> = [
     },
   },
   {
-    id: '3',
-
+    id: 'e3',
     child_id: '3',
     parent_id: '2',
     child: {
@@ -74,8 +72,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<RawEdge> = [
     },
   },
   {
-    id: '4',
-
+    id: 'e4',
     child_id: '4',
     parent_id: '3',
     child: {
@@ -111,7 +108,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<RawEdge> = [
   },
   // This is to make sure duplicate nodes still work when they are at different places in the tree, and dont overwrite one another
   {
-    id: '5',
+    id: 'e5',
     child_id: '4',
     parent_id: '1',
     child: {
