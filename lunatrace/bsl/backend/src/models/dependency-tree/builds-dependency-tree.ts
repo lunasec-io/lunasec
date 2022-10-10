@@ -124,9 +124,9 @@ export class DependencyTree {
     return vulnsWithMetadata;
   }
 
-  // this is the main function that we call to return useful information to the client about their vulnerabilities
+  // This is the data we return to the frontend. We also cache this data onto the tree when the tree is constructed
   // Also this method is too long but also really hard to break up because of all the computed state from various steps
-  public getVulnerableReleases(): VulnerableRelease[] {
+  private getVulnerableReleases(): VulnerableRelease[] {
     const vulnerableReleasesById: Record<string, VulnerableRelease> = {};
 
     this.vulnerableDepNodeIds.forEach((id) => {
