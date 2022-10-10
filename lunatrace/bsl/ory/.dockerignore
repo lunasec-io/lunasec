@@ -1,0 +1,5 @@
+kratos/config.dev.yaml
+kratos/generated/
+oathkeeper/lunatrace-oathkeeper.2022-05-13.jwks.json
+oathkeeper/jwks.dev.json
+oathkeeper/generated/

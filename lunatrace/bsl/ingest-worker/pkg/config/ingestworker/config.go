@@ -9,30 +9,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package config
+package ingestworker
 
 import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queuefx"
-	"github.com/rs/zerolog/log"
 	"go.uber.org/config"
-	"io/ioutil"
 	"os"
-	"path"
 )
 
-const configDir = "config/queuehandler/"
-
-type QueueHandlerConfig struct {
-	Queue   queuefx.Config   `yaml:"queue"`
+type Config struct {
 	Graphql graphqlfx.Config `yaml:"graphql"`
 }
 
-func newDefaultQueueHandlerConfig() QueueHandlerConfig {
-	return QueueHandlerConfig{
-		Queue: queuefx.Config{
-			Name: "${QUEUE_NAME}",
-		},
+func newDefaultConfig() Config {
+	return Config{
 		Graphql: graphqlfx.Config{
 			Url:    `${LUNATRACE_GRAPHQL_SERVER_URL}`,
 			Secret: `${LUNATRACE_GRAPHQL_SERVER_SECRET}`,
@@ -40,22 +30,11 @@ func newDefaultQueueHandlerConfig() QueueHandlerConfig {
 	}
 }
 
-func NewQueueHandlerConfigProvider() (config.Provider, error) {
+func NewConfigProvider() (config.Provider, error) {
 	opts := []config.YAMLOption{
 		config.Permissive(),
 		config.Expand(os.LookupEnv),
-		config.Static(newDefaultQueueHandlerConfig()),
+		config.Static(newDefaultConfig()),
 	}
-
-	files, err := ioutil.ReadDir(configDir)
-	if err == nil {
-		for _, file := range files {
-			opts = append(opts, config.File(path.Join(configDir, file.Name())))
-		}
-	}
-	if err != nil {
-		log.Warn().Str("config directory", configDir).Msg("unable to locate config directory")
-	}
-
 	return config.NewYAML(opts...)
 }
