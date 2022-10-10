@@ -14,6 +14,7 @@ package main
 import (
 	ingest "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/package-injest"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/vulnerability"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/ingestworker"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
@@ -45,6 +46,10 @@ func main() {
 			Version: "0.0.1",
 		}),
 		fx.Provide(
+			ingestworker.NewConfigProvider,
+		),
+		fx.Provide(
+			graphqlfx.NewConfig,
 			graphqlfx.NewGraphqlClient,
 		),
 		fx.Provide(
