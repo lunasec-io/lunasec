@@ -14,7 +14,7 @@ package main
 import (
 	"context"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/awsfx"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/queuehandler"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher/npm"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
@@ -34,7 +34,7 @@ func main() {
 	app := fx.New(
 		fx.Supply(http.DefaultClient),
 		fx.Provide(
-			config.NewQueueHandlerConfigProvider,
+			queuehandler.NewConfigProvider,
 			queuefx.NewConfig,
 			graphqlfx.NewConfig,
 			awsfx.NewConfig,

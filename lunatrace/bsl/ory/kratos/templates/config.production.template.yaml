@@ -1,38 +1,38 @@
 version: v0.9.0-alpha.3
 serve:
   public:
-    base_url: https://lunatrace.lunasec.io/api/kratos/
+    base_url: https://$KRATOS_DOMAIN_NAME/api/kratos/
     cors:
       enabled: true
   admin:
-    base_url: http://localhost:4434/
+    base_url: http://$KRATOS_DOMAIN_NAME:4434/
 
 selfservice:
-  default_browser_return_url: https://lunatrace.lunasec.io/
+  default_browser_return_url: https://$KRATOS_DOMAIN_NAME/
   allowed_return_urls:
-    - https://lunatrace.lunasec.io
+    - https://$KRATOS_DOMAIN_NAME
 
   flows:
     error:
-      ui_url: https://lunatrace.lunasec.io/auth/error
+      ui_url: https://$KRATOS_DOMAIN_NAME/auth/error
 
     settings:
-      ui_url: https://lunatrace.lunasec.io/api/kratos/settings
+      ui_url: https://$KRATOS_DOMAIN_NAME/api/kratos/settings
 
     recovery:
-      ui_url: https://lunatrace.lunasec.io/api/kratos/recovery
+      ui_url: https://$KRATOS_DOMAIN_NAME/api/kratos/recovery
 
     verification:
-      ui_url: https://lunatrace.lunasec.io/api/kratos/verification
+      ui_url: https://$KRATOS_DOMAIN_NAME/api/kratos/verification
       after:
-        default_browser_return_url: https://lunatrace.lunasec.io/
+        default_browser_return_url: https://$KRATOS_DOMAIN_NAME/
 
     logout:
       after:
-        default_browser_return_url: https://lunatrace.lunasec.io
+        default_browser_return_url: https://$KRATOS_DOMAIN_NAME
 
     login:
-      ui_url: https://lunatrace.lunasec.io
+      ui_url: https://$KRATOS_DOMAIN_NAME
       lifespan: 10m
       after:
         oidc:
@@ -44,7 +44,7 @@ selfservice:
                 body: file:///config/oidc.hook.jsonnet
 
     registration:
-      ui_url: https://lunatrace.lunasec.io/
+      ui_url: https://$KRATOS_DOMAIN_NAME/
       lifespan: 10m
       after:
         password:
@@ -66,10 +66,6 @@ selfservice:
                 url: http://localhost:3002/github/login
                 method: POST
                 body: file:///config/oidc.hook.jsonnet
-
-
-
-
 log:
   level: debug
   format: json
