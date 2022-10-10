@@ -316,6 +316,26 @@ export class LunatraceBackendStack extends cdk.Stack {
       // },
     });
 
+    const ingestWorkerImage = ContainerImage.fromAsset('../ingest-worker', {
+      ...commonBuildProps,
+      file: 'docker/ingestworker.dockerfile',
+    });
+
+    // Update vulnerabilities job
+    const updateVulnerabilitiesJob = taskDef.addContainer('UpdateVulnerabilitesJob', {
+      memoryLimitMiB: 8 * 1024,
+      cpu: 4 * 1024,
+      image: ingestWorkerImage,
+      logging: datadogLogDriverForService('lunatrace', 'UpdateVulnerabilitiesJob'),
+      environment: {
+        LUNATRACE_GRAPHQL_SERVER_URL: 'http://localhost:8080/v1/graphql',
+      },
+      command: ['vulnerability', 'ingest', '--source', 'ghsa', '--cron', '0 0 * * *'],
+      secrets: {
+        LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+      },
+    });
+
     backend.addContainerDependencies({
       container: oathkeeper,
       condition: ContainerDependencyCondition.HEALTHY,

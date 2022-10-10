@@ -240,34 +240,5 @@ export class WorkerStack extends cdk.Stack {
       repositoryQueue.grantConsumeMessages(queueFargateService.taskDefinition.taskRole);
       repositoryQueue.grantSendMessages(queueFargateService.taskDefinition.taskRole);
     });
-
-    const ingestWorkerImage = ContainerImage.fromAsset('../ingest-worker', {
-      ...commonBuildProps,
-      file: 'docker/ingestworker.dockerfile',
-    });
-
-    // Update vulnerabilities job
-    const updateVulnerabilitiesJob = new ScheduledFargateTask(context, 'UpdateVulnerabilitesJob', {
-      cluster: fargateCluster,
-      platformVersion: FargatePlatformVersion.LATEST,
-      desiredTaskCount: 1,
-      schedule: Schedule.rate(Duration.minutes(10)),
-      securityGroups: [vpcDbSecurityGroup, servicesSecurityGroup],
-      subnetSelection: { subnetType: SubnetType.PUBLIC },
-      scheduledFargateTaskImageOptions: {
-        memoryLimitMiB: 8 * 1024,
-        cpu: 4 * 1024,
-        image: ingestWorkerImage,
-        logDriver: datadogLogDriverForService('lunatrace', 'UpdateVulnerabilitiesJob'),
-        environment: {
-          ...processQueueCommonEnvVars,
-        },
-        command: ['vulnerability', 'ingest', '--source', 'ghsa'],
-        secrets: {
-          LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
-        },
-      },
-    });
-    addDatadogToTaskDefinition(context, updateVulnerabilitiesJob.taskDefinition, datadogApiKeyArn);
   }
 }
