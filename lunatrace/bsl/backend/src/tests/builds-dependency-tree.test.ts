@@ -21,15 +21,23 @@ describe('The dependency tree', () => {
   it('should generate a dependency tree', () => {
     const tree = new DependencyTree(fakeDependencyTreeHasuraOutputFixture);
     expect(tree).toBeDefined();
-    expect(tree.depNodesById.size).toEqual(4);
+    expect(tree.depNodesByEdgeId.size).toEqual(5);
     expect(tree.nodeIdToParentIds.size).toEqual(3);
+    expect(tree.nodeIdToParentIds.get('4')?.size).toEqual(2);
     // parse out vulnerable releases and check the data
+  });
+
+  it('Should show vulnerable releases properly', () => {
+    const tree = new DependencyTree(fakeDependencyTreeHasuraOutputFixture);
+
     const vulnReleases = tree.vulnerableReleases;
     expect(vulnReleases.length).toEqual(1);
 
     const vulnQux = vulnReleases[0];
     expect(vulnQux.trivially_updatable).toEqual('yes');
-    expect(vulnQux.chains.length).toEqual(1);
+    console.log('vulnQux chains', util.inspect(vulnQux.chains, { depth: 3 }));
+    console.log('parent map', tree.nodeIdToParentIds);
+    expect(vulnQux.chains.length).toEqual(2);
     const chain = vulnQux.chains[0];
 
     const chainPackageNames = chain.map((dep) => dep.release.package.name);
@@ -44,7 +52,7 @@ describe('The dependency tree', () => {
     const vulnerabilities = tree.getVulnerabilities();
     expect(vulnerabilities.length).toEqual(1);
     expect(vulnerabilities[0].vulnerability.source_id).toEqual('GHSA123ABC');
-    expect(vulnerabilities[0].chains.length).toEqual(1);
+    expect(vulnerabilities[0].chains.length).toEqual(2);
     expect(vulnerabilities[0].chains[0].length).toEqual(4);
   });
 });

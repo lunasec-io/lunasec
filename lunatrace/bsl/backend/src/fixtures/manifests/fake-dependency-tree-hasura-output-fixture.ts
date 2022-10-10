@@ -109,4 +109,40 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<RawEdge> = [
       },
     },
   },
+  // This is to make sure duplicate nodes still work when they are at different places in the tree, and dont overwrite one another
+  {
+    id: '5',
+    child_id: '4',
+    parent_id: '1',
+    child: {
+      id: '4',
+      range: '^1.0.0',
+      release_id: '4',
+      release: {
+        version: '1.0.2',
+        id: '4',
+        package: {
+          affected_by_vulnerability: [
+            {
+              vulnerability: {
+                severity_name: 'Medium',
+                cvss_score: 7.2,
+                source: 'github',
+                source_id: 'GHSA123ABC',
+                id: 'a',
+              },
+              ranges: [
+                {
+                  fixed: '1.0.3',
+                  introduced: '1.0.0',
+                },
+              ],
+            },
+          ],
+          name: 'qux',
+          package_manager: 'npm',
+        },
+      },
+    },
+  },
 ];
