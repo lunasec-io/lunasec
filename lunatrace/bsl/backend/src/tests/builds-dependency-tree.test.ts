@@ -12,8 +12,6 @@
  *
  */
 
-import util from 'util';
-
 import { fakeDependencyTreeHasuraOutputFixture } from '../fixtures/manifests/fake-dependency-tree-hasura-output-fixture';
 import { DependencyTree } from '../models/dependency-tree/builds-dependency-tree';
 
@@ -35,8 +33,6 @@ describe('The dependency tree', () => {
 
     const vulnQux = vulnReleases[0];
     expect(vulnQux.trivially_updatable).toEqual('yes');
-    console.log('vulnQux chains', util.inspect(vulnQux.chains, { depth: 3 }));
-    console.log('parent map', tree.nodeIdToParentIds);
     expect(vulnQux.chains.length).toEqual(2);
     const chain = vulnQux.chains[0];
 
@@ -54,5 +50,6 @@ describe('The dependency tree', () => {
     expect(vulnerabilities[0].vulnerability.source_id).toEqual('GHSA123ABC');
     expect(vulnerabilities[0].chains.length).toEqual(2);
     expect(vulnerabilities[0].chains[0].length).toEqual(4);
+    expect(vulnerabilities[0].chains[1].length).toEqual(2);
   });
 });
