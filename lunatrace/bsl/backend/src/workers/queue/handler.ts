@@ -28,7 +28,7 @@ import { processS3SqsMessage } from './queue-processors/process-s3-sqs-message';
 
 export async function startQueueWorker(): Promise<void> {
   try {
-    const firstId = await db.one('SELECT parent_id FROM manifest_dependency_edge LIMIT 1');
+    const firstId = await db.one('SELECT 1');
 
     log.info('Debug message test DB connection:', { firstId });
   } catch (e) {

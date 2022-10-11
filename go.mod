@@ -39,7 +39,7 @@ require (
 	github.com/rs/zerolog v1.27.0
 	github.com/schollz/progressbar/v3 v3.8.6
 	github.com/spf13/viper v1.12.0
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.8.0
 	github.com/urfave/cli/v2 v2.10.3
 	github.com/vektah/gqlparser/v2 v2.4.1
 	go.uber.org/config v1.4.0
@@ -134,6 +134,7 @@ require (
 	github.com/fullstorydev/grpcurl v1.8.2 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.0 // indirect
 	github.com/go-chi/chi v4.1.2+incompatible // indirect
+	github.com/go-co-op/gocron v1.17.0 // indirect
 	github.com/go-git/gcfg v1.5.0 // indirect
 	github.com/go-git/go-billy/v5 v5.3.1 // indirect
 	github.com/go-logr/logr v1.2.2 // indirect
@@ -240,6 +241,7 @@ require (
 	github.com/prometheus/common v0.32.1 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sassoftware/relic v0.0.0-20210427151427-dfb082b79b74 // indirect
 	github.com/scylladb/go-set v1.0.3-0.20200225121959-cc7b2070d91e // indirect

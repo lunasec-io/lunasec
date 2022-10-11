@@ -11,9 +11,9 @@
  * limitations under the License.
  *
  */
-import { DependencyEdgePartial } from '../../models/dependency-tree/types';
+import { RawEdge } from '../../models/dependency-tree/types';
 
-export const fakeDependencyTreeHasuraOutputFixture: Array<DependencyEdgePartial> = [
+export const fakeDependencyTreeHasuraOutputFixture: Array<RawEdge> = [
   {
     id: '1',
     child_id: '1',
@@ -34,7 +34,8 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<DependencyEdgePartial>
     },
   },
   {
-    id: '1',
+    id: '2',
+
     child_id: '2',
     parent_id: '1',
     child: {
@@ -53,7 +54,8 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<DependencyEdgePartial>
     },
   },
   {
-    id: '1',
+    id: '3',
+
     child_id: '3',
     parent_id: '2',
     child: {
@@ -72,7 +74,8 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<DependencyEdgePartial>
     },
   },
   {
-    id: '1',
+    id: '4',
+
     child_id: '4',
     parent_id: '3',
     child: {
