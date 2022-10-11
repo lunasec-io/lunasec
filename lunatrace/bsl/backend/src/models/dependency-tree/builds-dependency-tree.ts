@@ -28,17 +28,20 @@ import {
 export class DependencyTree {
   // The following indexes are how the tree is "built". They allow high speed querying against the tree data without ever building a full tree in memory
 
-  // This is and should remain the only index that holds a reference to the actual nodes. All parsing algorithms must use this index to resolve depNodes
+  // This is and should remain the only index that holds a reference to the actual nodes.
+  // All parsing algorithms must use this index to resolve depNodes
   public depNodesById: Map<string, BuiltNode> = new Map();
   // Used to trace the structure of the tree from the bottom up
-  public nodeIdToParentIds: Map<string, Set<string>> = new Map();
+  public parentsByNodeId: Map<string, Set<string>> = new Map();
   // Used so we can quickly fetch all nodes that are the same release (ex React@1.0.0)
   public depNodeIdsByReleaseId: Map<string, Set<string>> = new Map();
   // Holds which nodes have been determined to be vulnerable, for later processing
   public vulnerableDepNodeIds: Set<string> = new Set();
-  // This is the full computed dataset that we server directly to the frontend. This is the "output" format of the tree.
+  // This is the full computed dataset that we serve directly to the frontend. This is the "output" format of the tree.
   // Note that other public methods, like getVulnerabilities() rearrange this same data into different shapes for easier parsing outside of the tree
   public vulnerableReleases: VulnerableRelease[];
+  // keep track of edge ids later in case theyre needed, since we arent storing or indexing edges anywhere else
+  public edgeIdsByParentChildSlug: Map<string, string> = new Map();
 
   // This constructor builds the indexes and any useful data that show useful data about the tree
   constructor(sourceDeps: Array<RawEdge>) {
@@ -51,8 +54,10 @@ export class DependencyTree {
         ...edge.child.release,
         package: { ...edge.child.release.package, affected_by_vulnerability: this.buildVulns(edge.child) },
       };
+
       // flatten the parent id into the child so we can forget about edges as much as possible, and filter the vulns
-      const depNode: BuiltNode = { ...edge.child, edge_id: edge.id, parent_id: edge.parent_id, release: builtRelease };
+      const depNode: BuiltNode = { ...edge.child, parent_id: edge.parent_id, release: builtRelease };
+
       // Create a map from a given release to the list of depNodes
       const existingNodesForThisRelease = this.depNodeIdsByReleaseId.get(depNode.release_id);
       if (existingNodesForThisRelease) {
@@ -63,15 +68,19 @@ export class DependencyTree {
       }
 
       // Create a lookup of child IDs that map to a set of nodes that include them (parents).
-      const parentIdsToNode = this.nodeIdToParentIds.get(edge.child_id) || new Set();
+      const parentIdsToNode = this.parentsByNodeId.get(depNode.id) || new Set();
 
       if (depNode.parent_id && depNode.parent_id !== '00000000-0000-0000-0000-000000000000') {
         parentIdsToNode.add(depNode.parent_id);
-        this.nodeIdToParentIds.set(depNode.id, parentIdsToNode);
+        this.parentsByNodeId.set(depNode.id, parentIdsToNode);
       }
 
-      // Create a separate lookup to directly map an ID to a node
+      // Create a separate lookup to directly map an ID to a node, note this will overwrite identical nodes but it's fine
       this.depNodesById.set(depNode.id, depNode);
+
+      // keep track of edge ids later in case theyre needed, since we arent storing or indexing edges anywhere else
+      const parentChildSlug = (edge.parent_id || '') + ':' + edge.child_id;
+      this.edgeIdsByParentChildSlug.set(parentChildSlug, edge.id);
     });
     this.vulnerableReleases = this.getVulnerableReleases();
   }
@@ -115,22 +124,22 @@ export class DependencyTree {
     return vulnsWithMetadata;
   }
 
-  // this is the main function that we call to return useful information to the client about their vulnerabilities
-  // Todo: The nice generic typing in the return type has been given up on for now (DependencyEdgePartial instead of DependencyEdge), it would be nice to fix it, but its maybe not worth it
+  // This is the data we return to the frontend. We also cache this data onto the tree when the tree is constructed
   // Also this method is too long but also really hard to break up because of all the computed state from various steps
   private getVulnerableReleases(): VulnerableRelease[] {
     const vulnerableReleasesById: Record<string, VulnerableRelease> = {};
 
-    this.vulnerableDepNodeIds.forEach((nodeId) => {
-      const vulnerableDep = this.depNodesById.get(nodeId);
+    this.vulnerableDepNodeIds.forEach((id) => {
+      const vulnerableDep = this.depNodesById.get(id);
 
       if (!vulnerableDep) {
-        throw new Error('failed to lookup depNode by id');
+        throw new Error(`failed to lookup depNode by id: ${id}`);
       }
+
+      const chains = this.getDependencyChainsOfDepNode(vulnerableDep);
 
       const release = vulnerableDep.release;
 
-      const chains = this.getDependencyChainsOfDepNode(vulnerableDep);
       const devOnly = chains.every((chain) => {
         const rootLabels = chain[0].labels;
         if (rootLabels && 'scope' in rootLabels && rootLabels.scope === 'dev') {
@@ -193,12 +202,16 @@ export class DependencyTree {
     return Object.values(vulnerableReleasesById);
   }
 
-  // unused but could come in handy someday
+  // unused but might come in handy someday
   private chainsAreIdentical(firstChain: DependencyChain, secondChain: DependencyChain): boolean {
     if (firstChain.length !== secondChain.length) {
       return false;
     }
     return !firstChain.some((dep, i) => dep.id !== secondChain[i].id);
+  }
+
+  public getEdgeIdFromNodePair(firstNodeId: string, secondNodeId: string): string | undefined {
+    return this.edgeIdsByParentChildSlug.get(firstNodeId + ':' + secondNodeId);
   }
 
   private precomputeVulnTriviallyUpdatable(requestedRange: string, vuln: RawVulnMeta): boolean {
@@ -288,16 +301,15 @@ export class DependencyTree {
         return;
       }
 
-      const parents = this.nodeIdToParentIds.get(dep.id);
-
+      const parents = this.parentsByNodeId.get(dep.id);
       if (!parents) {
-        throw new Error(`Failed to find parent edges for child id ${dep.id} in the tree`);
+        throw new Error(`Failed to find parent edges for node id ${dep.id} in the tree`);
       }
 
-      parents.forEach((parentEdgeId) => {
-        const parentEdge = this.depNodesById.get(parentEdgeId);
+      parents.forEach((parentId) => {
+        const parentEdge = this.depNodesById.get(parentId);
         if (!parentEdge) {
-          throw new Error(`Failed to find parent edge with id ${parentEdgeId} for child id ${dep.id}`);
+          throw new Error(`Failed to find parent edge with id ${parentId} for child id ${dep.id}`);
         }
         recursivelyGenerateChainsWithStack(parentEdge, newStack);
       });
@@ -305,7 +317,6 @@ export class DependencyTree {
 
     // start the recursive search
     recursivelyGenerateChainsWithStack(depNode, []);
-
     return flattenedChains;
   }
 }

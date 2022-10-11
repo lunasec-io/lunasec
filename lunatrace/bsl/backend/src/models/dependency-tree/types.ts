@@ -64,7 +64,6 @@ export interface RawVulnMeta {
 
 export interface BuiltNode extends RawNode {
   // we dump these in here as we build the tree so we can forget about edges, because edges are confusing
-  edge_id: string;
   parent_id?: string;
   release: BuiltRelease;
 }
