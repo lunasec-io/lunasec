@@ -12,10 +12,11 @@
 package main
 
 import (
-	ingest "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/package-injest"
+	packageCommand "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/package"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/vulnerability"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/ingestworker"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
@@ -61,8 +62,11 @@ func main() {
 		fx.Provide(
 			npm.NewNPMFetcher,
 			ingester.NewHasuraIngester,
-			ingest.NewCommand,
 			vulnerability.NewCommand,
+		),
+		fx.Provide(
+			replicator.NewNPMReplicator,
+			packageCommand.NewCommand,
 		),
 	)
 }

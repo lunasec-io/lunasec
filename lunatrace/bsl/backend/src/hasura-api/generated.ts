@@ -53,7 +53,7 @@ export type BuildData_AffectedByVulnerability = {
   __typename?: 'BuildData_AffectedByVulnerability';
   chains?: Maybe<Array<Array<BuildData_DependencyNode>>>;
   ranges?: Maybe<Array<Maybe<BuildData_Range>>>;
-  triviallyUpdatable?: Maybe<Scalars['Boolean']>;
+  trivially_updatable?: Maybe<Scalars['Boolean']>;
   vulnerability: BuildData_Vulnerability;
 };
 
@@ -96,13 +96,13 @@ export type BuildData_Vulnerability = {
 
 export type BuildData_VulnerableRelease = {
   __typename?: 'BuildData_VulnerableRelease';
-  affectedBy: Array<BuildData_AffectedByVulnerability>;
+  affected_by: Array<BuildData_AffectedByVulnerability>;
   chains: Array<Array<BuildData_DependencyNode>>;
   cvss?: Maybe<Scalars['Float']>;
-  devOnly: Scalars['Boolean'];
+  dev_only: Scalars['Boolean'];
   release?: Maybe<BuildData_Release>;
   severity?: Maybe<Scalars['String']>;
-  triviallyUpdatable: Scalars['String'];
+  trivially_updatable: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'. */
@@ -277,6 +277,8 @@ export type Analysis_Manifest_Dependency_Edge_Result = {
   finding_source: Analysis_Finding_Source_Enum;
   finding_type: Analysis_Finding_Type_Enum;
   id: Scalars['uuid'];
+  /** An object relationship */
+  manifest_dependency_edge: Manifest_Dependency_Edge;
   manifest_dependency_edge_id: Scalars['uuid'];
   vulnerability_id: Scalars['uuid'];
 };
@@ -290,6 +292,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Bool_Exp = {
   finding_source?: InputMaybe<Analysis_Finding_Source_Enum_Comparison_Exp>;
   finding_type?: InputMaybe<Analysis_Finding_Type_Enum_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
   manifest_dependency_edge_id?: InputMaybe<Uuid_Comparison_Exp>;
   vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
@@ -308,6 +311,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Insert_Input = {
   finding_source?: InputMaybe<Analysis_Finding_Source_Enum>;
   finding_type?: InputMaybe<Analysis_Finding_Type_Enum>;
   id?: InputMaybe<Scalars['uuid']>;
+  manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Obj_Rel_Insert_Input>;
   manifest_dependency_edge_id?: InputMaybe<Scalars['uuid']>;
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
@@ -334,6 +338,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Order_By = {
   finding_source?: InputMaybe<Order_By>;
   finding_type?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Order_By>;
   manifest_dependency_edge_id?: InputMaybe<Order_By>;
   vulnerability_id?: InputMaybe<Order_By>;
 };
@@ -3000,6 +3005,13 @@ export type Manifest_Dependency_Edge_Mutation_Response = {
   returning: Array<Manifest_Dependency_Edge>;
 };
 
+/** input type for inserting object relation for remote table "manifest_dependency_edge" */
+export type Manifest_Dependency_Edge_Obj_Rel_Insert_Input = {
+  data: Manifest_Dependency_Edge_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Manifest_Dependency_Edge_On_Conflict>;
+};
+
 /** on_conflict condition type for table "manifest_dependency_edge" */
 export type Manifest_Dependency_Edge_On_Conflict = {
   constraint: Manifest_Dependency_Edge_Constraint;
@@ -3574,6 +3586,14 @@ export type Mutation_Root = {
   insert_manifests?: Maybe<Manifests_Mutation_Response>;
   /** insert a single row into the table: "manifests" */
   insert_manifests_one?: Maybe<Manifests>;
+  /** insert data into the table: "npm.latest_revision" */
+  insert_npm_latest_revision?: Maybe<Npm_Latest_Revision_Mutation_Response>;
+  /** insert a single row into the table: "npm.latest_revision" */
+  insert_npm_latest_revision_one?: Maybe<Npm_Latest_Revision>;
+  /** insert data into the table: "npm.revision" */
+  insert_npm_revision?: Maybe<Npm_Revision_Mutation_Response>;
+  /** insert a single row into the table: "npm.revision" */
+  insert_npm_revision_one?: Maybe<Npm_Revision>;
   /** insert data into the table: "organization_user" */
   insert_organization_user?: Maybe<Organization_User_Mutation_Response>;
   /** insert a single row into the table: "organization_user" */
@@ -3713,6 +3733,14 @@ export type Mutation_Root = {
   update_manifests?: Maybe<Manifests_Mutation_Response>;
   /** update single row of the table: "manifests" */
   update_manifests_by_pk?: Maybe<Manifests>;
+  /** update data of the table: "npm.latest_revision" */
+  update_npm_latest_revision?: Maybe<Npm_Latest_Revision_Mutation_Response>;
+  /** update single row of the table: "npm.latest_revision" */
+  update_npm_latest_revision_by_pk?: Maybe<Npm_Latest_Revision>;
+  /** update data of the table: "npm.revision" */
+  update_npm_revision?: Maybe<Npm_Revision_Mutation_Response>;
+  /** update single row of the table: "npm.revision" */
+  update_npm_revision_by_pk?: Maybe<Npm_Revision>;
   /** update data of the table: "organization_user" */
   update_organization_user?: Maybe<Organization_User_Mutation_Response>;
   /** update single row of the table: "organization_user" */
@@ -4048,6 +4076,34 @@ export type Mutation_RootInsert_ManifestsArgs = {
 export type Mutation_RootInsert_Manifests_OneArgs = {
   object: Manifests_Insert_Input;
   on_conflict?: InputMaybe<Manifests_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Npm_Latest_RevisionArgs = {
+  objects: Array<Npm_Latest_Revision_Insert_Input>;
+  on_conflict?: InputMaybe<Npm_Latest_Revision_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Npm_Latest_Revision_OneArgs = {
+  object: Npm_Latest_Revision_Insert_Input;
+  on_conflict?: InputMaybe<Npm_Latest_Revision_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Npm_RevisionArgs = {
+  objects: Array<Npm_Revision_Insert_Input>;
+  on_conflict?: InputMaybe<Npm_Revision_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Npm_Revision_OneArgs = {
+  object: Npm_Revision_Insert_Input;
+  on_conflict?: InputMaybe<Npm_Revision_On_Conflict>;
 };
 
 
@@ -4580,6 +4636,36 @@ export type Mutation_RootUpdate_Manifests_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Npm_Latest_RevisionArgs = {
+  _set?: InputMaybe<Npm_Latest_Revision_Set_Input>;
+  where: Npm_Latest_Revision_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Npm_Latest_Revision_By_PkArgs = {
+  _set?: InputMaybe<Npm_Latest_Revision_Set_Input>;
+  pk_columns: Npm_Latest_Revision_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Npm_RevisionArgs = {
+  _inc?: InputMaybe<Npm_Revision_Inc_Input>;
+  _set?: InputMaybe<Npm_Revision_Set_Input>;
+  where: Npm_Revision_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Npm_Revision_By_PkArgs = {
+  _inc?: InputMaybe<Npm_Revision_Inc_Input>;
+  _set?: InputMaybe<Npm_Revision_Set_Input>;
+  pk_columns: Npm_Revision_Pk_Columns_Input;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_Organization_UserArgs = {
   _set?: InputMaybe<Organization_User_Set_Input>;
   where: Organization_User_Bool_Exp;
@@ -4961,6 +5047,186 @@ export type Mutation_RootUpdate_Webhook_Cache_By_PkArgs = {
   _set?: InputMaybe<Webhook_Cache_Set_Input>;
   pk_columns: Webhook_Cache_Pk_Columns_Input;
 };
+
+/** Latest document revision  */
+export type Npm_Latest_Revision = {
+  __typename?: 'npm_latest_revision';
+  id: Scalars['String'];
+  rev: Scalars['String'];
+  /** An object relationship */
+  revision: Npm_Revision;
+};
+
+/** Boolean expression to filter rows from the table "npm.latest_revision". All fields are combined with a logical 'AND'. */
+export type Npm_Latest_Revision_Bool_Exp = {
+  _and?: InputMaybe<Array<Npm_Latest_Revision_Bool_Exp>>;
+  _not?: InputMaybe<Npm_Latest_Revision_Bool_Exp>;
+  _or?: InputMaybe<Array<Npm_Latest_Revision_Bool_Exp>>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  rev?: InputMaybe<String_Comparison_Exp>;
+  revision?: InputMaybe<Npm_Revision_Bool_Exp>;
+};
+
+/** unique or primary key constraints on table "npm.latest_revision" */
+export enum Npm_Latest_Revision_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  LatestRevisionPkey = 'latest_revision_pkey'
+}
+
+/** input type for inserting data into table "npm.latest_revision" */
+export type Npm_Latest_Revision_Insert_Input = {
+  id?: InputMaybe<Scalars['String']>;
+  rev?: InputMaybe<Scalars['String']>;
+  revision?: InputMaybe<Npm_Revision_Obj_Rel_Insert_Input>;
+};
+
+/** response of any mutation on the table "npm.latest_revision" */
+export type Npm_Latest_Revision_Mutation_Response = {
+  __typename?: 'npm_latest_revision_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Npm_Latest_Revision>;
+};
+
+/** on_conflict condition type for table "npm.latest_revision" */
+export type Npm_Latest_Revision_On_Conflict = {
+  constraint: Npm_Latest_Revision_Constraint;
+  update_columns?: Array<Npm_Latest_Revision_Update_Column>;
+  where?: InputMaybe<Npm_Latest_Revision_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "npm.latest_revision". */
+export type Npm_Latest_Revision_Order_By = {
+  id?: InputMaybe<Order_By>;
+  rev?: InputMaybe<Order_By>;
+  revision?: InputMaybe<Npm_Revision_Order_By>;
+};
+
+/** primary key columns input for table: npm_latest_revision */
+export type Npm_Latest_Revision_Pk_Columns_Input = {
+  id: Scalars['String'];
+};
+
+/** select columns of table "npm.latest_revision" */
+export enum Npm_Latest_Revision_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Rev = 'rev'
+}
+
+/** input type for updating data in table "npm.latest_revision" */
+export type Npm_Latest_Revision_Set_Input = {
+  id?: InputMaybe<Scalars['String']>;
+  rev?: InputMaybe<Scalars['String']>;
+};
+
+/** update columns of table "npm.latest_revision" */
+export enum Npm_Latest_Revision_Update_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Rev = 'rev'
+}
+
+/** Revision of a NPM CouchDB document. */
+export type Npm_Revision = {
+  __typename?: 'npm_revision';
+  id: Scalars['String'];
+  rev: Scalars['String'];
+  seq?: Maybe<Scalars['Int']>;
+};
+
+/** Boolean expression to filter rows from the table "npm.revision". All fields are combined with a logical 'AND'. */
+export type Npm_Revision_Bool_Exp = {
+  _and?: InputMaybe<Array<Npm_Revision_Bool_Exp>>;
+  _not?: InputMaybe<Npm_Revision_Bool_Exp>;
+  _or?: InputMaybe<Array<Npm_Revision_Bool_Exp>>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  rev?: InputMaybe<String_Comparison_Exp>;
+  seq?: InputMaybe<Int_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "npm.revision" */
+export enum Npm_Revision_Constraint {
+  /** unique or primary key constraint on columns "rev" */
+  RevisionPkey = 'revision_pkey'
+}
+
+/** input type for incrementing numeric columns in table "npm.revision" */
+export type Npm_Revision_Inc_Input = {
+  seq?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "npm.revision" */
+export type Npm_Revision_Insert_Input = {
+  id?: InputMaybe<Scalars['String']>;
+  rev?: InputMaybe<Scalars['String']>;
+  seq?: InputMaybe<Scalars['Int']>;
+};
+
+/** response of any mutation on the table "npm.revision" */
+export type Npm_Revision_Mutation_Response = {
+  __typename?: 'npm_revision_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Npm_Revision>;
+};
+
+/** input type for inserting object relation for remote table "npm.revision" */
+export type Npm_Revision_Obj_Rel_Insert_Input = {
+  data: Npm_Revision_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Npm_Revision_On_Conflict>;
+};
+
+/** on_conflict condition type for table "npm.revision" */
+export type Npm_Revision_On_Conflict = {
+  constraint: Npm_Revision_Constraint;
+  update_columns?: Array<Npm_Revision_Update_Column>;
+  where?: InputMaybe<Npm_Revision_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "npm.revision". */
+export type Npm_Revision_Order_By = {
+  id?: InputMaybe<Order_By>;
+  rev?: InputMaybe<Order_By>;
+  seq?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: npm_revision */
+export type Npm_Revision_Pk_Columns_Input = {
+  rev: Scalars['String'];
+};
+
+/** select columns of table "npm.revision" */
+export enum Npm_Revision_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Rev = 'rev',
+  /** column name */
+  Seq = 'seq'
+}
+
+/** input type for updating data in table "npm.revision" */
+export type Npm_Revision_Set_Input = {
+  id?: InputMaybe<Scalars['String']>;
+  rev?: InputMaybe<Scalars['String']>;
+  seq?: InputMaybe<Scalars['Int']>;
+};
+
+/** update columns of table "npm.revision" */
+export enum Npm_Revision_Update_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Rev = 'rev',
+  /** column name */
+  Seq = 'seq'
+}
 
 /** column ordering options */
 export enum Order_By {
@@ -7210,6 +7476,14 @@ export type Query_Root = {
   manifests: Array<Manifests>;
   /** fetch data from the table: "manifests" using primary key columns */
   manifests_by_pk?: Maybe<Manifests>;
+  /** fetch data from the table: "npm.latest_revision" */
+  npm_latest_revision: Array<Npm_Latest_Revision>;
+  /** fetch data from the table: "npm.latest_revision" using primary key columns */
+  npm_latest_revision_by_pk?: Maybe<Npm_Latest_Revision>;
+  /** fetch data from the table: "npm.revision" */
+  npm_revision: Array<Npm_Revision>;
+  /** fetch data from the table: "npm.revision" using primary key columns */
+  npm_revision_by_pk?: Maybe<Npm_Revision>;
   /** fetch data from the table: "organization_user" */
   organization_user: Array<Organization_User>;
   /** fetch data from the table: "organization_user" using primary key columns */
@@ -7553,6 +7827,34 @@ export type Query_RootManifestsArgs = {
 
 export type Query_RootManifests_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootNpm_Latest_RevisionArgs = {
+  distinct_on?: InputMaybe<Array<Npm_Latest_Revision_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Npm_Latest_Revision_Order_By>>;
+  where?: InputMaybe<Npm_Latest_Revision_Bool_Exp>;
+};
+
+
+export type Query_RootNpm_Latest_Revision_By_PkArgs = {
+  id: Scalars['String'];
+};
+
+
+export type Query_RootNpm_RevisionArgs = {
+  distinct_on?: InputMaybe<Array<Npm_Revision_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Npm_Revision_Order_By>>;
+  where?: InputMaybe<Npm_Revision_Bool_Exp>;
+};
+
+
+export type Query_RootNpm_Revision_By_PkArgs = {
+  rev: Scalars['String'];
 };
 
 
@@ -8513,6 +8815,14 @@ export type Subscription_Root = {
   manifests: Array<Manifests>;
   /** fetch data from the table: "manifests" using primary key columns */
   manifests_by_pk?: Maybe<Manifests>;
+  /** fetch data from the table: "npm.latest_revision" */
+  npm_latest_revision: Array<Npm_Latest_Revision>;
+  /** fetch data from the table: "npm.latest_revision" using primary key columns */
+  npm_latest_revision_by_pk?: Maybe<Npm_Latest_Revision>;
+  /** fetch data from the table: "npm.revision" */
+  npm_revision: Array<Npm_Revision>;
+  /** fetch data from the table: "npm.revision" using primary key columns */
+  npm_revision_by_pk?: Maybe<Npm_Revision>;
   /** fetch data from the table: "organization_user" */
   organization_user: Array<Organization_User>;
   /** fetch data from the table: "organization_user" using primary key columns */
@@ -8847,6 +9157,34 @@ export type Subscription_RootManifestsArgs = {
 
 export type Subscription_RootManifests_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootNpm_Latest_RevisionArgs = {
+  distinct_on?: InputMaybe<Array<Npm_Latest_Revision_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Npm_Latest_Revision_Order_By>>;
+  where?: InputMaybe<Npm_Latest_Revision_Bool_Exp>;
+};
+
+
+export type Subscription_RootNpm_Latest_Revision_By_PkArgs = {
+  id: Scalars['String'];
+};
+
+
+export type Subscription_RootNpm_RevisionArgs = {
+  distinct_on?: InputMaybe<Array<Npm_Revision_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Npm_Revision_Order_By>>;
+  where?: InputMaybe<Npm_Revision_Bool_Exp>;
+};
+
+
+export type Subscription_RootNpm_Revision_By_PkArgs = {
+  rev: Scalars['String'];
 };
 
 
@@ -11533,6 +11871,7 @@ export const GetTreeFromBuildDocument = gql`
         id
         parent_id
         child_id
+        id
         child {
           id
           range
