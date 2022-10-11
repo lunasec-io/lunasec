@@ -35,7 +35,7 @@ input Boolean_comparison_exp {
 type BuildData_AffectedByVulnerability {
   chains: [[BuildData_DependencyNode!]!]
   ranges: [BuildData_Range]
-  trivially_updatable: Boolean
+  triviallyUpdatable: Boolean
   vulnerability: BuildData_Vulnerability!
 }
 
@@ -72,13 +72,13 @@ type BuildData_Vulnerability {
 }
 
 type BuildData_VulnerableRelease {
-  affected_by: [BuildData_AffectedByVulnerability!]!
+  affectedBy: [BuildData_AffectedByVulnerability!]!
   chains: [[BuildData_DependencyNode!]!]!
   cvss: Float
-  dev_only: Boolean!
+  devOnly: Boolean!
   release: BuildData_Release
   severity: String
-  trivially_updatable: String!
+  triviallyUpdatable: String!
 }
 
 """
