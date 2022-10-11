@@ -35,7 +35,7 @@ input Boolean_comparison_exp {
 type BuildData_AffectedByVulnerability {
   chains: [[BuildData_DependencyNode!]!]
   ranges: [BuildData_Range]
-  triviallyUpdatable: Boolean
+  trivially_updatable: Boolean
   vulnerability: BuildData_Vulnerability!
 }
 
@@ -72,13 +72,13 @@ type BuildData_Vulnerability {
 }
 
 type BuildData_VulnerableRelease {
-  affectedBy: [BuildData_AffectedByVulnerability!]!
+  affected_by: [BuildData_AffectedByVulnerability!]!
   chains: [[BuildData_DependencyNode!]!]!
   cvss: Float
-  devOnly: Boolean!
+  dev_only: Boolean!
   release: BuildData_Release
   severity: String
-  triviallyUpdatable: String!
+  trivially_updatable: String!
 }
 
 """
@@ -284,6 +284,9 @@ type analysis_manifest_dependency_edge_result {
   finding_source: analysis_finding_source_enum!
   finding_type: analysis_finding_type_enum!
   id: uuid!
+
+  """An object relationship"""
+  manifest_dependency_edge: manifest_dependency_edge!
   manifest_dependency_edge_id: uuid!
   vulnerability_id: uuid!
 }
@@ -299,6 +302,7 @@ input analysis_manifest_dependency_edge_result_bool_exp {
   finding_source: analysis_finding_source_enum_comparison_exp
   finding_type: analysis_finding_type_enum_comparison_exp
   id: uuid_comparison_exp
+  manifest_dependency_edge: manifest_dependency_edge_bool_exp
   manifest_dependency_edge_id: uuid_comparison_exp
   vulnerability_id: uuid_comparison_exp
 }
@@ -326,6 +330,7 @@ input analysis_manifest_dependency_edge_result_insert_input {
   finding_source: analysis_finding_source_enum
   finding_type: analysis_finding_type_enum
   id: uuid
+  manifest_dependency_edge: manifest_dependency_edge_obj_rel_insert_input
   manifest_dependency_edge_id: uuid
   vulnerability_id: uuid
 }
@@ -358,6 +363,7 @@ input analysis_manifest_dependency_edge_result_order_by {
   finding_source: order_by
   finding_type: order_by
   id: order_by
+  manifest_dependency_edge: manifest_dependency_edge_order_by
   manifest_dependency_edge_id: order_by
   vulnerability_id: order_by
 }
@@ -3677,6 +3683,16 @@ type manifest_dependency_edge_mutation_response {
 }
 
 """
+input type for inserting object relation for remote table "manifest_dependency_edge"
+"""
+input manifest_dependency_edge_obj_rel_insert_input {
+  data: manifest_dependency_edge_insert_input!
+
+  """upsert condition"""
+  on_conflict: manifest_dependency_edge_on_conflict
+}
+
+"""
 on_conflict condition type for table "manifest_dependency_edge"
 """
 input manifest_dependency_edge_on_conflict {
@@ -4669,6 +4685,50 @@ type mutation_root {
   ): manifests
 
   """
+  insert data into the table: "npm.latest_revision"
+  """
+  insert_npm_latest_revision(
+    """the rows to be inserted"""
+    objects: [npm_latest_revision_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: npm_latest_revision_on_conflict
+  ): npm_latest_revision_mutation_response
+
+  """
+  insert a single row into the table: "npm.latest_revision"
+  """
+  insert_npm_latest_revision_one(
+    """the row to be inserted"""
+    object: npm_latest_revision_insert_input!
+
+    """upsert condition"""
+    on_conflict: npm_latest_revision_on_conflict
+  ): npm_latest_revision
+
+  """
+  insert data into the table: "npm.revision"
+  """
+  insert_npm_revision(
+    """the rows to be inserted"""
+    objects: [npm_revision_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: npm_revision_on_conflict
+  ): npm_revision_mutation_response
+
+  """
+  insert a single row into the table: "npm.revision"
+  """
+  insert_npm_revision_one(
+    """the row to be inserted"""
+    object: npm_revision_insert_input!
+
+    """upsert condition"""
+    on_conflict: npm_revision_on_conflict
+  ): npm_revision
+
+  """
   insert data into the table: "organization_user"
   """
   insert_organization_user(
@@ -5563,6 +5623,52 @@ type mutation_root {
   ): manifests
 
   """
+  update data of the table: "npm.latest_revision"
+  """
+  update_npm_latest_revision(
+    """sets the columns of the filtered rows to the given values"""
+    _set: npm_latest_revision_set_input
+
+    """filter the rows which have to be updated"""
+    where: npm_latest_revision_bool_exp!
+  ): npm_latest_revision_mutation_response
+
+  """
+  update single row of the table: "npm.latest_revision"
+  """
+  update_npm_latest_revision_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: npm_latest_revision_set_input
+    pk_columns: npm_latest_revision_pk_columns_input!
+  ): npm_latest_revision
+
+  """
+  update data of the table: "npm.revision"
+  """
+  update_npm_revision(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: npm_revision_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: npm_revision_set_input
+
+    """filter the rows which have to be updated"""
+    where: npm_revision_bool_exp!
+  ): npm_revision_mutation_response
+
+  """
+  update single row of the table: "npm.revision"
+  """
+  update_npm_revision_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: npm_revision_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: npm_revision_set_input
+    pk_columns: npm_revision_pk_columns_input!
+  ): npm_revision
+
+  """
   update data of the table: "organization_user"
   """
   update_organization_user(
@@ -6315,6 +6421,232 @@ type mutation_root {
     _set: webhook_cache_set_input
     pk_columns: webhook_cache_pk_columns_input!
   ): webhook_cache
+}
+
+"""Latest document revision """
+type npm_latest_revision {
+  id: String!
+  rev: String!
+
+  """An object relationship"""
+  revision: npm_revision!
+}
+
+"""
+Boolean expression to filter rows from the table "npm.latest_revision". All fields are combined with a logical 'AND'.
+"""
+input npm_latest_revision_bool_exp {
+  _and: [npm_latest_revision_bool_exp!]
+  _not: npm_latest_revision_bool_exp
+  _or: [npm_latest_revision_bool_exp!]
+  id: String_comparison_exp
+  rev: String_comparison_exp
+  revision: npm_revision_bool_exp
+}
+
+"""
+unique or primary key constraints on table "npm.latest_revision"
+"""
+enum npm_latest_revision_constraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  latest_revision_pkey
+}
+
+"""
+input type for inserting data into table "npm.latest_revision"
+"""
+input npm_latest_revision_insert_input {
+  id: String
+  rev: String
+  revision: npm_revision_obj_rel_insert_input
+}
+
+"""
+response of any mutation on the table "npm.latest_revision"
+"""
+type npm_latest_revision_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [npm_latest_revision!]!
+}
+
+"""
+on_conflict condition type for table "npm.latest_revision"
+"""
+input npm_latest_revision_on_conflict {
+  constraint: npm_latest_revision_constraint!
+  update_columns: [npm_latest_revision_update_column!]! = []
+  where: npm_latest_revision_bool_exp
+}
+
+"""Ordering options when selecting data from "npm.latest_revision"."""
+input npm_latest_revision_order_by {
+  id: order_by
+  rev: order_by
+  revision: npm_revision_order_by
+}
+
+"""primary key columns input for table: npm_latest_revision"""
+input npm_latest_revision_pk_columns_input {
+  id: String!
+}
+
+"""
+select columns of table "npm.latest_revision"
+"""
+enum npm_latest_revision_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  rev
+}
+
+"""
+input type for updating data in table "npm.latest_revision"
+"""
+input npm_latest_revision_set_input {
+  id: String
+  rev: String
+}
+
+"""
+update columns of table "npm.latest_revision"
+"""
+enum npm_latest_revision_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  rev
+}
+
+"""Revision of a NPM CouchDB document."""
+type npm_revision {
+  id: String!
+  rev: String!
+  seq: Int
+}
+
+"""
+Boolean expression to filter rows from the table "npm.revision". All fields are combined with a logical 'AND'.
+"""
+input npm_revision_bool_exp {
+  _and: [npm_revision_bool_exp!]
+  _not: npm_revision_bool_exp
+  _or: [npm_revision_bool_exp!]
+  id: String_comparison_exp
+  rev: String_comparison_exp
+  seq: Int_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "npm.revision"
+"""
+enum npm_revision_constraint {
+  """
+  unique or primary key constraint on columns "rev"
+  """
+  revision_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "npm.revision"
+"""
+input npm_revision_inc_input {
+  seq: Int
+}
+
+"""
+input type for inserting data into table "npm.revision"
+"""
+input npm_revision_insert_input {
+  id: String
+  rev: String
+  seq: Int
+}
+
+"""
+response of any mutation on the table "npm.revision"
+"""
+type npm_revision_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [npm_revision!]!
+}
+
+"""
+input type for inserting object relation for remote table "npm.revision"
+"""
+input npm_revision_obj_rel_insert_input {
+  data: npm_revision_insert_input!
+
+  """upsert condition"""
+  on_conflict: npm_revision_on_conflict
+}
+
+"""
+on_conflict condition type for table "npm.revision"
+"""
+input npm_revision_on_conflict {
+  constraint: npm_revision_constraint!
+  update_columns: [npm_revision_update_column!]! = []
+  where: npm_revision_bool_exp
+}
+
+"""Ordering options when selecting data from "npm.revision"."""
+input npm_revision_order_by {
+  id: order_by
+  rev: order_by
+  seq: order_by
+}
+
+"""primary key columns input for table: npm_revision"""
+input npm_revision_pk_columns_input {
+  rev: String!
+}
+
+"""
+select columns of table "npm.revision"
+"""
+enum npm_revision_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  rev
+
+  """column name"""
+  seq
+}
+
+"""
+input type for updating data in table "npm.revision"
+"""
+input npm_revision_set_input {
+  id: String
+  rev: String
+  seq: Int
+}
+
+"""
+update columns of table "npm.revision"
+"""
+enum npm_revision_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  rev
+
+  """column name"""
+  seq
 }
 
 """column ordering options"""
@@ -9450,6 +9782,54 @@ type query_root {
   manifests_by_pk(id: uuid!): manifests
 
   """
+  fetch data from the table: "npm.latest_revision"
+  """
+  npm_latest_revision(
+    """distinct select on columns"""
+    distinct_on: [npm_latest_revision_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [npm_latest_revision_order_by!]
+
+    """filter the rows returned"""
+    where: npm_latest_revision_bool_exp
+  ): [npm_latest_revision!]!
+
+  """
+  fetch data from the table: "npm.latest_revision" using primary key columns
+  """
+  npm_latest_revision_by_pk(id: String!): npm_latest_revision
+
+  """
+  fetch data from the table: "npm.revision"
+  """
+  npm_revision(
+    """distinct select on columns"""
+    distinct_on: [npm_revision_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [npm_revision_order_by!]
+
+    """filter the rows returned"""
+    where: npm_revision_bool_exp
+  ): [npm_revision!]!
+
+  """fetch data from the table: "npm.revision" using primary key columns"""
+  npm_revision_by_pk(rev: String!): npm_revision
+
+  """
   fetch data from the table: "organization_user"
   """
   organization_user(
@@ -11179,6 +11559,54 @@ type subscription_root {
 
   """fetch data from the table: "manifests" using primary key columns"""
   manifests_by_pk(id: uuid!): manifests
+
+  """
+  fetch data from the table: "npm.latest_revision"
+  """
+  npm_latest_revision(
+    """distinct select on columns"""
+    distinct_on: [npm_latest_revision_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [npm_latest_revision_order_by!]
+
+    """filter the rows returned"""
+    where: npm_latest_revision_bool_exp
+  ): [npm_latest_revision!]!
+
+  """
+  fetch data from the table: "npm.latest_revision" using primary key columns
+  """
+  npm_latest_revision_by_pk(id: String!): npm_latest_revision
+
+  """
+  fetch data from the table: "npm.revision"
+  """
+  npm_revision(
+    """distinct select on columns"""
+    distinct_on: [npm_revision_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [npm_revision_order_by!]
+
+    """filter the rows returned"""
+    where: npm_revision_bool_exp
+  ): [npm_revision!]!
+
+  """fetch data from the table: "npm.revision" using primary key columns"""
+  npm_revision_by_pk(rev: String!): npm_revision
 
   """
   fetch data from the table: "organization_user"

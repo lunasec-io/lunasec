@@ -1,0 +1,5 @@
+mutation InsertRevisions($revisions: [npm_revision_insert_input!]!) {
+  insert_npm_revision(objects: $revisions) {
+    affected_rows
+  }
+}

@@ -23,27 +23,38 @@ import (
 type Params struct {
 	fx.In
 
-	Ingester metadata.Ingester
+	Ingester   metadata.Ingester
+	Replicator metadata.Replicator
 }
 
 func NewCommand(p Params) clifx.CommandResult {
 	return clifx.CommandResult{
 		Command: &cli.Command{
-			Name:  "package-ingest",
+			Name:  "package",
 			Usage: "[packages...]",
-			Action: func(ctx *cli.Context) error {
-				packageName := ctx.Args().First()
+			Subcommands: []*cli.Command{
+				{
+					Name: "ingest",
+					Action: func(ctx *cli.Context) error {
+						packageName := ctx.Args().First()
 
-				return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName)
-			},
-		},
-		Command: &cli.Command{
-			Name:  "metadata",
-			Usage: "[packages...]",
-			Action: func(ctx *cli.Context) error {
-				packageName := ctx.Args().First()
-
-				return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName)
+						return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName)
+					},
+				},
+				{
+					Name: "replicate",
+					Flags: []cli.Flag{
+						&cli.IntFlag{
+							Name:  "offset",
+							Usage: "Offset from start of the all docs stream.",
+							Value: 0,
+						},
+					},
+					Action: func(ctx *cli.Context) error {
+						offset := ctx.Int("offset")
+						return p.Replicator.Replicate(ctx.Context, offset)
+					},
+				},
 			},
 		},
 	}
