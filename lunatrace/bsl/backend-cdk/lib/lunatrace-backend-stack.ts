@@ -152,7 +152,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         REACT_APP_GRAPHQL_URL: `https://${props.domainName}/v1/graphql`,
         REACT_APP_KRATOS_URL: `https://${props.domainName}/api/kratos`,
         REACT_APP_GITHUB_APP_LINK: props.gitHubAppLink,
-        REACT_APP_DATADOG_RUM_PROXY_URI: 'https://metrics-cdn.infra.lunasec.io/proxy',
+        REACT_DATADOG_RUM_PROXY_URI: 'https://metrics-cdn.infra.lunasec.io/proxy',
       },
       extraHash: 'TODO-REPLACE-ME',
     });
