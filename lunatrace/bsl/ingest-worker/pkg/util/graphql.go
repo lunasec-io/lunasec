@@ -30,6 +30,7 @@ import (
 	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
+// TODO (cthompson) turn these into options
 type GraphqlLogContext struct {
 	Key   string
 	Value string

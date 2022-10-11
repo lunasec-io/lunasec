@@ -1,11 +1,10 @@
-
-
 query GetTreeFromBuild($build_id: uuid!) {
     builds_by_pk(id: $build_id) {
         resolved_manifests {
             id
             path
             child_edges_recursive {
+                id
                 parent_id
                 child_id
                 id
@@ -40,7 +39,6 @@ query GetTreeFromBuild($build_id: uuid!) {
                 }
             }
         }
-
         project {
             name
             ignored_vulnerabilities {
@@ -52,7 +50,5 @@ query GetTreeFromBuild($build_id: uuid!) {
                 vulnerability_id
             }
         }
-
-
     }
 }
