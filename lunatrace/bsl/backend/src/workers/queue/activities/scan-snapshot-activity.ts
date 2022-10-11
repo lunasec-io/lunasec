@@ -114,13 +114,30 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
   vulnerabilities.forEach((v) => {
     v.chains.forEach((chain) => {
       chain.forEach(async (node) => {
-        const key = v.vulnerability.id + node.edge_id;
+        if (!node.parent_id) {
+          log.warn('parent id is not defined', {
+            vulnerabilities,
+            node,
+          });
+          return;
+        }
+
+        const edgeId = depTree.getEdgeIdFromNodePair(node.parent_id, node.id);
+        if (!edgeId) {
+          log.warn('cannot find edge id', {
+            vulnerabilities,
+            node,
+          });
+          return;
+        }
+
+        const key = v.vulnerability.id + edgeId;
         if (queuedStaticAnalyses.get(key)) {
           return;
         }
 
         queuedStaticAnalyses.set(key, true);
-        const resp = await queueManifestDependencyEdgeForStaticAnalysis(v.vulnerability.id, node.edge_id);
+        const resp = await queueManifestDependencyEdgeForStaticAnalysis(v.vulnerability.id, edgeId);
         if (resp.error) {
           log.error('failed to queue vulnerable edge for analysis', {
             vulnerabilitiy: v.vulnerability.id,
