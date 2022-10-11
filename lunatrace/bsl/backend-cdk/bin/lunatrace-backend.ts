@@ -30,22 +30,6 @@ const stackVersionInputLookup: Record<string, StackInputs> = {
   V2: stackInputsV2,
 };
 
-const stackVersion = process.env.STACK_VERSION;
-if (!stackVersion) {
-  throw new Error('STACK_VERSION env var must be set');
-}
-
-const lunatraceStackInputs = stackVersionInputLookup[stackVersion];
-if (!lunatraceStackInputs) {
-  throw new Error(`unable to find stack with version: ${stackVersion}`);
-}
-
-const appName = lunatraceStackInputs.appName;
-const env = {
-  account: lunatraceStackInputs.cdkDefaultAccount,
-  region: lunatraceStackInputs.cdkDefaultRegion,
-};
-
 function deployStack() {
   if (process.env.DEVELOPMENT === 'true') {
     const devUser = process.env.DEV_USER;
@@ -53,12 +37,34 @@ function deployStack() {
       throw new Error('unable to deploy development stack, must specify DEV_USER');
     }
 
+    const appName = stackInputsV1.appName;
+    const env = {
+      account: stackInputsV1.cdkDefaultAccount,
+      region: stackInputsV1.cdkDefaultRegion,
+    };
+
     return new WorkerStorageStack(app, `${appName}-${devUser}-EtlStorage`, {
       env,
       publicBaseUrl: 'http://localhost:4455',
       development: true,
     });
   }
+
+  const stackVersion = process.env.STACK_VERSION;
+  if (!stackVersion) {
+    throw new Error('STACK_VERSION env var must be set');
+  }
+  const lunatraceStackInputs = stackVersionInputLookup[stackVersion];
+  if (!lunatraceStackInputs) {
+    throw new Error(`unable to find stack with version: ${stackVersion}`);
+  }
+
+  const appName = lunatraceStackInputs.appName;
+  const env = {
+    account: lunatraceStackInputs.cdkDefaultAccount,
+    region: lunatraceStackInputs.cdkDefaultRegion,
+  };
+
   return new LunatraceBackendStack(app, `${appName}-BackendStack`, {
     env: env,
     ...lunatraceStackInputs,
