@@ -39,7 +39,10 @@ func main() {
 					codeDir := c.Args().First()
 					dependency := c.String("dependency")
 
-					_, err := rules.DependencyIsImportedAndCalledInCode(dependency, codeDir)
+					called, err := rules.DependencyIsImportedAndCalledInCode(dependency, codeDir)
+					if !called {
+						log.Info().Msg("dependency was not imported and called")
+					}
 					return err
 				},
 			},
