@@ -11,7 +11,9 @@
  * limitations under the License.
  *
  */
-export const stackInputs = {
+import { StackInputs } from './types';
+
+export const stackInputsV1: StackInputs = {
   cdkDefaultRegion: 'us-west-2',
   cdkDefaultAccount: '134071937287',
   appName: 'lunatrace',
@@ -24,15 +26,16 @@ export const stackInputs = {
   databaseSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:lunatrace-HasuraDatabaseUrlSecret-v2-HdcJ1q',
   gitHubAppId: '180838',
   gitHubAppPrivateKey: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceGitHubAppPrivateKey-iAHHOb',
+  gitHubAppLink: 'https://github.com/apps/lunatrace-by-lunasec/installations/new',
   gitHubAppWebHookSecret: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceGitHubAppWebHookSecret-3YTJBv',
   kratosCookieSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceKratosCookieSecret-znMFAC',
   kratosCipherSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceKratosCipherSecret-ehfsGT',
+  hasuraAdminSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:lunatrace-HasuraAdminSecret-pJLyHB',
   datadogApiKeyArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:lunatrace-DatadogAPIKey-S19XEK',
   githubOauthAppLoginSecretArn:
     'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceKratosGitHubOAuthAppLoginSecret-zrd4WX',
   githubOauthAppLoginClientIdArn:
     'arn:aws:secretsmanager:us-west-2:134071937287:secret:LunaTraceKratosGitHubOAuthAppLoginClientId-ryyGXL',
   kratosSlackSecretArn: 'arn:aws:secretsmanager:us-west-2:134071937287:secret:KratosSlackSecret-W5WX6d',
+  dbSecurityGroup: 'sg-05b9e1c5e5c1b123a',
 };
-
-export type StackInputs = typeof stackInputs;

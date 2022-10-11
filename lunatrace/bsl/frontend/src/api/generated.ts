@@ -50,7 +50,7 @@ export type BuildData_AffectedByVulnerability = {
   __typename?: 'BuildData_AffectedByVulnerability';
   chains?: Maybe<Array<Array<BuildData_DependencyNode>>>;
   ranges?: Maybe<Array<Maybe<BuildData_Range>>>;
-  triviallyUpdatable?: Maybe<Scalars['Boolean']>;
+  trivially_updatable?: Maybe<Scalars['Boolean']>;
   vulnerability: BuildData_Vulnerability;
 };
 
@@ -89,18 +89,17 @@ export type BuildData_Vulnerability = {
   severity_name?: Maybe<Scalars['String']>;
   source: Scalars['String'];
   source_id: Scalars['String'];
-  triviallyUpdatable?: Maybe<Scalars['String']>;
 };
 
 export type BuildData_VulnerableRelease = {
   __typename?: 'BuildData_VulnerableRelease';
-  affectedBy: Array<BuildData_AffectedByVulnerability>;
+  affected_by: Array<BuildData_AffectedByVulnerability>;
   chains: Array<Array<BuildData_DependencyNode>>;
   cvss?: Maybe<Scalars['Float']>;
-  devOnly: Scalars['Boolean'];
+  dev_only: Scalars['Boolean'];
   release?: Maybe<BuildData_Release>;
   severity?: Maybe<Scalars['String']>;
-  triviallyUpdatable: Scalars['String'];
+  trivially_updatable: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'. */
@@ -2419,6 +2418,7 @@ export type Manifest_Dependency_Edge = {
   /** An object relationship */
   child: Manifest_Dependency_Node;
   child_id: Scalars['uuid'];
+  id: Scalars['uuid'];
   /** An object relationship */
   parent: Manifest_Dependency_Node;
   parent_id: Scalars['uuid'];
@@ -2438,6 +2438,7 @@ export type Manifest_Dependency_Edge_Bool_Exp = {
   _or?: InputMaybe<Array<Manifest_Dependency_Edge_Bool_Exp>>;
   child?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   child_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
   parent?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   parent_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
@@ -2445,12 +2446,14 @@ export type Manifest_Dependency_Edge_Bool_Exp = {
 /** order by max() on columns of table "manifest_dependency_edge" */
 export type Manifest_Dependency_Edge_Max_Order_By = {
   child_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   parent_id?: InputMaybe<Order_By>;
 };
 
 /** order by min() on columns of table "manifest_dependency_edge" */
 export type Manifest_Dependency_Edge_Min_Order_By = {
   child_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   parent_id?: InputMaybe<Order_By>;
 };
 
@@ -2458,6 +2461,7 @@ export type Manifest_Dependency_Edge_Min_Order_By = {
 export type Manifest_Dependency_Edge_Order_By = {
   child?: InputMaybe<Manifest_Dependency_Node_Order_By>;
   child_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   parent?: InputMaybe<Manifest_Dependency_Node_Order_By>;
   parent_id?: InputMaybe<Order_By>;
 };
@@ -2466,6 +2470,8 @@ export type Manifest_Dependency_Edge_Order_By = {
 export enum Manifest_Dependency_Edge_Select_Column {
   /** column name */
   ChildId = 'child_id',
+  /** column name */
+  Id = 'id',
   /** column name */
   ParentId = 'parent_id'
 }
@@ -4086,6 +4092,8 @@ export type Query_Root = {
   manifest_dependency: Array<Manifest_Dependency>;
   /** fetch data from the table: "manifest_dependency_edge" */
   manifest_dependency_edge: Array<Manifest_Dependency_Edge>;
+  /** fetch data from the table: "manifest_dependency_edge" using primary key columns */
+  manifest_dependency_edge_by_pk?: Maybe<Manifest_Dependency_Edge>;
   /** fetch data from the table: "manifest_dependency_node" */
   manifest_dependency_node: Array<Manifest_Dependency_Node>;
   /** fetch data from the table: "manifest_dependency_node" using primary key columns */
@@ -4393,6 +4401,11 @@ export type Query_RootManifest_Dependency_EdgeArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
   where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+};
+
+
+export type Query_RootManifest_Dependency_Edge_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -5252,6 +5265,8 @@ export type Subscription_Root = {
   manifest_dependency: Array<Manifest_Dependency>;
   /** fetch data from the table: "manifest_dependency_edge" */
   manifest_dependency_edge: Array<Manifest_Dependency_Edge>;
+  /** fetch data from the table: "manifest_dependency_edge" using primary key columns */
+  manifest_dependency_edge_by_pk?: Maybe<Manifest_Dependency_Edge>;
   /** fetch data from the table: "manifest_dependency_node" */
   manifest_dependency_node: Array<Manifest_Dependency_Node>;
   /** fetch data from the table: "manifest_dependency_node" using primary key columns */
@@ -5550,6 +5565,11 @@ export type Subscription_RootManifest_Dependency_EdgeArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
   where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+};
+
+
+export type Subscription_RootManifest_Dependency_Edge_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -6924,7 +6944,7 @@ export type GetVulnerableReleasesFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', triviallyUpdatable: string, cvss?: number | null, severity?: string | null, devOnly: boolean, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>>, release?: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string } } | null, affectedBy: Array<{ __typename?: 'BuildData_AffectedByVulnerability', triviallyUpdatable?: boolean | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, source_id: string }, chains?: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>> | null }> }> | null };
+export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, cvss?: number | null, severity?: string | null, dev_only: boolean, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>>, release?: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string } } | null, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable?: boolean | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, source_id: string }, chains?: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>> | null }> }> | null };
 
 export type InsertNewOrgUserMutationVariables = Exact<{
   organization_id: Scalars['uuid'];
@@ -7640,10 +7660,10 @@ export const GetVulnerabilityDetailsDocument = `
 export const GetVulnerableReleasesFromBuildDocument = `
     query GetVulnerableReleasesFromBuild($build_id: uuid!) {
   vulnerableReleasesFromBuild(buildId: $build_id) {
-    triviallyUpdatable
+    trivially_updatable
     cvss
     severity
-    devOnly
+    dev_only
     chains {
       id
       range
@@ -7661,8 +7681,8 @@ export const GetVulnerableReleasesFromBuildDocument = `
         name
       }
     }
-    affectedBy {
-      triviallyUpdatable
+    affected_by {
+      trivially_updatable
       vulnerability {
         severity_name
         cvss_score
@@ -7681,7 +7701,7 @@ export const GetVulnerableReleasesFromBuildDocument = `
         }
       }
     }
-    devOnly
+    dev_only
     release {
       id
     }
