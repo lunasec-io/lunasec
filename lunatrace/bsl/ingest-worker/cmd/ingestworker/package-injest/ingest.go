@@ -37,5 +37,14 @@ func NewCommand(p Params) clifx.CommandResult {
 				return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName)
 			},
 		},
+		Command: &cli.Command{
+			Name:  "metadata",
+			Usage: "[packages...]",
+			Action: func(ctx *cli.Context) error {
+				packageName := ctx.Args().First()
+
+				return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName)
+			},
+		},
 	}
 }
