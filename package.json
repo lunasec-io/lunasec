@@ -110,7 +110,8 @@
       "./lunatrace/bsl/common",
       "./lunatrace/bsl/logger",
       "./lunatrace/bsl/frontend",
-      "./lunatrace/dev-cli"
+      "./lunatrace/dev-cli",
+      "./lunatrace/datadog-metrics-proxy"
     ]
   },
   "packageManager": "yarn@3.2.2",
