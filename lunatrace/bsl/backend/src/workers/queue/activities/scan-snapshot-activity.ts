@@ -105,26 +105,26 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
     return newError('unable to build dependency tree');
   }
 
-  const vulnerableDependencyChains = depTree.getVulnerableDependencyChainsByEdgeId();
+  const vulnerabilities = depTree.getVulnerabilities();
   log.info('starting static analysis for dependency tree', {
-    vulnerableDependencyChains,
+    vulnerableDependencyChains: vulnerabilities,
   });
 
   const queuedStaticAnalyses: Map<string, boolean> = new Map<string, boolean>();
-  Object.entries(vulnerableDependencyChains).forEach(([vulnerabilityId, dependencyChains]) => {
-    dependencyChains.forEach((chain) => {
-      chain.forEach(async (edgeId) => {
-        const key = vulnerabilityId + edgeId;
+  vulnerabilities.forEach((v) => {
+    v.chains.forEach((chain) => {
+      chain.forEach(async (node) => {
+        const key = v.vulnerability.id + node.edge_id;
         if (queuedStaticAnalyses.get(key)) {
           return;
         }
 
         queuedStaticAnalyses.set(key, true);
-        const resp = await queueManifestDependencyEdgeForStaticAnalysis(vulnerabilityId, edgeId);
+        const resp = await queueManifestDependencyEdgeForStaticAnalysis(v.vulnerability.id, node.edge_id);
         if (resp.error) {
           log.error('failed to queue vulnerable edge for analysis', {
-            vulnerabilityId,
-            edgeId,
+            vulnerabilitiy: v.vulnerability.id,
+            edgeId: node,
           });
         }
       });
