@@ -12,6 +12,8 @@
  *
  */
 
+import util from 'util';
+
 import { fakeDependencyTreeHasuraOutputFixture } from '../fixtures/manifests/fake-dependency-tree-hasura-output-fixture';
 import { DependencyTree } from '../models/dependency-tree/builds-dependency-tree';
 
@@ -20,17 +22,29 @@ describe('The dependency tree', () => {
     const tree = new DependencyTree(fakeDependencyTreeHasuraOutputFixture);
     expect(tree).toBeDefined();
     expect(tree.depNodesById.size).toEqual(4);
-    expect(tree.childIdToParentIds.size).toEqual(3);
-    expect(tree.vulnIdToVulns.size).toEqual(1);
+    expect(tree.nodeIdToParentIds.size).toEqual(3);
     // parse out vulnerable releases and check the data
-    const vulnReleases = tree.getVulnerableReleases();
+    const vulnReleases = tree.vulnerableReleases;
     expect(vulnReleases.length).toEqual(1);
 
     const vulnQux = vulnReleases[0];
-    expect(vulnQux.triviallyUpdatable).toEqual('yes');
+    expect(vulnQux.trivially_updatable).toEqual('yes');
     expect(vulnQux.chains.length).toEqual(1);
+    const chain = vulnQux.chains[0];
 
-    const chainPackageNames = vulnQux.chains[0].map((dep) => dep.release.package.name);
+    const chainPackageNames = chain.map((dep) => dep.release.package.name);
     expect(chainPackageNames).toEqual(['foo', 'bar', 'baz', 'qux']);
+
+    const leafNode = chain[chain.length - 1];
+    expect(leafNode.id).toEqual('4');
+  });
+
+  it('should show all vulnerabilities with getVulnerabilities()', () => {
+    const tree = new DependencyTree(fakeDependencyTreeHasuraOutputFixture);
+    const vulnerabilities = tree.getVulnerabilities();
+    expect(vulnerabilities.length).toEqual(1);
+    expect(vulnerabilities[0].vulnerability.source_id).toEqual('GHSA123ABC');
+    expect(vulnerabilities[0].chains.length).toEqual(1);
+    expect(vulnerabilities[0].chains[0].length).toEqual(4);
   });
 });
