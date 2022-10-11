@@ -1,0 +1,168 @@
+.dropdown {
+  > .dropdown-menu:first-of-type {
+    display: block;
+    transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) 0s, opacity 0.3s ease 0s, height 0s linear 0.35s;
+  }
+  .dropdown-menu{
+      @include opacity(0);
+      @include box-shadow($dropdown-shadow);
+      visibility: hidden;
+      position: absolute;
+      
+      &[x-placement="top-start"]{
+          @include transform-translate-y-dropdown(0px);
+
+      }
+      &[x-placement="bottom-start"]{
+          @include transform-translate-y-dropdown(0px);
+      }
+  }
+
+  &.show .dropdown-menu{
+      @include opacity(1);
+      visibility: visible;
+
+      &[x-placement="top-start"]{
+          @include transform-translate-y-dropdown(-50px);
+          top: auto !important;
+          bottom: 0 !important;
+
+      }
+      &[x-placement="bottom-start"]{
+          @include transform-translate-y-dropdown(40px);
+          bottom: auto !important;
+          top: 0 !important;
+      }
+  }
+}
+
+.dropdown-menu{
+    background-color: $white-color;
+    border: 0 none;
+    border-radius: $border-radius-extreme;
+    margin-top: 10px;
+    padding: 0px;
+
+    .divider{
+        background-color: $medium-pale-bg;
+        margin: 0px;
+    }
+
+    .dropdown-header{
+        color: $dark-gray;
+        font-size: $font-size-small;
+        padding: $padding-dropdown-vertical $padding-dropdown-horizontal;
+    }
+
+    .no-notification{
+        color: #9A9A9A;
+        font-size: 1.2em;
+        padding: 30px 30px;
+        text-align: center;
+    }
+
+    .dropdown-item{
+        color: $font-color;
+        font-size: $font-size-base;
+        padding: 10px 45px 10px 15px;
+        clear: both;
+        white-space: nowrap;
+        width: 100%;
+        display: block;
+
+       img{
+           margin-top: -3px;
+       }
+
+    }
+    .dropdown-item:focus{
+        outline: 0 !important;
+    }
+
+    .btn-group.select &{
+        min-width: 100%;
+    }
+
+    .dropdown-item:first-child {
+       border-top-left-radius: $border-radius-extreme;
+       border-top-right-radius: $border-radius-extreme;
+    }
+
+    .dropdown-item:last-child {
+        border-bottom-left-radius: $border-radius-extreme;
+        border-bottom-right-radius: $border-radius-extreme;
+    }
+
+    .dropdown-item.dropdown-toggle:last-of-type{
+      border-bottom-left-radius: $border-radius-extreme;
+      border-bottom-right-radius: $border-radius-extreme;
+
+      +.dropdown-menu {
+        &.show {
+          left: 100% !important;
+        }
+        .dropdown-item.dropdown-toggle {
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+        li .dropdown-item.dropdown-toggle {
+          border-top-left-radius: 0;
+          border-top-right-radius: 0;
+          border-bottom-left-radius: $border-radius-extreme;
+          border-bottom-right-radius: $border-radius-extreme;
+        }
+      }
+    }
+
+    .select & .dropdown-item:first-child{
+        border-radius: 0;
+        border-bottom: 0 none;
+    }
+
+    .dropdown-item:hover,
+    .dropdown-item:focus{
+        color: $white-color !important;
+        opacity: 1;
+        text-decoration: none;
+
+    }
+    .dropdown-item:hover,
+    .dropdown-item:focus{
+        background-color: $default-color;
+    }
+
+    &.dropdown-primary .dropdown-item:hover,
+    &.dropdown-primary .dropdown-item:focus{
+        background-color: $bg-primary;
+    }
+    &.dropdown-info .dropdown-item:hover,
+    &.dropdown-info .dropdown-item:focus{
+        background-color: $bg-info;
+    }
+    &.dropdown-success .dropdown-item:hover,
+    &.dropdown-success .dropdown-item:focus{
+        background-color: $bg-success;
+    }
+    &.dropdown-warning .dropdown-item:hover,
+    &.dropdown-warning .dropdown-item:focus{
+        background-color: $bg-warning;
+    }
+    &.dropdown-danger .dropdown-item:hover,
+    &.dropdown-danger .dropdown-item:focus{
+        background-color: $bg-danger;
+    }
+
+}
+.dropdown-divider {
+    margin: 0 !important;
+}
+
+//fixed the bug for the select items in btn-group
+
+.btn-group.select.open {
+  overflow: visible;
+}
+.dropdown-menu-right {
+  right: -2px;
+  left: auto;
+}

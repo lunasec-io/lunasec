@@ -1,0 +1,209 @@
+/*     General overwrite     */
+body{
+    color: $font-color;
+    font-size: $font-size-base;
+    font-weight: $font-weight-light;
+    font-family: 'Montserrat', "Helvetica", Arial, sans-serif;
+}
+a{
+  color: $info-color;
+
+  &:hover, &:focus{
+     color: $info-states-color;
+     text-decoration: none;
+  }
+
+  // @include transition($fast-transition-time, linear);
+}
+hr{
+    border-color: $medium-pale-bg;
+}
+.icon{
+    fill: $font-color;
+}
+.fa-base{
+    font-size: 1.25em !important;
+}
+a:focus, a:active,
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+select::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+    outline : 0;
+}
+.ui-slider-handle:focus,
+.navbar-toggle {
+    outline : 0 !important;
+}
+
+
+/*           Animations              */
+.form-control,
+.input-group-addon,
+.tagsinput,
+.navbar,
+.navbar .alert,
+.carousel-control.right,
+.carousel-control.left
+{
+    @include transition($general-transition-time, linear);
+}
+.tagsinput .tag,
+.tagsinput-remove-link,
+.filter,
+.btn-hover,
+[data-toggle="collapse"] i,
+.animation-transition-fast,
+.dropdown-menu .dropdown-item{
+    @include transition($fast-transition-time, linear);
+}
+
+.btn-morphing .fa,
+.btn-morphing .circle,
+.gsdk-collapse{
+    @include transition($slow-transition-time, linear);
+}
+
+.fa{
+    width: 18px;
+    text-align: center;
+}
+.margin-top{
+    margin-top: 50px;
+}
+
+.iframe-container iframe{
+    box-shadow: 0 16px 38px -12px rgba(0,0,0,.56), 0 4px 25px 0 rgba(0,0,0,.12), 0 8px 10px -5px rgba(0,0,0,.2);
+}
+
+/*       CT colors          */
+.ct-blue{
+    color: $primary-color;
+}
+.ct-azure{
+    color: $info-color;
+}
+.ct-green{
+    color: $success-color;
+}
+.ct-orange{
+    color: $warning-color;
+}
+.ct-red{
+    color: $danger-color;
+}
+
+//stefan changes
+
+.pagination .page-item .page-link .fa{
+    width: auto;
+    font-weight: $font-weight-bold;
+}
+
+.bg-primary{
+    @include navbar-color($bg-primary !important);
+}
+.bg-info{
+    @include navbar-color($bg-info !important);
+}
+.bg-success{
+    @include navbar-color($bg-success !important);
+}
+.bg-warning{
+    @include navbar-color($bg-warning !important);
+}
+.bg-danger{
+    @include navbar-color($bg-danger !important);
+}
+
+
+.wrapper {
+  -webkit-transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
+  transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
+  left: 0;
+  background-color: $white-color;
+  position: relative;
+  z-index: 1;
+}
+
+// Pulsing Heart (footer)
+.heart {
+  color: #EB5E28;
+  animation: heathing 1s ease infinite,;
+}
+
+@keyframes heathing {
+  0% { transform: scale( .75 ); }
+  20% { transform: scale( 1 ); }
+  40% { transform: scale( .75 ); }
+  60% { transform: scale( 1 ); }
+  80% { transform: scale( .75 ); }
+  100% { transform: scale( .75 ); }
+}
+
+
+.bd-docs {
+  .page-header {
+    min-height: 50vh;
+  }
+}
+
+.offline-doc {
+  .navbar.navbar-transparent{
+    padding-top: 25px;
+    border-bottom: none;
+
+    .navbar-minimize {
+      display: none;
+    }
+    .navbar-brand,
+    .collapse .navbar-nav .nav-link {
+      color: $white-color !important;
+    }
+  }
+
+  .footer{
+    position: absolute;
+    width: 100%;
+    background: transparent;
+    bottom: 0;
+    z-index: 3;
+
+    nav > ul a:not(.btn),
+    .copyright {
+      color: $white-color !important;
+    }
+  }
+
+  .page-header{
+      .page-header-image {
+        position: absolute;
+        background-size: cover;
+        background-position: center center;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+    .container {
+      z-index: 3;
+    }
+    &:after {
+      background-color: rgba(0, 0, 0, 0.5);
+      content: "";
+      display: block;
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 2;
+    }
+  }
+}
+
+.main .section:first-of-type {
+    position: relative;
+    z-index: 2;
+}

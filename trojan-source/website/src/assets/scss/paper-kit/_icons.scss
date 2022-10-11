@@ -1,0 +1,111 @@
+
+.section-nucleo-icons{
+    padding: 100px 0;
+
+    .icons-container{
+        position: relative;
+        max-width: 450px;
+        height: 300px;
+        max-height: 300px;
+        margin: 0 auto;
+
+        i{
+            font-size: 34px;
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            &:nth-child(1){
+                top: 5%;
+                left: 7%;
+            }
+            &:nth-child(2){
+                top: 28%;
+                left: 24%;
+            }
+            &:nth-child(3){
+                top: 40%;
+            }
+            &:nth-child(4){
+                top: 18%;
+                left: 62%;
+            }
+            &:nth-child(5){
+                top: 74%;
+                left: 3%;
+            }
+            &:nth-child(6){
+                top: 36%;
+                left: 44%;
+                font-size: 65px;
+                color: $danger-color;
+                padding: 1px;
+            }
+            &:nth-child(7){
+                top: 59%;
+                left: 26%;
+            }
+            &:nth-child(8){
+                top: 60%;
+                left: 69%;
+            }
+            &:nth-child(9){
+                top: 72%;
+                left: 47%;
+            }
+            &:nth-child(10){
+                top: 88%;
+                left: 27%;
+            }
+            &:nth-child(11){
+                top: 31%;
+                left: 80%;
+            }
+            &:nth-child(12){
+                top: 88%;
+                left: 68%;
+            }
+            &:nth-child(13){
+                top: 5%;
+                left: 81%;
+            }
+            &:nth-child(14){
+                top: 58%;
+                left: 90%;
+            }
+            &:nth-child(15){
+                top: 6%;
+                left: 40%;
+            }
+        }
+    }
+}
+.section-dark{
+    .icons-container{
+        color: $white-color;
+    }
+}
+.info{
+    .icon{
+        margin-top: 0;
+        font-size: 3.4em;
+    }
+}
+.icon-primary{
+    color: $primary-color;
+}
+.icon-info{
+    color: $info-color;
+}
+.icon-success{
+    color: $success-color;
+}
+.icon-warning{
+    color: $warning-color;
+}
+.icon-danger{
+    color: $danger-color;
+}
+.icon-neutral{
+    color: $white-color;
+}

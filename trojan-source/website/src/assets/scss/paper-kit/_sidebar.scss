@@ -1,0 +1,207 @@
+#bodyClick {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    opacity: 0;
+    top: 0;
+    left: auto;
+    right: 230px;
+    content: "";
+    z-index: 1029;
+    overflow-x: hidden;
+}
+body {
+     position: relative;
+}
+body > .navbar-collapse {
+    position: fixed;
+    display: block;
+    top: 0;
+    height: 100vh;
+    width: 300px;
+    right: 0;
+    z-index: 1032;
+    visibility: visible;
+    background-color: $white-color;
+    overflow-y: visible;
+    border-top: none;
+    text-align: left;
+    border-left: 1px solid $table-line-color;
+    padding-top: 15px;
+
+    @include transform-translate-x(300px);
+    @include transition (0.50s, cubic-bezier(0.685, 0.0473, 0.346, 1));
+
+    ul {
+        position: relative;
+        z-index: 3;
+        overflow-y: auto;
+        height: 100%;
+    }
+
+    .nav > li{
+
+        &:last-child {
+            border-bottom: 0;
+        }
+        & > a{
+            margin: 0px 0px;
+            color: $default-color;
+            text-transform: uppercase;
+            font-weight: 600;
+            font-size: $font-size-small;
+            line-height: $line-height-general;
+            padding: 15px;
+
+            &:hover,
+            &.active{
+                color: $default-states-color;
+            }
+
+            span{
+                display: inline-block !important;
+                margin-left: 5px;
+            }
+        }
+
+        &.social-links{
+            text-align: center;
+            margin-left: -40px;
+             > a{
+                font-size: 20px;
+                padding: 15px 15px;
+            }
+        }
+    }
+
+    .scroll-area{
+            max-height: none;
+    }
+
+    &::after{
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        background-color: $bg-nude;
+        background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(112, 112, 112, 0) 60%, rgba(186, 186, 186, 0.15) 100%);
+        display: block;
+        content: "";
+        z-index: 1;
+    }
+
+    &.navbar-white-collapse{
+        &::after{
+            background-color: $white-color;
+        }
+    }
+    &.has-image::after{
+        @include black-filter(.8);
+    }
+
+    .dropdown-menu{
+        display: none;
+    }
+    .open .dropdown-menu{
+        position: static;
+        float: none;
+        width: auto;
+        margin-top: 0;
+        background-color: transparent;
+        border: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        display: block;
+        min-width: auto !important;
+    }
+
+    .caret{
+        border-bottom-color: $default-states-color;
+        border-top-color: $default-states-color;
+    }
+
+    .nav .open > a,
+    .nav .open > a:hover,
+    .nav .open > a:focus{
+        background-color: transparent;
+    }
+
+}
+
+body > navbar-white-collapse{
+
+}
+body > .navbar-collapse.collapse{
+    height: 100vh !important;
+}
+
+.wrapper{
+   @include transition (0.50s, cubic-bezier(0.685, 0.0473, 0.346, 1));
+   left: 0;
+   background-color: white;
+   position: relative;
+   z-index: 1;
+
+   &.transition{
+     @include transform-translate-x(0px);
+   }
+}
+
+.navbar-burger{
+    .navbar-toggle .icon-bar {
+          display: block;
+          position: relative;
+          width: 24px;
+          height: 2px;
+          border-radius: 1px;
+    }
+    &.navbar-transparent .navbar-toggle .icon-bar{
+        background: #fff;
+    }
+
+    .container{
+         @include transition (0.50s, cubic-bezier(0.685, 0.0473, 0.346, 1));
+         position: relative;
+    }
+    .navbar-header .navbar-toggle {
+        margin-top: 12px;
+        margin-bottom: 8px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .bar1,
+    .bar2,
+    .bar3 {
+      outline: 1px solid transparent;
+    }
+    .bar1 {
+      top: 0px;
+      @include bar-animation($topbar-back);
+    }
+    .bar2 {
+      opacity: 1;
+    }
+    .bar3 {
+      bottom: 0px;
+      @include bar-animation($bottombar-back);
+    }
+    .toggled .bar1 {
+      top: 6px;
+      @include bar-animation($topbar-x);
+    }
+    .toggled .bar2 {
+      opacity: 0;
+    }
+    .toggled .bar3 {
+      bottom: 6px;
+      @include bar-animation($bottombar-x);
+    }
+
+    @include topbar-x-rotation();
+    @include topbar-back-rotation();
+    @include bottombar-x-rotation();
+    @include bottombar-back-rotation();
+
+}

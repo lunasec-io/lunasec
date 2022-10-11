@@ -1,0 +1,134 @@
+/*           Font Smoothing      */
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, p, .navbar, .brand, a, .td-name, td, button, input, select, textarea{
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-family: $font-family-sans-serif;
+    font-weight: $font-weight-light;
+}
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4{
+    margin: $margin-large-vertical 0 0;
+}
+h1, .h1 {
+    font-size: $font-size-h1;
+}
+h2, .h2{
+    font-size: $font-size-h2;
+}
+h3, .h3{
+    font-size: $font-size-h3;
+    line-height: 1.4;
+    margin: 20px 0 0px;
+}
+h4, .h4{
+    font-size: $font-size-h4;
+    line-height: 1.2em;
+}
+h5, .h5 {
+    font-size: $font-size-h5;
+    line-height: 1.4em;
+}
+h6, .h6{
+    font-size: $font-size-h6;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    line-height: 1.5em;
+}
+p{
+    font-size: $font-paragraph;
+    line-height: $line-height-general;
+    margin-bottom: 5px;
+}
+
+h1 small, h2 small, h3 small, h4 small, h5 small, h6 small, .h1 small, .h2 small, .h3 small, .h4 small, .h5 small, .h6 small, h1 .small, h2 .small, h3 .small, h4 .small, h5 .small, h6 .small, .h1 .small, .h2 .small, .h3 .small, .h4 .small, .h5 .small, .h6 .small {
+    color: $dark-gray;
+    line-height: $line-height-general;
+}
+
+h1 small, h2 small, h3 small, h1 .small, h2 .small, h3 .small {
+    font-size: 60%;
+}
+
+.title,
+.card-title,
+.info-title,
+.footer-brand,
+.footer-big h5,
+.footer-big h4,
+.media .media-heading{
+    font-family: $font-family-sans-serif;;
+
+    &,
+    a{
+        color: $card-black-color;
+        text-decoration: none;
+    }
+}
+.title-uppercase{
+    text-transform: uppercase;
+}
+.description{
+    color: $dark-gray;
+}
+blockquote small{
+    font-style: normal;
+}
+.text-muted{
+    color: $medium-gray;
+}
+.text-primary, .text-primary:hover{
+    color: $primary-color !important;
+}
+.text-info, .text-info:hover{
+    color: $info-color !important;
+}
+.text-success, .text-success:hover{
+    color: $success-color !important;
+}
+.text-warning, .text-warning:hover{
+    color: $warning-color !important;
+}
+.text-danger, .text-danger:hover{
+    color: $danger-color !important;
+}
+.glyphicon{
+    line-height: 1;
+}
+
+// Pulsing Heart (footer)
+.heart {
+  color: #EB5E28;
+  animation: heathing 1s ease infinite,;
+}
+
+@keyframes heathing {
+  0% { transform: scale( .75 ); }
+  20% { transform: scale( 1 ); }
+  40% { transform: scale( .75 ); }
+  60% { transform: scale( 1 ); }
+  80% { transform: scale( .75 ); }
+  100% { transform: scale( .75 ); }
+}
+.footer .credits,
+.footer-nav{
+    line-height: 85px;
+}
+.footer .btn{
+    margin-bottom: 0;
+}
+.blockquote{
+    border-left: 0 none;
+    border-bottom: 1px solid #CCC5B9;
+    border-top: 1px solid #CCC5B9;
+    font-weight: 300;
+    margin: 15px 0 10px;
+    text-align: center;
+}
+.title{
+    margin-top: 30px;
+    margin-bottom: 25px;
+    min-height: 32px;
+}
+.title.text-center{
+    margin-bottom: 50px;
+}

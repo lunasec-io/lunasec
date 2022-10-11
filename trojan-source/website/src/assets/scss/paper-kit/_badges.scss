@@ -1,0 +1,36 @@
+/*           badges & Progress-bar              */
+.badge{
+    padding: 0.4em 0.9em;
+    color: $white-color;
+    font-weight: 500;
+    font-size: 0.75em;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-bottom: 3px;
+    padding-top: 5px;
+
+  &:focus {
+    outline: none;
+  }
+  span[data-role="remove"]:focus {
+    outline: none;
+  }
+}
+.badge-primary{
+    background-color: $primary-color;
+}
+.badge-info{
+    background-color: $info-color;
+}
+.badge-success{
+    background-color: $success-color;
+}
+.badge-warning{
+    background-color: $warning-color;
+}
+.badge-danger{
+    background-color: $danger-color;
+}
+.badge-default{
+    background-color: $default-color;
+}

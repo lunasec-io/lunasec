@@ -1,0 +1,113 @@
+//
+// bootstrap-tagsinput v0.8.0 for Bootstrap v4.0.0-alpha.6
+// --------------------------------------------------
+
+.bootstrap-tagsinput {
+    background-color: transparent;
+    display: inline-block;
+    padding: 4px 6px;
+    color: #555;
+    vertical-align: middle;
+    border-radius: 4px;
+    width: 100%;
+    line-height: 22px;
+    cursor: text;
+
+    & input {
+        border: none;
+        box-shadow: none;
+        outline: none;
+        background-color: transparent;
+        padding: 0 6px;
+        margin: 0;
+        width: auto;
+        max-width: inherit;
+
+        &:focus {
+            border: none;
+            box-shadow: none;
+        }
+
+        &::-moz-placeholder {
+            color: $input-color-placeholder;
+            opacity: 1;
+        }
+
+        &:-ms-input-placeholder {
+            color: $input-color-placeholder;
+        }
+
+        &::-webkit-input-placeholder {
+            color: $input-color-placeholder;
+        }
+    }
+
+    &.form-control {
+        & input::-moz-placeholder {
+            color: $input-color-placeholder;
+            // opacity: 1;
+        }
+
+        & input:-ms-input-placeholder {
+            color: $input-color-placeholder;
+        }
+
+        & input::-webkit-input-placeholder {
+            color: $input-color-placeholder;
+        }
+    }
+
+    .badge{
+        -webkit-transition: all 170ms linear;
+        -moz-transition: all 170ms linear;
+        -o-transition: all 170ms linear;
+        -ms-transition: all 170ms linear;
+        transition: all 170ms linear;
+    }
+
+    & .badge {
+        cursor: pointer;
+        margin: 5px 3px 5px 0;
+        position: relative;
+        padding: 4px 8px 3px .8em;
+        border-radius: 12px;
+        color: #FFF;
+        font-size: .75em;
+        font-weight: 500;
+        display: inline-block;
+        line-height: 1.5em;
+        text-transform: uppercase;
+
+        &:hover{
+            padding-right: 25px;
+        }
+        &:hover [data-role="remove"]{
+            opacity: 1;
+            padding-right: 6px;
+        }
+
+        & [data-role="remove"] {
+            cursor: pointer;
+            position: absolute;
+            top: 3.5px;
+            right: 0;
+            opacity: 0;
+
+            &:after {
+                content: "\f00d";
+                padding: 0px 4px;
+                font-size: 18px;
+                font: normal normal normal 10px/1 FontAwesome;
+            }
+            &:hover {
+                &:active {
+                    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+                    opacity: 1;
+                }
+            }
+        }
+    }
+}
+.badge-success{
+    background-color: #7AC29A;
+}

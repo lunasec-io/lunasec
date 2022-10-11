@@ -1,0 +1,323 @@
+$font-color:                 #66615b !default;
+$fill-font-color:            rgba(255, 255, 255, 0.8);
+$font-family-sans-serif:     'Montserrat', "Helvetica", Arial, sans-serif;
+
+$none:                       0   !default;
+$border-thin:                1px !default;
+$border-thick:               2px !default;
+
+$white-color:                #FFFFFF !default;
+$white-bg:                   #FFFFFF !default;
+$white-states-color:         rgba($white-color, 0.8);
+
+$smoke-bg:                   #F5F5F5 !default;
+$pale-bg:                    #FFFCF5 !default;
+$medium-pale-bg:             #F1EAE0 !default;
+
+$table-line-color:           #ccc !default;
+$muted-color:                #a49e93 !default;
+
+$black-bg:                   rgba(30,30,30,.97) !default;
+
+$black-color:                #333333 !default;
+$black-hr:                   #444444 !default;
+
+$light-gray:                 #E3E3E3 !default;
+$medium-gray:                #DDDDDD !default;
+$dark-gray:                  #9A9A9A !default;
+
+$placeholder-gray:           rgba(210, 210, 210, 1)  !default;
+
+$gray-input-bg:              #fffcf5 !default;
+$danger-input-bg:            #FFC0A4 !default;
+$success-input-bg:           #ABF3CB !default;
+$other-medium-gray:          #A49E93 !default;
+$transparent-bg:             transparent !default;
+
+$default-color:              #66615B !default;
+$default-bg:                 #66615B !default;
+$default-states-color:       #403D39 !default;
+
+$primary-color:              #51cbce !default;
+$primary-states-color:       darken($primary-color, 10%) !default;
+
+$success-color:              #6bd098 !default;
+$success-states-color:       darken($success-color, 10%) !default;
+
+$info-color:                 #51bcda !default;
+$info-states-color:          darken($info-color, 10%) !default;
+
+$warning-color:              #fbc658 !default;
+$warning-states-color:       darken($warning-color, 10%) !default;
+
+$danger-color:               #f5593d !default;
+$danger-states-color:        darken($danger-color, 8%) !default;
+
+$link-disabled-color:        #666666 !default;
+
+$purple-color:               #c178c1 !default;
+$purple-states-color:        darken($purple-color, 8%) !default;
+
+$brown-color:                #dcb285 !default;
+$brown-states-color:         darken($brown-color, 8%) !default;
+
+
+
+
+/*      light colors - used for select dropdown         */
+
+$light-blue:                 rgba($primary-color, .2);
+$light-azure:                rgba($info-color, .2);
+$light-green:                rgba($success-color, .2);
+$light-orange:               rgba($warning-color, .2);
+$light-red:                  rgba($danger-color, .2);
+
+
+//== Components
+//
+$padding-base-vertical:         7px !default;
+$padding-base-horizontal:       18px !default;
+
+$padding-round-vertical:        9px !default;
+$padding-round-horizontal:     18px !default;
+
+$padding-simple-vertical:      10px !default;
+$padding-simple-horizontal:    18px !default;
+
+$padding-large-vertical:       11px !default;
+$padding-large-horizontal:     30px !default;
+
+$padding-small-vertical:        4px !default;
+$padding-small-horizontal:     10px !default;
+
+$padding-xs-vertical:           2px !default;
+$padding-xs-horizontal:         5px !default;
+
+$padding-label-vertical:        2px !default;
+$padding-label-horizontal:     12px !default;
+
+// padding for links inside dropdown menu
+$padding-dropdown-vertical:     10px !default;
+$padding-dropdown-horizontal:   15px !default;
+
+$margin-large-vertical:        30px !default;
+$margin-base-vertical:         15px !default;
+
+// border radius for buttons
+$border-radius-none:             0px !default;
+$border-radius-btn-small:      26px !default;
+$border-radius-btn-base:       20px !default;
+$border-radius-btn-large:      50px !default;
+
+
+$margin-bottom:                0 0 10px 0 !default;
+$border-radius-small:           3px !default;
+$border-radius-base:            4px !default;
+$border-radius-large:           6px !default;
+$border-radius-x-large:         8px !default;
+$border-radius-extreme:         12px !default;
+
+$border-radius-none-top:      $border-radius-none $border-radius-none 0 0 !default;
+$border-radius-none-bottom:   0 0 $border-radius-none $border-radius-none !default;
+
+$border-radius-small-top:      $border-radius-small $border-radius-small 0 0 !default;
+$border-radius-small-bottom:   0 0 $border-radius-small $border-radius-small !default;
+
+$border-radius-large-top:      $border-radius-large $border-radius-large 0 0 !default;
+$border-radius-large-bottom:   0 0 $border-radius-large $border-radius-large !default;
+
+$btn-round-radius:             30px !default;
+
+$height-base:                  40px !default;
+
+$font-size-base:               14px !default;
+$font-size-small:              12px !default;
+$font-size-medium:             16px !default;
+$font-size-large:              20px !default;
+$font-size-large-navbar:       22px !default;
+
+$font-size-h1:                 3.6em !default;
+$font-size-h2:                 2.8em !default;
+$font-size-h3:                 1.825em !default;
+$font-size-h4:                 1.6em !default;
+$font-size-h5:                 1.35em !default;
+$font-size-h6:                 0.9em !default;
+$font-paragraph:               15px !default;
+$font-size-navbar:             14px !default;
+
+$font-size-info-horizontal:    2.5em !default;
+
+$font-weight-light:          300 !default;
+$font-weight-normal:         400 !default;
+$font-weight-semi:           500 !default;
+$font-weight-bold:           600 !default;
+
+$line-height-small:            20px !default;
+$line-height-general:          1.5em !default;
+$line-height:                 36px !default;
+$line-height-lg:              54px !default;
+
+
+$border-radius-top:        10px 10px 0 0 !default;
+$border-radius-bottom:     0 0 10px 10px !default;
+$border-radius-dropdown:   10px 10px !default;
+
+$dropdown-shadow:          0 2px rgba(17, 16, 15, 0.1), 0 2px 10px rgba(17, 16, 15, 0.1);
+
+$general-transition-time:  300ms !default;
+
+$slow-transition-time:           300ms !default;
+$dropdown-coordinates:      29px -50px !default;
+
+$fast-transition-time:           150ms !default;
+$select-coordinates:         50% -40px !default;
+
+$transition-linear:                                   linear !default;
+$transition-bezier:         cubic-bezier(0.34, 1.61, 0.7, 1) !default;
+$transition-ease:           ease 0s;
+
+$navbar-padding-a:               10px 15px;
+$navbar-margin-a:                15px  3px;
+
+$padding-social-a:               10px  5px;
+
+$navbar-margin-a-btn:            15px 3px;
+$navbar-margin-a-btn-round:      16px 3px;
+
+$navbar-padding-a-icons:         6px 15px;
+$navbar-margin-a-icons:          6px  3px;
+
+$navbar-padding-brand:           20px 15px;
+$navbar-margin-brand:             5px  0px;
+
+$navbar-margin-brand-icons:      12px auto;
+
+$navbar-margin-btn:              15px  3px;
+
+$height-icon:					 64px !default;
+$width-icon:					 64px !default;
+$padding-icon:					 12px !default;
+$border-radius-icon:		     15px !default;
+
+$size-icon: 					 64px;
+$size-icon-sm: 					 32px;
+
+
+$height-icon-sm:				 32px;
+$width-icon-sm:					 32px;
+$padding-icon-sm:			     4px;
+$border-radius-icon-sm:			 7px;
+
+$height-icon-message:			 40px;
+$width-icon-message:			 40px;
+
+$height-icon-message-sm: 		 20px;
+$width-icon-message-sm:			 20px;
+
+
+
+$white-navbar:              rgba(#FFFFFF, .96);
+$blue-navbar:               rgba(#34ACDC, .98);
+$azure-navbar:              rgba(#5BCAFF, .98);
+$green-navbar:              rgba(#4CD964, .98);
+$orange-navbar:             rgba(#FF9500, .98);
+$red-navbar:                rgba(#FF4C40, .98);
+
+$bg-nude:               #FFFCF5 !default;
+$bg-primary:            lighten($primary-color, 7%) !default;
+$bg-info:               lighten($info-color, 7%) !default;
+$bg-success:            lighten($success-color, 7%) !default;
+$bg-warning:            lighten($warning-color, 7%) !default;
+$bg-danger:             lighten($danger-color, 7%) !default;
+$bg-brown:              lighten($brown-color, 7%) !default;
+$bg-purple:             lighten($purple-color, 7%) !default;
+
+$preloader-color:          #D8D1C9 !default;
+
+$filter-blue:         darken($primary-color, 10%);
+$filter-azure:        darken($info-color, 10%);
+$filter-green:        darken($success-color, 10%);
+$filter-orange:       darken($warning-color, 10%);
+$filter-red:          darken($danger-color, 10%);
+
+
+$topbar-x:             topbar-x !default;
+$topbar-back:          topbar-back !default;
+$bottombar-x:          bottombar-x !default;
+$bottombar-back:       bottombar-back !default;
+
+$social-facebook: 			#3b5998;
+$social-twitter: 			#55acee;
+$social-pinterest: 			#cc2127;
+$social-google: 			#dd4b39;
+$social-linkedin: 			#0976b4;
+$social-dribbble: 			#ea4c89;
+$social-github: 			#333333;
+$social-youtube: 			#e52d27;
+$social-instagram: 		    #125688;
+$social-reddit: 			#ff4500;
+$social-tumblr: 			#35465c;
+
+$background-light-grey:     #E8E7E3 !default;
+$background-lighter-grey:   #F0EFEB !default;
+$font-background-light-grey: #9C9B99 !default;
+$font-hover-background-light-grey: #5E5E5C !default;
+
+// variables used in headers
+$header-background:         #B2AFAB !default;
+
+$filter-primary:         darken($primary-color, 10%);
+$filter-info:        darken($info-color, 10%);
+$filter-success:        darken($success-color, 10%);
+$filter-warning:       darken($warning-color, 10%);
+$filter-danger:          darken($danger-color, 10%);
+
+// variable used in footers
+$black-footer-bg:            #252422 !default;
+$brown-font-color:           #A49E9E !default;
+$brown-font-color-hover:     #F1EAE0 !default;
+
+//variables used in cards
+$card-black-color:           #333333 !default;
+$card-muted-color:           #ccc !default;
+
+$card-background-blue:      #b8d8d8 !default;
+$card-font-blue:            #506568 !default;
+$card-subtitle-blue:        #7a9e9f !default;
+
+$card-background-green:      #d5e5a3 !default;
+$card-font-green:            #60773d !default;
+$card-subtitle-green:        #92ac56 !default;
+
+$card-background-yellow:      #ffe28c !default;
+$card-font-yellow:            #b25825 !default;
+$card-subtitle-yellow:        #d88715 !default;
+
+$card-background-brown:      #d6c1ab !default;
+$card-font-brown:            #75442e !default;
+$card-subtitle-brown:        #a47e65 !default;
+
+$card-background-purple:      #baa9ba !default;
+$card-font-purple:            #3a283d !default;
+$card-subtitle-purple:        #5a283d !default;
+
+$card-background-orange:      #ff8f5e !default;
+$card-font-orange:            #772510 !default;
+$card-subtitle-orange:        #e95e37 !default;
+
+$card-background-primary:     #427C89 !default;
+$card-border-color:           #427C89 !default;
+
+$color-red-error: rgb(185, 74, 72) !default;
+$color-grey-arrow: rgba(204, 204, 204, 0.2) !default;
+
+$width-default: 220px !default; // 3 960px-grid columns
+
+$zindex-select-dropdown: 1060 !default; // must be higher than a modal background (1050)
+
+//** Placeholder text color
+$input-color-placeholder: #999 !default;
+
+$dark-nav-color: #1e1e21 !default;
+$dark-footer-color: #0a0f10 !default;
+$section-dark-color: #0e0e12 !default;

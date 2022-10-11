@@ -1,0 +1,49 @@
+name: Deploy to SRCF
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      
+      # Use the appropriate version of node
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: 15.x
+        
+      # Runs a single command using the runners shell
+      - name: NPM Install Dependencies
+        run: cd website && npm install . --legacy-peer-deps --production=false
+
+      # Runs a set of commands using the runners shell
+      - name: NPM Build
+        run: cd website && CI="" npm run build
+      
+      # Publish build artifacts to remote server
+      - name: SSH Deploy
+        uses: easingthemes/ssh-deploy@191986574c0735ffad7ae1a297a414d6e6f95375
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SRCF_RSA }}
+          REMOTE_HOST: ${{ secrets.SRCF_HOST }}
+          REMOTE_USER: ${{ secrets.SRCF_USER }}
+          SOURCE: website/build/
+          TARGET: ${{ secrets.DEPLOY_DIR }}
+          ARGS: -azv --delete --omit-dir-times --no-perms --exclude '.htaccess'

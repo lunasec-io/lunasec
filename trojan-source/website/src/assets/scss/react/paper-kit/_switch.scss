@@ -1,0 +1,39 @@
+.custom-switch {
+  padding-left: 3.25rem;
+  min-height: 2rem;
+  display: flex;
+  .custom-control-label {
+    display: inline-flex;
+    align-items: center;
+    &::after {
+      height: calc(1.625rem - 4px);
+      width: calc(1.625rem - 4px);
+      left: calc(-3.25rem + 2px);
+      border-radius: 2.5rem;
+      background-color: white;
+    }
+    &::before {
+      height: 1.625rem;
+      width: 3rem;
+      left: -3.25rem;
+      border-radius: 2.5rem;
+      background-color: #adb5bd;
+    }
+  }
+
+  .custom-control-input:checked ~ .custom-control-label {
+    &::after {
+      transform: translateX(1.35rem);
+    }
+    &::before {
+      background-color: $info-color;
+      border-color: $info-color;
+    }
+  }
+
+  .custom-control-input:disabled {
+    &:checked ~ .custom-control-label::before {
+      // background-color: $info-color;
+    }
+  }
+}

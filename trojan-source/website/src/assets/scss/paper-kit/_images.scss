@@ -1,0 +1,66 @@
+.img-rounded{
+    border-radius: $border-radius-extreme;
+    transition: opacity 0.5s ease 0s;
+    max-width: 100%;
+}
+.img-details{
+    min-height: 50px;
+    padding: 0 4px 0.5em;
+
+}
+.img-details img{
+    width: 50px;
+}
+.img-details .author{
+    margin-left: 10px;
+    margin-top: -21px;
+    width: 40px;
+}
+.img-circle{
+    background-color: $white-color;
+    margin-bottom: 10px;
+    padding: 4px;
+    border-radius: 50% !important;
+    max-width: 100%;
+}
+.img-thumbnail{
+    border: 0 none;
+    border-radius: $border-radius-extreme;
+    box-shadow: 0 1px 2px rgba(164, 158, 147, 0.6);
+    margin-bottom: 10px;
+}
+.img-no-padding{
+    padding: 0px;
+}
+.example-page .img-rounded{
+    margin: 50px 0 20px;
+}
+.img-shadow{
+    box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                0 3px 14px 2px rgba(0, 0, 0, 0.12),
+                0 5px 5px -3px rgba(0, 0, 0, 0.2)
+}
+.images-title{
+    margin-bottom: 20px;
+    height: 50px;
+}
+.nav-link .profile-photo-small{
+    width: 40px;
+    height: 30px;
+    margin: -10px 0 0 -15px;
+}
+.profile-picture{
+    margin: 0 auto;
+    .fileinput-new img{
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+    .fileinput-exists img{
+        max-width: 150px;
+        max-height: 150px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+}

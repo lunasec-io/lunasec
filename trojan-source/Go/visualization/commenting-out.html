@@ -1,0 +1,16 @@
+<html>
+<body style="font-family:monospace;">
+package main<br />
+<br />
+import "fmt"<br />
+<br />
+func main() {<br />
+    <span style="margin-left: 23.5pt;"></span>var isAdmin = false<br />
+    <span style="margin-left: 23.5pt;"></span>var isSuperAdmin = false<br />
+    <span style="margin-left: 23.5pt;"></span>isAdmin = isAdmin || isSuperAdmin<br />
+    <span style="margin-left: 23.5pt;"></span>/*<span style="color:red;">RLO</span> } <span style="color:blue;">LRI</span>if (isAdmin)<span style="color:blue;">PDI</span> <span style="color:green;">LRI</span> begin admins only */<br />
+            <span style="margin-left: 47pt;"></span>fmt.Println("You are an admin.")<br />
+    <span style="margin-left: 23.5pt;"></span>/* end admin only <span style="color:red;">RLO</span> { <span style="color:blue;">LRI</span>*/<br />
+}<br />
+</body>
+</html>

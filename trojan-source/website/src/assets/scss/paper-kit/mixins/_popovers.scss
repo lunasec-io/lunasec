@@ -1,0 +1,21 @@
+@mixin popover-style($background-color){
+    background-color: $background-color;
+    color: $white-color;
+    .popover-title{
+        background-color: $background-color;
+        color: rgba(0, 0, 0, 0.56);
+    }
+    &.bottom .arrow:after{
+        border-bottom-color: $background-color;
+    }
+    &.left > .arrow::after{
+        border-left-color: $background-color;
+    }
+    &.top > .arrow::after{
+        border-top-color: $background-color;
+    }
+    &.right > .arrow::after{
+        border-right-color: $background-color;
+    }
+
+}

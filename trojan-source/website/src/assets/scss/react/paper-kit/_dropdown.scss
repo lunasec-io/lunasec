@@ -1,0 +1,24 @@
+.dropdown {
+  .dropdown-menu{
+    &[x-placement="top-start"]{
+      @include transform-translate-y-dropdown(0px);
+
+    }
+    &[x-placement="bottom-start"]{
+      @include transform-translate-y-dropdown(0px);
+    }
+  }
+
+  &.show .dropdown-menu{
+    &[x-placement="top-start"]{
+      @include transform-translate-y-dropdown(-50px);
+      top: auto !important;
+      bottom: 0 !important;
+    }
+    &[x-placement="bottom-start"]{
+      @include transform-translate-y-dropdown(40px);
+      bottom: auto !important;
+      top: 0 !important;
+    }
+  }
+}

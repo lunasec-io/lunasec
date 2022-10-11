@@ -1,0 +1,90 @@
+.carousel-control{
+    background-color: $danger-color;
+    border-radius: 50%;
+    opacity: 1;
+    text-shadow: none;
+
+    &:hover,
+    &:focus{
+        opacity: 1;
+        background-color: $danger-states-color;
+    }
+}
+
+.carousel-control.left{
+    height: 30px;
+    top: 50%;
+    width: 30px;
+    left: 25px;
+    opacity: 0;
+}
+.carousel-control.right{
+    height: 30px;
+    right: 25px;
+    top: 50%;
+    width: 30px;
+    opacity: 0;
+}
+.carousel-control .icon-prev, .carousel-control .icon-next, .carousel-control .fa, .carousel-control .fa {
+    display: inline-block;
+    z-index: 5;
+}
+.carousel-control .fa{
+    font-size: 26px;
+    margin: 2px;
+}
+.carousel-control.left, .carousel-control.right {
+    background-image: none;
+}
+
+ .page-carousel{
+    border-radius: $border-radius-extreme !important;
+    border: none !important;
+    width: 100%;
+}
+
+.carousel-inner {
+  > .carousel-item > img,
+  > .carousel-item > a > img {
+      border-radius: $border-radius-extreme;
+      box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
+  }
+  .carousel-item img {
+    width: 100%;
+  }
+}
+
+.carousel-indicators > li{
+    background-color: rgba(204, 204, 204, 0.49);
+    border: 0 none;
+}
+.carousel-indicators .active{
+    background-color: $danger-color;
+}
+.page-carousel:hover{
+    .carousel-control.right,
+    .carousel-control.left{
+        opacity: 1;
+        z-index: 1;
+    }
+}
+.card {
+    .carousel {
+        .carousel-indicators {
+            bottom: 0;
+        }
+        a {
+            position: absolute;
+            color: $white-color !important;
+        &:hover {
+            color: $white-color !important;
+        }
+        .fa-angle-left:before {
+            padding-right: 3px;
+        }
+        .fa-angle-right:before {
+            padding-left: 3px;
+        }
+        }
+    }
+}

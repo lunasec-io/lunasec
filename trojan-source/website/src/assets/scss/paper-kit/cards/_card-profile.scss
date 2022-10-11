@@ -1,0 +1,43 @@
+.card-profile {
+  margin-top: 30px;
+  text-align: center;
+
+  .card-cover {
+    height: 130px;
+    background-position: center center;
+    background-size: cover;
+    border-radius: $border-radius-extreme $border-radius-extreme 0 0;
+  }
+
+  .card-body {
+    .card-title {
+      margin-top: 5px !important;
+    }
+    .card-category {
+      margin-bottom: 5px;
+      margin-top: 5px;
+    }
+  }
+
+  .card-avatar {
+    max-width: 120px;
+    max-height: 120px;
+    margin: -60px auto 0;
+    border-radius: 50%;
+    overflow: hidden;
+
+    &.border-white {
+        border: 4px solid $white-color;
+    }
+    &.border-gray {
+        border: 4px solid $card-muted-color;
+    }
+  }
+
+}
+
+.section {
+  .card-profile {
+    margin-top: 100px;
+  }
+}

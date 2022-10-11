@@ -1,0 +1,135 @@
+.section{
+    padding: 70px 0;
+    position: relative;
+    background-color: #FFFFFF;
+}
+.section-with-space{
+    padding: 60px 0;
+}
+.section-gray{
+    background-color: #EEEEEE;
+}
+.section-nude{
+    background-color: $bg-nude;
+}
+.section-gold{
+    background-color: #caac90;
+    color: $white-color;
+}
+.section-brown{
+    background-color: #A59E94;
+    color: $white-color;
+}
+.section-light-blue{
+    background-color: $primary-color;
+    color: $white-color;
+}
+.section-dark-blue{
+    background-color: #506367;
+    color: $white-color;
+}
+.section-dark{
+    background-color: $section-dark-color;
+}
+.section-image,
+.section-gold,
+.section-dark{
+    position: relative;
+
+    .title,
+    .info-title,
+    .card-plain .card-title{
+        color: $white-color !important;
+    }
+    .category,
+    .description,
+    .card-plain .card-description,
+    .card-plain .card-category{
+        color: rgba($white-color, .7);
+    }
+    hr{
+        border-color: rgba(255, 255, 255, 0.19);
+    }
+}
+.page-header,
+.carousel-caption{
+    .title,
+    .info-title{
+        color: $white-color;
+    }
+}
+[class*="features-"],
+[class*="team-"],
+[class*="projects-"],
+[class*="pricing-"],
+[class*="testimonials-"],
+[class*="contactus-"]{
+    padding: 80px 0;
+}
+.section-image{
+
+    &:before{
+        content: "";
+        display: block;
+        height: 100%;
+        left: 0;
+        top: 0;
+        position: absolute;
+        width: 100%;
+        z-index: 1;
+    }
+    & .container{
+        position: relative;
+        z-index: 2;
+    }
+}
+
+.section-login{
+    min-height: 400px;
+    background-color: $section-dark-color;
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    /* IE10+ CSS styles go here */
+    .page-header{
+        .content-center{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -75%);
+        }
+        .presentation-title{
+            background: none !important;
+        }
+    }
+}
+
+
+[class*="features-"],
+[class*="team-"],
+[class*="projects-"],
+[class*="pricing-"],
+[class*="testimonials-"],
+[class*="contactus-"] {
+    padding: 80px 0;
+}
+.section-image {
+    background-position: center bottom;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    &:before {
+        content: "";
+        display: block;
+        height: 100%;
+        left: 0;
+        top: 0;
+        position: absolute;
+        width: 100%;
+        z-index: 1;
+    }
+    & .container {
+        position: relative;
+        z-index: 2;
+    }
+}

@@ -1,0 +1,71 @@
+.btn-twitter{
+    color: $social-twitter !important;
+
+    &:hover,
+    &:focus,
+    &:active{
+        color: $social-twitter !important;
+    }
+}
+
+.btn-facebook{
+    color: $social-facebook !important;
+
+    &:hover,
+    &:focus,
+    &:active{
+        color: $social-facebook !important;
+    }
+}
+
+.btn-google{
+    color: $social-google !important;
+
+    &:hover,
+    &:focus,
+    &:active{
+        color: $social-google !important;
+    }
+}
+
+.btn-linkedin{
+    color: $social-linkedin !important;
+
+    &:hover,
+    &:focus,
+    &:active{
+        color: $social-linkedin !important;
+    }
+}
+.btn-twitter-bg{
+    background-color: $social-twitter !important;
+    border-color: $social-twitter !important;
+    &:hover{
+        background-color: darken($social-twitter, 5%) !important;
+        border-color: darken($social-twitter, 5%) !important;
+    }
+}
+.btn-facebook-bg{
+    background-color: $social-facebook !important;
+    border-color: $social-facebook !important;
+    &:hover{
+        background-color: darken($social-facebook, 5%) !important;
+        border-color: darken($social-facebook, 5%) !important;
+    }
+}
+.btn-google-bg{
+    background-color: $social-google !important;
+    border-color: $social-google !important;
+    &:hover{
+        background-color: darken($social-google, 5%) !important;
+        border-color: darken($social-google, 5%) !important;
+    }
+}
+.btn-github-bg{
+    background-color: #767676 !important;
+    border-color: #767676 !important;
+    &:hover{
+        background-color: darken(#767676, 5%) !important;
+        border-color: darken(#767676, 5%) !important;
+    }
+}

@@ -1,0 +1,87 @@
+{
+  "name": "trojan-source",
+  "version": "1.3.0",
+  "dependencies": {
+    "classnames": "2.2.6",
+    "moment": "2.29.1",
+    "node-sass": "5.0.0",
+    "nouislider": "14.6.4",
+    "react": "17.0.2",
+    "react-copy-to-clipboard": "^5.0.4",
+    "react-datetime": "3.0.4",
+    "react-dom": "17.0.2",
+    "react-lazyload": "^3.2.0",
+    "react-router": "5.2.0",
+    "react-router-dom": "5.2.0",
+    "react-scripts": "4.0.3",
+    "react-typist": "^2.0.5",
+    "reactstrap": "8.9.0",
+    "supports-webp-sync": "^1.0.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "postbuild": "react-snap",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
+    "compile-sass": "node-sass src/assets/scss/paper-kit.scss src/assets/css/paper-kit.css",
+    "minify-sass": "node-sass src/assets/scss/paper-kit.scss src/assets/css/paper-kit.min.css --output-style compressed",
+    "map-sass": "node-sass src/assets/scss/paper-kit.scss src/assets/css/paper-kit.css --source-map true"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "optionalDependencies": {
+    "jquery": "3.6.0",
+    "typescript": "4.2.3"
+  },
+  "devDependencies": {
+    "bootstrap": "4.6.0",
+    "gulp": "4.0.2",
+    "gulp-append-prepend": "1.0.8",
+    "react-snap": "^1.23.0"
+  },
+  "description": "Trojan Source Attacks Website",
+  "main": "src/assets/scss/paper-kit.scss",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickboucher/trojan-source.git"
+  },
+  "keywords": [
+    "react",
+    "reactstrap",
+    "reactjs",
+    "paper-kit",
+    "paper-kit-react",
+    "paper-kit-2",
+    "paper-kit2",
+    "paper-design",
+    "hook",
+    "hooks",
+    "react-hook",
+    "react-hooks",
+    "template",
+    "theme",
+    "react-template",
+    "react-theme"
+  ],
+  "author": "Nicholas Boucher",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nickboucher/trojan-source/issues"
+  },
+  "homepage": "https://trojansource.codes/"
+}
