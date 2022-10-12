@@ -1,0 +1,34 @@
+table:
+  name: revision
+  schema: npm
+insert_permissions:
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - rev
+        - id
+        - doc
+        - deleted
+        - seq
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - deleted
+        - seq
+        - doc
+        - id
+        - rev
+      filter: {}
+update_permissions:
+  - role: service
+    permission:
+      columns:
+        - deleted
+        - seq
+        - doc
+        - id
+        - rev
+      filter: {}
+      check: null

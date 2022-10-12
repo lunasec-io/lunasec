@@ -106,9 +106,7 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
   }
 
   const vulnerabilities = depTree.getVulnerabilities();
-  log.info('starting static analysis for dependency tree', {
-    vulnerableDependencyChains: vulnerabilities,
-  });
+  log.info('starting static analysis for dependency tree');
 
   const queuedStaticAnalyses: Map<string, boolean> = new Map<string, boolean>();
   vulnerabilities.forEach((v) => {
@@ -162,10 +160,10 @@ export async function scanSnapshotActivity(buildId: string, msg: S3ObjectMetadat
     }
 
     // TODO (cthompson) commented out so that the branch could be landed to fix production
-    // const staticAnalysisRes = await staticallyAnalyzeDependencyTree(buildId);
-    // if (staticAnalysisRes.error) {
-    //   return staticAnalysisRes;
-    // }
+    const staticAnalysisRes = await staticallyAnalyzeDependencyTree(buildId);
+    if (staticAnalysisRes.error) {
+      return staticAnalysisRes;
+    }
 
     const bucketInfo: SbomBucketInfo = { region, bucketName, key };
 

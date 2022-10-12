@@ -1,0 +1,5 @@
+mutation UpsertRevisions($revisions: [npm_revision_insert_input!]!) {
+  insert_npm_revision(objects: $revisions, on_conflict: {constraint: revision_pkey, update_columns: [rev, id, doc, deleted, seq]}) {
+    affected_rows
+  }
+}

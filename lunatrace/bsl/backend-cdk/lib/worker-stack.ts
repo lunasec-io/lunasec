@@ -11,8 +11,6 @@
  * limitations under the License.
  *
  */
-import { inspect } from 'util';
-
 import { SecurityGroup, SubnetType } from '@aws-cdk/aws-ec2';
 import {
   CapacityProviderStrategy,
@@ -20,23 +18,20 @@ import {
   ContainerImage,
   DeploymentControllerType,
   Secret as EcsSecret,
-  FargatePlatformVersion,
 } from '@aws-cdk/aws-ecs';
 import {
   ApplicationLoadBalancedFargateService,
   QueueProcessingFargateServiceProps,
-  ScheduledFargateTask,
 } from '@aws-cdk/aws-ecs-patterns';
-import { Schedule } from '@aws-cdk/aws-events';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
-import { Construct, Duration } from '@aws-cdk/core';
+import { Construct } from '@aws-cdk/core';
 
-import { QueueProcessingFargateService } from './aws/queue-processing-fargate-service';
 import { commonBuildProps } from './constants';
 import { addDatadogToTaskDefinition, datadogLogDriverForService } from './datadog-fargate-integration';
 import { WorkerStorageStackState } from './worker-storage-stack';
+import {QueueProcessingFargateService} from "./aws/queue-processing-fargate-service";
 
 interface WorkerStackProps extends cdk.StackProps {
   fargateCluster: Cluster;
@@ -100,7 +95,7 @@ export class WorkerStack extends cdk.Stack {
     const staticAnalysisQueue = storageStack.staticAnalysisSqsQueue;
 
     if (!repositoryQueue || !webhookQueue || !manifestQueue || !sbomQueue || !staticAnalysisQueue) {
-      throw new Error(`expected non-null storage stack queues: ${inspect(storageStack)}`);
+      throw new Error(`expected non-null storage stack queues: ${storageStack}`);
     }
 
     const workerContainerImage = ContainerImage.fromAsset('../backend', {
@@ -124,6 +119,7 @@ export class WorkerStack extends cdk.Stack {
       GITHUB_APP_ID: gitHubAppId,
       HASURA_URL: publicHasuraServiceUrl,
       LUNATRACE_GRAPHQL_SERVER_URL: 'http://backend.services:8080/v1/graphql',
+      LUNATRACE_NPM_REGISTRY: 'http://backend.services:8081',
     };
 
     const processQueueCommonSecrets: Record<string, EcsSecret> = {
@@ -156,23 +152,23 @@ export class WorkerStack extends cdk.Stack {
 
     const queueServices: QueueService[] = [
       {
+        // TODO (cthompson) mount EFS to make available storage larger
         name: 'ProcessRepositoryQueue',
         queue: repositoryQueue,
         visibility: 600,
         ram: 8 * gb,
         cpu: 4 * gb,
         capacityProviderStrategies,
-        ephemeralStorageGiB: 200,
         scalingSteps,
       },
       {
         name: 'StaticAnalysisQueue',
         queue: staticAnalysisQueue,
+        image: golangWorkerImage,
         visibility: 600,
         ram: 8 * gb,
         cpu: 4 * gb,
         capacityProviderStrategies,
-        ephemeralStorageGiB: 200,
         scalingSteps,
       },
       {

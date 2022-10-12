@@ -4685,28 +4685,6 @@ type mutation_root {
   ): manifests
 
   """
-  insert data into the table: "npm.latest_revision"
-  """
-  insert_npm_latest_revision(
-    """the rows to be inserted"""
-    objects: [npm_latest_revision_insert_input!]!
-
-    """upsert condition"""
-    on_conflict: npm_latest_revision_on_conflict
-  ): npm_latest_revision_mutation_response
-
-  """
-  insert a single row into the table: "npm.latest_revision"
-  """
-  insert_npm_latest_revision_one(
-    """the row to be inserted"""
-    object: npm_latest_revision_insert_input!
-
-    """upsert condition"""
-    on_conflict: npm_latest_revision_on_conflict
-  ): npm_latest_revision
-
-  """
   insert data into the table: "npm.revision"
   """
   insert_npm_revision(
@@ -5623,31 +5601,32 @@ type mutation_root {
   ): manifests
 
   """
-  update data of the table: "npm.latest_revision"
-  """
-  update_npm_latest_revision(
-    """sets the columns of the filtered rows to the given values"""
-    _set: npm_latest_revision_set_input
-
-    """filter the rows which have to be updated"""
-    where: npm_latest_revision_bool_exp!
-  ): npm_latest_revision_mutation_response
-
-  """
-  update single row of the table: "npm.latest_revision"
-  """
-  update_npm_latest_revision_by_pk(
-    """sets the columns of the filtered rows to the given values"""
-    _set: npm_latest_revision_set_input
-    pk_columns: npm_latest_revision_pk_columns_input!
-  ): npm_latest_revision
-
-  """
   update data of the table: "npm.revision"
   """
   update_npm_revision(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: npm_revision_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: npm_revision_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: npm_revision_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: npm_revision_delete_key_input
+
     """increments the numeric columns with given value of the filtered values"""
     _inc: npm_revision_inc_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: npm_revision_prepend_input
 
     """sets the columns of the filtered rows to the given values"""
     _set: npm_revision_set_input
@@ -5660,8 +5639,29 @@ type mutation_root {
   update single row of the table: "npm.revision"
   """
   update_npm_revision_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: npm_revision_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: npm_revision_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: npm_revision_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: npm_revision_delete_key_input
+
     """increments the numeric columns with given value of the filtered values"""
     _inc: npm_revision_inc_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: npm_revision_prepend_input
 
     """sets the columns of the filtered rows to the given values"""
     _set: npm_revision_set_input
@@ -6423,113 +6423,21 @@ type mutation_root {
   ): webhook_cache
 }
 
-"""Latest document revision """
-type npm_latest_revision {
-  id: String!
-  rev: String!
-
-  """An object relationship"""
-  revision: npm_revision!
-}
-
-"""
-Boolean expression to filter rows from the table "npm.latest_revision". All fields are combined with a logical 'AND'.
-"""
-input npm_latest_revision_bool_exp {
-  _and: [npm_latest_revision_bool_exp!]
-  _not: npm_latest_revision_bool_exp
-  _or: [npm_latest_revision_bool_exp!]
-  id: String_comparison_exp
-  rev: String_comparison_exp
-  revision: npm_revision_bool_exp
-}
-
-"""
-unique or primary key constraints on table "npm.latest_revision"
-"""
-enum npm_latest_revision_constraint {
-  """
-  unique or primary key constraint on columns "id"
-  """
-  latest_revision_pkey
-}
-
-"""
-input type for inserting data into table "npm.latest_revision"
-"""
-input npm_latest_revision_insert_input {
-  id: String
-  rev: String
-  revision: npm_revision_obj_rel_insert_input
-}
-
-"""
-response of any mutation on the table "npm.latest_revision"
-"""
-type npm_latest_revision_mutation_response {
-  """number of rows affected by the mutation"""
-  affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [npm_latest_revision!]!
-}
-
-"""
-on_conflict condition type for table "npm.latest_revision"
-"""
-input npm_latest_revision_on_conflict {
-  constraint: npm_latest_revision_constraint!
-  update_columns: [npm_latest_revision_update_column!]! = []
-  where: npm_latest_revision_bool_exp
-}
-
-"""Ordering options when selecting data from "npm.latest_revision"."""
-input npm_latest_revision_order_by {
-  id: order_by
-  rev: order_by
-  revision: npm_revision_order_by
-}
-
-"""primary key columns input for table: npm_latest_revision"""
-input npm_latest_revision_pk_columns_input {
-  id: String!
-}
-
-"""
-select columns of table "npm.latest_revision"
-"""
-enum npm_latest_revision_select_column {
-  """column name"""
-  id
-
-  """column name"""
-  rev
-}
-
-"""
-input type for updating data in table "npm.latest_revision"
-"""
-input npm_latest_revision_set_input {
-  id: String
-  rev: String
-}
-
-"""
-update columns of table "npm.latest_revision"
-"""
-enum npm_latest_revision_update_column {
-  """column name"""
-  id
-
-  """column name"""
-  rev
-}
-
 """Revision of a NPM CouchDB document."""
 type npm_revision {
+  deleted: Boolean!
+  doc(
+    """JSON select path"""
+    path: String
+  ): jsonb
   id: String!
   rev: String!
-  seq: Int
+  seq: Int!
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input npm_revision_append_input {
+  doc: jsonb
 }
 
 """
@@ -6539,6 +6447,8 @@ input npm_revision_bool_exp {
   _and: [npm_revision_bool_exp!]
   _not: npm_revision_bool_exp
   _or: [npm_revision_bool_exp!]
+  deleted: Boolean_comparison_exp
+  doc: jsonb_comparison_exp
   id: String_comparison_exp
   rev: String_comparison_exp
   seq: Int_comparison_exp
@@ -6555,6 +6465,27 @@ enum npm_revision_constraint {
 }
 
 """
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input npm_revision_delete_at_path_input {
+  doc: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input npm_revision_delete_elem_input {
+  doc: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input npm_revision_delete_key_input {
+  doc: String
+}
+
+"""
 input type for incrementing numeric columns in table "npm.revision"
 """
 input npm_revision_inc_input {
@@ -6565,6 +6496,8 @@ input npm_revision_inc_input {
 input type for inserting data into table "npm.revision"
 """
 input npm_revision_insert_input {
+  deleted: Boolean
+  doc: jsonb
   id: String
   rev: String
   seq: Int
@@ -6582,16 +6515,6 @@ type npm_revision_mutation_response {
 }
 
 """
-input type for inserting object relation for remote table "npm.revision"
-"""
-input npm_revision_obj_rel_insert_input {
-  data: npm_revision_insert_input!
-
-  """upsert condition"""
-  on_conflict: npm_revision_on_conflict
-}
-
-"""
 on_conflict condition type for table "npm.revision"
 """
 input npm_revision_on_conflict {
@@ -6602,6 +6525,8 @@ input npm_revision_on_conflict {
 
 """Ordering options when selecting data from "npm.revision"."""
 input npm_revision_order_by {
+  deleted: order_by
+  doc: order_by
   id: order_by
   rev: order_by
   seq: order_by
@@ -6612,10 +6537,21 @@ input npm_revision_pk_columns_input {
   rev: String!
 }
 
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input npm_revision_prepend_input {
+  doc: jsonb
+}
+
 """
 select columns of table "npm.revision"
 """
 enum npm_revision_select_column {
+  """column name"""
+  deleted
+
+  """column name"""
+  doc
+
   """column name"""
   id
 
@@ -6630,6 +6566,8 @@ enum npm_revision_select_column {
 input type for updating data in table "npm.revision"
 """
 input npm_revision_set_input {
+  deleted: Boolean
+  doc: jsonb
   id: String
   rev: String
   seq: Int
@@ -6639,6 +6577,12 @@ input npm_revision_set_input {
 update columns of table "npm.revision"
 """
 enum npm_revision_update_column {
+  """column name"""
+  deleted
+
+  """column name"""
+  doc
+
   """column name"""
   id
 
@@ -9782,31 +9726,6 @@ type query_root {
   manifests_by_pk(id: uuid!): manifests
 
   """
-  fetch data from the table: "npm.latest_revision"
-  """
-  npm_latest_revision(
-    """distinct select on columns"""
-    distinct_on: [npm_latest_revision_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [npm_latest_revision_order_by!]
-
-    """filter the rows returned"""
-    where: npm_latest_revision_bool_exp
-  ): [npm_latest_revision!]!
-
-  """
-  fetch data from the table: "npm.latest_revision" using primary key columns
-  """
-  npm_latest_revision_by_pk(id: String!): npm_latest_revision
-
-  """
   fetch data from the table: "npm.revision"
   """
   npm_revision(
@@ -11559,31 +11478,6 @@ type subscription_root {
 
   """fetch data from the table: "manifests" using primary key columns"""
   manifests_by_pk(id: uuid!): manifests
-
-  """
-  fetch data from the table: "npm.latest_revision"
-  """
-  npm_latest_revision(
-    """distinct select on columns"""
-    distinct_on: [npm_latest_revision_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [npm_latest_revision_order_by!]
-
-    """filter the rows returned"""
-    where: npm_latest_revision_bool_exp
-  ): [npm_latest_revision!]!
-
-  """
-  fetch data from the table: "npm.latest_revision" using primary key columns
-  """
-  npm_latest_revision_by_pk(id: String!): npm_latest_revision
 
   """
   fetch data from the table: "npm.revision"
