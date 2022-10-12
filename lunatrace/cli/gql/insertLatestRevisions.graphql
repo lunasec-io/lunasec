@@ -1,5 +1,0 @@
-mutation InsertLatestRevisions($latest_revisions: [npm_latest_revision_insert_input!]!) {
-  insert_npm_latest_revision(objects: $latest_revisions, on_conflict: {constraint: latest_revision_pkey, update_columns: rev}) {
-    affected_rows
-  }
-}

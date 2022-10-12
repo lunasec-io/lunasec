@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -16,7 +16,7 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/awsfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/queuehandler"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher/npm"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queuefx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis"
@@ -32,19 +32,19 @@ type QueueHandlerProps struct {
 
 func main() {
 	app := fx.New(
+		queuefx.Module,
+		graphqlfx.Module,
+		awsfx.Module,
+		fetcher.NPMModule,
+
 		fx.Supply(http.DefaultClient),
 		fx.Provide(
 			queuehandler.NewConfigProvider,
-			queuefx.NewConfig,
-			graphqlfx.NewConfig,
-			awsfx.NewConfig,
 
-			awsfx.NewSession,
-			graphqlfx.NewGraphqlClient,
-			npm.NewNPMFetcher,
 			ingester.NewHasuraIngester,
 
 			staticanalysis.NewStaticAnalysisQueueHandler,
+
 			func(props QueueHandlerProps) queuefx.HandlerLookup {
 				handlerLookup := queuefx.HandlerLookup{}
 				for _, handler := range props.Handlers {
@@ -52,7 +52,6 @@ func main() {
 				}
 				return handlerLookup
 			},
-			queuefx.NewQueueSubscriber,
 		),
 
 		fx.Invoke(func(queueSub *queuefx.Subscriber) error {
