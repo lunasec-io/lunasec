@@ -154,7 +154,6 @@ export class LunatraceBackendStack extends cdk.Stack {
         REACT_APP_GITHUB_APP_LINK: props.gitHubAppLink,
         REACT_DATADOG_RUM_PROXY_URI: 'https://metrics.lunasec.io/proxy',
       },
-      extraHash: 'TODO-REPLACE-ME',
     });
 
     const frontend = taskDef.addContainer('FrontendContainer', {
@@ -177,7 +176,6 @@ export class LunatraceBackendStack extends cdk.Stack {
         OATHKEEPER_KRATOS_URL: 'http://localhost:4433',
         OATHKEEPER_MATCH_URL: `<https|http|ws>://<localhost:4455|${props.domainName}>`,
       },
-      extraHash: 'TODO-REPLACE-ME',
     });
 
     const oathkeeper = taskDef.addContainer('OathkeeperContainer', {
@@ -200,7 +198,6 @@ export class LunatraceBackendStack extends cdk.Stack {
       buildArgs: {
         KRATOS_DOMAIN_NAME: props.domainName,
       },
-      extraHash: 'TODO-REPLACE-ME',
     });
 
     const githubOauthAppLoginClientId = Secret.fromSecretCompleteArn(
@@ -252,7 +249,6 @@ export class LunatraceBackendStack extends cdk.Stack {
     const backendContainerImage = ContainerImage.fromAsset('../backend', {
       ...commonBuildProps,
       target: 'backend-express-server',
-      extraHash: 'TODO-REPLACE-ME',
     });
 
     const backend = taskDef.addContainer('BackendContainer', {
@@ -290,7 +286,6 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const hasuraContainerImage = ContainerImage.fromAsset('../hasura', {
       ...commonBuildProps,
-      extraHash: 'TODO-REPLACE-ME',
     });
 
     const hasura = taskDef.addContainer('HasuraContainer', {
@@ -334,6 +329,27 @@ export class LunatraceBackendStack extends cdk.Stack {
       command: ['vulnerability', 'ingest', '--source', 'ghsa', '--cron', '0 0 * * *'],
       secrets: {
         LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+      },
+    });
+
+    const registryProxyImage = ContainerImage.fromAsset('../ingest-worker', {
+      ...commonBuildProps,
+      file: 'docker/registryproxy.dockerfile',
+    });
+
+    const registryPort = 8081;
+
+    // NPM registry proxy
+    taskDef.addContainer('NPMRegistryProxy', {
+      image: registryProxyImage,
+      portMappings: [{ containerPort: registryPort }],
+      logging: datadogLogDriverForService('lunatrace', 'NPMRegistryProxy'),
+      environment: {
+        LUNATRACE_PROXY_PORT: registryPort.toString(10),
+        LUNATRACE_PROXY_STAGE: 'release',
+      },
+      secrets: {
+        LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
       },
     });
 

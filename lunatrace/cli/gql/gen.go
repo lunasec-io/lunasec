@@ -2725,31 +2725,6 @@ func (v *Ignored_vulnerabilities_bool_exp) GetVulnerability_id() *Uuid_compariso
 	return v.Vulnerability_id
 }
 
-// InsertLatestRevisionsInsert_npm_latest_revisionNpm_latest_revision_mutation_response includes the requested fields of the GraphQL type npm_latest_revision_mutation_response.
-// The GraphQL type's documentation follows.
-//
-// response of any mutation on the table "npm.latest_revision"
-type InsertLatestRevisionsInsert_npm_latest_revisionNpm_latest_revision_mutation_response struct {
-	// number of rows affected by the mutation
-	Affected_rows int `json:"affected_rows"`
-}
-
-// GetAffected_rows returns InsertLatestRevisionsInsert_npm_latest_revisionNpm_latest_revision_mutation_response.Affected_rows, and is useful for accessing the field via an interface.
-func (v *InsertLatestRevisionsInsert_npm_latest_revisionNpm_latest_revision_mutation_response) GetAffected_rows() int {
-	return v.Affected_rows
-}
-
-// InsertLatestRevisionsResponse is returned by InsertLatestRevisions on success.
-type InsertLatestRevisionsResponse struct {
-	// insert data into the table: "npm.latest_revision"
-	Insert_npm_latest_revision *InsertLatestRevisionsInsert_npm_latest_revisionNpm_latest_revision_mutation_response `json:"insert_npm_latest_revision"`
-}
-
-// GetInsert_npm_latest_revision returns InsertLatestRevisionsResponse.Insert_npm_latest_revision, and is useful for accessing the field via an interface.
-func (v *InsertLatestRevisionsResponse) GetInsert_npm_latest_revision() *InsertLatestRevisionsInsert_npm_latest_revisionNpm_latest_revision_mutation_response {
-	return v.Insert_npm_latest_revision
-}
-
 // InsertManifestDependencyEdgeAnalysisInsert_analysis_manifest_dependency_edge_result_oneAnalysis_manifest_dependency_edge_result includes the requested fields of the GraphQL type analysis_manifest_dependency_edge_result.
 // The GraphQL type's documentation follows.
 //
@@ -3563,66 +3538,20 @@ const (
 	Manifests_update_columnStatus Manifests_update_column = "status"
 )
 
-// input type for inserting data into table "npm.latest_revision"
-type Npm_latest_revision_insert_input struct {
-	Id       *string                            `json:"id,omitempty"`
-	Rev      *string                            `json:"rev,omitempty"`
-	Revision *Npm_revision_obj_rel_insert_input `json:"revision,omitempty"`
-}
-
-// GetId returns Npm_latest_revision_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Npm_latest_revision_insert_input) GetId() *string { return v.Id }
-
-// GetRev returns Npm_latest_revision_insert_input.Rev, and is useful for accessing the field via an interface.
-func (v *Npm_latest_revision_insert_input) GetRev() *string { return v.Rev }
-
-// GetRevision returns Npm_latest_revision_insert_input.Revision, and is useful for accessing the field via an interface.
-func (v *Npm_latest_revision_insert_input) GetRevision() *Npm_revision_obj_rel_insert_input {
-	return v.Revision
-}
-
-// Boolean expression to filter rows from the table "npm.revision". All fields are combined with a logical 'AND'.
-type Npm_revision_bool_exp struct {
-	And []*Npm_revision_bool_exp `json:"_and,omitempty"`
-	Not *Npm_revision_bool_exp   `json:"_not,omitempty"`
-	Or  []*Npm_revision_bool_exp `json:"_or,omitempty"`
-	Id  *String_comparison_exp   `json:"id,omitempty"`
-	Rev *String_comparison_exp   `json:"rev,omitempty"`
-	Seq *Int_comparison_exp      `json:"seq,omitempty"`
-}
-
-// GetAnd returns Npm_revision_bool_exp.And, and is useful for accessing the field via an interface.
-func (v *Npm_revision_bool_exp) GetAnd() []*Npm_revision_bool_exp { return v.And }
-
-// GetNot returns Npm_revision_bool_exp.Not, and is useful for accessing the field via an interface.
-func (v *Npm_revision_bool_exp) GetNot() *Npm_revision_bool_exp { return v.Not }
-
-// GetOr returns Npm_revision_bool_exp.Or, and is useful for accessing the field via an interface.
-func (v *Npm_revision_bool_exp) GetOr() []*Npm_revision_bool_exp { return v.Or }
-
-// GetId returns Npm_revision_bool_exp.Id, and is useful for accessing the field via an interface.
-func (v *Npm_revision_bool_exp) GetId() *String_comparison_exp { return v.Id }
-
-// GetRev returns Npm_revision_bool_exp.Rev, and is useful for accessing the field via an interface.
-func (v *Npm_revision_bool_exp) GetRev() *String_comparison_exp { return v.Rev }
-
-// GetSeq returns Npm_revision_bool_exp.Seq, and is useful for accessing the field via an interface.
-func (v *Npm_revision_bool_exp) GetSeq() *Int_comparison_exp { return v.Seq }
-
-// unique or primary key constraints on table "npm.revision"
-type Npm_revision_constraint string
-
-const (
-	// unique or primary key constraint on columns "rev"
-	Npm_revision_constraintRevisionPkey Npm_revision_constraint = "revision_pkey"
-)
-
 // input type for inserting data into table "npm.revision"
 type Npm_revision_insert_input struct {
-	Id  *string `json:"id,omitempty"`
-	Rev *string `json:"rev,omitempty"`
-	Seq *int    `json:"seq,omitempty"`
+	Deleted *bool            `json:"deleted,omitempty"`
+	Doc     *json.RawMessage `json:"doc,omitempty"`
+	Id      *string          `json:"id,omitempty"`
+	Rev     *string          `json:"rev,omitempty"`
+	Seq     *int             `json:"seq,omitempty"`
 }
+
+// GetDeleted returns Npm_revision_insert_input.Deleted, and is useful for accessing the field via an interface.
+func (v *Npm_revision_insert_input) GetDeleted() *bool { return v.Deleted }
+
+// GetDoc returns Npm_revision_insert_input.Doc, and is useful for accessing the field via an interface.
+func (v *Npm_revision_insert_input) GetDoc() *json.RawMessage { return v.Doc }
 
 // GetId returns Npm_revision_insert_input.Id, and is useful for accessing the field via an interface.
 func (v *Npm_revision_insert_input) GetId() *string { return v.Id }
@@ -3632,51 +3561,6 @@ func (v *Npm_revision_insert_input) GetRev() *string { return v.Rev }
 
 // GetSeq returns Npm_revision_insert_input.Seq, and is useful for accessing the field via an interface.
 func (v *Npm_revision_insert_input) GetSeq() *int { return v.Seq }
-
-// input type for inserting object relation for remote table "npm.revision"
-type Npm_revision_obj_rel_insert_input struct {
-	Data *Npm_revision_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Npm_revision_on_conflict `json:"on_conflict,omitempty"`
-}
-
-// GetData returns Npm_revision_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
-func (v *Npm_revision_obj_rel_insert_input) GetData() *Npm_revision_insert_input { return v.Data }
-
-// GetOn_conflict returns Npm_revision_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
-func (v *Npm_revision_obj_rel_insert_input) GetOn_conflict() *Npm_revision_on_conflict {
-	return v.On_conflict
-}
-
-// on_conflict condition type for table "npm.revision"
-type Npm_revision_on_conflict struct {
-	Constraint     Npm_revision_constraint      `json:"constraint,omitempty"`
-	Update_columns []Npm_revision_update_column `json:"update_columns,omitempty"`
-	Where          *Npm_revision_bool_exp       `json:"where,omitempty"`
-}
-
-// GetConstraint returns Npm_revision_on_conflict.Constraint, and is useful for accessing the field via an interface.
-func (v *Npm_revision_on_conflict) GetConstraint() Npm_revision_constraint { return v.Constraint }
-
-// GetUpdate_columns returns Npm_revision_on_conflict.Update_columns, and is useful for accessing the field via an interface.
-func (v *Npm_revision_on_conflict) GetUpdate_columns() []Npm_revision_update_column {
-	return v.Update_columns
-}
-
-// GetWhere returns Npm_revision_on_conflict.Where, and is useful for accessing the field via an interface.
-func (v *Npm_revision_on_conflict) GetWhere() *Npm_revision_bool_exp { return v.Where }
-
-// update columns of table "npm.revision"
-type Npm_revision_update_column string
-
-const (
-	// column name
-	Npm_revision_update_columnId Npm_revision_update_column = "id"
-	// column name
-	Npm_revision_update_columnRev Npm_revision_update_column = "rev"
-	// column name
-	Npm_revision_update_columnSeq Npm_revision_update_column = "seq"
-)
 
 // input type for inserting array relation for remote table "organization_user"
 type Organization_user_arr_rel_insert_input struct {
@@ -6365,6 +6249,31 @@ func (v *UpsertPackageResponse) GetInsert_package_one() *UpsertPackageInsert_pac
 	return v.Insert_package_one
 }
 
+// UpsertRevisionsInsert_npm_revisionNpm_revision_mutation_response includes the requested fields of the GraphQL type npm_revision_mutation_response.
+// The GraphQL type's documentation follows.
+//
+// response of any mutation on the table "npm.revision"
+type UpsertRevisionsInsert_npm_revisionNpm_revision_mutation_response struct {
+	// number of rows affected by the mutation
+	Affected_rows int `json:"affected_rows"`
+}
+
+// GetAffected_rows returns UpsertRevisionsInsert_npm_revisionNpm_revision_mutation_response.Affected_rows, and is useful for accessing the field via an interface.
+func (v *UpsertRevisionsInsert_npm_revisionNpm_revision_mutation_response) GetAffected_rows() int {
+	return v.Affected_rows
+}
+
+// UpsertRevisionsResponse is returned by UpsertRevisions on success.
+type UpsertRevisionsResponse struct {
+	// insert data into the table: "npm.revision"
+	Insert_npm_revision *UpsertRevisionsInsert_npm_revisionNpm_revision_mutation_response `json:"insert_npm_revision"`
+}
+
+// GetInsert_npm_revision returns UpsertRevisionsResponse.Insert_npm_revision, and is useful for accessing the field via an interface.
+func (v *UpsertRevisionsResponse) GetInsert_npm_revision() *UpsertRevisionsInsert_npm_revisionNpm_revision_mutation_response {
+	return v.Insert_npm_revision
+}
+
 // UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_response includes the requested fields of the GraphQL type vulnerability_mutation_response.
 // The GraphQL type's documentation follows.
 //
@@ -8092,16 +8001,6 @@ type __GetVulnerabilityMetadataInput struct {
 // GetId returns __GetVulnerabilityMetadataInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetVulnerabilityMetadataInput) GetId() uuid.UUID { return v.Id }
 
-// __InsertLatestRevisionsInput is used internally by genqlient
-type __InsertLatestRevisionsInput struct {
-	Latest_revisions []*Npm_latest_revision_insert_input `json:"latest_revisions,omitempty"`
-}
-
-// GetLatest_revisions returns __InsertLatestRevisionsInput.Latest_revisions, and is useful for accessing the field via an interface.
-func (v *__InsertLatestRevisionsInput) GetLatest_revisions() []*Npm_latest_revision_insert_input {
-	return v.Latest_revisions
-}
-
 // __InsertManifestDependencyEdgeAnalysisInput is used internally by genqlient
 type __InsertManifestDependencyEdgeAnalysisInput struct {
 	Result *Analysis_manifest_dependency_edge_result_insert_input `json:"result,omitempty"`
@@ -8177,6 +8076,14 @@ func (v *__UpsertPackageInput) GetObject() *Package_insert_input { return v.Obje
 
 // GetOn_conflict returns __UpsertPackageInput.On_conflict, and is useful for accessing the field via an interface.
 func (v *__UpsertPackageInput) GetOn_conflict() *Package_on_conflict { return v.On_conflict }
+
+// __UpsertRevisionsInput is used internally by genqlient
+type __UpsertRevisionsInput struct {
+	Revisions []*Npm_revision_insert_input `json:"revisions,omitempty"`
+}
+
+// GetRevisions returns __UpsertRevisionsInput.Revisions, and is useful for accessing the field via an interface.
+func (v *__UpsertRevisionsInput) GetRevisions() []*Npm_revision_insert_input { return v.Revisions }
 
 // __UpsertVulnerabilitiesInput is used internally by genqlient
 type __UpsertVulnerabilitiesInput struct {
@@ -8407,38 +8314,6 @@ query GetVulnerabilityMetadata ($id: uuid!) {
 	return &data, err
 }
 
-func InsertLatestRevisions(
-	ctx context.Context,
-	client graphql.Client,
-	latest_revisions []*Npm_latest_revision_insert_input,
-) (*InsertLatestRevisionsResponse, error) {
-	req := &graphql.Request{
-		OpName: "InsertLatestRevisions",
-		Query: `
-mutation InsertLatestRevisions ($latest_revisions: [npm_latest_revision_insert_input!]!) {
-	insert_npm_latest_revision(objects: $latest_revisions, on_conflict: {constraint:latest_revision_pkey,update_columns:rev}) {
-		affected_rows
-	}
-}
-`,
-		Variables: &__InsertLatestRevisionsInput{
-			Latest_revisions: latest_revisions,
-		},
-	}
-	var err error
-
-	var data InsertLatestRevisionsResponse
-	resp := &graphql.Response{Data: &data}
-
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
-	)
-
-	return &data, err
-}
-
 func InsertManifestDependencyEdgeAnalysis(
 	ctx context.Context,
 	client graphql.Client,
@@ -8617,6 +8492,38 @@ mutation UpsertPackage ($object: package_insert_input!, $on_conflict: package_on
 	var err error
 
 	var data UpsertPackageResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
+
+func UpsertRevisions(
+	ctx context.Context,
+	client graphql.Client,
+	revisions []*Npm_revision_insert_input,
+) (*UpsertRevisionsResponse, error) {
+	req := &graphql.Request{
+		OpName: "UpsertRevisions",
+		Query: `
+mutation UpsertRevisions ($revisions: [npm_revision_insert_input!]!) {
+	insert_npm_revision(objects: $revisions, on_conflict: {constraint:revision_pkey,update_columns:[rev,id,doc,deleted,seq]}) {
+		affected_rows
+	}
+}
+`,
+		Variables: &__UpsertRevisionsInput{
+			Revisions: revisions,
+		},
+	}
+	var err error
+
+	var data UpsertRevisionsResponse
 	resp := &graphql.Response{Data: &data}
 
 	err = client.MakeRequest(

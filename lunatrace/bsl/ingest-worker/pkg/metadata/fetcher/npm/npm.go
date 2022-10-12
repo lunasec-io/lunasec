@@ -25,6 +25,8 @@ import (
 
 type npmFetcherDeps struct {
 	fx.In
+
+	Config
 	Client *http.Client
 }
 
@@ -33,7 +35,7 @@ type npmFetcher struct {
 }
 
 func (n *npmFetcher) Fetch(ctx context.Context, pkgName string) (*metadata.PackageMetadata, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, NpmRegistry+"/"+pkgName, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, n.deps.Config.RegistryUrl+"/"+pkgName, nil)
 	if err != nil {
 		return nil, err
 	}
