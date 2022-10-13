@@ -12,10 +12,13 @@
 package main
 
 import (
-	ingest "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/package-injest"
+	packageCommand "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/package"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/vulnerability"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/ingestworker"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/dbfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
@@ -25,7 +28,6 @@ import (
 	clifx2 "github.com/ajvpot/clifx"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/license"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher/npm"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
 	vulnmanager "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/lunatracefx"
@@ -34,11 +36,16 @@ import (
 func main() {
 	clifx2.Main(
 		lunatracefx.Module,
+		graphqlfx.Module,
+		dbfx.Module,
+		fetcher.NPMModule,
+
 		fx.Invoke(func() {
 			util.RunOnProcessExit(func() {
 				util.RemoveCleanupDirs()
 			})
 		}),
+
 		// todo make a module
 		fx.Supply(&clifx2.AppConfig{
 			Name:    "ingestworker",
@@ -49,20 +56,18 @@ func main() {
 			ingestworker.NewConfigProvider,
 		),
 		fx.Provide(
-			graphqlfx.NewConfig,
-			graphqlfx.NewGraphqlClient,
-		),
-		fx.Provide(
 			licensecheck.NewScanner,
 			packagejson.NewScanner,
 			license.NewCommand,
 			vulnmanager.NewFileIngester,
 		),
 		fx.Provide(
-			npm.NewNPMFetcher,
 			ingester.NewHasuraIngester,
-			ingest.NewCommand,
 			vulnerability.NewCommand,
+		),
+		fx.Provide(
+			replicator.NewNPMReplicator,
+			packageCommand.NewCommand,
 		),
 	)
 }
