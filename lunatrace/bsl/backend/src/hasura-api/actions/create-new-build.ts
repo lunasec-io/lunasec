@@ -16,7 +16,7 @@ import { MaybeError } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { catchError, ErrorOrResult, threwError } from '../../utils/try';
-import { InsertBuildMutation, Scalars } from '../generated';
+import { InsertBuildMutation } from '../generated';
 import { hasura } from '../index';
 
 async function getProjectId(repoId: number, projectId: string | undefined): Promise<MaybeError<string>> {

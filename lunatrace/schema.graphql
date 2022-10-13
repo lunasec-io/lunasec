@@ -13,10 +13,6 @@ directive @cached(
   ttl: Int! = 60
 ) on QUERY
 
-type AuthenticatedRepoCloneUrlOutput {
-  url: String
-}
-
 """
 Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
 """
@@ -30,55 +26,6 @@ input Boolean_comparison_exp {
   _lte: Boolean
   _neq: Boolean
   _nin: [Boolean!]
-}
-
-type BuildData_AffectedByVulnerability {
-  chains: [[BuildData_DependencyNode!]!]
-  ranges: [BuildData_Range]
-  trivially_updatable: Boolean
-  vulnerability: BuildData_Vulnerability!
-}
-
-type BuildData_DependencyNode {
-  id: String!
-  range: String!
-  release: BuildData_Release!
-  release_id: String!
-}
-
-type BuildData_Package {
-  affected_by_vulnerability: [BuildData_AffectedByVulnerability!]
-  name: String!
-  package_manager: String!
-}
-
-type BuildData_Range {
-  fixed: String
-  introduced: String
-}
-
-type BuildData_Release {
-  id: String!
-  package: BuildData_Package!
-  version: String!
-}
-
-type BuildData_Vulnerability {
-  cvss_score: Float
-  id: String!
-  severity_name: String
-  source: String!
-  source_id: String!
-}
-
-type BuildData_VulnerableRelease {
-  affected_by: [BuildData_AffectedByVulnerability!]!
-  chains: [[BuildData_DependencyNode!]!]!
-  cvss: Float
-  dev_only: Boolean!
-  release: BuildData_Release
-  severity: String
-  trivially_updatable: String!
 }
 
 """
@@ -96,23 +43,6 @@ input Float_comparison_exp {
   _nin: [Float!]
 }
 
-type GithubRepository {
-  cloneUrl: String!
-  defaultBranch: String!
-  gitUrl: String!
-  orgId: Int!
-  orgName: String!
-  orgNodeId: String!
-  ownerType: String!
-  repoId: Int!
-  repoName: String!
-  repoNodeId: String!
-}
-
-type InstallSelectedReposResponse {
-  success: Boolean
-}
-
 """
 Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
 """
@@ -126,29 +56,6 @@ input Int_comparison_exp {
   _lte: Int
   _neq: Int
   _nin: [Int!]
-}
-
-type OrgWithRepos {
-  id: String!
-  organizationName: String!
-  repos: [GithubRepository!]!
-}
-
-input OrgsWithReposInput {
-  id: String!
-  repos: [Int!]!
-}
-
-type PresignedUrlResponse {
-  bucket: String!
-  headers: jsonb!
-  key: String!
-  url: String!
-}
-
-type SbomUploadUrlOutput {
-  error: Boolean!
-  uploadUrl: UploadUrl
 }
 
 """
@@ -202,11 +109,6 @@ input String_comparison_exp {
 
   """does the column match the given SQL regular expression"""
   _similar: String
-}
-
-type UploadUrl {
-  headers: jsonb!
-  url: String!
 }
 
 scalar _text
@@ -957,8 +859,8 @@ type builds {
   ): [manifests!]!
 
   """An object relationship"""
-  project: projects
-  project_id: uuid
+  project: projects!
+  project_id: uuid!
   pull_request_id: String
 
   """An array relationship"""
@@ -979,7 +881,6 @@ type builds {
     where: resolved_manifest_bool_exp
   ): [resolved_manifest!]!
   s3_url: String
-  s3_url_signed: String
 
   """An array relationship"""
   scans(
@@ -2184,7 +2085,6 @@ input fix_state_enum_comparison_exp {
 
 """Metadata about a github repository and where to find it."""
 type github_repositories {
-  authenticated_clone_url: AuthenticatedRepoCloneUrlOutput
   default_branch: String
   git_url: String!
   github_id: Int
@@ -5173,10 +5073,6 @@ type mutation_root {
     """upsert condition"""
     on_conflict: webhook_cache_on_conflict
   ): webhook_cache
-  installSelectedRepos(orgs: [OrgsWithReposInput!]!): InstallSelectedReposResponse
-
-  """ get s3 presigned url for manifest upload, used only by the frontend """
-  presignManifestUpload(project_id: uuid!): PresignedUrlResponse
 
   """
   update data of the table: "analysis.manifest_dependency_edge_result"
@@ -9063,8 +8959,6 @@ type query_root {
   fetch data from the table: "analysis.manifest_dependency_edge_result" using primary key columns
   """
   analysis_manifest_dependency_edge_result_by_pk(id: uuid!): analysis_manifest_dependency_edge_result
-  authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
-  availableOrgsWithRepos: [OrgWithRepos!]
 
   """
   fetch data from the table: "build_dependency_relationship"
@@ -9170,7 +9064,6 @@ type query_root {
     """filter the rows returned"""
     where: default_branch_builds_bool_exp
   ): [default_branch_builds!]!
-  fakeQueryToHackHasuraBeingABuggyMess: String
 
   """An array relationship"""
   findings(
@@ -9701,9 +9594,6 @@ type query_root {
   """
   package_release_license_by_pk(id: uuid!): package_release_license
 
-  """ get s3 presigned url for manifest upload, used by the CLI """
-  presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
-
   """An array relationship"""
   project_access_tokens(
     """distinct select on columns"""
@@ -9790,7 +9680,6 @@ type query_root {
   fetch data from the table: "resolved_manifest" using primary key columns
   """
   resolved_manifest_by_pk(id: uuid!): resolved_manifest
-  sbomUrl(buildId: uuid!): String
 
   """An array relationship"""
   scans(
@@ -10078,7 +9967,6 @@ type query_root {
   fetch data from the table: "vulnerability.severity" using primary key columns
   """
   vulnerability_severity_by_pk(id: uuid!): vulnerability_severity
-  vulnerableReleasesFromBuild(buildId: uuid!): [BuildData_VulnerableRelease!]
 
   """
   fetch data from the table: "webhook_cache"

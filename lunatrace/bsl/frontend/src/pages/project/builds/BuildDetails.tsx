@@ -12,15 +12,13 @@
  *
  */
 import { filterFindingsNotIgnored } from '@lunatrace/lunatrace-common/build/main';
-import { skipToken } from '@reduxjs/toolkit/query/react';
 import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, Card, Col, Container, Modal, ProgressBar, Row, Spinner } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 
 import api from '../../../api';
-import { Build_State_Enum, GetBuildLogsQuery } from '../../../api/generated';
 import { SpinIfLoading } from '../../../components/SpinIfLoading';
 import useAppDispatch from '../../../hooks/useAppDispatch';
 import useBreakpoint from '../../../hooks/useBreakpoint';
@@ -28,8 +26,8 @@ import { add } from '../../../store/slices/alerts';
 
 import { BuildDetailsHeader } from './BuildDetailsHeader';
 import { BuildStateViewer } from './BuildStateViewer';
-import { DependencyTreeViewer } from './DependencyTreeViewer';
 import { VulnQuickView } from './VulnQuickView';
+import { VulnerablePackageListWrapper } from './VulnerablePackageListWrapper';
 
 export const BuildDetails: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
@@ -97,7 +95,7 @@ export const BuildDetails: React.FunctionComponent = () => {
   const filteredFindings = ignoreFindings ? filterFindingsNotIgnored(build.findings) : build.findings;
 
   const depTree = (
-    <DependencyTreeViewer
+    <VulnerablePackageListWrapper
       resolvedManifests={build.resolved_manifests}
       findings={filteredFindings}
       projectId={build.project_id}

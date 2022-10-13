@@ -29,7 +29,7 @@ interface FindingListProps {
   setIgnoreFindings: (ignored: boolean) => void;
 }
 
-export const VulnerablePackageList: React.FunctionComponent<FindingListProps> = ({
+export const LegacyGrypeVulnerablePackageList: React.FunctionComponent<FindingListProps> = ({
   project_id,
   findings,
   quickView,

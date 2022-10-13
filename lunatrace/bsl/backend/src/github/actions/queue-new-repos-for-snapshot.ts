@@ -14,7 +14,7 @@
 
 import { hasura } from '../../hasura-api';
 import { GithubRepositoryInfo } from '../../types/github';
-import { SnapshotBuildInfo, SnapshotForRepositoryRequest } from '../../types/sqs';
+import { SnapshotBuildInfo } from '../../types/sqs';
 import { MaybeError } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';

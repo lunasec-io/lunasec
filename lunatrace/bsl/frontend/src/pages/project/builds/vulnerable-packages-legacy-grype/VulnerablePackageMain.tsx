@@ -11,43 +11,41 @@
  * limitations under the License.
  *
  */
+import { VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
 import React, { useState } from 'react';
 import { Card, Dropdown, FloatingLabel, Form, FormControl, Spinner } from 'react-bootstrap';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { useParams } from 'react-router-dom';
 
 import api from '../../../../api';
 import { ConfirmationDailog } from '../../../../components/ConfirmationDialog';
-import { QuickViewProps } from '../types';
+import { DepTree, QuickViewProps } from '../types';
 
 import { VulnerablePackageCardHeader } from './VulnerablePackageCardHeader';
 import { PackageCardBody } from './body/PackageCardBody';
-import { VulnerablePackage } from './types';
+import { Finding } from './types';
 
 interface VulnerablePackageMainProps {
-  pkg: VulnerablePackage;
+  pkg: VulnerablePackage<Finding>;
   severityFilter: number;
+  depTree: DepTree | null;
   quickView: QuickViewProps;
 }
 
 export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMainProps> = ({
   pkg,
   severityFilter,
+  depTree,
   quickView,
 }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [insertVulnIgnore, insertVulnIgnoreState] = api.useInsertIgnoredVulnerabilitiesMutation();
   const [ignoreNote, setIgnoreNote] = useState('');
-  const { projectId } = useParams();
 
   const bulkIgnoreVulns = async () => {
-    if (!projectId) {
-      throw new Error('attempted to ignore a vuln but no project id is in the url');
-    }
-    const toIgnore = pkg.affected_by.map((vulnMeta) => {
+    const toIgnore = pkg.findings.map((f) => {
       return {
-        vulnerability_id: vulnMeta.vulnerability.id,
-        project_id: projectId,
+        vulnerability_id: f.vulnerability_id,
+        project_id: pkg.project_id,
         note: ignoreNote,
         locations: f.locations,
       };

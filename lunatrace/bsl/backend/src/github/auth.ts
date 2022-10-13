@@ -16,7 +16,7 @@ import { createAppAuth } from '@octokit/auth-app';
 import { GraphQLClient } from 'graphql-request';
 
 import { getGithubAppConfig } from '../config';
-import { MaybeError, MaybeResultOrError } from '../types/util';
+import { MaybeResultOrError } from '../types/util';
 import { newError, newResult } from '../utils/errors';
 import { catchError, threwError } from '../utils/try';
 

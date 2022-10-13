@@ -17,7 +17,7 @@ type Query {
     ): AuthenticatedRepoCloneUrlOutput
     fakeQueryToHackHasuraBeingABuggyMess: String
     availableOrgsWithRepos: [OrgWithRepos!]
-    vulnerableReleasesFromBuild(buildId: uuid!): [BuildData_VulnerableRelease!]
+    vulnerableReleasesFromBuild(buildId: uuid!, minimumSeverity: String, showIgnored: Boolean): [BuildData_VulnerableRelease!]
 }
 
 type Mutation {
@@ -93,7 +93,7 @@ type BuildData_VulnerableRelease {
     cvss: Float
     chains: [[BuildData_DependencyNode!]!]!
     affected_by: [BuildData_AffectedByVulnerability!]!
-    release: BuildData_Release
+    release: BuildData_Release!
     trivially_updatable: String!
 }
 

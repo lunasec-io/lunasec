@@ -11,15 +11,14 @@
  * limitations under the License.
  *
  */
-import React, { useMemo } from 'react';
+import React from 'react';
 
-import { GetBuildDetailsQuery, Resolved_Manifest } from '../../../api/generated';
-import { DependencyTree } from '../../../dependency-tree/builds-dependency-tree';
-import useBreakpoint from '../../../hooks/useBreakpoint';
+import api from '../../../api';
+import { GetBuildDetailsQuery } from '../../../api/generated';
 
 import { QuickViewProps } from './types';
-import { VulnerablePackageList } from './vulnerable-packages/VulnerablePackageList';
-import { Finding } from './vulnerable-packages/types';
+import { LegacyGrypeVulnerablePackageList } from './vulnerable-packages-legacy-grype/LegacyGrypeVulnerablePackageList';
+import { Finding } from './vulnerable-packages-legacy-grype/types';
 
 export type ResolvedManifestQueryResponse = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['resolved_manifests'];
 
@@ -31,28 +30,17 @@ export interface DependencyTreeViewerProps {
   toggleIgnoreFindings: () => void;
 }
 
-export const DependencyTreeViewer: React.FunctionComponent<DependencyTreeViewerProps> = (
+export const VulnerablePackageListWrapper: React.FunctionComponent<DependencyTreeViewerProps> = (
   props: DependencyTreeViewerProps
 ) => {
   const { findings, quickViewConfig, resolvedManifests, projectId, toggleIgnoreFindings } = props;
 
-  const depTree = useMemo(() => {
-    const mergedDependencies = resolvedManifests.flatMap((manifest) => {
-      return manifest.child_edges_recursive || [];
-    });
-
-    if (!mergedDependencies || mergedDependencies.length === 0) {
-      return null;
-    }
-
-    return new DependencyTree(mergedDependencies);
-  }, [resolvedManifests]);
-
+  const { data: vulnerableReleasesData, isLoading } = api.useVulnerableReleasesFromBuildQuery();
   return (
-    <VulnerablePackageList
+    <LegacyGrypeVulnerablePackageList
       project_id={projectId}
       findings={findings}
-      depTree={depTree}
+      depTree={null}
       quickView={quickViewConfig}
       setIgnoreFindings={toggleIgnoreFindings}
     />
