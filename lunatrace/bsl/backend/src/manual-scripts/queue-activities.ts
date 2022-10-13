@@ -17,7 +17,6 @@ import { queueManifestDependencyEdgeForStaticAnalysis } from '../analysis/static
 import { getRepoCloneUrlWithAuth } from '../github/actions/get-repo-clone-url-with-auth';
 import { createNewBuild } from '../hasura-api/actions/create-new-build';
 import { SnapshotBuildInfo, SnapshotForRepositoryRequest } from '../types/sqs';
-import { newError } from '../utils/errors';
 import { log } from '../utils/log';
 import { scanSnapshotActivity } from '../workers/queue/activities/scan-snapshot-activity';
 import { snapshotRepositoryActivity } from '../workers/queue/activities/snapshot-repository-activity';

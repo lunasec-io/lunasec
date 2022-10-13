@@ -16,6 +16,10 @@
 /*                    Input data as it comes from the database                */
 /* -------------------------------------------------------------------------- */
 
+export interface RawManifest {
+  path?: string | null;
+  child_edges_recursive?: RawEdge[] | null;
+}
 export interface RawEdge {
   child_id: string;
   parent_id?: string;
@@ -58,6 +62,10 @@ export interface RawVulnMeta {
   }>;
 }
 
+export interface IgnoredVulnerability {
+  vulnerability_id: string;
+  locations: string[];
+}
 /* -------------------------------------------------------------------------- */
 /*                  Output data that is returned from the tree                */
 /* -------------------------------------------------------------------------- */
@@ -80,6 +88,7 @@ interface BuiltPackage extends RawPackage {
 export interface BuiltVulnMeta extends RawVulnMeta {
   trivially_updatable: boolean; // We add this by determining something can be updated to a non-vulnerable version without violating semver
   chains: DependencyChain[]; // each vuln has its own sublist of chains in addition to the global list in the main body of the release. This is in case some have been eliminated by false-positive analysis for only this vuln
+  path: string;
 }
 
 export type DependencyChain = Array<BuiltNode>;
@@ -94,4 +103,5 @@ export interface VulnerableRelease {
   dev_only: boolean;
   affected_by: Array<BuiltVulnMeta>;
   trivially_updatable: 'no' | 'partially' | 'yes';
+  paths: string[];
 }

@@ -13,9 +13,7 @@
  */
 import { getGithubOrganizationMembers } from '../../github/actions/fetch-org-members-from-github';
 import { GitHubUserData, WebHookOrgData } from '../../types/github';
-import { MaybeError } from '../../types/util';
 import { log } from '../../utils/log';
-import { notEmpty } from '../../utils/predicates';
 import {
   Organization_User_Arr_Rel_Insert_Input,
   Organization_User_Constraint,

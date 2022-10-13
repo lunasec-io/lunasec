@@ -91,3 +91,16 @@
           	headers: JSON!
           	url: String!
           }
+  remote_relationships:
+    - relationships:
+        - definition:
+            to_source:
+              field_mapping:
+                id: vulnerability_id
+              relationship_type: array
+              source: lunatrace
+              table:
+                name: ignored_vulnerabilities
+                schema: public
+          name: ignored_vulnerabilities
+      type_name: BuildData_Vulnerability

@@ -12,6 +12,7 @@
  *
  */
 import { GraphQLYogaError } from '@graphql-yoga/node';
+import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common/build/main';
 
 import { hasura } from '../../hasura-api';
 import { GetTreeFromBuildQuery } from '../../hasura-api/generated';
@@ -36,7 +37,16 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
 
   const rawManifests = rawBuildData.resolved_manifests;
 
-  const depTree = buildTreeFromRawData(rawManifests);
+  const ignoredVulnerabilities = args.showIgnored ? [] : rawBuildData.project.ignored_vulnerabilities;
+
+  const minimumSeverity = args.minimumSeverity || null;
+
+  if (!severityIsValid(minimumSeverity)) {
+    throw new GraphQLYogaError(
+      'Invalid minimum severity passed, acceptable arguments are: ' + JSON.stringify(severityOrderOsv)
+    );
+  }
+  const depTree = buildTreeFromRawData(rawManifests, minimumSeverity, ignoredVulnerabilities);
   if (!depTree) {
     return null; // tells the client that we didnt get any tree info back and to fall back to grype (for now)
   }
@@ -49,20 +59,33 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
   return vulnerableReleases;
 };
 
-type ManifestData = NonNullable<NonNullable<GetTreeFromBuildQuery['builds_by_pk']>['resolved_manifests']>;
-type NodeData = NonNullable<ManifestData[number]['child_edges_recursive']>[number];
+type RequestData = NonNullable<GetTreeFromBuildQuery['builds_by_pk']>;
+type ManifestData = NonNullable<RequestData['resolved_manifests']>;
+type IgnoredVulnerabilities = NonNullable<RequestData['project']['ignored_vulnerabilities']>;
 
-export function buildTreeFromRawData<iManifestData>(rawManifestData: ManifestData): DependencyTree | null {
+export function buildTreeFromRawData<iManifestData>(
+  rawManifestData: ManifestData,
+  minimumSeverity: SeverityNamesOsv | null,
+  ignoredVulnerabilities: IgnoredVulnerabilities
+): DependencyTree | null {
   if (!rawManifestData || rawManifestData.length === 0) {
-    return null;
+    return null; //fallback to grype
   }
 
+  // check how many dependencies there are to make sure there are any at all, not sure if this is necessary
   const mergedDependencies = rawManifestData.flatMap((manifest) => {
     return manifest.child_edges_recursive || [];
   });
-
   if (!mergedDependencies || mergedDependencies.length === 0) {
-    return null;
+    return null; //fallback to grype
   }
-  return new DependencyTree(mergedDependencies);
+
+  return new DependencyTree(rawManifestData, minimumSeverity, ignoredVulnerabilities);
+}
+
+function severityIsValid(name: string | null): name is SeverityNamesOsv | null {
+  if (name === null) {
+    return true;
+  }
+  return severityOrderOsv.includes(name);
 }

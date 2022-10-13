@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { severityOrderOsv } from '@lunatrace/lunatrace-common';
+import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common';
 import semver from 'semver';
 
 import {
@@ -19,7 +19,8 @@ import {
   BuiltRelease,
   BuiltVulnMeta,
   DependencyChain,
-  RawEdge,
+  IgnoredVulnerability,
+  RawManifest,
   RawNode,
   RawVulnMeta,
   VulnerableRelease,
@@ -41,56 +42,113 @@ export class DependencyTree {
   public vulnerableReleases: VulnerableRelease[];
 
   // This constructor builds the indexes and any useful data that show useful data about the tree
-  constructor(sourceDeps: Array<RawEdge>) {
+  constructor(
+    sourceManifests: Array<RawManifest>,
+    minimumSeverity: SeverityNamesOsv | null,
+    ignoredVulnerabilites: Array<{ vulnerability_id: string; locations: string[] }>
+  ) {
     // This is a hack to clone this object and unfreeze it, surprisingly tricky in JS
-    const flatEdges = JSON.parse(JSON.stringify(sourceDeps)) as Array<RawEdge>;
+    const clonedManifests = JSON.parse(JSON.stringify(sourceManifests)) as Array<RawManifest>;
 
-    flatEdges.forEach((edge) => {
-      // We modify some vulnerability data on the release and since that changes the whole type chain, we rebuild the release here
-      const builtRelease: BuiltRelease = {
-        ...edge.child.release,
-        package: { ...edge.child.release.package, affected_by_vulnerability: this.buildVulns(edge.child, edge.id) },
-      };
-      // flatten the parent id into the child so we can forget about edges as much as possible, and filter the vulns
-      const depNode: BuiltNode = { ...edge.child, edge_id: edge.id, parent_id: edge.parent_id, release: builtRelease };
-      // Create a map from a given release to the list of depNodes
-      const existingNodesForThisRelease = this.depNodeIdsByReleaseId.get(depNode.release_id);
-      if (existingNodesForThisRelease) {
-        // just add the depNodes to the existing release ID
-        existingNodesForThisRelease.add(depNode.id);
-      } else {
-        this.depNodeIdsByReleaseId.set(depNode.release.id, new Set([depNode.id]));
+    clonedManifests.forEach((manifest) => {
+      const flatEdges = manifest.child_edges_recursive;
+      if (!flatEdges) {
+        return;
       }
+      flatEdges.forEach((edge) => {
+        // We modify some vulnerability data on the release and since that changes the whole type chain, we rebuild the release here
+        const builtRelease: BuiltRelease = {
+          ...edge.child.release,
+          package: {
+            ...edge.child.release.package,
+            affected_by_vulnerability: this.buildVulns(
+              edge.child,
+              edge.id,
+              manifest.path || 'Unknown',
+              minimumSeverity,
+              ignoredVulnerabilites
+            ),
+          },
+        };
+        // flatten the parent id into the child so we can forget about edges as much as possible, and filter the vulns
+        const depNode: BuiltNode = {
+          ...edge.child,
+          edge_id: edge.id,
+          parent_id: edge.parent_id,
+          release: builtRelease,
+        };
+        // Create a map from a given release to the list of depNodes
+        const existingNodesForThisRelease = this.depNodeIdsByReleaseId.get(depNode.release_id);
+        if (existingNodesForThisRelease) {
+          // just add the depNodes to the existing release ID
+          existingNodesForThisRelease.add(depNode.id);
+        } else {
+          this.depNodeIdsByReleaseId.set(depNode.release.id, new Set([depNode.id]));
+        }
 
-      // Create a lookup of child IDs that map to a set of nodes that include them (parents).
-      const parentIdsToNode = this.nodeIdToParentIds.get(depNode.id) || new Set();
+        // Create a lookup of child IDs that map to a set of nodes that include them (parents).
+        const parentIdsToNode = this.nodeIdToParentIds.get(depNode.id) || new Set();
 
-      if (depNode.parent_id && depNode.parent_id !== '00000000-0000-0000-0000-000000000000') {
-        parentIdsToNode.add(depNode.parent_id);
-        this.nodeIdToParentIds.set(depNode.id, parentIdsToNode);
-      }
+        if (depNode.parent_id && depNode.parent_id !== '00000000-0000-0000-0000-000000000000') {
+          parentIdsToNode.add(depNode.parent_id);
+          this.nodeIdToParentIds.set(depNode.id, parentIdsToNode);
+        }
 
-      // Create a separate lookup to directly map an ID to a node
-      this.depNodesByEdgeId.set(depNode.edge_id, depNode);
+        // Create a separate lookup to directly map an ID to a node
+        this.depNodesByEdgeId.set(depNode.edge_id, depNode);
+      });
     });
+
     this.vulnerableReleases = this.getVulnerableReleases();
   }
 
-  private buildVulns(depNode: RawNode, edgeId: string): BuiltVulnMeta[] {
+  private buildVulns(
+    depNode: RawNode,
+    edgeId: string,
+    path: string,
+    minimumSeverity: SeverityNamesOsv | null,
+    ignoredVulnerabilities: IgnoredVulnerability[]
+  ): BuiltVulnMeta[] {
     const builtVulns: BuiltVulnMeta[] = [];
-    depNode.release.package.affected_by_vulnerability.forEach((vuln) => {
-      const vulnerableRange = this.convertRangesToSemverRange(vuln.ranges);
+    depNode.release.package.affected_by_vulnerability.forEach((vulnMeta) => {
+      const vulnerableRange = this.convertRangesToSemverRange(vulnMeta.ranges);
       const isVulnerable = semver.satisfies(depNode.release.version, vulnerableRange);
 
-      if (isVulnerable) {
-        // Add to the lookup of vulnerable deps for later
-        this.vulnerableDepNodeEdgeIds.add(edgeId);
-        // Mark the vulns that can be trivially updated
-        const triviallyUpdatable = this.precomputeVulnTriviallyUpdatable(depNode.range, vuln);
-
-        const builtVuln: BuiltVulnMeta = { ...vuln, trivially_updatable: triviallyUpdatable, chains: [] };
-        builtVulns.push(builtVuln);
+      if (!isVulnerable) {
+        return;
       }
+
+      // filter by minimum severity
+      if (minimumSeverity) {
+        const severityName = vulnMeta.vulnerability.severity_name;
+        if (!severityName) {
+          return;
+        }
+        const severityRank = severityOrderOsv.indexOf(severityName);
+        const minimumSeverityRank = severityOrderOsv.indexOf(minimumSeverity);
+        if (severityRank < minimumSeverityRank) {
+          return;
+        }
+      }
+
+      // filter by ignored
+      if (ignoredVulnerabilities) {
+        const vulnId = vulnMeta.vulnerability.id;
+        const isIgnored = ignoredVulnerabilities.some((ignored) => {
+          return ignored.vulnerability_id === vulnId && ignored.locations.includes(path);
+        });
+        if (isIgnored) {
+          return;
+        }
+      }
+
+      // Add to the lookup of vulnerable deps for later
+      this.vulnerableDepNodeEdgeIds.add(edgeId);
+      // Mark the vulns that can be trivially updated
+      const triviallyUpdatable = this.precomputeVulnTriviallyUpdatable(depNode.range, vulnMeta);
+
+      const builtVuln: BuiltVulnMeta = { ...vulnMeta, trivially_updatable: triviallyUpdatable, chains: [], path };
+      builtVulns.push(builtVuln);
     });
     return builtVulns;
   }
@@ -155,6 +213,7 @@ export class DependencyTree {
         // We arent tracking this release yet, make a new object
         if (!existingRelease) {
           const newVulnerableRelease: VulnerableRelease = {
+            paths: [affectedByVuln.path],
             release,
             severity,
             cvss: affectedByVuln.vulnerability.cvss_score || null,
@@ -188,6 +247,10 @@ export class DependencyTree {
         // add chains to the top level list of chains on the release, if this is the first vuln we have process on the edge (because we only want to do this once per edge)
         if (vulnIndex === 0) {
           existingRelease.chains = this.addNewChainsExcludingDuplicates(existingRelease.chains, chains);
+        }
+
+        if (!existingRelease.paths.includes(affectedByVuln.path)) {
+          existingRelease.paths.push(affectedByVuln.path);
         }
       });
     });

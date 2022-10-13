@@ -73,7 +73,7 @@ export type BuildData_VulnerableRelease = {
   chains: Array<Array<BuildData_DependencyNode>>;
   cvss?: Maybe<Scalars['Float']>;
   dev_only: Scalars['Boolean'];
-  release?: Maybe<BuildData_Release>;
+  release: BuildData_Release;
   severity?: Maybe<Scalars['String']>;
   trivially_updatable: Scalars['String'];
 };
@@ -164,6 +164,8 @@ export type QuerySbomUrlArgs = {
 
 export type QueryVulnerableReleasesFromBuildArgs = {
   buildId: Scalars['uuid'];
+  minimumSeverity?: InputMaybe<Scalars['String']>;
+  showIgnored?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type SbomUploadUrlInput = {
@@ -361,7 +363,7 @@ export type BuildData_VulnerableReleaseResolvers<ContextType = Context, ParentTy
   chains?: Resolver<Array<Array<ResolversTypes['BuildData_DependencyNode']>>, ParentType, ContextType>;
   cvss?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   dev_only?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  release?: Resolver<Maybe<ResolversTypes['BuildData_Release']>, ParentType, ContextType>;
+  release?: Resolver<ResolversTypes['BuildData_Release'], ParentType, ContextType>;
   severity?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   trivially_updatable?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
