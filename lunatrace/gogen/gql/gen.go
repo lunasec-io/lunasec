@@ -69,12 +69,13 @@ const (
 
 // input type for inserting data into table "analysis.manifest_dependency_edge_result"
 type Analysis_manifest_dependency_edge_result_insert_input struct {
-	Created_at                  *time.Time                    `json:"created_at,omitempty"`
-	Finding_source              *Analysis_finding_source_enum `json:"finding_source,omitempty"`
-	Finding_type                *Analysis_finding_type_enum   `json:"finding_type,omitempty"`
-	Id                          *uuid.UUID                    `json:"id,omitempty"`
-	Manifest_dependency_edge_id *uuid.UUID                    `json:"manifest_dependency_edge_id,omitempty"`
-	Vulnerability_id            *uuid.UUID                    `json:"vulnerability_id,omitempty"`
+	Created_at                  *time.Time                                     `json:"created_at,omitempty"`
+	Finding_source              *Analysis_finding_source_enum                  `json:"finding_source,omitempty"`
+	Finding_type                *Analysis_finding_type_enum                    `json:"finding_type,omitempty"`
+	Id                          *uuid.UUID                                     `json:"id,omitempty"`
+	Manifest_dependency_edge    *Manifest_dependency_edge_obj_rel_insert_input `json:"manifest_dependency_edge,omitempty"`
+	Manifest_dependency_edge_id *uuid.UUID                                     `json:"manifest_dependency_edge_id,omitempty"`
+	Vulnerability_id            *uuid.UUID                                     `json:"vulnerability_id,omitempty"`
 }
 
 // GetCreated_at returns Analysis_manifest_dependency_edge_result_insert_input.Created_at, and is useful for accessing the field via an interface.
@@ -94,6 +95,11 @@ func (v *Analysis_manifest_dependency_edge_result_insert_input) GetFinding_type(
 
 // GetId returns Analysis_manifest_dependency_edge_result_insert_input.Id, and is useful for accessing the field via an interface.
 func (v *Analysis_manifest_dependency_edge_result_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetManifest_dependency_edge returns Analysis_manifest_dependency_edge_result_insert_input.Manifest_dependency_edge, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_insert_input) GetManifest_dependency_edge() *Manifest_dependency_edge_obj_rel_insert_input {
+	return v.Manifest_dependency_edge
+}
 
 // GetManifest_dependency_edge_id returns Analysis_manifest_dependency_edge_result_insert_input.Manifest_dependency_edge_id, and is useful for accessing the field via an interface.
 func (v *Analysis_manifest_dependency_edge_result_insert_input) GetManifest_dependency_edge_id() *uuid.UUID {
@@ -3092,6 +3098,23 @@ func (v *Manifest_dependency_edge_insert_input) GetParent() *Manifest_dependency
 
 // GetParent_id returns Manifest_dependency_edge_insert_input.Parent_id, and is useful for accessing the field via an interface.
 func (v *Manifest_dependency_edge_insert_input) GetParent_id() *uuid.UUID { return v.Parent_id }
+
+// input type for inserting object relation for remote table "manifest_dependency_edge"
+type Manifest_dependency_edge_obj_rel_insert_input struct {
+	Data *Manifest_dependency_edge_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Manifest_dependency_edge_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Manifest_dependency_edge_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_obj_rel_insert_input) GetData() *Manifest_dependency_edge_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Manifest_dependency_edge_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_obj_rel_insert_input) GetOn_conflict() *Manifest_dependency_edge_on_conflict {
+	return v.On_conflict
+}
 
 // on_conflict condition type for table "manifest_dependency_edge"
 type Manifest_dependency_edge_on_conflict struct {
@@ -6979,6 +7002,7 @@ type Vulnerability_bool_exp struct {
 	References              *Vulnerability_reference_bool_exp  `json:"references,omitempty"`
 	Reviewed_by_source      *Boolean_comparison_exp            `json:"reviewed_by_source,omitempty"`
 	Severities              *Vulnerability_severity_bool_exp   `json:"severities,omitempty"`
+	Severity_name           *Severity_enum_comparison_exp      `json:"severity_name,omitempty"`
 	Source                  *String_comparison_exp             `json:"source,omitempty"`
 	Source_id               *String_comparison_exp             `json:"source_id,omitempty"`
 	Summary                 *String_comparison_exp             `json:"summary,omitempty"`
@@ -7052,6 +7076,11 @@ func (v *Vulnerability_bool_exp) GetReviewed_by_source() *Boolean_comparison_exp
 // GetSeverities returns Vulnerability_bool_exp.Severities, and is useful for accessing the field via an interface.
 func (v *Vulnerability_bool_exp) GetSeverities() *Vulnerability_severity_bool_exp {
 	return v.Severities
+}
+
+// GetSeverity_name returns Vulnerability_bool_exp.Severity_name, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetSeverity_name() *Severity_enum_comparison_exp {
+	return v.Severity_name
 }
 
 // GetSource returns Vulnerability_bool_exp.Source, and is useful for accessing the field via an interface.
@@ -7343,6 +7372,7 @@ type Vulnerability_insert_input struct {
 	References            *Vulnerability_reference_arr_rel_insert_input  `json:"references,omitempty"`
 	Reviewed_by_source    *bool                                          `json:"reviewed_by_source,omitempty"`
 	Severities            *Vulnerability_severity_arr_rel_insert_input   `json:"severities,omitempty"`
+	Severity_name         *string                                        `json:"severity_name,omitempty"`
 	Source                *string                                        `json:"source,omitempty"`
 	Source_id             *string                                        `json:"source_id,omitempty"`
 	Summary               *string                                        `json:"summary,omitempty"`
@@ -7405,6 +7435,9 @@ func (v *Vulnerability_insert_input) GetReviewed_by_source() *bool { return v.Re
 func (v *Vulnerability_insert_input) GetSeverities() *Vulnerability_severity_arr_rel_insert_input {
 	return v.Severities
 }
+
+// GetSeverity_name returns Vulnerability_insert_input.Severity_name, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetSeverity_name() *string { return v.Severity_name }
 
 // GetSource returns Vulnerability_insert_input.Source, and is useful for accessing the field via an interface.
 func (v *Vulnerability_insert_input) GetSource() *string { return v.Source }
@@ -7869,6 +7902,8 @@ const (
 	Vulnerability_update_columnPublished Vulnerability_update_column = "published"
 	// column name
 	Vulnerability_update_columnReviewedBySource Vulnerability_update_column = "reviewed_by_source"
+	// column name
+	Vulnerability_update_columnSeverityName Vulnerability_update_column = "severity_name"
 	// column name
 	Vulnerability_update_columnSource Vulnerability_update_column = "source"
 	// column name

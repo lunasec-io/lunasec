@@ -137,6 +137,7 @@ export class LunaLogger {
       timeEpoch: now.getTime(),
       name: this.options.loggerName || defaultLoggerName,
       message: '',
+      params: {},
       context: {
         ...contextFromStorage,
         ...this.context,
@@ -155,9 +156,9 @@ export class LunaLogger {
       // If the item is the last in the list, then have no spacing.
       const spacing = index === args.length - 1 ? '' : ' ';
 
-      // If the argument is an object, then add its keys to the context object
+      // If the argument is an object, then add its keys to the params object
       if (this.isObject(arg)) {
-        logObject.params = [...(logObject.params || []), arg];
+        logObject.params = { ...logObject.params, ...arg };
 
         // Also log the error directly as a string
         if (arg instanceof Error) {
@@ -181,7 +182,7 @@ export class LunaLogger {
     });
   }
 
-  private isObject(arg: unknown): boolean {
+  private isObject(arg: unknown): arg is Record<string | number | symbol, unknown> {
     // sigh..ok javascript, if you say so
     return typeof arg === 'object' && !Array.isArray(arg) && arg !== null;
   }

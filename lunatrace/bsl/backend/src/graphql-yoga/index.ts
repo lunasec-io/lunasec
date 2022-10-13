@@ -29,8 +29,10 @@ const schema = loadSchemaSync(join(__dirname, 'schema.graphql'), { loaders: [new
 const schemaWithResolvers = addResolversToSchema(schema, resolvers);
 
 const graphqlServer = createServer({
+  logging: log,
   schema: schemaWithResolvers,
   graphiql: true,
+  maskedErrors: false,
 });
 
 export function registerYoga(app: Express.Application): void {

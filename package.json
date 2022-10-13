@@ -111,7 +111,7 @@
       "./lunatrace/bsl/logger",
       "./lunatrace/bsl/frontend",
       "./lunatrace/dev-cli",
-      "./lunatrace/gogen"
+      "./lunatrace/datadog-metrics-proxy"
     ]
   },
   "packageManager": "yarn@3.2.2",

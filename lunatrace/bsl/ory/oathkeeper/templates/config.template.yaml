@@ -6,7 +6,7 @@ serve:
 
 access_rules:
   repositories:
-    - file://generated/rules.yaml
+    - file:///config/generated/rules.yaml
 
 errors:
   fallback:

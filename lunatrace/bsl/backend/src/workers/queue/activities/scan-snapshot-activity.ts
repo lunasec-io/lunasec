@@ -17,13 +17,16 @@ import zlib from 'zlib';
 import validate from 'validator';
 
 import { InsertedScan, performSnapshotScanAndCollectReport } from '../../../analysis/scan';
+import { queueManifestDependencyEdgeForStaticAnalysis } from '../../../analysis/static-analysis';
 import { interactWithPR } from '../../../github/actions/pr-comment-generator';
+import { buildTreeFromRawData } from '../../../graphql-yoga/resolvers/vulnerable-releases-from-build';
+import { hasura } from '../../../hasura-api';
 import { updateBuildStatus } from '../../../hasura-api/actions/update-build-status';
 import { updateManifestStatus } from '../../../hasura-api/actions/update-manifest-status';
 import { Build_State_Enum } from '../../../hasura-api/generated';
 import { S3ObjectMetadata } from '../../../types/s3';
 import { SbomBucketInfo } from '../../../types/scan';
-import { MaybeError } from '../../../types/util';
+import { MaybeError, MaybeErrorVoid } from '../../../types/util';
 import { aws } from '../../../utils/aws-utils';
 import { newError, newResult } from '../../../utils/errors';
 import { log } from '../../../utils/log';
@@ -77,16 +80,90 @@ async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Pr
   return scanReport;
 }
 
+async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeErrorVoid> {
+  const treeResp = await catchError(hasura.GetTreeFromBuild({ build_id: buildId }));
+  if (threwError(treeResp)) {
+    log.error('failed to get dependency tree', {
+      error: treeResp,
+    });
+    return newError('failed to get dependency tree');
+  }
+
+  const rawBuildData = treeResp.builds_by_pk;
+  if (!rawBuildData) {
+    log.error('dependency tree is empty');
+    return newError('dependency tree is empty');
+  }
+
+  const rawManifests = rawBuildData.resolved_manifests as Omit<typeof rawBuildData['resolved_manifests'], '__typename'>;
+
+  const depTree = buildTreeFromRawData(rawManifests);
+  if (!depTree) {
+    log.error('unable to build dependency tree', {
+      rawManifests,
+    });
+    return newError('unable to build dependency tree');
+  }
+
+  const vulnerabilities = depTree.getVulnerabilities();
+  log.info('starting static analysis for dependency tree');
+
+  const queuedStaticAnalyses: Map<string, boolean> = new Map<string, boolean>();
+  vulnerabilities.forEach((v) => {
+    v.chains.forEach((chain) => {
+      chain.forEach(async (node) => {
+        if (!node.parent_id) {
+          log.warn('parent id is not defined', {
+            vulnerabilities,
+            node,
+          });
+          return;
+        }
+
+        const edgeId = depTree.getEdgeIdFromNodePair(node.parent_id, node.id);
+        if (!edgeId) {
+          log.warn('cannot find edge id', {
+            vulnerabilities,
+            node,
+          });
+          return;
+        }
+
+        const key = v.vulnerability.id + edgeId;
+        if (queuedStaticAnalyses.get(key)) {
+          return;
+        }
+
+        queuedStaticAnalyses.set(key, true);
+        const resp = await queueManifestDependencyEdgeForStaticAnalysis(v.vulnerability.id, edgeId);
+        if (resp.error) {
+          log.error('failed to queue vulnerable edge for analysis', {
+            vulnerabilitiy: v.vulnerability.id,
+            edgeId: node,
+          });
+        }
+      });
+    });
+  });
+  return newResult(undefined);
+}
+
 export async function scanSnapshotActivity(buildId: string, msg: S3ObjectMetadata): Promise<MaybeError<undefined>> {
   const { key, region, bucketName } = msg;
   return await log.provideFields({ key, region, bucketName }, async () => {
     if (!buildId || !validate.isUUID(buildId)) {
-      log.error('invalid build uuid from s3 object at key ', {
+      log.error('invalid build uuid from s3 object at key', {
         key,
       });
       // not much we can do without a valid buildId
       return newError('invalid build uuid from s3 object at key ' + key);
     }
+
+    // TODO (cthompson) commented out so that the branch could be landed to fix production
+    // const staticAnalysisRes = await staticallyAnalyzeDependencyTree(buildId);
+    // if (staticAnalysisRes.error) {
+    //   return staticAnalysisRes;
+    // }
 
     const bucketInfo: SbomBucketInfo = { region, bucketName, key };
 
@@ -112,7 +189,7 @@ export async function scanSnapshotActivity(buildId: string, msg: S3ObjectMetadat
     try {
       await interactWithPR(buildId, scanResp);
     } catch (e) {
-      log.error('commenting on github pr failed, continuing.. ', {
+      log.error('commenting on github pr failed, continuing...', {
         error: e,
       });
     }

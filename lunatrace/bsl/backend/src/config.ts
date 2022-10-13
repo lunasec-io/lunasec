@@ -30,8 +30,6 @@ import {
 } from './types/config';
 import { tryParseInt, validateBooleanString } from './utils/parse';
 
-const notSet = 'not-set';
-
 export const checkEnvVar = (envVarKey: string, defaultValue?: string) => {
   const envVar = process.env[envVarKey];
 
@@ -96,14 +94,14 @@ export function getWebhookConfig(): WebhookConfig {
   }
 
   // QUEUE_NAME means DEVELOPMENT_QUEUE_NAME
-  const developmentQueueName = checkEnvVar('QUEUE_NAME', notSet);
+  const developmentQueueName = checkEnvVar('QUEUE_NAME', '');
 
   // In production, this queue will be specifically set since it references a different queue.
   // In development, since there is only one queue, this will be set with QUEUE_NAME.
   // If neither are set, throw an error
   const queueName = checkEnvVar('PROCESS_WEBHOOK_QUEUE', developmentQueueName);
 
-  if (queueName === notSet) {
+  if (queueName === '') {
     throw new Error(
       'Unknown queue name.  Must set either QUEUE_NAME in development or PROCESS_WEBHOOK_QUEUE in production'
     );
@@ -118,16 +116,15 @@ export function getWebhookConfig(): WebhookConfig {
 }
 
 export function getRepositoryQueueConfig(): RepositoryQueueConfig {
-  const developmentQueueName = checkEnvVar('QUEUE_NAME', notSet);
+  const developmentQueueName = checkEnvVar('QUEUE_NAME', '');
+  const productionQueueName = checkEnvVar('PROCESS_REPOSITORY_QUEUE', '');
 
-  // In production, this queue will be specifically set since it references a different queue.
-  // In development, since there is only one queue, this will be set with QUEUE_NAME.
-  // If neither are set, throw an error
-  const queueName = checkEnvVar('PROCESS_REPOSITORY_QUEUE', developmentQueueName);
+  const queueName = productionQueueName || developmentQueueName;
 
-  if (queueName === notSet) {
+  if (queueName === '') {
     throw new Error('PROCESS_REPOSITORY_QUEUE is not set and QUEUE_NAME for development is not set');
   }
+
   return {
     queueName,
   };
@@ -153,12 +150,16 @@ export function getWorkerBucketConfig(): WorkerBucketConfig {
 }
 
 export function getStaticAnalysisConfig(): StaticAnalysisConfig {
-  const developmentQueueName = checkEnvVar('GOLANG_QUEUE_NAME', notSet);
+  const developmentQueueName = checkEnvVar('GOLANG_QUEUE_NAME', '');
 
   // In production, this queue will be specifically set since it references a different queue.
   // In development, since there is only one queue, this will be set with QUEUE_NAME.
   // If neither are set, throw an error
   const queueName = checkEnvVar('STATIC_ANALYSIS_QUEUE', developmentQueueName);
+
+  if (queueName === '') {
+    throw new Error('STATIC_ANALYSIS_QUEUE is not set and GOLANG_QUEUE_NAME for development is not set');
+  }
 
   return {
     queueName,

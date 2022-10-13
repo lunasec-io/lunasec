@@ -68,13 +68,18 @@ export async function pullRequestHandler(event: EmitterWebhookEvent<'pull_reques
 
     const getRepositoryResponse = await hasura.GetGithubRepositoriesByIds({ ids: [repositoryId] });
     if (getRepositoryResponse.github_repositories.length !== 1) {
-      log.info('Received a webhook for a repository which is not imported, no-op.');
+      log.info('Received a webhook for a repository which is not imported, no-op.', {
+        repositoryId,
+        event,
+      });
       return;
     }
 
     const projectId = getRepositoryResponse.github_repositories[0].project.id;
-
-    log.info('snapshotting repository for pull request');
+    log.info('snapshotting repository for pull request', {
+      repositoryId,
+      projectId,
+    });
 
     // TODO (cthompson) we need to start the github PR check here, and then in pr-comment-generator.ts, that is where
     // we update the check to say that it is finished.
