@@ -3538,30 +3538,6 @@ const (
 	Manifests_update_columnStatus Manifests_update_column = "status"
 )
 
-// input type for inserting data into table "npm.revision"
-type Npm_revision_insert_input struct {
-	Deleted *bool            `json:"deleted,omitempty"`
-	Doc     *json.RawMessage `json:"doc,omitempty"`
-	Id      *string          `json:"id,omitempty"`
-	Rev     *string          `json:"rev,omitempty"`
-	Seq     *int             `json:"seq,omitempty"`
-}
-
-// GetDeleted returns Npm_revision_insert_input.Deleted, and is useful for accessing the field via an interface.
-func (v *Npm_revision_insert_input) GetDeleted() *bool { return v.Deleted }
-
-// GetDoc returns Npm_revision_insert_input.Doc, and is useful for accessing the field via an interface.
-func (v *Npm_revision_insert_input) GetDoc() *json.RawMessage { return v.Doc }
-
-// GetId returns Npm_revision_insert_input.Id, and is useful for accessing the field via an interface.
-func (v *Npm_revision_insert_input) GetId() *string { return v.Id }
-
-// GetRev returns Npm_revision_insert_input.Rev, and is useful for accessing the field via an interface.
-func (v *Npm_revision_insert_input) GetRev() *string { return v.Rev }
-
-// GetSeq returns Npm_revision_insert_input.Seq, and is useful for accessing the field via an interface.
-func (v *Npm_revision_insert_input) GetSeq() *int { return v.Seq }
-
 // input type for inserting array relation for remote table "organization_user"
 type Organization_user_arr_rel_insert_input struct {
 	Data []*Organization_user_insert_input `json:"data,omitempty"`
@@ -6249,31 +6225,6 @@ func (v *UpsertPackageResponse) GetInsert_package_one() *UpsertPackageInsert_pac
 	return v.Insert_package_one
 }
 
-// UpsertRevisionsInsert_npm_revisionNpm_revision_mutation_response includes the requested fields of the GraphQL type npm_revision_mutation_response.
-// The GraphQL type's documentation follows.
-//
-// response of any mutation on the table "npm.revision"
-type UpsertRevisionsInsert_npm_revisionNpm_revision_mutation_response struct {
-	// number of rows affected by the mutation
-	Affected_rows int `json:"affected_rows"`
-}
-
-// GetAffected_rows returns UpsertRevisionsInsert_npm_revisionNpm_revision_mutation_response.Affected_rows, and is useful for accessing the field via an interface.
-func (v *UpsertRevisionsInsert_npm_revisionNpm_revision_mutation_response) GetAffected_rows() int {
-	return v.Affected_rows
-}
-
-// UpsertRevisionsResponse is returned by UpsertRevisions on success.
-type UpsertRevisionsResponse struct {
-	// insert data into the table: "npm.revision"
-	Insert_npm_revision *UpsertRevisionsInsert_npm_revisionNpm_revision_mutation_response `json:"insert_npm_revision"`
-}
-
-// GetInsert_npm_revision returns UpsertRevisionsResponse.Insert_npm_revision, and is useful for accessing the field via an interface.
-func (v *UpsertRevisionsResponse) GetInsert_npm_revision() *UpsertRevisionsInsert_npm_revisionNpm_revision_mutation_response {
-	return v.Insert_npm_revision
-}
-
 // UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_response includes the requested fields of the GraphQL type vulnerability_mutation_response.
 // The GraphQL type's documentation follows.
 //
@@ -8077,14 +8028,6 @@ func (v *__UpsertPackageInput) GetObject() *Package_insert_input { return v.Obje
 // GetOn_conflict returns __UpsertPackageInput.On_conflict, and is useful for accessing the field via an interface.
 func (v *__UpsertPackageInput) GetOn_conflict() *Package_on_conflict { return v.On_conflict }
 
-// __UpsertRevisionsInput is used internally by genqlient
-type __UpsertRevisionsInput struct {
-	Revisions []*Npm_revision_insert_input `json:"revisions,omitempty"`
-}
-
-// GetRevisions returns __UpsertRevisionsInput.Revisions, and is useful for accessing the field via an interface.
-func (v *__UpsertRevisionsInput) GetRevisions() []*Npm_revision_insert_input { return v.Revisions }
-
 // __UpsertVulnerabilitiesInput is used internally by genqlient
 type __UpsertVulnerabilitiesInput struct {
 	Vulnerabilities           []*Vulnerability_insert_input `json:"vulnerabilities,omitempty"`
@@ -8492,38 +8435,6 @@ mutation UpsertPackage ($object: package_insert_input!, $on_conflict: package_on
 	var err error
 
 	var data UpsertPackageResponse
-	resp := &graphql.Response{Data: &data}
-
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
-	)
-
-	return &data, err
-}
-
-func UpsertRevisions(
-	ctx context.Context,
-	client graphql.Client,
-	revisions []*Npm_revision_insert_input,
-) (*UpsertRevisionsResponse, error) {
-	req := &graphql.Request{
-		OpName: "UpsertRevisions",
-		Query: `
-mutation UpsertRevisions ($revisions: [npm_revision_insert_input!]!) {
-	insert_npm_revision(objects: $revisions, on_conflict: {constraint:revision_pkey,update_columns:[rev,id,doc,deleted,seq]}) {
-		affected_rows
-	}
-}
-`,
-		Variables: &__UpsertRevisionsInput{
-			Revisions: revisions,
-		},
-	}
-	var err error
-
-	var data UpsertRevisionsResponse
 	resp := &graphql.Response{Data: &data}
 
 	err = client.MakeRequest(
