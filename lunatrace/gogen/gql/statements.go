@@ -11,9 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package gql
 
+// TODO: This file is called statements but it just has onConflicts, many of them are used outside of the CLI in the ingestworker, the ingestworker has its own set of onconflicts that are for some reason in a file called "types"
 var PackageOnConflict = &Package_on_conflict{
 	Constraint: Package_constraintPackagePackageManagerCustomRegistryNameIdx,
 	Update_columns: []Package_update_column{
@@ -36,6 +36,7 @@ var VulnerabilityOnConflict = &Vulnerability_on_conflict{
 		Vulnerability_update_columnSummary,
 		Vulnerability_update_columnUpstreamData,
 		Vulnerability_update_columnReviewedBySource,
+		Vulnerability_update_columnSeverityName,
 	},
 }
 

@@ -27,14 +27,14 @@ function isPromiseLike(obj: unknown): obj is PromiseLike<unknown> {
 /**
  * Union type to wrap the original type T and allow Errors additionally
  */
-export type Try<T, E extends Error = Error> = T | E;
+export type ErrorOrResult<T, E extends Error = Error> = T | E;
 
 /**
  * simple function to turn a promise of type T to type T | Error
  *
  * i.e.: catch the error and return it as the value
  */
-function tryify<T, E extends Error = Error>(p: PromiseLike<T>): PromiseLike<Try<T, E>> {
+function tryify<T, E extends Error = Error>(p: PromiseLike<T>): PromiseLike<ErrorOrResult<T, E>> {
   return p.then(
     (x: T) => x,
     (err: E) => err
@@ -46,12 +46,14 @@ function tryify<T, E extends Error = Error>(p: PromiseLike<T>): PromiseLike<Try<
  *
  * it imitates the concept (though it's not a monad) of scala.util.Try — but try is a reserved keyword, so it's called tryF
  */
-export function catchError<T, E extends Error = Error>(asyncBlock: () => PromiseLike<T>): PromiseLike<Try<T, E>>;
-export function catchError<T, E extends Error = Error>(block: () => T): Try<T, E>;
-export function catchError<T, E extends Error = Error>(promise: PromiseLike<T>): PromiseLike<Try<T, E>>;
+export function catchError<T, E extends Error = Error>(
+  asyncBlock: () => PromiseLike<T>
+): PromiseLike<ErrorOrResult<T, E>>;
+export function catchError<T, E extends Error = Error>(block: () => T): ErrorOrResult<T, E>;
+export function catchError<T, E extends Error = Error>(promise: PromiseLike<T>): PromiseLike<ErrorOrResult<T, E>>;
 export function catchError<T, E extends Error = Error>(
   input: PromiseLike<T> | (() => T | PromiseLike<T>)
-): Try<T, E> | PromiseLike<Try<T, E>> {
+): ErrorOrResult<T, E> | PromiseLike<ErrorOrResult<T, E>> {
   // if the input is a simple promise, a simple try-ify is enough
   if (isPromiseLike(input)) {
     return tryify(input);

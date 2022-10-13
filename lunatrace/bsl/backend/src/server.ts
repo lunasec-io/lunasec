@@ -20,9 +20,14 @@ const serverConfig = getServerConfig();
 
 void (async () => {
   const app = await newApp();
-  app.listen(serverConfig.serverPort, () => {
-    log.info('Server is running on port ', serverConfig.serverPort);
-  });
+  try {
+    app.listen(serverConfig.serverPort, () => {
+      log.info('Server is running on port ', serverConfig.serverPort);
+    });
+  } catch (e) {
+    log.error('UNCAUGHT TOP LEVEL ERROR, PROCESS WILL EXIT', { error: e });
+    throw e;
+  }
 })().catch((e) => {
   log.error('unable to start server', {
     error: e,

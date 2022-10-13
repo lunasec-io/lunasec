@@ -22,7 +22,7 @@ import (
 	"github.com/Khan/genqlient/graphql"
 	"go.uber.org/fx"
 
-	metadata2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/mapper"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
@@ -33,7 +33,7 @@ const refetchDays = 0
 type Params struct {
 	fx.In
 
-	Fetcher   metadata2.Fetcher
+	Fetcher   metadata.Fetcher
 	GQLClient graphql.Client
 }
 
@@ -159,6 +159,6 @@ func (h *hasuraNPMIngester) IngestPackageAndDependencies(
 	return nil
 }
 
-func NewHasuraIngester(p Params) (metadata2.Ingester, error) {
-	return &hasuraNPMIngester{deps: p}, nil
+func NewHasuraIngester(p Params) metadata.Ingester {
+	return &hasuraNPMIngester{deps: p}
 }

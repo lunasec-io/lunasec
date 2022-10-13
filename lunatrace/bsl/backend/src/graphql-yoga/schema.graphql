@@ -17,6 +17,7 @@ type Query {
     ): AuthenticatedRepoCloneUrlOutput
     fakeQueryToHackHasuraBeingABuggyMess: String
     availableOrgsWithRepos: [OrgWithRepos!]
+    vulnerableReleasesFromBuild(buildId: uuid!): [BuildData_VulnerableRelease!]
 }
 
 type Mutation {
@@ -75,7 +76,7 @@ type GithubRepository {
     gitUrl: String!
     ownerType: String!
     cloneUrl: String!
-    defaultBranch: String!
+defaultBranch: String!
 }
 
 type OrgWithRepos {
@@ -83,3 +84,57 @@ type OrgWithRepos {
     id: String!
     repos: [GithubRepository!]!
 }
+
+
+# ------- BEGIN VULNERABLE RELEASE RESPONSE TYPES BELOW, these reference the dependency-tree/types.ts
+type BuildData_VulnerableRelease {
+    dev_only: Boolean!
+    severity: String
+    cvss: Float
+    chains: [[BuildData_DependencyNode!]!]!
+    affected_by: [BuildData_AffectedByVulnerability!]!
+    release: BuildData_Release
+    trivially_updatable: String!
+}
+
+
+type BuildData_AffectedByVulnerability {
+    vulnerability: BuildData_Vulnerability!
+    ranges: [BuildData_Range]
+    trivially_updatable: Boolean
+    chains: [[BuildData_DependencyNode!]!] # each vuln has its own sublist of chains in addition to the global list in the main body of the release. This is in case some have been eliminated by false-positive analysis for only this vuln
+}
+
+type BuildData_DependencyNode {
+    id: String!
+    range: String!
+    release_id: String!
+    release: BuildData_Release!
+}
+
+type BuildData_Range {
+    introduced: String
+    fixed: String
+}
+
+type BuildData_Release {
+    id: String!
+    version: String!
+    package: BuildData_Package!
+}
+
+type BuildData_Package {
+    name: String!
+    package_manager: String!
+    affected_by_vulnerability: [BuildData_AffectedByVulnerability!]
+}
+
+
+type BuildData_Vulnerability {
+    id: String!
+    severity_name: String
+    cvss_score: Float
+    source: String!
+    source_id: String!
+}
+

@@ -24,7 +24,7 @@ import {
 import { getGithubAccessTokenFromKratos } from '../../kratos';
 import { errorResponse, logError } from '../../utils/errors';
 import { log } from '../../utils/log';
-import { catchError, threwError, Try } from '../../utils/try';
+import { catchError, ErrorOrResult, threwError } from '../../utils/try';
 import { GetUserOrganizationsQuery } from '../api/generated';
 
 import { getOrgsForUser } from './get-orgs-for-user';
@@ -61,7 +61,7 @@ export async function authUserToOrgs(res: Response, userId: string) {
     return;
   }
 
-  const userGithubOrgs: Try<GetUserOrganizationsQuery | null> = await catchError(
+  const userGithubOrgs: ErrorOrResult<GetUserOrganizationsQuery | null> = await catchError(
     async () => await getOrgsForUser(userId, kratosResponse.token)
   );
 
@@ -81,7 +81,7 @@ export async function authUserToOrgs(res: Response, userId: string) {
 
   log.debug(`[user: ${userId}] Github user's organization ids: ${githubOrgIds}`);
 
-  const authorizedUserOrgs: Try<GetAuthorizedUserOrganizationsQuery> = await catchError(
+  const authorizedUserOrgs: ErrorOrResult<GetAuthorizedUserOrganizationsQuery> = await catchError(
     async () =>
       await hasura.GetAuthorizedUserOrganizations({
         github_org_ids: githubOrgIds,
@@ -105,7 +105,7 @@ export async function authUserToOrgs(res: Response, userId: string) {
     };
   });
 
-  const updatedOrganizations: Try<UpdateOrganizationsForUserMutation> = await catchError(
+  const updatedOrganizations: ErrorOrResult<UpdateOrganizationsForUserMutation> = await catchError(
     async () =>
       await hasura.UpdateOrganizationsForUser({
         organizations_for_user: organizationUserInput,

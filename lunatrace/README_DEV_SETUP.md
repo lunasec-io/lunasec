@@ -157,7 +157,7 @@ yarn run sass:build
 git clone https://github.com/github/advisory-database.git /tmp/advisory-database
 
 cd bsl/ingest-worker
-go run cmd/lpt/main.go vulnerability ingest --source ghsa /tmp/advisory-database
+go run cmd/ingestworker/main.go vulnerability ingest --source ghsa /tmp/advisory-database
 ```
 
 ### Re-run everything

@@ -32,6 +32,55 @@ input Boolean_comparison_exp {
   _nin: [Boolean!]
 }
 
+type BuildData_AffectedByVulnerability {
+  chains: [[BuildData_DependencyNode!]!]
+  ranges: [BuildData_Range]
+  trivially_updatable: Boolean
+  vulnerability: BuildData_Vulnerability!
+}
+
+type BuildData_DependencyNode {
+  id: String!
+  range: String!
+  release: BuildData_Release!
+  release_id: String!
+}
+
+type BuildData_Package {
+  affected_by_vulnerability: [BuildData_AffectedByVulnerability!]
+  name: String!
+  package_manager: String!
+}
+
+type BuildData_Range {
+  fixed: String
+  introduced: String
+}
+
+type BuildData_Release {
+  id: String!
+  package: BuildData_Package!
+  version: String!
+}
+
+type BuildData_Vulnerability {
+  cvss_score: Float
+  id: String!
+  severity_name: String
+  source: String!
+  source_id: String!
+}
+
+type BuildData_VulnerableRelease {
+  affected_by: [BuildData_AffectedByVulnerability!]!
+  chains: [[BuildData_DependencyNode!]!]!
+  cvss: Float
+  dev_only: Boolean!
+  release: BuildData_Release
+  severity: String
+  trivially_updatable: String!
+}
+
 """
 Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'.
 """
@@ -235,6 +284,9 @@ type analysis_manifest_dependency_edge_result {
   finding_source: analysis_finding_source_enum!
   finding_type: analysis_finding_type_enum!
   id: uuid!
+
+  """An object relationship"""
+  manifest_dependency_edge: manifest_dependency_edge!
   manifest_dependency_edge_id: uuid!
   vulnerability_id: uuid!
 }
@@ -250,6 +302,7 @@ input analysis_manifest_dependency_edge_result_bool_exp {
   finding_source: analysis_finding_source_enum_comparison_exp
   finding_type: analysis_finding_type_enum_comparison_exp
   id: uuid_comparison_exp
+  manifest_dependency_edge: manifest_dependency_edge_bool_exp
   manifest_dependency_edge_id: uuid_comparison_exp
   vulnerability_id: uuid_comparison_exp
 }
@@ -277,6 +330,7 @@ input analysis_manifest_dependency_edge_result_insert_input {
   finding_source: analysis_finding_source_enum
   finding_type: analysis_finding_type_enum
   id: uuid
+  manifest_dependency_edge: manifest_dependency_edge_obj_rel_insert_input
   manifest_dependency_edge_id: uuid
   vulnerability_id: uuid
 }
@@ -309,6 +363,7 @@ input analysis_manifest_dependency_edge_result_order_by {
   finding_source: order_by
   finding_type: order_by
   id: order_by
+  manifest_dependency_edge: manifest_dependency_edge_order_by
   manifest_dependency_edge_id: order_by
   vulnerability_id: order_by
 }
@@ -3628,6 +3683,16 @@ type manifest_dependency_edge_mutation_response {
 }
 
 """
+input type for inserting object relation for remote table "manifest_dependency_edge"
+"""
+input manifest_dependency_edge_obj_rel_insert_input {
+  data: manifest_dependency_edge_insert_input!
+
+  """upsert condition"""
+  on_conflict: manifest_dependency_edge_on_conflict
+}
+
+"""
 on_conflict condition type for table "manifest_dependency_edge"
 """
 input manifest_dependency_edge_on_conflict {
@@ -4620,6 +4685,28 @@ type mutation_root {
   ): manifests
 
   """
+  insert data into the table: "npm.revision"
+  """
+  insert_npm_revision(
+    """the rows to be inserted"""
+    objects: [npm_revision_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: npm_revision_on_conflict
+  ): npm_revision_mutation_response
+
+  """
+  insert a single row into the table: "npm.revision"
+  """
+  insert_npm_revision_one(
+    """the row to be inserted"""
+    object: npm_revision_insert_input!
+
+    """upsert condition"""
+    on_conflict: npm_revision_on_conflict
+  ): npm_revision
+
+  """
   insert data into the table: "organization_user"
   """
   insert_organization_user(
@@ -5514,6 +5601,74 @@ type mutation_root {
   ): manifests
 
   """
+  update data of the table: "npm.revision"
+  """
+  update_npm_revision(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: npm_revision_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: npm_revision_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: npm_revision_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: npm_revision_delete_key_input
+
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: npm_revision_inc_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: npm_revision_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: npm_revision_set_input
+
+    """filter the rows which have to be updated"""
+    where: npm_revision_bool_exp!
+  ): npm_revision_mutation_response
+
+  """
+  update single row of the table: "npm.revision"
+  """
+  update_npm_revision_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: npm_revision_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: npm_revision_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: npm_revision_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: npm_revision_delete_key_input
+
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: npm_revision_inc_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: npm_revision_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: npm_revision_set_input
+    pk_columns: npm_revision_pk_columns_input!
+  ): npm_revision
+
+  """
   update data of the table: "organization_user"
   """
   update_organization_user(
@@ -6266,6 +6421,176 @@ type mutation_root {
     _set: webhook_cache_set_input
     pk_columns: webhook_cache_pk_columns_input!
   ): webhook_cache
+}
+
+"""Revision of a NPM CouchDB document."""
+type npm_revision {
+  deleted: Boolean!
+  doc(
+    """JSON select path"""
+    path: String
+  ): jsonb!
+  id: String!
+  rev: String!
+  seq: Int!
+}
+
+"""append existing jsonb value of filtered columns with new jsonb value"""
+input npm_revision_append_input {
+  doc: jsonb
+}
+
+"""
+Boolean expression to filter rows from the table "npm.revision". All fields are combined with a logical 'AND'.
+"""
+input npm_revision_bool_exp {
+  _and: [npm_revision_bool_exp!]
+  _not: npm_revision_bool_exp
+  _or: [npm_revision_bool_exp!]
+  deleted: Boolean_comparison_exp
+  doc: jsonb_comparison_exp
+  id: String_comparison_exp
+  rev: String_comparison_exp
+  seq: Int_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "npm.revision"
+"""
+enum npm_revision_constraint {
+  """
+  unique or primary key constraint on columns "seq"
+  """
+  revision_pkey
+}
+
+"""
+delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+"""
+input npm_revision_delete_at_path_input {
+  doc: [String!]
+}
+
+"""
+delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+"""
+input npm_revision_delete_elem_input {
+  doc: Int
+}
+
+"""
+delete key/value pair or string element. key/value pairs are matched based on their key value
+"""
+input npm_revision_delete_key_input {
+  doc: String
+}
+
+"""
+input type for incrementing numeric columns in table "npm.revision"
+"""
+input npm_revision_inc_input {
+  seq: Int
+}
+
+"""
+input type for inserting data into table "npm.revision"
+"""
+input npm_revision_insert_input {
+  deleted: Boolean
+  doc: jsonb
+  id: String
+  rev: String
+  seq: Int
+}
+
+"""
+response of any mutation on the table "npm.revision"
+"""
+type npm_revision_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [npm_revision!]!
+}
+
+"""
+on_conflict condition type for table "npm.revision"
+"""
+input npm_revision_on_conflict {
+  constraint: npm_revision_constraint!
+  update_columns: [npm_revision_update_column!]! = []
+  where: npm_revision_bool_exp
+}
+
+"""Ordering options when selecting data from "npm.revision"."""
+input npm_revision_order_by {
+  deleted: order_by
+  doc: order_by
+  id: order_by
+  rev: order_by
+  seq: order_by
+}
+
+"""primary key columns input for table: npm_revision"""
+input npm_revision_pk_columns_input {
+  seq: Int!
+}
+
+"""prepend existing jsonb value of filtered columns with new jsonb value"""
+input npm_revision_prepend_input {
+  doc: jsonb
+}
+
+"""
+select columns of table "npm.revision"
+"""
+enum npm_revision_select_column {
+  """column name"""
+  deleted
+
+  """column name"""
+  doc
+
+  """column name"""
+  id
+
+  """column name"""
+  rev
+
+  """column name"""
+  seq
+}
+
+"""
+input type for updating data in table "npm.revision"
+"""
+input npm_revision_set_input {
+  deleted: Boolean
+  doc: jsonb
+  id: String
+  rev: String
+  seq: Int
+}
+
+"""
+update columns of table "npm.revision"
+"""
+enum npm_revision_update_column {
+  """column name"""
+  deleted
+
+  """column name"""
+  doc
+
+  """column name"""
+  id
+
+  """column name"""
+  rev
+
+  """column name"""
+  seq
 }
 
 """column ordering options"""
@@ -9401,6 +9726,29 @@ type query_root {
   manifests_by_pk(id: uuid!): manifests
 
   """
+  fetch data from the table: "npm.revision"
+  """
+  npm_revision(
+    """distinct select on columns"""
+    distinct_on: [npm_revision_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [npm_revision_order_by!]
+
+    """filter the rows returned"""
+    where: npm_revision_bool_exp
+  ): [npm_revision!]!
+
+  """fetch data from the table: "npm.revision" using primary key columns"""
+  npm_revision_by_pk(seq: Int!): npm_revision
+
+  """
   fetch data from the table: "organization_user"
   """
   organization_user(
@@ -10029,6 +10377,7 @@ type query_root {
   fetch data from the table: "vulnerability.severity" using primary key columns
   """
   vulnerability_severity_by_pk(id: uuid!): vulnerability_severity
+  vulnerableReleasesFromBuild(buildId: uuid!): [BuildData_VulnerableRelease!]
 
   """
   fetch data from the table: "webhook_cache"
@@ -11131,6 +11480,29 @@ type subscription_root {
   manifests_by_pk(id: uuid!): manifests
 
   """
+  fetch data from the table: "npm.revision"
+  """
+  npm_revision(
+    """distinct select on columns"""
+    distinct_on: [npm_revision_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [npm_revision_order_by!]
+
+    """filter the rows returned"""
+    where: npm_revision_bool_exp
+  ): [npm_revision!]!
+
+  """fetch data from the table: "npm.revision" using primary key columns"""
+  npm_revision_by_pk(seq: Int!): npm_revision
+
+  """
   fetch data from the table: "organization_user"
   """
   organization_user(
@@ -12161,6 +12533,7 @@ type vulnerability {
     """filter the rows returned"""
     where: vulnerability_severity_bool_exp
   ): [vulnerability_severity!]!
+  severity_name: severity_enum
   source: String!
   source_id: String!
   summary: String
@@ -12932,6 +13305,7 @@ input vulnerability_bool_exp {
   references: vulnerability_reference_bool_exp
   reviewed_by_source: Boolean_comparison_exp
   severities: vulnerability_severity_bool_exp
+  severity_name: severity_enum_comparison_exp
   source: String_comparison_exp
   source_id: String_comparison_exp
   summary: String_comparison_exp
@@ -13311,6 +13685,7 @@ input vulnerability_insert_input {
   references: vulnerability_reference_arr_rel_insert_input
   reviewed_by_source: Boolean
   severities: vulnerability_severity_arr_rel_insert_input
+  severity_name: severity_enum
   source: String
   source_id: String
   summary: String
@@ -13367,6 +13742,7 @@ input vulnerability_order_by {
   references_aggregate: vulnerability_reference_aggregate_order_by
   reviewed_by_source: order_by
   severities_aggregate: vulnerability_severity_aggregate_order_by
+  severity_name: order_by
   source: order_by
   source_id: order_by
   summary: order_by
@@ -13750,6 +14126,9 @@ enum vulnerability_select_column {
   reviewed_by_source
 
   """column name"""
+  severity_name
+
+  """column name"""
   source
 
   """column name"""
@@ -13776,6 +14155,7 @@ input vulnerability_set_input {
   modified: timestamptz
   published: timestamptz
   reviewed_by_source: Boolean
+  severity_name: severity_enum
   source: String
   source_id: String
   summary: String
@@ -13990,6 +14370,9 @@ enum vulnerability_update_column {
 
   """column name"""
   reviewed_by_source
+
+  """column name"""
+  severity_name
 
   """column name"""
   source

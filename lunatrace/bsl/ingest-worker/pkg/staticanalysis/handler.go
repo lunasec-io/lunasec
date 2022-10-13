@@ -24,7 +24,6 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
-	"io/ioutil"
 	"net/http"
 	"os"
 )
@@ -119,7 +118,7 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("package release id", queueRecord.ManifestDependencyEdgeId).
+			Str("manifest dependency edge id", queueRecord.ManifestDependencyEdgeId).
 			Msg("failed to parse package release id as uuid")
 		return err
 	}
@@ -128,7 +127,7 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("package release id", queueRecord.VulnerabilityID).
+			Str("vulnerability id", queueRecord.VulnerabilityID).
 			Msg("failed to parse vulnerability id as uuid")
 		return err
 	}
@@ -138,20 +137,41 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 		return err
 	}
 
-	parentPackageName := resp.Manifest_dependency_edge_by_pk.Parent.Release.Package.Name
+	if resp.Manifest_dependency_edge_by_pk == nil {
+		log.Error().
+			Err(err).
+			Msg("manifest dependency edge is nil")
+		return errors.New("manifest dependency edge nil")
+	}
+
+	if resp.Manifest_dependency_edge_by_pk.Child == nil {
+		log.Error().
+			Err(err).
+			Interface("manifest dependency edge", resp.Manifest_dependency_edge_by_pk).
+			Msg("child dependency is nil")
+		return errors.New("child dependency is nil")
+	}
 	childPackageName := resp.Manifest_dependency_edge_by_pk.Child.Release.Package.Name
 
-	logInfo := log.Info().
-		Str("parent package", parentPackageName).
-		Str("child package", childPackageName)
+	if resp.Manifest_dependency_edge_by_pk.Parent == nil {
+		log.Error().
+			Err(err).
+			Interface("manifest dependency edge", resp.Manifest_dependency_edge_by_pk).
+			Msg("parent dependency is nil")
+		return errors.New("child dependency is nil")
+	}
 
-	logError := log.Error().
-		Str("parent package", parentPackageName).
-		Str("child package", childPackageName)
+	if resp.Manifest_dependency_edge_by_pk.Parent.Release == nil {
+		log.Error().
+			Err(err).
+			Interface("manifest dependency edge", resp.Manifest_dependency_edge_by_pk).
+			Msg("parent dependency release is nil")
+		return errors.New("parent dependency release is nil")
+	}
 
-	logInfo.Msg("statically analyzing parent child relationship")
-
+	parentPackageName := resp.Manifest_dependency_edge_by_pk.Parent.Release.Package.Name
 	upstreamBlobUrl := resp.Manifest_dependency_edge_by_pk.Parent.Release.Upstream_blob_url
+
 	if upstreamBlobUrl == nil {
 		upstreamBlobUrl, err = s.ingestPackageAndGetUpstreamUrl(ctx, manifestDependencyEdgeUUID, parentPackageName)
 		if err != nil {
@@ -159,42 +179,58 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 		}
 	}
 
+	log.Info().
+		Str("parent package", parentPackageName).
+		Str("child package", childPackageName).
+		Msg("statically analyzing parent child relationship")
+
 	upstreamUrlResp, err := http.Get(*upstreamBlobUrl)
 	if err != nil {
-		logError.
+		log.Error().
 			Err(err).
+			Str("parent package", parentPackageName).
+			Str("child package", childPackageName).
 			Str("parent package code", *upstreamBlobUrl).
 			Msg("failed to download package blob")
 		return err
 	}
 
-	tmpDir, err := ioutil.TempDir("", "")
+	tmpDir, err := os.MkdirTemp("", "")
 	if err != nil {
-		logError.
+		log.Error().
+			Str("parent package", parentPackageName).
+			Str("child package", childPackageName).
 			Err(err).
 			Msg("failed to create temporary directory for parent package code")
 		return err
 	}
 	defer os.RemoveAll(tmpDir)
 
-	logInfo.
+	log.Info().
 		Str("upstream url", *upstreamBlobUrl).
+		Str("tmp dir", tmpDir).
 		Msg("extracting package code")
 
 	err = util.ExtractTarGz(upstreamUrlResp.Body, tmpDir)
 	if err != nil {
-		logError.
+		log.Error().
+			Str("parent package", parentPackageName).
+			Str("child package", childPackageName).
 			Err(err).
 			Msg("failed to extract parent package code to directory")
 		return err
 	}
 
-	logInfo.
+	log.Info().
+		Str("parent package", parentPackageName).
+		Str("child package", childPackageName).
 		Msg("analyzing code for usages of child in parent")
 
 	importedAndCalled, err := rules.DependencyIsImportedAndCalledInCode(childPackageName, tmpDir)
 	if err != nil {
-		logError.
+		log.Error().
+			Str("parent package", parentPackageName).
+			Str("child package", childPackageName).
 			Err(err).
 			Msg("failed to determine if child is imported and called by parent")
 	}
@@ -206,7 +242,9 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 		return gql.Analysis_finding_type_enumNotVulnerable
 	}()
 
-	logInfo.
+	log.Info().
+		Str("parent package", parentPackageName).
+		Str("child package", childPackageName).
 		Str("finding type", string(findingType)).
 		Msg("saving results of analysis")
 
@@ -236,7 +274,9 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 
 	insertedAnalysisID := analysisResp.GetInsert_analysis_manifest_dependency_edge_result_one().GetId().String()
 
-	logInfo.
+	log.Info().
+		Str("parent package", parentPackageName).
+		Str("child package", childPackageName).
 		Str("results id", insertedAnalysisID).
 		Msg("inserted edge analysis results")
 
