@@ -316,6 +316,9 @@ func (n *npmReplicator) Replicate(ctx context.Context, seq, limit int) error {
 		if seq == 0 && limit == 0 {
 			var err error
 
+			log.Info().
+				Msg("replicating changes from npm from last sequence")
+
 			// ask the database what the last scanned sequence was
 			seq, err = n.getLastReplicatedSequence()
 			if err != nil {
@@ -325,7 +328,7 @@ func (n *npmReplicator) Replicate(ctx context.Context, seq, limit int) error {
 
 		log.Info().
 			Int("since", seq).
-			Msg("replicating changes from npm from last sequence")
+			Msg("replicating changes starting at seq")
 		return n.replicateChangesSince(ctx, seq, limit)
 	}
 
