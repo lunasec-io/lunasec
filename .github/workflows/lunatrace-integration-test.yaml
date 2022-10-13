@@ -83,6 +83,7 @@ jobs:
           fi
 
       - run: docker-compose logs
+        if: always()
         working-directory: lunatrace/bsl
 
       - name: Generate Files
