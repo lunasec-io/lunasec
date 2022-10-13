@@ -355,7 +355,6 @@ export class LunatraceBackendStack extends cdk.Stack {
     // NPM replicator
     taskDef.addContainer('NPMReplicator', {
       image: ingestWorkerImage,
-      portMappings: [{ containerPort: registryPort }],
       logging: datadogLogDriverForService('lunatrace', 'NPMReplicator'),
       command: ['package', 'replicate'],
       environment: {
