@@ -11,4 +11,4 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 COPY --from=builder /build/lunatrace/bsl/ingest-worker/registryproxy /
 
-ENTRYPOINT ["/ingestworker"]
+ENTRYPOINT ["/registryproxy"]
