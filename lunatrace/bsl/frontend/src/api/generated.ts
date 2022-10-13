@@ -46,6 +46,62 @@ export type Boolean_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Boolean']>>;
 };
 
+export type BuildData_AffectedByVulnerability = {
+  __typename?: 'BuildData_AffectedByVulnerability';
+  chains?: Maybe<Array<Array<BuildData_DependencyNode>>>;
+  ranges?: Maybe<Array<Maybe<BuildData_Range>>>;
+  trivially_updatable?: Maybe<Scalars['Boolean']>;
+  vulnerability: BuildData_Vulnerability;
+};
+
+export type BuildData_DependencyNode = {
+  __typename?: 'BuildData_DependencyNode';
+  id: Scalars['String'];
+  range: Scalars['String'];
+  release: BuildData_Release;
+  release_id: Scalars['String'];
+};
+
+export type BuildData_Package = {
+  __typename?: 'BuildData_Package';
+  affected_by_vulnerability?: Maybe<Array<BuildData_AffectedByVulnerability>>;
+  name: Scalars['String'];
+  package_manager: Scalars['String'];
+};
+
+export type BuildData_Range = {
+  __typename?: 'BuildData_Range';
+  fixed?: Maybe<Scalars['String']>;
+  introduced?: Maybe<Scalars['String']>;
+};
+
+export type BuildData_Release = {
+  __typename?: 'BuildData_Release';
+  id: Scalars['String'];
+  package: BuildData_Package;
+  version: Scalars['String'];
+};
+
+export type BuildData_Vulnerability = {
+  __typename?: 'BuildData_Vulnerability';
+  cvss_score?: Maybe<Scalars['Float']>;
+  id: Scalars['String'];
+  severity_name?: Maybe<Scalars['String']>;
+  source: Scalars['String'];
+  source_id: Scalars['String'];
+};
+
+export type BuildData_VulnerableRelease = {
+  __typename?: 'BuildData_VulnerableRelease';
+  affected_by: Array<BuildData_AffectedByVulnerability>;
+  chains: Array<Array<BuildData_DependencyNode>>;
+  cvss?: Maybe<Scalars['Float']>;
+  dev_only: Scalars['Boolean'];
+  release?: Maybe<BuildData_Release>;
+  severity?: Maybe<Scalars['String']>;
+  trivially_updatable: Scalars['String'];
+};
+
 /** Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'. */
 export type Float_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Float']>;
@@ -2362,6 +2418,7 @@ export type Manifest_Dependency_Edge = {
   /** An object relationship */
   child: Manifest_Dependency_Node;
   child_id: Scalars['uuid'];
+  id: Scalars['uuid'];
   /** An object relationship */
   parent: Manifest_Dependency_Node;
   parent_id: Scalars['uuid'];
@@ -2381,6 +2438,7 @@ export type Manifest_Dependency_Edge_Bool_Exp = {
   _or?: InputMaybe<Array<Manifest_Dependency_Edge_Bool_Exp>>;
   child?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   child_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
   parent?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   parent_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
@@ -2388,12 +2446,14 @@ export type Manifest_Dependency_Edge_Bool_Exp = {
 /** order by max() on columns of table "manifest_dependency_edge" */
 export type Manifest_Dependency_Edge_Max_Order_By = {
   child_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   parent_id?: InputMaybe<Order_By>;
 };
 
 /** order by min() on columns of table "manifest_dependency_edge" */
 export type Manifest_Dependency_Edge_Min_Order_By = {
   child_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   parent_id?: InputMaybe<Order_By>;
 };
 
@@ -2401,6 +2461,7 @@ export type Manifest_Dependency_Edge_Min_Order_By = {
 export type Manifest_Dependency_Edge_Order_By = {
   child?: InputMaybe<Manifest_Dependency_Node_Order_By>;
   child_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
   parent?: InputMaybe<Manifest_Dependency_Node_Order_By>;
   parent_id?: InputMaybe<Order_By>;
 };
@@ -2409,6 +2470,8 @@ export type Manifest_Dependency_Edge_Order_By = {
 export enum Manifest_Dependency_Edge_Select_Column {
   /** column name */
   ChildId = 'child_id',
+  /** column name */
+  Id = 'id',
   /** column name */
   ParentId = 'parent_id'
 }
@@ -4029,6 +4092,8 @@ export type Query_Root = {
   manifest_dependency: Array<Manifest_Dependency>;
   /** fetch data from the table: "manifest_dependency_edge" */
   manifest_dependency_edge: Array<Manifest_Dependency_Edge>;
+  /** fetch data from the table: "manifest_dependency_edge" using primary key columns */
+  manifest_dependency_edge_by_pk?: Maybe<Manifest_Dependency_Edge>;
   /** fetch data from the table: "manifest_dependency_node" */
   manifest_dependency_node: Array<Manifest_Dependency_Node>;
   /** fetch data from the table: "manifest_dependency_node" using primary key columns */
@@ -4118,6 +4183,7 @@ export type Query_Root = {
   vulnerability_severity: Array<Vulnerability_Severity>;
   /** fetch data from the table: "vulnerability.severity" using primary key columns */
   vulnerability_severity_by_pk?: Maybe<Vulnerability_Severity>;
+  vulnerableReleasesFromBuild?: Maybe<Array<BuildData_VulnerableRelease>>;
 };
 
 
@@ -4335,6 +4401,11 @@ export type Query_RootManifest_Dependency_EdgeArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
   where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+};
+
+
+export type Query_RootManifest_Dependency_Edge_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -4653,6 +4724,11 @@ export type Query_RootVulnerability_SeverityArgs = {
 
 export type Query_RootVulnerability_Severity_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootVulnerableReleasesFromBuildArgs = {
+  buildId: Scalars['uuid'];
 };
 
 /** Boolean expression to compare columns of type "reference_type". All fields are combined with logical 'AND'. */
@@ -5189,6 +5265,8 @@ export type Subscription_Root = {
   manifest_dependency: Array<Manifest_Dependency>;
   /** fetch data from the table: "manifest_dependency_edge" */
   manifest_dependency_edge: Array<Manifest_Dependency_Edge>;
+  /** fetch data from the table: "manifest_dependency_edge" using primary key columns */
+  manifest_dependency_edge_by_pk?: Maybe<Manifest_Dependency_Edge>;
   /** fetch data from the table: "manifest_dependency_node" */
   manifest_dependency_node: Array<Manifest_Dependency_Node>;
   /** fetch data from the table: "manifest_dependency_node" using primary key columns */
@@ -5487,6 +5565,11 @@ export type Subscription_RootManifest_Dependency_EdgeArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Manifest_Dependency_Edge_Order_By>>;
   where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+};
+
+
+export type Subscription_RootManifest_Dependency_Edge_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -5920,6 +6003,7 @@ export type Vulnerability = {
   reviewed_by_source?: Maybe<Scalars['Boolean']>;
   /** An array relationship */
   severities: Array<Vulnerability_Severity>;
+  severity_name?: Maybe<Scalars['severity_enum']>;
   source: Scalars['String'];
   source_id: Scalars['String'];
   summary?: Maybe<Scalars['String']>;
@@ -6333,6 +6417,7 @@ export type Vulnerability_Bool_Exp = {
   references?: InputMaybe<Vulnerability_Reference_Bool_Exp>;
   reviewed_by_source?: InputMaybe<Boolean_Comparison_Exp>;
   severities?: InputMaybe<Vulnerability_Severity_Bool_Exp>;
+  severity_name?: InputMaybe<Severity_Enum_Comparison_Exp>;
   source?: InputMaybe<String_Comparison_Exp>;
   source_id?: InputMaybe<String_Comparison_Exp>;
   summary?: InputMaybe<String_Comparison_Exp>;
@@ -6479,6 +6564,7 @@ export type Vulnerability_Order_By = {
   references_aggregate?: InputMaybe<Vulnerability_Reference_Aggregate_Order_By>;
   reviewed_by_source?: InputMaybe<Order_By>;
   severities_aggregate?: InputMaybe<Vulnerability_Severity_Aggregate_Order_By>;
+  severity_name?: InputMaybe<Order_By>;
   source?: InputMaybe<Order_By>;
   source_id?: InputMaybe<Order_By>;
   summary?: InputMaybe<Order_By>;
@@ -6636,6 +6722,8 @@ export enum Vulnerability_Select_Column {
   Published = 'published',
   /** column name */
   ReviewedBySource = 'reviewed_by_source',
+  /** column name */
+  SeverityName = 'severity_name',
   /** column name */
   Source = 'source',
   /** column name */
@@ -6850,6 +6938,13 @@ export type GetVulnerabilityDetailsQueryVariables = Exact<{
 
 
 export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerability_by_pk?: { __typename?: 'vulnerability', database_specific?: any | null, details?: string | null, source: string, source_id: string, summary?: string | null, withdrawn?: any | null, published?: any | null, modified: any, id: any, affected: Array<{ __typename?: 'vulnerability_affected', database_specific?: any | null, ecosystem_specific?: any | null, id: any, package: { __typename?: 'package', name: string, package_manager: any, id: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', database_specific?: any | null, event: string, id: any, type: any, version: string }>, affected_versions: Array<{ __typename?: 'vulnerability_affected_version', database_specific?: any | null, id: any, version: string }> }>, equivalents: Array<{ __typename?: 'vulnerability_equivalent', equivalent_vulnerability: { __typename?: 'vulnerability', id: any, source: string, source_id: string, summary?: string | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, type: string, score: string, source: string }> } }>, findings: Array<{ __typename?: 'findings', id: any, build_id: any, latest_default_build?: { __typename?: 'latest_default_builds', id?: any | null, build_number?: number | null, created_at?: any | null, project_id?: any | null, project?: { __typename?: 'projects', name: string, id: any } | null } | null }>, references: Array<{ __typename?: 'vulnerability_reference', id: any, type: any, url: string }>, severities: Array<{ __typename?: 'vulnerability_severity', id: any, score: string, source: string, type: string }> } | null };
+
+export type GetVulnerableReleasesFromBuildQueryVariables = Exact<{
+  build_id: Scalars['uuid'];
+}>;
+
+
+export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, cvss?: number | null, severity?: string | null, dev_only: boolean, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>>, release?: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string } } | null, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable?: boolean | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, source_id: string }, chains?: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>> | null }> }> | null };
 
 export type InsertNewOrgUserMutationVariables = Exact<{
   organization_id: Scalars['uuid'];
@@ -7562,6 +7657,57 @@ export const GetVulnerabilityDetailsDocument = `
   }
 }
     `;
+export const GetVulnerableReleasesFromBuildDocument = `
+    query GetVulnerableReleasesFromBuild($build_id: uuid!) {
+  vulnerableReleasesFromBuild(buildId: $build_id) {
+    trivially_updatable
+    cvss
+    severity
+    dev_only
+    chains {
+      id
+      range
+      release {
+        id
+        package {
+          name
+        }
+        version
+      }
+    }
+    release {
+      version
+      package {
+        name
+      }
+    }
+    affected_by {
+      trivially_updatable
+      vulnerability {
+        severity_name
+        cvss_score
+        source
+        source_id
+      }
+      chains {
+        id
+        range
+        release {
+          id
+          package {
+            name
+          }
+          version
+        }
+      }
+    }
+    dev_only
+    release {
+      id
+    }
+  }
+}
+    `;
 export const InsertNewOrgUserDocument = `
     mutation InsertNewOrgUser($organization_id: uuid!) {
   insert_organization_user_one(object: {organization_id: $organization_id}) {
@@ -7699,6 +7845,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables>({
       query: (variables) => ({ document: GetVulnerabilityDetailsDocument, variables })
+    }),
+    GetVulnerableReleasesFromBuild: build.query<GetVulnerableReleasesFromBuildQuery, GetVulnerableReleasesFromBuildQueryVariables>({
+      query: (variables) => ({ document: GetVulnerableReleasesFromBuildDocument, variables })
     }),
     InsertNewOrgUser: build.mutation<InsertNewOrgUserMutation, InsertNewOrgUserMutationVariables>({
       query: (variables) => ({ document: InsertNewOrgUserDocument, variables })

@@ -81,7 +81,7 @@ export async function queueManifestDependencyEdgeForStaticAnalysis(
     });
     return newError('sending message to queue failed, responded: ' + JSON.stringify(result));
   }
-  log.info('queued repository for snapshot', {
+  log.info('queued dependency for static analysis', {
     queue: staticAnalysisQueueUrl.res,
     req,
   });

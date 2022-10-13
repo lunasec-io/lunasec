@@ -1,0 +1,54 @@
+query GetTreeFromBuild($build_id: uuid!) {
+    builds_by_pk(id: $build_id) {
+        resolved_manifests {
+            id
+            path
+            child_edges_recursive {
+                id
+                parent_id
+                child_id
+                id
+                child {
+                    id
+                    range
+                    labels
+                    release_id
+                    release {
+                        id
+                        fetched_time
+                        version
+                        package {
+                            name
+                            last_successful_fetch
+                            package_manager
+                            affected_by_vulnerability {
+                                vulnerability {
+                                    id
+                                    source_id
+                                    source
+                                    severity_name
+                                    cvss_score
+                                }
+                                ranges {
+                                    introduced
+                                    fixed
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        project {
+            name
+            ignored_vulnerabilities {
+                id
+                creator_id
+                locations
+                note
+                project_id
+                vulnerability_id
+            }
+        }
+    }
+}

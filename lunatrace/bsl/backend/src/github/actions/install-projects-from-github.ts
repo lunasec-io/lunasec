@@ -12,7 +12,13 @@
  *
  */
 import { hasura } from '../../hasura-api';
-import { Projects_Constraint, Projects_Insert_Input } from '../../hasura-api/generated';
+import {
+  Github_Repositories_Constraint,
+  Github_Repositories_Update_Column,
+  Projects_Constraint,
+  Projects_Insert_Input,
+  Projects_Update_Column,
+} from '../../hasura-api/generated';
 import { GithubRepositoryInfo } from '../../types/github';
 import { MaybeError } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
@@ -77,6 +83,10 @@ export async function installProjectsFromGithub(
             traits: repo,
           },
         ],
+        on_conflict: {
+          constraint: Github_Repositories_Constraint.GithubRepositoriesGithubNodeIdKey,
+          update_columns: [Github_Repositories_Update_Column.GithubNodeId],
+        },
       },
     };
   });
@@ -86,7 +96,7 @@ export async function installProjectsFromGithub(
       projects: hasuraProjectsObjects,
       on_conflict: {
         constraint: Projects_Constraint.ProjectsNameOrganizationIdKey,
-        update_columns: [],
+        update_columns: [Projects_Update_Column.Name, Projects_Update_Column.OrganizationId],
       },
     })
   );
