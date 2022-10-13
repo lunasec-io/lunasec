@@ -120,6 +120,7 @@ export class WorkerStack extends cdk.Stack {
       HASURA_URL: publicHasuraServiceUrl,
       LUNATRACE_GRAPHQL_SERVER_URL: 'http://backend.services:8080/v1/graphql',
       LUNATRACE_NPM_REGISTRY: 'http://backend.services:8081',
+      STATIC_ANALYSIS_QUEUE: staticAnalysisQueue.queueName,
     };
 
     const processQueueCommonSecrets: Record<string, EcsSecret> = {
