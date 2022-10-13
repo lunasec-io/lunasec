@@ -268,15 +268,15 @@ func (n *npmReplicator) replicationWorker(ctx context.Context, job replicatorJob
 	errors <- n.Replicate(ctx, job.startSeq, job.size)
 }
 
-func (n *npmReplicator) replicateToKnownSequence(ctx context.Context, startSeq, endSeq int) error {
+func (n *npmReplicator) replicateToKnownSequence(ctx context.Context, endSeq int) error {
 	workerCount := 10
-	workerJobChunkSize := (endSeq - startSeq) / workerCount
+	workerJobChunkSize := endSeq / workerCount
 
 	errorChan := make(chan error, workerCount)
 
 	for w := 0; w < workerCount; w++ {
 		job := replicatorJob{
-			startSeq: startSeq + (w * workerJobChunkSize),
+			startSeq: w * workerJobChunkSize,
 			size:     workerJobChunkSize,
 		}
 		go n.replicationWorker(ctx, job, errorChan)
@@ -305,23 +305,30 @@ func (n *npmReplicator) Replicate(ctx context.Context, seq, limit int) error {
 			return err
 		}
 
-		// ask the database what the last scanned sequence was
-		seq, err = n.getLastReplicatedSequence()
-		if err != nil {
-			return err
-		}
-
 		// try to do a fast catch-up by using a bunch of workers
-		err = n.replicateToKnownSequence(ctx, seq, lastSeq)
+		err = n.replicateToKnownSequence(ctx, lastSeq)
 		if err != nil {
 			return err
 		}
 	}
 
 	replicate := func() error {
+		if seq == 0 && limit == 0 {
+			var err error
+
+			log.Info().
+				Msg("replicating changes from npm from last sequence")
+
+			// ask the database what the last scanned sequence was
+			seq, err = n.getLastReplicatedSequence()
+			if err != nil {
+				return err
+			}
+		}
+
 		log.Info().
 			Int("since", seq).
-			Msg("replicating changes from npm from last sequence")
+			Msg("replicating changes starting at seq")
 		return n.replicateChangesSince(ctx, seq, limit)
 	}
 
