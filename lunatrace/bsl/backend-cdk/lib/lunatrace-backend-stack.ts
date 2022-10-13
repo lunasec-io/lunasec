@@ -318,7 +318,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     });
 
     // Update vulnerabilities job
-    const updateVulnerabilitiesJob = taskDef.addContainer('UpdateVulnerabilitesJob', {
+    const updateVulnerabilitiesJob = taskDef.addContainer('UpdateVulnerabilitiesJob', {
       memoryLimitMiB: 8 * 1024,
       cpu: 4 * 1024,
       image: ingestWorkerImage,
@@ -350,6 +350,21 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
       secrets: {
         LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      },
+    });
+
+    // NPM replicator
+    taskDef.addContainer('NPMReplicator', {
+      image: ingestWorkerImage,
+      portMappings: [{ containerPort: registryPort }],
+      logging: datadogLogDriverForService('lunatrace', 'NPMReplicator'),
+      command: ['package', 'replicate'],
+      environment: {
+        LUNATRACE_GRAPHQL_SERVER_URL: 'http://localhost:8080/v1/graphql',
+      },
+      secrets: {
+        LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+        LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
       },
     });
 
