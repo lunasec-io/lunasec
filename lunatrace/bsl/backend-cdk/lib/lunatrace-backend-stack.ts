@@ -328,6 +328,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       command: ['vulnerability', 'ingest', '--source', 'ghsa', '--cron', '0 0 * * *'],
       secrets: {
         LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+        LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
       },
     });
 
