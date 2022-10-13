@@ -153,7 +153,6 @@ export class LunatraceBackendStack extends cdk.Stack {
         REACT_APP_KRATOS_URL: `https://${props.domainName}/api/kratos`,
         REACT_APP_GITHUB_APP_LINK: props.gitHubAppLink,
       },
-      extraHash: 'TODO-REPLACE-ME',
     });
 
     const frontend = taskDef.addContainer('FrontendContainer', {
@@ -176,7 +175,6 @@ export class LunatraceBackendStack extends cdk.Stack {
         OATHKEEPER_KRATOS_URL: 'http://localhost:4433',
         OATHKEEPER_MATCH_URL: `<https|http|ws>://<localhost:4455|${props.domainName}>`,
       },
-      extraHash: 'TODO-REPLACE-ME',
     });
 
     const oathkeeper = taskDef.addContainer('OathkeeperContainer', {
@@ -199,7 +197,6 @@ export class LunatraceBackendStack extends cdk.Stack {
       buildArgs: {
         KRATOS_DOMAIN_NAME: props.domainName,
       },
-      extraHash: 'TODO-REPLACE-ME',
     });
 
     const githubOauthAppLoginClientId = Secret.fromSecretCompleteArn(
@@ -251,7 +248,6 @@ export class LunatraceBackendStack extends cdk.Stack {
     const backendContainerImage = ContainerImage.fromAsset('../backend', {
       ...commonBuildProps,
       target: 'backend-express-server',
-      extraHash: 'TODO-REPLACE-ME',
     });
 
     const backend = taskDef.addContainer('BackendContainer', {
@@ -289,7 +285,6 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const hasuraContainerImage = ContainerImage.fromAsset('../hasura', {
       ...commonBuildProps,
-      extraHash: 'TODO-REPLACE-ME',
     });
 
     const hasura = taskDef.addContainer('HasuraContainer', {
@@ -322,7 +317,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     });
 
     // Update vulnerabilities job
-    const updateVulnerabilitiesJob = taskDef.addContainer('UpdateVulnerabilitesJob', {
+    const updateVulnerabilitiesJob = taskDef.addContainer('UpdateVulnerabilitiesJob', {
       memoryLimitMiB: 8 * 1024,
       cpu: 4 * 1024,
       image: ingestWorkerImage,
@@ -332,6 +327,42 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
       command: ['vulnerability', 'ingest', '--source', 'ghsa', '--cron', '0 0 * * *'],
       secrets: {
+        LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+      },
+    });
+
+    const registryProxyImage = ContainerImage.fromAsset('../ingest-worker', {
+      ...commonBuildProps,
+      file: 'docker/registryproxy.dockerfile',
+    });
+
+    const registryPort = 8081;
+
+    // NPM registry proxy
+    taskDef.addContainer('NPMRegistryProxy', {
+      image: registryProxyImage,
+      portMappings: [{ containerPort: registryPort }],
+      logging: datadogLogDriverForService('lunatrace', 'NPMRegistryProxy'),
+      environment: {
+        LUNATRACE_PROXY_PORT: registryPort.toString(10),
+        LUNATRACE_PROXY_STAGE: 'release',
+      },
+      secrets: {
+        LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      },
+    });
+
+    // NPM replicator
+    taskDef.addContainer('NPMReplicator', {
+      image: ingestWorkerImage,
+      portMappings: [{ containerPort: registryPort }],
+      logging: datadogLogDriverForService('lunatrace', 'NPMReplicator'),
+      command: ['package', 'replicate'],
+      environment: {
+        LUNATRACE_GRAPHQL_SERVER_URL: 'http://localhost:8080/v1/graphql',
+      },
+      secrets: {
+        LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
         LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
       },
     });
