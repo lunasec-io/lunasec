@@ -6429,7 +6429,7 @@ type npm_revision {
   doc(
     """JSON select path"""
     path: String
-  ): jsonb
+  ): jsonb!
   id: String!
   rev: String!
   seq: Int!
@@ -6459,7 +6459,7 @@ unique or primary key constraints on table "npm.revision"
 """
 enum npm_revision_constraint {
   """
-  unique or primary key constraint on columns "rev"
+  unique or primary key constraint on columns "seq"
   """
   revision_pkey
 }
@@ -6534,7 +6534,7 @@ input npm_revision_order_by {
 
 """primary key columns input for table: npm_revision"""
 input npm_revision_pk_columns_input {
-  rev: String!
+  seq: Int!
 }
 
 """prepend existing jsonb value of filtered columns with new jsonb value"""
@@ -9746,7 +9746,7 @@ type query_root {
   ): [npm_revision!]!
 
   """fetch data from the table: "npm.revision" using primary key columns"""
-  npm_revision_by_pk(rev: String!): npm_revision
+  npm_revision_by_pk(seq: Int!): npm_revision
 
   """
   fetch data from the table: "organization_user"
@@ -11500,7 +11500,7 @@ type subscription_root {
   ): [npm_revision!]!
 
   """fetch data from the table: "npm.revision" using primary key columns"""
-  npm_revision_by_pk(rev: String!): npm_revision
+  npm_revision_by_pk(seq: Int!): npm_revision
 
   """
   fetch data from the table: "organization_user"

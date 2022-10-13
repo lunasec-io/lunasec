@@ -5026,7 +5026,7 @@ export type Mutation_RootUpdate_Webhook_Cache_By_PkArgs = {
 export type Npm_Revision = {
   __typename?: 'npm_revision';
   deleted: Scalars['Boolean'];
-  doc?: Maybe<Scalars['jsonb']>;
+  doc: Scalars['jsonb'];
   id: Scalars['String'];
   rev: Scalars['String'];
   seq: Scalars['Int'];
@@ -5057,7 +5057,7 @@ export type Npm_Revision_Bool_Exp = {
 
 /** unique or primary key constraints on table "npm.revision" */
 export enum Npm_Revision_Constraint {
-  /** unique or primary key constraint on columns "rev" */
+  /** unique or primary key constraint on columns "seq" */
   RevisionPkey = 'revision_pkey'
 }
 
@@ -5117,7 +5117,7 @@ export type Npm_Revision_Order_By = {
 
 /** primary key columns input for table: npm_revision */
 export type Npm_Revision_Pk_Columns_Input = {
-  rev: Scalars['String'];
+  seq: Scalars['Int'];
 };
 
 /** prepend existing jsonb value of filtered columns with new jsonb value */
@@ -7770,7 +7770,7 @@ export type Query_RootNpm_RevisionArgs = {
 
 
 export type Query_RootNpm_Revision_By_PkArgs = {
-  rev: Scalars['String'];
+  seq: Scalars['Int'];
 };
 
 
@@ -9082,7 +9082,7 @@ export type Subscription_RootNpm_RevisionArgs = {
 
 
 export type Subscription_RootNpm_Revision_By_PkArgs = {
-  rev: Scalars['String'];
+  seq: Scalars['Int'];
 };
 
 
