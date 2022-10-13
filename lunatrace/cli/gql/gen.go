@@ -69,12 +69,13 @@ const (
 
 // input type for inserting data into table "analysis.manifest_dependency_edge_result"
 type Analysis_manifest_dependency_edge_result_insert_input struct {
-	Created_at                  *time.Time                    `json:"created_at,omitempty"`
-	Finding_source              *Analysis_finding_source_enum `json:"finding_source,omitempty"`
-	Finding_type                *Analysis_finding_type_enum   `json:"finding_type,omitempty"`
-	Id                          *uuid.UUID                    `json:"id,omitempty"`
-	Manifest_dependency_edge_id *uuid.UUID                    `json:"manifest_dependency_edge_id,omitempty"`
-	Vulnerability_id            *uuid.UUID                    `json:"vulnerability_id,omitempty"`
+	Created_at                  *time.Time                                     `json:"created_at,omitempty"`
+	Finding_source              *Analysis_finding_source_enum                  `json:"finding_source,omitempty"`
+	Finding_type                *Analysis_finding_type_enum                    `json:"finding_type,omitempty"`
+	Id                          *uuid.UUID                                     `json:"id,omitempty"`
+	Manifest_dependency_edge    *Manifest_dependency_edge_obj_rel_insert_input `json:"manifest_dependency_edge,omitempty"`
+	Manifest_dependency_edge_id *uuid.UUID                                     `json:"manifest_dependency_edge_id,omitempty"`
+	Vulnerability_id            *uuid.UUID                                     `json:"vulnerability_id,omitempty"`
 }
 
 // GetCreated_at returns Analysis_manifest_dependency_edge_result_insert_input.Created_at, and is useful for accessing the field via an interface.
@@ -94,6 +95,11 @@ func (v *Analysis_manifest_dependency_edge_result_insert_input) GetFinding_type(
 
 // GetId returns Analysis_manifest_dependency_edge_result_insert_input.Id, and is useful for accessing the field via an interface.
 func (v *Analysis_manifest_dependency_edge_result_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetManifest_dependency_edge returns Analysis_manifest_dependency_edge_result_insert_input.Manifest_dependency_edge, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_insert_input) GetManifest_dependency_edge() *Manifest_dependency_edge_obj_rel_insert_input {
+	return v.Manifest_dependency_edge
+}
 
 // GetManifest_dependency_edge_id returns Analysis_manifest_dependency_edge_result_insert_input.Manifest_dependency_edge_id, and is useful for accessing the field via an interface.
 func (v *Analysis_manifest_dependency_edge_result_insert_input) GetManifest_dependency_edge_id() *uuid.UUID {
@@ -3092,6 +3098,23 @@ func (v *Manifest_dependency_edge_insert_input) GetParent() *Manifest_dependency
 
 // GetParent_id returns Manifest_dependency_edge_insert_input.Parent_id, and is useful for accessing the field via an interface.
 func (v *Manifest_dependency_edge_insert_input) GetParent_id() *uuid.UUID { return v.Parent_id }
+
+// input type for inserting object relation for remote table "manifest_dependency_edge"
+type Manifest_dependency_edge_obj_rel_insert_input struct {
+	Data *Manifest_dependency_edge_insert_input `json:"data,omitempty"`
+	// upsert condition
+	On_conflict *Manifest_dependency_edge_on_conflict `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Manifest_dependency_edge_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_obj_rel_insert_input) GetData() *Manifest_dependency_edge_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Manifest_dependency_edge_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Manifest_dependency_edge_obj_rel_insert_input) GetOn_conflict() *Manifest_dependency_edge_on_conflict {
+	return v.On_conflict
+}
 
 // on_conflict condition type for table "manifest_dependency_edge"
 type Manifest_dependency_edge_on_conflict struct {
