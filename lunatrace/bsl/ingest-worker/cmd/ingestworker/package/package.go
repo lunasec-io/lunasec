@@ -12,8 +12,10 @@
 package ingest
 
 import (
+	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
+	"time"
 
 	"github.com/ajvpot/clifx"
 
@@ -43,8 +45,35 @@ func NewCommand(p Params) clifx.CommandResult {
 				},
 				{
 					Name: "replicate",
+					Flags: []cli.Flag{
+						&cli.IntFlag{
+							Name:     "offset",
+							Required: false,
+							Usage:    "Offset of where to start replicating from.",
+						},
+						&cli.IntFlag{
+							Name:     "limit",
+							Required: false,
+							Usage:    "Limit to .",
+						},
+					},
 					Action: func(ctx *cli.Context) error {
-						return p.Replicator.Replicate(ctx.Context)
+						offset := ctx.Int("offset")
+						limit := ctx.Int("limit")
+
+						for {
+							log.Info().
+								Int("offset", offset).
+								Msg("starting to replicate registry")
+
+							err := p.Replicator.Replicate(ctx.Context, offset, limit)
+							if err != nil {
+								log.Warn().
+									Err(err).
+									Msg("error while replicating")
+							}
+							time.Sleep(time.Minute)
+						}
 					},
 				},
 			},
