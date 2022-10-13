@@ -12,12 +12,9 @@
 package ingest
 
 import (
-	"github.com/rs/zerolog/log"
+	"github.com/ajvpot/clifx"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
-	"time"
-
-	"github.com/ajvpot/clifx"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
 )
@@ -47,33 +44,27 @@ func NewCommand(p Params) clifx.CommandResult {
 					Name: "replicate",
 					Flags: []cli.Flag{
 						&cli.IntFlag{
-							Name:     "offset",
+							Name:     "since",
 							Required: false,
 							Usage:    "Offset of where to start replicating from.",
 						},
-						&cli.IntFlag{
-							Name:     "limit",
+						&cli.BoolFlag{
+							Name:     "init",
 							Required: false,
-							Usage:    "Limit to .",
+							Usage:    "Initial replication to quickly catchup.",
 						},
 					},
 					Action: func(ctx *cli.Context) error {
-						offset := ctx.Int("offset")
-						limit := ctx.Int("limit")
+						since := ctx.Int("since")
+						init := ctx.Bool("init")
 
-						for {
-							log.Info().
-								Int("offset", offset).
-								Msg("starting to replicate registry")
-
-							err := p.Replicator.Replicate(ctx.Context, offset, limit)
+						if init {
+							err := p.Replicator.InitialReplication(ctx.Context)
 							if err != nil {
-								log.Warn().
-									Err(err).
-									Msg("error while replicating")
+								return err
 							}
-							time.Sleep(time.Minute)
 						}
+						return p.Replicator.ReplicateSince(ctx.Context, since)
 					},
 				},
 			},
