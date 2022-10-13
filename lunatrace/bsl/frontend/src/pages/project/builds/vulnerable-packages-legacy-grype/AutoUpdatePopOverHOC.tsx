@@ -11,14 +11,17 @@
  * limitations under the License.
  *
  */
+import { VulnerablePackage } from '@lunatrace/lunatrace-common';
 import React from 'react';
 import { Popover } from 'react-bootstrap';
 import { CopyBlock, tomorrowNight } from 'react-code-blocks';
 
-import { VulnerablePackage } from './types';
+import { DepTree } from '../types';
 
-export const AutoUpdatePopOverHOC = (pkgsToUpdate: VulnerablePackage[]) => {
-  const pkgNameList = pkgsToUpdate.map((p) => p.release.package.name).join(' ');
+import { Finding } from './types';
+
+export const AutoUpdatePopOverHOC = (pkgsToUpdate: VulnerablePackage<Finding>[], depTree: DepTree) => {
+  const pkgNameList = pkgsToUpdate.map((p) => p.package_name).join(' ');
   return (
     <Popover className="all-packages-update-popover">
       <Popover.Header>Updatable Vulnerable Packages</Popover.Header>

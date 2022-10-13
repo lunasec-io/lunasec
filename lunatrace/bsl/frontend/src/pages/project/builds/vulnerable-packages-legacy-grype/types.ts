@@ -11,12 +11,8 @@
  * limitations under the License.
  *
  */
-// import { GetBuildDetailsQuery } from '../../../../api/generated';
-//
-// // export type Finding = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['findings'][number];
-//
-// export type Guide = Finding['vulnerability']['guide_vulnerabilities'][number]['guide'];
+import { GetBuildDetailsQuery } from '../../../../api/generated';
 
-import { BuildData_VulnerableRelease } from '../../../../api/generated';
+export type Finding = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['findings'][number];
 
-export type VulnerablePackage = NonNullable<BuildData_VulnerableRelease>;
+export type Guide = Finding['vulnerability']['guide_vulnerabilities'][number]['guide'];

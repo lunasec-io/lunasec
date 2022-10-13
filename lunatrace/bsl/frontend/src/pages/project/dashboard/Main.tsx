@@ -20,7 +20,6 @@ import { UserContext } from '../../../contexts/UserContext';
 import { ProjectInfo, SetActiveTab } from '../types';
 
 import { DefaultBranchSummary } from './DefaultBranchSummary';
-import { ManifestDrop } from './ManifestDrop';
 import { ProjectCloneForAdmin } from './ProjectCloneForAdmin';
 import { ScanTypesExplanation } from './ScanTypesExplanation';
 

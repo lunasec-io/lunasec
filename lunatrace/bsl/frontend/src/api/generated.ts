@@ -97,7 +97,7 @@ export type BuildData_VulnerableRelease = {
   chains: Array<Array<BuildData_DependencyNode>>;
   cvss?: Maybe<Scalars['Float']>;
   dev_only: Scalars['Boolean'];
-  release?: Maybe<BuildData_Release>;
+  release: BuildData_Release;
   severity?: Maybe<Scalars['String']>;
   trivially_updatable: Scalars['String'];
 };
@@ -6944,7 +6944,7 @@ export type GetVulnerableReleasesFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, cvss?: number | null, severity?: string | null, dev_only: boolean, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>>, release?: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string } } | null, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable?: boolean | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, source_id: string }, chains?: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>> | null }> }> | null };
+export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, cvss?: number | null, severity?: string | null, dev_only: boolean, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>>, release: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string } }, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable?: boolean | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, source_id: string }, chains?: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>> | null }> }> | null };
 
 export type InsertNewOrgUserMutationVariables = Exact<{
   organization_id: Scalars['uuid'];

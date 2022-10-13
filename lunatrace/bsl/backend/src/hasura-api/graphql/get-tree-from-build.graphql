@@ -2,6 +2,12 @@
 
 query GetTreeFromBuild($build_id: uuid!) {
     builds_by_pk(id: $build_id) {
+        project {
+            ignored_vulnerabilities {
+                vulnerability_id
+                locations
+            }
+        }
         resolved_manifests {
             id
             path

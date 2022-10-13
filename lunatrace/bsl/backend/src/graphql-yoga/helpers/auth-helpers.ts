@@ -22,7 +22,7 @@ import { Context, ContextLoggedIn } from '../context';
 export function throwIfUnauthenticated(ctx: Context): void {
   if (!isAuthenticated(ctx)) {
     log.warn('No parsed JWT claims with a user ID on route that required authorization, throwing a graphql error');
-    throw new GraphQLYogaError('Unauthorized');
+    throw new GraphQLYogaError(`Unauthorized`);
   }
 }
 

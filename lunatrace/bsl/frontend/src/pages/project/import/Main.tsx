@@ -11,10 +11,10 @@
  * limitations under the License.
  *
  */
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Card, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
 import { FiArrowRight, FiGithub } from 'react-icons/fi';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import api from '../../../api';
 import { OrgsWithReposInput } from '../../../api/generated';
