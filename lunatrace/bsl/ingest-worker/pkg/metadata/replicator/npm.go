@@ -145,17 +145,22 @@ func (n *npmReplicator) bulkInsertChanges(revisions []ChangesReqItem) error {
 	return nil
 }
 
-func (n *npmReplicator) replicateChangesSince(ctx context.Context, since, limit int) error {
+func (n *npmReplicator) replicateChangesSince(ctx context.Context, since, lastSeq int) (int, error) {
 	var revisions []ChangesReqItem
+
+	log.Info().
+		Int("since", since).
+		Msg("replicating changes starting at seq")
 
 	scanner, cleanup, err := n.changesRequest(ctx, since, false)
 	if err != nil {
-		return err
+		return since, err
 	}
 	defer cleanup()
 
 	totalCount := 0
 	timeCheckpoint := time.Now()
+	lastKnownSeq := 0
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -174,12 +179,13 @@ func (n *npmReplicator) replicateChangesSince(ctx context.Context, since, limit 
 				Msg("failed to unmarshal changes item")
 			continue
 		}
+		lastKnownSeq = item.Seq
 
-		if limit != 0 && limit == item.Seq {
+		if lastSeq != 0 && lastSeq == item.Seq {
 			log.Info().
 				Int("seq", item.Seq).
-				Msg("completed replication job to limit")
-			return nil
+				Msg("completed replication job to lastSeq")
+			return 0, nil
 		}
 
 		// remove `\u0000` from doc
@@ -191,7 +197,7 @@ func (n *npmReplicator) replicateChangesSince(ctx context.Context, since, limit 
 			log.Info().
 				Dur("delta", time.Now().Sub(timeCheckpoint)).
 				Int("total count", totalCount).
-				Int("target count", since+limit).
+				Int("target count", since+lastSeq).
 				Int("seq", item.Seq).
 				Msg("replication status")
 			timeCheckpoint = time.Now()
@@ -200,7 +206,7 @@ func (n *npmReplicator) replicateChangesSince(ctx context.Context, since, limit 
 			err = n.bulkInsertChanges(revisions)
 			if err != nil {
 				log.Error().Err(err).Msg("failed to insert revisions")
-				return err
+				return item.Seq, err
 			}
 			revisions = []ChangesReqItem{}
 		}
@@ -208,10 +214,10 @@ func (n *npmReplicator) replicateChangesSince(ctx context.Context, since, limit 
 
 	if err = scanner.Err(); err != nil {
 		log.Error().Err(err).Msg("error while scanning changes")
-		return err
+		return lastKnownSeq, err
 	}
 
-	return nil
+	return lastKnownSeq, nil
 }
 
 func (n *npmReplicator) getLastSequenceFromChangeStream(ctx context.Context) (int, error) {
@@ -244,7 +250,7 @@ func (n *npmReplicator) getLastSequenceFromChangeStream(ctx context.Context) (in
 	return item.Seq, nil
 }
 
-func (n *npmReplicator) getLastReplicatedSequence() (int, error) {
+func (n *npmReplicator) LastReplicatedItem() (int, error) {
 	log.Info().Msg("determining last replicated sequence item")
 
 	row := n.deps.DB.QueryRow(`SELECT COALESCE(MAX(seq), 0) FROM npm.revision`)
@@ -265,7 +271,7 @@ type replicatorJob struct {
 }
 
 func (n *npmReplicator) replicationWorker(ctx context.Context, job replicatorJob, errors chan<- error) {
-	errors <- n.Replicate(ctx, job.startSeq, job.size)
+	errors <- n.replicateChunk(ctx, job.startSeq, job.size)
 }
 
 func (n *npmReplicator) replicateToKnownSequence(ctx context.Context, endSeq int) error {
@@ -297,39 +303,20 @@ func (n *npmReplicator) replicateToKnownSequence(ctx context.Context, endSeq int
 	return nil
 }
 
-func (n *npmReplicator) Replicate(ctx context.Context, seq, limit int) error {
-	// If we have not specified a specific sequence to start with, assume we are starting at the beginning
-	if limit == 0 {
-		lastSeq, err := n.getLastSequenceFromChangeStream(ctx)
-		if err != nil {
-			return err
-		}
-
-		// try to do a fast catch-up by using a bunch of workers
-		err = n.replicateToKnownSequence(ctx, lastSeq)
-		if err != nil {
-			return err
-		}
-	}
+func (n *npmReplicator) replicateChunk(ctx context.Context, seq, lastSeq int) error {
+	var (
+		err          error
+		lastKnownSeq int
+	)
 
 	replicate := func() error {
-		if seq == 0 && limit == 0 {
-			var err error
-
-			log.Info().
-				Msg("replicating changes from npm from last sequence")
-
-			// ask the database what the last scanned sequence was
-			seq, err = n.getLastReplicatedSequence()
-			if err != nil {
-				return err
-			}
+		// in the case that we experienced an error midway through replicating, restore the place that we left off
+		if lastKnownSeq != 0 {
+			seq = lastKnownSeq
 		}
 
-		log.Info().
-			Int("since", seq).
-			Msg("replicating changes starting at seq")
-		return n.replicateChangesSince(ctx, seq, limit)
+		lastKnownSeq, err = n.replicateChangesSince(ctx, seq, lastSeq)
+		return err
 	}
 
 	expBackoff := backoff.NewExponentialBackOff()
@@ -337,13 +324,46 @@ func (n *npmReplicator) Replicate(ctx context.Context, seq, limit int) error {
 	// This process takes a long time, make sure we have enough time in between errors
 	expBackoff.MaxElapsedTime = time.Hour * 24
 
-	err := backoff.Retry(replicate, expBackoff)
+	err = backoff.Retry(replicate, expBackoff)
 	if err != nil {
 		log.Error().
 			Err(err).
 			Msg("failed to replicate from offset")
 	}
 	return nil
+}
+
+func (n *npmReplicator) InitialReplication(ctx context.Context) error {
+	log.Info().
+		Msg("initial replication of registry")
+
+	lastSeq, err := n.getLastSequenceFromChangeStream(ctx)
+	if err != nil {
+		return err
+	}
+
+	// try to do a fast catch-up by using a bunch of workers
+	err = n.replicateToKnownSequence(ctx, lastSeq)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (n *npmReplicator) ReplicateSince(ctx context.Context, seq int) error {
+	for {
+		log.Info().
+			Int("since", seq).
+			Msg("starting to replicate registry")
+
+		err := n.replicateChunk(ctx, seq, 0)
+		if err != nil {
+			log.Warn().
+				Err(err).
+				Msg("error while replicating")
+		}
+		time.Sleep(time.Minute)
+	}
 }
 
 func NewNPMReplicator(d npmReplicatorDeps) metadata.Replicator {
