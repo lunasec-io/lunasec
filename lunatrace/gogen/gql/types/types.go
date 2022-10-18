@@ -19,62 +19,62 @@ type UUID string
 type PackageManager string
 
 const (
-  NPM       = "npm"
-  Packagist = "packagist"
-  CratesIo  = "crates_io"
-  Go        = "go"
-  Hex       = "hex"
-  Maven     = "maven"
-  NuGet     = "nuget"
-  PyPi      = "pypi"
-  RubyGems  = "rubygems"
+	NPM       = "npm"
+	Packagist = "packagist"
+	CratesIo  = "crates_io"
+	Go        = "go"
+	Hex       = "hex"
+	Maven     = "maven"
+	NuGet     = "nuget"
+	PyPi      = "pypi"
+	RubyGems  = "rubygems"
 )
 
 var PackageManagers = []PackageManager{
-  NPM,
-  Packagist,
-  CratesIo,
-  Go,
-  Hex,
-  Maven,
-  NuGet,
-  PyPi,
-  RubyGems,
+	NPM,
+	Packagist,
+	CratesIo,
+	Go,
+	Hex,
+	Maven,
+	NuGet,
+	PyPi,
+	RubyGems,
 }
 
 type LicenseSource string
 
 const (
-  Manual     LicenseSource = "manual"
-  ScanRepo   LicenseSource = "scan_repo"
-  ScanBinary LicenseSource = "scan_binary"
-  ApiNpm     LicenseSource = "api_npm"
+	Manual     LicenseSource = "manual"
+	ScanRepo   LicenseSource = "scan_repo"
+	ScanBinary LicenseSource = "scan_binary"
+	ApiNpm     LicenseSource = "api_npm"
 )
 
 type AffectedRangeType string
 
 const (
-  Git       AffectedRangeType = "git"
-  SemVer    AffectedRangeType = "semver"
-  Ecosystem AffectedRangeType = "ecosystem"
+	Git       AffectedRangeType = "git"
+	SemVer    AffectedRangeType = "semver"
+	Ecosystem AffectedRangeType = "ecosystem"
 )
 
 var AffectedRangeTypes = []AffectedRangeType{
-  Git, SemVer, Ecosystem,
+	Git, SemVer, Ecosystem,
 }
 
 type ReferenceType string
 
 const (
-  Advisory     ReferenceType = "advisory"
-  Article      ReferenceType = "article"
-  Fix          ReferenceType = "fix"
-  GitReference ReferenceType = "git"
-  Package      ReferenceType = "package"
-  Report       ReferenceType = "report"
-  Web          ReferenceType = "web"
+	Advisory     ReferenceType = "advisory"
+	Article      ReferenceType = "article"
+	Fix          ReferenceType = "fix"
+	GitReference ReferenceType = "git"
+	Package      ReferenceType = "package"
+	Report       ReferenceType = "report"
+	Web          ReferenceType = "web"
 )
 
 var ReferenceTypes = []ReferenceType{
-  Advisory, Article, Fix, GitReference, Package, Report, Web,
+	Advisory, Article, Fix, GitReference, Package, Report, Web,
 }

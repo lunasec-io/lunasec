@@ -1,7 +1,7 @@
-schema: ../schema.graphql
+schema: schema.graphql
 
 operations:
-  - gql/*.graphql
+  - gql/graphql/*.graphql
 
 generated: gql/gen.go
 package: gql
@@ -42,10 +42,10 @@ bindings:
   numeric:
     type: float64
   package_manager:
-    type: github.com/lunasec-io/lunasec/lunatrace/cli/gql/types.PackageManager
+    type: github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types.PackageManager
   license_source:
-    type: github.com/lunasec-io/lunasec/lunatrace/cli/gql/types.LicenseSource
+    type: github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types.LicenseSource
   affected_range_type:
-    type: github.com/lunasec-io/lunasec/lunatrace/cli/gql/types.AffectedRangeType
+    type: github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types.AffectedRangeType
   reference_type:
-    type: github.com/lunasec-io/lunasec/lunatrace/cli/gql/types.ReferenceType
+    type: github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types.ReferenceType

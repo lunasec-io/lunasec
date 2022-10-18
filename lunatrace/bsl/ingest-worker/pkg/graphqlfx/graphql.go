@@ -13,7 +13,7 @@ package graphqlfx
 
 import (
 	"github.com/Khan/genqlient/graphql"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 	"github.com/rs/zerolog/log"
 	"net/http"
 )
