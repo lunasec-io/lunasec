@@ -12,11 +12,11 @@
 package mapper
 
 import (
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql/types"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 	"time"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
@@ -61,7 +61,7 @@ func mapReleases(r []metadata.Release) *gql.Package_release_arr_rel_insert_input
 
 	return &gql.Package_release_arr_rel_insert_input{
 		Data:        m,
-		On_conflict: gql.ReleaseOnConflict,
+		On_conflict: metadata.ReleaseOnConflict,
 	}
 }
 
@@ -75,7 +75,7 @@ func mapDependencies(ds []metadata.Dependency) *gql.Package_release_dependency_a
 					Name:            util.Ptr(dep.Name),
 					Package_manager: &npmV,
 				},
-				On_conflict: gql.PackageOnConflict,
+				On_conflict: metadata.PackageOnConflict,
 			},
 			Package_name:          util.Ptr(dep.Name),
 			Package_version_query: util.Ptr(dep.Version),
@@ -88,7 +88,7 @@ func mapDependencies(ds []metadata.Dependency) *gql.Package_release_dependency_a
 
 	return &gql.Package_release_dependency_arr_rel_insert_input{
 		Data:        m,
-		On_conflict: gql.PackageReleaseDependencyOnConflict,
+		On_conflict: metadata.PackageReleaseDependencyOnConflict,
 	}
 }
 
@@ -107,7 +107,7 @@ func mapMaintainers(p []metadata.Maintainer) *gql.Package_package_maintainer_arr
 
 	return &gql.Package_package_maintainer_arr_rel_insert_input{
 		Data:        m,
-		On_conflict: gql.PackageMaintainerOnConflict,
+		On_conflict: metadata.PackageMaintainerOnConflict,
 	}
 }
 
@@ -118,6 +118,6 @@ func mapMaintainer(pm metadata.Maintainer) *gql.Package_maintainer_obj_rel_inser
 			Name:            util.Ptr(pm.Name),
 			Package_manager: &npmV,
 		},
-		On_conflict: gql.MaintainerOnConflict,
+		On_conflict: metadata.MaintainerOnConflict,
 	}
 }

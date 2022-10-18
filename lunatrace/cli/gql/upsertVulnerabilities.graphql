@@ -1,7 +1,0 @@
-mutation UpsertVulnerabilities($vulnerabilities: [vulnerability_insert_input!]!, $vulnerability_on_conflict: vulnerability_on_conflict!) {
-  insert_vulnerability(objects: $vulnerabilities, on_conflict: $vulnerability_on_conflict) {
-    returning {
-      id
-    }
-  }
-}

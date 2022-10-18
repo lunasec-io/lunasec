@@ -1,0 +1,51 @@
+schema: schema.graphql
+
+operations:
+  - gql/graphql/*.graphql
+
+generated: gql/gen.go
+package: gql
+
+use_struct_references: true
+
+optional: pointer
+
+bindings:
+  bigint:
+    type: int64
+  DateTime:
+    type: time.Time
+  timestamp:
+    type: time.Time
+  timestamptz:
+    type: time.Time
+  date:
+    type: time.Time
+  UUID:
+    type: github.com/google/uuid.UUID
+  uuid:
+    type: github.com/google/uuid.UUID
+  _text:
+    type: string
+  user_role:
+    type: string
+  fix_state_enum:
+    type: string
+  builds_source_type:
+    type: string
+  organization_user_role:
+    type: string
+  severity_enum:
+    type: string
+  jsonb:
+    type: encoding/json.RawMessage
+  numeric:
+    type: float64
+  package_manager:
+    type: github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types.PackageManager
+  license_source:
+    type: github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types.LicenseSource
+  affected_range_type:
+    type: github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types.AffectedRangeType
+  reference_type:
+    type: github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types.ReferenceType

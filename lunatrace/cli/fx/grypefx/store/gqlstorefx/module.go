@@ -17,6 +17,7 @@ package gqlstorefx
 import (
 	"context"
 	"errors"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 	"github.com/rs/zerolog/log"
 	"strings"
 	"time"
@@ -26,7 +27,6 @@ import (
 	"github.com/google/uuid"
 	"go.uber.org/fx"
 
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
