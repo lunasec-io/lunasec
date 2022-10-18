@@ -14,7 +14,7 @@ package ingester
 import (
 	"context"
 	util2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
-	gql2 "github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 	"github.com/rs/zerolog/log"
 	"time"
@@ -55,7 +55,7 @@ func sliceContainsPackage(packageSlice []string, packageName string) bool {
 func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]string, error) {
 	// todo make sure this isn't too restrictive
 	// check if we've already fetched this package
-	checkRes, err := gql2.PackageFetchTime(ctx, h.deps.GQLClient, &npmV, util.Ptr(""), util.Ptr(packageName))
+	checkRes, err := gql.PackageFetchTime(ctx, h.deps.GQLClient, &npmV, util.Ptr(""), util.Ptr(packageName))
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]s
 		return nil, err
 	}
 
-	res, err := gql2.UpsertPackage(ctx, h.deps.GQLClient, gqlPkg, gql2.PackageOnConflict)
+	res, err := gql.UpsertPackage(ctx, h.deps.GQLClient, gqlPkg, metadata.PackageOnConflict)
 	if err != nil {
 		util2.LogGraphqlError(
 			err,

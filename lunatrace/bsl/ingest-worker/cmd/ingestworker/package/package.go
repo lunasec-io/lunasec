@@ -53,17 +53,33 @@ func NewCommand(p Params) clifx.CommandResult {
 							Required: false,
 							Usage:    "Initial replication to quickly catchup.",
 						},
+						&cli.BoolFlag{
+							Name:     "resume",
+							Required: false,
+							Usage:    "Resume replication from last replicated item.",
+						},
 					},
 					Action: func(ctx *cli.Context) error {
+						var err error
+
 						since := ctx.Int("since")
 						init := ctx.Bool("init")
+						resume := ctx.Bool("resume")
 
 						if init {
-							err := p.Replicator.InitialReplication(ctx.Context)
+							err = p.Replicator.InitialReplication(ctx.Context)
 							if err != nil {
 								return err
 							}
 						}
+
+						if resume {
+							since, err = p.Replicator.GetLastReplicatedOffset()
+							if err != nil {
+								return err
+							}
+						}
+
 						return p.Replicator.ReplicateSince(ctx.Context, since)
 					},
 				},
