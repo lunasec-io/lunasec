@@ -133,7 +133,7 @@ async function executePRComment(
   return;
 }
 
-async function executePRCheck(
+async function updatePRCheckWithResult(
   buildLookup: GetBuildQuery,
   scanReport: InsertedScan,
   buildId: string,
@@ -167,17 +167,17 @@ async function executePRCheck(
     logger.error("can't comment because git hash is missing");
   }
 
+  const detailsUrl = `https://lunatrace.lunasec.io/project/${projectId}/build/${buildId}`;
+
   const checkData = {
     name: 'LunaTrace',
     head_sha: buildLookup.builds_by_pk?.git_hash,
     external_id: buildId,
-    details_url: `https://lunatrace.lunasec.io/project/${projectId}/build/${buildId}`,
+    details_url: detailsUrl,
     output: {
       title: 'LunaTrace',
-      summary: scanReport.findings.length
-        ? `${scanReport.findings.length} vulnerabilities detected`
-        : 'No vulnerabilities detected',
-      text: body,
+      summary: 'Vulnerability scanning in progress.',
+      text: `## LunaTrace\n\nVulnerability scanning in progress. ([View detailed status](${detailsUrl}))`,
     },
   };
 
@@ -190,22 +190,20 @@ async function executePRCheck(
     repo,
   });
 
-  const githubReviewResponse = await octokit.rest.checks.create({
+  const githubReviewResponse = await octokit.rest.checks.update({
     owner,
     repo,
-    status: 'completed',
-    conclusion: scanReport.findings.length ? 'neutral' : 'success',
-    completed_at: new Date().toISOString(),
+    status: 'in_progress',
     ...checkData,
   });
 
-  logger.info('check created', {
+  logger.info('check updated', {
     checkId: githubReviewResponse.data.id,
   });
   return;
 }
 
-export async function interactWithPR(buildId: string, scanReport: InsertedScan) {
+export async function interactWithPR(buildId: string, scanReport: InsertedScan): Promise<void> {
   const buildLookup = await hasura.GetBuild({
     build_id: buildId,
   });
@@ -254,7 +252,7 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
   });
 
   if (buildLookup.builds_by_pk.project.settings.pr_check_enabled) {
-    await executePRCheck(
+    await updatePRCheckWithResult(
       buildLookup,
       scanReport,
       buildId,
@@ -265,6 +263,7 @@ export async function interactWithPR(buildId: string, scanReport: InsertedScan) 
       previousReviewId
     );
   }
+
   if (!buildLookup.builds_by_pk.project.settings.pr_feedback_disabled) {
     await executePRComment(
       buildLookup,

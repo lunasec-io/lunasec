@@ -36,16 +36,18 @@ export function processGithubWebhookActivity(webhooks: WebhookInterceptor): Webh
 
     return await log.provideFields({ deliveryId }, async () => {
       try {
-        const webhookData: ErrorOrResult<GetWebhookCacheByDeliveryIdQuery | null> = await catchError(
-          async () =>
-            await hasura.GetWebhookCacheByDeliveryId({
-              delivery_id: deliveryId,
-            })
+        const webhookData = await catchError(
+          hasura.GetWebhookCacheByDeliveryId({
+            delivery_id: deliveryId,
+          })
         );
 
         if (threwError(webhookData)) {
-          log.error(`failed to get webhook data for deliveryId ${deliveryId}`);
-          return newError(`Failed to get webhook data for deliveryId ${deliveryId}`);
+          log.error(`Failed to get webhook data for deliveryId ${deliveryId}`);
+          return {
+            error: true,
+            msg: `Failed to get webhook data for deliveryId ${deliveryId}`,
+          };
         }
 
         const event: EmitterWebhookEvent = {
@@ -59,13 +61,21 @@ export function processGithubWebhookActivity(webhooks: WebhookInterceptor): Webh
         log.info('processing github webhook event', {
           event,
         });
+
+        // TODO: Mark webhooks as handled in the database
         await webhooks.receive(event);
 
-        return newResult(undefined);
+        return {
+          error: false,
+        };
       } catch (e) {
         log.error({ error: e, deliveryId }, 'Unable to process GitHub webhook');
 
-        return newError(threwError(e) ? e.message : String(e));
+        return {
+          error: true,
+          msg: threwError(e) ? e.message : String(e),
+          rawError: e instanceof Error ? e : undefined,
+        };
       }
     });
   };

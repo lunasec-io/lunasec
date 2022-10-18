@@ -18,7 +18,7 @@ import { SnapshotBuildInfo } from '../../../types/sqs';
 import { log } from '../../../utils/log';
 import { queueRepositoryForSnapshot } from '../../actions/queue-repository-for-snapshot';
 
-export async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>) {
+export async function pullRequestHandler(event: EmitterWebhookEvent<'pull_request'>): Promise<void> {
   const actionName = event.payload.action;
 
   if (actionName === 'synchronize' || actionName === 'opened' || actionName === 'reopened') {
