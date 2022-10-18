@@ -250,7 +250,7 @@ func (n *npmReplicator) getLastSequenceFromChangeStream(ctx context.Context) (in
 	return item.Seq, nil
 }
 
-func (n *npmReplicator) LastReplicatedItem() (int, error) {
+func (n *npmReplicator) GetLastReplicatedOffset() (int, error) {
 	log.Info().Msg("determining last replicated sequence item")
 
 	row := n.deps.DB.QueryRow(`SELECT COALESCE(MAX(seq), 0) FROM npm.revision`)

@@ -11,6 +11,11 @@
   ~ limitations under the License.
   ~
 -->
-# gen
+# gogen
+Generates go specific code.
 
-generated files
+Currently, is used to generate `gql/gen.go`
+
+```shell
+go generate ./...
+```
