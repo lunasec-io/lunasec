@@ -16,7 +16,7 @@ package license
 
 import (
 	"context"
-	gql2 "github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 	"testing"
 	"time"
@@ -30,52 +30,52 @@ import (
 	lunatypes "github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 )
 
-var packageOnConflict = &gql2.Package_on_conflict{
-	Constraint: gql2.Package_constraintPackagePackageManagerCustomRegistryNameIdx,
-	Update_columns: []gql2.Package_update_column{
-		gql2.Package_update_columnCustomRegistry,
-		gql2.Package_update_columnDescription,
-		gql2.Package_update_columnName,
-		gql2.Package_update_columnPackageManager,
+var packageOnConflict = &gql.Package_on_conflict{
+	Constraint: gql.Package_constraintPackagePackageManagerCustomRegistryNameIdx,
+	Update_columns: []gql.Package_update_column{
+		gql.Package_update_columnCustomRegistry,
+		gql.Package_update_columnDescription,
+		gql.Package_update_columnName,
+		gql.Package_update_columnPackageManager,
 	},
 }
 
-var releaseOnConflict = &gql2.Package_release_on_conflict{
-	Constraint: gql2.Package_release_constraintReleasePackageIdVersionIdx,
-	Update_columns: []gql2.Package_release_update_column{
-		gql2.Package_release_update_columnBlobHash,
-		gql2.Package_release_update_columnMirroredBlobUrl,
-		gql2.Package_release_update_columnObservedTime,
-		gql2.Package_release_update_columnPublishingMaintainerId,
-		gql2.Package_release_update_columnReleaseTime,
-		gql2.Package_release_update_columnUpstreamBlobUrl,
-		gql2.Package_release_update_columnUpstreamData,
-		gql2.Package_release_update_columnVersion,
+var releaseOnConflict = &gql.Package_release_on_conflict{
+	Constraint: gql.Package_release_constraintReleasePackageIdVersionIdx,
+	Update_columns: []gql.Package_release_update_column{
+		gql.Package_release_update_columnBlobHash,
+		gql.Package_release_update_columnMirroredBlobUrl,
+		gql.Package_release_update_columnObservedTime,
+		gql.Package_release_update_columnPublishingMaintainerId,
+		gql.Package_release_update_columnReleaseTime,
+		gql.Package_release_update_columnUpstreamBlobUrl,
+		gql.Package_release_update_columnUpstreamData,
+		gql.Package_release_update_columnVersion,
 	},
 }
 
-var maintainerOnConflict = &gql2.Package_maintainer_on_conflict{
-	Constraint: gql2.Package_maintainer_constraintMaintainerPackageManagerEmailIdx,
-	Update_columns: []gql2.Package_maintainer_update_column{
-		gql2.Package_maintainer_update_columnName,
-		gql2.Package_maintainer_update_columnEmail,
+var maintainerOnConflict = &gql.Package_maintainer_on_conflict{
+	Constraint: gql.Package_maintainer_constraintMaintainerPackageManagerEmailIdx,
+	Update_columns: []gql.Package_maintainer_update_column{
+		gql.Package_maintainer_update_columnName,
+		gql.Package_maintainer_update_columnEmail,
 	},
 }
 
-var packageMaintainerOnConflict = &gql2.Package_package_maintainer_on_conflict{
-	Constraint: gql2.Package_package_maintainer_constraintPackageMaintainerPackageIdMaintainerIdIdx,
+var packageMaintainerOnConflict = &gql.Package_package_maintainer_on_conflict{
+	Constraint: gql.Package_package_maintainer_constraintPackageMaintainerPackageIdMaintainerIdIdx,
 	// don't upsert the join table
-	Update_columns: []gql2.Package_package_maintainer_update_column{},
+	Update_columns: []gql.Package_package_maintainer_update_column{},
 }
 
-var packageReleaseDependencyOnConflict = &gql2.Package_release_dependency_on_conflict{
-	Constraint: gql2.Package_release_dependency_constraintReleaseDependencyReleaseIdPackageNamePackageVersionIdx,
-	Update_columns: []gql2.Package_release_dependency_update_column{
+var packageReleaseDependencyOnConflict = &gql.Package_release_dependency_on_conflict{
+	Constraint: gql.Package_release_dependency_constraintReleaseDependencyReleaseIdPackageNamePackageVersionIdx,
+	Update_columns: []gql.Package_release_dependency_update_column{
 		//todo is this right?
-		gql2.Package_release_dependency_update_columnDependencyPackageId,
-		gql2.Package_release_dependency_update_columnDependencyReleaseId,
-		gql2.Package_release_dependency_update_columnPackageName,
-		gql2.Package_release_dependency_update_columnPackageVersionQuery,
+		gql.Package_release_dependency_update_columnDependencyPackageId,
+		gql.Package_release_dependency_update_columnDependencyReleaseId,
+		gql.Package_release_dependency_update_columnPackageName,
+		gql.Package_release_dependency_update_columnPackageVersionQuery,
 	},
 }
 
@@ -99,16 +99,16 @@ func TestUpsert(t *testing.T) {
 	const packageName = "test_package"
 	const dependencyName = "test_dependency"
 
-	res, err := gql2.UpsertPackage(context.Background(), gql2.LocalClient, &gql2.Package_insert_input{
+	res, err := gql.UpsertPackage(context.Background(), gql.LocalClient, &gql.Package_insert_input{
 		Custom_registry: "",
 		Description:     "",
 		Name:            packageName,
-		Package_maintainers: &gql2.Package_package_maintainer_arr_rel_insert_input{
-			Data: []*gql2.Package_package_maintainer_insert_input{
+		Package_maintainers: &gql.Package_package_maintainer_arr_rel_insert_input{
+			Data: []*gql.Package_package_maintainer_insert_input{
 				// slice of join table
 				{
-					Maintainer: &gql2.Package_maintainer_obj_rel_insert_input{
-						Data: &gql2.Package_maintainer_insert_input{
+					Maintainer: &gql.Package_maintainer_obj_rel_insert_input{
+						Data: &gql.Package_maintainer_insert_input{
 							Email:           "",
 							Name:            "",
 							Package_manager: types.NPM,
@@ -120,25 +120,25 @@ func TestUpsert(t *testing.T) {
 			On_conflict: packageMaintainerOnConflict,
 		},
 		Package_manager: types.NPM,
-		Releases: &gql2.Package_release_arr_rel_insert_input{
-			Data: []*gql2.Package_release_insert_input{
+		Releases: &gql.Package_release_arr_rel_insert_input{
+			Data: []*gql.Package_release_insert_input{
 				// slice of release
 				{
-					Publishing_maintainer: &gql2.Package_maintainer_obj_rel_insert_input{
-						Data: &gql2.Package_maintainer_insert_input{
+					Publishing_maintainer: &gql.Package_maintainer_obj_rel_insert_input{
+						Data: &gql.Package_maintainer_insert_input{
 							Email:           "",
 							Name:            "",
 							Package_manager: types.NPM,
 						},
 						On_conflict: maintainerOnConflict,
 					},
-					Release_dependencies: &gql2.Package_release_dependency_arr_rel_insert_input{
-						Data: []*gql2.Package_release_dependency_insert_input{
+					Release_dependencies: &gql.Package_release_dependency_arr_rel_insert_input{
+						Data: []*gql.Package_release_dependency_insert_input{
 							// slice of deps
 							{
 								// create a stub entry for packages which are not yet analyzed.
-								Dependency_package: &gql2.Package_obj_rel_insert_input{
-									Data: &gql2.Package_insert_input{
+								Dependency_package: &gql.Package_obj_rel_insert_input{
+									Data: &gql.Package_insert_input{
 										Name:            dependencyName,
 										Package_manager: types.NPM,
 									},
