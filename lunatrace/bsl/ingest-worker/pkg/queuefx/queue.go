@@ -42,17 +42,25 @@ type Subscriber struct {
 func getSqsSubscriptionUrl(awsSession *session.Session, queueName string) (string, error) {
 	svc := sqs.New(awsSession)
 
+	log.Info().
+		Str("queue name", queueName).
+		Msg("getting queue url from queue name")
+
 	output, err := svc.GetQueueUrl(&sqs.GetQueueUrlInput{
 		QueueName: aws.String(queueName),
 	})
 	if err != nil {
-		log.Error().Err(err).Msg("failed to get SQS queue url")
+		log.Error().
+			Err(err).
+			Msg("failed to get SQS queue url")
 		return "", err
 	}
 
 	queueUrl, err := url.Parse(*output.QueueUrl)
 	if err != nil {
-		log.Error().Err(err).Msg("failed to parse SQS queue url")
+		log.Error().
+			Err(err).
+			Msg("failed to parse SQS queue url")
 		return "", err
 	}
 

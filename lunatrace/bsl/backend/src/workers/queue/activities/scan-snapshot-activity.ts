@@ -159,11 +159,10 @@ export async function scanSnapshotActivity(buildId: string, msg: S3ObjectMetadat
       return newError('invalid build uuid from s3 object at key ' + key);
     }
 
-    // TODO (cthompson) commented out so that the branch could be landed to fix production
-    // const staticAnalysisRes = await staticallyAnalyzeDependencyTree(buildId);
-    // if (staticAnalysisRes.error) {
-    //   return staticAnalysisRes;
-    // }
+    const staticAnalysisRes = await staticallyAnalyzeDependencyTree(buildId);
+    if (staticAnalysisRes.error) {
+      return staticAnalysisRes;
+    }
 
     const bucketInfo: SbomBucketInfo = { region, bucketName, key };
 
