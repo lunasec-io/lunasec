@@ -1,6 +1,7 @@
 package npm
 
 import (
+	"github.com/rs/zerolog/log"
 	"go.uber.org/config"
 )
 
@@ -13,7 +14,9 @@ func NewConfig(provider config.Provider) (config Config) {
 
 	err := value.Populate(&config)
 	if err != nil {
-		config.RegistryUrl = NpmRegistry
+		log.Error().
+			Err(err).
+			Msg("unable populate npm fetcher config")
 		return
 	}
 	return
