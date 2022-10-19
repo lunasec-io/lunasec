@@ -33,8 +33,9 @@ const refetchDays = 0
 type Params struct {
 	fx.In
 
-	Fetcher   metadata.Fetcher
-	GQLClient graphql.Client
+	Fetcher     metadata.Fetcher
+	GQLClient   graphql.Client
+	NPMRegistry metadata.NpmRegistry
 }
 
 type hasuraNPMIngester struct {
@@ -50,6 +51,27 @@ func sliceContainsPackage(packageSlice []string, packageName string) bool {
 		}
 	}
 	return false
+}
+
+func (h *hasuraNPMIngester) IngestAllPackagesFromRegistry(ctx context.Context) error {
+	packageStream, err := h.deps.NPMRegistry.PackageStream(ctx)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("failed to get package stream from registry")
+		return err
+	}
+
+	for packageName := range packageStream {
+		_, err = h.Ingest(ctx, packageName)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Msg("failed to ingest package")
+			return err
+		}
+	}
+	return nil
 }
 
 func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]string, error) {
@@ -70,12 +92,12 @@ func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]s
 		}
 	}
 
-	pkg, err := h.deps.Fetcher.Fetch(ctx, packageName)
+	pkg, err := h.deps.NPMRegistry.GetPackageMetadata(ctx, packageName)
 	if err != nil {
 		log.Error().
 			Err(err).
 			Str("package", packageName).
-			Msg("failed to fetch package")
+			Msg("failed to get package metadata")
 		return nil, err
 	}
 

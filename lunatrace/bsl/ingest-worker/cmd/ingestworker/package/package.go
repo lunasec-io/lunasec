@@ -34,8 +34,20 @@ func NewCommand(p Params) clifx.CommandResult {
 			Subcommands: []*cli.Command{
 				{
 					Name: "ingest",
+					Flags: []cli.Flag{
+						&cli.BoolFlag{
+							Name:     "registry",
+							Required: false,
+							Usage:    "Ingest all packages from replicated registry.",
+						},
+					},
 					Action: func(ctx *cli.Context) error {
 						packageName := ctx.Args().First()
+						registry := ctx.Bool("registry")
+
+						if registry {
+							return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName)
+						}
 
 						return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName)
 					},

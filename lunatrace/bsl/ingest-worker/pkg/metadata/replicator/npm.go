@@ -350,13 +350,13 @@ func (n *npmReplicator) InitialReplication(ctx context.Context) error {
 	return nil
 }
 
-func (n *npmReplicator) ReplicateSince(ctx context.Context, seq int) error {
+func (n *npmReplicator) ReplicateSince(ctx context.Context, since int) error {
 	for {
 		log.Info().
-			Int("since", seq).
+			Int("since", since).
 			Msg("starting to replicate registry")
 
-		err := n.replicateChunk(ctx, seq, 0)
+		err := n.replicateChunk(ctx, since, 0)
 		if err != nil {
 			log.Warn().
 				Err(err).
