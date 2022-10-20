@@ -167,7 +167,7 @@ module.exports = {
     navbar: {
       logo: {
         alt: 'LunaSec Logo',
-        src: '/docs/img/logo-black-text.svg',
+        src: '/docs/img/logo-black-text_500px.svg',
         srcDark: '/docs/img/logo-white-text.svg'
       },
       items: [
