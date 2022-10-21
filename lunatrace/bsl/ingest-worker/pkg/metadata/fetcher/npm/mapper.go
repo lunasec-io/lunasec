@@ -13,14 +13,14 @@ package npm
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/rs/zerolog/log"
 	"time"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
 )
 
 func adapt(n *NpmPackageMetadataWithRawVersions, packageRaw []byte) (*metadata.PackageMetadata, error) {
-	releases, err := mapReleases(n.VersionsRaw)
+	releases, err := mapReleases(n.Name, n.VersionsRaw)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func mapMaintainers(a []Author) []metadata.Maintainer {
 	return m
 }
 
-func mapReleases(r map[string]json.RawMessage) ([]metadata.Release, error) {
+func mapReleases(packageName string, r map[string]json.RawMessage) ([]metadata.Release, error) {
 	m := make([]metadata.Release, 0, len(r))
 	for rv, rrl := range r {
 
@@ -56,7 +56,11 @@ func mapReleases(r map[string]json.RawMessage) ([]metadata.Release, error) {
 
 		err := json.Unmarshal(rrl, &rl)
 		if err != nil {
-			fmt.Println("release failed to unmarshal, dropping error")
+			log.Error().
+				Err(err).
+				Str("package name", packageName).
+				Str("version", rv).
+				Msg("release failed to unmarshal, dropping error")
 			continue
 		}
 
