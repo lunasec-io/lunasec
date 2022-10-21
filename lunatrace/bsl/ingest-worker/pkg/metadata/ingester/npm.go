@@ -90,7 +90,6 @@ func (h *NPMPackageIngester) hasPackageRecentlyBeenFetched(ctx context.Context, 
 		postgres.AND(
 			table.Package.Name.EQ(postgres.String(packageName)),
 			table.Package.PackageManager.EQ(postgres.NewEnumValue(string(npmV))),
-			table.Package.CustomRegistry.EQ(postgres.String("")),
 			table.Package.LastSuccessfulFetch.IS_NOT_NULL(),
 		),
 	).LIMIT(1)
@@ -99,6 +98,9 @@ func (h *NPMPackageIngester) hasPackageRecentlyBeenFetched(ctx context.Context, 
 	err := packageFetchTime.QueryContext(ctx, h.deps.DB, &p)
 	if err != nil {
 		if err == qrm.ErrNoRows {
+			log.Info().
+				Str("package name", packageName).
+				Msg("package has never been fetched")
 			return false, nil
 		}
 		return false, err
