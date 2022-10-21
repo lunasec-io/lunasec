@@ -80,7 +80,7 @@ func NewCommand(p Params) clifx.CommandResult {
 							bar := progressbar.Default(int64(len(packages)))
 
 							for _, packageName = range packages {
-								err = p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName)
+								err = p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName, ignoreErrors)
 								if err != nil {
 									log.Error().
 										Err(err).
@@ -105,7 +105,7 @@ func NewCommand(p Params) clifx.CommandResult {
 							return err
 						}
 
-						return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName)
+						return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName, ignoreErrors)
 					},
 				},
 				{

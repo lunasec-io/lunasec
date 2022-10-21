@@ -70,12 +70,12 @@ func main() {
 			vulnmanager.NewFileIngester,
 		),
 		fx.Provide(
-			ingester.NewNPMPackageIngester,
 			vulnerability.NewCommand,
 		),
 		fx.Provide(
 			ingester.NewPackageSqlIngester,
 			replicator.NewNPMReplicator,
+			ingester.NewNPMPackageIngester,
 			packageCommand.NewCommand,
 		),
 

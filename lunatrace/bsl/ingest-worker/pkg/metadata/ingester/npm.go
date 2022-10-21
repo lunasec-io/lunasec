@@ -45,15 +45,6 @@ type NPMPackageIngester struct {
 
 var npmV types.PackageManager = types.NPM
 
-func sliceContainsPackage(packageSlice []string, packageName string) bool {
-	for _, p := range packageSlice {
-		if packageName == p {
-			return true
-		}
-	}
-	return false
-}
-
 func (h *NPMPackageIngester) IngestAllPackagesFromRegistry(ctx context.Context, ignoreErrors bool) error {
 	log.Info().
 		Msg("collecting packages from npm registry")
@@ -184,6 +175,7 @@ func (h *NPMPackageIngester) Ingest(ctx context.Context, packageName string) ([]
 func (h *NPMPackageIngester) IngestPackageAndDependencies(
 	ctx context.Context,
 	packageName string,
+	ignoreErrors bool,
 ) error {
 	var ingestedPkgs []string
 	pkgs := []string{packageName}
@@ -201,14 +193,17 @@ func (h *NPMPackageIngester) IngestPackageAndDependencies(
 			log.Error().
 				Err(err).
 				Msg("failed to ingest packages")
-			return err
+
+			if !ignoreErrors {
+				return err
+			}
 		}
 		ingestedPkgs = append(ingestedPkgs, packageToIngest)
 
 		for _, newPkg := range newPkgs {
 			// If the package to be scanned is already flagged to be ingested
 			// or the package has already been ingested, then skip flagging this package
-			if sliceContainsPackage(pkgs, newPkg) || sliceContainsPackage(ingestedPkgs, newPkg) {
+			if lo.Contains(pkgs, newPkg) || lo.Contains(ingestedPkgs, newPkg) {
 				continue
 			}
 			pkgs = append(pkgs, newPkg)
