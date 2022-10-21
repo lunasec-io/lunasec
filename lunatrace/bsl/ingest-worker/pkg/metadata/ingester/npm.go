@@ -15,6 +15,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/go-jet/jet/v2/postgres"
+	"github.com/go-jet/jet/v2/qrm"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/model"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/table"
@@ -97,7 +98,7 @@ func (h *NPMPackageIngester) hasPackageRecentlyBeenFetched(ctx context.Context, 
 	).WHERE(
 		postgres.AND(
 			table.Package.Name.EQ(postgres.String(packageName)),
-			table.Package.PackageManager.EQ(postgres.String(string(npmV))),
+			table.Package.PackageManager.EQ(postgres.NewEnumValue(string(npmV))),
 			table.Package.CustomRegistry.EQ(postgres.String("")),
 			table.Package.LastSuccessfulFetch.IS_NOT_NULL(),
 		),
@@ -106,6 +107,9 @@ func (h *NPMPackageIngester) hasPackageRecentlyBeenFetched(ctx context.Context, 
 	var p model.Package
 	err := packageFetchTime.QueryContext(ctx, h.deps.DB, &p)
 	if err != nil {
+		if err == qrm.ErrNoRows {
+			return false, nil
+		}
 		return false, err
 	}
 
@@ -118,6 +122,10 @@ func (h *NPMPackageIngester) hasPackageRecentlyBeenFetched(ctx context.Context, 
 func (h *NPMPackageIngester) Ingest(ctx context.Context, packageName string) ([]string, error) {
 	recentlyRefetched, err := h.hasPackageRecentlyBeenFetched(ctx, packageName)
 	if err != nil {
+		log.Error().
+			Err(err).
+			Str("package name", packageName).
+			Msg("failed to check if package has been recently fetched")
 		return []string{}, err
 	}
 
