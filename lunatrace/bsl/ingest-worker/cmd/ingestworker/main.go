@@ -61,6 +61,11 @@ func main() {
 			Version: "0.0.1",
 		}),
 		fx.Provide(
+			ingester.NewPackageSqlIngester,
+			ingester.NewNPMPackageIngester,
+			replicator.NewNPMReplicator,
+		),
+		fx.Provide(
 			ingestworker.NewConfigProvider,
 		),
 		fx.Provide(
@@ -73,9 +78,6 @@ func main() {
 			vulnerability.NewCommand,
 		),
 		fx.Provide(
-			ingester.NewPackageSqlIngester,
-			replicator.NewNPMReplicator,
-			ingester.NewNPMPackageIngester,
 			packageCommand.NewCommand,
 		),
 

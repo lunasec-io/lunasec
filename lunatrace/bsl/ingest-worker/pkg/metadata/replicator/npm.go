@@ -10,7 +10,6 @@ import (
 	"github.com/cenkalti/backoff/v4"
 	"github.com/lib/pq"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
 	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
@@ -33,9 +32,9 @@ DO UPDATE SET id = EXCLUDED.id, rev = EXCLUDED.rev, doc = EXCLUDED.doc, deleted 
 
 type npmReplicatorDeps struct {
 	fx.In
-	Client             *http.Client
-	DB                 *sql.DB
-	NPMPackageIngester ingester.NPMPackageIngester
+	Client          *http.Client
+	DB              *sql.DB
+	PackageIngester metadata.PackageIngester
 }
 
 type npmReplicator struct {
@@ -346,7 +345,7 @@ func (n *npmReplicator) ingestReplicatedPackages(ctx context.Context, replicated
 				Msg("skipping package ingestion")
 		}
 
-		_, err := n.deps.NPMPackageIngester.Ingest(ctx, p)
+		_, err := n.deps.PackageIngester.Ingest(ctx, p)
 		if err != nil {
 			log.Error().
 				Err(err).
