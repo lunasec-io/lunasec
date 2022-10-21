@@ -176,75 +176,49 @@ func (h *NPMPackageIngester) Ingest(ctx context.Context, packageName string) ([]
 	return checkList, nil
 }
 
-func (h *NPMPackageIngester) packageIngestionWorker(
-	ctx context.Context,
-	packageQueue <-chan string,
-	discoveredPackages chan<- string,
-	errors chan<- error,
-	duration time.Duration,
-) {
-	for packageToIngest := range packageQueue {
-		log.Info().
-			Str("package", packageToIngest).
-			Msg("ingesting package")
-
-		newPkgs, err := h.IngestWithoutRefetch(ctx, packageToIngest, duration)
-		if err != nil {
-			errors <- err
-		}
-		for _, p := range newPkgs {
-			discoveredPackages <- p
-		}
-	}
-}
-
 func (h *NPMPackageIngester) IngestPackageAndDependencies(
 	ctx context.Context,
 	packageName string,
 	ignoreErrors bool,
 	duration time.Duration,
 ) error {
-	packageQueue := make(chan string)
-	discoveredPackages := make(chan string)
-	defer close(packageQueue)
-	defer close(discoveredPackages)
+	var ingestedPkgs []string
+	pkgs := []string{packageName}
 
-	workerCount := 10
+	for len(pkgs) > 0 {
+		packageToIngest := pkgs[0]
+		pkgs = pkgs[1:]
 
-	errors := make(chan error, workerCount)
-	defer close(errors)
+		log.Info().
+			Str("package", packageToIngest).
+			Msg("ingesting package")
 
-	for w := 0; w < workerCount; w++ {
-		go h.packageIngestionWorker(ctx, packageQueue, discoveredPackages, errors, duration)
-	}
+		newPkgs, err := h.IngestWithoutRefetch(ctx, packageToIngest, duration)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Msg("failed to ingest packages")
 
-	go func() {
-		for err := range errors {
-			if err != nil {
-				log.Error().
-					Err(err).
-					Msg("failed to ingest package")
+			if !ignoreErrors {
+				return err
 			}
 		}
-	}()
+		ingestedPkgs = append(ingestedPkgs, packageToIngest)
 
-	packageQueue <- packageName
-
-	type exists struct{}
-
-	ingestedPackages := map[string]exists{}
-	ingestedPackages[packageName] = exists{}
-
-	for discoveredPackage := range discoveredPackages {
-		if _, ok := ingestedPackages[discoveredPackage]; ok {
-			continue
+		for _, newPkg := range newPkgs {
+			// If the package to be scanned is already flagged to be ingested
+			// or the package has already been ingested, then skip flagging this package
+			if lo.Contains(pkgs, newPkg) || lo.Contains(ingestedPkgs, newPkg) {
+				continue
+			}
+			pkgs = append(pkgs, newPkg)
 		}
 
-		ingestedPackages[discoveredPackage] = exists{}
-		packageQueue <- discoveredPackage
+		log.Info().
+			Str("package", packageToIngest).
+			Strs("packages to ingest", pkgs).
+			Msg("successfully ingested package")
 	}
-
-	// TODO (cthompson) what is the termination condition? we are collecting dependencies of dependencies, but it is not clear when the end of the collection is reached.
 	return nil
 }
 
