@@ -9,12 +9,13 @@ package model
 
 import (
 	"github.com/google/uuid"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 	"time"
 )
 
 type ReleaseLicense struct {
 	ID           uuid.UUID `sql:"primary_key"`
-	Source       LicenseSource
+	Source       types.LicenseSource
 	ReleaseID    uuid.UUID
 	ScanTime     time.Time
 	LicenseID    uuid.UUID

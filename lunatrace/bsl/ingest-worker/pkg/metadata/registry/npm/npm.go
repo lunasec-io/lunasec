@@ -3,15 +3,16 @@ package npm
 import (
 	"database/sql"
 	"errors"
+	"github.com/go-jet/jet/v2/postgres"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher/npm"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/npm/model"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/npm/table"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
 )
 
 const (
-	allPackageIds        = `SELECT id FROM npm.revision GROUP BY id ORDER BY id ASC`
-	queryPackageMetadata = `SELECT doc, deleted FROM npm.revision WHERE id = $1 ORDER BY seq DESC LIMIT 1`
 	maxPackageStreamSize = 1000
 )
 
@@ -29,7 +30,14 @@ type npmRegistry struct {
 func (s *npmRegistry) PackageStream() (<-chan string, error) {
 	packageStream := make(chan string, maxPackageStreamSize)
 
-	rows, err := s.deps.DB.Query(allPackageIds)
+	allPackageIds := table.Revision.SELECT(
+		table.Revision.ID,
+	).GROUP_BY(table.Revision.ID).
+		ORDER_BY(table.Revision.ID.ASC())
+
+	allPackageIdsSql, _ := allPackageIds.Sql()
+
+	rows, err := s.deps.DB.Query(allPackageIdsSql)
 	if err != nil {
 		return nil, err
 	}
@@ -54,15 +62,17 @@ func (s *npmRegistry) PackageStream() (<-chan string, error) {
 }
 
 func (s *npmRegistry) GetPackageMetadata(packageName string) (*metadata.PackageMetadata, error) {
-	var (
-		doc     []byte
-		deleted bool
-	)
+	queryPackageMetadata := table.Revision.SELECT(
+		table.Revision.Doc,
+		table.Revision.Deleted,
+	).WHERE(
+		table.Revision.ID.EQ(postgres.String(packageName)),
+	).ORDER_BY(table.Revision.Seq.DESC())
 
-	row := s.deps.DB.QueryRow(queryPackageMetadata, packageName)
+	var revision model.Revision
 
 	// TODO (cthompson) if there is no row returned, try to resolve the package via the NPM fetcher
-	err := row.Scan(&doc, &deleted)
+	err := queryPackageMetadata.Query(s.deps.DB, &revision)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -71,7 +81,7 @@ func (s *npmRegistry) GetPackageMetadata(packageName string) (*metadata.PackageM
 		return nil, err
 	}
 
-	if deleted {
+	if revision.Deleted {
 		err = errors.New("failed to get latest package metadata")
 		log.Error().
 			Str("package name", packageName).
@@ -79,7 +89,7 @@ func (s *npmRegistry) GetPackageMetadata(packageName string) (*metadata.PackageM
 		return nil, err
 	}
 
-	return npm.ParseRawPackageMetadata(doc)
+	return npm.ParseRawPackageMetadata([]byte(revision.Doc))
 }
 
 func NewNPMRegistry(d npmRegistryDeps) metadata.NpmRegistry {

@@ -12,7 +12,6 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 )
 
-// Boolean expression to compare columns of type "affected_range_type". All fields are combined with logical 'AND'.
 type Affected_range_type_comparison_exp struct {
 	Eq      *types.AffectedRangeType  `json:"_eq,omitempty"`
 	Gt      *types.AffectedRangeType  `json:"_gt,omitempty"`
@@ -67,7 +66,6 @@ const (
 	Analysis_finding_type_enumVulnerable    Analysis_finding_type_enum = "vulnerable"
 )
 
-// input type for inserting data into table "analysis.manifest_dependency_edge_result"
 type Analysis_manifest_dependency_edge_result_insert_input struct {
 	Created_at                  *time.Time                                     `json:"created_at,omitempty"`
 	Finding_source              *Analysis_finding_source_enum                  `json:"finding_source,omitempty"`
@@ -111,7 +109,6 @@ func (v *Analysis_manifest_dependency_edge_result_insert_input) GetVulnerability
 	return v.Vulnerability_id
 }
 
-// Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'.
 type Bigint_comparison_exp struct {
 	Eq      *int64  `json:"_eq,omitempty"`
 	Gt      *int64  `json:"_gt,omitempty"`
@@ -151,7 +148,6 @@ func (v *Bigint_comparison_exp) GetNeq() *int64 { return v.Neq }
 // GetNin returns Bigint_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Bigint_comparison_exp) GetNin() []int64 { return v.Nin }
 
-// Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
 type Boolean_comparison_exp struct {
 	Eq      *bool  `json:"_eq,omitempty"`
 	Gt      *bool  `json:"_gt,omitempty"`
@@ -191,11 +187,9 @@ func (v *Boolean_comparison_exp) GetNeq() *bool { return v.Neq }
 // GetNin returns Boolean_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Boolean_comparison_exp) GetNin() []bool { return v.Nin }
 
-// input type for inserting array relation for remote table "build_dependency_relationship"
 type Build_dependency_relationship_arr_rel_insert_input struct {
-	Data []*Build_dependency_relationship_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Build_dependency_relationship_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Build_dependency_relationship_insert_input `json:"data,omitempty"`
+	On_conflict *Build_dependency_relationship_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Build_dependency_relationship_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -208,7 +202,6 @@ func (v *Build_dependency_relationship_arr_rel_insert_input) GetOn_conflict() *B
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "build_dependency_relationship". All fields are combined with a logical 'AND'.
 type Build_dependency_relationship_bool_exp struct {
 	And                         []*Build_dependency_relationship_bool_exp `json:"_and,omitempty"`
 	Not                         *Build_dependency_relationship_bool_exp   `json:"_not,omitempty"`
@@ -282,15 +275,12 @@ func (v *Build_dependency_relationship_bool_exp) GetRelease_id() *Uuid_compariso
 	return v.Release_id
 }
 
-// unique or primary key constraints on table "build_dependency_relationship"
 type Build_dependency_relationship_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
 	Build_dependency_relationship_constraintBuildDependencyRelationshipPkey Build_dependency_relationship_constraint = "build_dependency_relationship_pkey"
 )
 
-// input type for inserting data into table "build_dependency_relationship"
 type Build_dependency_relationship_insert_input struct {
 	Build                       *Builds_obj_rel_insert_input                        `json:"build,omitempty"`
 	Build_id                    *uuid.UUID                                          `json:"build_id,omitempty"`
@@ -342,11 +332,9 @@ func (v *Build_dependency_relationship_insert_input) GetRelease() *Package_relea
 // GetRelease_id returns Build_dependency_relationship_insert_input.Release_id, and is useful for accessing the field via an interface.
 func (v *Build_dependency_relationship_insert_input) GetRelease_id() *uuid.UUID { return v.Release_id }
 
-// input type for inserting object relation for remote table "build_dependency_relationship"
 type Build_dependency_relationship_obj_rel_insert_input struct {
-	Data *Build_dependency_relationship_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Build_dependency_relationship_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Build_dependency_relationship_insert_input `json:"data,omitempty"`
+	On_conflict *Build_dependency_relationship_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Build_dependency_relationship_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -359,7 +347,6 @@ func (v *Build_dependency_relationship_obj_rel_insert_input) GetOn_conflict() *B
 	return v.On_conflict
 }
 
-// on_conflict condition type for table "build_dependency_relationship"
 type Build_dependency_relationship_on_conflict struct {
 	Constraint     Build_dependency_relationship_constraint      `json:"constraint,omitempty"`
 	Update_columns []Build_dependency_relationship_update_column `json:"update_columns,omitempty"`
@@ -381,31 +368,21 @@ func (v *Build_dependency_relationship_on_conflict) GetWhere() *Build_dependency
 	return v.Where
 }
 
-// update columns of table "build_dependency_relationship"
 type Build_dependency_relationship_update_column string
 
 const (
-	// column name
-	Build_dependency_relationship_update_columnBuildId Build_dependency_relationship_update_column = "build_id"
-	// column name
+	Build_dependency_relationship_update_columnBuildId                  Build_dependency_relationship_update_column = "build_id"
 	Build_dependency_relationship_update_columnDependedByRelationshipId Build_dependency_relationship_update_column = "depended_by_relationship_id"
-	// column name
-	Build_dependency_relationship_update_columnId Build_dependency_relationship_update_column = "id"
-	// column name
-	Build_dependency_relationship_update_columnLabels Build_dependency_relationship_update_column = "labels"
-	// column name
-	Build_dependency_relationship_update_columnProjectPath Build_dependency_relationship_update_column = "project_path"
-	// column name
-	Build_dependency_relationship_update_columnRange Build_dependency_relationship_update_column = "range"
-	// column name
-	Build_dependency_relationship_update_columnReleaseId Build_dependency_relationship_update_column = "release_id"
+	Build_dependency_relationship_update_columnId                       Build_dependency_relationship_update_column = "id"
+	Build_dependency_relationship_update_columnLabels                   Build_dependency_relationship_update_column = "labels"
+	Build_dependency_relationship_update_columnProjectPath              Build_dependency_relationship_update_column = "project_path"
+	Build_dependency_relationship_update_columnRange                    Build_dependency_relationship_update_column = "range"
+	Build_dependency_relationship_update_columnReleaseId                Build_dependency_relationship_update_column = "release_id"
 )
 
-// input type for inserting array relation for remote table "build_log"
 type Build_log_arr_rel_insert_input struct {
-	Data []*Build_log_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Build_log_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Build_log_insert_input `json:"data,omitempty"`
+	On_conflict *Build_log_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Build_log_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -416,7 +393,6 @@ func (v *Build_log_arr_rel_insert_input) GetOn_conflict() *Build_log_on_conflict
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "build_log". All fields are combined with a logical 'AND'.
 type Build_log_bool_exp struct {
 	And        []*Build_log_bool_exp            `json:"_and,omitempty"`
 	Not        *Build_log_bool_exp              `json:"_not,omitempty"`
@@ -456,15 +432,12 @@ func (v *Build_log_bool_exp) GetMessage() *String_comparison_exp { return v.Mess
 // GetState returns Build_log_bool_exp.State, and is useful for accessing the field via an interface.
 func (v *Build_log_bool_exp) GetState() *Build_state_enum_comparison_exp { return v.State }
 
-// unique or primary key constraints on table "build_log"
 type Build_log_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
 	Build_log_constraintBuildLogPkey Build_log_constraint = "build_log_pkey"
 )
 
-// input type for inserting data into table "build_log"
 type Build_log_insert_input struct {
 	Build      *Builds_obj_rel_insert_input `json:"build,omitempty"`
 	Build_id   *uuid.UUID                   `json:"build_id,omitempty"`
@@ -492,7 +465,6 @@ func (v *Build_log_insert_input) GetMessage() *string { return v.Message }
 // GetState returns Build_log_insert_input.State, and is useful for accessing the field via an interface.
 func (v *Build_log_insert_input) GetState() *Build_state_enum { return v.State }
 
-// on_conflict condition type for table "build_log"
 type Build_log_on_conflict struct {
 	Constraint     Build_log_constraint      `json:"constraint,omitempty"`
 	Update_columns []Build_log_update_column `json:"update_columns,omitempty"`
@@ -510,11 +482,9 @@ func (v *Build_log_on_conflict) GetUpdate_columns() []Build_log_update_column {
 // GetWhere returns Build_log_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Build_log_on_conflict) GetWhere() *Build_log_bool_exp { return v.Where }
 
-// placeholder for update columns of table "build_log" (current role has no relevant permissions)
 type Build_log_update_column string
 
 const (
-	// placeholder (do not use)
 	Build_log_update_columnPlaceholder Build_log_update_column = "_PLACEHOLDER"
 )
 
@@ -531,7 +501,6 @@ const (
 	Build_state_enumSnapshotStarted       Build_state_enum = "snapshot_started"
 )
 
-// Boolean expression to compare columns of type "build_state_enum". All fields are combined with logical 'AND'.
 type Build_state_enum_comparison_exp struct {
 	Eq      *Build_state_enum  `json:"_eq,omitempty"`
 	In      []Build_state_enum `json:"_in,omitempty"`
@@ -555,11 +524,9 @@ func (v *Build_state_enum_comparison_exp) GetNeq() *Build_state_enum { return v.
 // GetNin returns Build_state_enum_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Build_state_enum_comparison_exp) GetNin() []Build_state_enum { return v.Nin }
 
-// input type for inserting array relation for remote table "builds"
 type Builds_arr_rel_insert_input struct {
-	Data []*Builds_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Builds_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Builds_insert_input `json:"data,omitempty"`
+	On_conflict *Builds_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Builds_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -568,7 +535,6 @@ func (v *Builds_arr_rel_insert_input) GetData() []*Builds_insert_input { return 
 // GetOn_conflict returns Builds_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
 func (v *Builds_arr_rel_insert_input) GetOn_conflict() *Builds_on_conflict { return v.On_conflict }
 
-// Boolean expression to filter rows from the table "builds". All fields are combined with a logical 'AND'.
 type Builds_bool_exp struct {
 	And                            []*Builds_bool_exp                      `json:"_and,omitempty"`
 	Not                            *Builds_bool_exp                        `json:"_not,omitempty"`
@@ -672,19 +638,14 @@ func (v *Builds_bool_exp) GetScans() *Scans_bool_exp { return v.Scans }
 // GetSource_type returns Builds_bool_exp.Source_type, and is useful for accessing the field via an interface.
 func (v *Builds_bool_exp) GetSource_type() *Builds_source_type_comparison_exp { return v.Source_type }
 
-// unique or primary key constraints on table "builds"
 type Builds_constraint string
 
 const (
-	// unique or primary key constraint on columns "agent_access_token"
-	Builds_constraintBuildsAgentAccessTokenKey Builds_constraint = "builds_agent_access_token_key"
-	// unique or primary key constraint on columns "project_id", "build_number"
+	Builds_constraintBuildsAgentAccessTokenKey     Builds_constraint = "builds_agent_access_token_key"
 	Builds_constraintBuildsBuildNumberProjectIdKey Builds_constraint = "builds_build_number_project_id_key"
-	// unique or primary key constraint on columns "id"
-	Builds_constraintBuildsPkey Builds_constraint = "builds_pkey"
+	Builds_constraintBuildsPkey                    Builds_constraint = "builds_pkey"
 )
 
-// input type for inserting data into table "builds"
 type Builds_insert_input struct {
 	Agent_access_token             *uuid.UUID                                          `json:"agent_access_token,omitempty"`
 	Build_dependency_relationships *Build_dependency_relationship_arr_rel_insert_input `json:"build_dependency_relationships,omitempty"`
@@ -774,11 +735,9 @@ func (v *Builds_insert_input) GetScans() *Scans_arr_rel_insert_input { return v.
 // GetSource_type returns Builds_insert_input.Source_type, and is useful for accessing the field via an interface.
 func (v *Builds_insert_input) GetSource_type() *string { return v.Source_type }
 
-// input type for inserting object relation for remote table "builds"
 type Builds_obj_rel_insert_input struct {
-	Data *Builds_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Builds_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Builds_insert_input `json:"data,omitempty"`
+	On_conflict *Builds_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Builds_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -787,7 +746,6 @@ func (v *Builds_obj_rel_insert_input) GetData() *Builds_insert_input { return v.
 // GetOn_conflict returns Builds_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
 func (v *Builds_obj_rel_insert_input) GetOn_conflict() *Builds_on_conflict { return v.On_conflict }
 
-// on_conflict condition type for table "builds"
 type Builds_on_conflict struct {
 	Constraint     Builds_constraint      `json:"constraint,omitempty"`
 	Update_columns []Builds_update_column `json:"update_columns,omitempty"`
@@ -803,7 +761,6 @@ func (v *Builds_on_conflict) GetUpdate_columns() []Builds_update_column { return
 // GetWhere returns Builds_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Builds_on_conflict) GetWhere() *Builds_bool_exp { return v.Where }
 
-// Boolean expression to compare columns of type "builds_source_type". All fields are combined with logical 'AND'.
 type Builds_source_type_comparison_exp struct {
 	Eq      *string  `json:"_eq,omitempty"`
 	Gt      *string  `json:"_gt,omitempty"`
@@ -843,35 +800,22 @@ func (v *Builds_source_type_comparison_exp) GetNeq() *string { return v.Neq }
 // GetNin returns Builds_source_type_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Builds_source_type_comparison_exp) GetNin() []string { return v.Nin }
 
-// update columns of table "builds"
 type Builds_update_column string
 
 const (
-	// column name
-	Builds_update_columnAgentAccessToken Builds_update_column = "agent_access_token"
-	// column name
-	Builds_update_columnBuildNumber Builds_update_column = "build_number"
-	// column name
-	Builds_update_columnCreatedAt Builds_update_column = "created_at"
-	// column name
-	Builds_update_columnExistingGithubCheckId Builds_update_column = "existing_github_check_id"
-	// column name
+	Builds_update_columnAgentAccessToken       Builds_update_column = "agent_access_token"
+	Builds_update_columnBuildNumber            Builds_update_column = "build_number"
+	Builds_update_columnCreatedAt              Builds_update_column = "created_at"
+	Builds_update_columnExistingGithubCheckId  Builds_update_column = "existing_github_check_id"
 	Builds_update_columnExistingGithubReviewId Builds_update_column = "existing_github_review_id"
-	// column name
-	Builds_update_columnGitBranch Builds_update_column = "git_branch"
-	// column name
-	Builds_update_columnGitHash Builds_update_column = "git_hash"
-	// column name
-	Builds_update_columnGitRemote Builds_update_column = "git_remote"
-	// column name
-	Builds_update_columnId Builds_update_column = "id"
-	// column name
-	Builds_update_columnProjectId Builds_update_column = "project_id"
-	// column name
-	Builds_update_columnS3Url Builds_update_column = "s3_url"
+	Builds_update_columnGitBranch              Builds_update_column = "git_branch"
+	Builds_update_columnGitHash                Builds_update_column = "git_hash"
+	Builds_update_columnGitRemote              Builds_update_column = "git_remote"
+	Builds_update_columnId                     Builds_update_column = "id"
+	Builds_update_columnProjectId              Builds_update_column = "project_id"
+	Builds_update_columnS3Url                  Builds_update_column = "s3_url"
 )
 
-// Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'.
 type Date_comparison_exp struct {
 	Eq      *time.Time  `json:"_eq,omitempty"`
 	Gt      *time.Time  `json:"_gt,omitempty"`
@@ -911,7 +855,6 @@ func (v *Date_comparison_exp) GetNeq() *time.Time { return v.Neq }
 // GetNin returns Date_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Date_comparison_exp) GetNin() []time.Time { return v.Nin }
 
-// input type for inserting array relation for remote table "default_branch_builds"
 type Default_branch_builds_arr_rel_insert_input struct {
 	Data []*Default_branch_builds_insert_input `json:"data,omitempty"`
 }
@@ -921,7 +864,6 @@ func (v *Default_branch_builds_arr_rel_insert_input) GetData() []*Default_branch
 	return v.Data
 }
 
-// Boolean expression to filter rows from the table "default_branch_builds". All fields are combined with a logical 'AND'.
 type Default_branch_builds_bool_exp struct {
 	And                       []*Default_branch_builds_bool_exp  `json:"_and,omitempty"`
 	Not                       *Default_branch_builds_bool_exp    `json:"_not,omitempty"`
@@ -1001,7 +943,6 @@ func (v *Default_branch_builds_bool_exp) GetSource_type() *Builds_source_type_co
 	return v.Source_type
 }
 
-// input type for inserting data into table "default_branch_builds"
 type Default_branch_builds_insert_input struct {
 	Build_number              *int                           `json:"build_number,omitempty"`
 	Created_at                *time.Time                     `json:"created_at,omitempty"`
@@ -1063,7 +1004,6 @@ func (v *Default_branch_builds_insert_input) GetScans() *Scans_arr_rel_insert_in
 // GetSource_type returns Default_branch_builds_insert_input.Source_type, and is useful for accessing the field via an interface.
 func (v *Default_branch_builds_insert_input) GetSource_type() *string { return v.Source_type }
 
-// input type for inserting object relation for remote table "default_branch_builds"
 type Default_branch_builds_obj_rel_insert_input struct {
 	Data *Default_branch_builds_insert_input `json:"data,omitempty"`
 }
@@ -1074,9 +1014,6 @@ func (v *Default_branch_builds_obj_rel_insert_input) GetData() *Default_branch_b
 }
 
 // DeleteBuildDelete_builds_by_pkBuilds includes the requested fields of the GraphQL type builds.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "builds"
 type DeleteBuildDelete_builds_by_pkBuilds struct {
 	Id uuid.UUID `json:"id"`
 }
@@ -1086,7 +1023,6 @@ func (v *DeleteBuildDelete_builds_by_pkBuilds) GetId() uuid.UUID { return v.Id }
 
 // DeleteBuildResponse is returned by DeleteBuild on success.
 type DeleteBuildResponse struct {
-	// delete single row from the table: "builds"
 	Delete_builds_by_pk *DeleteBuildDelete_builds_by_pkBuilds `json:"delete_builds_by_pk"`
 }
 
@@ -1095,11 +1031,9 @@ func (v *DeleteBuildResponse) GetDelete_builds_by_pk() *DeleteBuildDelete_builds
 	return v.Delete_builds_by_pk
 }
 
-// input type for inserting array relation for remote table "findings"
 type Findings_arr_rel_insert_input struct {
-	Data []*Findings_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Findings_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Findings_insert_input `json:"data,omitempty"`
+	On_conflict *Findings_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Findings_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -1108,7 +1042,6 @@ func (v *Findings_arr_rel_insert_input) GetData() []*Findings_insert_input { ret
 // GetOn_conflict returns Findings_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
 func (v *Findings_arr_rel_insert_input) GetOn_conflict() *Findings_on_conflict { return v.On_conflict }
 
-// Boolean expression to filter rows from the table "findings". All fields are combined with a logical 'AND'.
 type Findings_bool_exp struct {
 	And                  []*Findings_bool_exp            `json:"_and,omitempty"`
 	Not                  *Findings_bool_exp              `json:"_not,omitempty"`
@@ -1218,17 +1151,13 @@ func (v *Findings_bool_exp) GetVulnerability() *Vulnerability_bool_exp { return 
 // GetVulnerability_id returns Findings_bool_exp.Vulnerability_id, and is useful for accessing the field via an interface.
 func (v *Findings_bool_exp) GetVulnerability_id() *Uuid_comparison_exp { return v.Vulnerability_id }
 
-// unique or primary key constraints on table "findings"
 type Findings_constraint string
 
 const (
-	// unique or primary key constraint on columns "dedupe_slug", "build_id"
 	Findings_constraintFindingsDedupeSlugBuildIdKey Findings_constraint = "findings_dedupe_slug_build_id_key"
-	// unique or primary key constraint on columns "id"
-	Findings_constraintFindingsPkey Findings_constraint = "findings_pkey"
+	Findings_constraintFindingsPkey                 Findings_constraint = "findings_pkey"
 )
 
-// input type for inserting data into table "findings"
 type Findings_insert_input struct {
 	Build                *Builds_obj_rel_insert_input                `json:"build,omitempty"`
 	Build_id             *uuid.UUID                                  `json:"build_id,omitempty"`
@@ -1328,7 +1257,6 @@ func (v *Findings_insert_input) GetVulnerability() *Vulnerability_obj_rel_insert
 // GetVulnerability_id returns Findings_insert_input.Vulnerability_id, and is useful for accessing the field via an interface.
 func (v *Findings_insert_input) GetVulnerability_id() *uuid.UUID { return v.Vulnerability_id }
 
-// on_conflict condition type for table "findings"
 type Findings_on_conflict struct {
 	Constraint     Findings_constraint      `json:"constraint,omitempty"`
 	Update_columns []Findings_update_column `json:"update_columns,omitempty"`
@@ -1344,51 +1272,30 @@ func (v *Findings_on_conflict) GetUpdate_columns() []Findings_update_column { re
 // GetWhere returns Findings_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Findings_on_conflict) GetWhere() *Findings_bool_exp { return v.Where }
 
-// update columns of table "findings"
 type Findings_update_column string
 
 const (
-	// column name
-	Findings_update_columnBuildId Findings_update_column = "build_id"
-	// column name
-	Findings_update_columnCreatedAt Findings_update_column = "created_at"
-	// column name
-	Findings_update_columnDedupeSlug Findings_update_column = "dedupe_slug"
-	// column name
-	Findings_update_columnFixState Findings_update_column = "fix_state"
-	// column name
-	Findings_update_columnFixVersions Findings_update_column = "fix_versions"
-	// column name
-	Findings_update_columnId Findings_update_column = "id"
-	// column name
-	Findings_update_columnLanguage Findings_update_column = "language"
-	// column name
-	Findings_update_columnLocations Findings_update_column = "locations"
-	// column name
-	Findings_update_columnMatcher Findings_update_column = "matcher"
-	// column name
-	Findings_update_columnPackageName Findings_update_column = "package_name"
-	// column name
-	Findings_update_columnPurl Findings_update_column = "purl"
-	// column name
-	Findings_update_columnScanId Findings_update_column = "scan_id"
-	// column name
-	Findings_update_columnSeverity Findings_update_column = "severity"
-	// column name
-	Findings_update_columnType Findings_update_column = "type"
-	// column name
-	Findings_update_columnUpdatedAt Findings_update_column = "updated_at"
-	// column name
-	Findings_update_columnVersion Findings_update_column = "version"
-	// column name
-	Findings_update_columnVersionMatcher Findings_update_column = "version_matcher"
-	// column name
-	Findings_update_columnVirtualPath Findings_update_column = "virtual_path"
-	// column name
+	Findings_update_columnBuildId         Findings_update_column = "build_id"
+	Findings_update_columnCreatedAt       Findings_update_column = "created_at"
+	Findings_update_columnDedupeSlug      Findings_update_column = "dedupe_slug"
+	Findings_update_columnFixState        Findings_update_column = "fix_state"
+	Findings_update_columnFixVersions     Findings_update_column = "fix_versions"
+	Findings_update_columnId              Findings_update_column = "id"
+	Findings_update_columnLanguage        Findings_update_column = "language"
+	Findings_update_columnLocations       Findings_update_column = "locations"
+	Findings_update_columnMatcher         Findings_update_column = "matcher"
+	Findings_update_columnPackageName     Findings_update_column = "package_name"
+	Findings_update_columnPurl            Findings_update_column = "purl"
+	Findings_update_columnScanId          Findings_update_column = "scan_id"
+	Findings_update_columnSeverity        Findings_update_column = "severity"
+	Findings_update_columnType            Findings_update_column = "type"
+	Findings_update_columnUpdatedAt       Findings_update_column = "updated_at"
+	Findings_update_columnVersion         Findings_update_column = "version"
+	Findings_update_columnVersionMatcher  Findings_update_column = "version_matcher"
+	Findings_update_columnVirtualPath     Findings_update_column = "virtual_path"
 	Findings_update_columnVulnerabilityId Findings_update_column = "vulnerability_id"
 )
 
-// Boolean expression to compare columns of type "fix_state_enum". All fields are combined with logical 'AND'.
 type Fix_state_enum_comparison_exp struct {
 	Eq      *string  `json:"_eq,omitempty"`
 	Gt      *string  `json:"_gt,omitempty"`
@@ -1428,7 +1335,6 @@ func (v *Fix_state_enum_comparison_exp) GetNeq() *string { return v.Neq }
 // GetNin returns Fix_state_enum_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Fix_state_enum_comparison_exp) GetNin() []string { return v.Nin }
 
-// Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'.
 type Float_comparison_exp struct {
 	Eq      *float64  `json:"_eq,omitempty"`
 	Gt      *float64  `json:"_gt,omitempty"`
@@ -1469,13 +1375,8 @@ func (v *Float_comparison_exp) GetNeq() *float64 { return v.Neq }
 func (v *Float_comparison_exp) GetNin() []float64 { return v.Nin }
 
 // GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edge includes the requested fields of the GraphQL type manifest_dependency_edge.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "manifest_dependency_edge"
 type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edge struct {
-	// An object relationship
-	Child *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_node `json:"child"`
-	// An object relationship
+	Child  *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_node  `json:"child"`
 	Parent *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_node `json:"parent"`
 }
 
@@ -1490,11 +1391,7 @@ func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_depende
 }
 
 // GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_node includes the requested fields of the GraphQL type manifest_dependency_node.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "manifest_dependency_node"
 type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_node struct {
-	// An object relationship
 	Release *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_release `json:"release"`
 }
 
@@ -1504,11 +1401,7 @@ func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_depende
 }
 
 // GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_release includes the requested fields of the GraphQL type package_release.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "package.release"
 type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_release struct {
-	// An object relationship
 	Package *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_releasePackage `json:"package"`
 }
 
@@ -1518,9 +1411,6 @@ func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_depende
 }
 
 // GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_releasePackage includes the requested fields of the GraphQL type package.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "package.package"
 type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeChildManifest_dependency_nodeReleasePackage_releasePackage struct {
 	Name string `json:"name"`
 }
@@ -1531,11 +1421,7 @@ func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_depende
 }
 
 // GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_node includes the requested fields of the GraphQL type manifest_dependency_node.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "manifest_dependency_node"
 type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_node struct {
-	// An object relationship
 	Release *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release `json:"release"`
 }
 
@@ -1545,13 +1431,9 @@ func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_depende
 }
 
 // GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release includes the requested fields of the GraphQL type package_release.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "package.release"
 type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release struct {
-	Upstream_blob_url *string `json:"upstream_blob_url"`
-	// An object relationship
-	Package *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_releasePackage `json:"package"`
+	Upstream_blob_url *string                                                                                                                                     `json:"upstream_blob_url"`
+	Package           *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_releasePackage `json:"package"`
 }
 
 // GetUpstream_blob_url returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release.Upstream_blob_url, and is useful for accessing the field via an interface.
@@ -1565,9 +1447,6 @@ func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_depende
 }
 
 // GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_releasePackage includes the requested fields of the GraphQL type package.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "package.package"
 type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_releasePackage struct {
 	Name string `json:"name"`
 }
@@ -1579,7 +1458,6 @@ func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_depende
 
 // GetManifestDependencyEdgeResponse is returned by GetManifestDependencyEdge on success.
 type GetManifestDependencyEdgeResponse struct {
-	// fetch data from the table: "manifest_dependency_edge" using primary key columns
 	Manifest_dependency_edge_by_pk *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edge `json:"manifest_dependency_edge_by_pk"`
 }
 
@@ -1589,11 +1467,7 @@ func (v *GetManifestDependencyEdgeResponse) GetManifest_dependency_edge_by_pk() 
 }
 
 // GetProjectInfoQueryProject_access_tokens includes the requested fields of the GraphQL type project_access_tokens.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "project_access_tokens"
 type GetProjectInfoQueryProject_access_tokens struct {
-	// An object relationship
 	Project *GetProjectInfoQueryProject_access_tokensProjectProjects `json:"project"`
 }
 
@@ -1603,9 +1477,6 @@ func (v *GetProjectInfoQueryProject_access_tokens) GetProject() *GetProjectInfoQ
 }
 
 // GetProjectInfoQueryProject_access_tokensProjectProjects includes the requested fields of the GraphQL type projects.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "projects"
 type GetProjectInfoQueryProject_access_tokensProjectProjects struct {
 	Organization_id *uuid.UUID `json:"organization_id"`
 	Id              uuid.UUID  `json:"id"`
@@ -1621,7 +1492,6 @@ func (v *GetProjectInfoQueryProject_access_tokensProjectProjects) GetId() uuid.U
 
 // GetProjectInfoQueryResponse is returned by GetProjectInfoQuery on success.
 type GetProjectInfoQueryResponse struct {
-	// An array relationship
 	Project_access_tokens []*GetProjectInfoQueryProject_access_tokens `json:"project_access_tokens"`
 }
 
@@ -1632,7 +1502,6 @@ func (v *GetProjectInfoQueryResponse) GetProject_access_tokens() []*GetProjectIn
 
 // GetVulnerabilityMetadataResponse is returned by GetVulnerabilityMetadata on success.
 type GetVulnerabilityMetadataResponse struct {
-	// fetch data from the table: "vulnerability.vulnerability" using primary key columns
 	Vulnerability_by_pk *GetVulnerabilityMetadataVulnerability_by_pkVulnerability `json:"vulnerability_by_pk"`
 }
 
@@ -1642,18 +1511,13 @@ func (v *GetVulnerabilityMetadataResponse) GetVulnerability_by_pk() *GetVulnerab
 }
 
 // GetVulnerabilityMetadataVulnerability_by_pkVulnerability includes the requested fields of the GraphQL type vulnerability.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "vulnerability.vulnerability"
 type GetVulnerabilityMetadataVulnerability_by_pkVulnerability struct {
-	Id        uuid.UUID `json:"id"`
-	Source    string    `json:"source"`
-	Source_id string    `json:"source_id"`
-	// An array relationship
+	Id         uuid.UUID                                                                                    `json:"id"`
+	Source     string                                                                                       `json:"source"`
+	Source_id  string                                                                                       `json:"source_id"`
 	References []*GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference `json:"references"`
 	Details    *string                                                                                      `json:"details"`
-	// An array relationship
-	Affected []*GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affected `json:"affected"`
+	Affected   []*GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affected    `json:"affected"`
 }
 
 // GetId returns GetVulnerabilityMetadataVulnerability_by_pkVulnerability.Id, and is useful for accessing the field via an interface.
@@ -1685,11 +1549,7 @@ func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerability) GetAffected()
 }
 
 // GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affected includes the requested fields of the GraphQL type vulnerability_affected.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "vulnerability.affected"
 type GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affected struct {
-	// An object relationship
 	Package *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage `json:"package"`
 }
 
@@ -1699,9 +1559,6 @@ func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnera
 }
 
 // GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage includes the requested fields of the GraphQL type package.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "package.package"
 type GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage struct {
 	Id uuid.UUID `json:"id"`
 }
@@ -1712,9 +1569,6 @@ func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnera
 }
 
 // GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference includes the requested fields of the GraphQL type vulnerability_reference.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "vulnerability.reference"
 type GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference struct {
 	Url string `json:"url"`
 }
@@ -1726,7 +1580,6 @@ func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulne
 
 // GetVulnerabilityResponse is returned by GetVulnerability on success.
 type GetVulnerabilityResponse struct {
-	// fetch data from the table: "vulnerability.vulnerability"
 	Vulnerability []*GetVulnerabilityVulnerability `json:"vulnerability"`
 }
 
@@ -1736,19 +1589,13 @@ func (v *GetVulnerabilityResponse) GetVulnerability() []*GetVulnerabilityVulnera
 }
 
 // GetVulnerabilityVulnerability includes the requested fields of the GraphQL type vulnerability.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "vulnerability.vulnerability"
 type GetVulnerabilityVulnerability struct {
-	Id uuid.UUID `json:"id"`
-	// An array relationship
-	Affected []*GetVulnerabilityVulnerabilityAffectedVulnerability_affected `json:"affected"`
-	// An array relationship
+	Id          uuid.UUID                                                           `json:"id"`
+	Affected    []*GetVulnerabilityVulnerabilityAffectedVulnerability_affected      `json:"affected"`
 	Equivalents []*GetVulnerabilityVulnerabilityEquivalentsVulnerability_equivalent `json:"equivalents"`
-	// An array relationship
-	References []*GetVulnerabilityVulnerabilityReferencesVulnerability_reference `json:"references"`
-	Source     string                                                            `json:"source"`
-	Source_id  string                                                            `json:"source_id"`
+	References  []*GetVulnerabilityVulnerabilityReferencesVulnerability_reference   `json:"references"`
+	Source      string                                                              `json:"source"`
+	Source_id   string                                                              `json:"source_id"`
 }
 
 // GetId returns GetVulnerabilityVulnerability.Id, and is useful for accessing the field via an interface.
@@ -1776,16 +1623,10 @@ func (v *GetVulnerabilityVulnerability) GetSource() string { return v.Source }
 func (v *GetVulnerabilityVulnerability) GetSource_id() string { return v.Source_id }
 
 // GetVulnerabilityVulnerabilityAffectedVulnerability_affected includes the requested fields of the GraphQL type vulnerability_affected.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "vulnerability.affected"
 type GetVulnerabilityVulnerabilityAffectedVulnerability_affected struct {
-	// An array relationship
 	Affected_range_events []*GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event `json:"affected_range_events"`
-	// An array relationship
-	Affected_versions []*GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version `json:"affected_versions"`
-	// An object relationship
-	Package *GetVulnerabilityVulnerabilityAffectedVulnerability_affectedPackage `json:"package"`
+	Affected_versions     []*GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version         `json:"affected_versions"`
+	Package               *GetVulnerabilityVulnerabilityAffectedVulnerability_affectedPackage                                                   `json:"package"`
 }
 
 // GetAffected_range_events returns GetVulnerabilityVulnerabilityAffectedVulnerability_affected.Affected_range_events, and is useful for accessing the field via an interface.
@@ -1804,9 +1645,6 @@ func (v *GetVulnerabilityVulnerabilityAffectedVulnerability_affected) GetPackage
 }
 
 // GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event includes the requested fields of the GraphQL type vulnerability_affected_range_event.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "vulnerability.affected_range_event"
 type GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_range_eventsVulnerability_affected_range_event struct {
 	Type    types.AffectedRangeType `json:"type"`
 	Event   string                  `json:"event"`
@@ -1829,9 +1667,6 @@ func (v *GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_ran
 }
 
 // GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version includes the requested fields of the GraphQL type vulnerability_affected_version.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "vulnerability.affected_version"
 type GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_versionsVulnerability_affected_version struct {
 	Version string `json:"version"`
 }
@@ -1842,9 +1677,6 @@ func (v *GetVulnerabilityVulnerabilityAffectedVulnerability_affectedAffected_ver
 }
 
 // GetVulnerabilityVulnerabilityAffectedVulnerability_affectedPackage includes the requested fields of the GraphQL type package.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "package.package"
 type GetVulnerabilityVulnerabilityAffectedVulnerability_affectedPackage struct {
 	Name            string               `json:"name"`
 	Package_manager types.PackageManager `json:"package_manager"`
@@ -1861,11 +1693,7 @@ func (v *GetVulnerabilityVulnerabilityAffectedVulnerability_affectedPackage) Get
 }
 
 // GetVulnerabilityVulnerabilityEquivalentsVulnerability_equivalent includes the requested fields of the GraphQL type vulnerability_equivalent.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "vulnerability.equivalent"
 type GetVulnerabilityVulnerabilityEquivalentsVulnerability_equivalent struct {
-	// An object relationship
 	Vulnerability *GetVulnerabilityVulnerabilityEquivalentsVulnerability_equivalentVulnerability `json:"vulnerability"`
 }
 
@@ -1875,9 +1703,6 @@ func (v *GetVulnerabilityVulnerabilityEquivalentsVulnerability_equivalent) GetVu
 }
 
 // GetVulnerabilityVulnerabilityEquivalentsVulnerability_equivalentVulnerability includes the requested fields of the GraphQL type vulnerability.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "vulnerability.vulnerability"
 type GetVulnerabilityVulnerabilityEquivalentsVulnerability_equivalentVulnerability struct {
 	Id        uuid.UUID `json:"id"`
 	Source    string    `json:"source"`
@@ -1900,9 +1725,6 @@ func (v *GetVulnerabilityVulnerabilityEquivalentsVulnerability_equivalentVulnera
 }
 
 // GetVulnerabilityVulnerabilityReferencesVulnerability_reference includes the requested fields of the GraphQL type vulnerability_reference.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "vulnerability.reference"
 type GetVulnerabilityVulnerabilityReferencesVulnerability_reference struct {
 	Id  uuid.UUID `json:"id"`
 	Url string    `json:"url"`
@@ -1918,11 +1740,9 @@ func (v *GetVulnerabilityVulnerabilityReferencesVulnerability_reference) GetUrl(
 	return v.Url
 }
 
-// input type for inserting array relation for remote table "github_repositories"
 type Github_repositories_arr_rel_insert_input struct {
-	Data []*Github_repositories_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Github_repositories_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Github_repositories_insert_input `json:"data,omitempty"`
+	On_conflict *Github_repositories_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Github_repositories_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -1935,7 +1755,6 @@ func (v *Github_repositories_arr_rel_insert_input) GetOn_conflict() *Github_repo
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "github_repositories". All fields are combined with a logical 'AND'.
 type Github_repositories_bool_exp struct {
 	And            []*Github_repositories_bool_exp `json:"_and,omitempty"`
 	Not            *Github_repositories_bool_exp   `json:"_not,omitempty"`
@@ -1987,19 +1806,14 @@ func (v *Github_repositories_bool_exp) GetProject_id() *Uuid_comparison_exp { re
 // GetTraits returns Github_repositories_bool_exp.Traits, and is useful for accessing the field via an interface.
 func (v *Github_repositories_bool_exp) GetTraits() *Jsonb_comparison_exp { return v.Traits }
 
-// unique or primary key constraints on table "github_repositories"
 type Github_repositories_constraint string
 
 const (
-	// unique or primary key constraint on columns "github_id"
-	Github_repositories_constraintGithubRepositoriesGithubIdKey Github_repositories_constraint = "github_repositories_github_id_key"
-	// unique or primary key constraint on columns "github_node_id"
+	Github_repositories_constraintGithubRepositoriesGithubIdKey     Github_repositories_constraint = "github_repositories_github_id_key"
 	Github_repositories_constraintGithubRepositoriesGithubNodeIdKey Github_repositories_constraint = "github_repositories_github_node_id_key"
-	// unique or primary key constraint on columns "id"
-	Github_repositories_constraintGithubRepositoriesPkey Github_repositories_constraint = "github_repositories_pkey"
+	Github_repositories_constraintGithubRepositoriesPkey            Github_repositories_constraint = "github_repositories_pkey"
 )
 
-// input type for inserting data into table "github_repositories"
 type Github_repositories_insert_input struct {
 	Default_branch *string                        `json:"default_branch,omitempty"`
 	Git_url        *string                        `json:"git_url,omitempty"`
@@ -2033,11 +1847,9 @@ func (v *Github_repositories_insert_input) GetProject_id() *uuid.UUID { return v
 // GetTraits returns Github_repositories_insert_input.Traits, and is useful for accessing the field via an interface.
 func (v *Github_repositories_insert_input) GetTraits() *json.RawMessage { return v.Traits }
 
-// input type for inserting object relation for remote table "github_repositories"
 type Github_repositories_obj_rel_insert_input struct {
-	Data *Github_repositories_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Github_repositories_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Github_repositories_insert_input `json:"data,omitempty"`
+	On_conflict *Github_repositories_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Github_repositories_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -2050,7 +1862,6 @@ func (v *Github_repositories_obj_rel_insert_input) GetOn_conflict() *Github_repo
 	return v.On_conflict
 }
 
-// on_conflict condition type for table "github_repositories"
 type Github_repositories_on_conflict struct {
 	Constraint     Github_repositories_constraint      `json:"constraint,omitempty"`
 	Update_columns []Github_repositories_update_column `json:"update_columns,omitempty"`
@@ -2070,29 +1881,20 @@ func (v *Github_repositories_on_conflict) GetUpdate_columns() []Github_repositor
 // GetWhere returns Github_repositories_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Github_repositories_on_conflict) GetWhere() *Github_repositories_bool_exp { return v.Where }
 
-// update columns of table "github_repositories"
 type Github_repositories_update_column string
 
 const (
-	// column name
 	Github_repositories_update_columnDefaultBranch Github_repositories_update_column = "default_branch"
-	// column name
-	Github_repositories_update_columnGitUrl Github_repositories_update_column = "git_url"
-	// column name
-	Github_repositories_update_columnGithubId Github_repositories_update_column = "github_id"
-	// column name
-	Github_repositories_update_columnGithubNodeId Github_repositories_update_column = "github_node_id"
-	// column name
-	Github_repositories_update_columnProjectId Github_repositories_update_column = "project_id"
-	// column name
-	Github_repositories_update_columnTraits Github_repositories_update_column = "traits"
+	Github_repositories_update_columnGitUrl        Github_repositories_update_column = "git_url"
+	Github_repositories_update_columnGithubId      Github_repositories_update_column = "github_id"
+	Github_repositories_update_columnGithubNodeId  Github_repositories_update_column = "github_node_id"
+	Github_repositories_update_columnProjectId     Github_repositories_update_column = "project_id"
+	Github_repositories_update_columnTraits        Github_repositories_update_column = "traits"
 )
 
-// input type for inserting array relation for remote table "guide_related_guides"
 type Guide_related_guides_arr_rel_insert_input struct {
-	Data []*Guide_related_guides_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Guide_related_guides_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Guide_related_guides_insert_input `json:"data,omitempty"`
+	On_conflict *Guide_related_guides_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Guide_related_guides_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -2105,7 +1907,6 @@ func (v *Guide_related_guides_arr_rel_insert_input) GetOn_conflict() *Guide_rela
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "guide_related_guides". All fields are combined with a logical 'AND'.
 type Guide_related_guides_bool_exp struct {
 	And                []*Guide_related_guides_bool_exp `json:"_and,omitempty"`
 	Not                *Guide_related_guides_bool_exp   `json:"_not,omitempty"`
@@ -2149,17 +1950,13 @@ func (v *Guide_related_guides_bool_exp) GetUpdated_at() *Timestamptz_comparison_
 	return v.Updated_at
 }
 
-// unique or primary key constraints on table "guide_related_guides"
 type Guide_related_guides_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
-	Guide_related_guides_constraintGuideRelatedGuidesPkey Guide_related_guides_constraint = "guide_related_guides_pkey"
-	// unique or primary key constraint on columns "to_guide_unique_id", "from_guide_id"
+	Guide_related_guides_constraintGuideRelatedGuidesPkey   Guide_related_guides_constraint = "guide_related_guides_pkey"
 	Guide_related_guides_constraintGuideRelatedGuidesUnique Guide_related_guides_constraint = "guide_related_guides_unique"
 )
 
-// input type for inserting data into table "guide_related_guides"
 type Guide_related_guides_insert_input struct {
 	Created_at         *time.Time                   `json:"created_at,omitempty"`
 	From_guide_id      *uuid.UUID                   `json:"from_guide_id,omitempty"`
@@ -2195,7 +1992,6 @@ func (v *Guide_related_guides_insert_input) GetTo_guide_unique_id() *string {
 // GetUpdated_at returns Guide_related_guides_insert_input.Updated_at, and is useful for accessing the field via an interface.
 func (v *Guide_related_guides_insert_input) GetUpdated_at() *time.Time { return v.Updated_at }
 
-// on_conflict condition type for table "guide_related_guides"
 type Guide_related_guides_on_conflict struct {
 	Constraint     Guide_related_guides_constraint      `json:"constraint,omitempty"`
 	Update_columns []Guide_related_guides_update_column `json:"update_columns,omitempty"`
@@ -2215,27 +2011,19 @@ func (v *Guide_related_guides_on_conflict) GetUpdate_columns() []Guide_related_g
 // GetWhere returns Guide_related_guides_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Guide_related_guides_on_conflict) GetWhere() *Guide_related_guides_bool_exp { return v.Where }
 
-// update columns of table "guide_related_guides"
 type Guide_related_guides_update_column string
 
 const (
-	// column name
-	Guide_related_guides_update_columnCreatedAt Guide_related_guides_update_column = "created_at"
-	// column name
-	Guide_related_guides_update_columnFromGuideId Guide_related_guides_update_column = "from_guide_id"
-	// column name
-	Guide_related_guides_update_columnId Guide_related_guides_update_column = "id"
-	// column name
+	Guide_related_guides_update_columnCreatedAt       Guide_related_guides_update_column = "created_at"
+	Guide_related_guides_update_columnFromGuideId     Guide_related_guides_update_column = "from_guide_id"
+	Guide_related_guides_update_columnId              Guide_related_guides_update_column = "id"
 	Guide_related_guides_update_columnToGuideUniqueId Guide_related_guides_update_column = "to_guide_unique_id"
-	// column name
-	Guide_related_guides_update_columnUpdatedAt Guide_related_guides_update_column = "updated_at"
+	Guide_related_guides_update_columnUpdatedAt       Guide_related_guides_update_column = "updated_at"
 )
 
-// input type for inserting array relation for remote table "guide_vulnerabilities"
 type Guide_vulnerabilities_arr_rel_insert_input struct {
-	Data []*Guide_vulnerabilities_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Guide_vulnerabilities_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Guide_vulnerabilities_insert_input `json:"data,omitempty"`
+	On_conflict *Guide_vulnerabilities_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Guide_vulnerabilities_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -2248,7 +2036,6 @@ func (v *Guide_vulnerabilities_arr_rel_insert_input) GetOn_conflict() *Guide_vul
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "guide_vulnerabilities". All fields are combined with a logical 'AND'.
 type Guide_vulnerabilities_bool_exp struct {
 	And              []*Guide_vulnerabilities_bool_exp `json:"_and,omitempty"`
 	Not              *Guide_vulnerabilities_bool_exp   `json:"_not,omitempty"`
@@ -2296,17 +2083,13 @@ func (v *Guide_vulnerabilities_bool_exp) GetVulnerability_id() *Uuid_comparison_
 	return v.Vulnerability_id
 }
 
-// unique or primary key constraints on table "guide_vulnerabilities"
 type Guide_vulnerabilities_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
-	Guide_vulnerabilities_constraintGuideVulnerabilitiesPkey Guide_vulnerabilities_constraint = "guide_vulnerabilities_pkey"
-	// unique or primary key constraint on columns "vulnerability_id", "guide_id"
+	Guide_vulnerabilities_constraintGuideVulnerabilitiesPkey   Guide_vulnerabilities_constraint = "guide_vulnerabilities_pkey"
 	Guide_vulnerabilities_constraintGuideVulnerabilitiesUnique Guide_vulnerabilities_constraint = "guide_vulnerabilities_unique"
 )
 
-// input type for inserting data into table "guide_vulnerabilities"
 type Guide_vulnerabilities_insert_input struct {
 	Created_at       *time.Time                          `json:"created_at,omitempty"`
 	Guide            *Guides_obj_rel_insert_input        `json:"guide,omitempty"`
@@ -2342,7 +2125,6 @@ func (v *Guide_vulnerabilities_insert_input) GetVulnerability_id() *uuid.UUID {
 	return v.Vulnerability_id
 }
 
-// on_conflict condition type for table "guide_vulnerabilities"
 type Guide_vulnerabilities_on_conflict struct {
 	Constraint     Guide_vulnerabilities_constraint      `json:"constraint,omitempty"`
 	Update_columns []Guide_vulnerabilities_update_column `json:"update_columns,omitempty"`
@@ -2364,23 +2146,16 @@ func (v *Guide_vulnerabilities_on_conflict) GetWhere() *Guide_vulnerabilities_bo
 	return v.Where
 }
 
-// update columns of table "guide_vulnerabilities"
 type Guide_vulnerabilities_update_column string
 
 const (
-	// column name
-	Guide_vulnerabilities_update_columnCreatedAt Guide_vulnerabilities_update_column = "created_at"
-	// column name
-	Guide_vulnerabilities_update_columnGuideId Guide_vulnerabilities_update_column = "guide_id"
-	// column name
-	Guide_vulnerabilities_update_columnId Guide_vulnerabilities_update_column = "id"
-	// column name
-	Guide_vulnerabilities_update_columnUpdatedAt Guide_vulnerabilities_update_column = "updated_at"
-	// column name
+	Guide_vulnerabilities_update_columnCreatedAt       Guide_vulnerabilities_update_column = "created_at"
+	Guide_vulnerabilities_update_columnGuideId         Guide_vulnerabilities_update_column = "guide_id"
+	Guide_vulnerabilities_update_columnId              Guide_vulnerabilities_update_column = "id"
+	Guide_vulnerabilities_update_columnUpdatedAt       Guide_vulnerabilities_update_column = "updated_at"
 	Guide_vulnerabilities_update_columnVulnerabilityId Guide_vulnerabilities_update_column = "vulnerability_id"
 )
 
-// Boolean expression to filter rows from the table "guides". All fields are combined with a logical 'AND'.
 type Guides_bool_exp struct {
 	And []*Guides_bool_exp `json:"_and,omitempty"`
 	Not *Guides_bool_exp   `json:"_not,omitempty"`
@@ -2396,19 +2171,14 @@ func (v *Guides_bool_exp) GetNot() *Guides_bool_exp { return v.Not }
 // GetOr returns Guides_bool_exp.Or, and is useful for accessing the field via an interface.
 func (v *Guides_bool_exp) GetOr() []*Guides_bool_exp { return v.Or }
 
-// unique or primary key constraints on table "guides"
 type Guides_constraint string
 
 const (
-	// unique or primary key constraint on columns "data_source_link"
 	Guides_constraintGuidesDataSourceLinkKey Guides_constraint = "guides_data_source_link_key"
-	// unique or primary key constraint on columns "guide_unique_id"
-	Guides_constraintGuidesGuideUniqueIdKey Guides_constraint = "guides_guide_unique_id_key"
-	// unique or primary key constraint on columns "id"
-	Guides_constraintGuidesPkey Guides_constraint = "guides_pkey"
+	Guides_constraintGuidesGuideUniqueIdKey  Guides_constraint = "guides_guide_unique_id_key"
+	Guides_constraintGuidesPkey              Guides_constraint = "guides_pkey"
 )
 
-// input type for inserting data into table "guides"
 type Guides_insert_input struct {
 	Body                    *string                                     `json:"body,omitempty"`
 	Created_at              *time.Time                                  `json:"created_at,omitempty"`
@@ -2472,11 +2242,9 @@ func (v *Guides_insert_input) GetTitle() *string { return v.Title }
 // GetUpdated_at returns Guides_insert_input.Updated_at, and is useful for accessing the field via an interface.
 func (v *Guides_insert_input) GetUpdated_at() *time.Time { return v.Updated_at }
 
-// input type for inserting object relation for remote table "guides"
 type Guides_obj_rel_insert_input struct {
-	Data *Guides_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Guides_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Guides_insert_input `json:"data,omitempty"`
+	On_conflict *Guides_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Guides_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -2485,7 +2253,6 @@ func (v *Guides_obj_rel_insert_input) GetData() *Guides_insert_input { return v.
 // GetOn_conflict returns Guides_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
 func (v *Guides_obj_rel_insert_input) GetOn_conflict() *Guides_on_conflict { return v.On_conflict }
 
-// on_conflict condition type for table "guides"
 type Guides_on_conflict struct {
 	Constraint     Guides_constraint      `json:"constraint,omitempty"`
 	Update_columns []Guides_update_column `json:"update_columns,omitempty"`
@@ -2501,37 +2268,23 @@ func (v *Guides_on_conflict) GetUpdate_columns() []Guides_update_column { return
 // GetWhere returns Guides_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Guides_on_conflict) GetWhere() *Guides_bool_exp { return v.Where }
 
-// update columns of table "guides"
 type Guides_update_column string
 
 const (
-	// column name
-	Guides_update_columnBody Guides_update_column = "body"
-	// column name
-	Guides_update_columnCreatedAt Guides_update_column = "created_at"
-	// column name
-	Guides_update_columnDataSourceLink Guides_update_column = "data_source_link"
-	// column name
-	Guides_update_columnGuideUniqueId Guides_update_column = "guide_unique_id"
-	// column name
-	Guides_update_columnId Guides_update_column = "id"
-	// column name
-	Guides_update_columnMetadata Guides_update_column = "metadata"
-	// column name
+	Guides_update_columnBody                  Guides_update_column = "body"
+	Guides_update_columnCreatedAt             Guides_update_column = "created_at"
+	Guides_update_columnDataSourceLink        Guides_update_column = "data_source_link"
+	Guides_update_columnGuideUniqueId         Guides_update_column = "guide_unique_id"
+	Guides_update_columnId                    Guides_update_column = "id"
+	Guides_update_columnMetadata              Guides_update_column = "metadata"
 	Guides_update_columnMetadataSchemaVersion Guides_update_column = "metadata_schema_version"
-	// column name
-	Guides_update_columnSeverity Guides_update_column = "severity"
-	// column name
-	Guides_update_columnSummary Guides_update_column = "summary"
-	// column name
-	Guides_update_columnTags Guides_update_column = "tags"
-	// column name
-	Guides_update_columnTitle Guides_update_column = "title"
-	// column name
-	Guides_update_columnUpdatedAt Guides_update_column = "updated_at"
+	Guides_update_columnSeverity              Guides_update_column = "severity"
+	Guides_update_columnSummary               Guides_update_column = "summary"
+	Guides_update_columnTags                  Guides_update_column = "tags"
+	Guides_update_columnTitle                 Guides_update_column = "title"
+	Guides_update_columnUpdatedAt             Guides_update_column = "updated_at"
 )
 
-// Boolean expression to filter rows from the table "identities". All fields are combined with a logical 'AND'.
 type Identities_bool_exp struct {
 	And                           []*Identities_bool_exp                  `json:"_and,omitempty"`
 	Not                           *Identities_bool_exp                    `json:"_not,omitempty"`
@@ -2591,7 +2344,6 @@ func (v *Identities_bool_exp) GetUpdated_at() *Timestamp_comparison_exp { return
 // GetUser returns Identities_bool_exp.User, and is useful for accessing the field via an interface.
 func (v *Identities_bool_exp) GetUser() *Users_bool_exp { return v.User }
 
-// Boolean expression to filter rows from the table "identity_verifiable_addresses". All fields are combined with a logical 'AND'.
 type Identity_verifiable_addresses_bool_exp struct {
 	And         []*Identity_verifiable_addresses_bool_exp `json:"_and,omitempty"`
 	Not         *Identity_verifiable_addresses_bool_exp   `json:"_not,omitempty"`
@@ -2669,7 +2421,6 @@ func (v *Identity_verifiable_addresses_bool_exp) GetVerified_at() *Timestamp_com
 // GetVia returns Identity_verifiable_addresses_bool_exp.Via, and is useful for accessing the field via an interface.
 func (v *Identity_verifiable_addresses_bool_exp) GetVia() *String_comparison_exp { return v.Via }
 
-// Boolean expression to filter rows from the table "ignored_vulnerabilities". All fields are combined with a logical 'AND'.
 type Ignored_vulnerabilities_bool_exp struct {
 	And              []*Ignored_vulnerabilities_bool_exp `json:"_and,omitempty"`
 	Not              *Ignored_vulnerabilities_bool_exp   `json:"_not,omitempty"`
@@ -2726,9 +2477,6 @@ func (v *Ignored_vulnerabilities_bool_exp) GetVulnerability_id() *Uuid_compariso
 }
 
 // InsertManifestDependencyEdgeAnalysisInsert_analysis_manifest_dependency_edge_result_oneAnalysis_manifest_dependency_edge_result includes the requested fields of the GraphQL type analysis_manifest_dependency_edge_result.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "analysis.manifest_dependency_edge_result"
 type InsertManifestDependencyEdgeAnalysisInsert_analysis_manifest_dependency_edge_result_oneAnalysis_manifest_dependency_edge_result struct {
 	Id uuid.UUID `json:"id"`
 }
@@ -2740,7 +2488,6 @@ func (v *InsertManifestDependencyEdgeAnalysisInsert_analysis_manifest_dependency
 
 // InsertManifestDependencyEdgeAnalysisResponse is returned by InsertManifestDependencyEdgeAnalysis on success.
 type InsertManifestDependencyEdgeAnalysisResponse struct {
-	// insert a single row into the table: "analysis.manifest_dependency_edge_result"
 	Insert_analysis_manifest_dependency_edge_result_one *InsertManifestDependencyEdgeAnalysisInsert_analysis_manifest_dependency_edge_result_oneAnalysis_manifest_dependency_edge_result `json:"insert_analysis_manifest_dependency_edge_result_one"`
 }
 
@@ -2750,9 +2497,6 @@ func (v *InsertManifestDependencyEdgeAnalysisResponse) GetInsert_analysis_manife
 }
 
 // InsertNewBuildQueryInsert_builds_oneBuilds includes the requested fields of the GraphQL type builds.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "builds"
 type InsertNewBuildQueryInsert_builds_oneBuilds struct {
 	Id                 uuid.UUID `json:"id"`
 	Agent_access_token uuid.UUID `json:"agent_access_token"`
@@ -2768,7 +2512,6 @@ func (v *InsertNewBuildQueryInsert_builds_oneBuilds) GetAgent_access_token() uui
 
 // InsertNewBuildQueryResponse is returned by InsertNewBuildQuery on success.
 type InsertNewBuildQueryResponse struct {
-	// insert a single row into the table: "builds"
 	Insert_builds_one *InsertNewBuildQueryInsert_builds_oneBuilds `json:"insert_builds_one"`
 }
 
@@ -2777,7 +2520,6 @@ func (v *InsertNewBuildQueryResponse) GetInsert_builds_one() *InsertNewBuildQuer
 	return v.Insert_builds_one
 }
 
-// Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
 type Int_comparison_exp struct {
 	Eq      *int  `json:"_eq,omitempty"`
 	Gt      *int  `json:"_gt,omitempty"`
@@ -2824,21 +2566,15 @@ type Jsonb_cast_exp struct {
 // GetString returns Jsonb_cast_exp.String, and is useful for accessing the field via an interface.
 func (v *Jsonb_cast_exp) GetString() *String_comparison_exp { return v.String }
 
-// Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'.
 type Jsonb_comparison_exp struct {
-	Cast *Jsonb_cast_exp `json:"_cast,omitempty"`
-	// is the column contained in the given json value
-	Contained_in *json.RawMessage `json:"_contained_in,omitempty"`
-	// does the column contain the given json value at the top level
-	Contains *json.RawMessage `json:"_contains,omitempty"`
-	Eq       *json.RawMessage `json:"_eq,omitempty"`
-	Gt       *json.RawMessage `json:"_gt,omitempty"`
-	Gte      *json.RawMessage `json:"_gte,omitempty"`
-	// does the string exist as a top-level key in the column
-	Has_key *string `json:"_has_key,omitempty"`
-	// do all of these strings exist as top-level keys in the column
-	Has_keys_all []string `json:"_has_keys_all,omitempty"`
-	// do any of these strings exist as top-level keys in the column
+	Cast         *Jsonb_cast_exp   `json:"_cast,omitempty"`
+	Contained_in *json.RawMessage  `json:"_contained_in,omitempty"`
+	Contains     *json.RawMessage  `json:"_contains,omitempty"`
+	Eq           *json.RawMessage  `json:"_eq,omitempty"`
+	Gt           *json.RawMessage  `json:"_gt,omitempty"`
+	Gte          *json.RawMessage  `json:"_gte,omitempty"`
+	Has_key      *string           `json:"_has_key,omitempty"`
+	Has_keys_all []string          `json:"_has_keys_all,omitempty"`
 	Has_keys_any []string          `json:"_has_keys_any,omitempty"`
 	In           []json.RawMessage `json:"_in,omitempty"`
 	Is_null      *bool             `json:"_is_null,omitempty"`
@@ -2893,7 +2629,6 @@ func (v *Jsonb_comparison_exp) GetNeq() *json.RawMessage { return v.Neq }
 // GetNin returns Jsonb_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Jsonb_comparison_exp) GetNin() []json.RawMessage { return v.Nin }
 
-// Boolean expression to compare columns of type "license_source". All fields are combined with logical 'AND'.
 type License_source_comparison_exp struct {
 	Eq      *types.LicenseSource  `json:"_eq,omitempty"`
 	Gt      *types.LicenseSource  `json:"_gt,omitempty"`
@@ -2933,11 +2668,9 @@ func (v *License_source_comparison_exp) GetNeq() *types.LicenseSource { return v
 // GetNin returns License_source_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *License_source_comparison_exp) GetNin() []types.LicenseSource { return v.Nin }
 
-// input type for inserting array relation for remote table "manifest_dependency"
 type Manifest_dependency_arr_rel_insert_input struct {
-	Data []*Manifest_dependency_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Manifest_dependency_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Manifest_dependency_insert_input `json:"data,omitempty"`
+	On_conflict *Manifest_dependency_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Manifest_dependency_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -2950,7 +2683,6 @@ func (v *Manifest_dependency_arr_rel_insert_input) GetOn_conflict() *Manifest_de
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "manifest_dependency". All fields are combined with a logical 'AND'.
 type Manifest_dependency_bool_exp struct {
 	And                         []*Manifest_dependency_bool_exp    `json:"_and,omitempty"`
 	Not                         *Manifest_dependency_bool_exp      `json:"_not,omitempty"`
@@ -2994,19 +2726,15 @@ func (v *Manifest_dependency_bool_exp) GetResolved_manifest() *Resolved_manifest
 	return v.Resolved_manifest
 }
 
-// unique or primary key constraints on table "manifest_dependency"
 type Manifest_dependency_constraint string
 
 const (
-	// unique or primary key constraint on columns "manifest_dependency_node_id", "manifest_id"
 	Manifest_dependency_constraintManifestDependencyManifestIdManifestDependencyNodeIdIdx Manifest_dependency_constraint = "manifest_dependency_manifest_id_manifest_dependency_node_id_idx"
 )
 
-// input type for inserting array relation for remote table "manifest_dependency_edge"
 type Manifest_dependency_edge_arr_rel_insert_input struct {
-	Data []*Manifest_dependency_edge_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Manifest_dependency_edge_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Manifest_dependency_edge_insert_input `json:"data,omitempty"`
+	On_conflict *Manifest_dependency_edge_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Manifest_dependency_edge_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -3019,7 +2747,6 @@ func (v *Manifest_dependency_edge_arr_rel_insert_input) GetOn_conflict() *Manife
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "manifest_dependency_edge". All fields are combined with a logical 'AND'.
 type Manifest_dependency_edge_bool_exp struct {
 	And       []*Manifest_dependency_edge_bool_exp `json:"_and,omitempty"`
 	Not       *Manifest_dependency_edge_bool_exp   `json:"_not,omitempty"`
@@ -3061,17 +2788,13 @@ func (v *Manifest_dependency_edge_bool_exp) GetParent() *Manifest_dependency_nod
 // GetParent_id returns Manifest_dependency_edge_bool_exp.Parent_id, and is useful for accessing the field via an interface.
 func (v *Manifest_dependency_edge_bool_exp) GetParent_id() *Uuid_comparison_exp { return v.Parent_id }
 
-// unique or primary key constraints on table "manifest_dependency_edge"
 type Manifest_dependency_edge_constraint string
 
 const (
-	// unique or primary key constraint on columns "child_id", "parent_id"
 	Manifest_dependency_edge_constraintManifestDependencyEdgeParentIdChildIdIdx Manifest_dependency_edge_constraint = "manifest_dependency_edge_parent_id_child_id_idx"
-	// unique or primary key constraint on columns "id"
-	Manifest_dependency_edge_constraintManifestDependencyEdgePkey Manifest_dependency_edge_constraint = "manifest_dependency_edge_pkey"
+	Manifest_dependency_edge_constraintManifestDependencyEdgePkey               Manifest_dependency_edge_constraint = "manifest_dependency_edge_pkey"
 )
 
-// input type for inserting data into table "manifest_dependency_edge"
 type Manifest_dependency_edge_insert_input struct {
 	Child     *Manifest_dependency_node_obj_rel_insert_input `json:"child,omitempty"`
 	Child_id  *uuid.UUID                                     `json:"child_id,omitempty"`
@@ -3099,11 +2822,9 @@ func (v *Manifest_dependency_edge_insert_input) GetParent() *Manifest_dependency
 // GetParent_id returns Manifest_dependency_edge_insert_input.Parent_id, and is useful for accessing the field via an interface.
 func (v *Manifest_dependency_edge_insert_input) GetParent_id() *uuid.UUID { return v.Parent_id }
 
-// input type for inserting object relation for remote table "manifest_dependency_edge"
 type Manifest_dependency_edge_obj_rel_insert_input struct {
-	Data *Manifest_dependency_edge_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Manifest_dependency_edge_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Manifest_dependency_edge_insert_input `json:"data,omitempty"`
+	On_conflict *Manifest_dependency_edge_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Manifest_dependency_edge_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -3116,7 +2837,6 @@ func (v *Manifest_dependency_edge_obj_rel_insert_input) GetOn_conflict() *Manife
 	return v.On_conflict
 }
 
-// on_conflict condition type for table "manifest_dependency_edge"
 type Manifest_dependency_edge_on_conflict struct {
 	Constraint     Manifest_dependency_edge_constraint      `json:"constraint,omitempty"`
 	Update_columns []Manifest_dependency_edge_update_column `json:"update_columns,omitempty"`
@@ -3138,25 +2858,19 @@ func (v *Manifest_dependency_edge_on_conflict) GetWhere() *Manifest_dependency_e
 	return v.Where
 }
 
-// update columns of table "manifest_dependency_edge"
 type Manifest_dependency_edge_update_column string
 
 const (
-	// column name
-	Manifest_dependency_edge_update_columnChildId Manifest_dependency_edge_update_column = "child_id"
-	// column name
-	Manifest_dependency_edge_update_columnId Manifest_dependency_edge_update_column = "id"
-	// column name
+	Manifest_dependency_edge_update_columnChildId  Manifest_dependency_edge_update_column = "child_id"
+	Manifest_dependency_edge_update_columnId       Manifest_dependency_edge_update_column = "id"
 	Manifest_dependency_edge_update_columnParentId Manifest_dependency_edge_update_column = "parent_id"
 )
 
-// input type for inserting data into table "manifest_dependency"
 type Manifest_dependency_insert_input struct {
-	Manifest_dependency_node *Manifest_dependency_node_obj_rel_insert_input `json:"manifest_dependency_node,omitempty"`
-	// entrypoint to dep tree
-	Manifest_dependency_node_id *uuid.UUID                              `json:"manifest_dependency_node_id,omitempty"`
-	Manifest_id                 *uuid.UUID                              `json:"manifest_id,omitempty"`
-	Resolved_manifest           *Resolved_manifest_obj_rel_insert_input `json:"resolved_manifest,omitempty"`
+	Manifest_dependency_node    *Manifest_dependency_node_obj_rel_insert_input `json:"manifest_dependency_node,omitempty"`
+	Manifest_dependency_node_id *uuid.UUID                                     `json:"manifest_dependency_node_id,omitempty"`
+	Manifest_id                 *uuid.UUID                                     `json:"manifest_id,omitempty"`
+	Resolved_manifest           *Resolved_manifest_obj_rel_insert_input        `json:"resolved_manifest,omitempty"`
 }
 
 // GetManifest_dependency_node returns Manifest_dependency_insert_input.Manifest_dependency_node, and is useful for accessing the field via an interface.
@@ -3177,7 +2891,6 @@ func (v *Manifest_dependency_insert_input) GetResolved_manifest() *Resolved_mani
 	return v.Resolved_manifest
 }
 
-// Boolean expression to filter rows from the table "manifest_dependency_node". All fields are combined with a logical 'AND'.
 type Manifest_dependency_node_bool_exp struct {
 	And                   []*Manifest_dependency_node_bool_exp `json:"_and,omitempty"`
 	Not                   *Manifest_dependency_node_bool_exp   `json:"_not,omitempty"`
@@ -3233,18 +2946,14 @@ func (v *Manifest_dependency_node_bool_exp) GetRelease() *Package_release_bool_e
 // GetRelease_id returns Manifest_dependency_node_bool_exp.Release_id, and is useful for accessing the field via an interface.
 func (v *Manifest_dependency_node_bool_exp) GetRelease_id() *Uuid_comparison_exp { return v.Release_id }
 
-// unique or primary key constraints on table "manifest_dependency_node"
 type Manifest_dependency_node_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
 	Manifest_dependency_node_constraintManifestDependencyNodePkey Manifest_dependency_node_constraint = "manifest_dependency_node_pkey"
 )
 
-// input type for inserting data into table "manifest_dependency_node"
 type Manifest_dependency_node_insert_input struct {
-	Child_edges *Manifest_dependency_edge_arr_rel_insert_input `json:"child_edges,omitempty"`
-	// merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID.
+	Child_edges  *Manifest_dependency_edge_arr_rel_insert_input `json:"child_edges,omitempty"`
 	Id           *uuid.UUID                                     `json:"id,omitempty"`
 	Labels       *json.RawMessage                               `json:"labels,omitempty"`
 	Parent_edges *Manifest_dependency_edge_arr_rel_insert_input `json:"parent_edges,omitempty"`
@@ -3280,11 +2989,9 @@ func (v *Manifest_dependency_node_insert_input) GetRelease() *Package_release_ob
 // GetRelease_id returns Manifest_dependency_node_insert_input.Release_id, and is useful for accessing the field via an interface.
 func (v *Manifest_dependency_node_insert_input) GetRelease_id() *uuid.UUID { return v.Release_id }
 
-// input type for inserting object relation for remote table "manifest_dependency_node"
 type Manifest_dependency_node_obj_rel_insert_input struct {
-	Data *Manifest_dependency_node_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Manifest_dependency_node_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Manifest_dependency_node_insert_input `json:"data,omitempty"`
+	On_conflict *Manifest_dependency_node_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Manifest_dependency_node_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -3297,7 +3004,6 @@ func (v *Manifest_dependency_node_obj_rel_insert_input) GetOn_conflict() *Manife
 	return v.On_conflict
 }
 
-// on_conflict condition type for table "manifest_dependency_node"
 type Manifest_dependency_node_on_conflict struct {
 	Constraint     Manifest_dependency_node_constraint      `json:"constraint,omitempty"`
 	Update_columns []Manifest_dependency_node_update_column `json:"update_columns,omitempty"`
@@ -3319,21 +3025,15 @@ func (v *Manifest_dependency_node_on_conflict) GetWhere() *Manifest_dependency_n
 	return v.Where
 }
 
-// update columns of table "manifest_dependency_node"
 type Manifest_dependency_node_update_column string
 
 const (
-	// column name
-	Manifest_dependency_node_update_columnId Manifest_dependency_node_update_column = "id"
-	// column name
-	Manifest_dependency_node_update_columnLabels Manifest_dependency_node_update_column = "labels"
-	// column name
-	Manifest_dependency_node_update_columnRange Manifest_dependency_node_update_column = "range"
-	// column name
+	Manifest_dependency_node_update_columnId        Manifest_dependency_node_update_column = "id"
+	Manifest_dependency_node_update_columnLabels    Manifest_dependency_node_update_column = "labels"
+	Manifest_dependency_node_update_columnRange     Manifest_dependency_node_update_column = "range"
 	Manifest_dependency_node_update_columnReleaseId Manifest_dependency_node_update_column = "release_id"
 )
 
-// on_conflict condition type for table "manifest_dependency"
 type Manifest_dependency_on_conflict struct {
 	Constraint     Manifest_dependency_constraint      `json:"constraint,omitempty"`
 	Update_columns []Manifest_dependency_update_column `json:"update_columns,omitempty"`
@@ -3353,21 +3053,16 @@ func (v *Manifest_dependency_on_conflict) GetUpdate_columns() []Manifest_depende
 // GetWhere returns Manifest_dependency_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Manifest_dependency_on_conflict) GetWhere() *Manifest_dependency_bool_exp { return v.Where }
 
-// update columns of table "manifest_dependency"
 type Manifest_dependency_update_column string
 
 const (
-	// column name
 	Manifest_dependency_update_columnManifestDependencyNodeId Manifest_dependency_update_column = "manifest_dependency_node_id"
-	// column name
-	Manifest_dependency_update_columnManifestId Manifest_dependency_update_column = "manifest_id"
+	Manifest_dependency_update_columnManifestId               Manifest_dependency_update_column = "manifest_id"
 )
 
-// input type for inserting array relation for remote table "manifests"
 type Manifests_arr_rel_insert_input struct {
-	Data []*Manifests_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Manifests_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Manifests_insert_input `json:"data,omitempty"`
+	On_conflict *Manifests_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Manifests_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -3378,7 +3073,6 @@ func (v *Manifests_arr_rel_insert_input) GetOn_conflict() *Manifests_on_conflict
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "manifests". All fields are combined with a logical 'AND'.
 type Manifests_bool_exp struct {
 	And        []*Manifests_bool_exp     `json:"_and,omitempty"`
 	Not        *Manifests_bool_exp       `json:"_not,omitempty"`
@@ -3438,17 +3132,13 @@ func (v *Manifests_bool_exp) GetS3_url() *String_comparison_exp { return v.S3_ur
 // GetStatus returns Manifests_bool_exp.Status, and is useful for accessing the field via an interface.
 func (v *Manifests_bool_exp) GetStatus() *String_comparison_exp { return v.Status }
 
-// unique or primary key constraints on table "manifests"
 type Manifests_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
-	Manifests_constraintManifestsPkey Manifests_constraint = "manifests_pkey"
-	// unique or primary key constraint on columns "s3_url"
+	Manifests_constraintManifestsPkey     Manifests_constraint = "manifests_pkey"
 	Manifests_constraintManifestsS3UrlKey Manifests_constraint = "manifests_s3_url_key"
 )
 
-// input type for inserting data into table "manifests"
 type Manifests_insert_input struct {
 	Build      *Builds_obj_rel_insert_input   `json:"build,omitempty"`
 	Build_id   *uuid.UUID                     `json:"build_id,omitempty"`
@@ -3496,7 +3186,6 @@ func (v *Manifests_insert_input) GetS3_url() *string { return v.S3_url }
 // GetStatus returns Manifests_insert_input.Status, and is useful for accessing the field via an interface.
 func (v *Manifests_insert_input) GetStatus() *string { return v.Status }
 
-// on_conflict condition type for table "manifests"
 type Manifests_on_conflict struct {
 	Constraint     Manifests_constraint      `json:"constraint,omitempty"`
 	Update_columns []Manifests_update_column `json:"update_columns,omitempty"`
@@ -3514,35 +3203,23 @@ func (v *Manifests_on_conflict) GetUpdate_columns() []Manifests_update_column {
 // GetWhere returns Manifests_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Manifests_on_conflict) GetWhere() *Manifests_bool_exp { return v.Where }
 
-// update columns of table "manifests"
 type Manifests_update_column string
 
 const (
-	// column name
-	Manifests_update_columnBuildId Manifests_update_column = "build_id"
-	// column name
+	Manifests_update_columnBuildId   Manifests_update_column = "build_id"
 	Manifests_update_columnCreatedAt Manifests_update_column = "created_at"
-	// column name
-	Manifests_update_columnFilename Manifests_update_column = "filename"
-	// column name
-	Manifests_update_columnId Manifests_update_column = "id"
-	// column name
-	Manifests_update_columnMessage Manifests_update_column = "message"
-	// column name
+	Manifests_update_columnFilename  Manifests_update_column = "filename"
+	Manifests_update_columnId        Manifests_update_column = "id"
+	Manifests_update_columnMessage   Manifests_update_column = "message"
 	Manifests_update_columnProjectId Manifests_update_column = "project_id"
-	// column name
-	Manifests_update_columnS3Key Manifests_update_column = "s3_key"
-	// column name
-	Manifests_update_columnS3Url Manifests_update_column = "s3_url"
-	// column name
-	Manifests_update_columnStatus Manifests_update_column = "status"
+	Manifests_update_columnS3Key     Manifests_update_column = "s3_key"
+	Manifests_update_columnS3Url     Manifests_update_column = "s3_url"
+	Manifests_update_columnStatus    Manifests_update_column = "status"
 )
 
-// input type for inserting array relation for remote table "organization_user"
 type Organization_user_arr_rel_insert_input struct {
-	Data []*Organization_user_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Organization_user_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Organization_user_insert_input `json:"data,omitempty"`
+	On_conflict *Organization_user_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Organization_user_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -3555,7 +3232,6 @@ func (v *Organization_user_arr_rel_insert_input) GetOn_conflict() *Organization_
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "organization_user". All fields are combined with a logical 'AND'.
 type Organization_user_bool_exp struct {
 	And             []*Organization_user_bool_exp          `json:"_and,omitempty"`
 	Not             *Organization_user_bool_exp            `json:"_not,omitempty"`
@@ -3605,17 +3281,13 @@ func (v *Organization_user_bool_exp) GetUser() *Users_bool_exp { return v.User }
 // GetUser_id returns Organization_user_bool_exp.User_id, and is useful for accessing the field via an interface.
 func (v *Organization_user_bool_exp) GetUser_id() *Uuid_comparison_exp { return v.User_id }
 
-// unique or primary key constraints on table "organization_user"
 type Organization_user_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
-	Organization_user_constraintOrganizationUserPkey Organization_user_constraint = "organization_user_pkey"
-	// unique or primary key constraint on columns "user_id", "organization_id"
+	Organization_user_constraintOrganizationUserPkey                    Organization_user_constraint = "organization_user_pkey"
 	Organization_user_constraintOrganizationUserUserIdOrganizationIdKey Organization_user_constraint = "organization_user_user_id_organization_id_key"
 )
 
-// input type for inserting data into table "organization_user"
 type Organization_user_insert_input struct {
 	Created_at      *time.Time                          `json:"created_at,omitempty"`
 	Id              *uuid.UUID                          `json:"id,omitempty"`
@@ -3653,7 +3325,6 @@ func (v *Organization_user_insert_input) GetUser() *Users_obj_rel_insert_input {
 // GetUser_id returns Organization_user_insert_input.User_id, and is useful for accessing the field via an interface.
 func (v *Organization_user_insert_input) GetUser_id() *uuid.UUID { return v.User_id }
 
-// on_conflict condition type for table "organization_user"
 type Organization_user_on_conflict struct {
 	Constraint     Organization_user_constraint      `json:"constraint,omitempty"`
 	Update_columns []Organization_user_update_column `json:"update_columns,omitempty"`
@@ -3673,7 +3344,6 @@ func (v *Organization_user_on_conflict) GetUpdate_columns() []Organization_user_
 // GetWhere returns Organization_user_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Organization_user_on_conflict) GetWhere() *Organization_user_bool_exp { return v.Where }
 
-// Boolean expression to compare columns of type "organization_user_role". All fields are combined with logical 'AND'.
 type Organization_user_role_comparison_exp struct {
 	Eq      *string  `json:"_eq,omitempty"`
 	Gt      *string  `json:"_gt,omitempty"`
@@ -3713,25 +3383,17 @@ func (v *Organization_user_role_comparison_exp) GetNeq() *string { return v.Neq 
 // GetNin returns Organization_user_role_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Organization_user_role_comparison_exp) GetNin() []string { return v.Nin }
 
-// update columns of table "organization_user"
 type Organization_user_update_column string
 
 const (
-	// column name
-	Organization_user_update_columnCreatedAt Organization_user_update_column = "created_at"
-	// column name
-	Organization_user_update_columnId Organization_user_update_column = "id"
-	// column name
+	Organization_user_update_columnCreatedAt      Organization_user_update_column = "created_at"
+	Organization_user_update_columnId             Organization_user_update_column = "id"
 	Organization_user_update_columnOrganizationId Organization_user_update_column = "organization_id"
-	// column name
-	Organization_user_update_columnRole Organization_user_update_column = "role"
-	// column name
-	Organization_user_update_columnUpdatedAt Organization_user_update_column = "updated_at"
-	// column name
-	Organization_user_update_columnUserId Organization_user_update_column = "user_id"
+	Organization_user_update_columnRole           Organization_user_update_column = "role"
+	Organization_user_update_columnUpdatedAt      Organization_user_update_column = "updated_at"
+	Organization_user_update_columnUserId         Organization_user_update_column = "user_id"
 )
 
-// Boolean expression to filter rows from the table "organizations". All fields are combined with a logical 'AND'.
 type Organizations_bool_exp struct {
 	And                []*Organizations_bool_exp   `json:"_and,omitempty"`
 	Not                *Organizations_bool_exp     `json:"_not,omitempty"`
@@ -3797,21 +3459,15 @@ func (v *Organizations_bool_exp) GetSettings() *Settings_bool_exp { return v.Set
 // GetSettings_id returns Organizations_bool_exp.Settings_id, and is useful for accessing the field via an interface.
 func (v *Organizations_bool_exp) GetSettings_id() *Uuid_comparison_exp { return v.Settings_id }
 
-// unique or primary key constraints on table "organizations"
 type Organizations_constraint string
 
 const (
-	// unique or primary key constraint on columns "installation_id"
-	Organizations_constraintInstallationIdUnique Organizations_constraint = "installation_id_unique"
-	// unique or primary key constraint on columns "github_id"
-	Organizations_constraintOrganizationsGithubIdKey Organizations_constraint = "organizations_github_id_key"
-	// unique or primary key constraint on columns "github_node_id"
+	Organizations_constraintInstallationIdUnique         Organizations_constraint = "installation_id_unique"
+	Organizations_constraintOrganizationsGithubIdKey     Organizations_constraint = "organizations_github_id_key"
 	Organizations_constraintOrganizationsGithubNodeIdKey Organizations_constraint = "organizations_github_node_id_key"
-	// unique or primary key constraint on columns "id"
-	Organizations_constraintOrganizationsPkey Organizations_constraint = "organizations_pkey"
+	Organizations_constraintOrganizationsPkey            Organizations_constraint = "organizations_pkey"
 )
 
-// input type for inserting data into table "organizations"
 type Organizations_insert_input struct {
 	CreatedAt          *time.Time                              `json:"createdAt,omitempty"`
 	Creator            *Users_obj_rel_insert_input             `json:"creator,omitempty"`
@@ -3865,11 +3521,9 @@ func (v *Organizations_insert_input) GetProjects() *Projects_arr_rel_insert_inpu
 // GetSettings_id returns Organizations_insert_input.Settings_id, and is useful for accessing the field via an interface.
 func (v *Organizations_insert_input) GetSettings_id() *uuid.UUID { return v.Settings_id }
 
-// input type for inserting object relation for remote table "organizations"
 type Organizations_obj_rel_insert_input struct {
-	Data *Organizations_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Organizations_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Organizations_insert_input `json:"data,omitempty"`
+	On_conflict *Organizations_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Organizations_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -3880,7 +3534,6 @@ func (v *Organizations_obj_rel_insert_input) GetOn_conflict() *Organizations_on_
 	return v.On_conflict
 }
 
-// on_conflict condition type for table "organizations"
 type Organizations_on_conflict struct {
 	Constraint     Organizations_constraint      `json:"constraint,omitempty"`
 	Update_columns []Organizations_update_column `json:"update_columns,omitempty"`
@@ -3898,34 +3551,21 @@ func (v *Organizations_on_conflict) GetUpdate_columns() []Organizations_update_c
 // GetWhere returns Organizations_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Organizations_on_conflict) GetWhere() *Organizations_bool_exp { return v.Where }
 
-// update columns of table "organizations"
 type Organizations_update_column string
 
 const (
-	// column name
-	Organizations_update_columnCreatedat Organizations_update_column = "createdAt"
-	// column name
-	Organizations_update_columnCreatorId Organizations_update_column = "creator_id"
-	// column name
-	Organizations_update_columnGithubId Organizations_update_column = "github_id"
-	// column name
-	Organizations_update_columnGithubNodeId Organizations_update_column = "github_node_id"
-	// column name
+	Organizations_update_columnCreatedat       Organizations_update_column = "createdAt"
+	Organizations_update_columnCreatorId       Organizations_update_column = "creator_id"
+	Organizations_update_columnGithubId        Organizations_update_column = "github_id"
+	Organizations_update_columnGithubNodeId    Organizations_update_column = "github_node_id"
 	Organizations_update_columnGithubOwnerType Organizations_update_column = "github_owner_type"
-	// column name
-	Organizations_update_columnId Organizations_update_column = "id"
-	// column name
-	Organizations_update_columnInstallationId Organizations_update_column = "installation_id"
-	// column name
-	Organizations_update_columnName Organizations_update_column = "name"
-	// column name
-	Organizations_update_columnSettingsId Organizations_update_column = "settings_id"
+	Organizations_update_columnId              Organizations_update_column = "id"
+	Organizations_update_columnInstallationId  Organizations_update_column = "installation_id"
+	Organizations_update_columnName            Organizations_update_column = "name"
+	Organizations_update_columnSettingsId      Organizations_update_column = "settings_id"
 )
 
 // PackageFetchTimePackage includes the requested fields of the GraphQL type package.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "package.package"
 type PackageFetchTimePackage struct {
 	Last_successful_fetch *time.Time `json:"last_successful_fetch"`
 }
@@ -3937,14 +3577,12 @@ func (v *PackageFetchTimePackage) GetLast_successful_fetch() *time.Time {
 
 // PackageFetchTimeResponse is returned by PackageFetchTime on success.
 type PackageFetchTimeResponse struct {
-	// fetch data from the table: "package.package"
 	Package []*PackageFetchTimePackage `json:"package"`
 }
 
 // GetPackage returns PackageFetchTimeResponse.Package, and is useful for accessing the field via an interface.
 func (v *PackageFetchTimeResponse) GetPackage() []*PackageFetchTimePackage { return v.Package }
 
-// Boolean expression to filter rows from the table "package.package". All fields are combined with a logical 'AND'.
 type Package_bool_exp struct {
 	And                       []*Package_bool_exp                  `json:"_and,omitempty"`
 	Not                       *Package_bool_exp                    `json:"_not,omitempty"`
@@ -4014,17 +3652,13 @@ func (v *Package_bool_exp) GetReleases() *Package_release_bool_exp { return v.Re
 // GetUpstream_data returns Package_bool_exp.Upstream_data, and is useful for accessing the field via an interface.
 func (v *Package_bool_exp) GetUpstream_data() *Jsonb_comparison_exp { return v.Upstream_data }
 
-// unique or primary key constraints on table "package.package"
 type Package_constraint string
 
 const (
-	// unique or primary key constraint on columns "name", "package_manager", "custom_registry"
 	Package_constraintPackagePackageManagerCustomRegistryNameIdx Package_constraint = "package_package_manager_custom_registry_name_idx"
-	// unique or primary key constraint on columns "id"
-	Package_constraintPackagePkey Package_constraint = "package_pkey"
+	Package_constraintPackagePkey                                Package_constraint = "package_pkey"
 )
 
-// input type for inserting data into table "package.package"
 type Package_insert_input struct {
 	Affected_by_vulnerability *Vulnerability_affected_arr_rel_insert_input     `json:"affected_by_vulnerability,omitempty"`
 	Custom_registry           *string                                          `json:"custom_registry,omitempty"`
@@ -4076,7 +3710,6 @@ func (v *Package_insert_input) GetReleases() *Package_release_arr_rel_insert_inp
 // GetUpstream_data returns Package_insert_input.Upstream_data, and is useful for accessing the field via an interface.
 func (v *Package_insert_input) GetUpstream_data() *json.RawMessage { return v.Upstream_data }
 
-// Boolean expression to filter rows from the table "package.license". All fields are combined with a logical 'AND'.
 type Package_license_bool_exp struct {
 	And              []*Package_license_bool_exp       `json:"_and,omitempty"`
 	Not              *Package_license_bool_exp         `json:"_not,omitempty"`
@@ -4106,17 +3739,13 @@ func (v *Package_license_bool_exp) GetRelease_licenses() *Package_release_licens
 	return v.Release_licenses
 }
 
-// unique or primary key constraints on table "package.license"
 type Package_license_constraint string
 
 const (
-	// unique or primary key constraint on columns "name"
 	Package_license_constraintLicenseNameIdx Package_license_constraint = "license_name_idx"
-	// unique or primary key constraint on columns "id"
-	Package_license_constraintLicensePkey Package_license_constraint = "license_pkey"
+	Package_license_constraintLicensePkey    Package_license_constraint = "license_pkey"
 )
 
-// input type for inserting data into table "package.license"
 type Package_license_insert_input struct {
 	Id               *uuid.UUID                                    `json:"id,omitempty"`
 	Name             *string                                       `json:"name,omitempty"`
@@ -4134,11 +3763,9 @@ func (v *Package_license_insert_input) GetRelease_licenses() *Package_release_li
 	return v.Release_licenses
 }
 
-// input type for inserting object relation for remote table "package.license"
 type Package_license_obj_rel_insert_input struct {
-	Data *Package_license_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Package_license_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Package_license_insert_input `json:"data,omitempty"`
+	On_conflict *Package_license_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Package_license_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -4149,7 +3776,6 @@ func (v *Package_license_obj_rel_insert_input) GetOn_conflict() *Package_license
 	return v.On_conflict
 }
 
-// on_conflict condition type for table "package.license"
 type Package_license_on_conflict struct {
 	Constraint     Package_license_constraint      `json:"constraint,omitempty"`
 	Update_columns []Package_license_update_column `json:"update_columns,omitempty"`
@@ -4167,17 +3793,13 @@ func (v *Package_license_on_conflict) GetUpdate_columns() []Package_license_upda
 // GetWhere returns Package_license_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Package_license_on_conflict) GetWhere() *Package_license_bool_exp { return v.Where }
 
-// update columns of table "package.license"
 type Package_license_update_column string
 
 const (
-	// column name
-	Package_license_update_columnId Package_license_update_column = "id"
-	// column name
+	Package_license_update_columnId   Package_license_update_column = "id"
 	Package_license_update_columnName Package_license_update_column = "name"
 )
 
-// Boolean expression to filter rows from the table "package.maintainer". All fields are combined with a logical 'AND'.
 type Package_maintainer_bool_exp struct {
 	And                 []*Package_maintainer_bool_exp       `json:"_and,omitempty"`
 	Not                 *Package_maintainer_bool_exp         `json:"_not,omitempty"`
@@ -4223,17 +3845,13 @@ func (v *Package_maintainer_bool_exp) GetPublished_releases() *Package_release_b
 	return v.Published_releases
 }
 
-// unique or primary key constraints on table "package.maintainer"
 type Package_maintainer_constraint string
 
 const (
-	// unique or primary key constraint on columns "email", "package_manager"
 	Package_maintainer_constraintMaintainerPackageManagerEmailIdx Package_maintainer_constraint = "maintainer_package_manager_email_idx"
-	// unique or primary key constraint on columns "id"
-	Package_maintainer_constraintMaintainerPkey Package_maintainer_constraint = "maintainer_pkey"
+	Package_maintainer_constraintMaintainerPkey                   Package_maintainer_constraint = "maintainer_pkey"
 )
 
-// input type for inserting data into table "package.maintainer"
 type Package_maintainer_insert_input struct {
 	Email               *string                                          `json:"email,omitempty"`
 	Id                  *uuid.UUID                                       `json:"id,omitempty"`
@@ -4267,11 +3885,9 @@ func (v *Package_maintainer_insert_input) GetPublished_releases() *Package_relea
 	return v.Published_releases
 }
 
-// input type for inserting object relation for remote table "package.maintainer"
 type Package_maintainer_obj_rel_insert_input struct {
-	Data *Package_maintainer_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Package_maintainer_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Package_maintainer_insert_input `json:"data,omitempty"`
+	On_conflict *Package_maintainer_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Package_maintainer_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -4284,7 +3900,6 @@ func (v *Package_maintainer_obj_rel_insert_input) GetOn_conflict() *Package_main
 	return v.On_conflict
 }
 
-// on_conflict condition type for table "package.maintainer"
 type Package_maintainer_on_conflict struct {
 	Constraint     Package_maintainer_constraint      `json:"constraint,omitempty"`
 	Update_columns []Package_maintainer_update_column `json:"update_columns,omitempty"`
@@ -4304,21 +3919,15 @@ func (v *Package_maintainer_on_conflict) GetUpdate_columns() []Package_maintaine
 // GetWhere returns Package_maintainer_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Package_maintainer_on_conflict) GetWhere() *Package_maintainer_bool_exp { return v.Where }
 
-// update columns of table "package.maintainer"
 type Package_maintainer_update_column string
 
 const (
-	// column name
-	Package_maintainer_update_columnEmail Package_maintainer_update_column = "email"
-	// column name
-	Package_maintainer_update_columnId Package_maintainer_update_column = "id"
-	// column name
-	Package_maintainer_update_columnName Package_maintainer_update_column = "name"
-	// column name
+	Package_maintainer_update_columnEmail          Package_maintainer_update_column = "email"
+	Package_maintainer_update_columnId             Package_maintainer_update_column = "id"
+	Package_maintainer_update_columnName           Package_maintainer_update_column = "name"
 	Package_maintainer_update_columnPackageManager Package_maintainer_update_column = "package_manager"
 )
 
-// Boolean expression to compare columns of type "package_manager". All fields are combined with logical 'AND'.
 type Package_manager_comparison_exp struct {
 	Eq      *types.PackageManager  `json:"_eq,omitempty"`
 	Gt      *types.PackageManager  `json:"_gt,omitempty"`
@@ -4358,11 +3967,9 @@ func (v *Package_manager_comparison_exp) GetNeq() *types.PackageManager { return
 // GetNin returns Package_manager_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Package_manager_comparison_exp) GetNin() []types.PackageManager { return v.Nin }
 
-// input type for inserting object relation for remote table "package.package"
 type Package_obj_rel_insert_input struct {
-	Data *Package_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Package_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Package_insert_input `json:"data,omitempty"`
+	On_conflict *Package_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Package_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -4371,7 +3978,6 @@ func (v *Package_obj_rel_insert_input) GetData() *Package_insert_input { return 
 // GetOn_conflict returns Package_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
 func (v *Package_obj_rel_insert_input) GetOn_conflict() *Package_on_conflict { return v.On_conflict }
 
-// on_conflict condition type for table "package.package"
 type Package_on_conflict struct {
 	Constraint     Package_constraint      `json:"constraint,omitempty"`
 	Update_columns []Package_update_column `json:"update_columns,omitempty"`
@@ -4387,11 +3993,9 @@ func (v *Package_on_conflict) GetUpdate_columns() []Package_update_column { retu
 // GetWhere returns Package_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Package_on_conflict) GetWhere() *Package_bool_exp { return v.Where }
 
-// input type for inserting array relation for remote table "package.package_maintainer"
 type Package_package_maintainer_arr_rel_insert_input struct {
-	Data []*Package_package_maintainer_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Package_package_maintainer_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Package_package_maintainer_insert_input `json:"data,omitempty"`
+	On_conflict *Package_package_maintainer_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Package_package_maintainer_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -4404,7 +4008,6 @@ func (v *Package_package_maintainer_arr_rel_insert_input) GetOn_conflict() *Pack
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "package.package_maintainer". All fields are combined with a logical 'AND'.
 type Package_package_maintainer_bool_exp struct {
 	And           []*Package_package_maintainer_bool_exp `json:"_and,omitempty"`
 	Not           *Package_package_maintainer_bool_exp   `json:"_not,omitempty"`
@@ -4448,15 +4051,12 @@ func (v *Package_package_maintainer_bool_exp) GetPackage_id() *Uuid_comparison_e
 	return v.Package_id
 }
 
-// unique or primary key constraints on table "package.package_maintainer"
 type Package_package_maintainer_constraint string
 
 const (
-	// unique or primary key constraint on columns "maintainer_id", "package_id"
 	Package_package_maintainer_constraintPackageMaintainerPackageIdMaintainerIdIdx Package_package_maintainer_constraint = "package_maintainer_package_id_maintainer_id_idx"
 )
 
-// input type for inserting data into table "package.package_maintainer"
 type Package_package_maintainer_insert_input struct {
 	Maintainer    *Package_maintainer_obj_rel_insert_input `json:"maintainer,omitempty"`
 	Maintainer_id *uuid.UUID                               `json:"maintainer_id,omitempty"`
@@ -4482,7 +4082,6 @@ func (v *Package_package_maintainer_insert_input) GetPackage() *Package_obj_rel_
 // GetPackage_id returns Package_package_maintainer_insert_input.Package_id, and is useful for accessing the field via an interface.
 func (v *Package_package_maintainer_insert_input) GetPackage_id() *uuid.UUID { return v.Package_id }
 
-// on_conflict condition type for table "package.package_maintainer"
 type Package_package_maintainer_on_conflict struct {
 	Constraint     Package_package_maintainer_constraint      `json:"constraint,omitempty"`
 	Update_columns []Package_package_maintainer_update_column `json:"update_columns,omitempty"`
@@ -4504,21 +4103,16 @@ func (v *Package_package_maintainer_on_conflict) GetWhere() *Package_package_mai
 	return v.Where
 }
 
-// update columns of table "package.package_maintainer"
 type Package_package_maintainer_update_column string
 
 const (
-	// column name
 	Package_package_maintainer_update_columnMaintainerId Package_package_maintainer_update_column = "maintainer_id"
-	// column name
-	Package_package_maintainer_update_columnPackageId Package_package_maintainer_update_column = "package_id"
+	Package_package_maintainer_update_columnPackageId    Package_package_maintainer_update_column = "package_id"
 )
 
-// input type for inserting array relation for remote table "package.release"
 type Package_release_arr_rel_insert_input struct {
-	Data []*Package_release_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Package_release_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Package_release_insert_input `json:"data,omitempty"`
+	On_conflict *Package_release_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Package_release_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -4531,7 +4125,6 @@ func (v *Package_release_arr_rel_insert_input) GetOn_conflict() *Package_release
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "package.release". All fields are combined with a logical 'AND'.
 type Package_release_bool_exp struct {
 	And                            []*Package_release_bool_exp             `json:"_and,omitempty"`
 	Not                            *Package_release_bool_exp               `json:"_not,omitempty"`
@@ -4637,21 +4230,16 @@ func (v *Package_release_bool_exp) GetUpstream_data() *Jsonb_comparison_exp { re
 // GetVersion returns Package_release_bool_exp.Version, and is useful for accessing the field via an interface.
 func (v *Package_release_bool_exp) GetVersion() *String_comparison_exp { return v.Version }
 
-// unique or primary key constraints on table "package.release"
 type Package_release_constraint string
 
 const (
-	// unique or primary key constraint on columns "package_id", "version"
 	Package_release_constraintReleasePackageIdVersionIdx Package_release_constraint = "release_package_id_version_idx"
-	// unique or primary key constraint on columns "id"
-	Package_release_constraintReleasePkey Package_release_constraint = "release_pkey"
+	Package_release_constraintReleasePkey                Package_release_constraint = "release_pkey"
 )
 
-// input type for inserting array relation for remote table "package.release_dependency"
 type Package_release_dependency_arr_rel_insert_input struct {
-	Data []*Package_release_dependency_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Package_release_dependency_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Package_release_dependency_insert_input `json:"data,omitempty"`
+	On_conflict *Package_release_dependency_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Package_release_dependency_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -4664,7 +4252,6 @@ func (v *Package_release_dependency_arr_rel_insert_input) GetOn_conflict() *Pack
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "package.release_dependency". All fields are combined with a logical 'AND'.
 type Package_release_dependency_bool_exp struct {
 	And                   []*Package_release_dependency_bool_exp `json:"_and,omitempty"`
 	Not                   *Package_release_dependency_bool_exp   `json:"_not,omitempty"`
@@ -4742,17 +4329,13 @@ func (v *Package_release_dependency_bool_exp) GetRelease_id() *Uuid_comparison_e
 	return v.Release_id
 }
 
-// unique or primary key constraints on table "package.release_dependency"
 type Package_release_dependency_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
-	Package_release_dependency_constraintReleaseDependencyPkey Package_release_dependency_constraint = "release_dependency_pkey"
-	// unique or primary key constraint on columns "package_version_query", "package_name", "release_id"
+	Package_release_dependency_constraintReleaseDependencyPkey                                  Package_release_dependency_constraint = "release_dependency_pkey"
 	Package_release_dependency_constraintReleaseDependencyReleaseIdPackageNamePackageVersionIdx Package_release_dependency_constraint = "release_dependency_release_id_package_name_package_version__idx"
 )
 
-// input type for inserting data into table "package.release_dependency"
 type Package_release_dependency_insert_input struct {
 	Dependency_package    *Package_obj_rel_insert_input         `json:"dependency_package,omitempty"`
 	Dependency_package_id *uuid.UUID                            `json:"dependency_package_id,omitempty"`
@@ -4808,7 +4391,6 @@ func (v *Package_release_dependency_insert_input) GetRelease() *Package_release_
 // GetRelease_id returns Package_release_dependency_insert_input.Release_id, and is useful for accessing the field via an interface.
 func (v *Package_release_dependency_insert_input) GetRelease_id() *uuid.UUID { return v.Release_id }
 
-// on_conflict condition type for table "package.release_dependency"
 type Package_release_dependency_on_conflict struct {
 	Constraint     Package_release_dependency_constraint      `json:"constraint,omitempty"`
 	Update_columns []Package_release_dependency_update_column `json:"update_columns,omitempty"`
@@ -4830,27 +4412,18 @@ func (v *Package_release_dependency_on_conflict) GetWhere() *Package_release_dep
 	return v.Where
 }
 
-// update columns of table "package.release_dependency"
 type Package_release_dependency_update_column string
 
 const (
-	// column name
 	Package_release_dependency_update_columnDependencyPackageId Package_release_dependency_update_column = "dependency_package_id"
-	// column name
 	Package_release_dependency_update_columnDependencyReleaseId Package_release_dependency_update_column = "dependency_release_id"
-	// column name
-	Package_release_dependency_update_columnId Package_release_dependency_update_column = "id"
-	// column name
-	Package_release_dependency_update_columnIsDev Package_release_dependency_update_column = "is_dev"
-	// column name
-	Package_release_dependency_update_columnPackageName Package_release_dependency_update_column = "package_name"
-	// column name
+	Package_release_dependency_update_columnId                  Package_release_dependency_update_column = "id"
+	Package_release_dependency_update_columnIsDev               Package_release_dependency_update_column = "is_dev"
+	Package_release_dependency_update_columnPackageName         Package_release_dependency_update_column = "package_name"
 	Package_release_dependency_update_columnPackageVersionQuery Package_release_dependency_update_column = "package_version_query"
-	// column name
-	Package_release_dependency_update_columnReleaseId Package_release_dependency_update_column = "release_id"
+	Package_release_dependency_update_columnReleaseId           Package_release_dependency_update_column = "release_id"
 )
 
-// input type for inserting data into table "package.release"
 type Package_release_insert_input struct {
 	Blob_hash                      *string                                             `json:"blob_hash,omitempty"`
 	Build_dependency_relationships *Build_dependency_relationship_arr_rel_insert_input `json:"build_dependency_relationships,omitempty"`
@@ -4934,11 +4507,9 @@ func (v *Package_release_insert_input) GetUpstream_data() *json.RawMessage { ret
 // GetVersion returns Package_release_insert_input.Version, and is useful for accessing the field via an interface.
 func (v *Package_release_insert_input) GetVersion() *string { return v.Version }
 
-// input type for inserting array relation for remote table "package.release_license"
 type Package_release_license_arr_rel_insert_input struct {
-	Data []*Package_release_license_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Package_release_license_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Package_release_license_insert_input `json:"data,omitempty"`
+	On_conflict *Package_release_license_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Package_release_license_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -4951,7 +4522,6 @@ func (v *Package_release_license_arr_rel_insert_input) GetOn_conflict() *Package
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "package.release_license". All fields are combined with a logical 'AND'.
 type Package_release_license_bool_exp struct {
 	And           []*Package_release_license_bool_exp `json:"_and,omitempty"`
 	Not           *Package_release_license_bool_exp   `json:"_not,omitempty"`
@@ -5001,15 +4571,12 @@ func (v *Package_release_license_bool_exp) GetSource() *License_source_compariso
 	return v.Source
 }
 
-// unique or primary key constraints on table "package.release_license"
 type Package_release_license_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
 	Package_release_license_constraintReleaseLicensePkey Package_release_license_constraint = "release_license_pkey"
 )
 
-// input type for inserting data into table "package.release_license"
 type Package_release_license_insert_input struct {
 	Id            *uuid.UUID                            `json:"id,omitempty"`
 	License       *Package_license_obj_rel_insert_input `json:"license,omitempty"`
@@ -5045,7 +4612,6 @@ func (v *Package_release_license_insert_input) GetScan_time() *time.Time { retur
 // GetSource returns Package_release_license_insert_input.Source, and is useful for accessing the field via an interface.
 func (v *Package_release_license_insert_input) GetSource() *types.LicenseSource { return v.Source }
 
-// on_conflict condition type for table "package.release_license"
 type Package_release_license_on_conflict struct {
 	Constraint     Package_release_license_constraint      `json:"constraint,omitempty"`
 	Update_columns []Package_release_license_update_column `json:"update_columns,omitempty"`
@@ -5067,29 +4633,20 @@ func (v *Package_release_license_on_conflict) GetWhere() *Package_release_licens
 	return v.Where
 }
 
-// update columns of table "package.release_license"
 type Package_release_license_update_column string
 
 const (
-	// column name
-	Package_release_license_update_columnId Package_release_license_update_column = "id"
-	// column name
-	Package_release_license_update_columnLicenseId Package_release_license_update_column = "license_id"
-	// column name
-	Package_release_license_update_columnReleaseId Package_release_license_update_column = "release_id"
-	// column name
+	Package_release_license_update_columnId           Package_release_license_update_column = "id"
+	Package_release_license_update_columnLicenseId    Package_release_license_update_column = "license_id"
+	Package_release_license_update_columnReleaseId    Package_release_license_update_column = "release_id"
 	Package_release_license_update_columnScanMetadata Package_release_license_update_column = "scan_metadata"
-	// column name
-	Package_release_license_update_columnScanTime Package_release_license_update_column = "scan_time"
-	// column name
-	Package_release_license_update_columnSource Package_release_license_update_column = "source"
+	Package_release_license_update_columnScanTime     Package_release_license_update_column = "scan_time"
+	Package_release_license_update_columnSource       Package_release_license_update_column = "source"
 )
 
-// input type for inserting object relation for remote table "package.release"
 type Package_release_obj_rel_insert_input struct {
-	Data *Package_release_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Package_release_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Package_release_insert_input `json:"data,omitempty"`
+	On_conflict *Package_release_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Package_release_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -5100,7 +4657,6 @@ func (v *Package_release_obj_rel_insert_input) GetOn_conflict() *Package_release
 	return v.On_conflict
 }
 
-// on_conflict condition type for table "package.release"
 type Package_release_on_conflict struct {
 	Constraint     Package_release_constraint      `json:"constraint,omitempty"`
 	Update_columns []Package_release_update_column `json:"update_columns,omitempty"`
@@ -5118,57 +4674,35 @@ func (v *Package_release_on_conflict) GetUpdate_columns() []Package_release_upda
 // GetWhere returns Package_release_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Package_release_on_conflict) GetWhere() *Package_release_bool_exp { return v.Where }
 
-// update columns of table "package.release"
 type Package_release_update_column string
 
 const (
-	// column name
-	Package_release_update_columnBlobHash Package_release_update_column = "blob_hash"
-	// column name
-	Package_release_update_columnFetchedTime Package_release_update_column = "fetched_time"
-	// column name
-	Package_release_update_columnId Package_release_update_column = "id"
-	// column name
-	Package_release_update_columnMirroredBlobUrl Package_release_update_column = "mirrored_blob_url"
-	// column name
-	Package_release_update_columnObservedTime Package_release_update_column = "observed_time"
-	// column name
-	Package_release_update_columnPackageId Package_release_update_column = "package_id"
-	// column name
+	Package_release_update_columnBlobHash               Package_release_update_column = "blob_hash"
+	Package_release_update_columnFetchedTime            Package_release_update_column = "fetched_time"
+	Package_release_update_columnId                     Package_release_update_column = "id"
+	Package_release_update_columnMirroredBlobUrl        Package_release_update_column = "mirrored_blob_url"
+	Package_release_update_columnObservedTime           Package_release_update_column = "observed_time"
+	Package_release_update_columnPackageId              Package_release_update_column = "package_id"
 	Package_release_update_columnPublishingMaintainerId Package_release_update_column = "publishing_maintainer_id"
-	// column name
-	Package_release_update_columnReleaseTime Package_release_update_column = "release_time"
-	// column name
-	Package_release_update_columnUpstreamBlobUrl Package_release_update_column = "upstream_blob_url"
-	// column name
-	Package_release_update_columnUpstreamData Package_release_update_column = "upstream_data"
-	// column name
-	Package_release_update_columnVersion Package_release_update_column = "version"
+	Package_release_update_columnReleaseTime            Package_release_update_column = "release_time"
+	Package_release_update_columnUpstreamBlobUrl        Package_release_update_column = "upstream_blob_url"
+	Package_release_update_columnUpstreamData           Package_release_update_column = "upstream_data"
+	Package_release_update_columnVersion                Package_release_update_column = "version"
 )
 
-// update columns of table "package.package"
 type Package_update_column string
 
 const (
-	// column name
-	Package_update_columnCustomRegistry Package_update_column = "custom_registry"
-	// column name
-	Package_update_columnDescription Package_update_column = "description"
-	// column name
-	Package_update_columnId Package_update_column = "id"
-	// column name
-	Package_update_columnLastFailedFetch Package_update_column = "last_failed_fetch"
-	// column name
+	Package_update_columnCustomRegistry      Package_update_column = "custom_registry"
+	Package_update_columnDescription         Package_update_column = "description"
+	Package_update_columnId                  Package_update_column = "id"
+	Package_update_columnLastFailedFetch     Package_update_column = "last_failed_fetch"
 	Package_update_columnLastSuccessfulFetch Package_update_column = "last_successful_fetch"
-	// column name
-	Package_update_columnName Package_update_column = "name"
-	// column name
-	Package_update_columnPackageManager Package_update_column = "package_manager"
-	// column name
-	Package_update_columnUpstreamData Package_update_column = "upstream_data"
+	Package_update_columnName                Package_update_column = "name"
+	Package_update_columnPackageManager      Package_update_column = "package_manager"
+	Package_update_columnUpstreamData        Package_update_column = "upstream_data"
 )
 
-// Boolean expression to filter rows from the table "project_access_tokens". All fields are combined with a logical 'AND'.
 type Project_access_tokens_bool_exp struct {
 	And             []*Project_access_tokens_bool_exp `json:"_and,omitempty"`
 	Not             *Project_access_tokens_bool_exp   `json:"_not,omitempty"`
@@ -5210,11 +4744,9 @@ func (v *Project_access_tokens_bool_exp) GetProject_uuid() *Uuid_comparison_exp 
 	return v.Project_uuid
 }
 
-// input type for inserting array relation for remote table "projects"
 type Projects_arr_rel_insert_input struct {
-	Data []*Projects_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Projects_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Projects_insert_input `json:"data,omitempty"`
+	On_conflict *Projects_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Projects_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -5223,7 +4755,6 @@ func (v *Projects_arr_rel_insert_input) GetData() []*Projects_insert_input { ret
 // GetOn_conflict returns Projects_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
 func (v *Projects_arr_rel_insert_input) GetOn_conflict() *Projects_on_conflict { return v.On_conflict }
 
-// Boolean expression to filter rows from the table "projects". All fields are combined with a logical 'AND'.
 type Projects_bool_exp struct {
 	And                     []*Projects_bool_exp              `json:"_and,omitempty"`
 	Not                     *Projects_bool_exp                `json:"_not,omitempty"`
@@ -5313,17 +4844,13 @@ func (v *Projects_bool_exp) GetSettings() *Settings_bool_exp { return v.Settings
 // GetSettings_id returns Projects_bool_exp.Settings_id, and is useful for accessing the field via an interface.
 func (v *Projects_bool_exp) GetSettings_id() *Uuid_comparison_exp { return v.Settings_id }
 
-// unique or primary key constraints on table "projects"
 type Projects_constraint string
 
 const (
-	// unique or primary key constraint on columns "name", "organization_id"
 	Projects_constraintProjectsNameOrganizationIdKey Projects_constraint = "projects_name_organization_id_key"
-	// unique or primary key constraint on columns "id"
-	Projects_constraintProjectsPkey Projects_constraint = "projects_pkey"
+	Projects_constraintProjectsPkey                  Projects_constraint = "projects_pkey"
 )
 
-// input type for inserting data into table "projects"
 type Projects_insert_input struct {
 	Builds                *Builds_arr_rel_insert_input                `json:"builds,omitempty"`
 	Created_at            *time.Time                                  `json:"created_at,omitempty"`
@@ -5383,11 +4910,9 @@ func (v *Projects_insert_input) GetRepo() *string { return v.Repo }
 // GetSettings_id returns Projects_insert_input.Settings_id, and is useful for accessing the field via an interface.
 func (v *Projects_insert_input) GetSettings_id() *uuid.UUID { return v.Settings_id }
 
-// input type for inserting object relation for remote table "projects"
 type Projects_obj_rel_insert_input struct {
-	Data *Projects_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Projects_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Projects_insert_input `json:"data,omitempty"`
+	On_conflict *Projects_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Projects_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -5396,7 +4921,6 @@ func (v *Projects_obj_rel_insert_input) GetData() *Projects_insert_input { retur
 // GetOn_conflict returns Projects_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
 func (v *Projects_obj_rel_insert_input) GetOn_conflict() *Projects_on_conflict { return v.On_conflict }
 
-// on_conflict condition type for table "projects"
 type Projects_on_conflict struct {
 	Constraint     Projects_constraint      `json:"constraint,omitempty"`
 	Update_columns []Projects_update_column `json:"update_columns,omitempty"`
@@ -5412,25 +4936,17 @@ func (v *Projects_on_conflict) GetUpdate_columns() []Projects_update_column { re
 // GetWhere returns Projects_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Projects_on_conflict) GetWhere() *Projects_bool_exp { return v.Where }
 
-// update columns of table "projects"
 type Projects_update_column string
 
 const (
-	// column name
-	Projects_update_columnCreatedAt Projects_update_column = "created_at"
-	// column name
-	Projects_update_columnId Projects_update_column = "id"
-	// column name
-	Projects_update_columnName Projects_update_column = "name"
-	// column name
+	Projects_update_columnCreatedAt      Projects_update_column = "created_at"
+	Projects_update_columnId             Projects_update_column = "id"
+	Projects_update_columnName           Projects_update_column = "name"
 	Projects_update_columnOrganizationId Projects_update_column = "organization_id"
-	// column name
-	Projects_update_columnRepo Projects_update_column = "repo"
-	// column name
-	Projects_update_columnSettingsId Projects_update_column = "settings_id"
+	Projects_update_columnRepo           Projects_update_column = "repo"
+	Projects_update_columnSettingsId     Projects_update_column = "settings_id"
 )
 
-// Boolean expression to compare columns of type "reference_type". All fields are combined with logical 'AND'.
 type Reference_type_comparison_exp struct {
 	Eq      *types.ReferenceType  `json:"_eq,omitempty"`
 	Gt      *types.ReferenceType  `json:"_gt,omitempty"`
@@ -5470,11 +4986,9 @@ func (v *Reference_type_comparison_exp) GetNeq() *types.ReferenceType { return v
 // GetNin returns Reference_type_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Reference_type_comparison_exp) GetNin() []types.ReferenceType { return v.Nin }
 
-// input type for inserting array relation for remote table "resolved_manifest"
 type Resolved_manifest_arr_rel_insert_input struct {
-	Data []*Resolved_manifest_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Resolved_manifest_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Resolved_manifest_insert_input `json:"data,omitempty"`
+	On_conflict *Resolved_manifest_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Resolved_manifest_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -5487,7 +5001,6 @@ func (v *Resolved_manifest_arr_rel_insert_input) GetOn_conflict() *Resolved_mani
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "resolved_manifest". All fields are combined with a logical 'AND'.
 type Resolved_manifest_bool_exp struct {
 	And                   []*Resolved_manifest_bool_exp      `json:"_and,omitempty"`
 	Not                   *Resolved_manifest_bool_exp        `json:"_not,omitempty"`
@@ -5531,24 +5044,19 @@ func (v *Resolved_manifest_bool_exp) GetManifest_dependencies() *Manifest_depend
 // GetPath returns Resolved_manifest_bool_exp.Path, and is useful for accessing the field via an interface.
 func (v *Resolved_manifest_bool_exp) GetPath() *String_comparison_exp { return v.Path }
 
-// unique or primary key constraints on table "resolved_manifest"
 type Resolved_manifest_constraint string
 
 const (
-	// unique or primary key constraint on columns "build_id", "path"
 	Resolved_manifest_constraintManifestBuildIdPathIdx Resolved_manifest_constraint = "manifest_build_id_path_idx"
-	// unique or primary key constraint on columns "id"
-	Resolved_manifest_constraintManifestPkey Resolved_manifest_constraint = "manifest_pkey"
+	Resolved_manifest_constraintManifestPkey           Resolved_manifest_constraint = "manifest_pkey"
 )
 
-// input type for inserting data into table "resolved_manifest"
 type Resolved_manifest_insert_input struct {
 	Build                 *Builds_obj_rel_insert_input              `json:"build,omitempty"`
 	Build_id              *uuid.UUID                                `json:"build_id,omitempty"`
 	Id                    *uuid.UUID                                `json:"id,omitempty"`
 	Manifest_dependencies *Manifest_dependency_arr_rel_insert_input `json:"manifest_dependencies,omitempty"`
-	// path in repo of manifest file. empty string if the ecosystem does not have a manifest file.
-	Path *string `json:"path,omitempty"`
+	Path                  *string                                   `json:"path,omitempty"`
 }
 
 // GetBuild returns Resolved_manifest_insert_input.Build, and is useful for accessing the field via an interface.
@@ -5568,11 +5076,9 @@ func (v *Resolved_manifest_insert_input) GetManifest_dependencies() *Manifest_de
 // GetPath returns Resolved_manifest_insert_input.Path, and is useful for accessing the field via an interface.
 func (v *Resolved_manifest_insert_input) GetPath() *string { return v.Path }
 
-// input type for inserting object relation for remote table "resolved_manifest"
 type Resolved_manifest_obj_rel_insert_input struct {
-	Data *Resolved_manifest_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Resolved_manifest_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Resolved_manifest_insert_input `json:"data,omitempty"`
+	On_conflict *Resolved_manifest_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Resolved_manifest_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -5585,7 +5091,6 @@ func (v *Resolved_manifest_obj_rel_insert_input) GetOn_conflict() *Resolved_mani
 	return v.On_conflict
 }
 
-// on_conflict condition type for table "resolved_manifest"
 type Resolved_manifest_on_conflict struct {
 	Constraint     Resolved_manifest_constraint      `json:"constraint,omitempty"`
 	Update_columns []Resolved_manifest_update_column `json:"update_columns,omitempty"`
@@ -5605,23 +5110,17 @@ func (v *Resolved_manifest_on_conflict) GetUpdate_columns() []Resolved_manifest_
 // GetWhere returns Resolved_manifest_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Resolved_manifest_on_conflict) GetWhere() *Resolved_manifest_bool_exp { return v.Where }
 
-// update columns of table "resolved_manifest"
 type Resolved_manifest_update_column string
 
 const (
-	// column name
 	Resolved_manifest_update_columnBuildId Resolved_manifest_update_column = "build_id"
-	// column name
-	Resolved_manifest_update_columnId Resolved_manifest_update_column = "id"
-	// column name
-	Resolved_manifest_update_columnPath Resolved_manifest_update_column = "path"
+	Resolved_manifest_update_columnId      Resolved_manifest_update_column = "id"
+	Resolved_manifest_update_columnPath    Resolved_manifest_update_column = "path"
 )
 
-// input type for inserting array relation for remote table "scans"
 type Scans_arr_rel_insert_input struct {
-	Data []*Scans_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Scans_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Scans_insert_input `json:"data,omitempty"`
+	On_conflict *Scans_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Scans_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -5630,7 +5129,6 @@ func (v *Scans_arr_rel_insert_input) GetData() []*Scans_insert_input { return v.
 // GetOn_conflict returns Scans_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
 func (v *Scans_arr_rel_insert_input) GetOn_conflict() *Scans_on_conflict { return v.On_conflict }
 
-// Boolean expression to filter rows from the table "scans". All fields are combined with a logical 'AND'.
 type Scans_bool_exp struct {
 	And            []*Scans_bool_exp         `json:"_and,omitempty"`
 	Not            *Scans_bool_exp           `json:"_not,omitempty"`
@@ -5694,17 +5192,13 @@ func (v *Scans_bool_exp) GetSource_type() *String_comparison_exp { return v.Sour
 // GetTarget returns Scans_bool_exp.Target, and is useful for accessing the field via an interface.
 func (v *Scans_bool_exp) GetTarget() *String_comparison_exp { return v.Target }
 
-// unique or primary key constraints on table "scans"
 type Scans_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
-	Scans_constraintScansPkey Scans_constraint = "scans_pkey"
-	// unique or primary key constraint on columns "scan_number", "build_id"
+	Scans_constraintScansPkey                 Scans_constraint = "scans_pkey"
 	Scans_constraintScansScanNumberBuildIdKey Scans_constraint = "scans_scan_number_build_id_key"
 )
 
-// input type for inserting data into table "scans"
 type Scans_insert_input struct {
 	Build          *Builds_obj_rel_insert_input   `json:"build,omitempty"`
 	Build_id       *uuid.UUID                     `json:"build_id,omitempty"`
@@ -5756,11 +5250,9 @@ func (v *Scans_insert_input) GetSource_type() *string { return v.Source_type }
 // GetTarget returns Scans_insert_input.Target, and is useful for accessing the field via an interface.
 func (v *Scans_insert_input) GetTarget() *string { return v.Target }
 
-// input type for inserting object relation for remote table "scans"
 type Scans_obj_rel_insert_input struct {
-	Data *Scans_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Scans_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Scans_insert_input `json:"data,omitempty"`
+	On_conflict *Scans_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Scans_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -5769,7 +5261,6 @@ func (v *Scans_obj_rel_insert_input) GetData() *Scans_insert_input { return v.Da
 // GetOn_conflict returns Scans_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
 func (v *Scans_obj_rel_insert_input) GetOn_conflict() *Scans_on_conflict { return v.On_conflict }
 
-// on_conflict condition type for table "scans"
 type Scans_on_conflict struct {
 	Constraint     Scans_constraint      `json:"constraint,omitempty"`
 	Update_columns []Scans_update_column `json:"update_columns,omitempty"`
@@ -5785,35 +5276,23 @@ func (v *Scans_on_conflict) GetUpdate_columns() []Scans_update_column { return v
 // GetWhere returns Scans_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Scans_on_conflict) GetWhere() *Scans_bool_exp { return v.Where }
 
-// update columns of table "scans"
 type Scans_update_column string
 
 const (
-	// column name
-	Scans_update_columnBuildId Scans_update_column = "build_id"
-	// column name
-	Scans_update_columnCreatedAt Scans_update_column = "created_at"
-	// column name
-	Scans_update_columnDbDate Scans_update_column = "db_date"
-	// column name
-	Scans_update_columnDistroName Scans_update_column = "distro_name"
-	// column name
+	Scans_update_columnBuildId       Scans_update_column = "build_id"
+	Scans_update_columnCreatedAt     Scans_update_column = "created_at"
+	Scans_update_columnDbDate        Scans_update_column = "db_date"
+	Scans_update_columnDistroName    Scans_update_column = "distro_name"
 	Scans_update_columnDistroVersion Scans_update_column = "distro_version"
-	// column name
-	Scans_update_columnGrypeVersion Scans_update_column = "grype_version"
-	// column name
-	Scans_update_columnId Scans_update_column = "id"
-	// column name
-	Scans_update_columnScanNumber Scans_update_column = "scan_number"
-	// column name
-	Scans_update_columnSourceType Scans_update_column = "source_type"
-	// column name
-	Scans_update_columnTarget Scans_update_column = "target"
+	Scans_update_columnGrypeVersion  Scans_update_column = "grype_version"
+	Scans_update_columnId            Scans_update_column = "id"
+	Scans_update_columnScanNumber    Scans_update_column = "scan_number"
+	Scans_update_columnSourceType    Scans_update_column = "source_type"
+	Scans_update_columnTarget        Scans_update_column = "target"
 )
 
 // SetBuildS3UrlResponse is returned by SetBuildS3Url on success.
 type SetBuildS3UrlResponse struct {
-	// update single row of the table: "builds"
 	Update_builds_by_pk *SetBuildS3UrlUpdate_builds_by_pkBuilds `json:"update_builds_by_pk"`
 }
 
@@ -5823,9 +5302,6 @@ func (v *SetBuildS3UrlResponse) GetUpdate_builds_by_pk() *SetBuildS3UrlUpdate_bu
 }
 
 // SetBuildS3UrlUpdate_builds_by_pkBuilds includes the requested fields of the GraphQL type builds.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "builds"
 type SetBuildS3UrlUpdate_builds_by_pkBuilds struct {
 	Id uuid.UUID `json:"id"`
 }
@@ -5833,7 +5309,6 @@ type SetBuildS3UrlUpdate_builds_by_pkBuilds struct {
 // GetId returns SetBuildS3UrlUpdate_builds_by_pkBuilds.Id, and is useful for accessing the field via an interface.
 func (v *SetBuildS3UrlUpdate_builds_by_pkBuilds) GetId() uuid.UUID { return v.Id }
 
-// Boolean expression to filter rows from the table "settings". All fields are combined with a logical 'AND'.
 type Settings_bool_exp struct {
 	And                  []*Settings_bool_exp      `json:"_and,omitempty"`
 	Not                  *Settings_bool_exp        `json:"_not,omitempty"`
@@ -5875,7 +5350,6 @@ func (v *Settings_bool_exp) GetPr_feedback_disabled() *Boolean_comparison_exp {
 // GetProject returns Settings_bool_exp.Project, and is useful for accessing the field via an interface.
 func (v *Settings_bool_exp) GetProject() *Projects_bool_exp { return v.Project }
 
-// Boolean expression to compare columns of type "severity_enum". All fields are combined with logical 'AND'.
 type Severity_enum_comparison_exp struct {
 	Eq      *string  `json:"_eq,omitempty"`
 	Gt      *string  `json:"_gt,omitempty"`
@@ -5915,37 +5389,26 @@ func (v *Severity_enum_comparison_exp) GetNeq() *string { return v.Neq }
 // GetNin returns Severity_enum_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Severity_enum_comparison_exp) GetNin() []string { return v.Nin }
 
-// Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
 type String_comparison_exp struct {
-	Eq  *string `json:"_eq,omitempty"`
-	Gt  *string `json:"_gt,omitempty"`
-	Gte *string `json:"_gte,omitempty"`
-	// does the column match the given case-insensitive pattern
-	Ilike *string  `json:"_ilike,omitempty"`
-	In    []string `json:"_in,omitempty"`
-	// does the column match the given POSIX regular expression, case insensitive
-	Iregex  *string `json:"_iregex,omitempty"`
-	Is_null *bool   `json:"_is_null,omitempty"`
-	// does the column match the given pattern
-	Like *string `json:"_like,omitempty"`
-	Lt   *string `json:"_lt,omitempty"`
-	Lte  *string `json:"_lte,omitempty"`
-	Neq  *string `json:"_neq,omitempty"`
-	// does the column NOT match the given case-insensitive pattern
-	Nilike *string  `json:"_nilike,omitempty"`
-	Nin    []string `json:"_nin,omitempty"`
-	// does the column NOT match the given POSIX regular expression, case insensitive
-	Niregex *string `json:"_niregex,omitempty"`
-	// does the column NOT match the given pattern
-	Nlike *string `json:"_nlike,omitempty"`
-	// does the column NOT match the given POSIX regular expression, case sensitive
-	Nregex *string `json:"_nregex,omitempty"`
-	// does the column NOT match the given SQL regular expression
-	Nsimilar *string `json:"_nsimilar,omitempty"`
-	// does the column match the given POSIX regular expression, case sensitive
-	Regex *string `json:"_regex,omitempty"`
-	// does the column match the given SQL regular expression
-	Similar *string `json:"_similar,omitempty"`
+	Eq       *string  `json:"_eq,omitempty"`
+	Gt       *string  `json:"_gt,omitempty"`
+	Gte      *string  `json:"_gte,omitempty"`
+	Ilike    *string  `json:"_ilike,omitempty"`
+	In       []string `json:"_in,omitempty"`
+	Iregex   *string  `json:"_iregex,omitempty"`
+	Is_null  *bool    `json:"_is_null,omitempty"`
+	Like     *string  `json:"_like,omitempty"`
+	Lt       *string  `json:"_lt,omitempty"`
+	Lte      *string  `json:"_lte,omitempty"`
+	Neq      *string  `json:"_neq,omitempty"`
+	Nilike   *string  `json:"_nilike,omitempty"`
+	Nin      []string `json:"_nin,omitempty"`
+	Niregex  *string  `json:"_niregex,omitempty"`
+	Nlike    *string  `json:"_nlike,omitempty"`
+	Nregex   *string  `json:"_nregex,omitempty"`
+	Nsimilar *string  `json:"_nsimilar,omitempty"`
+	Regex    *string  `json:"_regex,omitempty"`
+	Similar  *string  `json:"_similar,omitempty"`
 }
 
 // GetEq returns String_comparison_exp.Eq, and is useful for accessing the field via an interface.
@@ -6005,7 +5468,6 @@ func (v *String_comparison_exp) GetRegex() *string { return v.Regex }
 // GetSimilar returns String_comparison_exp.Similar, and is useful for accessing the field via an interface.
 func (v *String_comparison_exp) GetSimilar() *string { return v.Similar }
 
-// Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'.
 type Text_comparison_exp struct {
 	Eq      *string  `json:"_eq,omitempty"`
 	Gt      *string  `json:"_gt,omitempty"`
@@ -6045,7 +5507,6 @@ func (v *Text_comparison_exp) GetNeq() *string { return v.Neq }
 // GetNin returns Text_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Text_comparison_exp) GetNin() []string { return v.Nin }
 
-// Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'.
 type Timestamp_comparison_exp struct {
 	Eq      *time.Time  `json:"_eq,omitempty"`
 	Gt      *time.Time  `json:"_gt,omitempty"`
@@ -6085,7 +5546,6 @@ func (v *Timestamp_comparison_exp) GetNeq() *time.Time { return v.Neq }
 // GetNin returns Timestamp_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Timestamp_comparison_exp) GetNin() []time.Time { return v.Nin }
 
-// Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'.
 type Timestamptz_comparison_exp struct {
 	Eq      *time.Time  `json:"_eq,omitempty"`
 	Gt      *time.Time  `json:"_gt,omitempty"`
@@ -6126,12 +5586,8 @@ func (v *Timestamptz_comparison_exp) GetNeq() *time.Time { return v.Neq }
 func (v *Timestamptz_comparison_exp) GetNin() []time.Time { return v.Nin }
 
 // UpsertPackageInsert_package_onePackage includes the requested fields of the GraphQL type package.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "package.package"
 type UpsertPackageInsert_package_onePackage struct {
-	Id uuid.UUID `json:"id"`
-	// An array relationship
+	Id       uuid.UUID                                                        `json:"id"`
 	Releases []*UpsertPackageInsert_package_onePackageReleasesPackage_release `json:"releases"`
 }
 
@@ -6144,12 +5600,8 @@ func (v *UpsertPackageInsert_package_onePackage) GetReleases() []*UpsertPackageI
 }
 
 // UpsertPackageInsert_package_onePackageReleasesPackage_release includes the requested fields of the GraphQL type package_release.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "package.release"
 type UpsertPackageInsert_package_onePackageReleasesPackage_release struct {
-	Id uuid.UUID `json:"id"`
-	// An array relationship
+	Id                   uuid.UUID                                                                                                      `json:"id"`
 	Release_dependencies []*UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency `json:"release_dependencies"`
 }
 
@@ -6164,12 +5616,8 @@ func (v *UpsertPackageInsert_package_onePackageReleasesPackage_release) GetRelea
 }
 
 // UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency includes the requested fields of the GraphQL type package_release_dependency.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "package.release_dependency"
 type UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependency struct {
-	Id uuid.UUID `json:"id"`
-	// An object relationship
+	Id                 uuid.UUID                                                                                                                             `json:"id"`
 	Dependency_package *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage `json:"dependency_package"`
 }
 
@@ -6184,9 +5632,6 @@ func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_de
 }
 
 // UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage includes the requested fields of the GraphQL type package.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "package.package"
 type UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_dependenciesPackage_release_dependencyDependency_packagePackage struct {
 	Id                    uuid.UUID  `json:"id"`
 	Name                  string     `json:"name"`
@@ -6216,7 +5661,6 @@ func (v *UpsertPackageInsert_package_onePackageReleasesPackage_releaseRelease_de
 
 // UpsertPackageResponse is returned by UpsertPackage on success.
 type UpsertPackageResponse struct {
-	// insert a single row into the table: "package.package"
 	Insert_package_one *UpsertPackageInsert_package_onePackage `json:"insert_package_one"`
 }
 
@@ -6226,11 +5670,7 @@ func (v *UpsertPackageResponse) GetInsert_package_one() *UpsertPackageInsert_pac
 }
 
 // UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_response includes the requested fields of the GraphQL type vulnerability_mutation_response.
-// The GraphQL type's documentation follows.
-//
-// response of any mutation on the table "vulnerability.vulnerability"
 type UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_response struct {
-	// data from the rows affected by the mutation
 	Returning []*UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_responseReturningVulnerability `json:"returning"`
 }
 
@@ -6240,9 +5680,6 @@ func (v *UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_respons
 }
 
 // UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_responseReturningVulnerability includes the requested fields of the GraphQL type vulnerability.
-// The GraphQL type's documentation follows.
-//
-// columns and relationships of "vulnerability.vulnerability"
 type UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_responseReturningVulnerability struct {
 	Id uuid.UUID `json:"id"`
 }
@@ -6254,7 +5691,6 @@ func (v *UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_respons
 
 // UpsertVulnerabilitiesResponse is returned by UpsertVulnerabilities on success.
 type UpsertVulnerabilitiesResponse struct {
-	// insert data into the table: "vulnerability.vulnerability"
 	Insert_vulnerability *UpsertVulnerabilitiesInsert_vulnerabilityVulnerability_mutation_response `json:"insert_vulnerability"`
 }
 
@@ -6263,7 +5699,6 @@ func (v *UpsertVulnerabilitiesResponse) GetInsert_vulnerability() *UpsertVulnera
 	return v.Insert_vulnerability
 }
 
-// Boolean expression to compare columns of type "user_role". All fields are combined with logical 'AND'.
 type User_role_comparison_exp struct {
 	Eq      *string  `json:"_eq,omitempty"`
 	Gt      *string  `json:"_gt,omitempty"`
@@ -6303,7 +5738,6 @@ func (v *User_role_comparison_exp) GetNeq() *string { return v.Neq }
 // GetNin returns User_role_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *User_role_comparison_exp) GetNin() []string { return v.Nin }
 
-// Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'.
 type Users_bool_exp struct {
 	And             []*Users_bool_exp         `json:"_and,omitempty"`
 	Not             *Users_bool_exp           `json:"_not,omitempty"`
@@ -6343,21 +5777,15 @@ func (v *Users_bool_exp) GetKratos_identity() *Identities_bool_exp { return v.Kr
 // GetRole returns Users_bool_exp.Role, and is useful for accessing the field via an interface.
 func (v *Users_bool_exp) GetRole() *User_role_comparison_exp { return v.Role }
 
-// unique or primary key constraints on table "users"
 type Users_constraint string
 
 const (
-	// unique or primary key constraint on columns "github_id"
-	Users_constraintUsersGithubIdKey Users_constraint = "users_github_id_key"
-	// unique or primary key constraint on columns "github_node_id"
+	Users_constraintUsersGithubIdKey     Users_constraint = "users_github_id_key"
 	Users_constraintUsersGithubNodeIdKey Users_constraint = "users_github_node_id_key"
-	// unique or primary key constraint on columns "kratos_id"
-	Users_constraintUsersKratosIdUnique Users_constraint = "users_kratos_id_unique"
-	// unique or primary key constraint on columns "id"
-	Users_constraintUsersPkey Users_constraint = "users_pkey"
+	Users_constraintUsersKratosIdUnique  Users_constraint = "users_kratos_id_unique"
+	Users_constraintUsersPkey            Users_constraint = "users_pkey"
 )
 
-// input type for inserting data into table "users"
 type Users_insert_input struct {
 	Github_id      *string    `json:"github_id,omitempty"`
 	Github_node_id *string    `json:"github_node_id,omitempty"`
@@ -6377,11 +5805,9 @@ func (v *Users_insert_input) GetId() *uuid.UUID { return v.Id }
 // GetKratos_id returns Users_insert_input.Kratos_id, and is useful for accessing the field via an interface.
 func (v *Users_insert_input) GetKratos_id() *uuid.UUID { return v.Kratos_id }
 
-// input type for inserting object relation for remote table "users"
 type Users_obj_rel_insert_input struct {
-	Data *Users_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Users_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Users_insert_input `json:"data,omitempty"`
+	On_conflict *Users_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Users_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -6390,7 +5816,6 @@ func (v *Users_obj_rel_insert_input) GetData() *Users_insert_input { return v.Da
 // GetOn_conflict returns Users_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
 func (v *Users_obj_rel_insert_input) GetOn_conflict() *Users_on_conflict { return v.On_conflict }
 
-// on_conflict condition type for table "users"
 type Users_on_conflict struct {
 	Constraint     Users_constraint      `json:"constraint,omitempty"`
 	Update_columns []Users_update_column `json:"update_columns,omitempty"`
@@ -6406,21 +5831,15 @@ func (v *Users_on_conflict) GetUpdate_columns() []Users_update_column { return v
 // GetWhere returns Users_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Users_on_conflict) GetWhere() *Users_bool_exp { return v.Where }
 
-// update columns of table "users"
 type Users_update_column string
 
 const (
-	// column name
-	Users_update_columnGithubId Users_update_column = "github_id"
-	// column name
+	Users_update_columnGithubId     Users_update_column = "github_id"
 	Users_update_columnGithubNodeId Users_update_column = "github_node_id"
-	// column name
-	Users_update_columnId Users_update_column = "id"
-	// column name
-	Users_update_columnKratosId Users_update_column = "kratos_id"
+	Users_update_columnId           Users_update_column = "id"
+	Users_update_columnKratosId     Users_update_column = "kratos_id"
 )
 
-// Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
 type Uuid_comparison_exp struct {
 	Eq      *uuid.UUID  `json:"_eq,omitempty"`
 	Gt      *uuid.UUID  `json:"_gt,omitempty"`
@@ -6460,11 +5879,9 @@ func (v *Uuid_comparison_exp) GetNeq() *uuid.UUID { return v.Neq }
 // GetNin returns Uuid_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Uuid_comparison_exp) GetNin() []uuid.UUID { return v.Nin }
 
-// input type for inserting array relation for remote table "vulnerability.affected"
 type Vulnerability_affected_arr_rel_insert_input struct {
-	Data []*Vulnerability_affected_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Vulnerability_affected_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Vulnerability_affected_insert_input `json:"data,omitempty"`
+	On_conflict *Vulnerability_affected_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Vulnerability_affected_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -6477,7 +5894,6 @@ func (v *Vulnerability_affected_arr_rel_insert_input) GetOn_conflict() *Vulnerab
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "vulnerability.affected". All fields are combined with a logical 'AND'.
 type Vulnerability_affected_bool_exp struct {
 	And                   []*Vulnerability_affected_bool_exp           `json:"_and,omitempty"`
 	Not                   *Vulnerability_affected_bool_exp             `json:"_not,omitempty"`
@@ -6545,17 +5961,13 @@ func (v *Vulnerability_affected_bool_exp) GetVulnerability_id() *Uuid_comparison
 	return v.Vulnerability_id
 }
 
-// unique or primary key constraints on table "vulnerability.affected"
 type Vulnerability_affected_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
-	Vulnerability_affected_constraintAffectedPkey Vulnerability_affected_constraint = "affected_pkey"
-	// unique or primary key constraint on columns "vulnerability_id", "package_id"
+	Vulnerability_affected_constraintAffectedPkey                        Vulnerability_affected_constraint = "affected_pkey"
 	Vulnerability_affected_constraintAffectedVulnerabilityIdPackageIdIdx Vulnerability_affected_constraint = "affected_vulnerability_id_package_id_idx"
 )
 
-// input type for inserting data into table "vulnerability.affected"
 type Vulnerability_affected_insert_input struct {
 	Affected_range_events *Vulnerability_affected_range_event_arr_rel_insert_input `json:"affected_range_events,omitempty"`
 	Affected_versions     *Vulnerability_affected_version_arr_rel_insert_input     `json:"affected_versions,omitempty"`
@@ -6615,11 +6027,9 @@ func (v *Vulnerability_affected_insert_input) GetVulnerability_id() *uuid.UUID {
 	return v.Vulnerability_id
 }
 
-// input type for inserting object relation for remote table "vulnerability.affected"
 type Vulnerability_affected_obj_rel_insert_input struct {
-	Data *Vulnerability_affected_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Vulnerability_affected_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Vulnerability_affected_insert_input `json:"data,omitempty"`
+	On_conflict *Vulnerability_affected_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Vulnerability_affected_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -6632,7 +6042,6 @@ func (v *Vulnerability_affected_obj_rel_insert_input) GetOn_conflict() *Vulnerab
 	return v.On_conflict
 }
 
-// on_conflict condition type for table "vulnerability.affected"
 type Vulnerability_affected_on_conflict struct {
 	Constraint     Vulnerability_affected_constraint      `json:"constraint,omitempty"`
 	Update_columns []Vulnerability_affected_update_column `json:"update_columns,omitempty"`
@@ -6654,11 +6063,9 @@ func (v *Vulnerability_affected_on_conflict) GetWhere() *Vulnerability_affected_
 	return v.Where
 }
 
-// input type for inserting array relation for remote table "vulnerability.affected_range_event"
 type Vulnerability_affected_range_event_arr_rel_insert_input struct {
-	Data []*Vulnerability_affected_range_event_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Vulnerability_affected_range_event_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Vulnerability_affected_range_event_insert_input `json:"data,omitempty"`
+	On_conflict *Vulnerability_affected_range_event_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Vulnerability_affected_range_event_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -6671,7 +6078,6 @@ func (v *Vulnerability_affected_range_event_arr_rel_insert_input) GetOn_conflict
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "vulnerability.affected_range_event". All fields are combined with a logical 'AND'.
 type Vulnerability_affected_range_event_bool_exp struct {
 	And               []*Vulnerability_affected_range_event_bool_exp `json:"_and,omitempty"`
 	Not               *Vulnerability_affected_range_event_bool_exp   `json:"_not,omitempty"`
@@ -6733,17 +6139,13 @@ func (v *Vulnerability_affected_range_event_bool_exp) GetVersion() *String_compa
 	return v.Version
 }
 
-// unique or primary key constraints on table "vulnerability.affected_range_event"
 type Vulnerability_affected_range_event_constraint string
 
 const (
-	// unique or primary key constraint on columns "type", "affected_id", "event", "version"
 	Vulnerability_affected_range_event_constraintAffectedRangeEventAffectedIdTypeEventVersionIdx Vulnerability_affected_range_event_constraint = "affected_range_event_affected_id_type_event_version_idx"
-	// unique or primary key constraint on columns "id"
-	Vulnerability_affected_range_event_constraintAffectedRangeEventPkey Vulnerability_affected_range_event_constraint = "affected_range_event_pkey"
+	Vulnerability_affected_range_event_constraintAffectedRangeEventPkey                          Vulnerability_affected_range_event_constraint = "affected_range_event_pkey"
 )
 
-// input type for inserting data into table "vulnerability.affected_range_event"
 type Vulnerability_affected_range_event_insert_input struct {
 	Affected          *Vulnerability_affected_obj_rel_insert_input `json:"affected,omitempty"`
 	Affected_id       *uuid.UUID                                   `json:"affected_id,omitempty"`
@@ -6783,7 +6185,6 @@ func (v *Vulnerability_affected_range_event_insert_input) GetType() *types.Affec
 // GetVersion returns Vulnerability_affected_range_event_insert_input.Version, and is useful for accessing the field via an interface.
 func (v *Vulnerability_affected_range_event_insert_input) GetVersion() *string { return v.Version }
 
-// on_conflict condition type for table "vulnerability.affected_range_event"
 type Vulnerability_affected_range_event_on_conflict struct {
 	Constraint     Vulnerability_affected_range_event_constraint      `json:"constraint,omitempty"`
 	Update_columns []Vulnerability_affected_range_event_update_column `json:"update_columns,omitempty"`
@@ -6805,45 +6206,30 @@ func (v *Vulnerability_affected_range_event_on_conflict) GetWhere() *Vulnerabili
 	return v.Where
 }
 
-// update columns of table "vulnerability.affected_range_event"
 type Vulnerability_affected_range_event_update_column string
 
 const (
-	// column name
-	Vulnerability_affected_range_event_update_columnAffectedId Vulnerability_affected_range_event_update_column = "affected_id"
-	// column name
+	Vulnerability_affected_range_event_update_columnAffectedId       Vulnerability_affected_range_event_update_column = "affected_id"
 	Vulnerability_affected_range_event_update_columnDatabaseSpecific Vulnerability_affected_range_event_update_column = "database_specific"
-	// column name
-	Vulnerability_affected_range_event_update_columnEvent Vulnerability_affected_range_event_update_column = "event"
-	// column name
-	Vulnerability_affected_range_event_update_columnId Vulnerability_affected_range_event_update_column = "id"
-	// column name
-	Vulnerability_affected_range_event_update_columnType Vulnerability_affected_range_event_update_column = "type"
-	// column name
-	Vulnerability_affected_range_event_update_columnVersion Vulnerability_affected_range_event_update_column = "version"
+	Vulnerability_affected_range_event_update_columnEvent            Vulnerability_affected_range_event_update_column = "event"
+	Vulnerability_affected_range_event_update_columnId               Vulnerability_affected_range_event_update_column = "id"
+	Vulnerability_affected_range_event_update_columnType             Vulnerability_affected_range_event_update_column = "type"
+	Vulnerability_affected_range_event_update_columnVersion          Vulnerability_affected_range_event_update_column = "version"
 )
 
-// update columns of table "vulnerability.affected"
 type Vulnerability_affected_update_column string
 
 const (
-	// column name
-	Vulnerability_affected_update_columnDatabaseSpecific Vulnerability_affected_update_column = "database_specific"
-	// column name
+	Vulnerability_affected_update_columnDatabaseSpecific  Vulnerability_affected_update_column = "database_specific"
 	Vulnerability_affected_update_columnEcosystemSpecific Vulnerability_affected_update_column = "ecosystem_specific"
-	// column name
-	Vulnerability_affected_update_columnId Vulnerability_affected_update_column = "id"
-	// column name
-	Vulnerability_affected_update_columnPackageId Vulnerability_affected_update_column = "package_id"
-	// column name
-	Vulnerability_affected_update_columnVulnerabilityId Vulnerability_affected_update_column = "vulnerability_id"
+	Vulnerability_affected_update_columnId                Vulnerability_affected_update_column = "id"
+	Vulnerability_affected_update_columnPackageId         Vulnerability_affected_update_column = "package_id"
+	Vulnerability_affected_update_columnVulnerabilityId   Vulnerability_affected_update_column = "vulnerability_id"
 )
 
-// input type for inserting array relation for remote table "vulnerability.affected_version"
 type Vulnerability_affected_version_arr_rel_insert_input struct {
-	Data []*Vulnerability_affected_version_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Vulnerability_affected_version_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Vulnerability_affected_version_insert_input `json:"data,omitempty"`
+	On_conflict *Vulnerability_affected_version_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Vulnerability_affected_version_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -6856,7 +6242,6 @@ func (v *Vulnerability_affected_version_arr_rel_insert_input) GetOn_conflict() *
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "vulnerability.affected_version". All fields are combined with a logical 'AND'.
 type Vulnerability_affected_version_bool_exp struct {
 	And               []*Vulnerability_affected_version_bool_exp `json:"_and,omitempty"`
 	Not               *Vulnerability_affected_version_bool_exp   `json:"_not,omitempty"`
@@ -6906,17 +6291,13 @@ func (v *Vulnerability_affected_version_bool_exp) GetVersion() *String_compariso
 	return v.Version
 }
 
-// unique or primary key constraints on table "vulnerability.affected_version"
 type Vulnerability_affected_version_constraint string
 
 const (
-	// unique or primary key constraint on columns "affected_id", "version"
 	Vulnerability_affected_version_constraintAffectedVersionAffectedIdTypeVersion Vulnerability_affected_version_constraint = "affected_version_affected_id_type_version"
-	// unique or primary key constraint on columns "id"
-	Vulnerability_affected_version_constraintAffectedVersionPkey Vulnerability_affected_version_constraint = "affected_version_pkey"
+	Vulnerability_affected_version_constraintAffectedVersionPkey                  Vulnerability_affected_version_constraint = "affected_version_pkey"
 )
 
-// input type for inserting data into table "vulnerability.affected_version"
 type Vulnerability_affected_version_insert_input struct {
 	Affected          *Vulnerability_affected_obj_rel_insert_input `json:"affected,omitempty"`
 	Affected_id       *uuid.UUID                                   `json:"affected_id,omitempty"`
@@ -6946,7 +6327,6 @@ func (v *Vulnerability_affected_version_insert_input) GetId() *uuid.UUID { retur
 // GetVersion returns Vulnerability_affected_version_insert_input.Version, and is useful for accessing the field via an interface.
 func (v *Vulnerability_affected_version_insert_input) GetVersion() *string { return v.Version }
 
-// on_conflict condition type for table "vulnerability.affected_version"
 type Vulnerability_affected_version_on_conflict struct {
 	Constraint     Vulnerability_affected_version_constraint      `json:"constraint,omitempty"`
 	Update_columns []Vulnerability_affected_version_update_column `json:"update_columns,omitempty"`
@@ -6968,21 +6348,15 @@ func (v *Vulnerability_affected_version_on_conflict) GetWhere() *Vulnerability_a
 	return v.Where
 }
 
-// update columns of table "vulnerability.affected_version"
 type Vulnerability_affected_version_update_column string
 
 const (
-	// column name
-	Vulnerability_affected_version_update_columnAffectedId Vulnerability_affected_version_update_column = "affected_id"
-	// column name
+	Vulnerability_affected_version_update_columnAffectedId       Vulnerability_affected_version_update_column = "affected_id"
 	Vulnerability_affected_version_update_columnDatabaseSpecific Vulnerability_affected_version_update_column = "database_specific"
-	// column name
-	Vulnerability_affected_version_update_columnId Vulnerability_affected_version_update_column = "id"
-	// column name
-	Vulnerability_affected_version_update_columnVersion Vulnerability_affected_version_update_column = "version"
+	Vulnerability_affected_version_update_columnId               Vulnerability_affected_version_update_column = "id"
+	Vulnerability_affected_version_update_columnVersion          Vulnerability_affected_version_update_column = "version"
 )
 
-// Boolean expression to filter rows from the table "vulnerability.vulnerability". All fields are combined with a logical 'AND'.
 type Vulnerability_bool_exp struct {
 	And                     []*Vulnerability_bool_exp          `json:"_and,omitempty"`
 	Not                     *Vulnerability_bool_exp            `json:"_not,omitempty"`
@@ -7098,21 +6472,16 @@ func (v *Vulnerability_bool_exp) GetUpstream_data() *Jsonb_comparison_exp { retu
 // GetWithdrawn returns Vulnerability_bool_exp.Withdrawn, and is useful for accessing the field via an interface.
 func (v *Vulnerability_bool_exp) GetWithdrawn() *Timestamptz_comparison_exp { return v.Withdrawn }
 
-// unique or primary key constraints on table "vulnerability.vulnerability"
 type Vulnerability_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
-	Vulnerability_constraintVulnerabilityPkey Vulnerability_constraint = "vulnerability_pkey"
-	// unique or primary key constraint on columns "source", "source_id"
+	Vulnerability_constraintVulnerabilityPkey              Vulnerability_constraint = "vulnerability_pkey"
 	Vulnerability_constraintVulnerabilitySourceSourceIdIdx Vulnerability_constraint = "vulnerability_source_source_id_idx"
 )
 
-// input type for inserting array relation for remote table "vulnerability.credit"
 type Vulnerability_credit_arr_rel_insert_input struct {
-	Data []*Vulnerability_credit_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Vulnerability_credit_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Vulnerability_credit_insert_input `json:"data,omitempty"`
+	On_conflict *Vulnerability_credit_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Vulnerability_credit_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -7125,7 +6494,6 @@ func (v *Vulnerability_credit_arr_rel_insert_input) GetOn_conflict() *Vulnerabil
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "vulnerability.credit". All fields are combined with a logical 'AND'.
 type Vulnerability_credit_bool_exp struct {
 	And              []*Vulnerability_credit_bool_exp `json:"_and,omitempty"`
 	Not              *Vulnerability_credit_bool_exp   `json:"_not,omitempty"`
@@ -7165,17 +6533,13 @@ func (v *Vulnerability_credit_bool_exp) GetVulnerability_id() *Uuid_comparison_e
 	return v.Vulnerability_id
 }
 
-// unique or primary key constraints on table "vulnerability.credit"
 type Vulnerability_credit_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
-	Vulnerability_credit_constraintCreditPkey Vulnerability_credit_constraint = "credit_pkey"
-	// unique or primary key constraint on columns "name", "vulnerability_id"
+	Vulnerability_credit_constraintCreditPkey                Vulnerability_credit_constraint = "credit_pkey"
 	Vulnerability_credit_constraintCreditVulnerabilityIdName Vulnerability_credit_constraint = "credit_vulnerability_id_name"
 )
 
-// input type for inserting data into table "vulnerability.credit"
 type Vulnerability_credit_insert_input struct {
 	Contact          *string                             `json:"contact,omitempty"`
 	Id               *uuid.UUID                          `json:"id,omitempty"`
@@ -7203,7 +6567,6 @@ func (v *Vulnerability_credit_insert_input) GetVulnerability_id() *uuid.UUID {
 	return v.Vulnerability_id
 }
 
-// on_conflict condition type for table "vulnerability.credit"
 type Vulnerability_credit_on_conflict struct {
 	Constraint     Vulnerability_credit_constraint      `json:"constraint,omitempty"`
 	Update_columns []Vulnerability_credit_update_column `json:"update_columns,omitempty"`
@@ -7223,25 +6586,18 @@ func (v *Vulnerability_credit_on_conflict) GetUpdate_columns() []Vulnerability_c
 // GetWhere returns Vulnerability_credit_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Vulnerability_credit_on_conflict) GetWhere() *Vulnerability_credit_bool_exp { return v.Where }
 
-// update columns of table "vulnerability.credit"
 type Vulnerability_credit_update_column string
 
 const (
-	// column name
-	Vulnerability_credit_update_columnContact Vulnerability_credit_update_column = "contact"
-	// column name
-	Vulnerability_credit_update_columnId Vulnerability_credit_update_column = "id"
-	// column name
-	Vulnerability_credit_update_columnName Vulnerability_credit_update_column = "name"
-	// column name
+	Vulnerability_credit_update_columnContact         Vulnerability_credit_update_column = "contact"
+	Vulnerability_credit_update_columnId              Vulnerability_credit_update_column = "id"
+	Vulnerability_credit_update_columnName            Vulnerability_credit_update_column = "name"
 	Vulnerability_credit_update_columnVulnerabilityId Vulnerability_credit_update_column = "vulnerability_id"
 )
 
-// input type for inserting array relation for remote table "vulnerability.equivalent"
 type Vulnerability_equivalent_arr_rel_insert_input struct {
-	Data []*Vulnerability_equivalent_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Vulnerability_equivalent_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Vulnerability_equivalent_insert_input `json:"data,omitempty"`
+	On_conflict *Vulnerability_equivalent_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Vulnerability_equivalent_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -7254,7 +6610,6 @@ func (v *Vulnerability_equivalent_arr_rel_insert_input) GetOn_conflict() *Vulner
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "vulnerability.equivalent". All fields are combined with a logical 'AND'.
 type Vulnerability_equivalent_bool_exp struct {
 	And                      []*Vulnerability_equivalent_bool_exp `json:"_and,omitempty"`
 	Not                      *Vulnerability_equivalent_bool_exp   `json:"_not,omitempty"`
@@ -7292,15 +6647,12 @@ func (v *Vulnerability_equivalent_bool_exp) GetVulnerability() *Vulnerability_bo
 	return v.Vulnerability
 }
 
-// unique or primary key constraints on table "vulnerability.equivalent"
 type Vulnerability_equivalent_constraint string
 
 const (
-	// unique or primary key constraint on columns "a", "b"
 	Vulnerability_equivalent_constraintEquivalentABIdx Vulnerability_equivalent_constraint = "equivalent_a_b_idx"
 )
 
-// input type for inserting data into table "vulnerability.equivalent"
 type Vulnerability_equivalent_insert_input struct {
 	A                        *uuid.UUID                          `json:"a,omitempty"`
 	B                        *uuid.UUID                          `json:"b,omitempty"`
@@ -7324,7 +6676,6 @@ func (v *Vulnerability_equivalent_insert_input) GetVulnerability() *Vulnerabilit
 	return v.Vulnerability
 }
 
-// on_conflict condition type for table "vulnerability.equivalent"
 type Vulnerability_equivalent_on_conflict struct {
 	Constraint     Vulnerability_equivalent_constraint      `json:"constraint,omitempty"`
 	Update_columns []Vulnerability_equivalent_update_column `json:"update_columns,omitempty"`
@@ -7346,17 +6697,13 @@ func (v *Vulnerability_equivalent_on_conflict) GetWhere() *Vulnerability_equival
 	return v.Where
 }
 
-// update columns of table "vulnerability.equivalent"
 type Vulnerability_equivalent_update_column string
 
 const (
-	// column name
 	Vulnerability_equivalent_update_columnA Vulnerability_equivalent_update_column = "a"
-	// column name
 	Vulnerability_equivalent_update_columnB Vulnerability_equivalent_update_column = "b"
 )
 
-// input type for inserting data into table "vulnerability.vulnerability"
 type Vulnerability_insert_input struct {
 	Affected              *Vulnerability_affected_arr_rel_insert_input   `json:"affected,omitempty"`
 	Credits               *Vulnerability_credit_arr_rel_insert_input     `json:"credits,omitempty"`
@@ -7454,11 +6801,9 @@ func (v *Vulnerability_insert_input) GetUpstream_data() *json.RawMessage { retur
 // GetWithdrawn returns Vulnerability_insert_input.Withdrawn, and is useful for accessing the field via an interface.
 func (v *Vulnerability_insert_input) GetWithdrawn() *time.Time { return v.Withdrawn }
 
-// input type for inserting object relation for remote table "vulnerability.vulnerability"
 type Vulnerability_obj_rel_insert_input struct {
-	Data *Vulnerability_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Vulnerability_on_conflict `json:"on_conflict,omitempty"`
+	Data        *Vulnerability_insert_input `json:"data,omitempty"`
+	On_conflict *Vulnerability_on_conflict  `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Vulnerability_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -7469,7 +6814,6 @@ func (v *Vulnerability_obj_rel_insert_input) GetOn_conflict() *Vulnerability_on_
 	return v.On_conflict
 }
 
-// on_conflict condition type for table "vulnerability.vulnerability"
 type Vulnerability_on_conflict struct {
 	Constraint     Vulnerability_constraint      `json:"constraint,omitempty"`
 	Update_columns []Vulnerability_update_column `json:"update_columns,omitempty"`
@@ -7487,11 +6831,9 @@ func (v *Vulnerability_on_conflict) GetUpdate_columns() []Vulnerability_update_c
 // GetWhere returns Vulnerability_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Vulnerability_on_conflict) GetWhere() *Vulnerability_bool_exp { return v.Where }
 
-// input type for inserting array relation for remote table "vulnerability.range"
 type Vulnerability_range_arr_rel_insert_input struct {
-	Data []*Vulnerability_range_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Vulnerability_range_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Vulnerability_range_insert_input `json:"data,omitempty"`
+	On_conflict *Vulnerability_range_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Vulnerability_range_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -7504,7 +6846,6 @@ func (v *Vulnerability_range_arr_rel_insert_input) GetOn_conflict() *Vulnerabili
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "vulnerability.range". All fields are combined with a logical 'AND'.
 type Vulnerability_range_bool_exp struct {
 	And         []*Vulnerability_range_bool_exp  `json:"_and,omitempty"`
 	Not         *Vulnerability_range_bool_exp    `json:"_not,omitempty"`
@@ -7542,17 +6883,13 @@ func (v *Vulnerability_range_bool_exp) GetId() *Uuid_comparison_exp { return v.I
 // GetIntroduced returns Vulnerability_range_bool_exp.Introduced, and is useful for accessing the field via an interface.
 func (v *Vulnerability_range_bool_exp) GetIntroduced() *String_comparison_exp { return v.Introduced }
 
-// unique or primary key constraints on table "vulnerability.range"
 type Vulnerability_range_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
 	Vulnerability_range_constraintRangePkey Vulnerability_range_constraint = "range_pkey"
-	// unique or primary key constraint on columns "affected_id", "fixed", "introduced"
 	Vulnerability_range_constraintRangeUniq Vulnerability_range_constraint = "range_uniq"
 )
 
-// input type for inserting data into table "vulnerability.range"
 type Vulnerability_range_insert_input struct {
 	Affected    *Vulnerability_affected_obj_rel_insert_input `json:"affected,omitempty"`
 	Affected_id *uuid.UUID                                   `json:"affected_id,omitempty"`
@@ -7578,7 +6915,6 @@ func (v *Vulnerability_range_insert_input) GetId() *uuid.UUID { return v.Id }
 // GetIntroduced returns Vulnerability_range_insert_input.Introduced, and is useful for accessing the field via an interface.
 func (v *Vulnerability_range_insert_input) GetIntroduced() *string { return v.Introduced }
 
-// on_conflict condition type for table "vulnerability.range"
 type Vulnerability_range_on_conflict struct {
 	Constraint     Vulnerability_range_constraint      `json:"constraint,omitempty"`
 	Update_columns []Vulnerability_range_update_column `json:"update_columns,omitempty"`
@@ -7598,25 +6934,18 @@ func (v *Vulnerability_range_on_conflict) GetUpdate_columns() []Vulnerability_ra
 // GetWhere returns Vulnerability_range_on_conflict.Where, and is useful for accessing the field via an interface.
 func (v *Vulnerability_range_on_conflict) GetWhere() *Vulnerability_range_bool_exp { return v.Where }
 
-// update columns of table "vulnerability.range"
 type Vulnerability_range_update_column string
 
 const (
-	// column name
 	Vulnerability_range_update_columnAffectedId Vulnerability_range_update_column = "affected_id"
-	// column name
-	Vulnerability_range_update_columnFixed Vulnerability_range_update_column = "fixed"
-	// column name
-	Vulnerability_range_update_columnId Vulnerability_range_update_column = "id"
-	// column name
+	Vulnerability_range_update_columnFixed      Vulnerability_range_update_column = "fixed"
+	Vulnerability_range_update_columnId         Vulnerability_range_update_column = "id"
 	Vulnerability_range_update_columnIntroduced Vulnerability_range_update_column = "introduced"
 )
 
-// input type for inserting array relation for remote table "vulnerability.reference"
 type Vulnerability_reference_arr_rel_insert_input struct {
-	Data []*Vulnerability_reference_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Vulnerability_reference_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Vulnerability_reference_insert_input `json:"data,omitempty"`
+	On_conflict *Vulnerability_reference_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Vulnerability_reference_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -7629,7 +6958,6 @@ func (v *Vulnerability_reference_arr_rel_insert_input) GetOn_conflict() *Vulnera
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "vulnerability.reference". All fields are combined with a logical 'AND'.
 type Vulnerability_reference_bool_exp struct {
 	And              []*Vulnerability_reference_bool_exp `json:"_and,omitempty"`
 	Not              *Vulnerability_reference_bool_exp   `json:"_not,omitempty"`
@@ -7669,17 +6997,13 @@ func (v *Vulnerability_reference_bool_exp) GetVulnerability_id() *Uuid_compariso
 	return v.Vulnerability_id
 }
 
-// unique or primary key constraints on table "vulnerability.reference"
 type Vulnerability_reference_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
-	Vulnerability_reference_constraintReferencePkey Vulnerability_reference_constraint = "reference_pkey"
-	// unique or primary key constraint on columns "type", "vulnerability_id", "url"
+	Vulnerability_reference_constraintReferencePkey                      Vulnerability_reference_constraint = "reference_pkey"
 	Vulnerability_reference_constraintReferenceVulnerabilityIdTypeUrlIdx Vulnerability_reference_constraint = "reference_vulnerability_id_type_url_idx"
 )
 
-// input type for inserting data into table "vulnerability.reference"
 type Vulnerability_reference_insert_input struct {
 	Id               *uuid.UUID                          `json:"id,omitempty"`
 	Type             *types.ReferenceType                `json:"type,omitempty"`
@@ -7707,7 +7031,6 @@ func (v *Vulnerability_reference_insert_input) GetVulnerability_id() *uuid.UUID 
 	return v.Vulnerability_id
 }
 
-// on_conflict condition type for table "vulnerability.reference"
 type Vulnerability_reference_on_conflict struct {
 	Constraint     Vulnerability_reference_constraint      `json:"constraint,omitempty"`
 	Update_columns []Vulnerability_reference_update_column `json:"update_columns,omitempty"`
@@ -7729,25 +7052,18 @@ func (v *Vulnerability_reference_on_conflict) GetWhere() *Vulnerability_referenc
 	return v.Where
 }
 
-// update columns of table "vulnerability.reference"
 type Vulnerability_reference_update_column string
 
 const (
-	// column name
-	Vulnerability_reference_update_columnId Vulnerability_reference_update_column = "id"
-	// column name
-	Vulnerability_reference_update_columnType Vulnerability_reference_update_column = "type"
-	// column name
-	Vulnerability_reference_update_columnUrl Vulnerability_reference_update_column = "url"
-	// column name
+	Vulnerability_reference_update_columnId              Vulnerability_reference_update_column = "id"
+	Vulnerability_reference_update_columnType            Vulnerability_reference_update_column = "type"
+	Vulnerability_reference_update_columnUrl             Vulnerability_reference_update_column = "url"
 	Vulnerability_reference_update_columnVulnerabilityId Vulnerability_reference_update_column = "vulnerability_id"
 )
 
-// input type for inserting array relation for remote table "vulnerability.severity"
 type Vulnerability_severity_arr_rel_insert_input struct {
-	Data []*Vulnerability_severity_insert_input `json:"data,omitempty"`
-	// upsert condition
-	On_conflict *Vulnerability_severity_on_conflict `json:"on_conflict,omitempty"`
+	Data        []*Vulnerability_severity_insert_input `json:"data,omitempty"`
+	On_conflict *Vulnerability_severity_on_conflict    `json:"on_conflict,omitempty"`
 }
 
 // GetData returns Vulnerability_severity_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
@@ -7760,7 +7076,6 @@ func (v *Vulnerability_severity_arr_rel_insert_input) GetOn_conflict() *Vulnerab
 	return v.On_conflict
 }
 
-// Boolean expression to filter rows from the table "vulnerability.severity". All fields are combined with a logical 'AND'.
 type Vulnerability_severity_bool_exp struct {
 	And              []*Vulnerability_severity_bool_exp `json:"_and,omitempty"`
 	Not              *Vulnerability_severity_bool_exp   `json:"_not,omitempty"`
@@ -7804,17 +7119,13 @@ func (v *Vulnerability_severity_bool_exp) GetVulnerability_id() *Uuid_comparison
 	return v.Vulnerability_id
 }
 
-// unique or primary key constraints on table "vulnerability.severity"
 type Vulnerability_severity_constraint string
 
 const (
-	// unique or primary key constraint on columns "id"
-	Vulnerability_severity_constraintSeverityPkey Vulnerability_severity_constraint = "severity_pkey"
-	// unique or primary key constraint on columns "source", "type", "vulnerability_id"
+	Vulnerability_severity_constraintSeverityPkey                         Vulnerability_severity_constraint = "severity_pkey"
 	Vulnerability_severity_constraintSeverityVulnerabilityIdSourceTypeIdx Vulnerability_severity_constraint = "severity_vulnerability_id_source_type_idx"
 )
 
-// input type for inserting data into table "vulnerability.severity"
 type Vulnerability_severity_insert_input struct {
 	Id               *uuid.UUID                          `json:"id,omitempty"`
 	Score            *string                             `json:"score,omitempty"`
@@ -7846,7 +7157,6 @@ func (v *Vulnerability_severity_insert_input) GetVulnerability_id() *uuid.UUID {
 	return v.Vulnerability_id
 }
 
-// on_conflict condition type for table "vulnerability.severity"
 type Vulnerability_severity_on_conflict struct {
 	Constraint     Vulnerability_severity_constraint      `json:"constraint,omitempty"`
 	Update_columns []Vulnerability_severity_update_column `json:"update_columns,omitempty"`
@@ -7868,52 +7178,32 @@ func (v *Vulnerability_severity_on_conflict) GetWhere() *Vulnerability_severity_
 	return v.Where
 }
 
-// update columns of table "vulnerability.severity"
 type Vulnerability_severity_update_column string
 
 const (
-	// column name
-	Vulnerability_severity_update_columnId Vulnerability_severity_update_column = "id"
-	// column name
-	Vulnerability_severity_update_columnScore Vulnerability_severity_update_column = "score"
-	// column name
-	Vulnerability_severity_update_columnSource Vulnerability_severity_update_column = "source"
-	// column name
-	Vulnerability_severity_update_columnType Vulnerability_severity_update_column = "type"
-	// column name
+	Vulnerability_severity_update_columnId              Vulnerability_severity_update_column = "id"
+	Vulnerability_severity_update_columnScore           Vulnerability_severity_update_column = "score"
+	Vulnerability_severity_update_columnSource          Vulnerability_severity_update_column = "source"
+	Vulnerability_severity_update_columnType            Vulnerability_severity_update_column = "type"
 	Vulnerability_severity_update_columnVulnerabilityId Vulnerability_severity_update_column = "vulnerability_id"
 )
 
-// update columns of table "vulnerability.vulnerability"
 type Vulnerability_update_column string
 
 const (
-	// column name
-	Vulnerability_update_columnCvssScore Vulnerability_update_column = "cvss_score"
-	// column name
+	Vulnerability_update_columnCvssScore        Vulnerability_update_column = "cvss_score"
 	Vulnerability_update_columnDatabaseSpecific Vulnerability_update_column = "database_specific"
-	// column name
-	Vulnerability_update_columnDetails Vulnerability_update_column = "details"
-	// column name
-	Vulnerability_update_columnId Vulnerability_update_column = "id"
-	// column name
-	Vulnerability_update_columnModified Vulnerability_update_column = "modified"
-	// column name
-	Vulnerability_update_columnPublished Vulnerability_update_column = "published"
-	// column name
+	Vulnerability_update_columnDetails          Vulnerability_update_column = "details"
+	Vulnerability_update_columnId               Vulnerability_update_column = "id"
+	Vulnerability_update_columnModified         Vulnerability_update_column = "modified"
+	Vulnerability_update_columnPublished        Vulnerability_update_column = "published"
 	Vulnerability_update_columnReviewedBySource Vulnerability_update_column = "reviewed_by_source"
-	// column name
-	Vulnerability_update_columnSeverityName Vulnerability_update_column = "severity_name"
-	// column name
-	Vulnerability_update_columnSource Vulnerability_update_column = "source"
-	// column name
-	Vulnerability_update_columnSourceId Vulnerability_update_column = "source_id"
-	// column name
-	Vulnerability_update_columnSummary Vulnerability_update_column = "summary"
-	// column name
-	Vulnerability_update_columnUpstreamData Vulnerability_update_column = "upstream_data"
-	// column name
-	Vulnerability_update_columnWithdrawn Vulnerability_update_column = "withdrawn"
+	Vulnerability_update_columnSeverityName     Vulnerability_update_column = "severity_name"
+	Vulnerability_update_columnSource           Vulnerability_update_column = "source"
+	Vulnerability_update_columnSourceId         Vulnerability_update_column = "source_id"
+	Vulnerability_update_columnSummary          Vulnerability_update_column = "summary"
+	Vulnerability_update_columnUpstreamData     Vulnerability_update_column = "upstream_data"
+	Vulnerability_update_columnWithdrawn        Vulnerability_update_column = "withdrawn"
 )
 
 // __DeleteBuildInput is used internally by genqlient
