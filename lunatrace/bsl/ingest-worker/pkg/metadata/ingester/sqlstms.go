@@ -27,12 +27,12 @@ func upsertPackage(ctx context.Context, tx *sql.Tx, p model.Package) (id uuid.UU
 		).
 		RETURNING(Package.ID)
 
-	var insertedId string
-	err = packageInsert.QueryContext(ctx, tx, &insertedId)
+	var insertedPackage model.Package
+	err = packageInsert.QueryContext(ctx, tx, &insertedPackage)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
-	return uuid.Parse(insertedId)
+	return insertedPackage.ID, nil
 }
 
 func upsertRelease(ctx context.Context, tx *sql.Tx, r model.Release) (id uuid.UUID, err error) {
@@ -61,12 +61,12 @@ func upsertRelease(ctx context.Context, tx *sql.Tx, r model.Release) (id uuid.UU
 		).
 		RETURNING(Release.ID)
 
-	var insertedId string
-	err = releaseInsert.QueryContext(ctx, tx, &insertedId)
+	var insertedRelease model.Release
+	err = releaseInsert.QueryContext(ctx, tx, &insertedRelease)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
-	return uuid.Parse(insertedId)
+	return insertedRelease.ID, nil
 }
 
 func upsertReleaseDependencyPackage(ctx context.Context, tx *sql.Tx, p model.Package) (id uuid.UUID, err error) {
@@ -84,12 +84,12 @@ func upsertReleaseDependencyPackage(ctx context.Context, tx *sql.Tx, p model.Pac
 		).
 		RETURNING(Package.ID)
 
-	var insertedId string
-	err = insertPackage.QueryContext(ctx, tx, &insertedId)
+	var insertedPackage model.Package
+	err = insertPackage.QueryContext(ctx, tx, &insertPackage)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
-	return uuid.Parse(insertedId)
+	return insertedPackage.ID, nil
 }
 
 func upsertReleaseDependency(ctx context.Context, tx *sql.Tx, r model.ReleaseDependency) (id uuid.UUID, err error) {
@@ -108,12 +108,12 @@ func upsertReleaseDependency(ctx context.Context, tx *sql.Tx, r model.ReleaseDep
 		).
 		RETURNING(ReleaseDependency.ID)
 
-	var insertedId string
-	err = insertReleaseDependency.QueryContext(ctx, tx, &insertedId)
+	var insertedReleaseDependency model.ReleaseDependency
+	err = insertReleaseDependency.QueryContext(ctx, tx, &insertedReleaseDependency)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
-	return uuid.Parse(insertedId)
+	return insertedReleaseDependency.ID, nil
 }
 
 func upsertPackageMaintainer(ctx context.Context, tx *sql.Tx, p model.PackageMaintainer) error {
@@ -143,10 +143,10 @@ func upsertMaintainer(ctx context.Context, tx *sql.Tx, m model.Maintainer) (id u
 		).
 		RETURNING(Maintainer.ID)
 
-	var insertedId string
-	err = insertMaintainer.QueryContext(ctx, tx, &insertedId)
+	var insertedMaintainer model.Maintainer
+	err = insertMaintainer.QueryContext(ctx, tx, &insertedMaintainer)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
-	return uuid.Parse(insertedId)
+	return insertedMaintainer.ID, nil
 }
