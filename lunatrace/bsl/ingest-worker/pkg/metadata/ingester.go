@@ -20,7 +20,7 @@ import (
 // It may return a list of suggestions for further packages to fetch.
 type PackageIngester interface {
 	Ingest(ctx context.Context, packageName string) ([]string, error)
-	IngestWithoutRefetch(ctx context.Context, packageName string) ([]string, error)
+	IngestWithoutRefetch(ctx context.Context, packageName string, duration time.Duration) ([]string, error)
 	IngestPackageAndDependencies(ctx context.Context, packageName string, ignoreErrors bool, duration time.Duration) error
 	IngestAllPackagesFromRegistry(ctx context.Context, ignoreErrors bool) error
 }
