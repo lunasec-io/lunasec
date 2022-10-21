@@ -14,17 +14,17 @@ package ingester
 import (
 	"context"
 	"database/sql"
-	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
+	"github.com/go-jet/jet/v2/postgres"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/model"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/table"
 	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
 	"time"
 
-	"github.com/Khan/genqlient/graphql"
 	"go.uber.org/fx"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
 // todo tune date
@@ -35,7 +35,6 @@ type Params struct {
 
 	DB                 *sql.DB
 	PackageSQLIngester PackageSqlIngester
-	GQLClient          graphql.Client
 	NPMRegistry        metadata.NpmRegistry
 }
 
@@ -92,22 +91,42 @@ func (h *NPMPackageIngester) IngestAllPackagesFromRegistry(ctx context.Context, 
 	return nil
 }
 
-func (h *NPMPackageIngester) Ingest(ctx context.Context, packageName string) ([]string, error) {
-	// todo make sure this isn't too restrictive
-	// check if we've already fetched this package
-	checkRes, err := gql.PackageFetchTime(ctx, h.deps.GQLClient, &npmV, util.Ptr(""), util.Ptr(packageName))
+func (h *NPMPackageIngester) hasPackageRecentlyBeenFetched(ctx context.Context, packageName string) (bool, error) {
+	packageFetchTime := table.Package.SELECT(
+		table.Package.LastSuccessfulFetch,
+	).WHERE(
+		postgres.AND(
+			table.Package.Name.EQ(postgres.String(packageName)),
+			table.Package.PackageManager.EQ(postgres.String(string(npmV))),
+			table.Package.CustomRegistry.EQ(postgres.String("")),
+			table.Package.LastSuccessfulFetch.IS_NOT_NULL(),
+		),
+	).LIMIT(1)
+
+	var p model.Package
+	err := packageFetchTime.QueryContext(ctx, h.deps.DB, &p)
 	if err != nil {
-		return nil, err
+		return false, err
 	}
-	for _, pkg := range checkRes.Package {
-		if pkg.Last_successful_fetch != nil &&
-			pkg.Last_successful_fetch.After(time.Now().AddDate(0, 0, -refetchDays)) {
-			// bail out early
-			log.Info().
-				Str("package", packageName).
-				Msg("package has already been ingested")
-			return nil, nil
-		}
+
+	// TODO (cthompson) make sure this isn't too restrictive
+	// check if we've already fetched this package
+	recentlyRefetched := p.LastSuccessfulFetch != nil && p.LastSuccessfulFetch.After(time.Now().AddDate(0, 0, -refetchDays))
+	return recentlyRefetched, nil
+}
+
+func (h *NPMPackageIngester) Ingest(ctx context.Context, packageName string) ([]string, error) {
+	recentlyRefetched, err := h.hasPackageRecentlyBeenFetched(ctx, packageName)
+	if err != nil {
+		return []string{}, err
+	}
+
+	if recentlyRefetched {
+		log.Info().
+			Str("package", packageName).
+			Dur("refetch days", refetchDays).
+			Msg("package has already been ingested")
+		return []string{}, nil
 	}
 
 	log.Info().
