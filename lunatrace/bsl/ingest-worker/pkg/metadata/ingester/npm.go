@@ -29,7 +29,7 @@ import (
 )
 
 // todo tune date
-const refetchDays = 0
+const refetchDays = 1
 
 type Params struct {
 	fx.In
@@ -106,12 +106,12 @@ func (h *NPMPackageIngester) hasPackageRecentlyBeenFetched(ctx context.Context, 
 
 	// TODO (cthompson) make sure this isn't too restrictive
 	// check if we've already fetched this package
-	recentlyRefetched := p.LastSuccessfulFetch != nil && p.LastSuccessfulFetch.After(time.Now().AddDate(0, 0, -refetchDays))
-	return recentlyRefetched, nil
+	recentlyFetched := p.LastSuccessfulFetch != nil && time.Now().Sub(*p.LastSuccessfulFetch) < refetchDays
+	return recentlyFetched, nil
 }
 
 func (h *NPMPackageIngester) Ingest(ctx context.Context, packageName string) ([]string, error) {
-	recentlyRefetched, err := h.hasPackageRecentlyBeenFetched(ctx, packageName)
+	recentlyFetched, err := h.hasPackageRecentlyBeenFetched(ctx, packageName)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -120,7 +120,7 @@ func (h *NPMPackageIngester) Ingest(ctx context.Context, packageName string) ([]
 		return []string{}, err
 	}
 
-	if recentlyRefetched {
+	if recentlyFetched {
 		log.Info().
 			Str("package", packageName).
 			Dur("refetch days", refetchDays).
