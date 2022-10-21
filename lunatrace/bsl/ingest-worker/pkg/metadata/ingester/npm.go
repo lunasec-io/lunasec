@@ -106,6 +106,11 @@ func (h *NPMPackageIngester) hasPackageRecentlyBeenFetched(ctx context.Context, 
 
 	// TODO (cthompson) make sure this isn't too restrictive
 	// check if we've already fetched this package
+	log.Info().
+		Str("package name", packageName).
+		Time("now", time.Now()).
+		Time("last successful fetch", *p.LastSuccessfulFetch).
+		Msg("last package fetch")
 	recentlyFetched := p.LastSuccessfulFetch != nil && time.Now().Sub(*p.LastSuccessfulFetch) < duration
 	return recentlyFetched, nil
 }
