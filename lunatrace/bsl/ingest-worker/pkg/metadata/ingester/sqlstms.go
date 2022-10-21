@@ -85,7 +85,7 @@ func upsertReleaseDependencyPackage(ctx context.Context, tx *sql.Tx, p model.Pac
 		RETURNING(Package.ID)
 
 	var insertedPackage model.Package
-	err = insertPackage.QueryContext(ctx, tx, &insertPackage)
+	err = insertPackage.QueryContext(ctx, tx, &insertedPackage)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
