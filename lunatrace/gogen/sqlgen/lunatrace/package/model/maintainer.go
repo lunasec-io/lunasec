@@ -9,11 +9,12 @@ package model
 
 import (
 	"github.com/google/uuid"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 )
 
 type Maintainer struct {
 	ID             uuid.UUID `sql:"primary_key"`
-	PackageManager *PackageManager
+	PackageManager types.PackageManager
 	Email          string
 	Name           *string
 }
