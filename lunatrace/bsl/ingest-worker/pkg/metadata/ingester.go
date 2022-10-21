@@ -15,10 +15,10 @@ import (
 	"context"
 )
 
-// Ingester ingests and upserts a single package from a datasource.
+// PackageIngester ingests and upserts a single package from a datasource.
 // It may return a list of suggestions for further packages to fetch.
-type Ingester interface {
+type PackageIngester interface {
 	Ingest(ctx context.Context, packageName string) ([]string, error)
 	IngestPackageAndDependencies(ctx context.Context, packageName string) error
-	IngestAllPackagesFromRegistry(ctx context.Context) error
+	IngestAllPackagesFromRegistry(ctx context.Context, ignoreErrors bool) error
 }

@@ -13,7 +13,7 @@ package ingester
 
 import (
 	"context"
-	util2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
+	"database/sql"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 	"github.com/rs/zerolog/log"
@@ -23,7 +23,6 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/mapper"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 )
 
@@ -33,12 +32,13 @@ const refetchDays = 0
 type Params struct {
 	fx.In
 
-	Fetcher     metadata.Fetcher
-	GQLClient   graphql.Client
-	NPMRegistry metadata.NpmRegistry
+	DB                 *sql.DB
+	PackageSQLIngester PackageSqlIngester
+	GQLClient          graphql.Client
+	NPMRegistry        metadata.NpmRegistry
 }
 
-type hasuraNPMIngester struct {
+type NPMPackageIngester struct {
 	deps Params
 }
 
@@ -53,8 +53,11 @@ func sliceContainsPackage(packageSlice []string, packageName string) bool {
 	return false
 }
 
-func (h *hasuraNPMIngester) IngestAllPackagesFromRegistry(ctx context.Context) error {
-	packageStream, err := h.deps.NPMRegistry.PackageStream(ctx)
+func (h *NPMPackageIngester) IngestAllPackagesFromRegistry(ctx context.Context, ignoreErrors bool) error {
+	log.Info().
+		Msg("collecting packages from npm registry")
+
+	packageStream, err := h.deps.NPMRegistry.PackageStream()
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -62,19 +65,52 @@ func (h *hasuraNPMIngester) IngestAllPackagesFromRegistry(ctx context.Context) e
 		return err
 	}
 
+	ingestedPackages := 0
 	for packageName := range packageStream {
+		log.Info().
+			Str("package name", packageName).
+			Msg("ingesting package")
+
 		_, err = h.Ingest(ctx, packageName)
 		if err != nil {
 			log.Error().
 				Err(err).
 				Msg("failed to ingest package")
+
+			if ignoreErrors {
+				continue
+			}
 			return err
 		}
+		ingestedPackages += 1
+	}
+
+	log.Info().
+		Int("ingested packages", ingestedPackages).
+		Msg("collecting packages from npm registry")
+	return nil
+}
+
+func (h *NPMPackageIngester) upsertPackage(ctx context.Context, pkg *metadata.PackageMetadata) error {
+	tx, err := h.deps.DB.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	_, err = h.deps.PackageSQLIngester.UpsertPackage(tx, pkg)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to map package sql")
+		return err
+	}
+
+	if err = tx.Commit(); err != nil {
+		return err
 	}
 	return nil
 }
 
-func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]string, error) {
+func (h *NPMPackageIngester) Ingest(ctx context.Context, packageName string) ([]string, error) {
 	// todo make sure this isn't too restrictive
 	// check if we've already fetched this package
 	checkRes, err := gql.PackageFetchTime(ctx, h.deps.GQLClient, &npmV, util.Ptr(""), util.Ptr(packageName))
@@ -92,7 +128,11 @@ func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]s
 		}
 	}
 
-	pkg, err := h.deps.NPMRegistry.GetPackageMetadata(ctx, packageName)
+	log.Info().
+		Str("package", packageName).
+		Msg("collecting package metadata from registry")
+
+	pkgMetadata, err := h.deps.NPMRegistry.GetPackageMetadata(packageName)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -101,46 +141,38 @@ func (h *hasuraNPMIngester) Ingest(ctx context.Context, packageName string) ([]s
 		return nil, err
 	}
 
-	gqlPkg, err := mapper.Map(pkg)
+	if pkgMetadata == nil {
+		log.Error().
+			Str("package name", packageName).
+			Msg("package metadata is null")
+		return nil, err
+	}
+
+	log.Info().
+		Str("package", packageName).
+		Msg("upserting package data into db")
+
+	err = h.upsertPackage(ctx, pkgMetadata)
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("package", packageName).
-			Msg("failed to map package")
+			Str("package name", packageName).
+			Msg("failed to upsert package")
 		return nil, err
 	}
 
-	res, err := gql.UpsertPackage(ctx, h.deps.GQLClient, gqlPkg, metadata.PackageOnConflict)
-	if err != nil {
-		util2.LogGraphqlError(
-			err,
-			"failed to upsert package",
-			util2.GraphqlLogContext{Key: "package", Value: packageName},
-		)
-		return nil, err
-	}
-
-	needToCheck := make(map[string]struct{})
-
-	for _, rel := range res.Insert_package_one.Releases {
-		for _, dep := range rel.Release_dependencies {
-			if dep.Dependency_package == nil ||
-				dep.Dependency_package.Last_successful_fetch == nil ||
-				dep.Dependency_package.Last_successful_fetch.Before(time.Now().AddDate(0, 0, -refetchDays)) {
-				needToCheck[dep.Dependency_package.Name] = struct{}{}
-			}
+	var checkList []string
+	for _, release := range pkgMetadata.Releases {
+		for _, releaseDependency := range release.Dependencies {
+			releaseDependency.Name
 		}
-	}
-
-	checkList := make([]string, 0, len(needToCheck))
-	for pkgName := range needToCheck {
-		checkList = append(checkList, pkgName)
+		releaseDependency
 	}
 
 	return checkList, nil
 }
 
-func (h *hasuraNPMIngester) IngestPackageAndDependencies(
+func (h *NPMPackageIngester) IngestPackageAndDependencies(
 	ctx context.Context,
 	packageName string,
 ) error {
@@ -181,6 +213,6 @@ func (h *hasuraNPMIngester) IngestPackageAndDependencies(
 	return nil
 }
 
-func NewHasuraIngester(p Params) metadata.Ingester {
-	return &hasuraNPMIngester{deps: p}
+func NewNPMPackageIngester(p Params) metadata.PackageIngester {
+	return &NPMPackageIngester{deps: p}
 }

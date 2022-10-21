@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/go-jet/jet/v2/generator/postgres"
+	_ "github.com/lib/pq"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/cmd/graphql"
 	"github.com/rs/zerolog/log"
 	"github.com/wundergraph/graphql-go-tools/pkg/astprinter"
@@ -11,7 +13,7 @@ import (
 	"net/http"
 )
 
-func main() {
+func generateGql() {
 	url := "http://localhost:8080/v1/graphql"
 
 	reqBody, err := json.Marshal(map[string]string{
@@ -78,4 +80,18 @@ func main() {
 		return
 	}
 	log.Info().Msg("Successfully wrote schema to schema.graphql")
+}
+
+func generateSql() {
+	err := postgres.GenerateDSN("postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable", "package", "./sqlgen")
+	if err != nil {
+		log.Error().Err(err).Msg("failed to generate jet generated sql")
+		return
+	}
+}
+
+func main() {
+	generateGql()
+
+	generateSql()
 }

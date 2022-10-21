@@ -22,18 +22,18 @@ type DBResult struct {
 	DB *sql.DB
 }
 
-func NewDB(config Config) DBResult {
+func NewDB(config Config) (DBResult, error) {
 	db, err := sql.Open("postgres", config.DSN)
 	if err != nil {
-		panic(err)
+		return DBResult{}, err
 	}
 
 	err = db.Ping()
 	if err != nil {
-		panic(err)
+		return DBResult{}, err
 	}
 
 	return DBResult{
 		DB: db,
-	}
+	}, nil
 }

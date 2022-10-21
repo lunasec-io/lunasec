@@ -12,9 +12,14 @@
 package ingest
 
 import (
+	"bufio"
+	"errors"
 	"github.com/ajvpot/clifx"
+	"github.com/rs/zerolog/log"
+	"github.com/schollz/progressbar/v3"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
+	"os"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
 )
@@ -22,7 +27,7 @@ import (
 type Params struct {
 	fx.In
 
-	Ingester   metadata.Ingester
+	Ingester   metadata.PackageIngester
 	Replicator metadata.Replicator
 }
 
@@ -35,18 +40,69 @@ func NewCommand(p Params) clifx.CommandResult {
 				{
 					Name: "ingest",
 					Flags: []cli.Flag{
+						&cli.StringFlag{
+							Name:     "packages",
+							Required: false,
+							Usage:    "File with list of packages to ingest.",
+						},
 						&cli.BoolFlag{
 							Name:     "registry",
 							Required: false,
 							Usage:    "Ingest all packages from replicated registry.",
 						},
+						&cli.BoolFlag{
+							Name:     "ignore-errors",
+							Required: false,
+							Usage:    "If a package ingestion fails, continue without fatally failing.",
+						},
 					},
 					Action: func(ctx *cli.Context) error {
 						packageName := ctx.Args().First()
 						registry := ctx.Bool("registry")
+						ignoreErrors := ctx.Bool("ignore-errors")
+						packagesFile := ctx.String("packages")
+
+						// import packages from a file
+						if packagesFile != "" {
+							fileHandle, err := os.Open(packagesFile)
+							if err != nil {
+								return err
+							}
+							defer fileHandle.Close()
+							fileScanner := bufio.NewScanner(fileHandle)
+
+							var packages []string
+							for fileScanner.Scan() {
+								packageName = fileScanner.Text()
+								packages = append(packages, packageName)
+							}
+
+							bar := progressbar.Default(int64(len(packages)))
+
+							for _, packageName = range packages {
+								err = p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName)
+								if err != nil {
+									log.Error().
+										Err(err).
+										Str("package name", packageName).
+										Msg("failed to import")
+									return err
+								}
+								bar.Add(1)
+							}
+
+							log.Info().
+								Msg("finished ingesting packages")
+							return nil
+						}
 
 						if registry {
-							return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName)
+							return p.Ingester.IngestAllPackagesFromRegistry(ctx.Context, ignoreErrors)
+						}
+
+						if packageName == "" {
+							err := errors.New("no package name provided")
+							return err
 						}
 
 						return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName)
