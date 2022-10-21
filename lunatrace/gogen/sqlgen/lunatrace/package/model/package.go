@@ -9,12 +9,13 @@ package model
 
 import (
 	"github.com/google/uuid"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 	"time"
 )
 
 type Package struct {
 	ID                  uuid.UUID `sql:"primary_key"`
-	PackageManager      PackageManager
+	PackageManager      types.PackageManager
 	CustomRegistry      string
 	Name                string
 	Description         *string

@@ -17,6 +17,7 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 	"github.com/rs/zerolog/log"
+	"github.com/samber/lo"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
@@ -91,25 +92,6 @@ func (h *NPMPackageIngester) IngestAllPackagesFromRegistry(ctx context.Context, 
 	return nil
 }
 
-func (h *NPMPackageIngester) upsertPackage(ctx context.Context, pkg *metadata.PackageMetadata) error {
-	tx, err := h.deps.DB.BeginTx(ctx, nil)
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback()
-
-	_, err = h.deps.PackageSQLIngester.UpsertPackage(tx, pkg)
-	if err != nil {
-		log.Error().Err(err).Msg("failed to map package sql")
-		return err
-	}
-
-	if err = tx.Commit(); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (h *NPMPackageIngester) Ingest(ctx context.Context, packageName string) ([]string, error) {
 	// todo make sure this isn't too restrictive
 	// check if we've already fetched this package
@@ -152,7 +134,7 @@ func (h *NPMPackageIngester) Ingest(ctx context.Context, packageName string) ([]
 		Str("package", packageName).
 		Msg("upserting package data into db")
 
-	err = h.upsertPackage(ctx, pkgMetadata)
+	_, err = h.deps.PackageSQLIngester.Ingest(ctx, pkgMetadata)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -164,11 +146,11 @@ func (h *NPMPackageIngester) Ingest(ctx context.Context, packageName string) ([]
 	var checkList []string
 	for _, release := range pkgMetadata.Releases {
 		for _, releaseDependency := range release.Dependencies {
-			releaseDependency.Name
+			if !lo.Contains(checkList, releaseDependency.Name) {
+				checkList = append(checkList, releaseDependency.Name)
+			}
 		}
-		releaseDependency
 	}
-
 	return checkList, nil
 }
 

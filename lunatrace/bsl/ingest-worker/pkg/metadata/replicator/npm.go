@@ -104,6 +104,7 @@ func (n *npmReplicator) bulkInsertChanges(revisions []ChangesReqItem) error {
 
 	revisionIds := lo.Map(revisions, func(revision ChangesReqItem, _ int) int { return revision.Seq })
 
+	// TODO (cthompson) replace with Jet syntax
 	for rowIdx, item := range revisions {
 		if len(item.Changes) == 0 {
 			log.Warn().
