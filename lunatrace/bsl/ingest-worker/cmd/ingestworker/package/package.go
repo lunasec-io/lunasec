@@ -55,12 +55,18 @@ func NewCommand(p Params) clifx.CommandResult {
 							Required: false,
 							Usage:    "If a package ingestion fails, continue without fatally failing.",
 						},
+						&cli.DurationFlag{
+							Name:     "refetch-duration",
+							Required: false,
+							Usage:    "Duration to wait before refetching a package.",
+						},
 					},
 					Action: func(ctx *cli.Context) error {
 						packageName := ctx.Args().First()
 						registry := ctx.Bool("registry")
 						ignoreErrors := ctx.Bool("ignore-errors")
 						packagesFile := ctx.String("packages")
+						refetchDuration := ctx.Duration("refetch-duration")
 
 						// import packages from a file
 						if packagesFile != "" {
@@ -80,7 +86,7 @@ func NewCommand(p Params) clifx.CommandResult {
 							bar := progressbar.Default(int64(len(packages)))
 
 							for _, packageName = range packages {
-								err = p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName, ignoreErrors)
+								err = p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName, ignoreErrors, refetchDuration)
 								if err != nil {
 									log.Error().
 										Err(err).
@@ -105,7 +111,7 @@ func NewCommand(p Params) clifx.CommandResult {
 							return err
 						}
 
-						return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName, ignoreErrors)
+						return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName, ignoreErrors, refetchDuration)
 					},
 				},
 				{
