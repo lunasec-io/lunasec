@@ -10,7 +10,7 @@ type AuthenticatedRepoCloneUrlOutput {
 
 scalar Boolean
 
-"Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'."
+"Boolean expression to compare columns of type Boolean. All fields are combined with logical 'AND'."
 input Boolean_comparison_exp {
     _eq: Boolean
     _gt: Boolean

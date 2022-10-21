@@ -19,15 +19,17 @@ type UUID string
 type PackageManager string
 
 const (
-	NPM       = "npm"
-	Packagist = "packagist"
-	CratesIo  = "crates_io"
-	Go        = "go"
-	Hex       = "hex"
-	Maven     = "maven"
-	NuGet     = "nuget"
-	PyPi      = "pypi"
-	RubyGems  = "rubygems"
+	NPM           = "npm"
+	Packagist     = "packagist"
+	CratesIo      = "crates_io"
+	Go            = "go"
+	Hex           = "hex"
+	Maven         = "maven"
+	NuGet         = "nuget"
+	PyPi          = "pypi"
+	RubyGems      = "rubygems"
+	GithubActions = "github_actions"
+	Pub           = "pub"
 )
 
 var PackageManagers = []PackageManager{
@@ -40,6 +42,8 @@ var PackageManagers = []PackageManager{
 	NuGet,
 	PyPi,
 	RubyGems,
+	GithubActions,
+	Pub,
 }
 
 type LicenseSource string

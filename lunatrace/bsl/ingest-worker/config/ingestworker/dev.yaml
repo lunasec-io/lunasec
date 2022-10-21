@@ -1,5 +1,5 @@
 graphql:
   url: http://localhost:4455/v1/graphql
   secret: myadminsecretkey
-db:
-  dsn: postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable
+#db:
+#  dsn: postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable
