@@ -13,6 +13,8 @@ optional: pointer
 bindings:
   bigint:
     type: int64
+  Boolean:
+    type: bool
   DateTime:
     type: time.Time
   timestamp:
