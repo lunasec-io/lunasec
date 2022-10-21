@@ -216,7 +216,7 @@ func (h *NPMPackageIngester) IngestPackageAndDependencies(
 
 		log.Info().
 			Str("package", packageToIngest).
-			Strs("packages to ingest", pkgs).
+			Int("packages to ingest", len(pkgs)).
 			Msg("successfully ingested package")
 	}
 	return nil
