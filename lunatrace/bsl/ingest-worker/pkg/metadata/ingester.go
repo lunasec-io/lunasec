@@ -13,12 +13,14 @@ package metadata
 
 import (
 	"context"
+	"time"
 )
 
 // PackageIngester ingests and upserts a single package from a datasource.
 // It may return a list of suggestions for further packages to fetch.
 type PackageIngester interface {
 	Ingest(ctx context.Context, packageName string) ([]string, error)
-	IngestPackageAndDependencies(ctx context.Context, packageName string, ignoreErrors bool) error
+	IngestWithoutRefetch(ctx context.Context, packageName string) ([]string, error)
+	IngestPackageAndDependencies(ctx context.Context, packageName string, ignoreErrors bool, duration time.Duration) error
 	IngestAllPackagesFromRegistry(ctx context.Context, ignoreErrors bool) error
 }

@@ -83,7 +83,7 @@ func (h *NPMPackageIngester) IngestAllPackagesFromRegistry(ctx context.Context, 
 	return nil
 }
 
-func (h *NPMPackageIngester) hasPackageRecentlyBeenFetched(ctx context.Context, packageName string) (bool, error) {
+func (h *NPMPackageIngester) hasPackageRecentlyBeenFetched(ctx context.Context, packageName string, duration time.Duration) (bool, error) {
 	packageFetchTime := table.Package.SELECT(
 		table.Package.LastSuccessfulFetch,
 	).WHERE(
@@ -106,12 +106,13 @@ func (h *NPMPackageIngester) hasPackageRecentlyBeenFetched(ctx context.Context, 
 
 	// TODO (cthompson) make sure this isn't too restrictive
 	// check if we've already fetched this package
-	recentlyFetched := p.LastSuccessfulFetch != nil && time.Now().Sub(*p.LastSuccessfulFetch) < refetchDays
+	recentlyFetched := p.LastSuccessfulFetch != nil && time.Now().Sub(*p.LastSuccessfulFetch) < duration
 	return recentlyFetched, nil
 }
 
-func (h *NPMPackageIngester) Ingest(ctx context.Context, packageName string) ([]string, error) {
-	recentlyFetched, err := h.hasPackageRecentlyBeenFetched(ctx, packageName)
+// IngestWithoutRefetch queries to see if the package has been ingested within duration.
+func (h *NPMPackageIngester) IngestWithoutRefetch(ctx context.Context, packageName string, duration time.Duration) ([]string, error) {
+	recentlyFetched, err := h.hasPackageRecentlyBeenFetched(ctx, packageName, duration)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -127,7 +128,10 @@ func (h *NPMPackageIngester) Ingest(ctx context.Context, packageName string) ([]
 			Msg("package has already been ingested")
 		return []string{}, nil
 	}
+	return h.Ingest(ctx, packageName)
+}
 
+func (h *NPMPackageIngester) Ingest(ctx context.Context, packageName string) ([]string, error) {
 	log.Info().
 		Str("package", packageName).
 		Msg("collecting package metadata from registry")
@@ -176,6 +180,7 @@ func (h *NPMPackageIngester) IngestPackageAndDependencies(
 	ctx context.Context,
 	packageName string,
 	ignoreErrors bool,
+	duration time.Duration,
 ) error {
 	var ingestedPkgs []string
 	pkgs := []string{packageName}
@@ -188,7 +193,7 @@ func (h *NPMPackageIngester) IngestPackageAndDependencies(
 			Str("package", packageToIngest).
 			Msg("ingesting package")
 
-		newPkgs, err := h.Ingest(ctx, packageToIngest)
+		newPkgs, err := h.IngestWithoutRefetch(ctx, packageToIngest, duration)
 		if err != nil {
 			log.Error().
 				Err(err).
