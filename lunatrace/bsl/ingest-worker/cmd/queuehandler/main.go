@@ -15,6 +15,7 @@ import (
 	"context"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/awsfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/queuehandler"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/dbfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/registry"
@@ -36,11 +37,13 @@ func main() {
 		graphqlfx.Module,
 		awsfx.Module,
 		registry.NPMModule,
+		dbfx.Module,
 
 		fx.Supply(http.DefaultClient),
 		fx.Provide(
 			queuehandler.NewConfigProvider,
 
+			ingester.NewPackageSqlIngester,
 			ingester.NewNPMPackageIngester,
 
 			staticanalysis.NewStaticAnalysisQueueHandler,
