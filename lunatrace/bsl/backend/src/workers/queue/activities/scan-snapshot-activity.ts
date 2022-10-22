@@ -81,6 +81,10 @@ async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Pr
 }
 
 async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeErrorVoid> {
+  log.info('statically analyzing dependency tree', {
+    buildId,
+  });
+
   const treeResp = await catchError(hasura.GetTreeFromBuild({ build_id: buildId }));
   if (threwError(treeResp)) {
     log.error('failed to get dependency tree', {
@@ -159,9 +163,12 @@ export async function scanSnapshotActivity(buildId: string, msg: S3ObjectMetadat
       return newError('invalid build uuid from s3 object at key ' + key);
     }
 
-    const staticAnalysisRes = await staticallyAnalyzeDependencyTree(buildId);
-    if (staticAnalysisRes.error) {
-      return staticAnalysisRes;
+    const staticAnalysisRes = await catchError(staticallyAnalyzeDependencyTree(buildId));
+    if (threwError(staticAnalysisRes)) {
+      log.warn('failed to run static analysis on dependency tree', {
+        buildId,
+        msg,
+      });
     }
 
     const bucketInfo: SbomBucketInfo = { region, bucketName, key };

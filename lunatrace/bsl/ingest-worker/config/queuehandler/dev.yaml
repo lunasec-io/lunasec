@@ -5,3 +5,5 @@ aws:
   region: us-west-2
 npm:
   registry_url: http://localhost:8081
+db:
+  dsn: postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable
