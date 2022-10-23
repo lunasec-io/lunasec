@@ -65,7 +65,7 @@ jobs:
 
       - name: Hasura Metadata Check
         run: |-
-          timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "404" ]]; do sleep 1; done' || false
+          timeout 360 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "404" ]]; do sleep 1; done' || false
           
           cd lunatrace/bsl/hasura
           
