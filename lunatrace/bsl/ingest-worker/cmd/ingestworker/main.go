@@ -18,7 +18,7 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/ingestworker"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/dbfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/registry"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
@@ -46,7 +46,7 @@ func main() {
 
 		graphqlfx.Module,
 		dbfx.Module,
-		fetcher.NPMModule,
+		registry.NPMModule,
 
 		fx.Invoke(func() {
 			util.RunOnProcessExit(func() {
@@ -61,6 +61,11 @@ func main() {
 			Version: "0.0.1",
 		}),
 		fx.Provide(
+			ingester.NewPackageSqlIngester,
+			ingester.NewNPMPackageIngester,
+			replicator.NewNPMReplicator,
+		),
+		fx.Provide(
 			ingestworker.NewConfigProvider,
 		),
 		fx.Provide(
@@ -70,11 +75,9 @@ func main() {
 			vulnmanager.NewFileIngester,
 		),
 		fx.Provide(
-			ingester.NewHasuraIngester,
 			vulnerability.NewCommand,
 		),
 		fx.Provide(
-			replicator.NewNPMReplicator,
 			packageCommand.NewCommand,
 		),
 

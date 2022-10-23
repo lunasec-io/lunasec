@@ -45,6 +45,8 @@ bindings:
     type: github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types.PackageManager
   license_source:
     type: github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types.LicenseSource
+  source:
+    type: github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types.LicenseSource
   affected_range_type:
     type: github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types.AffectedRangeType
   reference_type:
