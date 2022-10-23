@@ -32,12 +32,14 @@ DO UPDATE SET id = EXCLUDED.id, rev = EXCLUDED.rev, doc = EXCLUDED.doc, deleted 
 
 type npmReplicatorDeps struct {
 	fx.In
-	Client *http.Client
-	DB     *sql.DB
+	Client          *http.Client
+	DB              *sql.DB
+	PackageIngester metadata.PackageIngester
 }
 
 type npmReplicator struct {
-	deps npmReplicatorDeps
+	deps           npmReplicatorDeps
+	ingestPackages bool
 }
 
 type ChangesReqChange struct {
@@ -104,6 +106,7 @@ func (n *npmReplicator) bulkInsertChanges(revisions []ChangesReqItem) error {
 
 	revisionIds := lo.Map(revisions, func(revision ChangesReqItem, _ int) int { return revision.Seq })
 
+	// TODO (cthompson) replace with Jet syntax
 	for rowIdx, item := range revisions {
 		if len(item.Changes) == 0 {
 			log.Warn().
@@ -145,7 +148,7 @@ func (n *npmReplicator) bulkInsertChanges(revisions []ChangesReqItem) error {
 	return nil
 }
 
-func (n *npmReplicator) replicateChangesSince(ctx context.Context, since, lastSeq int) (int, error) {
+func (n *npmReplicator) replicateChangesSince(ctx context.Context, since, lastSeq int, replicatedPackages chan<- string) (int, error) {
 	var revisions []ChangesReqItem
 
 	log.Info().
@@ -192,6 +195,7 @@ func (n *npmReplicator) replicateChangesSince(ctx context.Context, since, lastSe
 		item.Doc = util.SanitizeNullEscapes(item.Doc)
 
 		revisions = append(revisions, item)
+		replicatedPackages <- item.Id
 
 		if len(revisions)%batchSize == 0 {
 			log.Info().
@@ -270,11 +274,11 @@ type replicatorJob struct {
 	size     int
 }
 
-func (n *npmReplicator) replicationWorker(ctx context.Context, job replicatorJob, errors chan<- error) {
-	errors <- n.replicateChunk(ctx, job.startSeq, job.size)
+func (n *npmReplicator) replicationWorker(ctx context.Context, job replicatorJob, errors chan<- error, replicatedPackages chan<- string) {
+	errors <- n.replicateChunk(ctx, job.startSeq, job.size, replicatedPackages)
 }
 
-func (n *npmReplicator) replicateToKnownSequence(ctx context.Context, endSeq int) error {
+func (n *npmReplicator) replicateToKnownSequence(ctx context.Context, endSeq int, replicatedPackages chan<- string) error {
 	workerCount := 10
 	workerJobChunkSize := endSeq / workerCount
 
@@ -285,7 +289,7 @@ func (n *npmReplicator) replicateToKnownSequence(ctx context.Context, endSeq int
 			startSeq: w * workerJobChunkSize,
 			size:     workerJobChunkSize,
 		}
-		go n.replicationWorker(ctx, job, errorChan)
+		go n.replicationWorker(ctx, job, errorChan, replicatedPackages)
 	}
 
 	errs := ""
@@ -303,7 +307,7 @@ func (n *npmReplicator) replicateToKnownSequence(ctx context.Context, endSeq int
 	return nil
 }
 
-func (n *npmReplicator) replicateChunk(ctx context.Context, seq, lastSeq int) error {
+func (n *npmReplicator) replicateChunk(ctx context.Context, seq, lastSeq int, replicatedPackages chan<- string) error {
 	var (
 		err          error
 		lastKnownSeq int
@@ -315,7 +319,7 @@ func (n *npmReplicator) replicateChunk(ctx context.Context, seq, lastSeq int) er
 			seq = lastKnownSeq
 		}
 
-		lastKnownSeq, err = n.replicateChangesSince(ctx, seq, lastSeq)
+		lastKnownSeq, err = n.replicateChangesSince(ctx, seq, lastSeq, replicatedPackages)
 		return err
 	}
 
@@ -333,6 +337,25 @@ func (n *npmReplicator) replicateChunk(ctx context.Context, seq, lastSeq int) er
 	return nil
 }
 
+func (n *npmReplicator) ingestReplicatedPackages(ctx context.Context, replicatedPackages <-chan string) {
+	for p := range replicatedPackages {
+		if !n.ingestPackages {
+			log.Info().
+				Str("package", p).
+				Msg("skipping package ingestion")
+		}
+
+		_, err := n.deps.PackageIngester.Ingest(ctx, p)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Str("package", p).
+				Msg("failed to ingest package")
+			continue
+		}
+	}
+}
+
 func (n *npmReplicator) InitialReplication(ctx context.Context) error {
 	log.Info().
 		Msg("initial replication of registry")
@@ -342,21 +365,31 @@ func (n *npmReplicator) InitialReplication(ctx context.Context) error {
 		return err
 	}
 
+	replicatedPackages := make(chan string)
+	defer close(replicatedPackages)
+
+	go n.ingestReplicatedPackages(ctx, replicatedPackages)
+
 	// try to do a fast catch-up by using a bunch of workers
-	err = n.replicateToKnownSequence(ctx, lastSeq)
+	err = n.replicateToKnownSequence(ctx, lastSeq, replicatedPackages)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (n *npmReplicator) ReplicateSince(ctx context.Context, seq int) error {
+func (n *npmReplicator) ReplicateSince(ctx context.Context, since int) error {
+	replicatedPackages := make(chan string)
+	defer close(replicatedPackages)
+
+	go n.ingestReplicatedPackages(ctx, replicatedPackages)
+
 	for {
 		log.Info().
-			Int("since", seq).
+			Int("since", since).
 			Msg("starting to replicate registry")
 
-		err := n.replicateChunk(ctx, seq, 0)
+		err := n.replicateChunk(ctx, since, 0, replicatedPackages)
 		if err != nil {
 			log.Warn().
 				Err(err).

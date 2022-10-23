@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -26,6 +26,7 @@ import (
 	"go.uber.org/fx"
 	"net/http"
 	"os"
+	"time"
 )
 
 type QueueRecord struct {
@@ -36,7 +37,7 @@ type QueueRecord struct {
 type Params struct {
 	fx.In
 
-	Ingester  metadata.Ingester
+	Ingester  metadata.PackageIngester
 	GQLClient graphql.Client
 }
 
@@ -81,7 +82,8 @@ func (s *staticAnalysisQueueHandler) ingestPackageAndGetUpstreamUrl(
 		Str("package name", packageName).
 		Msg("ingesting package metadata")
 
-	_, err := s.Ingester.Ingest(ctx, packageName)
+	// TODO (cthompson) figure out what time would work best for this, or if there should be a time
+	_, err := s.Ingester.IngestWithoutRefetch(ctx, packageName, time.Hour*24)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -89,6 +91,10 @@ func (s *staticAnalysisQueueHandler) ingestPackageAndGetUpstreamUrl(
 			Msg("failed to ingest package")
 		return nil, err
 	}
+
+	log.Info().
+		Str("package name", packageName).
+		Msg("ingested package metadata")
 
 	resp, err := s.getManifestDependencyEdge(ctx, manifestDependencyEdgeUUID)
 	if err != nil {
@@ -104,6 +110,90 @@ func (s *staticAnalysisQueueHandler) ingestPackageAndGetUpstreamUrl(
 		return nil, errors.New("failed to get upstream blob url after ingesting package")
 	}
 	return upstreamBlobUrl, nil
+}
+
+func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
+	ctx context.Context,
+	upstreamBlobUrl *string,
+	manifestDependencyEdgeUUID uuid.UUID,
+	parentPackageName,
+	childPackageName string,
+) gql.Analysis_finding_type_enum {
+	var err error
+
+	if upstreamBlobUrl == nil {
+		upstreamBlobUrl, err = s.ingestPackageAndGetUpstreamUrl(ctx, manifestDependencyEdgeUUID, parentPackageName)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Str("parent package", parentPackageName).
+				Str("child package", childPackageName).
+				Str("parent package code", *upstreamBlobUrl).
+				Msg("failed to determine upstream blob url")
+			return gql.Analysis_finding_type_enumError
+		}
+	}
+
+	log.Info().
+		Str("parent package", parentPackageName).
+		Str("child package", childPackageName).
+		Msg("statically analyzing parent child relationship")
+
+	upstreamUrlResp, err := http.Get(*upstreamBlobUrl)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("parent package", parentPackageName).
+			Str("child package", childPackageName).
+			Str("parent package code", *upstreamBlobUrl).
+			Msg("failed to download package blob")
+		return gql.Analysis_finding_type_enumError
+	}
+
+	tmpDir, err := os.MkdirTemp("", "")
+	if err != nil {
+		log.Error().
+			Str("parent package", parentPackageName).
+			Str("child package", childPackageName).
+			Err(err).
+			Msg("failed to create temporary directory for parent package code")
+		return gql.Analysis_finding_type_enumError
+	}
+	defer os.RemoveAll(tmpDir)
+
+	log.Info().
+		Str("upstream url", *upstreamBlobUrl).
+		Str("tmp dir", tmpDir).
+		Msg("extracting package code")
+
+	err = util.ExtractTarGz(upstreamUrlResp.Body, tmpDir)
+	if err != nil {
+		log.Error().
+			Str("parent package", parentPackageName).
+			Str("child package", childPackageName).
+			Err(err).
+			Msg("failed to extract parent package code to directory")
+		return gql.Analysis_finding_type_enumError
+	}
+
+	log.Info().
+		Str("parent package", parentPackageName).
+		Str("child package", childPackageName).
+		Msg("analyzing code for usages of child in parent")
+
+	importedAndCalled, err := rules.DependencyIsImportedAndCalledInCode(childPackageName, tmpDir)
+	if err != nil {
+		log.Error().
+			Str("parent package", parentPackageName).
+			Str("child package", childPackageName).
+			Err(err).
+			Msg("failed to determine if child is imported and called by parent")
+		return gql.Analysis_finding_type_enumError
+	}
+	if importedAndCalled {
+		return gql.Analysis_finding_type_enumVulnerable
+	}
+	return gql.Analysis_finding_type_enumNotVulnerable
 }
 
 func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record json.RawMessage) error {
@@ -172,75 +262,7 @@ func (s *staticAnalysisQueueHandler) HandleRecord(ctx context.Context, record js
 	parentPackageName := resp.Manifest_dependency_edge_by_pk.Parent.Release.Package.Name
 	upstreamBlobUrl := resp.Manifest_dependency_edge_by_pk.Parent.Release.Upstream_blob_url
 
-	if upstreamBlobUrl == nil {
-		upstreamBlobUrl, err = s.ingestPackageAndGetUpstreamUrl(ctx, manifestDependencyEdgeUUID, parentPackageName)
-		if err != nil {
-			return err
-		}
-	}
-
-	log.Info().
-		Str("parent package", parentPackageName).
-		Str("child package", childPackageName).
-		Msg("statically analyzing parent child relationship")
-
-	upstreamUrlResp, err := http.Get(*upstreamBlobUrl)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Str("parent package", parentPackageName).
-			Str("child package", childPackageName).
-			Str("parent package code", *upstreamBlobUrl).
-			Msg("failed to download package blob")
-		return err
-	}
-
-	tmpDir, err := os.MkdirTemp("", "")
-	if err != nil {
-		log.Error().
-			Str("parent package", parentPackageName).
-			Str("child package", childPackageName).
-			Err(err).
-			Msg("failed to create temporary directory for parent package code")
-		return err
-	}
-	defer os.RemoveAll(tmpDir)
-
-	log.Info().
-		Str("upstream url", *upstreamBlobUrl).
-		Str("tmp dir", tmpDir).
-		Msg("extracting package code")
-
-	err = util.ExtractTarGz(upstreamUrlResp.Body, tmpDir)
-	if err != nil {
-		log.Error().
-			Str("parent package", parentPackageName).
-			Str("child package", childPackageName).
-			Err(err).
-			Msg("failed to extract parent package code to directory")
-		return err
-	}
-
-	log.Info().
-		Str("parent package", parentPackageName).
-		Str("child package", childPackageName).
-		Msg("analyzing code for usages of child in parent")
-
-	importedAndCalled, err := rules.DependencyIsImportedAndCalledInCode(childPackageName, tmpDir)
-	if err != nil {
-		log.Error().
-			Str("parent package", parentPackageName).
-			Str("child package", childPackageName).
-			Err(err).
-			Msg("failed to determine if child is imported and called by parent")
-	}
-
-	findingType := func() gql.Analysis_finding_type_enum {
-		if importedAndCalled {
-			return gql.Analysis_finding_type_enumVulnerable
-		}
-		return gql.Analysis_finding_type_enumNotVulnerable
-	}()
+	findingType := s.runSemgrepRuleOnParentPackage(ctx, upstreamBlobUrl, manifestDependencyEdgeUUID, parentPackageName, childPackageName)
 
 	log.Info().
 		Str("parent package", parentPackageName).

@@ -12,6 +12,7 @@
  *
  */
 import { Readable } from 'stream';
+import util from 'util';
 import zlib from 'zlib';
 
 import validate from 'validator';
@@ -81,6 +82,10 @@ async function scanSnapshot(buildId: string, sbomBucketInfo: SbomBucketInfo): Pr
 }
 
 async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeErrorVoid> {
+  log.info('statically analyzing dependency tree', {
+    buildId,
+  });
+
   const treeResp = await catchError(hasura.GetTreeFromBuild({ build_id: buildId }));
   if (threwError(treeResp)) {
     log.error('failed to get dependency tree', {
@@ -129,12 +134,18 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
           return;
         }
 
+        // TODO (cthompson) until we are scanning first party code, this is needed so we dont try to scan
+        // the made up edge from the recursive sql query.
+        if (edgeId === '00000000-0000-0000-0000-000000000000') {
+          return;
+        }
+
         const key = v.vulnerability.id + edgeId;
         if (queuedStaticAnalyses.get(key)) {
           return;
         }
-
         queuedStaticAnalyses.set(key, true);
+
         const resp = await queueManifestDependencyEdgeForStaticAnalysis(v.vulnerability.id, edgeId);
         if (resp.error) {
           log.error('failed to queue vulnerable edge for analysis', {
@@ -159,11 +170,13 @@ export async function scanSnapshotActivity(buildId: string, msg: S3ObjectMetadat
       return newError('invalid build uuid from s3 object at key ' + key);
     }
 
-    // TODO (cthompson) commented out so that the branch could be landed to fix production
-    // const staticAnalysisRes = await staticallyAnalyzeDependencyTree(buildId);
-    // if (staticAnalysisRes.error) {
-    //   return staticAnalysisRes;
-    // }
+    const staticAnalysisRes = await catchError(staticallyAnalyzeDependencyTree(buildId));
+    if (threwError(staticAnalysisRes)) {
+      log.warn('failed to run static analysis on dependency tree', {
+        buildId,
+        msg,
+      });
+    }
 
     const bucketInfo: SbomBucketInfo = { region, bucketName, key };
 
