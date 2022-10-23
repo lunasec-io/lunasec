@@ -27,7 +27,7 @@ func adapt(n *NpmPackageMetadataWithRawVersions, packageRaw []byte) (*metadata.P
 	r := &metadata.PackageMetadata{
 		Name:         n.Name,
 		Description:  n.Description,
-		Registry:     NpmRegistry,
+		Registry:     "",
 		Maintainers:  mapMaintainers(n.Maintainers),
 		Releases:     releases,
 		UpstreamData: packageRaw,
