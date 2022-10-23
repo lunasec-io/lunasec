@@ -1,17 +1,26 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
+	"github.com/go-jet/jet/v2/generator/metadata"
+	"github.com/go-jet/jet/v2/generator/postgres"
+	"github.com/go-jet/jet/v2/generator/template"
+	postgres2 "github.com/go-jet/jet/v2/postgres"
+	_ "github.com/lib/pq"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/cmd/graphql"
 	"github.com/rs/zerolog/log"
 	"github.com/wundergraph/graphql-go-tools/pkg/astprinter"
 	"github.com/wundergraph/graphql-go-tools/pkg/introspection"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"net/http"
+	"path"
+	"strings"
 )
 
-func main() {
+func generateGql() {
 	url := "http://localhost:8080/v1/graphql"
 
 	reqBody, err := json.Marshal(map[string]string{
@@ -70,12 +79,108 @@ func main() {
 		return
 	}
 
-	schemaOutputPretty := outWriter.Bytes()
+	schemaOutput := outWriter.Bytes()
 
-	err = ioutil.WriteFile("schema.graphql", schemaOutputPretty, 0644)
+	schemaScanner := bufio.NewScanner(bytes.NewReader(schemaOutput))
+	formattedSchema := bytes.NewBuffer([]byte{})
+
+	// reserved graphql characters are still present in the schema "__Directive", remove those
+	removingLines := false
+	for schemaScanner.Scan() {
+		line := schemaScanner.Text()
+
+		if strings.Contains(line, "__") && strings.HasSuffix(line, "{") {
+			removingLines = true
+			continue
+		}
+		if removingLines && strings.Contains(line, "}") {
+			removingLines = false
+			continue
+		}
+		if removingLines {
+			continue
+		}
+
+		formattedSchema.WriteString(line + "\n")
+	}
+
+	err = ioutil.WriteFile("schema.graphql", formattedSchema.Bytes(), 0644)
 	if err != nil {
 		log.Error().Msg("failed to write schema to schema.graphql")
 		return
 	}
 	log.Info().Msg("Successfully wrote schema to schema.graphql")
+}
+
+type GenqlientBinding struct {
+	Type string `yaml:"type"`
+}
+
+type Genqlient struct {
+	Bindings map[string]GenqlientBinding `yaml:"bindings"`
+}
+
+func generateSql() {
+	file, err := ioutil.ReadFile("genqlient.yaml")
+	if err != nil {
+		log.Error().Err(err).Msg("failed to read genqlient.yaml")
+		return
+	}
+
+	var genqlient Genqlient
+
+	err = yaml.Unmarshal(file, &genqlient)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to parse genqlient.yaml")
+		return
+	}
+
+	err = postgres.GenerateDSN(
+		"postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable",
+		"npm",
+		"./sqlgen",
+	)
+
+	err = postgres.GenerateDSN(
+		"postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable",
+		"package",
+		"./sqlgen",
+		template.Default(postgres2.Dialect).
+			UseSchema(func(schema metadata.Schema) template.Schema {
+				return template.DefaultSchema(schema).
+					UseModel(template.DefaultModel().
+						UseTable(func(table metadata.Table) template.TableModel {
+							return template.DefaultTableModel(table).
+								UseField(func(column metadata.Column) template.TableModelField {
+									defaultTableModelField := template.DefaultTableModelField(column)
+
+									// TODO (cthompson) this needs more testing, but works for right now
+									// if there are problems with generated code, check this out first
+									if genqlientType, ok := genqlient.Bindings[column.Name]; ok {
+										importPath, importType := path.Split(genqlientType.Type)
+
+										parts := strings.Split(importType, ".")
+										importPackage := parts[0]
+
+										defaultTableModelField.Type = template.Type{
+											ImportPath: path.Join(importPath, importPackage),
+											Name:       importType,
+										}
+									}
+									return defaultTableModelField
+								})
+						}),
+					)
+			}),
+	)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to generate jet generated sql")
+		return
+	}
+}
+
+func main() {
+	generateGql()
+
+	generateSql()
 }

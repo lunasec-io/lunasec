@@ -13,7 +13,6 @@ package npm
 
 import (
 	"context"
-	"encoding/json"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -52,23 +51,7 @@ func (n *npmFetcher) Fetch(ctx context.Context, pkgName string) (*metadata.Packa
 		return nil, err
 	}
 
-	var pkgMeta NpmPackageMetadataWithRawVersions
-	err = json.Unmarshal(pkgMetaRaw, &pkgMeta)
-	if err != nil {
-		return nil, err
-	}
-
-	var pkgMetaForDB NpmPackageMetadata
-	err = json.Unmarshal(pkgMetaRaw, &pkgMetaForDB)
-	if err != nil {
-		return nil, err
-	}
-	pkgMetaForDBRaw, err := json.Marshal(&pkgMetaForDB)
-	if err != nil {
-		return nil, err
-	}
-
-	return adapt(&pkgMeta, pkgMetaForDBRaw)
+	return ParseRawPackageMetadata(pkgMetaRaw)
 }
 
 func NewNPMFetcher(d npmFetcherDeps) metadata.Fetcher {

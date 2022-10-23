@@ -14,6 +14,7 @@ package ingestworker
 import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/dbfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher/npm"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/config"
 	"io/ioutil"
@@ -26,6 +27,7 @@ const configDir = "config/ingestworker/"
 type Config struct {
 	Graphql graphqlfx.Config `yaml:"graphql"`
 	DB      dbfx.Config      `yaml:"db"`
+	NPM     npm.Config       `yaml:"npm"`
 }
 
 func newDefaultConfig() Config {
@@ -36,6 +38,9 @@ func newDefaultConfig() Config {
 		},
 		DB: dbfx.Config{
 			DSN: `${LUNATRACE_DB_DSN}`,
+		},
+		NPM: npm.Config{
+			RegistryUrl: `${LUNATRACE_NPM_REGISTRY_URL:"https://registry.npmjs.org"}`,
 		},
 	}
 }
