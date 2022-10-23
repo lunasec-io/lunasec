@@ -1,4 +1,5 @@
 version: '3.6'
+
 services:
   datadog:
     image: datadog/agent:latest
