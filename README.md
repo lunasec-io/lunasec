@@ -12,6 +12,7 @@
   ~
 -->
 
+TEST CI
 
 <p align="center">
   <img src='docs/static/img/logo-black-text.svg' width='60%'>
