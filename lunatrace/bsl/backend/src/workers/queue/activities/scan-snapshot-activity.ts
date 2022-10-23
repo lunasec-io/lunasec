@@ -12,6 +12,7 @@
  *
  */
 import { Readable } from 'stream';
+import util from 'util';
 import zlib from 'zlib';
 
 import validate from 'validator';
@@ -133,12 +134,18 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
           return;
         }
 
+        // TODO (cthompson) until we are scanning first party code, this is needed so we dont try to scan
+        // the made up edge from the recursive sql query.
+        if (edgeId === '00000000-0000-0000-0000-000000000000') {
+          return;
+        }
+
         const key = v.vulnerability.id + edgeId;
         if (queuedStaticAnalyses.get(key)) {
           return;
         }
-
         queuedStaticAnalyses.set(key, true);
+
         const resp = await queueManifestDependencyEdgeForStaticAnalysis(v.vulnerability.id, edgeId);
         if (resp.error) {
           log.error('failed to queue vulnerable edge for analysis', {
