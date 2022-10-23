@@ -3586,10 +3586,6 @@ export type Mutation_Root = {
   insert_manifests?: Maybe<Manifests_Mutation_Response>;
   /** insert a single row into the table: "manifests" */
   insert_manifests_one?: Maybe<Manifests>;
-  /** insert data into the table: "npm.revision" */
-  insert_npm_revision?: Maybe<Npm_Revision_Mutation_Response>;
-  /** insert a single row into the table: "npm.revision" */
-  insert_npm_revision_one?: Maybe<Npm_Revision>;
   /** insert data into the table: "organization_user" */
   insert_organization_user?: Maybe<Organization_User_Mutation_Response>;
   /** insert a single row into the table: "organization_user" */
@@ -3729,10 +3725,6 @@ export type Mutation_Root = {
   update_manifests?: Maybe<Manifests_Mutation_Response>;
   /** update single row of the table: "manifests" */
   update_manifests_by_pk?: Maybe<Manifests>;
-  /** update data of the table: "npm.revision" */
-  update_npm_revision?: Maybe<Npm_Revision_Mutation_Response>;
-  /** update single row of the table: "npm.revision" */
-  update_npm_revision_by_pk?: Maybe<Npm_Revision>;
   /** update data of the table: "organization_user" */
   update_organization_user?: Maybe<Organization_User_Mutation_Response>;
   /** update single row of the table: "organization_user" */
@@ -4068,20 +4060,6 @@ export type Mutation_RootInsert_ManifestsArgs = {
 export type Mutation_RootInsert_Manifests_OneArgs = {
   object: Manifests_Insert_Input;
   on_conflict?: InputMaybe<Manifests_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Npm_RevisionArgs = {
-  objects: Array<Npm_Revision_Insert_Input>;
-  on_conflict?: InputMaybe<Npm_Revision_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Npm_Revision_OneArgs = {
-  object: Npm_Revision_Insert_Input;
-  on_conflict?: InputMaybe<Npm_Revision_On_Conflict>;
 };
 
 
@@ -4614,32 +4592,6 @@ export type Mutation_RootUpdate_Manifests_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Npm_RevisionArgs = {
-  _append?: InputMaybe<Npm_Revision_Append_Input>;
-  _delete_at_path?: InputMaybe<Npm_Revision_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Npm_Revision_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Npm_Revision_Delete_Key_Input>;
-  _inc?: InputMaybe<Npm_Revision_Inc_Input>;
-  _prepend?: InputMaybe<Npm_Revision_Prepend_Input>;
-  _set?: InputMaybe<Npm_Revision_Set_Input>;
-  where: Npm_Revision_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Npm_Revision_By_PkArgs = {
-  _append?: InputMaybe<Npm_Revision_Append_Input>;
-  _delete_at_path?: InputMaybe<Npm_Revision_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Npm_Revision_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Npm_Revision_Delete_Key_Input>;
-  _inc?: InputMaybe<Npm_Revision_Inc_Input>;
-  _prepend?: InputMaybe<Npm_Revision_Prepend_Input>;
-  _set?: InputMaybe<Npm_Revision_Set_Input>;
-  pk_columns: Npm_Revision_Pk_Columns_Input;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_Organization_UserArgs = {
   _set?: InputMaybe<Organization_User_Set_Input>;
   where: Organization_User_Bool_Exp;
@@ -5021,146 +4973,6 @@ export type Mutation_RootUpdate_Webhook_Cache_By_PkArgs = {
   _set?: InputMaybe<Webhook_Cache_Set_Input>;
   pk_columns: Webhook_Cache_Pk_Columns_Input;
 };
-
-/** Revision of a NPM CouchDB document. */
-export type Npm_Revision = {
-  __typename?: 'npm_revision';
-  deleted: Scalars['Boolean'];
-  doc: Scalars['jsonb'];
-  id: Scalars['String'];
-  rev: Scalars['String'];
-  seq: Scalars['Int'];
-};
-
-
-/** Revision of a NPM CouchDB document. */
-export type Npm_RevisionDocArgs = {
-  path?: InputMaybe<Scalars['String']>;
-};
-
-/** append existing jsonb value of filtered columns with new jsonb value */
-export type Npm_Revision_Append_Input = {
-  doc?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** Boolean expression to filter rows from the table "npm.revision". All fields are combined with a logical 'AND'. */
-export type Npm_Revision_Bool_Exp = {
-  _and?: InputMaybe<Array<Npm_Revision_Bool_Exp>>;
-  _not?: InputMaybe<Npm_Revision_Bool_Exp>;
-  _or?: InputMaybe<Array<Npm_Revision_Bool_Exp>>;
-  deleted?: InputMaybe<Boolean_Comparison_Exp>;
-  doc?: InputMaybe<Jsonb_Comparison_Exp>;
-  id?: InputMaybe<String_Comparison_Exp>;
-  rev?: InputMaybe<String_Comparison_Exp>;
-  seq?: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "npm.revision" */
-export enum Npm_Revision_Constraint {
-  /** unique or primary key constraint on columns "seq" */
-  RevisionPkey = 'revision_pkey'
-}
-
-/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-export type Npm_Revision_Delete_At_Path_Input = {
-  doc?: InputMaybe<Array<Scalars['String']>>;
-};
-
-/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-export type Npm_Revision_Delete_Elem_Input = {
-  doc?: InputMaybe<Scalars['Int']>;
-};
-
-/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-export type Npm_Revision_Delete_Key_Input = {
-  doc?: InputMaybe<Scalars['String']>;
-};
-
-/** input type for incrementing numeric columns in table "npm.revision" */
-export type Npm_Revision_Inc_Input = {
-  seq?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "npm.revision" */
-export type Npm_Revision_Insert_Input = {
-  deleted?: InputMaybe<Scalars['Boolean']>;
-  doc?: InputMaybe<Scalars['jsonb']>;
-  id?: InputMaybe<Scalars['String']>;
-  rev?: InputMaybe<Scalars['String']>;
-  seq?: InputMaybe<Scalars['Int']>;
-};
-
-/** response of any mutation on the table "npm.revision" */
-export type Npm_Revision_Mutation_Response = {
-  __typename?: 'npm_revision_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Npm_Revision>;
-};
-
-/** on_conflict condition type for table "npm.revision" */
-export type Npm_Revision_On_Conflict = {
-  constraint: Npm_Revision_Constraint;
-  update_columns?: Array<Npm_Revision_Update_Column>;
-  where?: InputMaybe<Npm_Revision_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "npm.revision". */
-export type Npm_Revision_Order_By = {
-  deleted?: InputMaybe<Order_By>;
-  doc?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  rev?: InputMaybe<Order_By>;
-  seq?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: npm_revision */
-export type Npm_Revision_Pk_Columns_Input = {
-  seq: Scalars['Int'];
-};
-
-/** prepend existing jsonb value of filtered columns with new jsonb value */
-export type Npm_Revision_Prepend_Input = {
-  doc?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** select columns of table "npm.revision" */
-export enum Npm_Revision_Select_Column {
-  /** column name */
-  Deleted = 'deleted',
-  /** column name */
-  Doc = 'doc',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Rev = 'rev',
-  /** column name */
-  Seq = 'seq'
-}
-
-/** input type for updating data in table "npm.revision" */
-export type Npm_Revision_Set_Input = {
-  deleted?: InputMaybe<Scalars['Boolean']>;
-  doc?: InputMaybe<Scalars['jsonb']>;
-  id?: InputMaybe<Scalars['String']>;
-  rev?: InputMaybe<Scalars['String']>;
-  seq?: InputMaybe<Scalars['Int']>;
-};
-
-/** update columns of table "npm.revision" */
-export enum Npm_Revision_Update_Column {
-  /** column name */
-  Deleted = 'deleted',
-  /** column name */
-  Doc = 'doc',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Rev = 'rev',
-  /** column name */
-  Seq = 'seq'
-}
 
 /** column ordering options */
 export enum Order_By {
@@ -7410,10 +7222,6 @@ export type Query_Root = {
   manifests: Array<Manifests>;
   /** fetch data from the table: "manifests" using primary key columns */
   manifests_by_pk?: Maybe<Manifests>;
-  /** fetch data from the table: "npm.revision" */
-  npm_revision: Array<Npm_Revision>;
-  /** fetch data from the table: "npm.revision" using primary key columns */
-  npm_revision_by_pk?: Maybe<Npm_Revision>;
   /** fetch data from the table: "organization_user" */
   organization_user: Array<Organization_User>;
   /** fetch data from the table: "organization_user" using primary key columns */
@@ -7757,20 +7565,6 @@ export type Query_RootManifestsArgs = {
 
 export type Query_RootManifests_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootNpm_RevisionArgs = {
-  distinct_on?: InputMaybe<Array<Npm_Revision_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Npm_Revision_Order_By>>;
-  where?: InputMaybe<Npm_Revision_Bool_Exp>;
-};
-
-
-export type Query_RootNpm_Revision_By_PkArgs = {
-  seq: Scalars['Int'];
 };
 
 
@@ -8731,10 +8525,6 @@ export type Subscription_Root = {
   manifests: Array<Manifests>;
   /** fetch data from the table: "manifests" using primary key columns */
   manifests_by_pk?: Maybe<Manifests>;
-  /** fetch data from the table: "npm.revision" */
-  npm_revision: Array<Npm_Revision>;
-  /** fetch data from the table: "npm.revision" using primary key columns */
-  npm_revision_by_pk?: Maybe<Npm_Revision>;
   /** fetch data from the table: "organization_user" */
   organization_user: Array<Organization_User>;
   /** fetch data from the table: "organization_user" using primary key columns */
@@ -9069,20 +8859,6 @@ export type Subscription_RootManifestsArgs = {
 
 export type Subscription_RootManifests_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootNpm_RevisionArgs = {
-  distinct_on?: InputMaybe<Array<Npm_Revision_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Npm_Revision_Order_By>>;
-  where?: InputMaybe<Npm_Revision_Bool_Exp>;
-};
-
-
-export type Subscription_RootNpm_Revision_By_PkArgs = {
-  seq: Scalars['Int'];
 };
 
 
@@ -11369,7 +11145,7 @@ export type GetManifestDependencyEdgeAnalysisResultQueryVariables = Exact<{
 }>;
 
 
-export type GetManifestDependencyEdgeAnalysisResultQuery = { __typename?: 'query_root', analysis_manifest_dependency_edge_result: Array<{ __typename?: 'analysis_manifest_dependency_edge_result', id: any }> };
+export type GetManifestDependencyEdgeAnalysisResultQuery = { __typename?: 'query_root', analysis_manifest_dependency_edge_result: Array<{ __typename?: 'analysis_manifest_dependency_edge_result', id: any, finding_type: Analysis_Finding_Type_Enum }> };
 
 export type GetOrganizationFromInstallationIdQueryVariables = Exact<{
   installation_id?: InputMaybe<Scalars['Int']>;
@@ -11721,6 +11497,7 @@ export const GetManifestDependencyEdgeAnalysisResultDocument = gql`
     where: {vulnerability_id: {_eq: $vulnerability_id}, manifest_dependency_edge_id: {_eq: $manifest_dependency_edge_id}}
   ) {
     id
+    finding_type
   }
 }
     `;
