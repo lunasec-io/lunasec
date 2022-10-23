@@ -6,5 +6,4 @@ aws:
 npm:
   registry_url: http://localhost:8081
 db:
-#  dsn: postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable
-  dsn: postgres://serviceaccount:mG9OFA8aePrum13Y@localhost:5432/lunatrace
+  dsn: postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable
