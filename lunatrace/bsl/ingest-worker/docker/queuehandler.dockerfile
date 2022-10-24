@@ -5,9 +5,7 @@ WORKDIR /build/lunatrace/bsl/ingest-worker
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o queuehandler ./cmd/queuehandler
 
-FROM scratch
-
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+FROM gcr.io/distroless/base
 
 COPY --from=builder /build/lunatrace/bsl/ingest-worker/queuehandler /
 
