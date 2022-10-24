@@ -211,11 +211,11 @@ func (n *npmReplicator) replicateChangesSince(ctx context.Context, since, lastSe
 				return item.Seq, err
 			}
 			revisions = []ChangesReqItem{}
-		}
 
-		// once revisions have been upserted, queue the package to be ingested
-		for _, rev := range revisions {
-			replicatedPackages <- rev.Id
+			// once revisions have been upserted, queue the package to be ingested
+			for _, rev := range revisions {
+				replicatedPackages <- rev.Id
+			}
 		}
 	}
 
