@@ -155,7 +155,9 @@ func (s *packageSqlIngester) mapMaintainer(ctx context.Context, tx *sql.Tx, pm m
 }
 
 func (s *packageSqlIngester) Ingest(ctx context.Context, pkg *metadata.PackageMetadata) (string, error) {
-	tx, err := s.deps.DB.BeginTx(ctx, nil)
+	tx, err := s.deps.DB.BeginTx(ctx, &sql.TxOptions{
+		Isolation: sql.LevelReadUncommitted,
+	})
 	if err != nil {
 		return "", err
 	}
