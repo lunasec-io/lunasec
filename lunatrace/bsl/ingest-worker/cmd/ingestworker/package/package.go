@@ -12,16 +12,11 @@
 package ingest
 
 import (
-	"bufio"
 	"errors"
 	"github.com/ajvpot/clifx"
-	"github.com/rs/zerolog/log"
-	"github.com/schollz/progressbar/v3"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
-	"os"
-
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
 )
 
 type Params struct {
@@ -70,40 +65,11 @@ func NewCommand(p Params) clifx.CommandResult {
 
 						// import packages from a file
 						if packagesFile != "" {
-							fileHandle, err := os.Open(packagesFile)
-							if err != nil {
-								return err
-							}
-							defer fileHandle.Close()
-							fileScanner := bufio.NewScanner(fileHandle)
-
-							var packages []string
-							for fileScanner.Scan() {
-								packageName = fileScanner.Text()
-								packages = append(packages, packageName)
-							}
-
-							bar := progressbar.Default(int64(len(packages)))
-
-							for _, packageName = range packages {
-								err = p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName, ignoreErrors, refetchDuration)
-								if err != nil {
-									log.Error().
-										Err(err).
-										Str("package name", packageName).
-										Msg("failed to import")
-									return err
-								}
-								bar.Add(1)
-							}
-
-							log.Info().
-								Msg("finished ingesting packages")
-							return nil
+							return p.Ingester.IngestPackagesFromFile(ctx.Context, packagesFile, ignoreErrors, refetchDuration)
 						}
 
 						if registry {
-							return p.Ingester.IngestAllPackagesFromRegistry(ctx.Context, ignoreErrors)
+							return p.Ingester.IngestAllPackagesFromRegistry(ctx.Context, ignoreErrors, refetchDuration)
 						}
 
 						if packageName == "" {

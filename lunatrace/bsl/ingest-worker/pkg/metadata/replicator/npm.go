@@ -38,8 +38,7 @@ type npmReplicatorDeps struct {
 }
 
 type npmReplicator struct {
-	deps           npmReplicatorDeps
-	ingestPackages bool
+	deps npmReplicatorDeps
 }
 
 type ChangesReqChange struct {
@@ -195,7 +194,6 @@ func (n *npmReplicator) replicateChangesSince(ctx context.Context, since, lastSe
 		item.Doc = util.SanitizeNullEscapes(item.Doc)
 
 		revisions = append(revisions, item)
-		replicatedPackages <- item.Id
 
 		if len(revisions)%batchSize == 0 {
 			log.Info().
@@ -212,6 +210,11 @@ func (n *npmReplicator) replicateChangesSince(ctx context.Context, since, lastSe
 				log.Error().Err(err).Msg("failed to insert revisions")
 				return item.Seq, err
 			}
+			// once revisions have been upserted, queue the package to be ingested
+			for _, rev := range revisions {
+				replicatedPackages <- rev.Id
+			}
+
 			revisions = []ChangesReqItem{}
 		}
 	}
@@ -339,12 +342,6 @@ func (n *npmReplicator) replicateChunk(ctx context.Context, seq, lastSeq int, re
 
 func (n *npmReplicator) ingestReplicatedPackages(ctx context.Context, replicatedPackages <-chan string) {
 	for p := range replicatedPackages {
-		if !n.ingestPackages {
-			log.Info().
-				Str("package", p).
-				Msg("skipping package ingestion")
-		}
-
 		_, err := n.deps.PackageIngester.Ingest(ctx, p)
 		if err != nil {
 			log.Error().
