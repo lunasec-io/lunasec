@@ -48,6 +48,7 @@ export async function getSqsUrlPromise(queueName: string): Promise<string | unde
 export async function getSqsUrlFromName(queueName: string): Promise<MaybeError<string>> {
   const queueUrl = await catchError(getSqsUrlPromise(queueName));
   if (threwError(queueUrl) || !queueUrl) {
+    log.error('failed to retrieve queue url from aws', { queueUrl });
     return newError('Failed to retrieve queue url from aws using queue name');
   }
   return newResult(queueUrl);

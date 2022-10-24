@@ -1433,12 +1433,18 @@ func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_depende
 // GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release includes the requested fields of the GraphQL type package_release.
 type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release struct {
 	Upstream_blob_url *string                                                                                                                                     `json:"upstream_blob_url"`
+	Version           string                                                                                                                                      `json:"version"`
 	Package           *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_releasePackage `json:"package"`
 }
 
 // GetUpstream_blob_url returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release.Upstream_blob_url, and is useful for accessing the field via an interface.
 func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release) GetUpstream_blob_url() *string {
 	return v.Upstream_blob_url
+}
+
+// GetVersion returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release.Version, and is useful for accessing the field via an interface.
+func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release) GetVersion() string {
+	return v.Version
 }
 
 // GetPackage returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release.Package, and is useful for accessing the field via an interface.
@@ -7386,6 +7392,7 @@ query GetManifestDependencyEdge ($id: uuid!) {
 		parent {
 			release {
 				upstream_blob_url
+				version
 				package {
 					name
 				}
