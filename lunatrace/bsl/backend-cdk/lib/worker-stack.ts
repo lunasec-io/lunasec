@@ -234,6 +234,8 @@ export class WorkerStack extends cdk.Stack {
       webhookQueue.grantConsumeMessages(queueFargateService.taskDefinition.taskRole);
       repositoryQueue.grantConsumeMessages(queueFargateService.taskDefinition.taskRole);
       repositoryQueue.grantSendMessages(queueFargateService.taskDefinition.taskRole);
+      staticAnalysisQueue.grantConsumeMessages(queueFargateService.taskDefinition.taskRole);
+      staticAnalysisQueue.grantSendMessages(queueFargateService.taskDefinition.taskRole);
     });
   }
 }
