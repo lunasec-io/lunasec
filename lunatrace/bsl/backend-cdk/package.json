@@ -14,7 +14,7 @@
     "cdk:deploy:prod:run": "echo 'deploying...' && yarn run cdk:deploy:prod:cleanup && ./build-containers.sh && yarn run cdk:deploy:prod:all",
     "cdk:deploy:prod": "yarn run cdk:deploy:prod:v2",
     "cdk:deploy:prod:v1": "STACK_VERSION=V1 yarn run cdk:deploy:prod:run",
-    "cdk:deploy:prod:v2": "STACK_VERSION=V2 yarn run cdk:deploy:prod:run",
+    "cdk:deploy:prod:v2": "STACK_VERSION=V2 yarn run cdk:deploy:prod:run"
   },
   "devDependencies": {
     "@aws-cdk/assert": "2.40.0",
