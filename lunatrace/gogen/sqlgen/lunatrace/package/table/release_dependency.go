@@ -20,10 +20,10 @@ type releaseDependencyTable struct {
 	ID                  postgres.ColumnString
 	ReleaseID           postgres.ColumnString
 	DependencyPackageID postgres.ColumnString
-	DependencyReleaseID postgres.ColumnString
 	PackageName         postgres.ColumnString
 	PackageVersionQuery postgres.ColumnString
 	IsDev               postgres.ColumnBool
+	DependencyReleaseID postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -67,12 +67,12 @@ func newReleaseDependencyTableImpl(schemaName, tableName, alias string) releaseD
 		IDColumn                  = postgres.StringColumn("id")
 		ReleaseIDColumn           = postgres.StringColumn("release_id")
 		DependencyPackageIDColumn = postgres.StringColumn("dependency_package_id")
-		DependencyReleaseIDColumn = postgres.StringColumn("dependency_release_id")
 		PackageNameColumn         = postgres.StringColumn("package_name")
 		PackageVersionQueryColumn = postgres.StringColumn("package_version_query")
 		IsDevColumn               = postgres.BoolColumn("is_dev")
-		allColumns                = postgres.ColumnList{IDColumn, ReleaseIDColumn, DependencyPackageIDColumn, DependencyReleaseIDColumn, PackageNameColumn, PackageVersionQueryColumn, IsDevColumn}
-		mutableColumns            = postgres.ColumnList{ReleaseIDColumn, DependencyPackageIDColumn, DependencyReleaseIDColumn, PackageNameColumn, PackageVersionQueryColumn, IsDevColumn}
+		DependencyReleaseIDColumn = postgres.StringColumn("dependency_release_id")
+		allColumns                = postgres.ColumnList{IDColumn, ReleaseIDColumn, DependencyPackageIDColumn, PackageNameColumn, PackageVersionQueryColumn, IsDevColumn, DependencyReleaseIDColumn}
+		mutableColumns            = postgres.ColumnList{ReleaseIDColumn, DependencyPackageIDColumn, PackageNameColumn, PackageVersionQueryColumn, IsDevColumn, DependencyReleaseIDColumn}
 	)
 
 	return releaseDependencyTable{
@@ -82,10 +82,10 @@ func newReleaseDependencyTableImpl(schemaName, tableName, alias string) releaseD
 		ID:                  IDColumn,
 		ReleaseID:           ReleaseIDColumn,
 		DependencyPackageID: DependencyPackageIDColumn,
-		DependencyReleaseID: DependencyReleaseIDColumn,
 		PackageName:         PackageNameColumn,
 		PackageVersionQuery: PackageVersionQueryColumn,
 		IsDev:               IsDevColumn,
+		DependencyReleaseID: DependencyReleaseIDColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,
