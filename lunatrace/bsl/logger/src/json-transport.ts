@@ -23,6 +23,19 @@ export interface ConsoleTransportOptions {
 
 type ColorOptions = NonNullable<Parameters<typeof colorize>[1]>['colors'];
 
+const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key: any, value: any) => {
+    if (typeof value === 'object' && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};
+
 export class JsonTransport implements Transport {
   constructor(public options: ConsoleTransportOptions) {}
 
@@ -38,7 +51,7 @@ export class JsonTransport implements Transport {
     const { message, ...logWithoutMessage } = logObj;
     const logWithMessageOnBottom = { ...logWithoutMessage, message };
 
-    const logString = JSON.stringify(logWithMessageOnBottom, undefined, spacing);
+    const logString = JSON.stringify(logWithMessageOnBottom, getCircularReplacer(), spacing);
     if (this.options.colors) {
       const colors = this.getColors(logObj.level);
       console.log(colorize(logString, { colors }));
