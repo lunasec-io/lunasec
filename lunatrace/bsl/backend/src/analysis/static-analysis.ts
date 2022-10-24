@@ -54,9 +54,9 @@ export async function queueManifestDependencyEdgeForStaticAnalysis(
 
   const staticAnalysisConfig = getStaticAnalysisConfig();
 
-  const staticAnalysisQueueUrl = await catchError(getSqsUrlFromName(staticAnalysisConfig.queueName));
+  const staticAnalysisQueueUrl = await getSqsUrlFromName(staticAnalysisConfig.queueName);
 
-  if (threwError(staticAnalysisQueueUrl) || staticAnalysisQueueUrl.error) {
+  if (staticAnalysisQueueUrl.error) {
     log.error('unable to load static analysis queue url', {
       queueName: staticAnalysisQueueUrl,
     });
