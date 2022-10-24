@@ -177,10 +177,6 @@ func (s *packageSqlIngester) Ingest(ctx context.Context, pkg *metadata.PackageMe
 	return packageId, nil
 }
 
-func (s *packageSqlIngester) FastIngest(ctx context.Context, pkg *metadata.PackageMetadata) (string, error) {
-
-}
-
 func NewPackageSqlIngester(deps PackageSqlIngesterParams) PackageSqlIngester {
 	return &packageSqlIngester{
 		deps: deps,
