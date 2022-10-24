@@ -22,5 +22,6 @@ type PackageIngester interface {
 	Ingest(ctx context.Context, packageName string) ([]string, error)
 	IngestWithoutRefetch(ctx context.Context, packageName string, duration time.Duration) ([]string, error)
 	IngestPackageAndDependencies(ctx context.Context, packageName string, ignoreErrors bool, duration time.Duration) error
-	IngestAllPackagesFromRegistry(ctx context.Context, ignoreErrors bool) error
+	IngestAllPackagesFromRegistry(ctx context.Context, ignoreErrors bool, duration time.Duration) error
+	IngestPackagesFromFile(ctx context.Context, packagesFile string, ignoreErrors bool, duration time.Duration) error
 }

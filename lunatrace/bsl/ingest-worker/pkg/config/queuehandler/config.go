@@ -16,6 +16,7 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher/npm"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queuefx"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/config"
 	"io/ioutil"
@@ -65,6 +66,13 @@ func NewConfigProvider() (config.Provider, error) {
 	}
 	if err != nil {
 		log.Warn().Str("config directory", configDir).Msg("unable to locate config directory")
+	}
+
+	if f, ferr := os.Stat(constants.LunaTraceConfigFileName); ferr == nil {
+		log.Info().
+			Str("config file", constants.LunaTraceConfigFileName).
+			Msg("using local config file")
+		opts = append(opts, config.File(path.Join(f.Name())))
 	}
 
 	return config.NewYAML(opts...)
