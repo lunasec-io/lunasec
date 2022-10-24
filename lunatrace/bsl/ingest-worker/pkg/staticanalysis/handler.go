@@ -26,7 +26,6 @@ import (
 	"go.uber.org/fx"
 	"net/http"
 	"os"
-	"time"
 )
 
 type QueueRecord struct {
@@ -83,17 +82,6 @@ func (s *staticAnalysisQueueHandler) getUpstreamUrlForPackage(
 		Str("package name", packageName).
 		Msg("querying package metadata")
 
-	go func() {
-		// TODO (cthompson) put this on a queue?
-		_, err := s.Ingester.IngestWithoutRefetch(ctx, packageName, time.Hour*24)
-		if err != nil {
-			log.Error().
-				Err(err).
-				Str("package name", packageName).
-				Msg("failed to ingest package")
-		}
-	}()
-
 	packageMeta, err := s.PackageRegistry.GetPackageMetadata(packageName)
 	if err != nil {
 		log.Error().
@@ -124,6 +112,15 @@ func (s *staticAnalysisQueueHandler) getUpstreamUrlForPackage(
 	/*
 		TODO (cthompson) we should be able to get the `Upstream_blob_url` from this data, but since ingestion
 		is too slow atm, we are skipping the ingestion (in case the package doesn't exist) and just processing the package metadata.
+
+		// TODO (cthompson) put this on a queue?
+		_, err := s.Ingester.IngestWithoutRefetch(ctx, packageName, time.Hour*24)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Str("package name", packageName).
+				Msg("failed to ingest package")
+		}
 
 		upstreamBlobUrl := resp.Manifest_dependency_edge_by_pk.Parent.Release.Upstream_blob_url
 		if upstreamBlobUrl == nil {
