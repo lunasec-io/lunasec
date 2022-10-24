@@ -12,6 +12,7 @@
 package ingester
 
 import (
+	"bufio"
 	"context"
 	"database/sql"
 	"github.com/go-jet/jet/v2/postgres"
@@ -21,6 +22,8 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/table"
 	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
+	"github.com/schollz/progressbar/v3"
+	"os"
 	"time"
 
 	"go.uber.org/fx"
@@ -45,7 +48,7 @@ type NPMPackageIngester struct {
 
 var npmV types.PackageManager = types.NPM
 
-func (h *NPMPackageIngester) IngestAllPackagesFromRegistry(ctx context.Context, ignoreErrors bool) error {
+func (h *NPMPackageIngester) IngestAllPackagesFromRegistry(ctx context.Context, ignoreErrors bool, duration time.Duration) error {
 	log.Info().
 		Msg("collecting packages from npm registry")
 
@@ -63,7 +66,7 @@ func (h *NPMPackageIngester) IngestAllPackagesFromRegistry(ctx context.Context, 
 			Str("package name", packageName).
 			Msg("ingesting package")
 
-		_, err = h.Ingest(ctx, packageName)
+		_, err = h.IngestWithoutRefetch(ctx, packageName, duration)
 		if err != nil {
 			log.Error().
 				Err(err).
@@ -226,6 +229,44 @@ func (h *NPMPackageIngester) IngestPackageAndDependencies(
 			Int("packages to ingest", len(pkgs)).
 			Msg("successfully ingested package")
 	}
+	return nil
+}
+
+func (h *NPMPackageIngester) IngestPackagesFromFile(
+	ctx context.Context,
+	packagesFile string,
+	ignoreErrors bool,
+	refetchDuration time.Duration,
+) error {
+	fileHandle, err := os.Open(packagesFile)
+	if err != nil {
+		return err
+	}
+	defer fileHandle.Close()
+	fileScanner := bufio.NewScanner(fileHandle)
+
+	var packages []string
+	for fileScanner.Scan() {
+		packageName := fileScanner.Text()
+		packages = append(packages, packageName)
+	}
+
+	bar := progressbar.Default(int64(len(packages)))
+
+	for _, packageName := range packages {
+		err = h.IngestPackageAndDependencies(ctx, packageName, ignoreErrors, refetchDuration)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Str("package name", packageName).
+				Msg("failed to import")
+			return err
+		}
+		bar.Add(1)
+	}
+
+	log.Info().
+		Msg("finished ingesting packages")
 	return nil
 }
 

@@ -26,7 +26,6 @@ import (
 	"go.uber.org/fx"
 	"net/http"
 	"os"
-	"time"
 )
 
 type QueueRecord struct {
@@ -37,8 +36,9 @@ type QueueRecord struct {
 type Params struct {
 	fx.In
 
-	Ingester  metadata.PackageIngester
-	GQLClient graphql.Client
+	Ingester        metadata.PackageIngester
+	GQLClient       graphql.Client
+	PackageRegistry metadata.NpmRegistry
 }
 
 type staticAnalysisQueueHandler struct {
@@ -73,43 +73,65 @@ func (s *staticAnalysisQueueHandler) getManifestDependencyEdge(ctx context.Conte
 	return resp, nil
 }
 
-func (s *staticAnalysisQueueHandler) ingestPackageAndGetUpstreamUrl(
+func (s *staticAnalysisQueueHandler) getUpstreamUrlForPackage(
 	ctx context.Context,
 	manifestDependencyEdgeUUID uuid.UUID,
 	packageName string,
-) (*string, error) {
+) (string, error) {
 	log.Info().
 		Str("package name", packageName).
-		Msg("ingesting package metadata")
+		Msg("querying package metadata")
 
-	// TODO (cthompson) figure out what time would work best for this, or if there should be a time
-	_, err := s.Ingester.IngestWithoutRefetch(ctx, packageName, time.Hour*24)
+	packageMeta, err := s.PackageRegistry.GetPackageMetadata(packageName)
 	if err != nil {
 		log.Error().
 			Err(err).
 			Str("package name", packageName).
-			Msg("failed to ingest package")
-		return nil, err
+			Msg("failed to get package metadata")
+		return "", err
 	}
 
 	log.Info().
 		Str("package name", packageName).
-		Msg("ingested package metadata")
+		Msg("queried package metadata")
 
 	resp, err := s.getManifestDependencyEdge(ctx, manifestDependencyEdgeUUID)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	upstreamBlobUrl := resp.Manifest_dependency_edge_by_pk.Parent.Release.Upstream_blob_url
-	if upstreamBlobUrl == nil {
-		log.Error().
-			Err(err).
-			Str("parent package", packageName).
-			Msg("failed to ingest package and dependencies for package")
-		return nil, errors.New("failed to get upstream blob url after ingesting package")
+	parentVersion := resp.Manifest_dependency_edge_by_pk.Parent.Release.Version
+
+	for _, release := range packageMeta.Releases {
+		if release.Version == parentVersion {
+			return release.UpstreamBlobUrl, nil
+		}
 	}
-	return upstreamBlobUrl, nil
+	return "", errors.New("unable to find upstream blob url for package")
+
+	/*
+		TODO (cthompson) we should be able to get the `Upstream_blob_url` from this data, but since ingestion
+		is too slow atm, we are skipping the ingestion (in case the package doesn't exist) and just processing the package metadata.
+
+		// TODO (cthompson) put this on a queue?
+		_, err := s.Ingester.IngestWithoutRefetch(ctx, packageName, time.Hour*24)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Str("package name", packageName).
+				Msg("failed to ingest package")
+		}
+
+		upstreamBlobUrl := resp.Manifest_dependency_edge_by_pk.Parent.Release.Upstream_blob_url
+		if upstreamBlobUrl == nil {
+			log.Error().
+				Err(err).
+				Str("parent package", packageName).
+				Msg("failed to ingest package and dependencies for package")
+			return nil, errors.New("failed to get upstream blob url after ingesting package")
+		}
+		return upstreamBlobUrl, nil
+	*/
 }
 
 func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
@@ -121,17 +143,19 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 ) gql.Analysis_finding_type_enum {
 	var err error
 
+	var resolvedBlobUrl string
 	if upstreamBlobUrl == nil {
-		upstreamBlobUrl, err = s.ingestPackageAndGetUpstreamUrl(ctx, manifestDependencyEdgeUUID, parentPackageName)
+		resolvedBlobUrl, err = s.getUpstreamUrlForPackage(ctx, manifestDependencyEdgeUUID, parentPackageName)
 		if err != nil {
 			log.Error().
 				Err(err).
 				Str("parent package", parentPackageName).
 				Str("child package", childPackageName).
-				Str("parent package code", *upstreamBlobUrl).
 				Msg("failed to determine upstream blob url")
 			return gql.Analysis_finding_type_enumError
 		}
+	} else {
+		resolvedBlobUrl = *upstreamBlobUrl
 	}
 
 	log.Info().
@@ -139,13 +163,12 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 		Str("child package", childPackageName).
 		Msg("statically analyzing parent child relationship")
 
-	upstreamUrlResp, err := http.Get(*upstreamBlobUrl)
+	upstreamUrlResp, err := http.Get(resolvedBlobUrl)
 	if err != nil {
 		log.Error().
 			Err(err).
 			Str("parent package", parentPackageName).
 			Str("child package", childPackageName).
-			Str("parent package code", *upstreamBlobUrl).
 			Msg("failed to download package blob")
 		return gql.Analysis_finding_type_enumError
 	}
@@ -162,7 +185,6 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 	defer os.RemoveAll(tmpDir)
 
 	log.Info().
-		Str("upstream url", *upstreamBlobUrl).
 		Str("tmp dir", tmpDir).
 		Msg("extracting package code")
 
