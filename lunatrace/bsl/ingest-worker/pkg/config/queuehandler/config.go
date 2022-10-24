@@ -12,6 +12,7 @@
 package queuehandler
 
 import (
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/dbfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher/npm"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queuefx"
@@ -28,6 +29,7 @@ type Config struct {
 	Queue   queuefx.Config   `yaml:"queue"`
 	Graphql graphqlfx.Config `yaml:"graphql"`
 	NPM     npm.Config       `yaml:"npm"`
+	DB      dbfx.Config      `yaml:"db"`
 }
 
 func newDefaultConfig() Config {
@@ -41,6 +43,9 @@ func newDefaultConfig() Config {
 		},
 		NPM: npm.Config{
 			RegistryUrl: `${LUNATRACE_NPM_REGISTRY_URL:"https://registry.npmjs.org"}`,
+		},
+		DB: dbfx.Config{
+			DSN: `${LUNATRACE_DB_DSN}`,
 		},
 	}
 }

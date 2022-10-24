@@ -19,19 +19,16 @@ import {
   DeploymentControllerType,
   Secret as EcsSecret,
 } from '@aws-cdk/aws-ecs';
-import {
-  ApplicationLoadBalancedFargateService,
-  QueueProcessingFargateServiceProps,
-} from '@aws-cdk/aws-ecs-patterns';
+import { ApplicationLoadBalancedFargateService, QueueProcessingFargateServiceProps } from '@aws-cdk/aws-ecs-patterns';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
 import { Construct } from '@aws-cdk/core';
 
+import { QueueProcessingFargateService } from './aws/queue-processing-fargate-service';
 import { commonBuildProps } from './constants';
 import { addDatadogToTaskDefinition, datadogLogDriverForService } from './datadog-fargate-integration';
 import { WorkerStorageStackState } from './worker-storage-stack';
-import {QueueProcessingFargateService} from "./aws/queue-processing-fargate-service";
 
 interface WorkerStackProps extends cdk.StackProps {
   fargateCluster: Cluster;
@@ -125,6 +122,7 @@ export class WorkerStack extends cdk.Stack {
 
     const processQueueCommonSecrets: Record<string, EcsSecret> = {
       DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
       HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
       HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
       LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
