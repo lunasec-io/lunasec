@@ -210,12 +210,12 @@ func (n *npmReplicator) replicateChangesSince(ctx context.Context, since, lastSe
 				log.Error().Err(err).Msg("failed to insert revisions")
 				return item.Seq, err
 			}
-			revisions = []ChangesReqItem{}
-
 			// once revisions have been upserted, queue the package to be ingested
 			for _, rev := range revisions {
 				replicatedPackages <- rev.Id
 			}
+
+			revisions = []ChangesReqItem{}
 		}
 	}
 
