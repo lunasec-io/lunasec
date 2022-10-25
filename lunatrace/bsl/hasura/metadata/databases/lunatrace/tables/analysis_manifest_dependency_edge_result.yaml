@@ -10,9 +10,10 @@ insert_permissions:
     permission:
       check: {}
       columns:
-        - finding_source
-        - finding_type
         - created_at
+        - finding_source
+        - finding_source_version
+        - finding_type
         - id
         - manifest_dependency_edge_id
         - vulnerability_id
@@ -20,9 +21,10 @@ select_permissions:
   - role: service
     permission:
       columns:
-        - finding_source
-        - finding_type
         - created_at
+        - finding_source
+        - finding_source_version
+        - finding_type
         - id
         - manifest_dependency_edge_id
         - vulnerability_id
@@ -31,9 +33,10 @@ update_permissions:
   - role: service
     permission:
       columns:
-        - finding_source
-        - finding_type
         - created_at
+        - finding_source
+        - finding_source_version
+        - finding_type
         - id
         - manifest_dependency_edge_id
         - vulnerability_id

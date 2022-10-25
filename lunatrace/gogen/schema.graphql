@@ -233,6 +233,7 @@ input analysis_finding_type_enum_comparison_exp {
 type analysis_manifest_dependency_edge_result {
     created_at: timestamptz!
     finding_source: analysis_finding_source_enum!
+    finding_source_version: Int!
     finding_type: analysis_finding_type_enum!
     id: uuid!
     manifest_dependency_edge: manifest_dependency_edge!
@@ -246,6 +247,7 @@ input analysis_manifest_dependency_edge_result_bool_exp {
     _or: [analysis_manifest_dependency_edge_result_bool_exp!]
     created_at: timestamptz_comparison_exp
     finding_source: analysis_finding_source_enum_comparison_exp
+    finding_source_version: Int_comparison_exp
     finding_type: analysis_finding_type_enum_comparison_exp
     id: uuid_comparison_exp
     manifest_dependency_edge: manifest_dependency_edge_bool_exp
@@ -258,9 +260,14 @@ enum analysis_manifest_dependency_edge_result_constraint {
     manifest_dependency_edge_result_pkey
 }
 
+input analysis_manifest_dependency_edge_result_inc_input {
+    finding_source_version: Int
+}
+
 input analysis_manifest_dependency_edge_result_insert_input {
     created_at: timestamptz
     finding_source: analysis_finding_source_enum
+    finding_source_version: Int
     finding_type: analysis_finding_type_enum
     id: uuid
     manifest_dependency_edge: manifest_dependency_edge_obj_rel_insert_input
@@ -282,6 +289,7 @@ input analysis_manifest_dependency_edge_result_on_conflict {
 input analysis_manifest_dependency_edge_result_order_by {
     created_at: order_by
     finding_source: order_by
+    finding_source_version: order_by
     finding_type: order_by
     id: order_by
     manifest_dependency_edge: manifest_dependency_edge_order_by
@@ -296,6 +304,7 @@ input analysis_manifest_dependency_edge_result_pk_columns_input {
 enum analysis_manifest_dependency_edge_result_select_column {
     created_at
     finding_source
+    finding_source_version
     finding_type
     id
     manifest_dependency_edge_id
@@ -305,6 +314,7 @@ enum analysis_manifest_dependency_edge_result_select_column {
 input analysis_manifest_dependency_edge_result_set_input {
     created_at: timestamptz
     finding_source: analysis_finding_source_enum
+    finding_source_version: Int
     finding_type: analysis_finding_type_enum
     id: uuid
     manifest_dependency_edge_id: uuid
@@ -314,6 +324,7 @@ input analysis_manifest_dependency_edge_result_set_input {
 enum analysis_manifest_dependency_edge_result_update_column {
     created_at
     finding_source
+    finding_source_version
     finding_type
     id
     manifest_dependency_edge_id
@@ -2741,8 +2752,8 @@ type mutation_root {
     insert_webhook_cache_one(object: webhook_cache_insert_input!, on_conflict: webhook_cache_on_conflict): webhook_cache
     installSelectedRepos(orgs: [OrgsWithReposInput!]!): InstallSelectedReposResponse
     presignManifestUpload(project_id: uuid!): PresignedUrlResponse
-    update_analysis_manifest_dependency_edge_result(_set: analysis_manifest_dependency_edge_result_set_input, where: analysis_manifest_dependency_edge_result_bool_exp!): analysis_manifest_dependency_edge_result_mutation_response
-    update_analysis_manifest_dependency_edge_result_by_pk(_set: analysis_manifest_dependency_edge_result_set_input, pk_columns: analysis_manifest_dependency_edge_result_pk_columns_input!): analysis_manifest_dependency_edge_result
+    update_analysis_manifest_dependency_edge_result(_inc: analysis_manifest_dependency_edge_result_inc_input, _set: analysis_manifest_dependency_edge_result_set_input, where: analysis_manifest_dependency_edge_result_bool_exp!): analysis_manifest_dependency_edge_result_mutation_response
+    update_analysis_manifest_dependency_edge_result_by_pk(_inc: analysis_manifest_dependency_edge_result_inc_input, _set: analysis_manifest_dependency_edge_result_set_input, pk_columns: analysis_manifest_dependency_edge_result_pk_columns_input!): analysis_manifest_dependency_edge_result
     update_build_dependency_relationship(_append: build_dependency_relationship_append_input, _delete_at_path: build_dependency_relationship_delete_at_path_input, _delete_elem: build_dependency_relationship_delete_elem_input, _delete_key: build_dependency_relationship_delete_key_input, _prepend: build_dependency_relationship_prepend_input, _set: build_dependency_relationship_set_input, where: build_dependency_relationship_bool_exp!): build_dependency_relationship_mutation_response
     update_build_dependency_relationship_by_pk(_append: build_dependency_relationship_append_input, _delete_at_path: build_dependency_relationship_delete_at_path_input, _delete_elem: build_dependency_relationship_delete_elem_input, _delete_key: build_dependency_relationship_delete_key_input, _prepend: build_dependency_relationship_prepend_input, _set: build_dependency_relationship_set_input, pk_columns: build_dependency_relationship_pk_columns_input!): build_dependency_relationship
     update_builds(_inc: builds_inc_input, _set: builds_set_input, where: builds_bool_exp!): builds_mutation_response
@@ -3562,7 +3573,6 @@ type package_release {
     publishing_maintainer: package_maintainer
     publishing_maintainer_id: uuid
     release_dependencies(distinct_on: [package_release_dependency_select_column!], limit: Int, offset: Int, order_by: [package_release_dependency_order_by!], where: package_release_dependency_bool_exp): [package_release_dependency!]!
-    release_dependents(distinct_on: [package_release_dependency_select_column!], limit: Int, offset: Int, order_by: [package_release_dependency_order_by!], where: package_release_dependency_bool_exp): [package_release_dependency!]!
     release_licenses(distinct_on: [package_release_license_select_column!], limit: Int, offset: Int, order_by: [package_release_license_order_by!], where: package_release_license_bool_exp): [package_release_license!]!
     release_time: timestamptz
     upstream_blob_url: String
@@ -3600,7 +3610,6 @@ input package_release_bool_exp {
     publishing_maintainer: package_maintainer_bool_exp
     publishing_maintainer_id: uuid_comparison_exp
     release_dependencies: package_release_dependency_bool_exp
-    release_dependents: package_release_dependency_bool_exp
     release_licenses: package_release_license_bool_exp
     release_time: timestamptz_comparison_exp
     upstream_blob_url: String_comparison_exp
@@ -3628,7 +3637,6 @@ input package_release_delete_key_input {
 type package_release_dependency {
     dependency_package: package
     dependency_package_id: uuid
-    dependency_release: package_release
     dependency_release_id: uuid
     id: uuid!
     is_dev: Boolean!
@@ -3655,7 +3663,6 @@ input package_release_dependency_bool_exp {
     _or: [package_release_dependency_bool_exp!]
     dependency_package: package_bool_exp
     dependency_package_id: uuid_comparison_exp
-    dependency_release: package_release_bool_exp
     dependency_release_id: uuid_comparison_exp
     id: uuid_comparison_exp
     is_dev: Boolean_comparison_exp
@@ -3673,7 +3680,6 @@ enum package_release_dependency_constraint {
 input package_release_dependency_insert_input {
     dependency_package: package_obj_rel_insert_input
     dependency_package_id: uuid
-    dependency_release: package_release_obj_rel_insert_input
     dependency_release_id: uuid
     id: uuid
     is_dev: Boolean
@@ -3715,7 +3721,6 @@ input package_release_dependency_on_conflict {
 input package_release_dependency_order_by {
     dependency_package: package_order_by
     dependency_package_id: order_by
-    dependency_release: package_release_order_by
     dependency_release_id: order_by
     id: order_by
     is_dev: order_by
@@ -3771,7 +3776,6 @@ input package_release_insert_input {
     publishing_maintainer: package_maintainer_obj_rel_insert_input
     publishing_maintainer_id: uuid
     release_dependencies: package_release_dependency_arr_rel_insert_input
-    release_dependents: package_release_dependency_arr_rel_insert_input
     release_licenses: package_release_license_arr_rel_insert_input
     release_time: timestamptz
     upstream_blob_url: String
@@ -3969,7 +3973,6 @@ input package_release_order_by {
     publishing_maintainer: package_maintainer_order_by
     publishing_maintainer_id: order_by
     release_dependencies_aggregate: package_release_dependency_aggregate_order_by
-    release_dependents_aggregate: package_release_dependency_aggregate_order_by
     release_licenses_aggregate: package_release_license_aggregate_order_by
     release_time: order_by
     upstream_blob_url: order_by

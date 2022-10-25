@@ -18,6 +18,12 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+const (
+	// NOTE bump this version every time importedandcalled.yaml.tmpl is modified
+	// NOTE also need to bump the version in lunatrace/bsl/backend/src/analysis/static-analysis.ts
+	ImportedAndCalledRuleVersion = 2
+)
+
 type ImportedAndCalledSemgrepRuleVariables struct {
 	PackageName string
 }
