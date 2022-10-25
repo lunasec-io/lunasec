@@ -13,7 +13,4 @@
  */
 import vulnerable from 'vulnerable-package';
 
-function foo() {
-  var x = 100;
-  vulnerable.callFunction(1, 2, 3, x);
-}
+vulnerable(1, 2, 3);
