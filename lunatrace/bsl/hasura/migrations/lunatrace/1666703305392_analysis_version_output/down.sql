@@ -1,0 +1,1 @@
+ALTER TABLE analysis.manifest_dependency_edge_result DROP COLUMN finding_source_version;

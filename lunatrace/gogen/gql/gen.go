@@ -69,6 +69,7 @@ const (
 type Analysis_manifest_dependency_edge_result_insert_input struct {
 	Created_at                  *time.Time                                     `json:"created_at,omitempty"`
 	Finding_source              *Analysis_finding_source_enum                  `json:"finding_source,omitempty"`
+	Finding_source_version      *int                                           `json:"finding_source_version,omitempty"`
 	Finding_type                *Analysis_finding_type_enum                    `json:"finding_type,omitempty"`
 	Id                          *uuid.UUID                                     `json:"id,omitempty"`
 	Manifest_dependency_edge    *Manifest_dependency_edge_obj_rel_insert_input `json:"manifest_dependency_edge,omitempty"`
@@ -84,6 +85,11 @@ func (v *Analysis_manifest_dependency_edge_result_insert_input) GetCreated_at() 
 // GetFinding_source returns Analysis_manifest_dependency_edge_result_insert_input.Finding_source, and is useful for accessing the field via an interface.
 func (v *Analysis_manifest_dependency_edge_result_insert_input) GetFinding_source() *Analysis_finding_source_enum {
 	return v.Finding_source
+}
+
+// GetFinding_source_version returns Analysis_manifest_dependency_edge_result_insert_input.Finding_source_version, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_insert_input) GetFinding_source_version() *int {
+	return v.Finding_source_version
 }
 
 // GetFinding_type returns Analysis_manifest_dependency_edge_result_insert_input.Finding_type, and is useful for accessing the field via an interface.
@@ -4146,7 +4152,6 @@ type Package_release_bool_exp struct {
 	Publishing_maintainer          *Package_maintainer_bool_exp            `json:"publishing_maintainer,omitempty"`
 	Publishing_maintainer_id       *Uuid_comparison_exp                    `json:"publishing_maintainer_id,omitempty"`
 	Release_dependencies           *Package_release_dependency_bool_exp    `json:"release_dependencies,omitempty"`
-	Release_dependents             *Package_release_dependency_bool_exp    `json:"release_dependents,omitempty"`
 	Release_licenses               *Package_release_license_bool_exp       `json:"release_licenses,omitempty"`
 	Release_time                   *Timestamptz_comparison_exp             `json:"release_time,omitempty"`
 	Upstream_blob_url              *String_comparison_exp                  `json:"upstream_blob_url,omitempty"`
@@ -4210,11 +4215,6 @@ func (v *Package_release_bool_exp) GetRelease_dependencies() *Package_release_de
 	return v.Release_dependencies
 }
 
-// GetRelease_dependents returns Package_release_bool_exp.Release_dependents, and is useful for accessing the field via an interface.
-func (v *Package_release_bool_exp) GetRelease_dependents() *Package_release_dependency_bool_exp {
-	return v.Release_dependents
-}
-
 // GetRelease_licenses returns Package_release_bool_exp.Release_licenses, and is useful for accessing the field via an interface.
 func (v *Package_release_bool_exp) GetRelease_licenses() *Package_release_license_bool_exp {
 	return v.Release_licenses
@@ -4264,7 +4264,6 @@ type Package_release_dependency_bool_exp struct {
 	Or                    []*Package_release_dependency_bool_exp `json:"_or,omitempty"`
 	Dependency_package    *Package_bool_exp                      `json:"dependency_package,omitempty"`
 	Dependency_package_id *Uuid_comparison_exp                   `json:"dependency_package_id,omitempty"`
-	Dependency_release    *Package_release_bool_exp              `json:"dependency_release,omitempty"`
 	Dependency_release_id *Uuid_comparison_exp                   `json:"dependency_release_id,omitempty"`
 	Id                    *Uuid_comparison_exp                   `json:"id,omitempty"`
 	Is_dev                *Boolean_comparison_exp                `json:"is_dev,omitempty"`
@@ -4297,11 +4296,6 @@ func (v *Package_release_dependency_bool_exp) GetDependency_package() *Package_b
 // GetDependency_package_id returns Package_release_dependency_bool_exp.Dependency_package_id, and is useful for accessing the field via an interface.
 func (v *Package_release_dependency_bool_exp) GetDependency_package_id() *Uuid_comparison_exp {
 	return v.Dependency_package_id
-}
-
-// GetDependency_release returns Package_release_dependency_bool_exp.Dependency_release, and is useful for accessing the field via an interface.
-func (v *Package_release_dependency_bool_exp) GetDependency_release() *Package_release_bool_exp {
-	return v.Dependency_release
 }
 
 // GetDependency_release_id returns Package_release_dependency_bool_exp.Dependency_release_id, and is useful for accessing the field via an interface.
@@ -4345,7 +4339,6 @@ const (
 type Package_release_dependency_insert_input struct {
 	Dependency_package    *Package_obj_rel_insert_input         `json:"dependency_package,omitempty"`
 	Dependency_package_id *uuid.UUID                            `json:"dependency_package_id,omitempty"`
-	Dependency_release    *Package_release_obj_rel_insert_input `json:"dependency_release,omitempty"`
 	Dependency_release_id *uuid.UUID                            `json:"dependency_release_id,omitempty"`
 	Id                    *uuid.UUID                            `json:"id,omitempty"`
 	Is_dev                *bool                                 `json:"is_dev,omitempty"`
@@ -4363,11 +4356,6 @@ func (v *Package_release_dependency_insert_input) GetDependency_package() *Packa
 // GetDependency_package_id returns Package_release_dependency_insert_input.Dependency_package_id, and is useful for accessing the field via an interface.
 func (v *Package_release_dependency_insert_input) GetDependency_package_id() *uuid.UUID {
 	return v.Dependency_package_id
-}
-
-// GetDependency_release returns Package_release_dependency_insert_input.Dependency_release, and is useful for accessing the field via an interface.
-func (v *Package_release_dependency_insert_input) GetDependency_release() *Package_release_obj_rel_insert_input {
-	return v.Dependency_release
 }
 
 // GetDependency_release_id returns Package_release_dependency_insert_input.Dependency_release_id, and is useful for accessing the field via an interface.
@@ -4442,7 +4430,6 @@ type Package_release_insert_input struct {
 	Publishing_maintainer          *Package_maintainer_obj_rel_insert_input            `json:"publishing_maintainer,omitempty"`
 	Publishing_maintainer_id       *uuid.UUID                                          `json:"publishing_maintainer_id,omitempty"`
 	Release_dependencies           *Package_release_dependency_arr_rel_insert_input    `json:"release_dependencies,omitempty"`
-	Release_dependents             *Package_release_dependency_arr_rel_insert_input    `json:"release_dependents,omitempty"`
 	Release_licenses               *Package_release_license_arr_rel_insert_input       `json:"release_licenses,omitempty"`
 	Release_time                   *time.Time                                          `json:"release_time,omitempty"`
 	Upstream_blob_url              *string                                             `json:"upstream_blob_url,omitempty"`
@@ -4489,11 +4476,6 @@ func (v *Package_release_insert_input) GetPublishing_maintainer_id() *uuid.UUID 
 // GetRelease_dependencies returns Package_release_insert_input.Release_dependencies, and is useful for accessing the field via an interface.
 func (v *Package_release_insert_input) GetRelease_dependencies() *Package_release_dependency_arr_rel_insert_input {
 	return v.Release_dependencies
-}
-
-// GetRelease_dependents returns Package_release_insert_input.Release_dependents, and is useful for accessing the field via an interface.
-func (v *Package_release_insert_input) GetRelease_dependents() *Package_release_dependency_arr_rel_insert_input {
-	return v.Release_dependents
 }
 
 // GetRelease_licenses returns Package_release_insert_input.Release_licenses, and is useful for accessing the field via an interface.
