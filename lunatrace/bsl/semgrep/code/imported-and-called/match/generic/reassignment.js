@@ -15,4 +15,5 @@ import vulnerable from 'vulnerable-package';
 
 const reassigned = vulnerable;
 
+// ruleid: imported-and-called
 reassigned();

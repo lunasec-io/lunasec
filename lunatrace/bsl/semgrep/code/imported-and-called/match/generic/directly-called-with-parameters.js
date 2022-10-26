@@ -14,4 +14,4 @@
 import vulnerable from 'vulnerable-package';
 
 // ruleid: imported-and-called
-vulnerable();
+vulnerable(1, 2, 3);

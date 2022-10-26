@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -34,13 +34,39 @@ func main() {
 						Usage:    "The dependency to verify if it is imported and called.",
 						Required: true,
 					},
+					&cli.BoolFlag{
+						Name:     "debug",
+						Usage:    "Write rule to a file in the current directory.",
+						Required: true,
+					},
 				},
 				Action: func(c *cli.Context) error {
 					codeDir := c.Args().First()
 					dependency := c.String("dependency")
+					debug := c.Bool("debug")
 
-					called, err := rules.DependencyIsImportedAndCalledInCode(dependency, codeDir)
-					if !called {
+					if debug {
+						var f *os.File
+
+						f, err := os.Create("importedandcalled.yaml")
+						if err != nil {
+							return err
+						}
+						err = rules.TemplateImportedAndCalledRuleToFile(f, dependency)
+					}
+
+					results, err := rules.AnalyzeCodeForImportingAndCallingPackage(codeDir, dependency)
+					if err != nil {
+						return err
+					}
+
+					if len(results.Results) > 0 {
+						for _, result := range results.Results {
+							log.Info().
+								Str("path", result.Path).
+								Msg("dependency imported and called at path")
+						}
+					} else {
 						log.Info().Msg("dependency was not imported and called")
 					}
 					return err

@@ -13,4 +13,5 @@
  */
 import { export1, vulnerable } from "vulnerable-package";
 
+// ruleid: imported-and-called
 vulnerable();
