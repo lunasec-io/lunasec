@@ -39,7 +39,6 @@ rules:
     pattern-sources:
     - pattern: $IMPORT = require("{{ .PackageName }}")
     pattern-sinks:
-    - pattern: $IMPORT.$FUNC(...)
     - patterns:
         - pattern: $IMPORT(...)
         - pattern-not: require(...)
