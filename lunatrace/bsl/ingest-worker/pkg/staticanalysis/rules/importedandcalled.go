@@ -28,7 +28,7 @@ type ImportedAndCalledSemgrepRuleVariables struct {
 	PackageName string
 }
 
-func AnalyzeCodeForImportingAndCallingPackage(codeDir, dependency string) (results *SemgrepRuleOutput, err error) {
+func TemplateImportedAndCalledRuleToFile(ruleFile *os.File, dependency string) (err error) {
 	semgrepRuleTemplate, err := template.ParseFS(tpl.RuleTemplates, "importedandcalled.yaml.tpl")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to parse semgrep rule")
@@ -39,6 +39,15 @@ func AnalyzeCodeForImportingAndCallingPackage(codeDir, dependency string) (resul
 		PackageName: dependency,
 	}
 
+	err = semgrepRuleTemplate.Execute(ruleFile, templateVariables)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to execute template and write rule to fd")
+		return
+	}
+	return nil
+}
+
+func AnalyzeCodeForImportingAndCallingPackage(codeDir, dependency string) (results *SemgrepRuleOutput, err error) {
 	ruleFile, err := os.CreateTemp("", "*.yaml")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to create temporary semgrep rule")
@@ -46,9 +55,7 @@ func AnalyzeCodeForImportingAndCallingPackage(codeDir, dependency string) (resul
 	}
 	defer os.Remove(ruleFile.Name())
 
-	err = semgrepRuleTemplate.Execute(ruleFile, templateVariables)
-	if err != nil {
-		log.Error().Err(err).Msg("failed to execute template and write rule to fd")
+	if err = TemplateImportedAndCalledRuleToFile(ruleFile, dependency); err != nil {
 		return
 	}
 

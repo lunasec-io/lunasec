@@ -100,11 +100,9 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 		Str("child package", childPackageName).
 		Logger()
 
-	findingType, results := s.runSemgrepRuleOnParentPackage(
+	findingType, _ := s.runSemgrepRuleOnParentPackage(
 		ctx, logger, upstreamBlobUrl, manifestDependencyEdgeUUID, parentPackageName, childPackageName,
 	)
-
-	resultsPtr := marshalResults(logger, results)
 
 	logger.Info().
 		Str("finding type", string(findingType)).
@@ -116,7 +114,6 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 		Finding_source_version:      util.Ptr(rules.ImportedAndCalledRuleVersion),
 		Manifest_dependency_edge_id: util.Ptr(manifestDependencyEdgeUUID),
 		Vulnerability_id:            util.Ptr(vulnerabilityUUID),
-		Output:                      util.Ptr(resultsPtr),
 	}
 
 	analysisResp, err := gql.InsertManifestDependencyEdgeAnalysis(ctx, s.GQLClient, result)

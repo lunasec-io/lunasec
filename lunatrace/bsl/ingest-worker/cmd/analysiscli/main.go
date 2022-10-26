@@ -34,12 +34,32 @@ func main() {
 						Usage:    "The dependency to verify if it is imported and called.",
 						Required: true,
 					},
+					&cli.BoolFlag{
+						Name:     "debug",
+						Usage:    "Write rule to a file in the current directory.",
+						Required: true,
+					},
 				},
 				Action: func(c *cli.Context) error {
 					codeDir := c.Args().First()
 					dependency := c.String("dependency")
+					debug := c.Bool("debug")
+
+					if debug {
+						var f *os.File
+
+						f, err := os.Create("importedandcalled.yaml")
+						if err != nil {
+							return err
+						}
+						err = rules.TemplateImportedAndCalledRuleToFile(f, dependency)
+					}
 
 					results, err := rules.AnalyzeCodeForImportingAndCallingPackage(codeDir, dependency)
+					if err != nil {
+						return err
+					}
+
 					if len(results.Results) > 0 {
 						for _, result := range results.Results {
 							log.Info().
