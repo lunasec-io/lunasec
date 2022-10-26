@@ -25,6 +25,27 @@ rules:
       - pattern-either:
         - pattern-inside: $IMPORT.$FUNC(...)
         - pattern-inside: $IMPORT(...)
+        - pattern-inside: class $X extends $IMPORT { ... }
+        - pattern-inside: class $X extends $IMPORT.$CLASS { ... }
+    message: A vulnerable package was imported and called.
+    languages:
+      - javascript
+      - typescript
+    severity: ERROR
+  - id: imported-and-called-taint
+    mode: taint
+    options:
+      symbolic_propagation: true
+    pattern-sources:
+    - pattern: $IMPORT = require("vulnerable-package")
+    pattern-sinks:
+    - pattern-either:
+      - pattern: $IMPORT.$FUNC(...)
+      - patterns:
+        - pattern: $IMPORT(...)
+        - pattern-not: require(...)
+      - pattern: class $X extends $IMPORT { ... }
+      - pattern: class $X extends $IMPORT.$CLASS { ... }
     message: A vulnerable package was imported and called.
     languages:
       - javascript

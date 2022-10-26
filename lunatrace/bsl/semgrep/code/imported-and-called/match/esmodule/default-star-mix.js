@@ -12,4 +12,6 @@
  *
  */
 import defaultExport, * as vulnerable from "vulnerable-package";
+
+// ruleid: imported-and-called
 vulnerable();
