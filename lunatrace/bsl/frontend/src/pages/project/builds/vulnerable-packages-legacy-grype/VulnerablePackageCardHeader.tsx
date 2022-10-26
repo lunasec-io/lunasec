@@ -14,11 +14,7 @@
 import { filterFindingsNotIgnored, VulnerablePackageLegacy } from '@lunatrace/lunatrace-common/build/main';
 import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
-import { Card, Col, NavLink, OverlayTrigger, Popover, Row, Tooltip } from 'react-bootstrap';
-import { CopyBlock, tomorrowNight } from 'react-code-blocks';
-import { FcUpload } from 'react-icons/fc';
-
-import useBreakpoint from '../../../../hooks/useBreakpoint';
+import { Card, Col, Row } from 'react-bootstrap';
 
 import { Finding } from './types';
 
@@ -26,9 +22,7 @@ interface VulnerablePackageCardHeaderProps {
   pkg: VulnerablePackageLegacy<Finding>;
 }
 
-export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePackageCardHeaderProps> = ({
-  pkg,
-}) => {
+export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePackageCardHeaderProps> = ({ pkg }) => {
   const filteredFindings = filterFindingsNotIgnored(pkg.findings);
   const allFindingsAreIgnored = filteredFindings.length === 0;
   const headerClassNames = allFindingsAreIgnored ? 'text-decoration-line-through' : '';
@@ -41,7 +35,6 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
     .filter((severity) => !!severity)
     .sort((a, b) => (a && b ? b.overallScore - a.overallScore : 0));
   const mostSevereSeverity = sortedSeverities.length > 0 ? sortedSeverities[0] : null;
-
 
   return (
     <Card.Header>
