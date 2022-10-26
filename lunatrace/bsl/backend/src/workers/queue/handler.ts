@@ -22,6 +22,7 @@ import { MaybeErrorVoid } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { loadQueueUrlOrExit } from '../../utils/sqs';
+import { catchError } from '../../utils/try';
 
 import { createActivities, processLunaTraceSqsMessage } from './queue-processors/process-luna-trace-sqs-message';
 import { processS3SqsMessage } from './queue-processors/process-s3-sqs-message';
@@ -158,7 +159,7 @@ class QueueWorker {
     const data: ReceiveMessageCommandOutput = await sqsClient.send(new ReceiveMessageCommand(params));
 
     if (data.Messages) {
-      const allJobs = Promise.all(data.Messages.map((m) => this.processQueueMessage(queueUrl, m)));
+      const allJobs = Promise.all(data.Messages.map((m) => catchError(this.processQueueMessage(queueUrl, m))));
 
       const timeoutPromise = new Promise((resolve) => {
         setTimeout(() => resolve('job_timeout'), 5 * 60 * 1000);

@@ -13,4 +13,5 @@
  */
 const vulnerable = require('vulnerable-package');
 
+// ruleid: imported-and-called
 vulnerable.callFunction();
