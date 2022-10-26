@@ -12,7 +12,7 @@ package rules
 
 import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules/tpl"
-	"io"
+	"os"
 	"text/template"
 
 	"github.com/rs/zerolog/log"
@@ -28,44 +28,29 @@ type ImportedAndCalledSemgrepRuleVariables struct {
 	PackageName string
 }
 
-func DependencyIsImportedAndCalledInCode(dependency, codeDir string) (bool, error) {
+func AnalyzeCodeForImportingAndCallingPackage(codeDir, dependency string) (results *SemgrepRuleOutput, err error) {
 	semgrepRuleTemplate, err := template.ParseFS(tpl.RuleTemplates, "importedandcalled.yaml.tpl")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to parse semgrep rule")
-		return false, err
+		return
 	}
 
 	templateVariables := ImportedAndCalledSemgrepRuleVariables{
 		PackageName: dependency,
 	}
 
-	ruleReader, ruleWriter := io.Pipe()
-
-	go func() {
-		err = semgrepRuleTemplate.Execute(ruleWriter, templateVariables)
-		if err != nil {
-			log.Error().Err(err).Msg("failed to execute template and write rule to fd")
-			_ = ruleWriter.CloseWithError(err)
-			return
-		}
-		err = ruleWriter.Close()
-		if err != nil {
-			log.Error().Err(err).Msg("failed to close semgrep stdin")
-			return
-		}
-	}()
-
-	results, err := runSemgrepRule(ruleReader, codeDir)
+	ruleFile, err := os.CreateTemp("", "*.yaml")
 	if err != nil {
-		log.Error().Err(err).Msg("failed to run semgrep rule")
-		return false, err
+		log.Error().Err(err).Msg("failed to create temporary semgrep rule")
+		return
+	}
+	defer os.Remove(ruleFile.Name())
+
+	err = semgrepRuleTemplate.Execute(ruleFile, templateVariables)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to execute template and write rule to fd")
+		return
 	}
 
-	for _, result := range results.Results {
-		log.Info().
-			Int64("line", result.Start.Line).
-			Str("path", result.Path).
-			Msg("dependency called in code")
-	}
-	return len(results.Results) > 0, nil
+	return runSemgrepRule(ruleFile.Name(), codeDir)
 }

@@ -281,7 +281,19 @@ export type Analysis_Manifest_Dependency_Edge_Result = {
   /** An object relationship */
   manifest_dependency_edge: Manifest_Dependency_Edge;
   manifest_dependency_edge_id: Scalars['uuid'];
+  output?: Maybe<Scalars['jsonb']>;
   vulnerability_id: Scalars['uuid'];
+};
+
+
+/** columns and relationships of "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_ResultOutputArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Analysis_Manifest_Dependency_Edge_Result_Append_Input = {
+  output?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** Boolean expression to filter rows from the table "analysis.manifest_dependency_edge_result". All fields are combined with a logical 'AND'. */
@@ -296,16 +308,32 @@ export type Analysis_Manifest_Dependency_Edge_Result_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
   manifest_dependency_edge_id?: InputMaybe<Uuid_Comparison_Exp>;
+  output?: InputMaybe<Jsonb_Comparison_Exp>;
   vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "analysis.manifest_dependency_edge_result" */
 export enum Analysis_Manifest_Dependency_Edge_Result_Constraint {
-  /** unique or primary key constraint on columns "manifest_dependency_edge_id", "vulnerability_id" */
-  ManifestDependencyEdgeResultManifestDependencyEdgeIdVul = 'manifest_dependency_edge_result_manifest_dependency_edge_id_vul',
   /** unique or primary key constraint on columns "id" */
-  ManifestDependencyEdgeResultPkey = 'manifest_dependency_edge_result_pkey'
+  ManifestDependencyEdgeResultPkey = 'manifest_dependency_edge_result_pkey',
+  /** unique or primary key constraint on columns "manifest_dependency_edge_id", "vulnerability_id", "finding_source_version", "finding_source" */
+  ManifestDependencyEdgeResultVulnerabilityIdManifestDepen = 'manifest_dependency_edge_result_vulnerability_id_manifest_depen'
 }
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Analysis_Manifest_Dependency_Edge_Result_Delete_At_Path_Input = {
+  output?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Analysis_Manifest_Dependency_Edge_Result_Delete_Elem_Input = {
+  output?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Analysis_Manifest_Dependency_Edge_Result_Delete_Key_Input = {
+  output?: InputMaybe<Scalars['String']>;
+};
 
 /** input type for incrementing numeric columns in table "analysis.manifest_dependency_edge_result" */
 export type Analysis_Manifest_Dependency_Edge_Result_Inc_Input = {
@@ -321,6 +349,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']>;
   manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Obj_Rel_Insert_Input>;
   manifest_dependency_edge_id?: InputMaybe<Scalars['uuid']>;
+  output?: InputMaybe<Scalars['jsonb']>;
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -349,12 +378,18 @@ export type Analysis_Manifest_Dependency_Edge_Result_Order_By = {
   id?: InputMaybe<Order_By>;
   manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Order_By>;
   manifest_dependency_edge_id?: InputMaybe<Order_By>;
+  output?: InputMaybe<Order_By>;
   vulnerability_id?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: analysis_manifest_dependency_edge_result */
 export type Analysis_Manifest_Dependency_Edge_Result_Pk_Columns_Input = {
   id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Analysis_Manifest_Dependency_Edge_Result_Prepend_Input = {
+  output?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** select columns of table "analysis.manifest_dependency_edge_result" */
@@ -372,6 +407,8 @@ export enum Analysis_Manifest_Dependency_Edge_Result_Select_Column {
   /** column name */
   ManifestDependencyEdgeId = 'manifest_dependency_edge_id',
   /** column name */
+  Output = 'output',
+  /** column name */
   VulnerabilityId = 'vulnerability_id'
 }
 
@@ -383,6 +420,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Set_Input = {
   finding_type?: InputMaybe<Analysis_Finding_Type_Enum>;
   id?: InputMaybe<Scalars['uuid']>;
   manifest_dependency_edge_id?: InputMaybe<Scalars['uuid']>;
+  output?: InputMaybe<Scalars['jsonb']>;
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -400,6 +438,8 @@ export enum Analysis_Manifest_Dependency_Edge_Result_Update_Column {
   Id = 'id',
   /** column name */
   ManifestDependencyEdgeId = 'manifest_dependency_edge_id',
+  /** column name */
+  Output = 'output',
   /** column name */
   VulnerabilityId = 'vulnerability_id'
 }
@@ -4413,7 +4453,12 @@ export type Mutation_RootPresignManifestUploadArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Analysis_Manifest_Dependency_Edge_ResultArgs = {
+  _append?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Append_Input>;
+  _delete_at_path?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_Key_Input>;
   _inc?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Inc_Input>;
+  _prepend?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Prepend_Input>;
   _set?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Set_Input>;
   where: Analysis_Manifest_Dependency_Edge_Result_Bool_Exp;
 };
@@ -4421,7 +4466,12 @@ export type Mutation_RootUpdate_Analysis_Manifest_Dependency_Edge_ResultArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Analysis_Manifest_Dependency_Edge_Result_By_PkArgs = {
+  _append?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Append_Input>;
+  _delete_at_path?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_Key_Input>;
   _inc?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Inc_Input>;
+  _prepend?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Prepend_Input>;
   _set?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Set_Input>;
   pk_columns: Analysis_Manifest_Dependency_Edge_Result_Pk_Columns_Input;
 };
