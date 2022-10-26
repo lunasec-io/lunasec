@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+import {SeverityNamesOsv} from "@lunatrace/lunatrace-common";
 import React, { useState } from 'react';
 import { Card, Dropdown, FloatingLabel, Form, FormControl, Spinner } from 'react-bootstrap';
 import { BsThreeDotsVertical } from 'react-icons/bs';
@@ -26,32 +27,35 @@ import { VulnerablePackage } from './types';
 
 interface VulnerablePackageMainProps {
   pkg: VulnerablePackage;
-  severityFilter: number;
   quickView: QuickViewProps;
+  severity: SeverityNamesOsv;
+  shouldIgnore:boolean;
 }
 
 export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMainProps> = ({
   pkg,
-  severityFilter,
   quickView,
+    severity,
+    shouldIgnore
 }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [insertVulnIgnore, insertVulnIgnoreState] = api.useInsertIgnoredVulnerabilitiesMutation();
   const [ignoreNote, setIgnoreNote] = useState('');
-  const { projectId } = useParams();
+  const { project_id } = useParams();
 
   const bulkIgnoreVulns = async () => {
-    if (!projectId) {
+    if (!project_id) {
       throw new Error('attempted to ignore a vuln but no project id is in the url');
     }
     const toIgnore = pkg.affected_by.map((vulnMeta) => {
       return {
         vulnerability_id: vulnMeta.vulnerability.id,
-        project_id: projectId,
+        project_id: project_id,
         note: ignoreNote,
-        locations: f.locations,
+        locations: [vulnMeta.path],
       };
     });
+    console.log('bulkIgnore called and formatted this request',toIgnore)
     await insertVulnIgnore({ objects: toIgnore });
   };
   // eslint-disable-next-line react/display-name
@@ -92,8 +96,8 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
     <>
       <Card className="vulnpkg-card">
         {renderIgnoreUi()}
-        <VulnerablePackageCardHeader pkg={pkg} depTree={depTree} />
-        <PackageCardBody pkg={pkg} severityFilter={severityFilter} quickView={quickView} depTree={depTree} />
+        <VulnerablePackageCardHeader vulnerable={pkg} />
+        <PackageCardBody pkg={pkg} quickView={quickView} severity={severity} shouldIgnore={shouldIgnore}/>
       </Card>
       <ConfirmationDailog
         title={`Ignore All Findings For This Package`}

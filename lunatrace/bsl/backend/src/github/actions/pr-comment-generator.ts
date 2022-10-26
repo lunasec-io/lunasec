@@ -11,7 +11,12 @@
  * limitations under the License.
  *
  */
-import { filterFindingsNotIgnored, Finding, groupByPackage, VulnerablePackage } from '@lunatrace/lunatrace-common';
+import {
+  filterFindingsNotIgnored,
+  Finding,
+  groupByPackage,
+  VulnerablePackageLegacy,
+} from '@lunatrace/lunatrace-common';
 import markdownTable from 'markdown-table';
 import { Octokit } from 'octokit';
 
@@ -23,7 +28,7 @@ import { log } from '../../utils/log';
 import { generateGithubGraphqlClient } from '../api';
 import { getInstallationAccessToken } from '../auth';
 
-function formatLocationText(finding: VulnerablePackage<Finding>) {
+function formatLocationText(finding: VulnerablePackageLegacy<Finding>) {
   if (finding.locations.length === 0) {
     return 'Unknown';
   }

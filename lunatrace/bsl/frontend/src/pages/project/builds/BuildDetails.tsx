@@ -50,7 +50,6 @@ export const BuildDetails: React.FunctionComponent = () => {
   }, []);
 
   const [ignoreFindings, setIgnoreFindings] = useState<boolean>(true);
-
   // We show a temporary view of any vulnerabilities that get clicked, instead of redirecting.  This is much faster when doing an audit
   // because it prevents the loss of the app state/context and any open dropdowns and filters.
   // We prop drill these pretty deep, so consider using a context provider instead
@@ -94,15 +93,16 @@ export const BuildDetails: React.FunctionComponent = () => {
 
   const filteredFindings = ignoreFindings ? filterFindingsNotIgnored(build.findings) : build.findings;
 
-  const depTree = (
+  const renderedPackageList = (
     <VulnerablePackageListWrapper
-      resolvedManifests={build.resolved_manifests}
       findings={filteredFindings}
       projectId={build.project_id}
+      buildId={build_id}
       quickViewConfig={{
         vulnQuickViewId,
         setVulnQuickViewId,
       }}
+      shouldIgnore={ignoreFindings}
       toggleIgnoreFindings={() => setIgnoreFindings(!ignoreFindings)}
     />
   );
@@ -119,7 +119,7 @@ export const BuildDetails: React.FunctionComponent = () => {
       <div ref={listStartRef} />
       <Row>
         <Col xxl={quickViewOpen ? 6 : 12} className={packageListColClasses}>
-          {depTree}
+          {renderedPackageList}
         </Col>
 
         {vulnQuickViewId ? (

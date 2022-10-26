@@ -2,12 +2,6 @@
 
 query GetTreeFromBuild($build_id: uuid!) {
     builds_by_pk(id: $build_id) {
-        project {
-            ignored_vulnerabilities {
-                vulnerability_id
-                locations
-            }
-        }
         resolved_manifests {
             id
             path
@@ -35,6 +29,15 @@ query GetTreeFromBuild($build_id: uuid!) {
                                     source
                                     severity_name
                                     cvss_score
+                                    summary
+                                    guide_vulnerabilities {
+                                        guide_id
+                                        guide {
+                                            summary
+                                            id
+                                            title
+                                        }
+                                    }
                                 }
                                 ranges {
                                     introduced

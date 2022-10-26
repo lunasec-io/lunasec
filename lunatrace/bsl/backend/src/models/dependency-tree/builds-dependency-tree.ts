@@ -33,19 +33,23 @@ export class DependencyTree {
   public depNodesByEdgeId: Map<string, BuiltNode> = new Map();
   // Used to trace the structure of the tree from the bottom up
   public nodeIdToParentIds: Map<string, Set<string>> = new Map();
+
+  public nodeIdsToEdgeIds: Map<string, Set<string>> = new Map();
   // Used so we can quickly fetch all nodes that are the same release (ex React@1.0.0)
-  public depNodeIdsByReleaseId: Map<string, Set<string>> = new Map();
+  public depNodeEdgeIdsByReleaseId: Map<string, Set<string>> = new Map();
   // Holds which nodes have been determined to be vulnerable, for later processing
   public vulnerableDepNodeEdgeIds: Set<string> = new Set();
   // This is the full computed dataset that we server directly to the frontend. This is the "output" format of the tree.
   // Note that other public methods, like getVulnerabilities() rearrange this same data into different shapes for easier parsing outside of the tree
   public vulnerableReleases: VulnerableRelease[];
 
-  // This constructor builds the indexes and any useful data that show useful data about the tree
+
+
+  // This constructor builds the tree
   constructor(
     sourceManifests: Array<RawManifest>,
-    minimumSeverity: SeverityNamesOsv | null,
-    ignoredVulnerabilites: Array<{ vulnerability_id: string; locations: string[] }>
+    public minimumSeverity: SeverityNamesOsv | null,
+    public ignoredVulnerabilities: IgnoredVulnerability[]
   ) {
     // This is a hack to clone this object and unfreeze it, surprisingly tricky in JS
     const clonedManifests = JSON.parse(JSON.stringify(sourceManifests)) as Array<RawManifest>;
@@ -61,13 +65,7 @@ export class DependencyTree {
           ...edge.child.release,
           package: {
             ...edge.child.release.package,
-            affected_by_vulnerability: this.buildVulns(
-              edge.child,
-              edge.id,
-              manifest.path || 'Unknown',
-              minimumSeverity,
-              ignoredVulnerabilites
-            ),
+            affected_by_vulnerability: this.buildVulns(edge.child, edge.id, manifest.path || 'Unknown'),
           },
         };
         // flatten the parent id into the child so we can forget about edges as much as possible, and filter the vulns
@@ -78,13 +76,10 @@ export class DependencyTree {
           release: builtRelease,
         };
         // Create a map from a given release to the list of depNodes
-        const existingNodesForThisRelease = this.depNodeIdsByReleaseId.get(depNode.release_id);
-        if (existingNodesForThisRelease) {
-          // just add the depNodes to the existing release ID
-          existingNodesForThisRelease.add(depNode.id);
-        } else {
-          this.depNodeIdsByReleaseId.set(depNode.release.id, new Set([depNode.id]));
-        }
+        this.upsertValueIntoMapOfSets(this.depNodeEdgeIdsByReleaseId, depNode.release_id, edge.id)
+
+        // a map for each node, we know all the edges that it was a child of
+        this.upsertValueIntoMapOfSets(this.nodeIdsToEdgeIds, depNode.id, edge.id)
 
         // Create a lookup of child IDs that map to a set of nodes that include them (parents).
         const parentIdsToNode = this.nodeIdToParentIds.get(depNode.id) || new Set();
@@ -100,15 +95,10 @@ export class DependencyTree {
     });
 
     this.vulnerableReleases = this.getVulnerableReleases();
+    this.vulnerableReleases.sort((r1, r2) => this.sortBySeverityName(r1.severity, r2.severity))
   }
 
-  private buildVulns(
-    depNode: RawNode,
-    edgeId: string,
-    path: string,
-    minimumSeverity: SeverityNamesOsv | null,
-    ignoredVulnerabilities: IgnoredVulnerability[]
-  ): BuiltVulnMeta[] {
+  private buildVulns(depNode: RawNode, edgeId: string, path: string): BuiltVulnMeta[] {
     const builtVulns: BuiltVulnMeta[] = [];
     depNode.release.package.affected_by_vulnerability.forEach((vulnMeta) => {
       const vulnerableRange = this.convertRangesToSemverRange(vulnMeta.ranges);
@@ -118,40 +108,56 @@ export class DependencyTree {
         return;
       }
 
-      // filter by minimum severity
-      if (minimumSeverity) {
-        const severityName = vulnMeta.vulnerability.severity_name;
-        if (!severityName) {
-          return;
-        }
-        const severityRank = severityOrderOsv.indexOf(severityName);
-        const minimumSeverityRank = severityOrderOsv.indexOf(minimumSeverity);
-        if (severityRank < minimumSeverityRank) {
-          return;
-        }
-      }
-
       // filter by ignored
-      if (ignoredVulnerabilities) {
-        const vulnId = vulnMeta.vulnerability.id;
-        const isIgnored = ignoredVulnerabilities.some((ignored) => {
-          return ignored.vulnerability_id === vulnId && ignored.locations.includes(path);
-        });
-        if (isIgnored) {
-          return;
-        }
-      }
+      const vulnId = vulnMeta.vulnerability.id;
+      const ignored_vulnerability = this.ignoredVulnerabilities.find((ignored) => {
+        return ignored.vulnerability_id === vulnId && ignored.locations.includes(path);
+      });
 
       // Add to the lookup of vulnerable deps for later
       this.vulnerableDepNodeEdgeIds.add(edgeId);
       // Mark the vulns that can be trivially updated
-      const triviallyUpdatable = this.precomputeVulnTriviallyUpdatable(depNode.range, vulnMeta);
+      const triviallyUpdatableTo = this.precomputeVulnTriviallyUpdatableTo(depNode.range, vulnMeta);
 
-      const builtVuln: BuiltVulnMeta = { ...vulnMeta, trivially_updatable: triviallyUpdatable, chains: [], path };
+      const beneathMinimumSeverity = this.vulnBelowSeverityLimit(vulnMeta.vulnerability.severity_name);
+      const builtVuln: BuiltVulnMeta = {
+        ...vulnMeta,
+        trivially_updatable_to: triviallyUpdatableTo,
+        chains: [],
+        path,
+        beneath_minimum_severity: beneathMinimumSeverity,
+        fix_versions: this.computeFixVersions(vulnMeta),
+        ignored: !!ignored_vulnerability,
+        ignored_vulnerability: ignored_vulnerability,
+      };
       builtVulns.push(builtVuln);
     });
     return builtVulns;
   }
+
+  private vulnBelowSeverityLimit(vulnSeverity: string | undefined|null): boolean {
+    if (!this.minimumSeverity) {
+      return false;
+    }
+
+    if (!vulnSeverity) {
+      return true;
+    }
+    const severityRank = severityOrderOsv.indexOf(vulnSeverity);
+    const minimumSeverityRank = severityOrderOsv.indexOf(this.minimumSeverity);
+    return severityRank < minimumSeverityRank;
+  }
+
+  private upsertValueIntoMapOfSets(map: Map<string, Set<string>>, key: string, value:string){
+    const existingSet = map.get(key);
+    if (existingSet) {
+      // just add the depNodes to the existing release ID
+      existingSet.add(value);
+    } else {
+      map.set(key, new Set([value]));
+    }
+  }
+
 
   // Calls getVulnerableReleases and changes the data shape to just be a list of vulns and their chains
   public getVulnerabilities(): Array<BuiltVulnMeta> {
@@ -167,14 +173,14 @@ export class DependencyTree {
         }
         // just merge the vulnData into the main vuln
         existingVuln.chains = [...(existingVuln.chains || []), ...(newVuln.chains || [])];
-        existingVuln.trivially_updatable = existingVuln.trivially_updatable && newVuln.trivially_updatable;
+        // todo: we arent dealing with the trivially updatable to field here yet but it should probably be made to be an array for these amalgamated vulns
+        // existingVuln.trivially_updatable = existingVuln.trivially_updatable && newVuln.trivially_updatable;
       });
     });
     return vulnsWithMetadata;
   }
 
   // this is the main function that we call to return useful information to the client about their vulnerabilities
-  // Todo: The nice generic typing in the return type has been given up on for now (DependencyEdgePartial instead of DependencyEdge), it would be nice to fix it, but its maybe not worth it
   // Also this method is too long but also really hard to break up because of all the computed state from various steps
   private getVulnerableReleases(): VulnerableRelease[] {
     const vulnerableReleasesById: Record<string, VulnerableRelease> = {};
@@ -210,6 +216,7 @@ export class DependencyTree {
         // Clean the severity just in case of bad data or nulls, just in case
         const severity = rawSeverity && severityOrderOsv.includes(rawSeverity) ? rawSeverity : 'Unknown';
 
+        const guidesFromVuln = affectedByVuln.vulnerability.guide_vulnerabilities.map((gv) => gv.guide);
         // We arent tracking this release yet, make a new object
         if (!existingRelease) {
           const newVulnerableRelease: VulnerableRelease = {
@@ -221,6 +228,10 @@ export class DependencyTree {
             chains,
             trivially_updatable: this.checkIfReleaseTriviallyUpdatable(release.id),
             affected_by: [affectedByVuln],
+            beneath_minimum_severity: affectedByVuln.beneath_minimum_severity,
+            guides: guidesFromVuln,
+            fix_versions: affectedByVuln.fix_versions,
+            ignored: !affectedByVuln.beneath_minimum_severity && affectedByVuln.ignored,
           };
           vulnerableReleasesById[release.id] = newVulnerableRelease;
           return;
@@ -243,6 +254,9 @@ export class DependencyTree {
         // add vuln to the release if its not being tracked yet
         if (!existingRelease.affected_by.some((v) => v.vulnerability.id === affectedByVuln.vulnerability.id)) {
           existingRelease.affected_by.push(affectedByVuln);
+          existingRelease.affected_by.sort((v1, v2) => {
+            return this.sortBySeverityName(v1.vulnerability.severity_name,v2.vulnerability.severity_name)
+          })
         }
         // add chains to the top level list of chains on the release, if this is the first vuln we have process on the edge (because we only want to do this once per edge)
         if (vulnIndex === 0) {
@@ -252,9 +266,36 @@ export class DependencyTree {
         if (!existingRelease.paths.includes(affectedByVuln.path)) {
           existingRelease.paths.push(affectedByVuln.path);
         }
+
+        // Update severity check, if the new severity is too high for the threshold, it will bump the release to not beneath minimum severity.
+        existingRelease.beneath_minimum_severity =
+          existingRelease.beneath_minimum_severity && affectedByVuln.beneath_minimum_severity;
+
+        // Add guides, excluding dupes
+        guidesFromVuln.forEach((newGuide) => {
+          const guideAlreadyAdded = existingRelease.guides.some((existingGuide) => {
+            return existingGuide.id === newGuide.id;
+          });
+          if (!guideAlreadyAdded) {
+            existingRelease.guides.push(newGuide);
+          }
+        });
+
+        // update if the package should be ignored or not. If the vuln isnt being shown because of severity, skip
+        if (!affectedByVuln.beneath_minimum_severity) {
+          existingRelease.ignored = existingRelease.ignored && affectedByVuln.ignored;
+        }
+        // merge fix versions that are common between vulns
+        existingRelease.fix_versions = Array.from(
+          new Set([...existingRelease.fix_versions, ...affectedByVuln.fix_versions])
+        );
       });
     });
     return Object.values(vulnerableReleasesById);
+  }
+
+  private sortBySeverityName(nameOne:string|null|undefined, nameTwo:string|null|undefined){
+    return severityOrderOsv.indexOf(nameTwo || 'Unknown') - severityOrderOsv.indexOf(nameOne || 'Unknown')
   }
 
   private chainsAreIdentical(firstChain: DependencyChain, secondChain: DependencyChain): boolean {
@@ -280,16 +321,28 @@ export class DependencyTree {
     return chains;
   }
 
-  private precomputeVulnTriviallyUpdatable(requestedRange: string, vuln: RawVulnMeta): boolean {
+  private computeFixVersions(vuln: RawVulnMeta): string[] {
     const fixedVersions: string[] = [];
     vuln.ranges.forEach((range) => {
       if (range.fixed) {
         fixedVersions.push(range.fixed);
       }
     });
-    return fixedVersions.some((fixVersion) => {
+
+    return fixedVersions;
+  }
+
+  private precomputeVulnTriviallyUpdatableTo(requestedRange: string, vuln: RawVulnMeta): string | null {
+    const fixedVersions = this.computeFixVersions(vuln);
+    const updatableToFixVersions = fixedVersions.filter((fixVersion) => {
       return semver.satisfies(fixVersion, requestedRange);
     });
+    if (updatableToFixVersions.length === 0) {
+      return null;
+    }
+    // Get the highest version we can take of the fixes that are possible
+    const sortedUpdatableToFixVersions = semver.rsort(updatableToFixVersions);
+    return sortedUpdatableToFixVersions[0];
   }
 
   public convertRangesToSemverRange(ranges: RawVulnMeta['ranges']): semver.Range {
@@ -307,13 +360,16 @@ export class DependencyTree {
   }
 
   private checkIfReleaseTriviallyUpdatable(releaseId: string): 'yes' | 'partially' | 'no' {
-    const matchingDepIds = this.depNodeIdsByReleaseId.get(releaseId);
-    if (!matchingDepIds) {
+    const matchingEdgeIds = this.depNodeEdgeIdsByReleaseId.get(releaseId);
+    if (!matchingEdgeIds) {
       throw new Error(`Failed to find release for id ${releaseId} while checking triviallyUpdatable`);
     }
 
-    const matchingDeps = [...matchingDepIds].map((depId) => {
-      const depNode = this.depNodesByEdgeId.get(depId);
+    console.log('found dep Ids matching releaseId', releaseId, matchingEdgeIds)
+
+    const matchingDeps = [...matchingEdgeIds].map((edgeId) => {
+      console.log('looking up dep id ', edgeId, ' for release id ', releaseId);
+      const depNode = this.depNodesByEdgeId.get(edgeId);
       if (!depNode) {
         throw new Error('Missing dep node for dep id while checking triviallyUpdatable');
       }
@@ -325,11 +381,13 @@ export class DependencyTree {
     const fullyUpdatableDeps = matchingDeps.filter((dep) => {
       return dep.release.package.affected_by_vulnerability.every((affectedByVuln) => {
         totalVulnCount++; // also keep track of the vuln count while we are in this loop
-        return affectedByVuln.trivially_updatable;
+        return affectedByVuln.trivially_updatable_to !== null;
       });
     });
     const atLeastPartiallyUpdatableDeps = matchingDeps.filter((dep) => {
-      return dep.release.package.affected_by_vulnerability.some((affectedByVuln) => affectedByVuln.trivially_updatable);
+      return dep.release.package.affected_by_vulnerability.some(
+        (affectedByVuln) => affectedByVuln.trivially_updatable_to !== null
+      );
     });
 
     const fullUpdateCount = fullyUpdatableDeps.length;
@@ -367,17 +425,24 @@ export class DependencyTree {
         return;
       }
 
-      const parents = this.nodeIdToParentIds.get(dep.id);
-      if (!parents) {
+      const parentNodeIds = this.nodeIdToParentIds.get(dep.id);
+      if (!parentNodeIds) {
         throw new Error(`Failed to find parent edges for node id ${dep.id} in the tree`);
       }
 
-      parents.forEach((parentEdgeId) => {
-        const parentEdge = this.depNodesByEdgeId.get(parentEdgeId);
-        if (!parentEdge) {
-          throw new Error(`Failed to find parent edge with id ${parentEdgeId} for child id ${dep.id}`);
+      parentNodeIds.forEach((parentNodeId) => {
+        const parentEdgeIds = this.nodeIdsToEdgeIds.get(parentNodeId)
+        if (!parentEdgeIds){
+          throw new Error('Failed to find list of edge ids for node id')
         }
-        recursivelyGenerateChainsWithStack(parentEdge, newStack);
+        parentEdgeIds.forEach((parentEdgeId) => {
+          const parentEdge = this.depNodesByEdgeId.get(parentEdgeId);
+          if (!parentEdge) {
+            throw new Error(`Failed to find parent edge with id ${parentEdgeId} for child id ${dep.id}`);
+          }
+          recursivelyGenerateChainsWithStack(parentEdge, newStack);
+        })
+
       });
     };
 

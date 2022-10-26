@@ -15,18 +15,17 @@ import React from 'react';
 import { Accordion, Table } from 'react-bootstrap';
 import { ChevronDown, ChevronUp } from 'react-feather';
 
-import { DepTree, QuickViewProps } from '../../types';
-import { Finding } from '../types';
+import { QuickViewProps } from '../../../types';
+import { VulnMeta } from '../../types';
 
-import { FindingItem } from './FindingItem';
+import { VulnInfo } from './VulnInfo';
 
 interface FindingsTableProps {
   shouldFilterFindings: boolean;
-  filteredFindings: Finding[];
+  filteredFindings: VulnMeta[];
   quickView: QuickViewProps;
   setShouldFilterFindings: (shouldFilter: boolean) => void;
   findingsCount: number;
-  depTree: DepTree | null;
 }
 
 export const FindingsTable: React.FC<FindingsTableProps> = ({
@@ -35,7 +34,6 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
   quickView,
   setShouldFilterFindings,
   findingsCount,
-  depTree,
 }) => {
   return (
     <Accordion.Body>
@@ -51,13 +49,11 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {filteredFindings.map((f) => {
-            const patchable = depTree?.checkIfVulnInstancesTriviallyUpdatable(f.vulnerability.id);
+          {filteredFindings.map((vulnMeta) => {
             return (
-              <FindingItem
-                patchable={patchable}
-                key={f.id}
-                finding={f}
+              <VulnInfo
+                key={vulnMeta.vulnerability.id}
+                vulnMeta={vulnMeta}
                 setVulnQuickViewId={quickView.setVulnQuickViewId}
                 vulnQuickViewId={quickView.vulnQuickViewId}
               />

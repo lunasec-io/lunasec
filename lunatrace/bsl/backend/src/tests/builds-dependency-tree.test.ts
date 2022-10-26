@@ -13,10 +13,12 @@
  */
 
 import { fakeDependencyTreeHasuraOutputFixture } from '../fixtures/manifests/fake-dependency-tree-hasura-output-fixture';
+import {realDependencyTreeHasuraOutputFixture} from "../fixtures/manifests/real-dependency-tree-hasura-output";
 import { DependencyTree } from '../models/dependency-tree/builds-dependency-tree';
 
-const tree = new DependencyTree(fakeDependencyTreeHasuraOutputFixture, null, []);
-describe('The dependency tree', () => {
+describe('The fake dependency tree', () => {
+  const tree = new DependencyTree(fakeDependencyTreeHasuraOutputFixture, null, []);
+
   it('should generate a dependency tree', () => {
     expect(tree).toBeDefined();
     expect(tree.depNodesByEdgeId.size).toEqual(5);
@@ -52,12 +54,28 @@ describe('The dependency tree', () => {
 
   it('should filter vulnerabilities by severity', () => {
     const treeWithMiminumSeverity = new DependencyTree(fakeDependencyTreeHasuraOutputFixture, 'High', []);
-    expect(treeWithMiminumSeverity.vulnerableReleases.length).toEqual(0);
+    expect(treeWithMiminumSeverity.vulnerableReleases.length).toEqual(1);
+    const vulnRelease = treeWithMiminumSeverity.vulnerableReleases[0];
+    expect(vulnRelease.beneath_minimum_severity).toEqual(true);
+    expect(vulnRelease.affected_by[0].beneath_minimum_severity).toEqual(true);
   });
 
   it('should ignore vulnerabilities', () => {
-    const ignored = [{ vulnerability_id: 'a', locations: ['package-lock.json'] }];
+    const ignored = [{ vulnerability_id: 'a', locations: ['package-lock.json'], note: 'this is the note' }];
     const treeWithIgnored = new DependencyTree(fakeDependencyTreeHasuraOutputFixture, null, ignored);
-    expect(treeWithIgnored.vulnerableReleases.length).toEqual(0);
+    expect(treeWithIgnored.vulnerableReleases[0].ignored).toEqual(true);
+  });
+  it('should show guides', () => {
+    const guides = tree.vulnerableReleases[0].guides;
+    console.log('guides are', guides);
+    expect(guides.length).toEqual(1);
+    expect(guides[0].id).toEqual('g1');
   });
 });
+
+describe('a real sample dependency tree', () => {
+  const tree = new DependencyTree(realDependencyTreeHasuraOutputFixture, null, []);
+  it('should build', () => {
+    expect(tree).toBeDefined()
+  })
+})

@@ -11,30 +11,28 @@
  * limitations under the License.
  *
  */
-import { VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
+import { VulnerablePackageLegacy } from '@lunatrace/lunatrace-common/build/main';
 import React, { useState } from 'react';
 import { Card, Dropdown, FloatingLabel, Form, FormControl, Spinner } from 'react-bootstrap';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import api from '../../../../api';
 import { ConfirmationDailog } from '../../../../components/ConfirmationDialog';
-import { DepTree, QuickViewProps } from '../types';
+import {  QuickViewProps } from '../types';
 
 import { VulnerablePackageCardHeader } from './VulnerablePackageCardHeader';
 import { PackageCardBody } from './body/PackageCardBody';
 import { Finding } from './types';
 
 interface VulnerablePackageMainProps {
-  pkg: VulnerablePackage<Finding>;
+  pkg: VulnerablePackageLegacy<Finding>;
   severityFilter: number;
-  depTree: DepTree | null;
   quickView: QuickViewProps;
 }
 
 export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMainProps> = ({
   pkg,
   severityFilter,
-  depTree,
   quickView,
 }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -90,8 +88,8 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
     <>
       <Card className="vulnpkg-card">
         {renderIgnoreUi()}
-        <VulnerablePackageCardHeader pkg={pkg} depTree={depTree} />
-        <PackageCardBody pkg={pkg} severityFilter={severityFilter} quickView={quickView} depTree={depTree} />
+        <VulnerablePackageCardHeader pkg={pkg}  />
+        <PackageCardBody pkg={pkg} severityFilter={severityFilter} quickView={quickView}/>
       </Card>
       <ConfirmationDailog
         title={`Ignore All Findings For This Package`}
