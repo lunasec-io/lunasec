@@ -74,6 +74,7 @@ type Analysis_manifest_dependency_edge_result_insert_input struct {
 	Id                          *uuid.UUID                                     `json:"id,omitempty"`
 	Manifest_dependency_edge    *Manifest_dependency_edge_obj_rel_insert_input `json:"manifest_dependency_edge,omitempty"`
 	Manifest_dependency_edge_id *uuid.UUID                                     `json:"manifest_dependency_edge_id,omitempty"`
+	Output                      *json.RawMessage                               `json:"output,omitempty"`
 	Vulnerability_id            *uuid.UUID                                     `json:"vulnerability_id,omitempty"`
 }
 
@@ -108,6 +109,11 @@ func (v *Analysis_manifest_dependency_edge_result_insert_input) GetManifest_depe
 // GetManifest_dependency_edge_id returns Analysis_manifest_dependency_edge_result_insert_input.Manifest_dependency_edge_id, and is useful for accessing the field via an interface.
 func (v *Analysis_manifest_dependency_edge_result_insert_input) GetManifest_dependency_edge_id() *uuid.UUID {
 	return v.Manifest_dependency_edge_id
+}
+
+// GetOutput returns Analysis_manifest_dependency_edge_result_insert_input.Output, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_insert_input) GetOutput() *json.RawMessage {
+	return v.Output
 }
 
 // GetVulnerability_id returns Analysis_manifest_dependency_edge_result_insert_input.Vulnerability_id, and is useful for accessing the field via an interface.
@@ -7545,7 +7551,7 @@ func InsertManifestDependencyEdgeAnalysis(
 		OpName: "InsertManifestDependencyEdgeAnalysis",
 		Query: `
 mutation InsertManifestDependencyEdgeAnalysis ($result: analysis_manifest_dependency_edge_result_insert_input!) {
-	insert_analysis_manifest_dependency_edge_result_one(object: $result, on_conflict: {constraint:manifest_dependency_edge_result_manifest_dependency_edge_id_vul,update_columns:[vulnerability_id,manifest_dependency_edge_id,finding_source]}) {
+	insert_analysis_manifest_dependency_edge_result_one(object: $result, on_conflict: {constraint:manifest_dependency_edge_result_vulnerability_id_manifest_depen,update_columns:[vulnerability_id,manifest_dependency_edge_id,finding_source,finding_source_version,finding_type]}) {
 		id
 	}
 }

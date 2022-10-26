@@ -25,6 +25,8 @@ rules:
       - pattern-either:
         - pattern-inside: $IMPORT.$FUNC(...)
         - pattern-inside: $IMPORT(...)
+        - pattern-inside: class $X extends $IMPORT { ... }
+        - pattern-inside: class $X extends $IMPORT.$CLASS { ... }
     message: A vulnerable package was imported and called.
     languages:
       - javascript
