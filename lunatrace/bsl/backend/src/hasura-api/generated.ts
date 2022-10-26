@@ -282,6 +282,8 @@ export type Analysis_Manifest_Dependency_Edge_Result = {
   manifest_dependency_edge: Manifest_Dependency_Edge;
   manifest_dependency_edge_id: Scalars['uuid'];
   output?: Maybe<Scalars['jsonb']>;
+  /** An object relationship */
+  vulnerability: Vulnerability;
   vulnerability_id: Scalars['uuid'];
 };
 
@@ -309,15 +311,16 @@ export type Analysis_Manifest_Dependency_Edge_Result_Bool_Exp = {
   manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
   manifest_dependency_edge_id?: InputMaybe<Uuid_Comparison_Exp>;
   output?: InputMaybe<Jsonb_Comparison_Exp>;
+  vulnerability?: InputMaybe<Vulnerability_Bool_Exp>;
   vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "analysis.manifest_dependency_edge_result" */
 export enum Analysis_Manifest_Dependency_Edge_Result_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  ManifestDependencyEdgeResultPkey = 'manifest_dependency_edge_result_pkey',
   /** unique or primary key constraint on columns "manifest_dependency_edge_id", "vulnerability_id", "finding_source_version", "finding_source" */
-  ManifestDependencyEdgeResultVulnerabilityIdManifestDepen = 'manifest_dependency_edge_result_vulnerability_id_manifest_depen'
+  ManifestDependencyEdgeResultManifestDependencyEdgeIdVul = 'manifest_dependency_edge_result_manifest_dependency_edge_id_vul',
+  /** unique or primary key constraint on columns "id" */
+  ManifestDependencyEdgeResultPkey = 'manifest_dependency_edge_result_pkey'
 }
 
 /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
@@ -350,6 +353,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Insert_Input = {
   manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Obj_Rel_Insert_Input>;
   manifest_dependency_edge_id?: InputMaybe<Scalars['uuid']>;
   output?: InputMaybe<Scalars['jsonb']>;
+  vulnerability?: InputMaybe<Vulnerability_Obj_Rel_Insert_Input>;
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -379,6 +383,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Order_By = {
   manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Order_By>;
   manifest_dependency_edge_id?: InputMaybe<Order_By>;
   output?: InputMaybe<Order_By>;
+  vulnerability?: InputMaybe<Vulnerability_Order_By>;
   vulnerability_id?: InputMaybe<Order_By>;
 };
 
