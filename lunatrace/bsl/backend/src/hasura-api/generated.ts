@@ -275,12 +275,25 @@ export type Analysis_Manifest_Dependency_Edge_Result = {
   __typename?: 'analysis_manifest_dependency_edge_result';
   created_at: Scalars['timestamptz'];
   finding_source: Analysis_Finding_Source_Enum;
+  finding_source_version: Scalars['Int'];
   finding_type: Analysis_Finding_Type_Enum;
   id: Scalars['uuid'];
   /** An object relationship */
   manifest_dependency_edge: Manifest_Dependency_Edge;
   manifest_dependency_edge_id: Scalars['uuid'];
+  output?: Maybe<Scalars['jsonb']>;
   vulnerability_id: Scalars['uuid'];
+};
+
+
+/** columns and relationships of "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_ResultOutputArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Analysis_Manifest_Dependency_Edge_Result_Append_Input = {
+  output?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** Boolean expression to filter rows from the table "analysis.manifest_dependency_edge_result". All fields are combined with a logical 'AND'. */
@@ -290,29 +303,53 @@ export type Analysis_Manifest_Dependency_Edge_Result_Bool_Exp = {
   _or?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   finding_source?: InputMaybe<Analysis_Finding_Source_Enum_Comparison_Exp>;
+  finding_source_version?: InputMaybe<Int_Comparison_Exp>;
   finding_type?: InputMaybe<Analysis_Finding_Type_Enum_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
   manifest_dependency_edge_id?: InputMaybe<Uuid_Comparison_Exp>;
+  output?: InputMaybe<Jsonb_Comparison_Exp>;
   vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "analysis.manifest_dependency_edge_result" */
 export enum Analysis_Manifest_Dependency_Edge_Result_Constraint {
-  /** unique or primary key constraint on columns "manifest_dependency_edge_id", "vulnerability_id" */
-  ManifestDependencyEdgeResultManifestDependencyEdgeIdVul = 'manifest_dependency_edge_result_manifest_dependency_edge_id_vul',
   /** unique or primary key constraint on columns "id" */
-  ManifestDependencyEdgeResultPkey = 'manifest_dependency_edge_result_pkey'
+  ManifestDependencyEdgeResultPkey = 'manifest_dependency_edge_result_pkey',
+  /** unique or primary key constraint on columns "manifest_dependency_edge_id", "vulnerability_id", "finding_source_version", "finding_source" */
+  ManifestDependencyEdgeResultVulnerabilityIdManifestDepen = 'manifest_dependency_edge_result_vulnerability_id_manifest_depen'
 }
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Analysis_Manifest_Dependency_Edge_Result_Delete_At_Path_Input = {
+  output?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Analysis_Manifest_Dependency_Edge_Result_Delete_Elem_Input = {
+  output?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Analysis_Manifest_Dependency_Edge_Result_Delete_Key_Input = {
+  output?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for incrementing numeric columns in table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Inc_Input = {
+  finding_source_version?: InputMaybe<Scalars['Int']>;
+};
 
 /** input type for inserting data into table "analysis.manifest_dependency_edge_result" */
 export type Analysis_Manifest_Dependency_Edge_Result_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   finding_source?: InputMaybe<Analysis_Finding_Source_Enum>;
+  finding_source_version?: InputMaybe<Scalars['Int']>;
   finding_type?: InputMaybe<Analysis_Finding_Type_Enum>;
   id?: InputMaybe<Scalars['uuid']>;
   manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Obj_Rel_Insert_Input>;
   manifest_dependency_edge_id?: InputMaybe<Scalars['uuid']>;
+  output?: InputMaybe<Scalars['jsonb']>;
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -336,16 +373,23 @@ export type Analysis_Manifest_Dependency_Edge_Result_On_Conflict = {
 export type Analysis_Manifest_Dependency_Edge_Result_Order_By = {
   created_at?: InputMaybe<Order_By>;
   finding_source?: InputMaybe<Order_By>;
+  finding_source_version?: InputMaybe<Order_By>;
   finding_type?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Order_By>;
   manifest_dependency_edge_id?: InputMaybe<Order_By>;
+  output?: InputMaybe<Order_By>;
   vulnerability_id?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: analysis_manifest_dependency_edge_result */
 export type Analysis_Manifest_Dependency_Edge_Result_Pk_Columns_Input = {
   id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Analysis_Manifest_Dependency_Edge_Result_Prepend_Input = {
+  output?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** select columns of table "analysis.manifest_dependency_edge_result" */
@@ -355,11 +399,15 @@ export enum Analysis_Manifest_Dependency_Edge_Result_Select_Column {
   /** column name */
   FindingSource = 'finding_source',
   /** column name */
+  FindingSourceVersion = 'finding_source_version',
+  /** column name */
   FindingType = 'finding_type',
   /** column name */
   Id = 'id',
   /** column name */
   ManifestDependencyEdgeId = 'manifest_dependency_edge_id',
+  /** column name */
+  Output = 'output',
   /** column name */
   VulnerabilityId = 'vulnerability_id'
 }
@@ -368,9 +416,11 @@ export enum Analysis_Manifest_Dependency_Edge_Result_Select_Column {
 export type Analysis_Manifest_Dependency_Edge_Result_Set_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   finding_source?: InputMaybe<Analysis_Finding_Source_Enum>;
+  finding_source_version?: InputMaybe<Scalars['Int']>;
   finding_type?: InputMaybe<Analysis_Finding_Type_Enum>;
   id?: InputMaybe<Scalars['uuid']>;
   manifest_dependency_edge_id?: InputMaybe<Scalars['uuid']>;
+  output?: InputMaybe<Scalars['jsonb']>;
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -381,11 +431,15 @@ export enum Analysis_Manifest_Dependency_Edge_Result_Update_Column {
   /** column name */
   FindingSource = 'finding_source',
   /** column name */
+  FindingSourceVersion = 'finding_source_version',
+  /** column name */
   FindingType = 'finding_type',
   /** column name */
   Id = 'id',
   /** column name */
   ManifestDependencyEdgeId = 'manifest_dependency_edge_id',
+  /** column name */
+  Output = 'output',
   /** column name */
   VulnerabilityId = 'vulnerability_id'
 }
@@ -4399,6 +4453,12 @@ export type Mutation_RootPresignManifestUploadArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Analysis_Manifest_Dependency_Edge_ResultArgs = {
+  _append?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Append_Input>;
+  _delete_at_path?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_Key_Input>;
+  _inc?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Inc_Input>;
+  _prepend?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Prepend_Input>;
   _set?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Set_Input>;
   where: Analysis_Manifest_Dependency_Edge_Result_Bool_Exp;
 };
@@ -4406,6 +4466,12 @@ export type Mutation_RootUpdate_Analysis_Manifest_Dependency_Edge_ResultArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Analysis_Manifest_Dependency_Edge_Result_By_PkArgs = {
+  _append?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Append_Input>;
+  _delete_at_path?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_Key_Input>;
+  _inc?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Inc_Input>;
+  _prepend?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Prepend_Input>;
   _set?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Set_Input>;
   pk_columns: Analysis_Manifest_Dependency_Edge_Result_Pk_Columns_Input;
 };
@@ -6064,8 +6130,6 @@ export type Package_Release = {
   /** An array relationship */
   release_dependencies: Array<Package_Release_Dependency>;
   /** An array relationship */
-  release_dependents: Array<Package_Release_Dependency>;
-  /** An array relationship */
   release_licenses: Array<Package_Release_License>;
   release_time?: Maybe<Scalars['timestamptz']>;
   upstream_blob_url?: Maybe<Scalars['String']>;
@@ -6086,16 +6150,6 @@ export type Package_ReleaseBuild_Dependency_RelationshipsArgs = {
 
 /** columns and relationships of "package.release" */
 export type Package_ReleaseRelease_DependenciesArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_Dependency_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_Dependency_Order_By>>;
-  where?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
-};
-
-
-/** columns and relationships of "package.release" */
-export type Package_ReleaseRelease_DependentsArgs = {
   distinct_on?: InputMaybe<Array<Package_Release_Dependency_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -6154,7 +6208,6 @@ export type Package_Release_Bool_Exp = {
   publishing_maintainer?: InputMaybe<Package_Maintainer_Bool_Exp>;
   publishing_maintainer_id?: InputMaybe<Uuid_Comparison_Exp>;
   release_dependencies?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
-  release_dependents?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
   release_licenses?: InputMaybe<Package_Release_License_Bool_Exp>;
   release_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   upstream_blob_url?: InputMaybe<String_Comparison_Exp>;
@@ -6191,8 +6244,6 @@ export type Package_Release_Dependency = {
   /** An object relationship */
   dependency_package?: Maybe<Package>;
   dependency_package_id?: Maybe<Scalars['uuid']>;
-  /** An object relationship */
-  dependency_release?: Maybe<Package_Release>;
   dependency_release_id?: Maybe<Scalars['uuid']>;
   id: Scalars['uuid'];
   is_dev: Scalars['Boolean'];
@@ -6224,7 +6275,6 @@ export type Package_Release_Dependency_Bool_Exp = {
   _or?: InputMaybe<Array<Package_Release_Dependency_Bool_Exp>>;
   dependency_package?: InputMaybe<Package_Bool_Exp>;
   dependency_package_id?: InputMaybe<Uuid_Comparison_Exp>;
-  dependency_release?: InputMaybe<Package_Release_Bool_Exp>;
   dependency_release_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   is_dev?: InputMaybe<Boolean_Comparison_Exp>;
@@ -6246,7 +6296,6 @@ export enum Package_Release_Dependency_Constraint {
 export type Package_Release_Dependency_Insert_Input = {
   dependency_package?: InputMaybe<Package_Obj_Rel_Insert_Input>;
   dependency_package_id?: InputMaybe<Scalars['uuid']>;
-  dependency_release?: InputMaybe<Package_Release_Obj_Rel_Insert_Input>;
   dependency_release_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
   is_dev?: InputMaybe<Scalars['Boolean']>;
@@ -6296,7 +6345,6 @@ export type Package_Release_Dependency_On_Conflict = {
 export type Package_Release_Dependency_Order_By = {
   dependency_package?: InputMaybe<Package_Order_By>;
   dependency_package_id?: InputMaybe<Order_By>;
-  dependency_release?: InputMaybe<Package_Release_Order_By>;
   dependency_release_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   is_dev?: InputMaybe<Order_By>;
@@ -6371,7 +6419,6 @@ export type Package_Release_Insert_Input = {
   publishing_maintainer?: InputMaybe<Package_Maintainer_Obj_Rel_Insert_Input>;
   publishing_maintainer_id?: InputMaybe<Scalars['uuid']>;
   release_dependencies?: InputMaybe<Package_Release_Dependency_Arr_Rel_Insert_Input>;
-  release_dependents?: InputMaybe<Package_Release_Dependency_Arr_Rel_Insert_Input>;
   release_licenses?: InputMaybe<Package_Release_License_Arr_Rel_Insert_Input>;
   release_time?: InputMaybe<Scalars['timestamptz']>;
   upstream_blob_url?: InputMaybe<Scalars['String']>;
@@ -6624,7 +6671,6 @@ export type Package_Release_Order_By = {
   publishing_maintainer?: InputMaybe<Package_Maintainer_Order_By>;
   publishing_maintainer_id?: InputMaybe<Order_By>;
   release_dependencies_aggregate?: InputMaybe<Package_Release_Dependency_Aggregate_Order_By>;
-  release_dependents_aggregate?: InputMaybe<Package_Release_Dependency_Aggregate_Order_By>;
   release_licenses_aggregate?: InputMaybe<Package_Release_License_Aggregate_Order_By>;
   release_time?: InputMaybe<Order_By>;
   upstream_blob_url?: InputMaybe<Order_By>;
@@ -11142,6 +11188,7 @@ export type GetLatestBuildsForRescanQuery = { __typename?: 'query_root', latest_
 export type GetManifestDependencyEdgeAnalysisResultQueryVariables = Exact<{
   vulnerability_id: Scalars['uuid'];
   manifest_dependency_edge_id: Scalars['uuid'];
+  finding_source_version: Scalars['Int'];
 }>;
 
 
@@ -11492,9 +11539,9 @@ export const GetLatestBuildsForRescanDocument = gql`
 }
     `;
 export const GetManifestDependencyEdgeAnalysisResultDocument = gql`
-    query GetManifestDependencyEdgeAnalysisResult($vulnerability_id: uuid!, $manifest_dependency_edge_id: uuid!) {
+    query GetManifestDependencyEdgeAnalysisResult($vulnerability_id: uuid!, $manifest_dependency_edge_id: uuid!, $finding_source_version: Int!) {
   analysis_manifest_dependency_edge_result(
-    where: {vulnerability_id: {_eq: $vulnerability_id}, manifest_dependency_edge_id: {_eq: $manifest_dependency_edge_id}}
+    where: {vulnerability_id: {_eq: $vulnerability_id}, manifest_dependency_edge_id: {_eq: $manifest_dependency_edge_id}, finding_source_version: {_eq: $finding_source_version}, finding_type: {_neq: error}}
   ) {
     id
     finding_type

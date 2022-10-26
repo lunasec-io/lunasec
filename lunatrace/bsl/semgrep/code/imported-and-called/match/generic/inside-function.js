@@ -14,5 +14,7 @@
 import vulnerable from 'vulnerable-package';
 
 function foo() {
-  vulnerable.callFunction();
+  var x = 100;
+// ruleid: imported-and-called
+  vulnerable.callFunction(1, 2, 3, x);
 }

@@ -12,19 +12,19 @@ package rules
 
 import (
 	"encoding/json"
-	"io"
-
+	"errors"
+	"fmt"
 	"github.com/rs/zerolog/log"
 
 	"github.com/lunasec-io/lunasec/lunadefend/go/service"
 )
 
-func runSemgrepRule(rule io.Reader, dir string) (*SemgrepResults, error) {
+func runSemgrepRule(ruleFile, dir string) (*SemgrepRuleOutput, error) {
 	args := []string{
-		"--json", "-c", "-", dir,
+		"--json", "-c", ruleFile, dir,
 	}
 
-	executor := service.NewExecutor("semgrep", args, map[string]string{}, rule)
+	executor := service.NewExecutor("semgrep", args, map[string]string{}, nil)
 
 	result, err := executor.Execute()
 	if err != nil {
@@ -36,7 +36,7 @@ func runSemgrepRule(rule io.Reader, dir string) (*SemgrepResults, error) {
 		return nil, err
 	}
 
-	var semgrepResults SemgrepResults
+	var semgrepResults SemgrepRuleOutput
 
 	err = json.Unmarshal([]byte(result.Stdout), &semgrepResults)
 	if err != nil {
@@ -45,5 +45,18 @@ func runSemgrepRule(rule io.Reader, dir string) (*SemgrepResults, error) {
 			Msg("failed to unmarshal semgrep results")
 		return nil, err
 	}
+
+	if len(semgrepResults.Errors) > 0 {
+		loggerCtx := log.With()
+		for i, semgrepError := range semgrepResults.Errors {
+			loggerCtx = loggerCtx.Interface(fmt.Sprintf("error %d", i), semgrepError)
+		}
+		logger := loggerCtx.Logger()
+
+		logger.Error().
+			Msg("semgrep rule returned errors")
+		return nil, errors.New("failed to run semgrep rule")
+	}
+
 	return &semgrepResults, nil
 }

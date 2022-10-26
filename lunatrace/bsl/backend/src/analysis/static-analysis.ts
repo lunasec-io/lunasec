@@ -24,6 +24,10 @@ import { log } from '../utils/log';
 import { getSqsUrlFromName } from '../utils/sqs';
 import { catchError, threwError } from '../utils/try';
 
+// TODO (cthompson) we probably want this to be a shared constant in a protobuf definition
+// this is the same constant as lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules/importedandcalled.go
+const importedAndCalledRuleVersion = 2;
+
 export async function queueManifestDependencyEdgeForStaticAnalysis(
   vulnerabilityId: string,
   manifestDependencyEdgeId: string
@@ -32,19 +36,14 @@ export async function queueManifestDependencyEdgeForStaticAnalysis(
     hasura.GetManifestDependencyEdgeAnalysisResult({
       vulnerability_id: vulnerabilityId,
       manifest_dependency_edge_id: manifestDependencyEdgeId,
+      finding_source_version: importedAndCalledRuleVersion,
     })
   );
   if (threwError(cacheResult)) {
     return newError('Failed to lookup project when using repository id');
   }
 
-  // make sure we have a finding result that is not an error or unknown
-  if (
-    cacheResult.analysis_manifest_dependency_edge_result.filter(
-      (r) =>
-        r.finding_type !== Analysis_Finding_Type_Enum.Error && r.finding_type !== Analysis_Finding_Type_Enum.Unknown
-    ).length > 0
-  ) {
+  if (cacheResult.analysis_manifest_dependency_edge_result.length > 0) {
     log.info('found cached analysis result for manifest dependency edge analysis', {
       vulnerabilityId,
       manifestDependencyEdgeId,

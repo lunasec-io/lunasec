@@ -1,0 +1,36 @@
+query GetAnalysisManifestDependencyEdgeResultsOverview($offset: Int!, $limit: Int!, $where: analysis_manifest_dependency_edge_result_bool_exp!) {
+  analysis_manifest_dependency_edge_result(offset: $offset, limit: $limit, where: $where) {
+    id
+    finding_type
+    finding_source
+    finding_source_version
+    manifest_dependency_edge {
+      parent {
+        release {
+          version
+          package {
+            name
+          }
+        }
+      }
+      child {
+        release {
+          version
+          package {
+            name
+          }
+        }
+      }
+    }
+    vulnerability {
+      source_id
+      details
+    }
+    output
+  }
+  analysis_manifest_dependency_edge_result_aggregate {
+    aggregate {
+      count
+    }
+  }
+}
