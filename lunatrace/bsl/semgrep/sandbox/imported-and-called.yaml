@@ -40,7 +40,6 @@ rules:
     - pattern: $IMPORT = require("vulnerable-package")
     pattern-sinks:
     - pattern-either:
-      - pattern: $IMPORT.$FUNC(...)
       - patterns:
         - pattern: $IMPORT(...)
         - pattern-not: require(...)
