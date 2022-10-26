@@ -37,7 +37,7 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
 
   const rawManifests = rawBuildData.resolved_manifests;
 
-  const ignoredVulnerabilities = args.showIgnored ? [] : rawBuildData.project.ignored_vulnerabilities;
+  const ignoredVulnerabilities = rawBuildData.project.ignored_vulnerabilities;
 
   const minimumSeverity = args.minimumSeverity || null;
 

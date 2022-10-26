@@ -12,7 +12,8 @@
  *
  */
 import { severityOrderOsv } from '@lunatrace/lunatrace-common';
-import React, { ChangeEvent, useState } from 'react';
+import { SeverityNamesOsv } from '@lunatrace/lunatrace-common';
+import React, { ChangeEvent } from 'react';
 import { Button, Col, Dropdown, OverlayTrigger, Row } from 'react-bootstrap';
 
 import { QuickViewProps } from '../types';
@@ -25,34 +26,35 @@ interface FindingListProps {
   quickView: QuickViewProps;
   setIgnoreFindings: (ignored: boolean) => void;
   vulnerablePackages: VulnerablePackage[];
+  severity: SeverityNamesOsv;
+  setSeverity: (s: SeverityNamesOsv) => void;
+  shouldIgnore: boolean;
 }
 
 export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> = ({
   quickView,
   setIgnoreFindings,
   vulnerablePackages,
+  severity,
+  setSeverity,
+  shouldIgnore
 }) => {
-  const [severityFilter, setSeverityFilter] = useState(severityOrderOsv.indexOf('critical'));
-  const prettySeverity = severityOrderOsv[severityFilter] === 'unknown' ? 'None' : severityOrderOsv[severityFilter];
 
-  const filteredVulnerablePkgs = vulnerablePackages.filter(
-    (pkgs) => pkgs.severity && severityOrderOsv.indexOf(pkgs.severity) >= severityFilter
-  );
+  const packagesFilteredByIgnored = vulnerablePackages.filter((p) => !(shouldIgnore && p.ignored))
 
-  const pkgCards = filteredVulnerablePkgs.map((pkg) => {
-    return (
-      <Row key={pkg.release.id}>
-        <VulnerablePackageMain severityFilter={severityFilter} pkg={pkg} quickView={quickView} />
-      </Row>
-    );
-  });
-
-  const handleShowIgnoredFindings = (e: ChangeEvent<HTMLInputElement>) => setIgnoreFindings(!e.target.checked);
-
-  const pkgsToUpdate = filteredVulnerablePkgs.filter((pkg) => {
+  // Todo: not sure if this should include below minimum severity packages or not, might be confusing. For now we are, though
+  const pkgsToUpdate = packagesFilteredByIgnored.filter((pkg) => {
     if (pkg.trivially_updatable === 'yes' || pkg.trivially_updatable === 'partially') {
       return true;
     }
+  });
+
+  const packagesFilteredBySeverity = packagesFilteredByIgnored.filter((p) => !p.beneath_minimum_severity);
+
+  const handleShowIgnoredFindings = (e: ChangeEvent<HTMLInputElement>) => setIgnoreFindings(!e.target.checked);
+
+  const pkgCards = packagesFilteredBySeverity.map((p) => {
+    return <VulnerablePackageMain key={p.release.id} pkg={p} quickView={quickView} severity={severity} shouldIgnore={shouldIgnore}/>;
   });
 
   const areUpdatesAvailable = pkgsToUpdate.length > 0;
@@ -75,22 +77,21 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
           </label>
           <Dropdown align={{ md: 'end' }} className="d-inline me-2">
             <Dropdown.Toggle variant="secondary" className="text-capitalize">
-              Minimum Severity: {prettySeverity}
+              Minimum Severity: {severity === 'Unknown'? 'None': severity}
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Header>
                 Lowest severity to show <hr className="m-1" />
               </Dropdown.Header>
               {severityOrderOsv
-                .map((severityName, severityIndex) => {
+                .map((severityName) => {
                   return (
                     <Dropdown.Item
-                      active={severityIndex === severityFilter}
-                      onClick={() => setSeverityFilter(severityIndex)}
-                      key={severityIndex}
-                      className="text-capitalize"
+                      active={severityName === severity}
+                      onClick={() => setSeverity(severityName as SeverityNamesOsv)}
+                      key={severityName}
                     >
-                      {severityName === 'unknown' ? 'None' : severityName}
+                      {severityName === 'Unknown' ? 'None' : severityName}
                     </Dropdown.Item>
                   );
                 })
@@ -101,11 +102,11 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
       </Row>
       <br />
       {pkgCards}
-      {vulnerablePkgs.length > filteredVulnerablePkgs.length ? (
+      {vulnerablePackages.length > packagesFilteredBySeverity.length ? (
         <Row className="text-center">
           {' '}
-          <span className="link-primary cursor-pointer" onClick={() => setSeverityFilter(0)}>
-            Show {vulnerablePkgs.length - filteredVulnerablePkgs.length} lower severity vulnerabilities...{' '}
+          <span className="link-primary cursor-pointer" onClick={() => setSeverity('Unknown')}>
+            Show {vulnerablePackages.length - packagesFilteredBySeverity.length} lower severity vulnerabilities...{' '}
           </span>
         </Row>
       ) : null}

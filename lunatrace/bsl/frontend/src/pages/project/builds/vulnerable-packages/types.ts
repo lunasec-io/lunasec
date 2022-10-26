@@ -17,6 +17,12 @@
 //
 // export type Guide = Finding['vulnerability']['guide_vulnerabilities'][number]['guide'];
 
-import { BuildData_VulnerableRelease } from '../../../../api/generated';
+import { GetVulnerableReleasesFromBuildQuery } from '../../../../api/generated';
 
-export type VulnerablePackage = NonNullable<BuildData_VulnerableRelease>;
+export type VulnerablePackage = NonNullable<
+  NonNullable<GetVulnerableReleasesFromBuildQuery>['vulnerableReleasesFromBuild']
+>[number];
+
+export type Guide = VulnerablePackage['guides'][number];
+
+export type VulnMeta = VulnerablePackage['affected_by'][number];

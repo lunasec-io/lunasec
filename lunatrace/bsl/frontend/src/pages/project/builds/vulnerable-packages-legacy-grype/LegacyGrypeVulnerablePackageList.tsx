@@ -13,11 +13,10 @@
  */
 import { getCvssVectorFromSeverities, groupByPackage, severityOrder } from '@lunatrace/lunatrace-common';
 import React, { ChangeEvent, useState } from 'react';
-import { Button, Col, Dropdown, OverlayTrigger, Row } from 'react-bootstrap';
+import {  Col, Dropdown,  Row } from 'react-bootstrap';
 
-import { DepTree, QuickViewProps } from '../types';
+import { QuickViewProps } from '../types';
 
-import { AutoUpdatePopOverHOC } from './AutoUpdatePopOverHOC';
 import { VulnerablePackageMain } from './VulnerablePackageMain';
 import { Finding } from './types';
 
@@ -25,7 +24,6 @@ interface FindingListProps {
   findings: Finding[];
   project_id: string;
   quickView: QuickViewProps;
-  depTree: DepTree | null;
   setIgnoreFindings: (ignored: boolean) => void;
 }
 
@@ -33,7 +31,6 @@ export const LegacyGrypeVulnerablePackageList: React.FunctionComponent<FindingLi
   project_id,
   findings,
   quickView,
-  depTree,
   setIgnoreFindings,
 }) => {
   const [severityFilter, setSeverityFilter] = useState(severityOrder.indexOf('critical'));
@@ -56,37 +53,21 @@ export const LegacyGrypeVulnerablePackageList: React.FunctionComponent<FindingLi
   const pkgCards = filteredVulnerablePkgs.map((pkg) => {
     return (
       <Row key={pkg.purl}>
-        <VulnerablePackageMain severityFilter={severityFilter} pkg={pkg} quickView={quickView} depTree={depTree} />
+        <VulnerablePackageMain severityFilter={severityFilter} pkg={pkg} quickView={quickView} />
       </Row>
     );
   });
 
   const handleShowIgnoredFindings = (e: ChangeEvent<HTMLInputElement>) => setIgnoreFindings(!e.target.checked);
 
-  const pkgsToUpdate = vulnerablePkgs.filter((pkg) => {
-    const updatableStatus = depTree?.checkIfPackageTriviallyUpdatable(pkg.package_name, pkg.version);
-    if (updatableStatus === 'yes' || updatableStatus === 'partially') {
-      return true;
-    }
-  });
 
-  const areUpdatesAvailable = pkgsToUpdate.length > 0;
+
 
   return (
     <div className="vulnerability-list p-3">
       <Row>
         <Col md="6">
           <h2 className="d-inline-block me-3">Vulnerable Packages</h2>
-          {depTree && areUpdatesAvailable && (
-            <OverlayTrigger
-              placement="bottom"
-              trigger="click"
-              rootClose
-              overlay={AutoUpdatePopOverHOC(pkgsToUpdate, depTree)}
-            >
-              <Button className="mb-2">Update</Button>
-            </OverlayTrigger>
-          )}
         </Col>
         <Col md="6" style={{ display: 'flex', justifyContent: 'right' }}>
           <label className="form-check mx-2 p-1 cursor-pointer user-select-none">

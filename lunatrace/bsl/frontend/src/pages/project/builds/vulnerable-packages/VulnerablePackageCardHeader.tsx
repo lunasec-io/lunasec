@@ -11,42 +11,24 @@
  * limitations under the License.
  *
  */
-import { filterFindingsNotIgnored, VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
-import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
 import { Card, Col, NavLink, OverlayTrigger, Popover, Row, Tooltip } from 'react-bootstrap';
 import { CopyBlock, tomorrowNight } from 'react-code-blocks';
 import { FcUpload } from 'react-icons/fc';
 
 import useBreakpoint from '../../../../hooks/useBreakpoint';
-import { DepTree } from '../types';
 
-import { Finding } from './types';
+import { VulnerablePackage } from './types';
 
 interface VulnerablePackageCardHeaderProps {
-  pkg: VulnerablePackage<Finding>;
-  depTree: DepTree | null;
+  vulnerable: VulnerablePackage;
 }
 
 export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePackageCardHeaderProps> = ({
-  pkg,
-  depTree,
+  vulnerable,
 }) => {
-  const filteredFindings = filterFindingsNotIgnored(pkg.findings);
-  const allFindingsAreIgnored = filteredFindings.length === 0;
-  const headerClassNames = allFindingsAreIgnored ? 'text-decoration-line-through' : '';
-
-  // From the list of severities for a given vulnerability, determine which one is the most severe
-  // and display this score. Most often, there will only be one score, but in the case there are multiple,
-  // show the highest.
-  const sortedSeverities = filteredFindings
-    .map((finding) => getCvssVectorFromSeverities(finding.vulnerability.severities))
-    .filter((severity) => !!severity)
-    .sort((a, b) => (a && b ? b.overallScore - a.overallScore : 0));
-  const mostSevereSeverity = sortedSeverities.length > 0 ? sortedSeverities[0] : null;
-
   const renderUpdatableStatus = () => {
-    const trivialUpdateStatus = depTree?.checkIfPackageTriviallyUpdatable(pkg.package_name, pkg.version);
+    const trivialUpdateStatus = vulnerable.trivially_updatable;
 
     if (!trivialUpdateStatus || trivialUpdateStatus === 'no') {
       return null;
@@ -63,7 +45,7 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
             <hr className="m-1" />
             This command will update the package:
             <CopyBlock
-              text={`npm update ${pkg.package_name}`}
+              text={`npm update ${vulnerable.release.package.name}`}
               language="bash"
               showLineNumbers={false}
               startingLineNumber={false}
@@ -72,7 +54,7 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
             />
             or for Yarn:
             <CopyBlock
-              text={`yarn upgrade ${pkg.package_name}`}
+              text={`yarn upgrade ${vulnerable.release.package.name}`}
               language="bash"
               showLineNumbers={false}
               startingLineNumber={false}
@@ -103,33 +85,30 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
         <Row>
           <Col sm="6">
             <Card.Title>
-              <h2 className={headerClassNames}>{pkg.package_name}</h2>
+              <h2 className={vulnerable.ignored ? "text-decoration-line-through":""}>{vulnerable.release.package.name}</h2>
             </Card.Title>
             <Card.Subtitle>
               <span className="darker">Version: </span>
-              {pkg.version}
+              {vulnerable.release.version}
               {renderUpdatableStatus()}
             </Card.Subtitle>
           </Col>
           <Col sm={{ span: 6 }}>
             <div className="text-sm-end">
-              {mostSevereSeverity ? (
+              {vulnerable.severity ? (
                 <>
                   <Card.Title>
                     <span className="text-right darker"> Severity: </span>
                     <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
-                      <h4
-                        className={`p-1 ${mostSevereSeverity.cvss3OverallSeverityText} text-capitalize`}
-                        style={{ display: 'inline' }}
-                      >
-                        {mostSevereSeverity.cvss3OverallSeverityText}
+                      <h4 className={`p-1 ${vulnerable.severity} text-capitalize`} style={{ display: 'inline' }}>
+                        {vulnerable.severity}
                       </h4>
                     </div>
                   </Card.Title>
                   <Card.Subtitle>
                     {' '}
                     <span className="darker">CVSS: </span>
-                    {mostSevereSeverity.overallScore}
+                    {vulnerable.cvss}
                   </Card.Subtitle>
                 </>
               ) : null}

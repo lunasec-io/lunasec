@@ -24,9 +24,14 @@ export type AuthenticatedRepoCloneUrlOutput = {
 
 export type BuildData_AffectedByVulnerability = {
   __typename?: 'BuildData_AffectedByVulnerability';
+  beneath_minimum_severity: Scalars['Boolean'];
   chains?: Maybe<Array<Array<BuildData_DependencyNode>>>;
-  ranges?: Maybe<Array<Maybe<BuildData_Range>>>;
-  trivially_updatable?: Maybe<Scalars['Boolean']>;
+  fix_versions: Array<Scalars['String']>;
+  ignored: Scalars['Boolean'];
+  ignored_vulnerability?: Maybe<BuildData_IgnoredVulnerability>;
+  path: Scalars['String'];
+  ranges: Array<BuildData_Range>;
+  trivially_updatable_to?: Maybe<Scalars['String']>;
   vulnerability: BuildData_Vulnerability;
 };
 
@@ -36,6 +41,25 @@ export type BuildData_DependencyNode = {
   range: Scalars['String'];
   release: BuildData_Release;
   release_id: Scalars['String'];
+};
+
+export type BuildData_Guide = {
+  __typename?: 'BuildData_Guide';
+  id: Scalars['String'];
+  summary: Scalars['String'];
+  title: Scalars['String'];
+};
+
+export type BuildData_Guide_Vulnerability = {
+  __typename?: 'BuildData_Guide_Vulnerability';
+  guide?: Maybe<BuildData_Guide>;
+  guide_id: Scalars['String'];
+};
+
+export type BuildData_IgnoredVulnerability = {
+  __typename?: 'BuildData_IgnoredVulnerability';
+  locations: Array<Scalars['String']>;
+  note: Scalars['String'];
 };
 
 export type BuildData_Package = {
@@ -61,20 +85,27 @@ export type BuildData_Release = {
 export type BuildData_Vulnerability = {
   __typename?: 'BuildData_Vulnerability';
   cvss_score?: Maybe<Scalars['Float']>;
+  guide_vulnerabilities: Array<BuildData_Guide_Vulnerability>;
   id: Scalars['String'];
   severity_name?: Maybe<Scalars['String']>;
   source: Scalars['String'];
   source_id: Scalars['String'];
+  summary?: Maybe<Scalars['String']>;
 };
 
 export type BuildData_VulnerableRelease = {
   __typename?: 'BuildData_VulnerableRelease';
   affected_by: Array<BuildData_AffectedByVulnerability>;
+  beneath_minimum_severity: Scalars['Boolean'];
   chains: Array<Array<BuildData_DependencyNode>>;
   cvss?: Maybe<Scalars['Float']>;
   dev_only: Scalars['Boolean'];
+  fix_versions: Array<Scalars['String']>;
+  guides: Array<BuildData_Guide>;
+  ignored: Scalars['Boolean'];
+  paths: Array<Scalars['String']>;
   release: BuildData_Release;
-  severity?: Maybe<Scalars['String']>;
+  severity: Scalars['String'];
   trivially_updatable: Scalars['String'];
 };
 
@@ -165,7 +196,6 @@ export type QuerySbomUrlArgs = {
 export type QueryVulnerableReleasesFromBuildArgs = {
   buildId: Scalars['uuid'];
   minimumSeverity?: InputMaybe<Scalars['String']>;
-  showIgnored?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type SbomUploadUrlInput = {
@@ -258,6 +288,9 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BuildData_AffectedByVulnerability: ResolverTypeWrapper<BuildData_AffectedByVulnerability>;
   BuildData_DependencyNode: ResolverTypeWrapper<BuildData_DependencyNode>;
+  BuildData_Guide: ResolverTypeWrapper<BuildData_Guide>;
+  BuildData_Guide_Vulnerability: ResolverTypeWrapper<BuildData_Guide_Vulnerability>;
+  BuildData_IgnoredVulnerability: ResolverTypeWrapper<BuildData_IgnoredVulnerability>;
   BuildData_Package: ResolverTypeWrapper<BuildData_Package>;
   BuildData_Range: ResolverTypeWrapper<BuildData_Range>;
   BuildData_Release: ResolverTypeWrapper<BuildData_Release>;
@@ -286,6 +319,9 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   BuildData_AffectedByVulnerability: BuildData_AffectedByVulnerability;
   BuildData_DependencyNode: BuildData_DependencyNode;
+  BuildData_Guide: BuildData_Guide;
+  BuildData_Guide_Vulnerability: BuildData_Guide_Vulnerability;
+  BuildData_IgnoredVulnerability: BuildData_IgnoredVulnerability;
   BuildData_Package: BuildData_Package;
   BuildData_Range: BuildData_Range;
   BuildData_Release: BuildData_Release;
@@ -314,9 +350,14 @@ export type AuthenticatedRepoCloneUrlOutputResolvers<ContextType = Context, Pare
 };
 
 export type BuildData_AffectedByVulnerabilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_AffectedByVulnerability'] = ResolversParentTypes['BuildData_AffectedByVulnerability']> = {
+  beneath_minimum_severity?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   chains?: Resolver<Maybe<Array<Array<ResolversTypes['BuildData_DependencyNode']>>>, ParentType, ContextType>;
-  ranges?: Resolver<Maybe<Array<Maybe<ResolversTypes['BuildData_Range']>>>, ParentType, ContextType>;
-  trivially_updatable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  fix_versions?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  ignored?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  ignored_vulnerability?: Resolver<Maybe<ResolversTypes['BuildData_IgnoredVulnerability']>, ParentType, ContextType>;
+  path?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  ranges?: Resolver<Array<ResolversTypes['BuildData_Range']>, ParentType, ContextType>;
+  trivially_updatable_to?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   vulnerability?: Resolver<ResolversTypes['BuildData_Vulnerability'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -326,6 +367,25 @@ export type BuildData_DependencyNodeResolvers<ContextType = Context, ParentType 
   range?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   release?: Resolver<ResolversTypes['BuildData_Release'], ParentType, ContextType>;
   release_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BuildData_GuideResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_Guide'] = ResolversParentTypes['BuildData_Guide']> = {
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  summary?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BuildData_Guide_VulnerabilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_Guide_Vulnerability'] = ResolversParentTypes['BuildData_Guide_Vulnerability']> = {
+  guide?: Resolver<Maybe<ResolversTypes['BuildData_Guide']>, ParentType, ContextType>;
+  guide_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BuildData_IgnoredVulnerabilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_IgnoredVulnerability'] = ResolversParentTypes['BuildData_IgnoredVulnerability']> = {
+  locations?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  note?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -351,20 +411,27 @@ export type BuildData_ReleaseResolvers<ContextType = Context, ParentType extends
 
 export type BuildData_VulnerabilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_Vulnerability'] = ResolversParentTypes['BuildData_Vulnerability']> = {
   cvss_score?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  guide_vulnerabilities?: Resolver<Array<ResolversTypes['BuildData_Guide_Vulnerability']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   severity_name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   source?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   source_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  summary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type BuildData_VulnerableReleaseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_VulnerableRelease'] = ResolversParentTypes['BuildData_VulnerableRelease']> = {
   affected_by?: Resolver<Array<ResolversTypes['BuildData_AffectedByVulnerability']>, ParentType, ContextType>;
+  beneath_minimum_severity?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   chains?: Resolver<Array<Array<ResolversTypes['BuildData_DependencyNode']>>, ParentType, ContextType>;
   cvss?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   dev_only?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  fix_versions?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  guides?: Resolver<Array<ResolversTypes['BuildData_Guide']>, ParentType, ContextType>;
+  ignored?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  paths?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   release?: Resolver<ResolversTypes['BuildData_Release'], ParentType, ContextType>;
-  severity?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  severity?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   trivially_updatable?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -441,6 +508,9 @@ export type Resolvers<ContextType = Context> = {
   AuthenticatedRepoCloneUrlOutput?: AuthenticatedRepoCloneUrlOutputResolvers<ContextType>;
   BuildData_AffectedByVulnerability?: BuildData_AffectedByVulnerabilityResolvers<ContextType>;
   BuildData_DependencyNode?: BuildData_DependencyNodeResolvers<ContextType>;
+  BuildData_Guide?: BuildData_GuideResolvers<ContextType>;
+  BuildData_Guide_Vulnerability?: BuildData_Guide_VulnerabilityResolvers<ContextType>;
+  BuildData_IgnoredVulnerability?: BuildData_IgnoredVulnerabilityResolvers<ContextType>;
   BuildData_Package?: BuildData_PackageResolvers<ContextType>;
   BuildData_Range?: BuildData_RangeResolvers<ContextType>;
   BuildData_Release?: BuildData_ReleaseResolvers<ContextType>;

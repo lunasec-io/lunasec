@@ -8,42 +8,6 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
         id
         source_type
         project_id
-        resolved_manifests {
-            id
-            path
-            child_edges_recursive {
-                parent_id
-                child_id
-                child {
-                    id
-                    range
-                    labels
-                    release_id
-                    release {
-                        id
-                        fetched_time
-                        version
-                        package {
-                            name
-                            last_successful_fetch
-                            package_manager
-                            affected_by_vulnerability {
-                                vulnerability {
-                                    id
-                                    source_id
-                                    source
-                                }
-                                ranges {
-                                    introduced
-                                    fixed
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         project {
             name
             ignored_vulnerabilities {
