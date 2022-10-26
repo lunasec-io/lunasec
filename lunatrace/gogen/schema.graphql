@@ -238,7 +238,12 @@ type analysis_manifest_dependency_edge_result {
     id: uuid!
     manifest_dependency_edge: manifest_dependency_edge!
     manifest_dependency_edge_id: uuid!
+    output(path: String): jsonb
     vulnerability_id: uuid!
+}
+
+input analysis_manifest_dependency_edge_result_append_input {
+    output: jsonb
 }
 
 input analysis_manifest_dependency_edge_result_bool_exp {
@@ -252,12 +257,25 @@ input analysis_manifest_dependency_edge_result_bool_exp {
     id: uuid_comparison_exp
     manifest_dependency_edge: manifest_dependency_edge_bool_exp
     manifest_dependency_edge_id: uuid_comparison_exp
+    output: jsonb_comparison_exp
     vulnerability_id: uuid_comparison_exp
 }
 
 enum analysis_manifest_dependency_edge_result_constraint {
-    manifest_dependency_edge_result_manifest_dependency_edge_id_vul
     manifest_dependency_edge_result_pkey
+    manifest_dependency_edge_result_vulnerability_id_manifest_depen
+}
+
+input analysis_manifest_dependency_edge_result_delete_at_path_input {
+    output: [String!]
+}
+
+input analysis_manifest_dependency_edge_result_delete_elem_input {
+    output: Int
+}
+
+input analysis_manifest_dependency_edge_result_delete_key_input {
+    output: String
 }
 
 input analysis_manifest_dependency_edge_result_inc_input {
@@ -272,6 +290,7 @@ input analysis_manifest_dependency_edge_result_insert_input {
     id: uuid
     manifest_dependency_edge: manifest_dependency_edge_obj_rel_insert_input
     manifest_dependency_edge_id: uuid
+    output: jsonb
     vulnerability_id: uuid
 }
 
@@ -294,11 +313,16 @@ input analysis_manifest_dependency_edge_result_order_by {
     id: order_by
     manifest_dependency_edge: manifest_dependency_edge_order_by
     manifest_dependency_edge_id: order_by
+    output: order_by
     vulnerability_id: order_by
 }
 
 input analysis_manifest_dependency_edge_result_pk_columns_input {
     id: uuid!
+}
+
+input analysis_manifest_dependency_edge_result_prepend_input {
+    output: jsonb
 }
 
 enum analysis_manifest_dependency_edge_result_select_column {
@@ -308,6 +332,7 @@ enum analysis_manifest_dependency_edge_result_select_column {
     finding_type
     id
     manifest_dependency_edge_id
+    output
     vulnerability_id
 }
 
@@ -318,6 +343,7 @@ input analysis_manifest_dependency_edge_result_set_input {
     finding_type: analysis_finding_type_enum
     id: uuid
     manifest_dependency_edge_id: uuid
+    output: jsonb
     vulnerability_id: uuid
 }
 
@@ -328,6 +354,7 @@ enum analysis_manifest_dependency_edge_result_update_column {
     finding_type
     id
     manifest_dependency_edge_id
+    output
     vulnerability_id
 }
 
@@ -2752,8 +2779,8 @@ type mutation_root {
     insert_webhook_cache_one(object: webhook_cache_insert_input!, on_conflict: webhook_cache_on_conflict): webhook_cache
     installSelectedRepos(orgs: [OrgsWithReposInput!]!): InstallSelectedReposResponse
     presignManifestUpload(project_id: uuid!): PresignedUrlResponse
-    update_analysis_manifest_dependency_edge_result(_inc: analysis_manifest_dependency_edge_result_inc_input, _set: analysis_manifest_dependency_edge_result_set_input, where: analysis_manifest_dependency_edge_result_bool_exp!): analysis_manifest_dependency_edge_result_mutation_response
-    update_analysis_manifest_dependency_edge_result_by_pk(_inc: analysis_manifest_dependency_edge_result_inc_input, _set: analysis_manifest_dependency_edge_result_set_input, pk_columns: analysis_manifest_dependency_edge_result_pk_columns_input!): analysis_manifest_dependency_edge_result
+    update_analysis_manifest_dependency_edge_result(_append: analysis_manifest_dependency_edge_result_append_input, _delete_at_path: analysis_manifest_dependency_edge_result_delete_at_path_input, _delete_elem: analysis_manifest_dependency_edge_result_delete_elem_input, _delete_key: analysis_manifest_dependency_edge_result_delete_key_input, _inc: analysis_manifest_dependency_edge_result_inc_input, _prepend: analysis_manifest_dependency_edge_result_prepend_input, _set: analysis_manifest_dependency_edge_result_set_input, where: analysis_manifest_dependency_edge_result_bool_exp!): analysis_manifest_dependency_edge_result_mutation_response
+    update_analysis_manifest_dependency_edge_result_by_pk(_append: analysis_manifest_dependency_edge_result_append_input, _delete_at_path: analysis_manifest_dependency_edge_result_delete_at_path_input, _delete_elem: analysis_manifest_dependency_edge_result_delete_elem_input, _delete_key: analysis_manifest_dependency_edge_result_delete_key_input, _inc: analysis_manifest_dependency_edge_result_inc_input, _prepend: analysis_manifest_dependency_edge_result_prepend_input, _set: analysis_manifest_dependency_edge_result_set_input, pk_columns: analysis_manifest_dependency_edge_result_pk_columns_input!): analysis_manifest_dependency_edge_result
     update_build_dependency_relationship(_append: build_dependency_relationship_append_input, _delete_at_path: build_dependency_relationship_delete_at_path_input, _delete_elem: build_dependency_relationship_delete_elem_input, _delete_key: build_dependency_relationship_delete_key_input, _prepend: build_dependency_relationship_prepend_input, _set: build_dependency_relationship_set_input, where: build_dependency_relationship_bool_exp!): build_dependency_relationship_mutation_response
     update_build_dependency_relationship_by_pk(_append: build_dependency_relationship_append_input, _delete_at_path: build_dependency_relationship_delete_at_path_input, _delete_elem: build_dependency_relationship_delete_elem_input, _delete_key: build_dependency_relationship_delete_key_input, _prepend: build_dependency_relationship_prepend_input, _set: build_dependency_relationship_set_input, pk_columns: build_dependency_relationship_pk_columns_input!): build_dependency_relationship
     update_builds(_inc: builds_inc_input, _set: builds_set_input, where: builds_bool_exp!): builds_mutation_response

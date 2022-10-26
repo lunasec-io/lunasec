@@ -2,6 +2,7 @@ package staticanalysis
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/google/uuid"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules"
@@ -41,6 +42,18 @@ func validateGetManifestDependencyEdgeResponse(logger zerolog.Logger, resp *gql.
 		return errors.New("parent dependency release is nil")
 	}
 	return nil
+}
+
+func marshalResults(logger zerolog.Logger, results *rules.SemgrepRuleOutput) json.RawMessage {
+	// empty the scanned paths since this can get quite large
+	results.Paths.Scanned = []string{}
+
+	marshalledResults, err := json.Marshal(results)
+	if err != nil {
+		logger.Warn().Err(err).Msg("failed to marshal results")
+		marshalledResults = nil
+	}
+	return marshalledResults
 }
 
 func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx context.Context, queueRecord QueueRecord) error {
@@ -87,9 +100,11 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 		Str("child package", childPackageName).
 		Logger()
 
-	findingType := s.runSemgrepRuleOnParentPackage(
+	findingType, results := s.runSemgrepRuleOnParentPackage(
 		ctx, logger, upstreamBlobUrl, manifestDependencyEdgeUUID, parentPackageName, childPackageName,
 	)
+
+	resultsPtr := marshalResults(logger, results)
 
 	logger.Info().
 		Str("finding type", string(findingType)).
@@ -101,6 +116,7 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 		Finding_source_version:      util.Ptr(rules.ImportedAndCalledRuleVersion),
 		Manifest_dependency_edge_id: util.Ptr(manifestDependencyEdgeUUID),
 		Vulnerability_id:            util.Ptr(vulnerabilityUUID),
+		Output:                      util.Ptr(resultsPtr),
 	}
 
 	analysisResp, err := gql.InsertManifestDependencyEdgeAnalysis(ctx, s.GQLClient, result)
@@ -209,7 +225,7 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 	manifestDependencyEdgeUUID uuid.UUID,
 	parentPackageName,
 	childPackageName string,
-) gql.Analysis_finding_type_enum {
+) (gql.Analysis_finding_type_enum, *rules.SemgrepRuleOutput) {
 	var err error
 
 	var resolvedBlobUrl string
@@ -219,7 +235,7 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 			logger.Error().
 				Err(err).
 				Msg("failed to determine upstream blob url")
-			return gql.Analysis_finding_type_enumError
+			return gql.Analysis_finding_type_enumError, nil
 		}
 	} else {
 		resolvedBlobUrl = *upstreamBlobUrl
@@ -233,7 +249,7 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 		logger.Error().
 			Err(err).
 			Msg("failed to download package blob")
-		return gql.Analysis_finding_type_enumError
+		return gql.Analysis_finding_type_enumError, nil
 	}
 
 	tmpDir, err := os.MkdirTemp("", "")
@@ -241,7 +257,7 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 		logger.Error().
 			Err(err).
 			Msg("failed to create temporary directory for parent package code")
-		return gql.Analysis_finding_type_enumError
+		return gql.Analysis_finding_type_enumError, nil
 	}
 	defer os.RemoveAll(tmpDir)
 
@@ -254,21 +270,22 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 		logger.Error().
 			Err(err).
 			Msg("failed to extract parent package code to directory")
-		return gql.Analysis_finding_type_enumError
+		return gql.Analysis_finding_type_enumError, nil
 	}
 
 	logger.Info().
 		Msg("analyzing code for usages of child in parent")
 
-	importedAndCalled, err := rules.DependencyIsImportedAndCalledInCode(childPackageName, tmpDir)
+	results, err := rules.AnalyzeCodeForImportingAndCallingPackage(tmpDir, childPackageName)
 	if err != nil {
 		logger.Error().
 			Err(err).
 			Msg("failed to determine if child is imported and called by parent")
-		return gql.Analysis_finding_type_enumError
+		return gql.Analysis_finding_type_enumError, nil
 	}
-	if importedAndCalled {
-		return gql.Analysis_finding_type_enumVulnerable
+
+	if len(results.Results) > 0 {
+		return gql.Analysis_finding_type_enumVulnerable, results
 	}
-	return gql.Analysis_finding_type_enumNotVulnerable
+	return gql.Analysis_finding_type_enumNotVulnerable, results
 }

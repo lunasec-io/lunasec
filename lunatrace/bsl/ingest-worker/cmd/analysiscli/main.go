@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -39,8 +39,14 @@ func main() {
 					codeDir := c.Args().First()
 					dependency := c.String("dependency")
 
-					called, err := rules.DependencyIsImportedAndCalledInCode(dependency, codeDir)
-					if !called {
+					results, err := rules.AnalyzeCodeForImportingAndCallingPackage(codeDir, dependency)
+					if len(results.Results) > 0 {
+						for _, result := range results.Results {
+							log.Info().
+								Str("path", result.Path).
+								Msg("dependency imported and called at path")
+						}
+					} else {
 						log.Info().Msg("dependency was not imported and called")
 					}
 					return err
