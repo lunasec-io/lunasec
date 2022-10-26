@@ -239,6 +239,7 @@ type analysis_manifest_dependency_edge_result {
     manifest_dependency_edge: manifest_dependency_edge!
     manifest_dependency_edge_id: uuid!
     output(path: String): jsonb
+    vulnerability: vulnerability!
     vulnerability_id: uuid!
 }
 
@@ -258,12 +259,13 @@ input analysis_manifest_dependency_edge_result_bool_exp {
     manifest_dependency_edge: manifest_dependency_edge_bool_exp
     manifest_dependency_edge_id: uuid_comparison_exp
     output: jsonb_comparison_exp
+    vulnerability: vulnerability_bool_exp
     vulnerability_id: uuid_comparison_exp
 }
 
 enum analysis_manifest_dependency_edge_result_constraint {
+    manifest_dependency_edge_result_manifest_dependency_edge_id_vul
     manifest_dependency_edge_result_pkey
-    manifest_dependency_edge_result_vulnerability_id_manifest_depen
 }
 
 input analysis_manifest_dependency_edge_result_delete_at_path_input {
@@ -291,6 +293,7 @@ input analysis_manifest_dependency_edge_result_insert_input {
     manifest_dependency_edge: manifest_dependency_edge_obj_rel_insert_input
     manifest_dependency_edge_id: uuid
     output: jsonb
+    vulnerability: vulnerability_obj_rel_insert_input
     vulnerability_id: uuid
 }
 
@@ -314,6 +317,7 @@ input analysis_manifest_dependency_edge_result_order_by {
     manifest_dependency_edge: manifest_dependency_edge_order_by
     manifest_dependency_edge_id: order_by
     output: order_by
+    vulnerability: vulnerability_order_by
     vulnerability_id: order_by
 }
 
