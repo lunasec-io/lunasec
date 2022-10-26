@@ -71,7 +71,7 @@ function getSearch(search: string): Analysis_Manifest_Dependency_Edge_Result_Boo
 export const AdminDashboardStaticAnalysis = () => {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
-  const limit = 100;
+  const limit = 20;
   const offset = page * limit;
 
   const { data, error, isLoading } = api.endpoints.GetAnalysisManifestDependencyEdgeResultsOverview.useQuery({
@@ -145,11 +145,6 @@ export const AdminDashboardStaticAnalysis = () => {
                     codeBlock
                   />
                   <p>{r.finding_type}</p>
-                  <ul>
-                    {r.output.results.map((result: any) => (
-                      <li>{result.path}</li>
-                    ))}
-                  </ul>
                 </Card.Body>
               </Card>
             </Col>
