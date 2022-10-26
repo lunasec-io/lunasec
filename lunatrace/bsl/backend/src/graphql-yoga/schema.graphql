@@ -17,7 +17,7 @@ type Query {
     ): AuthenticatedRepoCloneUrlOutput
     fakeQueryToHackHasuraBeingABuggyMess: String
     availableOrgsWithRepos: [OrgWithRepos!]
-    vulnerableReleasesFromBuild(buildId: uuid!, minimumSeverity: String, showIgnored: Boolean): [BuildData_VulnerableRelease!]
+    vulnerableReleasesFromBuild(buildId: uuid!, minimumSeverity: String): [BuildData_VulnerableRelease!]
 }
 
 type Mutation {
@@ -89,20 +89,35 @@ type OrgWithRepos {
 # ------- BEGIN VULNERABLE RELEASE RESPONSE TYPES BELOW, these reference the dependency-tree/types.ts
 type BuildData_VulnerableRelease {
     dev_only: Boolean!
-    severity: String
+    severity: String!
     cvss: Float
     chains: [[BuildData_DependencyNode!]!]!
     affected_by: [BuildData_AffectedByVulnerability!]!
     release: BuildData_Release!
     trivially_updatable: String!
+    beneath_minimum_severity: Boolean!
+    guides: [BuildData_Guide!]!
+    fix_versions: [String!]!
+    paths: [String!]!
+    ignored: Boolean!
+}
+
+type BuildData_IgnoredVulnerability {
+    note: String!
+    locations: [String!]!
 }
 
 
 type BuildData_AffectedByVulnerability {
     vulnerability: BuildData_Vulnerability!
-    ranges: [BuildData_Range]
-    trivially_updatable: Boolean
+    beneath_minimum_severity: Boolean!
+    ranges: [BuildData_Range!]!
+    ignored:Boolean!
+    ignored_vulnerability: BuildData_IgnoredVulnerability
+    trivially_updatable_to: String
     chains: [[BuildData_DependencyNode!]!] # each vuln has its own sublist of chains in addition to the global list in the main body of the release. This is in case some have been eliminated by false-positive analysis for only this vuln
+    fix_versions: [String!]!
+    path: String!
 }
 
 type BuildData_DependencyNode {
@@ -121,6 +136,7 @@ type BuildData_Release {
     id: String!
     version: String!
     package: BuildData_Package!
+
 }
 
 type BuildData_Package {
@@ -134,7 +150,19 @@ type BuildData_Vulnerability {
     id: String!
     severity_name: String
     cvss_score: Float
+    summary: String
     source: String!
     source_id: String!
+    guide_vulnerabilities: [BuildData_Guide_Vulnerability!]!
 }
 
+type BuildData_Guide_Vulnerability {
+    guide_id: String!
+    guide: BuildData_Guide
+}
+
+type BuildData_Guide {
+    summary:String!
+    id: String!
+    title: String!
+}

@@ -11,12 +11,12 @@
  * limitations under the License.
  *
  */
-import { severityOrder, VulnerablePackage } from '@lunatrace/lunatrace-common';
+import { severityOrder, VulnerablePackageLegacy } from '@lunatrace/lunatrace-common';
 import React, { useState } from 'react';
 import { Accordion, Card, Container, Row } from 'react-bootstrap';
 
 import { ConditionallyRender } from '../../../../../components/utils/ConditionallyRender';
-import { DepTree, QuickViewProps } from '../../types';
+import { QuickViewProps } from '../../types';
 import { FindingsTable } from '../findings/FindingsList';
 import { FindingsListHeader } from '../findings/FindingsListHeader';
 import { Finding } from '../types';
@@ -25,18 +25,17 @@ import { GuideBlurb } from './GuideBlurb';
 import { PackageDetails } from './PackageDetails';
 
 interface VulnerablePackageCardBodyProps {
-  pkg: VulnerablePackage<Finding>;
+  pkg: VulnerablePackageLegacy<Finding>;
   severityFilter: number;
   quickView: QuickViewProps;
-  depTree: DepTree | null;
 }
 
 export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyProps> = ({
   pkg,
   severityFilter,
   quickView,
-  depTree,
 }) => {
+  const depTree = null
   const [shouldFilterFindings, setShouldFilterFindings] = useState(true);
 
   const filteredFindings = pkg.findings.filter((f) => {
@@ -54,7 +53,7 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
       </ConditionallyRender>
 
       <div className="m-lg-4">
-        <PackageDetails pkg={pkg} depTree={depTree} />
+        <PackageDetails pkg={pkg}/>
         <Row>
           <Accordion defaultActiveKey={filteredFindings.length > 2 ? 'nonexistant' : '0'}>
             <Accordion.Item eventKey="0">
@@ -69,7 +68,6 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
                 quickView={quickView}
                 setShouldFilterFindings={setShouldFilterFindings}
                 findingsCount={pkg.findings.length}
-                depTree={depTree}
               />
             </Accordion.Item>
           </Accordion>

@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { filterFindingsNotIgnored, VulnerablePackage } from '@lunatrace/lunatrace-common/build/main';
+import { filterFindingsNotIgnored, VulnerablePackageLegacy } from '@lunatrace/lunatrace-common/build/main';
 import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
 import { Card, Col, NavLink, OverlayTrigger, Popover, Row, Tooltip } from 'react-bootstrap';
@@ -19,18 +19,15 @@ import { CopyBlock, tomorrowNight } from 'react-code-blocks';
 import { FcUpload } from 'react-icons/fc';
 
 import useBreakpoint from '../../../../hooks/useBreakpoint';
-import { DepTree } from '../types';
 
 import { Finding } from './types';
 
 interface VulnerablePackageCardHeaderProps {
-  pkg: VulnerablePackage<Finding>;
-  depTree: DepTree | null;
+  pkg: VulnerablePackageLegacy<Finding>;
 }
 
 export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePackageCardHeaderProps> = ({
   pkg,
-  depTree,
 }) => {
   const filteredFindings = filterFindingsNotIgnored(pkg.findings);
   const allFindingsAreIgnored = filteredFindings.length === 0;
@@ -45,58 +42,7 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
     .sort((a, b) => (a && b ? b.overallScore - a.overallScore : 0));
   const mostSevereSeverity = sortedSeverities.length > 0 ? sortedSeverities[0] : null;
 
-  const renderUpdatableStatus = () => {
-    const trivialUpdateStatus = depTree?.checkIfPackageTriviallyUpdatable(pkg.package_name, pkg.version);
 
-    if (!trivialUpdateStatus || trivialUpdateStatus === 'no') {
-      return null;
-    }
-
-    const renderToolTip = (props: React.ComponentProps<typeof Tooltip>) => {
-      return (
-        <Popover className="package-update-popover" {...props}>
-          <Popover.Header>Trivially Updatable</Popover.Header>
-          <Popover.Body>
-            A fix is available within the semver range this package was requested with, meaning that the{' '}
-            <strong>project lockfile</strong> is probably the only thing constraining the package to the vulnerable
-            version.
-            <hr className="m-1" />
-            This command will update the package:
-            <CopyBlock
-              text={`npm update ${pkg.package_name}`}
-              language="bash"
-              showLineNumbers={false}
-              startingLineNumber={false}
-              theme={tomorrowNight}
-              codeBlock
-            />
-            or for Yarn:
-            <CopyBlock
-              text={`yarn upgrade ${pkg.package_name}`}
-              language="bash"
-              showLineNumbers={false}
-              startingLineNumber={false}
-              theme={tomorrowNight}
-              codeBlock
-            />
-          </Popover.Body>
-        </Popover>
-      );
-    };
-
-    const mdOrLarger = useBreakpoint('md');
-    return (
-      <>
-        {', '}
-        <OverlayTrigger trigger="click" rootClose placement={mdOrLarger ? 'right' : 'bottom'} overlay={renderToolTip}>
-          <NavLink className="primary-color d-inline m-0 p-0">
-            {trivialUpdateStatus === 'partially' ? 'partially ' : ''}updatable
-            <FcUpload color="black" className="pb-1" />
-          </NavLink>
-        </OverlayTrigger>
-      </>
-    );
-  };
   return (
     <Card.Header>
       <div className="ms-lg-4 me-lg-4">
@@ -108,7 +54,6 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
             <Card.Subtitle>
               <span className="darker">Version: </span>
               {pkg.version}
-              {renderUpdatableStatus()}
             </Card.Subtitle>
           </Col>
           <Col sm={{ span: 6 }}>

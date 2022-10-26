@@ -11,32 +11,26 @@
  * limitations under the License.
  *
  */
-import { checkIfFindingIgnored } from '@lunatrace/lunatrace-common/build/main';
-import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { FloatingLabel, Form, FormControl, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { XSquare } from 'react-feather';
 import { useParams } from 'react-router-dom';
-import semver from 'semver';
 
-import api from '../../../../../api';
-import { ConfirmationDailog } from '../../../../../components/ConfirmationDialog';
-import { toTitleCase } from '../../../../../utils/string-utils';
-import { Finding } from '../types';
+import api from '../../../../../../api';
+import { ConfirmationDailog } from '../../../../../../components/ConfirmationDialog';
+import { VulnMeta } from '../../types';
 
 interface VulnerabilityTableItemProps {
-  finding: Finding;
+  vulnMeta: VulnMeta;
   setVulnQuickViewId: (vulnId: string) => void;
   vulnQuickViewId: string | null;
-  patchable: string | undefined;
 }
 
-export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({
-  finding,
+export const VulnInfo: React.FC<VulnerabilityTableItemProps> = ({
+  vulnMeta,
   setVulnQuickViewId,
   vulnQuickViewId,
-  patchable,
 }) => {
   const [insertVulnIgnore, insertVulnIgnoreState] = api.useInsertIgnoredVulnerabilitiesMutation();
   const { project_id } = useParams();
@@ -44,14 +38,12 @@ export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [ignoreNote, setIgnoreNote] = useState('');
 
-  const findingIsIgnored = checkIfFindingIgnored(finding);
-
   const renderIgnoreNote = () => {
-    if (!findingIsIgnored) {
+    if (!vulnMeta.ignored_vulnerability) {
       return null;
     }
 
-    const rawNote = finding.vulnerability.ignored_vulnerabilities[0].note;
+    const rawNote = vulnMeta.ignored_vulnerability.note;
     const ignoredNotePretty = rawNote
       ? `Ignored with note: ${rawNote}`
       : 'Vulnerability has been ignored without a reason.';
@@ -62,17 +54,17 @@ export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({
       objects: [
         {
           project_id: project_id,
-          vulnerability_id: finding.vulnerability_id,
+          vulnerability_id: vulnMeta.vulnerability.id,
           note: ignoreNote,
-          locations: finding.locations,
+          locations: [vulnMeta.path],
         },
       ],
     });
     setIgnoreNote('');
   };
 
-  const getIgnoreColumn = () => {
-    if (findingIsIgnored) {
+  const getIgnoreButton = () => {
+    if (vulnMeta.ignored) {
       return null;
     }
     if (insertVulnIgnoreState.isLoading) {
@@ -89,56 +81,38 @@ export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({
     );
   };
 
-  const severity = getCvssVectorFromSeverities(finding.vulnerability.severities);
+  const vulnId = vulnQuickViewId === vulnMeta.vulnerability.id;
 
-  const openInQuickView = vulnQuickViewId === finding.vulnerability_id;
+  const rowClassNames = classNames('vuln-table-item', { open: vulnId, ignored: vulnMeta.ignored });
 
-  const rowClassNames = classNames('vuln-table-item', { open: openInQuickView, ignored: findingIsIgnored });
-
-  // TODO (cthompson) this should be moved into common
-  // TODO: (forrest) All this logic should get moved into the backend if possible eventually, frontend should be thin
-  const fixVersions = finding.vulnerability.affected
-    // only get affected packages from vulnerability that match finding package
-    .filter(
-      (affected) => finding.type === affected.package?.package_manager && finding.package_name === affected.package.name
-    )
-    // get fix events from vulnerability
-    // TODO: switch to using the better range table
-    .reduce((fixedEvents, affected) => {
-      const affectedRangeFixedEvents = affected.affected_range_events
-        .filter((range) => range.event === 'fixed')
-        .map((range) => range.version);
-      return [...fixedEvents, ...affectedRangeFixedEvents];
-    }, [] as string[])
-    // sort versions ascending
-    .sort((a, b) => (semver.gt(a, b) ? 1 : -1));
+  const fixVersions = vulnMeta.fix_versions
 
   const rowValues = [
-    finding.vulnerability.source,
-    finding.vulnerability.source_id,
-    severity ? toTitleCase(severity.cvss3OverallSeverityText) : 'unknown',
-    severity ? severity.overallScore : 'unknown',
-    fixVersions.length > 0 ? fixVersions.join(', ') : 'none',
-    getIgnoreColumn(),
+    vulnMeta.vulnerability.source,
+    vulnMeta.vulnerability.source_id,
+    vulnMeta.vulnerability.severity_name,
+    vulnMeta.vulnerability.cvss_score ? vulnMeta.vulnerability.cvss_score : 'Unknown',
+    fixVersions.length > 0 ? fixVersions.join(', ') : 'None',
+    getIgnoreButton(),
   ];
 
   return (
     <>
       <OverlayTrigger
         placement="bottom"
-        overlay={<Tooltip className="wide-tooltip">{finding.vulnerability.summary}</Tooltip>}
-        key={finding.id}
+        overlay={<Tooltip className="wide-tooltip">{vulnMeta.vulnerability.summary}</Tooltip>}
+        key={vulnMeta.vulnerability.id}
       >
         <tr
           style={{ cursor: 'pointer' }}
           onClick={(e) => {
-            setVulnQuickViewId(finding.vulnerability_id as string);
+            setVulnQuickViewId(vulnMeta.vulnerability.id );
           }}
           className={rowClassNames}
-          key={finding.id}
+          key={vulnMeta.vulnerability.id}
         >
           {rowValues.map((value, idx) => {
-            const classNames = findingIsIgnored ? 'text-decoration-line-through' : '';
+            const classNames = vulnMeta.ignored ? 'text-decoration-line-through' : '';
             return (
               <td key={idx} className={classNames}>
                 {value}

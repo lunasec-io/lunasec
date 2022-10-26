@@ -11,36 +11,25 @@
  * limitations under the License.
  *
  */
-import { VulnerablePackage } from '@lunatrace/lunatrace-common';
+import { VulnerablePackageLegacy } from '@lunatrace/lunatrace-common';
 import compareVersions from 'compare-versions';
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
-import { AiOutlineCode } from 'react-icons/ai';
+
 
 import { pluralizeIfMultiple } from '../../../../../utils/string-utils';
-import { DepTree } from '../../types';
 import { Finding } from '../types';
 
-import { TreeInfo } from './TreeInfo';
 interface PackageDetailsProps {
-  pkg: VulnerablePackage<Finding>;
-  depTree: DepTree | null;
+  pkg: VulnerablePackageLegacy<Finding>;
 }
 
-export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ pkg, depTree }) => {
+export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ pkg }) => {
   const fixVersions = [...pkg.fix_versions];
   const pkgLocations = pkg.locations.join(', ');
   const recommendVersion = fixVersions.sort(compareVersions).reverse()[0];
 
-  const depChains = depTree?.showDependencyChainsOfPackage(pkg.package_name, pkg.version);
-
-  const isNodeDevOnly = depChains?.every((chain) => {
-    const rootLabels = chain[0].child.labels;
-    if (rootLabels && 'scope' in rootLabels && rootLabels.scope === 'dev') {
-      return true;
-    }
-    return false;
-  });
+  const depTree = null;
 
   return (
     <div className="mb-3">
@@ -62,16 +51,6 @@ export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ p
             <span className="darker">{pluralizeIfMultiple(pkg.locations.length, 'Path') + ': '}</span>
             <span className="lighter mx-1">{pkgLocations}</span>
           </h5>
-          {isNodeDevOnly && (
-            <h5>
-              <AiOutlineCode className="mb-1 me-1 darker" />
-
-              <span className="">Dev Only</span>
-            </h5>
-          )}
-        </Col>
-        <Col xl="auto" lg={12} className="justify-content-xl-end d-flex">
-          <TreeInfo pkg={pkg} depChains={depChains} />
         </Col>
       </Row>
     </div>

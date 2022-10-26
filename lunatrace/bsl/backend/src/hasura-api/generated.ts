@@ -31,6 +31,11 @@ export type Scalars = {
   uuid: string;
 };
 
+export type AuthenticatedRepoCloneUrlOutput = {
+  __typename?: 'AuthenticatedRepoCloneUrlOutput';
+  url?: Maybe<Scalars['String']>;
+};
+
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
 export type Boolean_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Boolean']>;
@@ -42,6 +47,104 @@ export type Boolean_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Boolean']>;
   _neq?: InputMaybe<Scalars['Boolean']>;
   _nin?: InputMaybe<Array<Scalars['Boolean']>>;
+};
+
+export type BuildData_AffectedByVulnerability = {
+  __typename?: 'BuildData_AffectedByVulnerability';
+  beneath_minimum_severity: Scalars['Boolean'];
+  chains?: Maybe<Array<Array<BuildData_DependencyNode>>>;
+  fix_versions: Array<Scalars['String']>;
+  ignored: Scalars['Boolean'];
+  ignored_vulnerability?: Maybe<BuildData_IgnoredVulnerability>;
+  path: Scalars['String'];
+  ranges: Array<BuildData_Range>;
+  trivially_updatable_to?: Maybe<Scalars['String']>;
+  vulnerability: BuildData_Vulnerability;
+};
+
+export type BuildData_DependencyNode = {
+  __typename?: 'BuildData_DependencyNode';
+  id: Scalars['String'];
+  range: Scalars['String'];
+  release: BuildData_Release;
+  release_id: Scalars['String'];
+};
+
+export type BuildData_Guide = {
+  __typename?: 'BuildData_Guide';
+  id: Scalars['String'];
+  summary: Scalars['String'];
+  title: Scalars['String'];
+};
+
+export type BuildData_Guide_Vulnerability = {
+  __typename?: 'BuildData_Guide_Vulnerability';
+  guide?: Maybe<BuildData_Guide>;
+  guide_id: Scalars['String'];
+};
+
+export type BuildData_IgnoredVulnerability = {
+  __typename?: 'BuildData_IgnoredVulnerability';
+  locations: Array<Scalars['String']>;
+  note: Scalars['String'];
+};
+
+export type BuildData_Package = {
+  __typename?: 'BuildData_Package';
+  affected_by_vulnerability?: Maybe<Array<BuildData_AffectedByVulnerability>>;
+  name: Scalars['String'];
+  package_manager: Scalars['String'];
+};
+
+export type BuildData_Range = {
+  __typename?: 'BuildData_Range';
+  fixed?: Maybe<Scalars['String']>;
+  introduced?: Maybe<Scalars['String']>;
+};
+
+export type BuildData_Release = {
+  __typename?: 'BuildData_Release';
+  id: Scalars['String'];
+  package: BuildData_Package;
+  version: Scalars['String'];
+};
+
+export type BuildData_Vulnerability = {
+  __typename?: 'BuildData_Vulnerability';
+  cvss_score?: Maybe<Scalars['Float']>;
+  guide_vulnerabilities: Array<BuildData_Guide_Vulnerability>;
+  id: Scalars['String'];
+  /** An array relationship */
+  ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
+  severity_name?: Maybe<Scalars['String']>;
+  source: Scalars['String'];
+  source_id: Scalars['String'];
+  summary?: Maybe<Scalars['String']>;
+};
+
+
+export type BuildData_VulnerabilityIgnored_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Ignored_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Ignored_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
+};
+
+export type BuildData_VulnerableRelease = {
+  __typename?: 'BuildData_VulnerableRelease';
+  affected_by: Array<BuildData_AffectedByVulnerability>;
+  beneath_minimum_severity: Scalars['Boolean'];
+  chains: Array<Array<BuildData_DependencyNode>>;
+  cvss?: Maybe<Scalars['Float']>;
+  dev_only: Scalars['Boolean'];
+  fix_versions: Array<Scalars['String']>;
+  guides: Array<BuildData_Guide>;
+  ignored: Scalars['Boolean'];
+  paths: Array<Scalars['String']>;
+  release: BuildData_Release;
+  severity: Scalars['String'];
+  trivially_updatable: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'. */
@@ -57,6 +160,25 @@ export type Float_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Float']>>;
 };
 
+export type GithubRepository = {
+  __typename?: 'GithubRepository';
+  cloneUrl: Scalars['String'];
+  defaultBranch: Scalars['String'];
+  gitUrl: Scalars['String'];
+  orgId: Scalars['Int'];
+  orgName: Scalars['String'];
+  orgNodeId: Scalars['String'];
+  ownerType: Scalars['String'];
+  repoId: Scalars['Int'];
+  repoName: Scalars['String'];
+  repoNodeId: Scalars['String'];
+};
+
+export type InstallSelectedReposResponse = {
+  __typename?: 'InstallSelectedReposResponse';
+  success?: Maybe<Scalars['Boolean']>;
+};
+
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Int']>;
@@ -68,6 +190,32 @@ export type Int_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Int']>;
   _neq?: InputMaybe<Scalars['Int']>;
   _nin?: InputMaybe<Array<Scalars['Int']>>;
+};
+
+export type OrgWithRepos = {
+  __typename?: 'OrgWithRepos';
+  id: Scalars['String'];
+  organizationName: Scalars['String'];
+  repos: Array<GithubRepository>;
+};
+
+export type OrgsWithReposInput = {
+  id: Scalars['String'];
+  repos: Array<Scalars['Int']>;
+};
+
+export type PresignedUrlResponse = {
+  __typename?: 'PresignedUrlResponse';
+  bucket: Scalars['String'];
+  headers: Scalars['jsonb'];
+  key: Scalars['String'];
+  url: Scalars['String'];
+};
+
+export type SbomUploadUrlOutput = {
+  __typename?: 'SbomUploadUrlOutput';
+  error: Scalars['Boolean'];
+  uploadUrl?: Maybe<UploadUrl>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -101,6 +249,12 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
+};
+
+export type UploadUrl = {
+  __typename?: 'UploadUrl';
+  headers: Scalars['jsonb'];
+  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
@@ -659,6 +813,7 @@ export type Builds = {
   /** An array relationship */
   resolved_manifests: Array<Resolved_Manifest>;
   s3_url?: Maybe<Scalars['String']>;
+  s3_url_signed?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
   source_type: Scalars['builds_source_type'];
@@ -1709,6 +1864,7 @@ export type Fix_State_Enum_Comparison_Exp = {
 /** Metadata about a github repository and where to find it. */
 export type Github_Repositories = {
   __typename?: 'github_repositories';
+  authenticated_clone_url?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   default_branch?: Maybe<Scalars['String']>;
   git_url: Scalars['String'];
   github_id?: Maybe<Scalars['Int']>;
@@ -1963,9 +2119,20 @@ export type Guide_Related_Guides = {
   __typename?: 'guide_related_guides';
   created_at: Scalars['timestamptz'];
   from_guide_id: Scalars['uuid'];
+  /** An object relationship */
+  guide: Guides;
   id: Scalars['uuid'];
+  /** An object relationship */
+  parent_guide: Guides;
   to_guide_unique_id: Scalars['String'];
   updated_at: Scalars['timestamptz'];
+};
+
+/** order by aggregate values of table "guide_related_guides" */
+export type Guide_Related_Guides_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Guide_Related_Guides_Max_Order_By>;
+  min?: InputMaybe<Guide_Related_Guides_Min_Order_By>;
 };
 
 /** input type for inserting array relation for remote table "guide_related_guides" */
@@ -1982,7 +2149,9 @@ export type Guide_Related_Guides_Bool_Exp = {
   _or?: InputMaybe<Array<Guide_Related_Guides_Bool_Exp>>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   from_guide_id?: InputMaybe<Uuid_Comparison_Exp>;
+  guide?: InputMaybe<Guides_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  parent_guide?: InputMaybe<Guides_Bool_Exp>;
   to_guide_unique_id?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
@@ -2006,6 +2175,24 @@ export type Guide_Related_Guides_Insert_Input = {
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
+/** order by max() on columns of table "guide_related_guides" */
+export type Guide_Related_Guides_Max_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  from_guide_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  to_guide_unique_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "guide_related_guides" */
+export type Guide_Related_Guides_Min_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  from_guide_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  to_guide_unique_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
 /** response of any mutation on the table "guide_related_guides" */
 export type Guide_Related_Guides_Mutation_Response = {
   __typename?: 'guide_related_guides_mutation_response';
@@ -2026,7 +2213,9 @@ export type Guide_Related_Guides_On_Conflict = {
 export type Guide_Related_Guides_Order_By = {
   created_at?: InputMaybe<Order_By>;
   from_guide_id?: InputMaybe<Order_By>;
+  guide?: InputMaybe<Guides_Order_By>;
   id?: InputMaybe<Order_By>;
+  parent_guide?: InputMaybe<Guides_Order_By>;
   to_guide_unique_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -2077,6 +2266,8 @@ export enum Guide_Related_Guides_Update_Column {
 export type Guide_Vulnerabilities = {
   __typename?: 'guide_vulnerabilities';
   created_at: Scalars['timestamptz'];
+  /** An object relationship */
+  guide: Guides;
   guide_id: Scalars['uuid'];
   id: Scalars['uuid'];
   updated_at: Scalars['timestamptz'];
@@ -2105,6 +2296,7 @@ export type Guide_Vulnerabilities_Bool_Exp = {
   _not?: InputMaybe<Guide_Vulnerabilities_Bool_Exp>;
   _or?: InputMaybe<Array<Guide_Vulnerabilities_Bool_Exp>>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  guide?: InputMaybe<Guides_Bool_Exp>;
   guide_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -2168,6 +2360,7 @@ export type Guide_Vulnerabilities_On_Conflict = {
 /** Ordering options when selecting data from "guide_vulnerabilities". */
 export type Guide_Vulnerabilities_Order_By = {
   created_at?: InputMaybe<Order_By>;
+  guide?: InputMaybe<Guides_Order_By>;
   guide_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
@@ -2217,6 +2410,53 @@ export enum Guide_Vulnerabilities_Update_Column {
   VulnerabilityId = 'vulnerability_id'
 }
 
+/** columns and relationships of "guides" */
+export type Guides = {
+  __typename?: 'guides';
+  body: Scalars['String'];
+  created_at: Scalars['timestamptz'];
+  data_source_link: Scalars['String'];
+  guide_unique_id: Scalars['String'];
+  /** An array relationship */
+  guide_vulnerabilities: Array<Guide_Vulnerabilities>;
+  id: Scalars['uuid'];
+  metadata: Scalars['jsonb'];
+  metadata_schema_version: Scalars['Int'];
+  /** An array relationship */
+  related_guides: Array<Guide_Related_Guides>;
+  severity: Scalars['severity_enum'];
+  summary: Scalars['String'];
+  tags: Scalars['_text'];
+  title: Scalars['String'];
+  updated_at: Scalars['timestamptz'];
+};
+
+
+/** columns and relationships of "guides" */
+export type GuidesGuide_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Guide_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Guide_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Guide_Vulnerabilities_Bool_Exp>;
+};
+
+
+/** columns and relationships of "guides" */
+export type GuidesMetadataArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "guides" */
+export type GuidesRelated_GuidesArgs = {
+  distinct_on?: InputMaybe<Array<Guide_Related_Guides_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Guide_Related_Guides_Order_By>>;
+  where?: InputMaybe<Guide_Related_Guides_Bool_Exp>;
+};
+
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type Guides_Append_Input = {
   metadata?: InputMaybe<Scalars['jsonb']>;
@@ -2227,6 +2467,20 @@ export type Guides_Bool_Exp = {
   _and?: InputMaybe<Array<Guides_Bool_Exp>>;
   _not?: InputMaybe<Guides_Bool_Exp>;
   _or?: InputMaybe<Array<Guides_Bool_Exp>>;
+  body?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  data_source_link?: InputMaybe<String_Comparison_Exp>;
+  guide_unique_id?: InputMaybe<String_Comparison_Exp>;
+  guide_vulnerabilities?: InputMaybe<Guide_Vulnerabilities_Bool_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  metadata?: InputMaybe<Jsonb_Comparison_Exp>;
+  metadata_schema_version?: InputMaybe<Int_Comparison_Exp>;
+  related_guides?: InputMaybe<Guide_Related_Guides_Bool_Exp>;
+  severity?: InputMaybe<Severity_Enum_Comparison_Exp>;
+  summary?: InputMaybe<String_Comparison_Exp>;
+  tags?: InputMaybe<_Text_Comparison_Exp>;
+  title?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "guides" */
@@ -2282,6 +2536,8 @@ export type Guides_Mutation_Response = {
   __typename?: 'guides_mutation_response';
   /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Guides>;
 };
 
 /** input type for inserting object relation for remote table "guides" */
@@ -2298,10 +2554,61 @@ export type Guides_On_Conflict = {
   where?: InputMaybe<Guides_Bool_Exp>;
 };
 
+/** Ordering options when selecting data from "guides". */
+export type Guides_Order_By = {
+  body?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  data_source_link?: InputMaybe<Order_By>;
+  guide_unique_id?: InputMaybe<Order_By>;
+  guide_vulnerabilities_aggregate?: InputMaybe<Guide_Vulnerabilities_Aggregate_Order_By>;
+  id?: InputMaybe<Order_By>;
+  metadata?: InputMaybe<Order_By>;
+  metadata_schema_version?: InputMaybe<Order_By>;
+  related_guides_aggregate?: InputMaybe<Guide_Related_Guides_Aggregate_Order_By>;
+  severity?: InputMaybe<Order_By>;
+  summary?: InputMaybe<Order_By>;
+  tags?: InputMaybe<Order_By>;
+  title?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: guides */
+export type Guides_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
 /** prepend existing jsonb value of filtered columns with new jsonb value */
 export type Guides_Prepend_Input = {
   metadata?: InputMaybe<Scalars['jsonb']>;
 };
+
+/** select columns of table "guides" */
+export enum Guides_Select_Column {
+  /** column name */
+  Body = 'body',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  DataSourceLink = 'data_source_link',
+  /** column name */
+  GuideUniqueId = 'guide_unique_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Metadata = 'metadata',
+  /** column name */
+  MetadataSchemaVersion = 'metadata_schema_version',
+  /** column name */
+  Severity = 'severity',
+  /** column name */
+  Summary = 'summary',
+  /** column name */
+  Tags = 'tags',
+  /** column name */
+  Title = 'title',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
 
 /** input type for updating data in table "guides" */
 export type Guides_Set_Input = {
@@ -3444,6 +3751,8 @@ export type Mutation_Root = {
   insert_guide_vulnerabilities_one?: Maybe<Guide_Vulnerabilities>;
   /** insert data into the table: "guides" */
   insert_guides?: Maybe<Guides_Mutation_Response>;
+  /** insert a single row into the table: "guides" */
+  insert_guides_one?: Maybe<Guides>;
   /** insert data into the table: "manifest_dependency" */
   insert_manifest_dependency?: Maybe<Manifest_Dependency_Mutation_Response>;
   /** insert data into the table: "manifest_dependency_edge" */
@@ -3552,6 +3861,9 @@ export type Mutation_Root = {
   insert_webhook_cache?: Maybe<Webhook_Cache_Mutation_Response>;
   /** insert a single row into the table: "webhook_cache" */
   insert_webhook_cache_one?: Maybe<Webhook_Cache>;
+  installSelectedRepos?: Maybe<InstallSelectedReposResponse>;
+  /**  get s3 presigned url for manifest upload, used only by the frontend  */
+  presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** update data of the table: "analysis.manifest_dependency_edge_result" */
   update_analysis_manifest_dependency_edge_result?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Mutation_Response>;
   /** update single row of the table: "analysis.manifest_dependency_edge_result" */
@@ -3582,6 +3894,8 @@ export type Mutation_Root = {
   update_guide_vulnerabilities_by_pk?: Maybe<Guide_Vulnerabilities>;
   /** update data of the table: "guides" */
   update_guides?: Maybe<Guides_Mutation_Response>;
+  /** update single row of the table: "guides" */
+  update_guides_by_pk?: Maybe<Guides>;
   /** update data of the table: "manifest_dependency" */
   update_manifest_dependency?: Maybe<Manifest_Dependency_Mutation_Response>;
   /** update data of the table: "manifest_dependency_edge" */
@@ -3874,6 +4188,13 @@ export type Mutation_RootInsert_Guide_Vulnerabilities_OneArgs = {
 /** mutation root */
 export type Mutation_RootInsert_GuidesArgs = {
   objects: Array<Guides_Insert_Input>;
+  on_conflict?: InputMaybe<Guides_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Guides_OneArgs = {
+  object: Guides_Insert_Input;
   on_conflict?: InputMaybe<Guides_On_Conflict>;
 };
 
@@ -4257,6 +4578,18 @@ export type Mutation_RootInsert_Webhook_Cache_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInstallSelectedReposArgs = {
+  orgs: Array<OrgsWithReposInput>;
+};
+
+
+/** mutation root */
+export type Mutation_RootPresignManifestUploadArgs = {
+  project_id: Scalars['uuid'];
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_Analysis_Manifest_Dependency_Edge_ResultArgs = {
   _set?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Set_Input>;
   where: Analysis_Manifest_Dependency_Edge_Result_Bool_Exp;
@@ -4388,6 +4721,19 @@ export type Mutation_RootUpdate_GuidesArgs = {
   _prepend?: InputMaybe<Guides_Prepend_Input>;
   _set?: InputMaybe<Guides_Set_Input>;
   where: Guides_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Guides_By_PkArgs = {
+  _append?: InputMaybe<Guides_Append_Input>;
+  _delete_at_path?: InputMaybe<Guides_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Guides_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Guides_Delete_Key_Input>;
+  _inc?: InputMaybe<Guides_Inc_Input>;
+  _prepend?: InputMaybe<Guides_Prepend_Input>;
+  _set?: InputMaybe<Guides_Set_Input>;
+  pk_columns: Guides_Pk_Columns_Input;
 };
 
 
@@ -7018,6 +7364,8 @@ export type Query_Root = {
   analysis_manifest_dependency_edge_result: Array<Analysis_Manifest_Dependency_Edge_Result>;
   /** fetch data from the table: "analysis.manifest_dependency_edge_result" using primary key columns */
   analysis_manifest_dependency_edge_result_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result>;
+  authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
+  availableOrgsWithRepos?: Maybe<Array<OrgWithRepos>>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -7034,6 +7382,7 @@ export type Query_Root = {
   builds_by_pk?: Maybe<Builds>;
   /** An array relationship */
   default_branch_builds: Array<Default_Branch_Builds>;
+  fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
   /** fetch data from the table: "findings" using primary key columns */
@@ -7050,6 +7399,10 @@ export type Query_Root = {
   guide_vulnerabilities: Array<Guide_Vulnerabilities>;
   /** fetch data from the table: "guide_vulnerabilities" using primary key columns */
   guide_vulnerabilities_by_pk?: Maybe<Guide_Vulnerabilities>;
+  /** fetch data from the table: "guides" */
+  guides: Array<Guides>;
+  /** fetch data from the table: "guides" using primary key columns */
+  guides_by_pk?: Maybe<Guides>;
   /** fetch data from the table: "identities" */
   identities: Array<Identities>;
   /** fetch data from the table: "identities" using primary key columns */
@@ -7116,6 +7469,8 @@ export type Query_Root = {
   package_release_license: Array<Package_Release_License>;
   /** fetch data from the table: "package.release_license" using primary key columns */
   package_release_license_by_pk?: Maybe<Package_Release_License>;
+  /**  get s3 presigned url for manifest upload, used by the CLI  */
+  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
@@ -7130,6 +7485,7 @@ export type Query_Root = {
   resolved_manifest: Array<Resolved_Manifest>;
   /** fetch data from the table: "resolved_manifest" using primary key columns */
   resolved_manifest_by_pk?: Maybe<Resolved_Manifest>;
+  sbomUrl?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
@@ -7176,6 +7532,7 @@ export type Query_Root = {
   vulnerability_severity: Array<Vulnerability_Severity>;
   /** fetch data from the table: "vulnerability.severity" using primary key columns */
   vulnerability_severity_by_pk?: Maybe<Vulnerability_Severity>;
+  vulnerableReleasesFromBuild?: Maybe<Array<BuildData_VulnerableRelease>>;
   /** fetch data from the table: "webhook_cache" */
   webhook_cache: Array<Webhook_Cache>;
   /** fetch data from the table: "webhook_cache" using primary key columns */
@@ -7194,6 +7551,11 @@ export type Query_RootAnalysis_Manifest_Dependency_Edge_ResultArgs = {
 
 export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootAuthenticatedRepoCloneUrlArgs = {
+  repoGithubId: Scalars['Int'];
 };
 
 
@@ -7309,6 +7671,20 @@ export type Query_RootGuide_VulnerabilitiesArgs = {
 
 
 export type Query_RootGuide_Vulnerabilities_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootGuidesArgs = {
+  distinct_on?: InputMaybe<Array<Guides_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Guides_Order_By>>;
+  where?: InputMaybe<Guides_Bool_Exp>;
+};
+
+
+export type Query_RootGuides_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -7554,6 +7930,12 @@ export type Query_RootPackage_Release_License_By_PkArgs = {
 };
 
 
+export type Query_RootPresignSbomUploadArgs = {
+  buildId: Scalars['uuid'];
+  orgId: Scalars['uuid'];
+};
+
+
 export type Query_RootProject_Access_TokensArgs = {
   distinct_on?: InputMaybe<Array<Project_Access_Tokens_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -7602,6 +7984,11 @@ export type Query_RootResolved_ManifestArgs = {
 
 export type Query_RootResolved_Manifest_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootSbomUrlArgs = {
+  buildId: Scalars['uuid'];
 };
 
 
@@ -7765,6 +8152,12 @@ export type Query_RootVulnerability_SeverityArgs = {
 
 export type Query_RootVulnerability_Severity_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootVulnerableReleasesFromBuildArgs = {
+  buildId: Scalars['uuid'];
+  minimumSeverity?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -8328,6 +8721,10 @@ export type Subscription_Root = {
   guide_vulnerabilities: Array<Guide_Vulnerabilities>;
   /** fetch data from the table: "guide_vulnerabilities" using primary key columns */
   guide_vulnerabilities_by_pk?: Maybe<Guide_Vulnerabilities>;
+  /** fetch data from the table: "guides" */
+  guides: Array<Guides>;
+  /** fetch data from the table: "guides" using primary key columns */
+  guides_by_pk?: Maybe<Guides>;
   /** fetch data from the table: "identities" */
   identities: Array<Identities>;
   /** fetch data from the table: "identities" using primary key columns */
@@ -8587,6 +8984,20 @@ export type Subscription_RootGuide_VulnerabilitiesArgs = {
 
 
 export type Subscription_RootGuide_Vulnerabilities_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootGuidesArgs = {
+  distinct_on?: InputMaybe<Array<Guides_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Guides_Order_By>>;
+  where?: InputMaybe<Guides_Bool_Exp>;
+};
+
+
+export type Subscription_RootGuides_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -11011,7 +11422,7 @@ export type GetTreeFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', vulnerability_id: any, locations: any, id: any, creator_id?: any | null, note: string, project_id: any }> }, resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', parent_id: any, child_id: any, id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }> } | null };
+export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', parent_id: any, child_id: any, id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null, summary?: string | null, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide_id: any, guide: { __typename?: 'guides', summary: string, id: any, title: string } }> }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } } | null };
 
 export type GetUserGitHubDataQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
@@ -11369,12 +11780,6 @@ export const GetProjectFromRepoIdDocument = gql`
 export const GetTreeFromBuildDocument = gql`
     query GetTreeFromBuild($build_id: uuid!) {
   builds_by_pk(id: $build_id) {
-    project {
-      ignored_vulnerabilities {
-        vulnerability_id
-        locations
-      }
-    }
     resolved_manifests {
       id
       path
@@ -11402,6 +11807,15 @@ export const GetTreeFromBuildDocument = gql`
                   source
                   severity_name
                   cvss_score
+                  summary
+                  guide_vulnerabilities {
+                    guide_id
+                    guide {
+                      summary
+                      id
+                      title
+                    }
+                  }
                 }
                 ranges {
                   introduced

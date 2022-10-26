@@ -11,36 +11,73 @@
  * limitations under the License.
  *
  */
-import React from 'react';
+import { SeverityNamesOsv } from '@lunatrace/lunatrace-common';
+import React, { useState } from 'react';
+import { Spinner } from 'react-bootstrap';
 
 import api from '../../../api';
-import { GetBuildDetailsQuery } from '../../../api/generated';
+import { SpinIfLoading } from '../../../components/SpinIfLoading';
 
 import { QuickViewProps } from './types';
 import { LegacyGrypeVulnerablePackageList } from './vulnerable-packages-legacy-grype/LegacyGrypeVulnerablePackageList';
 import { Finding } from './vulnerable-packages-legacy-grype/types';
+import { VulnerablePackagesList } from './vulnerable-packages/VulnerablePackagesList';
 
-export type ResolvedManifestQueryResponse = NonNullable<GetBuildDetailsQuery['builds_by_pk']>['resolved_manifests'];
 
-export interface DependencyTreeViewerProps {
+export interface VulnerablePackageListWrapperProps {
   findings: Finding[];
   quickViewConfig: QuickViewProps;
-  resolvedManifests: ResolvedManifestQueryResponse;
   projectId: string;
+  buildId: string;
   toggleIgnoreFindings: () => void;
+  shouldIgnore: boolean;
 }
 
-export const VulnerablePackageListWrapper: React.FunctionComponent<DependencyTreeViewerProps> = (
-  props: DependencyTreeViewerProps
+// This component will switch between legacy views or the newer tree-based view if data is available
+export const VulnerablePackageListWrapper: React.FunctionComponent<VulnerablePackageListWrapperProps> = (
+  props: VulnerablePackageListWrapperProps
 ) => {
-  const { findings, quickViewConfig, resolvedManifests, projectId, toggleIgnoreFindings } = props;
+  const { findings, quickViewConfig, projectId, toggleIgnoreFindings, buildId, shouldIgnore } = props;
 
-  const { data: vulnerableReleasesData, isLoading } = api.useVulnerableReleasesFromBuildQuery();
+  // severity state for modern tree data, legacy has its own state and doesnt use this
+  const [severity, setSeverity] = useState<SeverityNamesOsv>('Critical');
+
+  // data for modern tree, legacy doesnt use this
+  const {
+    data: vulnerableReleasesData,
+    isLoading,
+    isFetching,
+  } = api.useGetVulnerableReleasesFromBuildQuery({
+    buildId,
+    minimumSeverity: severity,
+  });
+
+  const unfilteredVulnerableReleasesFromTree = vulnerableReleasesData?.vulnerableReleasesFromBuild;
+
+  if (isLoading) {
+    return <Spinner animation="border" />;
+  }
+  // we have tree data
+  if (unfilteredVulnerableReleasesFromTree) {
+    return (
+      <>
+        <SpinIfLoading isLoading={isFetching} />
+        <VulnerablePackagesList
+          vulnerablePackages={unfilteredVulnerableReleasesFromTree}
+          quickView={quickViewConfig}
+          setIgnoreFindings={toggleIgnoreFindings}
+          severity={severity}
+          setSeverity={setSeverity}
+          shouldIgnore={shouldIgnore}
+        />
+      </>
+    );
+  }
+  //legacy
   return (
     <LegacyGrypeVulnerablePackageList
       project_id={projectId}
       findings={findings}
-      depTree={null}
       quickView={quickViewConfig}
       setIgnoreFindings={toggleIgnoreFindings}
     />

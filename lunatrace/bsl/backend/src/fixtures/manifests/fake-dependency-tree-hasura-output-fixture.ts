@@ -97,6 +97,15 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<RawManifest> = [
                     source: 'github',
                     source_id: 'GHSA123ABC',
                     id: 'a',
+                    guide_vulnerabilities: [
+                      {
+                        guide: {
+                          title: 'fake guide title',
+                          id: 'g1',
+                          summary: 'a fake guide',
+                        },
+                      },
+                    ],
                   },
                   ranges: [
                     {
@@ -133,6 +142,15 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<RawManifest> = [
                     source: 'github',
                     source_id: 'GHSA123ABC',
                     id: 'a',
+                    guide_vulnerabilities: [
+                      {
+                        guide: {
+                          title: 'fake guide title',
+                          id: 'g1',
+                          summary: 'a fake guide',
+                        },
+                      },
+                    ],
                   },
                   ranges: [
                     {

@@ -13,6 +13,10 @@ directive @cached(
   ttl: Int! = 60
 ) on QUERY
 
+type AuthenticatedRepoCloneUrlOutput {
+  url: String
+}
+
 """
 Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
 """
@@ -26,6 +30,101 @@ input Boolean_comparison_exp {
   _lte: Boolean
   _neq: Boolean
   _nin: [Boolean!]
+}
+
+type BuildData_AffectedByVulnerability {
+  beneath_minimum_severity: Boolean!
+  chains: [[BuildData_DependencyNode!]!]
+  fix_versions: [String!]!
+  ignored: Boolean!
+  ignored_vulnerability: BuildData_IgnoredVulnerability
+  path: String!
+  ranges: [BuildData_Range!]!
+  trivially_updatable_to: String
+  vulnerability: BuildData_Vulnerability!
+}
+
+type BuildData_DependencyNode {
+  id: String!
+  range: String!
+  release: BuildData_Release!
+  release_id: String!
+}
+
+type BuildData_Guide {
+  id: String!
+  summary: String!
+  title: String!
+}
+
+type BuildData_Guide_Vulnerability {
+  guide: BuildData_Guide
+  guide_id: String!
+}
+
+type BuildData_IgnoredVulnerability {
+  locations: [String!]!
+  note: String!
+}
+
+type BuildData_Package {
+  affected_by_vulnerability: [BuildData_AffectedByVulnerability!]
+  name: String!
+  package_manager: String!
+}
+
+type BuildData_Range {
+  fixed: String
+  introduced: String
+}
+
+type BuildData_Release {
+  id: String!
+  package: BuildData_Package!
+  version: String!
+}
+
+type BuildData_Vulnerability {
+  cvss_score: Float
+  guide_vulnerabilities: [BuildData_Guide_Vulnerability!]!
+  id: String!
+
+  """An array relationship"""
+  ignored_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [ignored_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [ignored_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: ignored_vulnerabilities_bool_exp
+  ): [ignored_vulnerabilities!]!
+  severity_name: String
+  source: String!
+  source_id: String!
+  summary: String
+}
+
+type BuildData_VulnerableRelease {
+  affected_by: [BuildData_AffectedByVulnerability!]!
+  beneath_minimum_severity: Boolean!
+  chains: [[BuildData_DependencyNode!]!]!
+  cvss: Float
+  dev_only: Boolean!
+  fix_versions: [String!]!
+  guides: [BuildData_Guide!]!
+  ignored: Boolean!
+  paths: [String!]!
+  release: BuildData_Release!
+  severity: String!
+  trivially_updatable: String!
 }
 
 """
@@ -43,6 +142,23 @@ input Float_comparison_exp {
   _nin: [Float!]
 }
 
+type GithubRepository {
+  cloneUrl: String!
+  defaultBranch: String!
+  gitUrl: String!
+  orgId: Int!
+  orgName: String!
+  orgNodeId: String!
+  ownerType: String!
+  repoId: Int!
+  repoName: String!
+  repoNodeId: String!
+}
+
+type InstallSelectedReposResponse {
+  success: Boolean
+}
+
 """
 Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
 """
@@ -56,6 +172,29 @@ input Int_comparison_exp {
   _lte: Int
   _neq: Int
   _nin: [Int!]
+}
+
+type OrgWithRepos {
+  id: String!
+  organizationName: String!
+  repos: [GithubRepository!]!
+}
+
+input OrgsWithReposInput {
+  id: String!
+  repos: [Int!]!
+}
+
+type PresignedUrlResponse {
+  bucket: String!
+  headers: jsonb!
+  key: String!
+  url: String!
+}
+
+type SbomUploadUrlOutput {
+  error: Boolean!
+  uploadUrl: UploadUrl
 }
 
 """
@@ -109,6 +248,11 @@ input String_comparison_exp {
 
   """does the column match the given SQL regular expression"""
   _similar: String
+}
+
+type UploadUrl {
+  headers: jsonb!
+  url: String!
 }
 
 scalar _text
@@ -881,6 +1025,7 @@ type builds {
     where: resolved_manifest_bool_exp
   ): [resolved_manifest!]!
   s3_url: String
+  s3_url_signed: String
 
   """An array relationship"""
   scans(
@@ -2085,6 +2230,7 @@ input fix_state_enum_comparison_exp {
 
 """Metadata about a github repository and where to find it."""
 type github_repositories {
+  authenticated_clone_url: AuthenticatedRepoCloneUrlOutput
   default_branch: String
   git_url: String!
   github_id: Int
@@ -2409,9 +2555,24 @@ columns and relationships of "guide_related_guides"
 type guide_related_guides {
   created_at: timestamptz!
   from_guide_id: uuid!
+
+  """An object relationship"""
+  guide: guides!
   id: uuid!
+
+  """An object relationship"""
+  parent_guide: guides!
   to_guide_unique_id: String!
   updated_at: timestamptz!
+}
+
+"""
+order by aggregate values of table "guide_related_guides"
+"""
+input guide_related_guides_aggregate_order_by {
+  count: order_by
+  max: guide_related_guides_max_order_by
+  min: guide_related_guides_min_order_by
 }
 
 """
@@ -2433,7 +2594,9 @@ input guide_related_guides_bool_exp {
   _or: [guide_related_guides_bool_exp!]
   created_at: timestamptz_comparison_exp
   from_guide_id: uuid_comparison_exp
+  guide: guides_bool_exp
   id: uuid_comparison_exp
+  parent_guide: guides_bool_exp
   to_guide_unique_id: String_comparison_exp
   updated_at: timestamptz_comparison_exp
 }
@@ -2467,6 +2630,28 @@ input guide_related_guides_insert_input {
 }
 
 """
+order by max() on columns of table "guide_related_guides"
+"""
+input guide_related_guides_max_order_by {
+  created_at: order_by
+  from_guide_id: order_by
+  id: order_by
+  to_guide_unique_id: order_by
+  updated_at: order_by
+}
+
+"""
+order by min() on columns of table "guide_related_guides"
+"""
+input guide_related_guides_min_order_by {
+  created_at: order_by
+  from_guide_id: order_by
+  id: order_by
+  to_guide_unique_id: order_by
+  updated_at: order_by
+}
+
+"""
 response of any mutation on the table "guide_related_guides"
 """
 type guide_related_guides_mutation_response {
@@ -2490,7 +2675,9 @@ input guide_related_guides_on_conflict {
 input guide_related_guides_order_by {
   created_at: order_by
   from_guide_id: order_by
+  guide: guides_order_by
   id: order_by
+  parent_guide: guides_order_by
   to_guide_unique_id: order_by
   updated_at: order_by
 }
@@ -2556,6 +2743,9 @@ columns and relationships of "guide_vulnerabilities"
 """
 type guide_vulnerabilities {
   created_at: timestamptz!
+
+  """An object relationship"""
+  guide: guides!
   guide_id: uuid!
   id: uuid!
   updated_at: timestamptz!
@@ -2592,6 +2782,7 @@ input guide_vulnerabilities_bool_exp {
   _not: guide_vulnerabilities_bool_exp
   _or: [guide_vulnerabilities_bool_exp!]
   created_at: timestamptz_comparison_exp
+  guide: guides_bool_exp
   guide_id: uuid_comparison_exp
   id: uuid_comparison_exp
   updated_at: timestamptz_comparison_exp
@@ -2672,6 +2863,7 @@ input guide_vulnerabilities_on_conflict {
 """Ordering options when selecting data from "guide_vulnerabilities"."""
 input guide_vulnerabilities_order_by {
   created_at: order_by
+  guide: guides_order_by
   guide_id: order_by
   id: order_by
   updated_at: order_by
@@ -2735,6 +2927,63 @@ enum guide_vulnerabilities_update_column {
   vulnerability_id
 }
 
+"""
+columns and relationships of "guides"
+"""
+type guides {
+  body: String!
+  created_at: timestamptz!
+  data_source_link: String!
+  guide_unique_id: String!
+
+  """An array relationship"""
+  guide_vulnerabilities(
+    """distinct select on columns"""
+    distinct_on: [guide_vulnerabilities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [guide_vulnerabilities_order_by!]
+
+    """filter the rows returned"""
+    where: guide_vulnerabilities_bool_exp
+  ): [guide_vulnerabilities!]!
+  id: uuid!
+  metadata(
+    """JSON select path"""
+    path: String
+  ): jsonb!
+  metadata_schema_version: Int!
+
+  """An array relationship"""
+  related_guides(
+    """distinct select on columns"""
+    distinct_on: [guide_related_guides_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [guide_related_guides_order_by!]
+
+    """filter the rows returned"""
+    where: guide_related_guides_bool_exp
+  ): [guide_related_guides!]!
+  severity: severity_enum!
+  summary: String!
+  tags: _text!
+  title: String!
+  updated_at: timestamptz!
+}
+
 """append existing jsonb value of filtered columns with new jsonb value"""
 input guides_append_input {
   metadata: jsonb
@@ -2747,6 +2996,20 @@ input guides_bool_exp {
   _and: [guides_bool_exp!]
   _not: guides_bool_exp
   _or: [guides_bool_exp!]
+  body: String_comparison_exp
+  created_at: timestamptz_comparison_exp
+  data_source_link: String_comparison_exp
+  guide_unique_id: String_comparison_exp
+  guide_vulnerabilities: guide_vulnerabilities_bool_exp
+  id: uuid_comparison_exp
+  metadata: jsonb_comparison_exp
+  metadata_schema_version: Int_comparison_exp
+  related_guides: guide_related_guides_bool_exp
+  severity: severity_enum_comparison_exp
+  summary: String_comparison_exp
+  tags: _text_comparison_exp
+  title: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
 }
 
 """
@@ -2823,6 +3086,9 @@ response of any mutation on the table "guides"
 type guides_mutation_response {
   """number of rows affected by the mutation"""
   affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [guides!]!
 }
 
 """
@@ -2844,9 +3110,73 @@ input guides_on_conflict {
   where: guides_bool_exp
 }
 
+"""Ordering options when selecting data from "guides"."""
+input guides_order_by {
+  body: order_by
+  created_at: order_by
+  data_source_link: order_by
+  guide_unique_id: order_by
+  guide_vulnerabilities_aggregate: guide_vulnerabilities_aggregate_order_by
+  id: order_by
+  metadata: order_by
+  metadata_schema_version: order_by
+  related_guides_aggregate: guide_related_guides_aggregate_order_by
+  severity: order_by
+  summary: order_by
+  tags: order_by
+  title: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: guides"""
+input guides_pk_columns_input {
+  id: uuid!
+}
+
 """prepend existing jsonb value of filtered columns with new jsonb value"""
 input guides_prepend_input {
   metadata: jsonb
+}
+
+"""
+select columns of table "guides"
+"""
+enum guides_select_column {
+  """column name"""
+  body
+
+  """column name"""
+  created_at
+
+  """column name"""
+  data_source_link
+
+  """column name"""
+  guide_unique_id
+
+  """column name"""
+  id
+
+  """column name"""
+  metadata
+
+  """column name"""
+  metadata_schema_version
+
+  """column name"""
+  severity
+
+  """column name"""
+  summary
+
+  """column name"""
+  tags
+
+  """column name"""
+  title
+
+  """column name"""
+  updated_at
 }
 
 """
@@ -4481,6 +4811,17 @@ type mutation_root {
   ): guides_mutation_response
 
   """
+  insert a single row into the table: "guides"
+  """
+  insert_guides_one(
+    """the row to be inserted"""
+    object: guides_insert_input!
+
+    """upsert condition"""
+    on_conflict: guides_on_conflict
+  ): guides
+
+  """
   insert data into the table: "manifest_dependency"
   """
   insert_manifest_dependency(
@@ -5073,6 +5414,10 @@ type mutation_root {
     """upsert condition"""
     on_conflict: webhook_cache_on_conflict
   ): webhook_cache
+  installSelectedRepos(orgs: [OrgsWithReposInput!]!): InstallSelectedReposResponse
+
+  """ get s3 presigned url for manifest upload, used only by the frontend """
+  presignManifestUpload(project_id: uuid!): PresignedUrlResponse
 
   """
   update data of the table: "analysis.manifest_dependency_edge_result"
@@ -5344,6 +5689,39 @@ type mutation_root {
     """filter the rows which have to be updated"""
     where: guides_bool_exp!
   ): guides_mutation_response
+
+  """
+  update single row of the table: "guides"
+  """
+  update_guides_by_pk(
+    """append existing jsonb value of filtered columns with new jsonb value"""
+    _append: guides_append_input
+
+    """
+    delete the field or element with specified path (for JSON arrays, negative integers count from the end)
+    """
+    _delete_at_path: guides_delete_at_path_input
+
+    """
+    delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array
+    """
+    _delete_elem: guides_delete_elem_input
+
+    """
+    delete key/value pair or string element. key/value pairs are matched based on their key value
+    """
+    _delete_key: guides_delete_key_input
+
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: guides_inc_input
+
+    """prepend existing jsonb value of filtered columns with new jsonb value"""
+    _prepend: guides_prepend_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: guides_set_input
+    pk_columns: guides_pk_columns_input!
+  ): guides
 
   """
   update data of the table: "manifest_dependency"
@@ -8959,6 +9337,8 @@ type query_root {
   fetch data from the table: "analysis.manifest_dependency_edge_result" using primary key columns
   """
   analysis_manifest_dependency_edge_result_by_pk(id: uuid!): analysis_manifest_dependency_edge_result
+  authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
+  availableOrgsWithRepos: [OrgWithRepos!]
 
   """
   fetch data from the table: "build_dependency_relationship"
@@ -9064,6 +9444,7 @@ type query_root {
     """filter the rows returned"""
     where: default_branch_builds_bool_exp
   ): [default_branch_builds!]!
+  fakeQueryToHackHasuraBeingABuggyMess: String
 
   """An array relationship"""
   findings(
@@ -9156,6 +9537,29 @@ type query_root {
   fetch data from the table: "guide_vulnerabilities" using primary key columns
   """
   guide_vulnerabilities_by_pk(id: uuid!): guide_vulnerabilities
+
+  """
+  fetch data from the table: "guides"
+  """
+  guides(
+    """distinct select on columns"""
+    distinct_on: [guides_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [guides_order_by!]
+
+    """filter the rows returned"""
+    where: guides_bool_exp
+  ): [guides!]!
+
+  """fetch data from the table: "guides" using primary key columns"""
+  guides_by_pk(id: uuid!): guides
 
   """
   fetch data from the table: "identities"
@@ -9594,6 +9998,9 @@ type query_root {
   """
   package_release_license_by_pk(id: uuid!): package_release_license
 
+  """ get s3 presigned url for manifest upload, used by the CLI """
+  presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
+
   """An array relationship"""
   project_access_tokens(
     """distinct select on columns"""
@@ -9680,6 +10087,7 @@ type query_root {
   fetch data from the table: "resolved_manifest" using primary key columns
   """
   resolved_manifest_by_pk(id: uuid!): resolved_manifest
+  sbomUrl(buildId: uuid!): String
 
   """An array relationship"""
   scans(
@@ -9967,6 +10375,7 @@ type query_root {
   fetch data from the table: "vulnerability.severity" using primary key columns
   """
   vulnerability_severity_by_pk(id: uuid!): vulnerability_severity
+  vulnerableReleasesFromBuild(buildId: uuid!, minimumSeverity: String): [BuildData_VulnerableRelease!]
 
   """
   fetch data from the table: "webhook_cache"
@@ -10882,6 +11291,29 @@ type subscription_root {
   fetch data from the table: "guide_vulnerabilities" using primary key columns
   """
   guide_vulnerabilities_by_pk(id: uuid!): guide_vulnerabilities
+
+  """
+  fetch data from the table: "guides"
+  """
+  guides(
+    """distinct select on columns"""
+    distinct_on: [guides_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [guides_order_by!]
+
+    """filter the rows returned"""
+    where: guides_bool_exp
+  ): [guides!]!
+
+  """fetch data from the table: "guides" using primary key columns"""
+  guides_by_pk(id: uuid!): guides
 
   """
   fetch data from the table: "identities"
