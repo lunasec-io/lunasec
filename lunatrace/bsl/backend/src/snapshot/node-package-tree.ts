@@ -89,7 +89,7 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
       let pkgTree;
       try {
         // Calls our fork of the Snyk library
-        pkgTree = await buildDepTreeFromFiles(dir, 'package.json', base, true);
+        pkgTree = await buildDepTreeFromFiles(dir, 'package.json', base, true, false);
       } catch (e) {
         log.error('failed to parse a lockfile pair', {
           lockFilePathWithLeadingSlash,
