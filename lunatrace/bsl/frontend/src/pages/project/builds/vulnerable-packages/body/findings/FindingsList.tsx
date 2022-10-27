@@ -25,7 +25,7 @@ interface FindingsTableProps {
   filteredFindings: VulnMeta[];
   quickView: QuickViewProps;
   setShouldFilterFindings: (shouldFilter: boolean) => void;
-  findingsCount: number;
+  findingsHiddenBySeverityCount: number;
 }
 
 export const FindingsTable: React.FC<FindingsTableProps> = ({
@@ -33,7 +33,7 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
   filteredFindings,
   quickView,
   setShouldFilterFindings,
-  findingsCount,
+  findingsHiddenBySeverityCount,
 }) => {
   return (
     <Accordion.Body>
@@ -63,9 +63,9 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
       </Table>
 
       {shouldFilterFindings ? (
-        findingsCount > filteredFindings.length ? (
+        findingsHiddenBySeverityCount > 0 ? (
           <span style={{ cursor: 'pointer' }} onClick={() => setShouldFilterFindings(false)}>
-            Show {findingsCount - filteredFindings.length} lower severity findings
+            Show {findingsHiddenBySeverityCount} lower severity findings
             <ChevronDown />
           </span>
         ) : null

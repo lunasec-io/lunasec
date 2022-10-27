@@ -11,8 +11,7 @@
  * limitations under the License.
  *
  */
-import { severityOrderOsv } from '@lunatrace/lunatrace-common';
-import { SeverityNamesOsv } from '@lunatrace/lunatrace-common';
+import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common';
 import React, { ChangeEvent } from 'react';
 import { Button, Col, Dropdown, OverlayTrigger, Row } from 'react-bootstrap';
 
@@ -37,24 +36,29 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
   vulnerablePackages,
   severity,
   setSeverity,
-  shouldIgnore
+  shouldIgnore,
 }) => {
-
-  const packagesFilteredByIgnored = vulnerablePackages.filter((p) => !(shouldIgnore && p.ignored))
-
   // Todo: not sure if this should include below minimum severity packages or not, might be confusing. For now we are, though
-  const pkgsToUpdate = packagesFilteredByIgnored.filter((pkg) => {
+  const pkgsToUpdate = vulnerablePackages.filter((pkg) => {
     if (pkg.trivially_updatable === 'yes' || pkg.trivially_updatable === 'partially') {
       return true;
     }
   });
 
-  const packagesFilteredBySeverity = packagesFilteredByIgnored.filter((p) => !p.beneath_minimum_severity);
+  const packagesFilteredBySeverity = vulnerablePackages.filter((p) => !p.beneath_minimum_severity);
 
   const handleShowIgnoredFindings = (e: ChangeEvent<HTMLInputElement>) => setIgnoreFindings(!e.target.checked);
 
   const pkgCards = packagesFilteredBySeverity.map((p) => {
-    return <VulnerablePackageMain key={p.release.id} pkg={p} quickView={quickView} severity={severity} shouldIgnore={shouldIgnore}/>;
+    return (
+      <VulnerablePackageMain
+        key={p.release.id}
+        pkg={p}
+        quickView={quickView}
+        severity={severity}
+        shouldIgnore={shouldIgnore}
+      />
+    );
   });
 
   const areUpdatesAvailable = pkgsToUpdate.length > 0;
@@ -77,7 +81,7 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
           </label>
           <Dropdown align={{ md: 'end' }} className="d-inline me-2">
             <Dropdown.Toggle variant="secondary" className="text-capitalize">
-              Minimum Severity: {severity === 'Unknown'? 'None': severity}
+              Minimum Severity: {severity === 'Unknown' ? 'None' : severity}
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Header>
