@@ -5,7 +5,10 @@ rules:
     patterns:
       - pattern-either:
           - pattern-inside: |
-              $IMPORT = require($PACKAGE)
+              $IMPORT = require("$PACKAGE")
+              ...
+          - pattern-inside: |
+              $IMPORT = require("$PACKAGE")(...)
               ...
           - pattern-inside: |
               import $IMPORT from "$PACKAGE"
@@ -19,9 +22,9 @@ rules:
           - pattern-inside: |
               import { ..., $X as $IMPORT,... } from "$PACKAGE"
               ...
-      - metavariable-comparison:
+      - metavariable-regex:
           metavariable: $PACKAGE
-          comparison: $PACKAGE == "vulnerable-package"
+          regex: ^('|")?vulnerable-package/?
       - pattern-either:
         - pattern-inside: $IMPORT.$FUNC(...)
         - pattern-inside: $IMPORT(...)
