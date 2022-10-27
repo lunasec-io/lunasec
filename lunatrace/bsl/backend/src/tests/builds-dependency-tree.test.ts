@@ -13,7 +13,7 @@
  */
 
 import { fakeDependencyTreeHasuraOutputFixture } from '../fixtures/manifests/fake-dependency-tree-hasura-output-fixture';
-import {realDependencyTreeHasuraOutputFixture} from "../fixtures/manifests/real-dependency-tree-hasura-output";
+import { realDependencyTreeHasuraOutputFixture } from '../fixtures/manifests/real-dependency-tree-hasura-output';
 import { DependencyTree } from '../models/dependency-tree/builds-dependency-tree';
 
 describe('The fake dependency tree', () => {
@@ -63,7 +63,7 @@ describe('The fake dependency tree', () => {
   it('should ignore vulnerabilities', () => {
     const ignored = [{ vulnerability_id: 'a', locations: ['package-lock.json'], note: 'this is the note' }];
     const treeWithIgnored = new DependencyTree(fakeDependencyTreeHasuraOutputFixture, null, ignored);
-    expect(treeWithIgnored.vulnerableReleases[0].ignored).toEqual(true);
+    expect(treeWithIgnored.vulnerableReleases[0].affected_by[0].ignored).toEqual(true);
   });
   it('should show guides', () => {
     const guides = tree.vulnerableReleases[0].guides;
@@ -76,6 +76,6 @@ describe('The fake dependency tree', () => {
 describe('a real sample dependency tree', () => {
   const tree = new DependencyTree(realDependencyTreeHasuraOutputFixture, null, []);
   it('should build', () => {
-    expect(tree).toBeDefined()
-  })
-})
+    expect(tree).toBeDefined();
+  });
+});
