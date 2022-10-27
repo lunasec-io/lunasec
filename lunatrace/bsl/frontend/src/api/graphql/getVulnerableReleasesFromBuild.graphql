@@ -4,7 +4,6 @@ query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!)
         beneath_minimum_severity
         cvss
         severity
-        ignored
         paths
         fix_versions
         guides {

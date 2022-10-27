@@ -102,7 +102,6 @@ export type BuildData_VulnerableRelease = {
   dev_only: Scalars['Boolean'];
   fix_versions: Array<Scalars['String']>;
   guides: Array<BuildData_Guide>;
-  ignored: Scalars['Boolean'];
   paths: Array<Scalars['String']>;
   release: BuildData_Release;
   severity: Scalars['String'];
@@ -428,7 +427,6 @@ export type BuildData_VulnerableReleaseResolvers<ContextType = Context, ParentTy
   dev_only?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   fix_versions?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   guides?: Resolver<Array<ResolversTypes['BuildData_Guide']>, ParentType, ContextType>;
-  ignored?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   paths?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   release?: Resolver<ResolversTypes['BuildData_Release'], ParentType, ContextType>;
   severity?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

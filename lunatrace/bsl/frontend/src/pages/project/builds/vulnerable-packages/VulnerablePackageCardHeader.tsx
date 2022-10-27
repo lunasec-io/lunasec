@@ -21,14 +21,16 @@ import useBreakpoint from '../../../../hooks/useBreakpoint';
 import { VulnerablePackage } from './types';
 
 interface VulnerablePackageCardHeaderProps {
-  vulnerable: VulnerablePackage;
+  ignored: boolean;
+  pkg: VulnerablePackage;
 }
 
 export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePackageCardHeaderProps> = ({
-  vulnerable,
+  pkg,
+  ignored,
 }) => {
   const renderUpdatableStatus = () => {
-    const trivialUpdateStatus = vulnerable.trivially_updatable;
+    const trivialUpdateStatus = pkg.trivially_updatable;
 
     if (!trivialUpdateStatus || trivialUpdateStatus === 'no') {
       return null;
@@ -36,7 +38,7 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
 
     const renderToolTip = (props: React.ComponentProps<typeof Tooltip>) => {
       return (
-        <Popover className="package-update-popover" {...props}>
+        <Popover className="vulnerablePackage-update-popover" {...props}>
           <Popover.Header>Trivially Updatable</Popover.Header>
           <Popover.Body>
             A fix is available within the semver range this package was requested with, meaning that the{' '}
@@ -45,7 +47,7 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
             <hr className="m-1" />
             This command will update the package:
             <CopyBlock
-              text={`npm update ${vulnerable.release.package.name}`}
+              text={`npm update ${pkg.release.package.name}`}
               language="bash"
               showLineNumbers={false}
               startingLineNumber={false}
@@ -54,7 +56,7 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
             />
             or for Yarn:
             <CopyBlock
-              text={`yarn upgrade ${vulnerable.release.package.name}`}
+              text={`yarn upgrade ${pkg.release.package.name}`}
               language="bash"
               showLineNumbers={false}
               startingLineNumber={false}
@@ -85,30 +87,30 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
         <Row>
           <Col sm="6">
             <Card.Title>
-              <h2 className={vulnerable.ignored ? "text-decoration-line-through":""}>{vulnerable.release.package.name}</h2>
+              <h2 className={ignored ? 'text-decoration-line-through' : ''}>{pkg.release.package.name}</h2>
             </Card.Title>
             <Card.Subtitle>
               <span className="darker">Version: </span>
-              {vulnerable.release.version}
+              {pkg.release.version}
               {renderUpdatableStatus()}
             </Card.Subtitle>
           </Col>
           <Col sm={{ span: 6 }}>
             <div className="text-sm-end">
-              {vulnerable.severity ? (
+              {pkg.severity ? (
                 <>
                   <Card.Title>
                     <span className="text-right darker"> Severity: </span>
                     <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
-                      <h4 className={`p-1 ${vulnerable.severity} text-capitalize`} style={{ display: 'inline' }}>
-                        {vulnerable.severity}
+                      <h4 className={`p-1 ${pkg.severity} text-capitalize`} style={{ display: 'inline' }}>
+                        {pkg.severity}
                       </h4>
                     </div>
                   </Card.Title>
                   <Card.Subtitle>
                     {' '}
                     <span className="darker">CVSS: </span>
-                    {vulnerable.cvss}
+                    {pkg.cvss}
                   </Card.Subtitle>
                 </>
               ) : null}
