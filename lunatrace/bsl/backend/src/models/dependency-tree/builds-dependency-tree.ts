@@ -43,8 +43,6 @@ export class DependencyTree {
   // Note that other public methods, like getVulnerabilities() rearrange this same data into different shapes for easier parsing outside of the tree
   public vulnerableReleases: VulnerableRelease[];
 
-
-
   // This constructor builds the tree
   constructor(
     sourceManifests: Array<RawManifest>,
@@ -76,10 +74,10 @@ export class DependencyTree {
           release: builtRelease,
         };
         // Create a map from a given release to the list of depNodes
-        this.upsertValueIntoMapOfSets(this.depNodeEdgeIdsByReleaseId, depNode.release_id, edge.id)
+        this.upsertValueIntoMapOfSets(this.depNodeEdgeIdsByReleaseId, depNode.release_id, edge.id);
 
         // a map for each node, we know all the edges that it was a child of
-        this.upsertValueIntoMapOfSets(this.nodeIdsToEdgeIds, depNode.id, edge.id)
+        this.upsertValueIntoMapOfSets(this.nodeIdsToEdgeIds, depNode.id, edge.id);
 
         // Create a lookup of child IDs that map to a set of nodes that include them (parents).
         const parentIdsToNode = this.nodeIdToParentIds.get(depNode.id) || new Set();
@@ -95,7 +93,7 @@ export class DependencyTree {
     });
 
     this.vulnerableReleases = this.getVulnerableReleases();
-    this.vulnerableReleases.sort((r1, r2) => this.sortBySeverityName(r1.severity, r2.severity))
+    this.vulnerableReleases.sort((r1, r2) => this.sortBySeverityName(r1.severity, r2.severity));
   }
 
   private buildVulns(depNode: RawNode, edgeId: string, path: string): BuiltVulnMeta[] {
@@ -135,7 +133,7 @@ export class DependencyTree {
     return builtVulns;
   }
 
-  private vulnBelowSeverityLimit(vulnSeverity: string | undefined|null): boolean {
+  private vulnBelowSeverityLimit(vulnSeverity: string | undefined | null): boolean {
     if (!this.minimumSeverity) {
       return false;
     }
@@ -148,7 +146,7 @@ export class DependencyTree {
     return severityRank < minimumSeverityRank;
   }
 
-  private upsertValueIntoMapOfSets(map: Map<string, Set<string>>, key: string, value:string){
+  private upsertValueIntoMapOfSets(map: Map<string, Set<string>>, key: string, value: string) {
     const existingSet = map.get(key);
     if (existingSet) {
       // just add the depNodes to the existing release ID
@@ -157,7 +155,6 @@ export class DependencyTree {
       map.set(key, new Set([value]));
     }
   }
-
 
   // Calls getVulnerableReleases and changes the data shape to just be a list of vulns and their chains
   public getVulnerabilities(): Array<BuiltVulnMeta> {
@@ -231,7 +228,6 @@ export class DependencyTree {
             beneath_minimum_severity: affectedByVuln.beneath_minimum_severity,
             guides: guidesFromVuln,
             fix_versions: affectedByVuln.fix_versions,
-            ignored: !affectedByVuln.beneath_minimum_severity && affectedByVuln.ignored,
           };
           vulnerableReleasesById[release.id] = newVulnerableRelease;
           return;
@@ -255,8 +251,8 @@ export class DependencyTree {
         if (!existingRelease.affected_by.some((v) => v.vulnerability.id === affectedByVuln.vulnerability.id)) {
           existingRelease.affected_by.push(affectedByVuln);
           existingRelease.affected_by.sort((v1, v2) => {
-            return this.sortBySeverityName(v1.vulnerability.severity_name,v2.vulnerability.severity_name)
-          })
+            return this.sortBySeverityName(v1.vulnerability.severity_name, v2.vulnerability.severity_name);
+          });
         }
         // add chains to the top level list of chains on the release, if this is the first vuln we have process on the edge (because we only want to do this once per edge)
         if (vulnIndex === 0) {
@@ -281,10 +277,6 @@ export class DependencyTree {
           }
         });
 
-        // update if the package should be ignored or not. If the vuln isnt being shown because of severity, skip
-        if (!affectedByVuln.beneath_minimum_severity) {
-          existingRelease.ignored = existingRelease.ignored && affectedByVuln.ignored;
-        }
         // merge fix versions that are common between vulns
         existingRelease.fix_versions = Array.from(
           new Set([...existingRelease.fix_versions, ...affectedByVuln.fix_versions])
@@ -294,8 +286,8 @@ export class DependencyTree {
     return Object.values(vulnerableReleasesById);
   }
 
-  private sortBySeverityName(nameOne:string|null|undefined, nameTwo:string|null|undefined){
-    return severityOrderOsv.indexOf(nameTwo || 'Unknown') - severityOrderOsv.indexOf(nameOne || 'Unknown')
+  private sortBySeverityName(nameOne: string | null | undefined, nameTwo: string | null | undefined) {
+    return severityOrderOsv.indexOf(nameTwo || 'Unknown') - severityOrderOsv.indexOf(nameOne || 'Unknown');
   }
 
   private chainsAreIdentical(firstChain: DependencyChain, secondChain: DependencyChain): boolean {
@@ -365,7 +357,7 @@ export class DependencyTree {
       throw new Error(`Failed to find release for id ${releaseId} while checking triviallyUpdatable`);
     }
 
-    console.log('found dep Ids matching releaseId', releaseId, matchingEdgeIds)
+    console.log('found dep Ids matching releaseId', releaseId, matchingEdgeIds);
 
     const matchingDeps = [...matchingEdgeIds].map((edgeId) => {
       console.log('looking up dep id ', edgeId, ' for release id ', releaseId);
@@ -431,9 +423,9 @@ export class DependencyTree {
       }
 
       parentNodeIds.forEach((parentNodeId) => {
-        const parentEdgeIds = this.nodeIdsToEdgeIds.get(parentNodeId)
-        if (!parentEdgeIds){
-          throw new Error('Failed to find list of edge ids for node id')
+        const parentEdgeIds = this.nodeIdsToEdgeIds.get(parentNodeId);
+        if (!parentEdgeIds) {
+          throw new Error('Failed to find list of edge ids for node id');
         }
         parentEdgeIds.forEach((parentEdgeId) => {
           const parentEdge = this.depNodesByEdgeId.get(parentEdgeId);
@@ -441,8 +433,7 @@ export class DependencyTree {
             throw new Error(`Failed to find parent edge with id ${parentEdgeId} for child id ${dep.id}`);
           }
           recursivelyGenerateChainsWithStack(parentEdge, newStack);
-        })
-
+        });
       });
     };
 

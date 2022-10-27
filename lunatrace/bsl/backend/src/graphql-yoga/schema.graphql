@@ -99,7 +99,6 @@ type BuildData_VulnerableRelease {
     guides: [BuildData_Guide!]!
     fix_versions: [String!]!
     paths: [String!]!
-    ignored: Boolean!
 }
 
 type BuildData_IgnoredVulnerability {

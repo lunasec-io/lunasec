@@ -55,7 +55,7 @@ export interface RawVulnMeta {
     cvss_score?: number | null;
     source: string;
     source_id: string;
-    summary?:string |null;
+    summary?: string | null;
     guide_vulnerabilities: Array<{ guide: RawGuide }>;
   };
   ranges: Array<{
@@ -120,5 +120,4 @@ export interface VulnerableRelease {
   paths: string[];
   guides: RawGuide[];
   fix_versions: string[];
-  ignored: boolean;
 }

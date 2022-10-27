@@ -28,30 +28,21 @@ interface VulnerablePackageCardBodyProps {
   pkg: VulnerablePackage;
   quickView: QuickViewProps;
   severity: SeverityNamesOsv;
-  shouldIgnore: boolean;
+  findings: VulnerablePackage['affected_by'];
+  setShouldFilterFindingsBySeverity: (should: boolean) => void;
+  shouldFilterFindingsBySeverity: boolean;
+  findingsHiddenBySeverityCount: number;
 }
 
 export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyProps> = ({
   pkg,
   quickView,
   severity,
-  shouldIgnore,
+  shouldFilterFindingsBySeverity,
+  setShouldFilterFindingsBySeverity,
+  findings,
+  findingsHiddenBySeverityCount,
 }) => {
-  const [shouldFilterFindings, setShouldFilterFindings] = useState(true);
-
-  const findingsAboveSeverity = pkg.affected_by.filter((affectedByVuln) => {
-    return !affectedByVuln.beneath_minimum_severity || !shouldFilterFindings;
-  });
-
-  const findingsNotIgnored = findingsAboveSeverity.filter((f) => {
-    if (!shouldIgnore) {
-      return true;
-    }
-    return !f.ignored;
-  });
-
-  const findings = findingsNotIgnored;
-
   return (
     <Card.Body>
       <ConditionallyRender if={pkg.guides.length > 0}>
@@ -69,11 +60,11 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
             <Accordion.Item eventKey="0">
               <FindingsListHeader findingsCount={findings.length} severity={severity} />
               <FindingsTable
-                shouldFilterFindings={shouldFilterFindings}
+                shouldFilterFindings={shouldFilterFindingsBySeverity}
                 filteredFindings={findings}
                 quickView={quickView}
-                setShouldFilterFindings={setShouldFilterFindings}
-                findingsCount={pkg.affected_by.length}
+                setShouldFilterFindings={setShouldFilterFindingsBySeverity}
+                findingsHiddenBySeverityCount={findingsHiddenBySeverityCount}
               />
             </Accordion.Item>
           </Accordion>
