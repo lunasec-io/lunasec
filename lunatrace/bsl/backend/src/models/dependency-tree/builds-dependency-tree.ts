@@ -357,10 +357,7 @@ export class DependencyTree {
       throw new Error(`Failed to find release for id ${releaseId} while checking triviallyUpdatable`);
     }
 
-    console.log('found dep Ids matching releaseId', releaseId, matchingEdgeIds);
-
     const matchingDeps = [...matchingEdgeIds].map((edgeId) => {
-      console.log('looking up dep id ', edgeId, ' for release id ', releaseId);
       const depNode = this.depNodesByEdgeId.get(edgeId);
       if (!depNode) {
         throw new Error('Missing dep node for dep id while checking triviallyUpdatable');
