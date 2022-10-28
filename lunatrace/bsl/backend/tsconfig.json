@@ -49,7 +49,7 @@
     "./src/**/*.tsx",
     "./src/**/*.ts",
     "src/__tests__",
-    "./src/**/*"
+    "./src/**/*",
   ],
   "references": [
     {"path": "../common"},

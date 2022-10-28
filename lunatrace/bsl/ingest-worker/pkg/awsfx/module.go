@@ -11,23 +11,11 @@
 //
 package awsfx
 
-import (
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"go.uber.org/fx"
+import "go.uber.org/fx"
+
+var Module = fx.Options(
+	fx.Provide(
+		NewConfig,
+		NewSession,
+	),
 )
-
-type AwsSessionResult struct {
-	fx.Out
-
-	AwsSession *session.Session
-}
-
-func NewSession(config Config) AwsSessionResult {
-	awsSession := session.Must(session.NewSession(&aws.Config{
-		Region: aws.String(config.Region),
-	}))
-	return AwsSessionResult{
-		AwsSession: awsSession,
-	}
-}

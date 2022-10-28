@@ -13,7 +13,8 @@
  */
 import { getCvssVectorFromSeverities, groupByPackage, severityOrder } from '@lunatrace/lunatrace-common';
 import React, { ChangeEvent, useState } from 'react';
-import {  Col, Dropdown,  Row } from 'react-bootstrap';
+import { Col, Dropdown, Row } from 'react-bootstrap';
+import { AiOutlineMinusCircle } from 'react-icons/ai';
 
 import { QuickViewProps } from '../types';
 
@@ -60,14 +61,15 @@ export const LegacyGrypeVulnerablePackageList: React.FunctionComponent<FindingLi
 
   const handleShowIgnoredFindings = (e: ChangeEvent<HTMLInputElement>) => setIgnoreFindings(!e.target.checked);
 
-
-
-
   return (
     <div className="vulnerability-list p-3">
       <Row>
         <Col md="6">
           <h2 className="d-inline-block me-3">Vulnerable Packages</h2>
+          <p className="mt-n2">
+            <AiOutlineMinusCircle className="mb-1 me-1" />
+            Basic Vulnerability Data Only
+          </p>
         </Col>
         <Col md="6" style={{ display: 'flex', justifyContent: 'right' }}>
           <label className="form-check mx-2 p-1 cursor-pointer user-select-none">

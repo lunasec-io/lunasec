@@ -1,0 +1,20 @@
+query GetManifestDependencyEdge($id: uuid!) {
+  manifest_dependency_edge_by_pk(id: $id) {
+    child {
+      release {
+        package {
+          name
+        }
+      }
+    }
+    parent {
+      release {
+        upstream_blob_url
+        version
+        package {
+          name
+        }
+      }
+    }
+  }
+}

@@ -13,4 +13,5 @@
  */
 import { default as vulnerable } from "vulnerable-package";
 
+// ruleid: imported-and-called
 vulnerable();

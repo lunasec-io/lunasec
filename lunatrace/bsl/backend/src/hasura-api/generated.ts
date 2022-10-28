@@ -31,11 +31,6 @@ export type Scalars = {
   uuid: string;
 };
 
-export type AuthenticatedRepoCloneUrlOutput = {
-  __typename?: 'AuthenticatedRepoCloneUrlOutput';
-  url?: Maybe<Scalars['String']>;
-};
-
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
 export type Boolean_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Boolean']>;
@@ -47,104 +42,6 @@ export type Boolean_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Boolean']>;
   _neq?: InputMaybe<Scalars['Boolean']>;
   _nin?: InputMaybe<Array<Scalars['Boolean']>>;
-};
-
-export type BuildData_AffectedByVulnerability = {
-  __typename?: 'BuildData_AffectedByVulnerability';
-  beneath_minimum_severity: Scalars['Boolean'];
-  chains?: Maybe<Array<Array<BuildData_DependencyNode>>>;
-  fix_versions: Array<Scalars['String']>;
-  ignored: Scalars['Boolean'];
-  ignored_vulnerability?: Maybe<BuildData_IgnoredVulnerability>;
-  path: Scalars['String'];
-  ranges: Array<BuildData_Range>;
-  trivially_updatable_to?: Maybe<Scalars['String']>;
-  vulnerability: BuildData_Vulnerability;
-};
-
-export type BuildData_DependencyNode = {
-  __typename?: 'BuildData_DependencyNode';
-  id: Scalars['String'];
-  range: Scalars['String'];
-  release: BuildData_Release;
-  release_id: Scalars['String'];
-};
-
-export type BuildData_Guide = {
-  __typename?: 'BuildData_Guide';
-  id: Scalars['String'];
-  summary: Scalars['String'];
-  title: Scalars['String'];
-};
-
-export type BuildData_Guide_Vulnerability = {
-  __typename?: 'BuildData_Guide_Vulnerability';
-  guide?: Maybe<BuildData_Guide>;
-  guide_id: Scalars['String'];
-};
-
-export type BuildData_IgnoredVulnerability = {
-  __typename?: 'BuildData_IgnoredVulnerability';
-  locations: Array<Scalars['String']>;
-  note: Scalars['String'];
-};
-
-export type BuildData_Package = {
-  __typename?: 'BuildData_Package';
-  affected_by_vulnerability?: Maybe<Array<BuildData_AffectedByVulnerability>>;
-  name: Scalars['String'];
-  package_manager: Scalars['String'];
-};
-
-export type BuildData_Range = {
-  __typename?: 'BuildData_Range';
-  fixed?: Maybe<Scalars['String']>;
-  introduced?: Maybe<Scalars['String']>;
-};
-
-export type BuildData_Release = {
-  __typename?: 'BuildData_Release';
-  id: Scalars['String'];
-  package: BuildData_Package;
-  version: Scalars['String'];
-};
-
-export type BuildData_Vulnerability = {
-  __typename?: 'BuildData_Vulnerability';
-  cvss_score?: Maybe<Scalars['Float']>;
-  guide_vulnerabilities: Array<BuildData_Guide_Vulnerability>;
-  id: Scalars['String'];
-  /** An array relationship */
-  ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
-  severity_name?: Maybe<Scalars['String']>;
-  source: Scalars['String'];
-  source_id: Scalars['String'];
-  summary?: Maybe<Scalars['String']>;
-};
-
-
-export type BuildData_VulnerabilityIgnored_VulnerabilitiesArgs = {
-  distinct_on?: InputMaybe<Array<Ignored_Vulnerabilities_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Ignored_Vulnerabilities_Order_By>>;
-  where?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
-};
-
-export type BuildData_VulnerableRelease = {
-  __typename?: 'BuildData_VulnerableRelease';
-  affected_by: Array<BuildData_AffectedByVulnerability>;
-  beneath_minimum_severity: Scalars['Boolean'];
-  chains: Array<Array<BuildData_DependencyNode>>;
-  cvss?: Maybe<Scalars['Float']>;
-  dev_only: Scalars['Boolean'];
-  fix_versions: Array<Scalars['String']>;
-  guides: Array<BuildData_Guide>;
-  ignored: Scalars['Boolean'];
-  paths: Array<Scalars['String']>;
-  release: BuildData_Release;
-  severity: Scalars['String'];
-  trivially_updatable: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'. */
@@ -160,25 +57,6 @@ export type Float_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Float']>>;
 };
 
-export type GithubRepository = {
-  __typename?: 'GithubRepository';
-  cloneUrl: Scalars['String'];
-  defaultBranch: Scalars['String'];
-  gitUrl: Scalars['String'];
-  orgId: Scalars['Int'];
-  orgName: Scalars['String'];
-  orgNodeId: Scalars['String'];
-  ownerType: Scalars['String'];
-  repoId: Scalars['Int'];
-  repoName: Scalars['String'];
-  repoNodeId: Scalars['String'];
-};
-
-export type InstallSelectedReposResponse = {
-  __typename?: 'InstallSelectedReposResponse';
-  success?: Maybe<Scalars['Boolean']>;
-};
-
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Int']>;
@@ -190,32 +68,6 @@ export type Int_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Int']>;
   _neq?: InputMaybe<Scalars['Int']>;
   _nin?: InputMaybe<Array<Scalars['Int']>>;
-};
-
-export type OrgWithRepos = {
-  __typename?: 'OrgWithRepos';
-  id: Scalars['String'];
-  organizationName: Scalars['String'];
-  repos: Array<GithubRepository>;
-};
-
-export type OrgsWithReposInput = {
-  id: Scalars['String'];
-  repos: Array<Scalars['Int']>;
-};
-
-export type PresignedUrlResponse = {
-  __typename?: 'PresignedUrlResponse';
-  bucket: Scalars['String'];
-  headers: Scalars['jsonb'];
-  key: Scalars['String'];
-  url: Scalars['String'];
-};
-
-export type SbomUploadUrlOutput = {
-  __typename?: 'SbomUploadUrlOutput';
-  error: Scalars['Boolean'];
-  uploadUrl?: Maybe<UploadUrl>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -249,12 +101,6 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
-};
-
-export type UploadUrl = {
-  __typename?: 'UploadUrl';
-  headers: Scalars['jsonb'];
-  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
@@ -317,10 +163,27 @@ export type Analysis_Manifest_Dependency_Edge_Result = {
   __typename?: 'analysis_manifest_dependency_edge_result';
   created_at: Scalars['timestamptz'];
   finding_source: Analysis_Finding_Source_Enum;
+  finding_source_version: Scalars['Int'];
   finding_type: Analysis_Finding_Type_Enum;
   id: Scalars['uuid'];
+  /** An object relationship */
+  manifest_dependency_edge: Manifest_Dependency_Edge;
   manifest_dependency_edge_id: Scalars['uuid'];
+  output?: Maybe<Scalars['jsonb']>;
+  /** An object relationship */
+  vulnerability: Vulnerability;
   vulnerability_id: Scalars['uuid'];
+};
+
+
+/** columns and relationships of "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_ResultOutputArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Analysis_Manifest_Dependency_Edge_Result_Append_Input = {
+  output?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** Boolean expression to filter rows from the table "analysis.manifest_dependency_edge_result". All fields are combined with a logical 'AND'. */
@@ -330,27 +193,55 @@ export type Analysis_Manifest_Dependency_Edge_Result_Bool_Exp = {
   _or?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   finding_source?: InputMaybe<Analysis_Finding_Source_Enum_Comparison_Exp>;
+  finding_source_version?: InputMaybe<Int_Comparison_Exp>;
   finding_type?: InputMaybe<Analysis_Finding_Type_Enum_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
   manifest_dependency_edge_id?: InputMaybe<Uuid_Comparison_Exp>;
+  output?: InputMaybe<Jsonb_Comparison_Exp>;
+  vulnerability?: InputMaybe<Vulnerability_Bool_Exp>;
   vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "analysis.manifest_dependency_edge_result" */
 export enum Analysis_Manifest_Dependency_Edge_Result_Constraint {
-  /** unique or primary key constraint on columns "manifest_dependency_edge_id", "vulnerability_id" */
+  /** unique or primary key constraint on columns "manifest_dependency_edge_id", "vulnerability_id", "finding_source_version", "finding_source" */
   ManifestDependencyEdgeResultManifestDependencyEdgeIdVul = 'manifest_dependency_edge_result_manifest_dependency_edge_id_vul',
   /** unique or primary key constraint on columns "id" */
   ManifestDependencyEdgeResultPkey = 'manifest_dependency_edge_result_pkey'
 }
 
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Analysis_Manifest_Dependency_Edge_Result_Delete_At_Path_Input = {
+  output?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Analysis_Manifest_Dependency_Edge_Result_Delete_Elem_Input = {
+  output?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Analysis_Manifest_Dependency_Edge_Result_Delete_Key_Input = {
+  output?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for incrementing numeric columns in table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Inc_Input = {
+  finding_source_version?: InputMaybe<Scalars['Int']>;
+};
+
 /** input type for inserting data into table "analysis.manifest_dependency_edge_result" */
 export type Analysis_Manifest_Dependency_Edge_Result_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   finding_source?: InputMaybe<Analysis_Finding_Source_Enum>;
+  finding_source_version?: InputMaybe<Scalars['Int']>;
   finding_type?: InputMaybe<Analysis_Finding_Type_Enum>;
   id?: InputMaybe<Scalars['uuid']>;
+  manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Obj_Rel_Insert_Input>;
   manifest_dependency_edge_id?: InputMaybe<Scalars['uuid']>;
+  output?: InputMaybe<Scalars['jsonb']>;
+  vulnerability?: InputMaybe<Vulnerability_Obj_Rel_Insert_Input>;
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -374,15 +265,24 @@ export type Analysis_Manifest_Dependency_Edge_Result_On_Conflict = {
 export type Analysis_Manifest_Dependency_Edge_Result_Order_By = {
   created_at?: InputMaybe<Order_By>;
   finding_source?: InputMaybe<Order_By>;
+  finding_source_version?: InputMaybe<Order_By>;
   finding_type?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Order_By>;
   manifest_dependency_edge_id?: InputMaybe<Order_By>;
+  output?: InputMaybe<Order_By>;
+  vulnerability?: InputMaybe<Vulnerability_Order_By>;
   vulnerability_id?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: analysis_manifest_dependency_edge_result */
 export type Analysis_Manifest_Dependency_Edge_Result_Pk_Columns_Input = {
   id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Analysis_Manifest_Dependency_Edge_Result_Prepend_Input = {
+  output?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** select columns of table "analysis.manifest_dependency_edge_result" */
@@ -392,11 +292,15 @@ export enum Analysis_Manifest_Dependency_Edge_Result_Select_Column {
   /** column name */
   FindingSource = 'finding_source',
   /** column name */
+  FindingSourceVersion = 'finding_source_version',
+  /** column name */
   FindingType = 'finding_type',
   /** column name */
   Id = 'id',
   /** column name */
   ManifestDependencyEdgeId = 'manifest_dependency_edge_id',
+  /** column name */
+  Output = 'output',
   /** column name */
   VulnerabilityId = 'vulnerability_id'
 }
@@ -405,9 +309,11 @@ export enum Analysis_Manifest_Dependency_Edge_Result_Select_Column {
 export type Analysis_Manifest_Dependency_Edge_Result_Set_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   finding_source?: InputMaybe<Analysis_Finding_Source_Enum>;
+  finding_source_version?: InputMaybe<Scalars['Int']>;
   finding_type?: InputMaybe<Analysis_Finding_Type_Enum>;
   id?: InputMaybe<Scalars['uuid']>;
   manifest_dependency_edge_id?: InputMaybe<Scalars['uuid']>;
+  output?: InputMaybe<Scalars['jsonb']>;
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
 
@@ -418,11 +324,15 @@ export enum Analysis_Manifest_Dependency_Edge_Result_Update_Column {
   /** column name */
   FindingSource = 'finding_source',
   /** column name */
+  FindingSourceVersion = 'finding_source_version',
+  /** column name */
   FindingType = 'finding_type',
   /** column name */
   Id = 'id',
   /** column name */
   ManifestDependencyEdgeId = 'manifest_dependency_edge_id',
+  /** column name */
+  Output = 'output',
   /** column name */
   VulnerabilityId = 'vulnerability_id'
 }
@@ -813,7 +723,6 @@ export type Builds = {
   /** An array relationship */
   resolved_manifests: Array<Resolved_Manifest>;
   s3_url?: Maybe<Scalars['String']>;
-  s3_url_signed?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
   source_type: Scalars['builds_source_type'];
@@ -1864,7 +1773,6 @@ export type Fix_State_Enum_Comparison_Exp = {
 /** Metadata about a github repository and where to find it. */
 export type Github_Repositories = {
   __typename?: 'github_repositories';
-  authenticated_clone_url?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   default_branch?: Maybe<Scalars['String']>;
   git_url: Scalars['String'];
   github_id?: Maybe<Scalars['Int']>;
@@ -3193,6 +3101,13 @@ export type Manifest_Dependency_Edge_Mutation_Response = {
   returning: Array<Manifest_Dependency_Edge>;
 };
 
+/** input type for inserting object relation for remote table "manifest_dependency_edge" */
+export type Manifest_Dependency_Edge_Obj_Rel_Insert_Input = {
+  data: Manifest_Dependency_Edge_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Manifest_Dependency_Edge_On_Conflict>;
+};
+
 /** on_conflict condition type for table "manifest_dependency_edge" */
 export type Manifest_Dependency_Edge_On_Conflict = {
   constraint: Manifest_Dependency_Edge_Constraint;
@@ -3861,9 +3776,6 @@ export type Mutation_Root = {
   insert_webhook_cache?: Maybe<Webhook_Cache_Mutation_Response>;
   /** insert a single row into the table: "webhook_cache" */
   insert_webhook_cache_one?: Maybe<Webhook_Cache>;
-  installSelectedRepos?: Maybe<InstallSelectedReposResponse>;
-  /**  get s3 presigned url for manifest upload, used only by the frontend  */
-  presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** update data of the table: "analysis.manifest_dependency_edge_result" */
   update_analysis_manifest_dependency_edge_result?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Mutation_Response>;
   /** update single row of the table: "analysis.manifest_dependency_edge_result" */
@@ -4578,19 +4490,13 @@ export type Mutation_RootInsert_Webhook_Cache_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInstallSelectedReposArgs = {
-  orgs: Array<OrgsWithReposInput>;
-};
-
-
-/** mutation root */
-export type Mutation_RootPresignManifestUploadArgs = {
-  project_id: Scalars['uuid'];
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_Analysis_Manifest_Dependency_Edge_ResultArgs = {
+  _append?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Append_Input>;
+  _delete_at_path?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_Key_Input>;
+  _inc?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Inc_Input>;
+  _prepend?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Prepend_Input>;
   _set?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Set_Input>;
   where: Analysis_Manifest_Dependency_Edge_Result_Bool_Exp;
 };
@@ -4598,6 +4504,12 @@ export type Mutation_RootUpdate_Analysis_Manifest_Dependency_Edge_ResultArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Analysis_Manifest_Dependency_Edge_Result_By_PkArgs = {
+  _append?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Append_Input>;
+  _delete_at_path?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Delete_Key_Input>;
+  _inc?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Inc_Input>;
+  _prepend?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Prepend_Input>;
   _set?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Set_Input>;
   pk_columns: Analysis_Manifest_Dependency_Edge_Result_Pk_Columns_Input;
 };
@@ -6269,8 +6181,6 @@ export type Package_Release = {
   /** An array relationship */
   release_dependencies: Array<Package_Release_Dependency>;
   /** An array relationship */
-  release_dependents: Array<Package_Release_Dependency>;
-  /** An array relationship */
   release_licenses: Array<Package_Release_License>;
   release_time?: Maybe<Scalars['timestamptz']>;
   upstream_blob_url?: Maybe<Scalars['String']>;
@@ -6291,16 +6201,6 @@ export type Package_ReleaseBuild_Dependency_RelationshipsArgs = {
 
 /** columns and relationships of "package.release" */
 export type Package_ReleaseRelease_DependenciesArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_Dependency_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_Dependency_Order_By>>;
-  where?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
-};
-
-
-/** columns and relationships of "package.release" */
-export type Package_ReleaseRelease_DependentsArgs = {
   distinct_on?: InputMaybe<Array<Package_Release_Dependency_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -6359,7 +6259,6 @@ export type Package_Release_Bool_Exp = {
   publishing_maintainer?: InputMaybe<Package_Maintainer_Bool_Exp>;
   publishing_maintainer_id?: InputMaybe<Uuid_Comparison_Exp>;
   release_dependencies?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
-  release_dependents?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
   release_licenses?: InputMaybe<Package_Release_License_Bool_Exp>;
   release_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   upstream_blob_url?: InputMaybe<String_Comparison_Exp>;
@@ -6396,8 +6295,6 @@ export type Package_Release_Dependency = {
   /** An object relationship */
   dependency_package?: Maybe<Package>;
   dependency_package_id?: Maybe<Scalars['uuid']>;
-  /** An object relationship */
-  dependency_release?: Maybe<Package_Release>;
   dependency_release_id?: Maybe<Scalars['uuid']>;
   id: Scalars['uuid'];
   is_dev: Scalars['Boolean'];
@@ -6429,7 +6326,6 @@ export type Package_Release_Dependency_Bool_Exp = {
   _or?: InputMaybe<Array<Package_Release_Dependency_Bool_Exp>>;
   dependency_package?: InputMaybe<Package_Bool_Exp>;
   dependency_package_id?: InputMaybe<Uuid_Comparison_Exp>;
-  dependency_release?: InputMaybe<Package_Release_Bool_Exp>;
   dependency_release_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   is_dev?: InputMaybe<Boolean_Comparison_Exp>;
@@ -6451,7 +6347,6 @@ export enum Package_Release_Dependency_Constraint {
 export type Package_Release_Dependency_Insert_Input = {
   dependency_package?: InputMaybe<Package_Obj_Rel_Insert_Input>;
   dependency_package_id?: InputMaybe<Scalars['uuid']>;
-  dependency_release?: InputMaybe<Package_Release_Obj_Rel_Insert_Input>;
   dependency_release_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
   is_dev?: InputMaybe<Scalars['Boolean']>;
@@ -6501,7 +6396,6 @@ export type Package_Release_Dependency_On_Conflict = {
 export type Package_Release_Dependency_Order_By = {
   dependency_package?: InputMaybe<Package_Order_By>;
   dependency_package_id?: InputMaybe<Order_By>;
-  dependency_release?: InputMaybe<Package_Release_Order_By>;
   dependency_release_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   is_dev?: InputMaybe<Order_By>;
@@ -6576,7 +6470,6 @@ export type Package_Release_Insert_Input = {
   publishing_maintainer?: InputMaybe<Package_Maintainer_Obj_Rel_Insert_Input>;
   publishing_maintainer_id?: InputMaybe<Scalars['uuid']>;
   release_dependencies?: InputMaybe<Package_Release_Dependency_Arr_Rel_Insert_Input>;
-  release_dependents?: InputMaybe<Package_Release_Dependency_Arr_Rel_Insert_Input>;
   release_licenses?: InputMaybe<Package_Release_License_Arr_Rel_Insert_Input>;
   release_time?: InputMaybe<Scalars['timestamptz']>;
   upstream_blob_url?: InputMaybe<Scalars['String']>;
@@ -6829,7 +6722,6 @@ export type Package_Release_Order_By = {
   publishing_maintainer?: InputMaybe<Package_Maintainer_Order_By>;
   publishing_maintainer_id?: InputMaybe<Order_By>;
   release_dependencies_aggregate?: InputMaybe<Package_Release_Dependency_Aggregate_Order_By>;
-  release_dependents_aggregate?: InputMaybe<Package_Release_Dependency_Aggregate_Order_By>;
   release_licenses_aggregate?: InputMaybe<Package_Release_License_Aggregate_Order_By>;
   release_time?: InputMaybe<Order_By>;
   upstream_blob_url?: InputMaybe<Order_By>;
@@ -7364,8 +7256,6 @@ export type Query_Root = {
   analysis_manifest_dependency_edge_result: Array<Analysis_Manifest_Dependency_Edge_Result>;
   /** fetch data from the table: "analysis.manifest_dependency_edge_result" using primary key columns */
   analysis_manifest_dependency_edge_result_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result>;
-  authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
-  availableOrgsWithRepos?: Maybe<Array<OrgWithRepos>>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -7382,7 +7272,6 @@ export type Query_Root = {
   builds_by_pk?: Maybe<Builds>;
   /** An array relationship */
   default_branch_builds: Array<Default_Branch_Builds>;
-  fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
   /** fetch data from the table: "findings" using primary key columns */
@@ -7469,8 +7358,6 @@ export type Query_Root = {
   package_release_license: Array<Package_Release_License>;
   /** fetch data from the table: "package.release_license" using primary key columns */
   package_release_license_by_pk?: Maybe<Package_Release_License>;
-  /**  get s3 presigned url for manifest upload, used by the CLI  */
-  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
@@ -7485,7 +7372,6 @@ export type Query_Root = {
   resolved_manifest: Array<Resolved_Manifest>;
   /** fetch data from the table: "resolved_manifest" using primary key columns */
   resolved_manifest_by_pk?: Maybe<Resolved_Manifest>;
-  sbomUrl?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
@@ -7532,7 +7418,6 @@ export type Query_Root = {
   vulnerability_severity: Array<Vulnerability_Severity>;
   /** fetch data from the table: "vulnerability.severity" using primary key columns */
   vulnerability_severity_by_pk?: Maybe<Vulnerability_Severity>;
-  vulnerableReleasesFromBuild?: Maybe<Array<BuildData_VulnerableRelease>>;
   /** fetch data from the table: "webhook_cache" */
   webhook_cache: Array<Webhook_Cache>;
   /** fetch data from the table: "webhook_cache" using primary key columns */
@@ -7551,11 +7436,6 @@ export type Query_RootAnalysis_Manifest_Dependency_Edge_ResultArgs = {
 
 export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootAuthenticatedRepoCloneUrlArgs = {
-  repoGithubId: Scalars['Int'];
 };
 
 
@@ -7930,12 +7810,6 @@ export type Query_RootPackage_Release_License_By_PkArgs = {
 };
 
 
-export type Query_RootPresignSbomUploadArgs = {
-  buildId: Scalars['uuid'];
-  orgId: Scalars['uuid'];
-};
-
-
 export type Query_RootProject_Access_TokensArgs = {
   distinct_on?: InputMaybe<Array<Project_Access_Tokens_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -7984,11 +7858,6 @@ export type Query_RootResolved_ManifestArgs = {
 
 export type Query_RootResolved_Manifest_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootSbomUrlArgs = {
-  buildId: Scalars['uuid'];
 };
 
 
@@ -8152,12 +8021,6 @@ export type Query_RootVulnerability_SeverityArgs = {
 
 export type Query_RootVulnerability_Severity_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootVulnerableReleasesFromBuildArgs = {
-  buildId: Scalars['uuid'];
-  minimumSeverity?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -11384,10 +11247,11 @@ export type GetLatestBuildsForRescanQuery = { __typename?: 'query_root', latest_
 export type GetManifestDependencyEdgeAnalysisResultQueryVariables = Exact<{
   vulnerability_id: Scalars['uuid'];
   manifest_dependency_edge_id: Scalars['uuid'];
+  finding_source_version: Scalars['Int'];
 }>;
 
 
-export type GetManifestDependencyEdgeAnalysisResultQuery = { __typename?: 'query_root', analysis_manifest_dependency_edge_result: Array<{ __typename?: 'analysis_manifest_dependency_edge_result', id: any }> };
+export type GetManifestDependencyEdgeAnalysisResultQuery = { __typename?: 'query_root', analysis_manifest_dependency_edge_result: Array<{ __typename?: 'analysis_manifest_dependency_edge_result', id: any, finding_type: Analysis_Finding_Type_Enum }> };
 
 export type GetOrganizationFromInstallationIdQueryVariables = Exact<{
   installation_id?: InputMaybe<Scalars['Int']>;
@@ -11422,7 +11286,7 @@ export type GetTreeFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', parent_id: any, child_id: any, id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null, summary?: string | null, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide_id: any, guide: { __typename?: 'guides', summary: string, id: any, title: string } }> }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } } | null };
+export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', id: any, parent_id: any, child_id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null, summary?: string | null, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide_id: any, guide: { __typename?: 'guides', summary: string, id: any, title: string } }> }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } } | null };
 
 export type GetUserGitHubDataQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
@@ -11734,11 +11598,12 @@ export const GetLatestBuildsForRescanDocument = gql`
 }
     `;
 export const GetManifestDependencyEdgeAnalysisResultDocument = gql`
-    query GetManifestDependencyEdgeAnalysisResult($vulnerability_id: uuid!, $manifest_dependency_edge_id: uuid!) {
+    query GetManifestDependencyEdgeAnalysisResult($vulnerability_id: uuid!, $manifest_dependency_edge_id: uuid!, $finding_source_version: Int!) {
   analysis_manifest_dependency_edge_result(
-    where: {vulnerability_id: {_eq: $vulnerability_id}, manifest_dependency_edge_id: {_eq: $manifest_dependency_edge_id}}
+    where: {vulnerability_id: {_eq: $vulnerability_id}, manifest_dependency_edge_id: {_eq: $manifest_dependency_edge_id}, finding_source_version: {_eq: $finding_source_version}, finding_type: {_neq: error}}
   ) {
     id
+    finding_type
   }
 }
     `;
@@ -11784,6 +11649,7 @@ export const GetTreeFromBuildDocument = gql`
       id
       path
       child_edges_recursive {
+        id
         parent_id
         child_id
         id

@@ -15,9 +15,10 @@ import React, { useState } from 'react';
 import { Container, Nav } from 'react-bootstrap';
 
 import { AdminDashboardOrgs } from './Organizations';
+import { AdminDashboardStaticAnalysis } from './StaticAnalysisResults';
 import { AdminDashboardUsers } from './Users';
 
-type AdminDashboardTabs = 'users' | 'organizations';
+type AdminDashboardTabs = 'users' | 'organizations' | 'static analysis';
 
 const AdminDashboardNav = () => {
   const [activeTab, setActiveTab] = useState<AdminDashboardTabs>('users');
@@ -29,10 +30,13 @@ const AdminDashboardNav = () => {
     if (activeTab === 'organizations') {
       return <AdminDashboardOrgs />;
     }
+    if (activeTab === 'static analysis') {
+      return <AdminDashboardStaticAnalysis />;
+    }
     throw new Error(`unhandled tab for admin dashboard: ${activeTab}`);
   };
 
-  const tabs: AdminDashboardTabs[] = ['users', 'organizations'];
+  const tabs: AdminDashboardTabs[] = ['users', 'organizations', 'static analysis'];
 
   return (
     <>

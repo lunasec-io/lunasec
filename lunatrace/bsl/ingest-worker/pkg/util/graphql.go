@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -26,31 +26,22 @@
 package util
 
 import (
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
-type GraphqlLogContext struct {
-	Key   string
-	Value string
-}
-
-func LogGraphqlError(err error, message string, context ...GraphqlLogContext) {
-	event := log.Error()
-	for _, c := range context {
-		event = event.Str(c.Key, c.Value)
-	}
-
+func LogGraphqlError(logger zerolog.Logger, message string, err error) {
 	switch t := err.(type) {
 	case gqlerror.List:
 		for _, e := range t {
-			event.
+			logger.Error().
+				Err(err).
 				Str("msg", e.Message).
 				Interface("extensions", e.Extensions).
 				Msg(message)
 		}
 	default:
-		event.
+		logger.
 			Err(err).
 			Msg(message)
 	}

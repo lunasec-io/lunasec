@@ -13,4 +13,5 @@
  */
 import { vulnerable as alias1 } from 'vulnerable-package';
 
+// ruleid: imported-and-called
 vulnerable();

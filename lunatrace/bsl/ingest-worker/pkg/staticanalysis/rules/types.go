@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -13,11 +13,18 @@ package rules
 
 import "encoding/json"
 
-type SemgrepResults struct {
-	Errors  []interface{} `json:"errors"`
-	Paths   Paths         `json:"paths"`
-	Results []Result      `json:"results"`
-	Version string        `json:"version"`
+type SemgrepRuleOutput struct {
+	Errors  []SemgrepError  `json:"errors"`
+	Paths   Paths           `json:"paths"`
+	Results []SemgrepResult `json:"results"`
+	Version string          `json:"version"`
+}
+
+type SemgrepError struct {
+	Code    int    `json:"code"`
+	Level   string `json:"level"`
+	Message string `json:"message"`
+	Type    string `json:"type"`
 }
 
 type Paths struct {
@@ -25,7 +32,7 @@ type Paths struct {
 	Scanned []string `json:"scanned"`
 }
 
-type Result struct {
+type SemgrepResult struct {
 	CheckID string   `json:"check_id"`
 	End     Location `json:"end"`
 	Extra   Extra    `json:"extra"`

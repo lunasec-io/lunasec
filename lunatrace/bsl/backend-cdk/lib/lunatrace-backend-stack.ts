@@ -34,7 +34,7 @@ import { DnsRecordType, PrivateDnsNamespace } from '@aws-cdk/aws-servicediscover
 import * as cdk from '@aws-cdk/core';
 import { Duration } from '@aws-cdk/core';
 
-import { StackInputs } from '../stack-inputs';
+import { StackInputs } from '../inputs/types';
 
 import { commonBuildProps } from './constants';
 import { addDatadogToTaskDefinition, datadogLogDriverForService } from './datadog-fargate-integration';
@@ -62,7 +62,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     const dbSecurityGroup = SecurityGroup.fromSecurityGroupId(
       this,
       'DatabaseClusterSecurityGroup',
-      'sg-05b9e1c5e5c1b123a'
+      props.dbSecurityGroup
     );
 
     const vpcDbSecurityGroup = new SecurityGroup(this, 'sg', {
@@ -108,12 +108,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       props.databaseSecretArn
     );
 
-    const hasuraAdminSecret = new Secret(this, 'HasuraAdminSecret', {
-      secretName: `${props.appName}-HasuraAdminSecret`,
-      generateSecretString: {
-        passwordLength: 16,
-      },
-    });
+    const hasuraAdminSecret = Secret.fromSecretCompleteArn(this, 'HasuraAdminSecret', props.hasuraAdminSecretArn);
 
     const backendStaticSecret = Secret.fromSecretCompleteArn(this, 'BackendStaticSecret', props.backendStaticSecretArn);
     const gitHubAppPrivateKey = Secret.fromSecretCompleteArn(this, 'GitHubAppPrivateKey', props.gitHubAppPrivateKey);
@@ -153,6 +148,11 @@ export class LunatraceBackendStack extends cdk.Stack {
 
     const frontendContainerImage = ContainerImage.fromAsset('../frontend', {
       ...commonBuildProps,
+      buildArgs: {
+        REACT_APP_GRAPHQL_URL: `https://${props.domainName}/v1/graphql`,
+        REACT_APP_KRATOS_URL: `https://${props.domainName}/api/kratos`,
+        REACT_APP_GITHUB_APP_LINK: props.gitHubAppLink,
+      },
     });
 
     const frontend = taskDef.addContainer('FrontendContainer', {
@@ -161,18 +161,19 @@ export class LunatraceBackendStack extends cdk.Stack {
       portMappings: [{ containerPort: 80 }],
       logging: datadogLogDriverForService('lunatrace', 'frontend'),
       healthCheck: {
-        command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost || exit 1'],
+        command: ['CMD-SHELL', 'wget  --no-verbose --tries=1 --spider http://localhost || exit 1'],
       },
     });
 
-    const oathkeeperContainerImage = ContainerImage.fromAsset('../ory/oathkeeper', {
+    const oathkeeperContainerImage = ContainerImage.fromAsset('../ory', {
       ...commonBuildProps,
+      file: 'docker/oathkeeper.dockerfile',
       buildArgs: {
         OATHKEEPER_FRONTEND_URL: 'http://localhost:3000',
         OATHKEEPER_BACKEND_URL: 'http://localhost:3002',
         OATHKEEPER_HASURA_URL: 'http://localhost:8080',
         OATHKEEPER_KRATOS_URL: 'http://localhost:4433',
-        OATHKEEPER_MATCH_URL: '<https|http|ws>://<localhost:4455|lunatrace.lunasec.io>',
+        OATHKEEPER_MATCH_URL: `<https|http|ws>://<localhost:4455|${props.domainName}>`,
       },
     });
 
@@ -181,7 +182,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       image: oathkeeperContainerImage,
       portMappings: [{ containerPort: 4455 }],
       logging: datadogLogDriverForService('lunatrace', 'oathkeeper'),
-      command: ['--config', '/generated/config.yaml', 'serve'],
+      entryPoint: ['oathkeeper', '--config', '/config/generated/config.yaml', 'serve'],
       environment: {
         MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: oryConfigBucket.s3UrlForObject(oathkeeperJwksFile),
       },
@@ -190,7 +191,13 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
-    const kratosContainerImage = ContainerImage.fromAsset('../ory/kratos', commonBuildProps);
+    const kratosContainerImage = ContainerImage.fromAsset('../ory', {
+      ...commonBuildProps,
+      file: 'docker/kratos.dockerfile',
+      buildArgs: {
+        KRATOS_DOMAIN_NAME: props.domainName,
+      },
+    });
 
     const githubOauthAppLoginClientId = Secret.fromSecretCompleteArn(
       this,
@@ -211,7 +218,14 @@ export class LunatraceBackendStack extends cdk.Stack {
       image: kratosContainerImage,
       portMappings: [{ containerPort: 4433 }],
       logging: datadogLogDriverForService('lunatrace', 'kratos'),
-      command: ['--config', '/config/config.yaml', '--config', '/config/config.production.yaml', 'serve'],
+      entryPoint: [
+        'kratos',
+        '--config',
+        '/config/config.yaml',
+        '--config',
+        '/config/generated/config.production.yaml',
+        'serve',
+      ],
       environment: {
         // Set this to 'trace' if you need more data
         LOG_LEVEL: 'debug',
@@ -295,6 +309,62 @@ export class LunatraceBackendStack extends cdk.Stack {
       //   // TODO: Make this verify a 200 status code in the response
       //   command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:8080/healthz || exit 1'],
       // },
+    });
+
+    const ingestWorkerImage = ContainerImage.fromAsset('../ingest-worker', {
+      ...commonBuildProps,
+      file: 'docker/ingestworker.dockerfile',
+    });
+
+    // Update vulnerabilities job
+    const updateVulnerabilitiesJob = taskDef.addContainer('UpdateVulnerabilitiesJob', {
+      memoryLimitMiB: 8 * 1024,
+      cpu: 4 * 1024,
+      image: ingestWorkerImage,
+      logging: datadogLogDriverForService('lunatrace', 'UpdateVulnerabilitiesJob'),
+      environment: {
+        LUNATRACE_GRAPHQL_SERVER_URL: 'http://localhost:8080/v1/graphql',
+      },
+      command: ['vulnerability', 'ingest', '--source', 'ghsa', '--cron', '0 0 * * *'],
+      secrets: {
+        LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+        LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      },
+    });
+
+    const registryProxyImage = ContainerImage.fromAsset('../ingest-worker', {
+      ...commonBuildProps,
+      file: 'docker/registryproxy.dockerfile',
+    });
+
+    const registryPort = 8081;
+
+    // NPM registry proxy
+    taskDef.addContainer('NPMRegistryProxy', {
+      image: registryProxyImage,
+      portMappings: [{ containerPort: registryPort }],
+      logging: datadogLogDriverForService('lunatrace', 'NPMRegistryProxy'),
+      environment: {
+        LUNATRACE_PROXY_PORT: registryPort.toString(10),
+        LUNATRACE_PROXY_STAGE: 'release',
+      },
+      secrets: {
+        LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      },
+    });
+
+    // NPM replicator
+    taskDef.addContainer('NPMReplicator', {
+      image: ingestWorkerImage,
+      logging: datadogLogDriverForService('lunatrace', 'NPMReplicator'),
+      command: ['package', 'replicate', '--resume'],
+      environment: {
+        LUNATRACE_GRAPHQL_SERVER_URL: 'http://localhost:8080/v1/graphql',
+      },
+      secrets: {
+        LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+        LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+      },
     });
 
     backend.addContainerDependencies({
@@ -403,6 +473,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       backendStaticSecret,
       datadogApiKeyArn: props.datadogApiKeyArn,
       servicesSecurityGroup,
+      vpcDbSecurityGroup,
     });
   }
 }

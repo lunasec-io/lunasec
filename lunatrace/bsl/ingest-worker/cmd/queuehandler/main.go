@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -14,10 +14,11 @@ package main
 import (
 	"context"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/awsfx"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/queuehandler"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/dbfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher/npm"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/registry"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queuefx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis"
 	"go.uber.org/fx"
@@ -32,19 +33,21 @@ type QueueHandlerProps struct {
 
 func main() {
 	app := fx.New(
+		queuefx.Module,
+		graphqlfx.Module,
+		awsfx.Module,
+		registry.NPMModule,
+		dbfx.Module,
+
 		fx.Supply(http.DefaultClient),
 		fx.Provide(
-			config.NewQueueHandlerConfigProvider,
-			queuefx.NewConfig,
-			graphqlfx.NewConfig,
-			awsfx.NewConfig,
+			queuehandler.NewConfigProvider,
 
-			awsfx.NewSession,
-			graphqlfx.NewGraphqlClient,
-			npm.NewNPMFetcher,
-			ingester.NewHasuraIngester,
+			ingester.NewPackageSqlIngester,
+			ingester.NewNPMPackageIngester,
 
 			staticanalysis.NewStaticAnalysisQueueHandler,
+
 			func(props QueueHandlerProps) queuefx.HandlerLookup {
 				handlerLookup := queuefx.HandlerLookup{}
 				for _, handler := range props.Handlers {
@@ -52,7 +55,6 @@ func main() {
 				}
 				return handlerLookup
 			},
-			queuefx.NewQueueSubscriber,
 		),
 
 		fx.Invoke(func(queueSub *queuefx.Subscriber) error {

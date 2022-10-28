@@ -11,28 +11,11 @@
 //
 package graphqlfx
 
-import (
-	"github.com/Khan/genqlient/graphql"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/gql"
-	"github.com/rs/zerolog/log"
-	"net/http"
+import "go.uber.org/fx"
+
+var Module = fx.Options(
+	fx.Provide(
+		NewConfig,
+		NewGraphqlClient,
+	),
 )
-
-func NewGraphqlClient(config Config, hc *http.Client) graphql.Client {
-	if config.Url == "" {
-		log.Error().Msg("graphql server url is not defined")
-		return nil
-	}
-
-	if config.Secret == "" {
-		log.Error().Msg("graphql server secret is not defined")
-		return nil
-	}
-
-	lhc := hc
-	lhc.Transport = &gql.HeadersTransport{Headers: map[string]string{
-		"X-Hasura-Admin-Secret": config.Secret,
-		"X-Hasura-Role":         "service",
-	}}
-	return graphql.NewClient(config.Url, lhc)
-}
