@@ -39,6 +39,9 @@ export class DependencyTree {
   public depNodeEdgeIdsByReleaseId: Map<string, Set<string>> = new Map();
   // Holds which nodes have been determined to be vulnerable, for later processing
   public vulnerableDepNodeEdgeIds: Set<string> = new Set();
+
+  public edgeIdsByParentChildSlug: Map<string, string> = new Map();
+
   // This is the full computed dataset that we server directly to the frontend. This is the "output" format of the tree.
   // Note that other public methods, like getVulnerabilities() rearrange this same data into different shapes for easier parsing outside of the tree
   public vulnerableReleases: VulnerableRelease[];
@@ -69,7 +72,6 @@ export class DependencyTree {
         // flatten the parent id into the child so we can forget about edges as much as possible, and filter the vulns
         const depNode: BuiltNode = {
           ...edge.child,
-          edge_id: edge.id,
           parent_id: edge.parent_id,
           release: builtRelease,
         };
@@ -88,12 +90,20 @@ export class DependencyTree {
         }
 
         // Create a separate lookup to directly map an ID to a node
-        this.depNodesByEdgeId.set(depNode.edge_id, depNode);
+        this.depNodesByEdgeId.set(edge.id, depNode);
+
+        // keep track of edge ids later in case theyre needed, since we arent storing or indexing edges anywhere else
+        const parentChildSlug = (edge.parent_id || '') + ':' + edge.child_id;
+        this.edgeIdsByParentChildSlug.set(parentChildSlug, edge.id);
       });
     });
 
     this.vulnerableReleases = this.getVulnerableReleases();
     this.vulnerableReleases.sort((r1, r2) => this.sortBySeverityName(r1.severity, r2.severity));
+  }
+
+  public getEdgeIdFromNodePair(firstNodeId: string, secondNodeId: string): string | undefined {
+    return this.edgeIdsByParentChildSlug.get(firstNodeId + ':' + secondNodeId);
   }
 
   private buildVulns(depNode: RawNode, edgeId: string, path: string): BuiltVulnMeta[] {

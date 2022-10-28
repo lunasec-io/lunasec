@@ -22,9 +22,9 @@ export const log = new LunaLogger({ loggerName: logConfig.loggerName });
 
 log.addTransport(
   new JsonTransport({
-    colors: false,
+    colors: true,
     minLevel: isProduction ? 'info' : 'debug',
-    pretty: false,
+    pretty: true,
   })
 );
 

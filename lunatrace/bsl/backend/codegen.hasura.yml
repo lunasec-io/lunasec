@@ -28,6 +28,3 @@ generates:
 
       - "typescript-operations"
       - "typescript-graphql-request"
-  ../../schema.graphql:
-    plugins:
-      - "schema-ast"

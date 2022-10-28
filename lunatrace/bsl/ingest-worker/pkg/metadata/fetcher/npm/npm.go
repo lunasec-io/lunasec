@@ -13,7 +13,6 @@ package npm
 
 import (
 	"context"
-	"encoding/json"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -25,6 +24,8 @@ import (
 
 type npmFetcherDeps struct {
 	fx.In
+
+	Config
 	Client *http.Client
 }
 
@@ -33,7 +34,7 @@ type npmFetcher struct {
 }
 
 func (n *npmFetcher) Fetch(ctx context.Context, pkgName string) (*metadata.PackageMetadata, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, NpmRegistry+"/"+pkgName, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, n.deps.Config.RegistryUrl+"/"+pkgName, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -50,23 +51,7 @@ func (n *npmFetcher) Fetch(ctx context.Context, pkgName string) (*metadata.Packa
 		return nil, err
 	}
 
-	var pkgMeta NpmPackageMetadataWithRawVersions
-	err = json.Unmarshal(pkgMetaRaw, &pkgMeta)
-	if err != nil {
-		return nil, err
-	}
-
-	var pkgMetaForDB NpmPackageMetadata
-	err = json.Unmarshal(pkgMetaRaw, &pkgMetaForDB)
-	if err != nil {
-		return nil, err
-	}
-	pkgMetaForDBRaw, err := json.Marshal(&pkgMetaForDB)
-	if err != nil {
-		return nil, err
-	}
-
-	return adapt(&pkgMeta, pkgMetaForDBRaw)
+	return ParseRawPackageMetadata(pkgMetaRaw)
 }
 
 func NewNPMFetcher(d npmFetcherDeps) metadata.Fetcher {

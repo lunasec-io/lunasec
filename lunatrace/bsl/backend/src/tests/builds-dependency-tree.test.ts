@@ -52,6 +52,12 @@ describe('The fake dependency tree', () => {
     expect(vulnerabilities[0].chains[1].length).toEqual(2);
   });
 
+  it('should convert chain to edge ids', () => {
+    const chain = tree.vulnerableReleases[0].chains[0];
+    const edgeId = tree.getEdgeIdFromNodePair(chain[0].id, chain[1].id);
+    expect(edgeId).toEqual('e2');
+  });
+
   it('should filter vulnerabilities by severity', () => {
     const treeWithMiminumSeverity = new DependencyTree(fakeDependencyTreeHasuraOutputFixture, 'High', []);
     expect(treeWithMiminumSeverity.vulnerableReleases.length).toEqual(1);

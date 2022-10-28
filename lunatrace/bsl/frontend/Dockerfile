@@ -1,6 +1,11 @@
 FROM repo-bootstrap as frontend-build
 
 WORKDIR /usr/repo/lunatrace/bsl/frontend
+
+ARG REACT_APP_GRAPHQL_URL
+ARG REACT_APP_KRATOS_URL
+ARG REACT_APP_GITHUB_APP_LINK
+
 RUN yarn run build:docker
 
 FROM flashspys/nginx-static
