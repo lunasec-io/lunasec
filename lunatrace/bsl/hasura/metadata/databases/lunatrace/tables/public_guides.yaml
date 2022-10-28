@@ -34,6 +34,22 @@ insert_permissions:
         - guide_unique_id
         - updated_at
 select_permissions:
+  - role: service
+    permission:
+      columns:
+        - tags
+        - metadata_schema_version
+        - metadata
+        - body
+        - data_source_link
+        - guide_unique_id
+        - summary
+        - title
+        - created_at
+        - updated_at
+        - severity
+        - id
+      filter: {}
   - role: user
     permission:
       columns:
