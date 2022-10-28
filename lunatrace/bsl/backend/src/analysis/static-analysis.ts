@@ -16,12 +16,17 @@ import { SendMessageCommand } from '@aws-sdk/client-sqs';
 import { sqsClient } from '../aws/sqs-client';
 import { getStaticAnalysisConfig } from '../config';
 import { hasura } from '../hasura-api';
+import { Analysis_Finding_Type_Enum } from '../hasura-api/generated';
 import { LunaTraceStaticAnalysisSqsMessage, ProcessStaticAnalysisRequest } from '../types/sqs';
 import { MaybeErrorVoid } from '../types/util';
 import { newError, newResult } from '../utils/errors';
 import { log } from '../utils/log';
 import { getSqsUrlFromName } from '../utils/sqs';
 import { catchError, threwError } from '../utils/try';
+
+// TODO (cthompson) we probably want this to be a shared constant in a protobuf definition
+// this is the same constant as lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules/importedandcalled.go
+const importedAndCalledRuleVersion = 2;
 
 export async function queueManifestDependencyEdgeForStaticAnalysis(
   vulnerabilityId: string,
@@ -31,11 +36,13 @@ export async function queueManifestDependencyEdgeForStaticAnalysis(
     hasura.GetManifestDependencyEdgeAnalysisResult({
       vulnerability_id: vulnerabilityId,
       manifest_dependency_edge_id: manifestDependencyEdgeId,
+      finding_source_version: importedAndCalledRuleVersion,
     })
   );
   if (threwError(cacheResult)) {
     return newError('Failed to lookup project when using repository id');
   }
+
   if (cacheResult.analysis_manifest_dependency_edge_result.length > 0) {
     log.info('found cached analysis result for manifest dependency edge analysis', {
       vulnerabilityId,
@@ -46,9 +53,9 @@ export async function queueManifestDependencyEdgeForStaticAnalysis(
 
   const staticAnalysisConfig = getStaticAnalysisConfig();
 
-  const staticAnalysisQueueUrl = await catchError(getSqsUrlFromName(staticAnalysisConfig.queueName));
+  const staticAnalysisQueueUrl = await getSqsUrlFromName(staticAnalysisConfig.queueName);
 
-  if (threwError(staticAnalysisQueueUrl) || staticAnalysisQueueUrl.error) {
+  if (staticAnalysisQueueUrl.error) {
     log.error('unable to load static analysis queue url', {
       queueName: staticAnalysisQueueUrl,
     });
@@ -81,7 +88,7 @@ export async function queueManifestDependencyEdgeForStaticAnalysis(
     });
     return newError('sending message to queue failed, responded: ' + JSON.stringify(result));
   }
-  log.info('queued repository for snapshot', {
+  log.info('queued dependency for static analysis', {
     queue: staticAnalysisQueueUrl.res,
     req,
   });

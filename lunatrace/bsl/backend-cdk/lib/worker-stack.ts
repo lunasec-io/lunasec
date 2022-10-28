@@ -11,8 +11,6 @@
  * limitations under the License.
  *
  */
-import { inspect } from 'util';
-
 import { SecurityGroup, SubnetType } from '@aws-cdk/aws-ec2';
 import {
   CapacityProviderStrategy,
@@ -20,14 +18,8 @@ import {
   ContainerImage,
   DeploymentControllerType,
   Secret as EcsSecret,
-  FargatePlatformVersion,
 } from '@aws-cdk/aws-ecs';
-import {
-  ApplicationLoadBalancedFargateService,
-  QueueProcessingFargateServiceProps,
-  ScheduledFargateTask,
-} from '@aws-cdk/aws-ecs-patterns';
-import { Schedule } from '@aws-cdk/aws-events';
+import { ApplicationLoadBalancedFargateService, QueueProcessingFargateServiceProps } from '@aws-cdk/aws-ecs-patterns';
 import { ISecret } from '@aws-cdk/aws-secretsmanager';
 import { Queue } from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
@@ -50,6 +42,7 @@ interface WorkerStackProps extends cdk.StackProps {
   datadogApiKeyArn: string;
   storageStack: WorkerStorageStackState;
   servicesSecurityGroup: SecurityGroup;
+  vpcDbSecurityGroup: SecurityGroup;
 }
 
 interface QueueService extends Partial<QueueProcessingFargateServiceProps> {
@@ -89,6 +82,7 @@ export class WorkerStack extends cdk.Stack {
       storageStack,
       datadogApiKeyArn,
       servicesSecurityGroup,
+      vpcDbSecurityGroup,
     } = props;
 
     const webhookQueue = storageStack.processWebhookSqsQueue;
@@ -98,7 +92,7 @@ export class WorkerStack extends cdk.Stack {
     const staticAnalysisQueue = storageStack.staticAnalysisSqsQueue;
 
     if (!repositoryQueue || !webhookQueue || !manifestQueue || !sbomQueue || !staticAnalysisQueue) {
-      throw new Error(`expected non-null storage stack queues: ${inspect(storageStack)}`);
+      throw new Error(`expected non-null storage stack queues: ${storageStack}`);
     }
 
     const workerContainerImage = ContainerImage.fromAsset('../backend', {
@@ -122,10 +116,13 @@ export class WorkerStack extends cdk.Stack {
       GITHUB_APP_ID: gitHubAppId,
       HASURA_URL: publicHasuraServiceUrl,
       LUNATRACE_GRAPHQL_SERVER_URL: 'http://backend.services:8080/v1/graphql',
+      LUNATRACE_NPM_REGISTRY: 'http://backend.services:8081',
+      STATIC_ANALYSIS_QUEUE: staticAnalysisQueue.queueName,
     };
 
     const processQueueCommonSecrets: Record<string, EcsSecret> = {
       DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
       HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
       HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
       LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
@@ -154,23 +151,23 @@ export class WorkerStack extends cdk.Stack {
 
     const queueServices: QueueService[] = [
       {
+        // TODO (cthompson) mount EFS to make available storage larger
         name: 'ProcessRepositoryQueue',
         queue: repositoryQueue,
         visibility: 600,
         ram: 8 * gb,
         cpu: 4 * gb,
         capacityProviderStrategies,
-        ephemeralStorageGiB: 200,
         scalingSteps,
       },
       {
         name: 'StaticAnalysisQueue',
         queue: staticAnalysisQueue,
+        image: golangWorkerImage,
         visibility: 600,
         ram: 8 * gb,
         cpu: 4 * gb,
         capacityProviderStrategies,
-        ephemeralStorageGiB: 200,
         scalingSteps,
       },
       {
@@ -208,8 +205,9 @@ export class WorkerStack extends cdk.Stack {
         environment: {
           ...processQueueCommonEnvVars,
           ...(visibility ? { QUEUE_VISIBILITY: visibility.toString() } : {}),
+          REDEPLOY: '1',
         },
-        securityGroups: [servicesSecurityGroup],
+        securityGroups: [vpcDbSecurityGroup, servicesSecurityGroup],
         secrets: processQueueCommonSecrets,
         containerName: name + 'Container',
         circuitBreaker: {
@@ -236,39 +234,8 @@ export class WorkerStack extends cdk.Stack {
       webhookQueue.grantConsumeMessages(queueFargateService.taskDefinition.taskRole);
       repositoryQueue.grantConsumeMessages(queueFargateService.taskDefinition.taskRole);
       repositoryQueue.grantSendMessages(queueFargateService.taskDefinition.taskRole);
+      staticAnalysisQueue.grantConsumeMessages(queueFargateService.taskDefinition.taskRole);
+      staticAnalysisQueue.grantSendMessages(queueFargateService.taskDefinition.taskRole);
     });
-
-    const ingestWorkerImage = ContainerImage.fromAsset('../ingest-worker', {
-      ...commonBuildProps,
-      file: 'docker/ingestworker.dockerfile',
-    });
-
-    // Update vulnerabilities job
-    const updateVulnerabilitiesJob = new ScheduledFargateTask(context, 'UpdateVulnerabilitesJob', {
-      cluster: props.fargateCluster,
-      platformVersion: FargatePlatformVersion.LATEST,
-      desiredTaskCount: 1,
-      schedule: Schedule.cron({
-        minute: '0',
-        hour: '0',
-        day: '*',
-        month: '*',
-        year: '*',
-      }),
-      subnetSelection: { subnetType: SubnetType.PUBLIC },
-      scheduledFargateTaskImageOptions: {
-        memoryLimitMiB: 8 * 1024,
-        cpu: 4 * 1024,
-        image: ingestWorkerImage,
-        logDriver: datadogLogDriverForService('lunatrace', 'update-vulnerabilities-job'),
-        environment: {
-          ...processQueueCommonEnvVars,
-        },
-        secrets: {
-          LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
-        },
-      },
-    });
-    addDatadogToTaskDefinition(context, updateVulnerabilitiesJob.taskDefinition, datadogApiKeyArn);
   }
 }

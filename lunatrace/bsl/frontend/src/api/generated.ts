@@ -279,6 +279,207 @@ export type Affected_Range_Type_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['affected_range_type']>>;
 };
 
+export enum Analysis_Finding_Source_Enum {
+  SemgrepImportedCalled = 'semgrep_imported_called'
+}
+
+/** Boolean expression to compare columns of type "analysis_finding_source_enum". All fields are combined with logical 'AND'. */
+export type Analysis_Finding_Source_Enum_Comparison_Exp = {
+  _eq?: InputMaybe<Analysis_Finding_Source_Enum>;
+  _in?: InputMaybe<Array<Analysis_Finding_Source_Enum>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _neq?: InputMaybe<Analysis_Finding_Source_Enum>;
+  _nin?: InputMaybe<Array<Analysis_Finding_Source_Enum>>;
+};
+
+export enum Analysis_Finding_Type_Enum {
+  Error = 'error',
+  NotVulnerable = 'not_vulnerable',
+  Unknown = 'unknown',
+  Vulnerable = 'vulnerable'
+}
+
+/** Boolean expression to compare columns of type "analysis_finding_type_enum". All fields are combined with logical 'AND'. */
+export type Analysis_Finding_Type_Enum_Comparison_Exp = {
+  _eq?: InputMaybe<Analysis_Finding_Type_Enum>;
+  _in?: InputMaybe<Array<Analysis_Finding_Type_Enum>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _neq?: InputMaybe<Analysis_Finding_Type_Enum>;
+  _nin?: InputMaybe<Array<Analysis_Finding_Type_Enum>>;
+};
+
+/** columns and relationships of "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result = {
+  __typename?: 'analysis_manifest_dependency_edge_result';
+  created_at: Scalars['timestamptz'];
+  finding_source: Analysis_Finding_Source_Enum;
+  finding_source_version: Scalars['Int'];
+  finding_type: Analysis_Finding_Type_Enum;
+  id: Scalars['uuid'];
+  /** An object relationship */
+  manifest_dependency_edge: Manifest_Dependency_Edge;
+  manifest_dependency_edge_id: Scalars['uuid'];
+  output?: Maybe<Scalars['jsonb']>;
+  /** An object relationship */
+  vulnerability: Vulnerability;
+  vulnerability_id: Scalars['uuid'];
+};
+
+
+/** columns and relationships of "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_ResultOutputArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Aggregate = {
+  __typename?: 'analysis_manifest_dependency_edge_result_aggregate';
+  aggregate?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Aggregate_Fields>;
+  nodes: Array<Analysis_Manifest_Dependency_Edge_Result>;
+};
+
+/** aggregate fields of "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Aggregate_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_aggregate_fields';
+  avg?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Max_Fields>;
+  min?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Min_Fields>;
+  stddev?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Stddev_Fields>;
+  stddev_pop?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Stddev_Samp_Fields>;
+  sum?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Sum_Fields>;
+  var_pop?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Var_Pop_Fields>;
+  var_samp?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Var_Samp_Fields>;
+  variance?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Variance_Fields>;
+};
+
+
+/** aggregate fields of "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate avg on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Avg_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_avg_fields';
+  finding_source_version?: Maybe<Scalars['Float']>;
+};
+
+/** Boolean expression to filter rows from the table "analysis.manifest_dependency_edge_result". All fields are combined with a logical 'AND'. */
+export type Analysis_Manifest_Dependency_Edge_Result_Bool_Exp = {
+  _and?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>>;
+  _not?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
+  _or?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  finding_source?: InputMaybe<Analysis_Finding_Source_Enum_Comparison_Exp>;
+  finding_source_version?: InputMaybe<Int_Comparison_Exp>;
+  finding_type?: InputMaybe<Analysis_Finding_Type_Enum_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
+  manifest_dependency_edge_id?: InputMaybe<Uuid_Comparison_Exp>;
+  output?: InputMaybe<Jsonb_Comparison_Exp>;
+  vulnerability?: InputMaybe<Vulnerability_Bool_Exp>;
+  vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Max_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_max_fields';
+  created_at?: Maybe<Scalars['timestamptz']>;
+  finding_source_version?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
+  manifest_dependency_edge_id?: Maybe<Scalars['uuid']>;
+  vulnerability_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregate min on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Min_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_min_fields';
+  created_at?: Maybe<Scalars['timestamptz']>;
+  finding_source_version?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
+  manifest_dependency_edge_id?: Maybe<Scalars['uuid']>;
+  vulnerability_id?: Maybe<Scalars['uuid']>;
+};
+
+/** Ordering options when selecting data from "analysis.manifest_dependency_edge_result". */
+export type Analysis_Manifest_Dependency_Edge_Result_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  finding_source?: InputMaybe<Order_By>;
+  finding_source_version?: InputMaybe<Order_By>;
+  finding_type?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Order_By>;
+  manifest_dependency_edge_id?: InputMaybe<Order_By>;
+  output?: InputMaybe<Order_By>;
+  vulnerability?: InputMaybe<Vulnerability_Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "analysis.manifest_dependency_edge_result" */
+export enum Analysis_Manifest_Dependency_Edge_Result_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  FindingSource = 'finding_source',
+  /** column name */
+  FindingSourceVersion = 'finding_source_version',
+  /** column name */
+  FindingType = 'finding_type',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ManifestDependencyEdgeId = 'manifest_dependency_edge_id',
+  /** column name */
+  Output = 'output',
+  /** column name */
+  VulnerabilityId = 'vulnerability_id'
+}
+
+/** aggregate stddev on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_stddev_fields';
+  finding_source_version?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Pop_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_stddev_pop_fields';
+  finding_source_version?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Samp_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_stddev_samp_fields';
+  finding_source_version?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate sum on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Sum_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_sum_fields';
+  finding_source_version?: Maybe<Scalars['Int']>;
+};
+
+/** aggregate var_pop on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Var_Pop_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_var_pop_fields';
+  finding_source_version?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Var_Samp_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_var_samp_fields';
+  finding_source_version?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Variance_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_variance_fields';
+  finding_source_version?: Maybe<Scalars['Float']>;
+};
+
 /** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 export type Bigint_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['bigint']>;
@@ -4074,6 +4275,12 @@ export enum Projects_Update_Column {
 
 export type Query_Root = {
   __typename?: 'query_root';
+  /** fetch data from the table: "analysis.manifest_dependency_edge_result" */
+  analysis_manifest_dependency_edge_result: Array<Analysis_Manifest_Dependency_Edge_Result>;
+  /** fetch aggregated fields from the table: "analysis.manifest_dependency_edge_result" */
+  analysis_manifest_dependency_edge_result_aggregate: Analysis_Manifest_Dependency_Edge_Result_Aggregate;
+  /** fetch data from the table: "analysis.manifest_dependency_edge_result" using primary key columns */
+  analysis_manifest_dependency_edge_result_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result>;
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   availableOrgsWithRepos?: Maybe<Array<OrgWithRepos>>;
   /** fetch data from the table: "build_dependency_relationship" */
@@ -4225,6 +4432,29 @@ export type Query_Root = {
   /** fetch data from the table: "vulnerability.severity" using primary key columns */
   vulnerability_severity_by_pk?: Maybe<Vulnerability_Severity>;
   vulnerableReleasesFromBuild?: Maybe<Array<BuildData_VulnerableRelease>>;
+};
+
+
+export type Query_RootAnalysis_Manifest_Dependency_Edge_ResultArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
+};
+
+
+export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
+};
+
+
+export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -5251,6 +5481,12 @@ export type Severity_Enum_Comparison_Exp = {
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
+  /** fetch data from the table: "analysis.manifest_dependency_edge_result" */
+  analysis_manifest_dependency_edge_result: Array<Analysis_Manifest_Dependency_Edge_Result>;
+  /** fetch aggregated fields from the table: "analysis.manifest_dependency_edge_result" */
+  analysis_manifest_dependency_edge_result_aggregate: Analysis_Manifest_Dependency_Edge_Result_Aggregate;
+  /** fetch data from the table: "analysis.manifest_dependency_edge_result" using primary key columns */
+  analysis_manifest_dependency_edge_result_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -5395,6 +5631,29 @@ export type Subscription_Root = {
   vulnerability_severity: Array<Vulnerability_Severity>;
   /** fetch data from the table: "vulnerability.severity" using primary key columns */
   vulnerability_severity_by_pk?: Maybe<Vulnerability_Severity>;
+};
+
+
+export type Subscription_RootAnalysis_Manifest_Dependency_Edge_ResultArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
+};
+
+
+export type Subscription_RootAnalysis_Manifest_Dependency_Edge_Result_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
+};
+
+
+export type Subscription_RootAnalysis_Manifest_Dependency_Edge_Result_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -6864,6 +7123,15 @@ export type GetAllGuidesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllGuidesQuery = { __typename?: 'query_root', guides: Array<{ __typename?: 'guides', created_at: any, id: any, metadata: any, metadata_schema_version: number, severity: any, summary: string, tags: any, title: string, guide_unique_id: string, updated_at: any }> };
 
+export type GetAnalysisManifestDependencyEdgeResultsOverviewQueryVariables = Exact<{
+  offset: Scalars['Int'];
+  limit: Scalars['Int'];
+  where: Analysis_Manifest_Dependency_Edge_Result_Bool_Exp;
+}>;
+
+
+export type GetAnalysisManifestDependencyEdgeResultsOverviewQuery = { __typename?: 'query_root', analysis_manifest_dependency_edge_result: Array<{ __typename?: 'analysis_manifest_dependency_edge_result', id: any, finding_type: Analysis_Finding_Type_Enum, finding_source: Analysis_Finding_Source_Enum, finding_source_version: number, output?: any | null, manifest_dependency_edge: { __typename?: 'manifest_dependency_edge', parent: { __typename?: 'manifest_dependency_node', release: { __typename?: 'package_release', version: string, package: { __typename?: 'package', name: string } } }, child: { __typename?: 'manifest_dependency_node', release: { __typename?: 'package_release', version: string, package: { __typename?: 'package', name: string } } } }, vulnerability: { __typename?: 'vulnerability', source_id: string, details?: string | null } }>, analysis_manifest_dependency_edge_result_aggregate: { __typename?: 'analysis_manifest_dependency_edge_result_aggregate', aggregate?: { __typename?: 'analysis_manifest_dependency_edge_result_aggregate_fields', count: number } | null } };
+
 export type GetAvailableReposQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -7078,6 +7346,48 @@ export const GetAllGuidesDocument = `
     title
     guide_unique_id
     updated_at
+  }
+}
+    `;
+export const GetAnalysisManifestDependencyEdgeResultsOverviewDocument = `
+    query GetAnalysisManifestDependencyEdgeResultsOverview($offset: Int!, $limit: Int!, $where: analysis_manifest_dependency_edge_result_bool_exp!) {
+  analysis_manifest_dependency_edge_result(
+    offset: $offset
+    limit: $limit
+    where: $where
+  ) {
+    id
+    finding_type
+    finding_source
+    finding_source_version
+    manifest_dependency_edge {
+      parent {
+        release {
+          version
+          package {
+            name
+          }
+        }
+      }
+      child {
+        release {
+          version
+          package {
+            name
+          }
+        }
+      }
+    }
+    vulnerability {
+      source_id
+      details
+    }
+    output
+  }
+  analysis_manifest_dependency_edge_result_aggregate {
+    aggregate {
+      count
+    }
   }
 }
     `;
@@ -7831,6 +8141,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetAllGuides: build.query<GetAllGuidesQuery, GetAllGuidesQueryVariables | void>({
       query: (variables) => ({ document: GetAllGuidesDocument, variables })
+    }),
+    GetAnalysisManifestDependencyEdgeResultsOverview: build.query<GetAnalysisManifestDependencyEdgeResultsOverviewQuery, GetAnalysisManifestDependencyEdgeResultsOverviewQueryVariables>({
+      query: (variables) => ({ document: GetAnalysisManifestDependencyEdgeResultsOverviewDocument, variables })
     }),
     GetAvailableRepos: build.query<GetAvailableReposQuery, GetAvailableReposQueryVariables | void>({
       query: (variables) => ({ document: GetAvailableReposDocument, variables })

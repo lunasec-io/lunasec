@@ -14,6 +14,7 @@
 import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common';
 import React, { ChangeEvent } from 'react';
 import { Button, Col, Dropdown, OverlayTrigger, Row } from 'react-bootstrap';
+import { FcPlus } from 'react-icons/fc';
 
 import { QuickViewProps } from '../types';
 
@@ -68,6 +69,10 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
       <Row>
         <Col md="6">
           <h2 className="d-inline-block me-3">Vulnerable Packages</h2>
+          <p className="mt-n2">
+            <FcPlus className="mb-1 me-1" />
+            Showing Enhanced Tree Data
+          </p>
           {areUpdatesAvailable && (
             <OverlayTrigger placement="bottom" trigger="click" rootClose overlay={AutoUpdatePopOverHOC(pkgsToUpdate)}>
               <Button className="mb-2">Update</Button>

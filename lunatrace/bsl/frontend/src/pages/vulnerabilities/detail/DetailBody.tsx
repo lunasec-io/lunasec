@@ -237,12 +237,12 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                     <p key={r.id}>
                       {/*TODO: make this type an icon, the types are "'advisory'|'article'|'fix'|'git'|'package'|'report'|'web'"*/}
                       <span className="text-capitalize">{r.type}</span>:{' '}
-                      <NavLink className="text-clear darker" to={r.url}>
-                        {' '}
-                        {url.protocol}
+                      <a className="text-clear darker" href={r.url}>
+                        <ExternalLink size="1em" className="mb-1 me-1" /> {url.protocol}
+                        {'//'}
                         <span className="lighter font-weight-bold">{url.host}</span>
                         {url.pathname}
-                      </NavLink>
+                      </a>
                     </p>
                   );
                 })}
