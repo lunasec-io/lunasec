@@ -5,6 +5,9 @@ object_relationships:
   - name: dependency_package
     using:
       foreign_key_constraint_on: dependency_package_id
+  - name: dependency_release
+    using:
+      foreign_key_constraint_on: dependency_release_id
   - name: release
     using:
       foreign_key_constraint_on: release_id
