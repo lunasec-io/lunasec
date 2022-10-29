@@ -17,3 +17,4 @@ deploy-apigateway-to-firehose.ts
 **/generated-schema-1-validator.ts
 **/generated-resolver-types.ts
 lunatrace/bsl/semgrep/
+**/real-dependency-tree-hasura-output.ts

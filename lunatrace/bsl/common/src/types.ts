@@ -13,6 +13,8 @@
  */
 export const severityOrder = ['unknown', 'negligible', 'low', 'medium', 'high', 'critical'];
 
+export type SeverityNamesOsv = 'Unknown' | 'Negligible' | 'Low' | 'Medium' | 'High' | 'Critical';
+
 export const severityOrderOsv = ['Unknown', 'Negligible', 'Low', 'Medium', 'High', 'Critical'];
 
 export interface Finding {
@@ -40,7 +42,7 @@ export interface Finding {
   vulnerability_id: string;
 }
 
-export interface VulnerablePackage<F extends Finding> {
+export interface VulnerablePackageLegacy<F extends Finding> {
   created_at: string;
   purl: string;
   locations: string[];

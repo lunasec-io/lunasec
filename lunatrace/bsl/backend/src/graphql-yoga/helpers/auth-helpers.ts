@@ -22,7 +22,7 @@ import { Context, ContextLoggedIn } from '../context';
 export function throwIfUnauthenticated(ctx: Context): void {
   if (!isAuthenticated(ctx)) {
     log.warn('No parsed JWT claims with a user ID on route that required authorization, throwing a graphql error');
-    throw new GraphQLYogaError('Unauthorized');
+    throw new GraphQLYogaError(`Unauthorized`);
   }
 }
 
@@ -37,13 +37,14 @@ export function isAuthenticated(ctx: Context): ctx is ContextLoggedIn {
   return true;
 }
 
-export function getUserId(ctx: Context): string {
+export function getUserId(ctx: Context, kratos_id_instead = false): string {
   if (!ctx.req.user) {
     log.warn('No parsed JWT claims on route that required authorization, throwing a graphql error');
     throw new GraphQLYogaError('Unauthorized');
   }
   const claims = ctx.req.user;
-  const userId = claims['https://hasura.io/jwt/claims']['x-hasura-user-id'];
+  const claimKeyName = kratos_id_instead ? 'x-hasura-user-id' : 'x-hasura-real-user-id';
+  const userId = claims['https://hasura.io/jwt/claims'][claimKeyName];
   if (!userId) {
     throw new GraphQLYogaError('Failed to get User Id from JWT');
   }
@@ -51,8 +52,8 @@ export function getUserId(ctx: Context): string {
 }
 
 export async function checkProjectIsAuthorized(projectId: string, ctx: Context): Promise<void> {
-  const userId = getUserId(ctx);
-  const usersAuthorizedProjects = await hasura.GetUsersProjects({ user_id: userId });
+  const identityId = getUserId(ctx, true);
+  const usersAuthorizedProjects = await hasura.GetUsersProjects({ user_id: identityId });
   const userIsAuthorized = usersAuthorizedProjects.projects.some((p) => {
     return p.id === projectId;
   });
@@ -74,8 +75,8 @@ export async function checkBuildsAreAuthorized(buildIds: string[], ctx: Context)
 }
 
 export async function getGithubUserToken(ctx: Context): Promise<string> {
-  const userId = getUserId(ctx);
-  const githubUserTokenRes = await getGithubAccessTokenFromKratos(userId);
+  const identityId = getUserId(ctx, true);
+  const githubUserTokenRes = await getGithubAccessTokenFromKratos(identityId);
   if (githubUserTokenRes.error) {
     throw new GraphQLYogaError(githubUserTokenRes.message);
   }
