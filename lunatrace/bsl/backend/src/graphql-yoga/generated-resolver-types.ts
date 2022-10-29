@@ -53,7 +53,6 @@ export type BuildData_Guide = {
 export type BuildData_Guide_Vulnerability = {
   __typename?: 'BuildData_Guide_Vulnerability';
   guide?: Maybe<BuildData_Guide>;
-  guide_id: Scalars['String'];
 };
 
 export type BuildData_IgnoredVulnerability = {
@@ -378,7 +377,6 @@ export type BuildData_GuideResolvers<ContextType = Context, ParentType extends R
 
 export type BuildData_Guide_VulnerabilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_Guide_Vulnerability'] = ResolversParentTypes['BuildData_Guide_Vulnerability']> = {
   guide?: Resolver<Maybe<ResolversTypes['BuildData_Guide']>, ParentType, ContextType>;
-  guide_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

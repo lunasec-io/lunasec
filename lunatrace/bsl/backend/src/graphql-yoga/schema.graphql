@@ -156,7 +156,6 @@ type BuildData_Vulnerability {
 }
 
 type BuildData_Guide_Vulnerability {
-    guide_id: String!
     guide: BuildData_Guide
 }
 
