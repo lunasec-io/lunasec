@@ -1937,7 +1937,9 @@ type Guide_related_guides_bool_exp struct {
 	Or                 []*Guide_related_guides_bool_exp `json:"_or,omitempty"`
 	Created_at         *Timestamptz_comparison_exp      `json:"created_at,omitempty"`
 	From_guide_id      *Uuid_comparison_exp             `json:"from_guide_id,omitempty"`
+	Guide              *Guides_bool_exp                 `json:"guide,omitempty"`
 	Id                 *Uuid_comparison_exp             `json:"id,omitempty"`
+	Parent_guide       *Guides_bool_exp                 `json:"parent_guide,omitempty"`
 	To_guide_unique_id *String_comparison_exp           `json:"to_guide_unique_id,omitempty"`
 	Updated_at         *Timestamptz_comparison_exp      `json:"updated_at,omitempty"`
 }
@@ -1961,8 +1963,14 @@ func (v *Guide_related_guides_bool_exp) GetFrom_guide_id() *Uuid_comparison_exp 
 	return v.From_guide_id
 }
 
+// GetGuide returns Guide_related_guides_bool_exp.Guide, and is useful for accessing the field via an interface.
+func (v *Guide_related_guides_bool_exp) GetGuide() *Guides_bool_exp { return v.Guide }
+
 // GetId returns Guide_related_guides_bool_exp.Id, and is useful for accessing the field via an interface.
 func (v *Guide_related_guides_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetParent_guide returns Guide_related_guides_bool_exp.Parent_guide, and is useful for accessing the field via an interface.
+func (v *Guide_related_guides_bool_exp) GetParent_guide() *Guides_bool_exp { return v.Parent_guide }
 
 // GetTo_guide_unique_id returns Guide_related_guides_bool_exp.To_guide_unique_id, and is useful for accessing the field via an interface.
 func (v *Guide_related_guides_bool_exp) GetTo_guide_unique_id() *String_comparison_exp {
@@ -2065,6 +2073,7 @@ type Guide_vulnerabilities_bool_exp struct {
 	Not              *Guide_vulnerabilities_bool_exp   `json:"_not,omitempty"`
 	Or               []*Guide_vulnerabilities_bool_exp `json:"_or,omitempty"`
 	Created_at       *Timestamptz_comparison_exp       `json:"created_at,omitempty"`
+	Guide            *Guides_bool_exp                  `json:"guide,omitempty"`
 	Guide_id         *Uuid_comparison_exp              `json:"guide_id,omitempty"`
 	Id               *Uuid_comparison_exp              `json:"id,omitempty"`
 	Updated_at       *Timestamptz_comparison_exp       `json:"updated_at,omitempty"`
@@ -2085,6 +2094,9 @@ func (v *Guide_vulnerabilities_bool_exp) GetOr() []*Guide_vulnerabilities_bool_e
 func (v *Guide_vulnerabilities_bool_exp) GetCreated_at() *Timestamptz_comparison_exp {
 	return v.Created_at
 }
+
+// GetGuide returns Guide_vulnerabilities_bool_exp.Guide, and is useful for accessing the field via an interface.
+func (v *Guide_vulnerabilities_bool_exp) GetGuide() *Guides_bool_exp { return v.Guide }
 
 // GetGuide_id returns Guide_vulnerabilities_bool_exp.Guide_id, and is useful for accessing the field via an interface.
 func (v *Guide_vulnerabilities_bool_exp) GetGuide_id() *Uuid_comparison_exp { return v.Guide_id }
@@ -2181,9 +2193,23 @@ const (
 )
 
 type Guides_bool_exp struct {
-	And []*Guides_bool_exp `json:"_and,omitempty"`
-	Not *Guides_bool_exp   `json:"_not,omitempty"`
-	Or  []*Guides_bool_exp `json:"_or,omitempty"`
+	And                     []*Guides_bool_exp              `json:"_and,omitempty"`
+	Not                     *Guides_bool_exp                `json:"_not,omitempty"`
+	Or                      []*Guides_bool_exp              `json:"_or,omitempty"`
+	Body                    *String_comparison_exp          `json:"body,omitempty"`
+	Created_at              *Timestamptz_comparison_exp     `json:"created_at,omitempty"`
+	Data_source_link        *String_comparison_exp          `json:"data_source_link,omitempty"`
+	Guide_unique_id         *String_comparison_exp          `json:"guide_unique_id,omitempty"`
+	Guide_vulnerabilities   *Guide_vulnerabilities_bool_exp `json:"guide_vulnerabilities,omitempty"`
+	Id                      *Uuid_comparison_exp            `json:"id,omitempty"`
+	Metadata                *Jsonb_comparison_exp           `json:"metadata,omitempty"`
+	Metadata_schema_version *Int_comparison_exp             `json:"metadata_schema_version,omitempty"`
+	Related_guides          *Guide_related_guides_bool_exp  `json:"related_guides,omitempty"`
+	Severity                *Severity_enum_comparison_exp   `json:"severity,omitempty"`
+	Summary                 *String_comparison_exp          `json:"summary,omitempty"`
+	Tags                    *Text_comparison_exp            `json:"tags,omitempty"`
+	Title                   *String_comparison_exp          `json:"title,omitempty"`
+	Updated_at              *Timestamptz_comparison_exp     `json:"updated_at,omitempty"`
 }
 
 // GetAnd returns Guides_bool_exp.And, and is useful for accessing the field via an interface.
@@ -2194,6 +2220,52 @@ func (v *Guides_bool_exp) GetNot() *Guides_bool_exp { return v.Not }
 
 // GetOr returns Guides_bool_exp.Or, and is useful for accessing the field via an interface.
 func (v *Guides_bool_exp) GetOr() []*Guides_bool_exp { return v.Or }
+
+// GetBody returns Guides_bool_exp.Body, and is useful for accessing the field via an interface.
+func (v *Guides_bool_exp) GetBody() *String_comparison_exp { return v.Body }
+
+// GetCreated_at returns Guides_bool_exp.Created_at, and is useful for accessing the field via an interface.
+func (v *Guides_bool_exp) GetCreated_at() *Timestamptz_comparison_exp { return v.Created_at }
+
+// GetData_source_link returns Guides_bool_exp.Data_source_link, and is useful for accessing the field via an interface.
+func (v *Guides_bool_exp) GetData_source_link() *String_comparison_exp { return v.Data_source_link }
+
+// GetGuide_unique_id returns Guides_bool_exp.Guide_unique_id, and is useful for accessing the field via an interface.
+func (v *Guides_bool_exp) GetGuide_unique_id() *String_comparison_exp { return v.Guide_unique_id }
+
+// GetGuide_vulnerabilities returns Guides_bool_exp.Guide_vulnerabilities, and is useful for accessing the field via an interface.
+func (v *Guides_bool_exp) GetGuide_vulnerabilities() *Guide_vulnerabilities_bool_exp {
+	return v.Guide_vulnerabilities
+}
+
+// GetId returns Guides_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Guides_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetMetadata returns Guides_bool_exp.Metadata, and is useful for accessing the field via an interface.
+func (v *Guides_bool_exp) GetMetadata() *Jsonb_comparison_exp { return v.Metadata }
+
+// GetMetadata_schema_version returns Guides_bool_exp.Metadata_schema_version, and is useful for accessing the field via an interface.
+func (v *Guides_bool_exp) GetMetadata_schema_version() *Int_comparison_exp {
+	return v.Metadata_schema_version
+}
+
+// GetRelated_guides returns Guides_bool_exp.Related_guides, and is useful for accessing the field via an interface.
+func (v *Guides_bool_exp) GetRelated_guides() *Guide_related_guides_bool_exp { return v.Related_guides }
+
+// GetSeverity returns Guides_bool_exp.Severity, and is useful for accessing the field via an interface.
+func (v *Guides_bool_exp) GetSeverity() *Severity_enum_comparison_exp { return v.Severity }
+
+// GetSummary returns Guides_bool_exp.Summary, and is useful for accessing the field via an interface.
+func (v *Guides_bool_exp) GetSummary() *String_comparison_exp { return v.Summary }
+
+// GetTags returns Guides_bool_exp.Tags, and is useful for accessing the field via an interface.
+func (v *Guides_bool_exp) GetTags() *Text_comparison_exp { return v.Tags }
+
+// GetTitle returns Guides_bool_exp.Title, and is useful for accessing the field via an interface.
+func (v *Guides_bool_exp) GetTitle() *String_comparison_exp { return v.Title }
+
+// GetUpdated_at returns Guides_bool_exp.Updated_at, and is useful for accessing the field via an interface.
+func (v *Guides_bool_exp) GetUpdated_at() *Timestamptz_comparison_exp { return v.Updated_at }
 
 type Guides_constraint string
 
@@ -6362,6 +6434,7 @@ type Vulnerability_bool_exp struct {
 	Not                     *Vulnerability_bool_exp            `json:"_not,omitempty"`
 	Or                      []*Vulnerability_bool_exp          `json:"_or,omitempty"`
 	Affected                *Vulnerability_affected_bool_exp   `json:"affected,omitempty"`
+	Created_at              *Timestamptz_comparison_exp        `json:"created_at,omitempty"`
 	Credits                 *Vulnerability_credit_bool_exp     `json:"credits,omitempty"`
 	Cvss_score              *Float_comparison_exp              `json:"cvss_score,omitempty"`
 	Database_specific       *Jsonb_comparison_exp              `json:"database_specific,omitempty"`
@@ -6371,6 +6444,7 @@ type Vulnerability_bool_exp struct {
 	Guide_vulnerabilities   *Guide_vulnerabilities_bool_exp    `json:"guide_vulnerabilities,omitempty"`
 	Id                      *Uuid_comparison_exp               `json:"id,omitempty"`
 	Ignored_vulnerabilities *Ignored_vulnerabilities_bool_exp  `json:"ignored_vulnerabilities,omitempty"`
+	Last_fetched            *Timestamptz_comparison_exp        `json:"last_fetched,omitempty"`
 	Modified                *Timestamptz_comparison_exp        `json:"modified,omitempty"`
 	Published               *Timestamptz_comparison_exp        `json:"published,omitempty"`
 	References              *Vulnerability_reference_bool_exp  `json:"references,omitempty"`
@@ -6395,6 +6469,9 @@ func (v *Vulnerability_bool_exp) GetOr() []*Vulnerability_bool_exp { return v.Or
 
 // GetAffected returns Vulnerability_bool_exp.Affected, and is useful for accessing the field via an interface.
 func (v *Vulnerability_bool_exp) GetAffected() *Vulnerability_affected_bool_exp { return v.Affected }
+
+// GetCreated_at returns Vulnerability_bool_exp.Created_at, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetCreated_at() *Timestamptz_comparison_exp { return v.Created_at }
 
 // GetCredits returns Vulnerability_bool_exp.Credits, and is useful for accessing the field via an interface.
 func (v *Vulnerability_bool_exp) GetCredits() *Vulnerability_credit_bool_exp { return v.Credits }
@@ -6430,6 +6507,9 @@ func (v *Vulnerability_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
 func (v *Vulnerability_bool_exp) GetIgnored_vulnerabilities() *Ignored_vulnerabilities_bool_exp {
 	return v.Ignored_vulnerabilities
 }
+
+// GetLast_fetched returns Vulnerability_bool_exp.Last_fetched, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetLast_fetched() *Timestamptz_comparison_exp { return v.Last_fetched }
 
 // GetModified returns Vulnerability_bool_exp.Modified, and is useful for accessing the field via an interface.
 func (v *Vulnerability_bool_exp) GetModified() *Timestamptz_comparison_exp { return v.Modified }
@@ -6706,6 +6786,7 @@ const (
 
 type Vulnerability_insert_input struct {
 	Affected              *Vulnerability_affected_arr_rel_insert_input   `json:"affected,omitempty"`
+	Created_at            *time.Time                                     `json:"created_at,omitempty"`
 	Credits               *Vulnerability_credit_arr_rel_insert_input     `json:"credits,omitempty"`
 	Cvss_score            *float64                                       `json:"cvss_score,omitempty"`
 	Database_specific     *json.RawMessage                               `json:"database_specific,omitempty"`
@@ -6714,6 +6795,7 @@ type Vulnerability_insert_input struct {
 	Findings              *Findings_arr_rel_insert_input                 `json:"findings,omitempty"`
 	Guide_vulnerabilities *Guide_vulnerabilities_arr_rel_insert_input    `json:"guide_vulnerabilities,omitempty"`
 	Id                    *uuid.UUID                                     `json:"id,omitempty"`
+	Last_fetched          *time.Time                                     `json:"last_fetched,omitempty"`
 	Modified              *time.Time                                     `json:"modified,omitempty"`
 	Published             *time.Time                                     `json:"published,omitempty"`
 	References            *Vulnerability_reference_arr_rel_insert_input  `json:"references,omitempty"`
@@ -6731,6 +6813,9 @@ type Vulnerability_insert_input struct {
 func (v *Vulnerability_insert_input) GetAffected() *Vulnerability_affected_arr_rel_insert_input {
 	return v.Affected
 }
+
+// GetCreated_at returns Vulnerability_insert_input.Created_at, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetCreated_at() *time.Time { return v.Created_at }
 
 // GetCredits returns Vulnerability_insert_input.Credits, and is useful for accessing the field via an interface.
 func (v *Vulnerability_insert_input) GetCredits() *Vulnerability_credit_arr_rel_insert_input {
@@ -6763,6 +6848,9 @@ func (v *Vulnerability_insert_input) GetGuide_vulnerabilities() *Guide_vulnerabi
 
 // GetId returns Vulnerability_insert_input.Id, and is useful for accessing the field via an interface.
 func (v *Vulnerability_insert_input) GetId() *uuid.UUID { return v.Id }
+
+// GetLast_fetched returns Vulnerability_insert_input.Last_fetched, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetLast_fetched() *time.Time { return v.Last_fetched }
 
 // GetModified returns Vulnerability_insert_input.Modified, and is useful for accessing the field via an interface.
 func (v *Vulnerability_insert_input) GetModified() *time.Time { return v.Modified }
@@ -7191,10 +7279,12 @@ const (
 type Vulnerability_update_column string
 
 const (
+	Vulnerability_update_columnCreatedAt        Vulnerability_update_column = "created_at"
 	Vulnerability_update_columnCvssScore        Vulnerability_update_column = "cvss_score"
 	Vulnerability_update_columnDatabaseSpecific Vulnerability_update_column = "database_specific"
 	Vulnerability_update_columnDetails          Vulnerability_update_column = "details"
 	Vulnerability_update_columnId               Vulnerability_update_column = "id"
+	Vulnerability_update_columnLastFetched      Vulnerability_update_column = "last_fetched"
 	Vulnerability_update_columnModified         Vulnerability_update_column = "modified"
 	Vulnerability_update_columnPublished        Vulnerability_update_column = "published"
 	Vulnerability_update_columnReviewedBySource Vulnerability_update_column = "reviewed_by_source"

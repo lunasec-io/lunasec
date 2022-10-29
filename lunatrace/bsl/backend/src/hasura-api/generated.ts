@@ -51,9 +51,14 @@ export type Boolean_Comparison_Exp = {
 
 export type BuildData_AffectedByVulnerability = {
   __typename?: 'BuildData_AffectedByVulnerability';
+  beneath_minimum_severity: Scalars['Boolean'];
   chains?: Maybe<Array<Array<BuildData_DependencyNode>>>;
-  ranges?: Maybe<Array<Maybe<BuildData_Range>>>;
-  trivially_updatable?: Maybe<Scalars['Boolean']>;
+  fix_versions: Array<Scalars['String']>;
+  ignored: Scalars['Boolean'];
+  ignored_vulnerability?: Maybe<BuildData_IgnoredVulnerability>;
+  path: Scalars['String'];
+  ranges: Array<BuildData_Range>;
+  trivially_updatable_to?: Maybe<Scalars['String']>;
   vulnerability: BuildData_Vulnerability;
 };
 
@@ -63,6 +68,24 @@ export type BuildData_DependencyNode = {
   range: Scalars['String'];
   release: BuildData_Release;
   release_id: Scalars['String'];
+};
+
+export type BuildData_Guide = {
+  __typename?: 'BuildData_Guide';
+  id: Scalars['String'];
+  summary: Scalars['String'];
+  title: Scalars['String'];
+};
+
+export type BuildData_Guide_Vulnerability = {
+  __typename?: 'BuildData_Guide_Vulnerability';
+  guide?: Maybe<BuildData_Guide>;
+};
+
+export type BuildData_IgnoredVulnerability = {
+  __typename?: 'BuildData_IgnoredVulnerability';
+  locations: Array<Scalars['String']>;
+  note: Scalars['String'];
 };
 
 export type BuildData_Package = {
@@ -88,20 +111,37 @@ export type BuildData_Release = {
 export type BuildData_Vulnerability = {
   __typename?: 'BuildData_Vulnerability';
   cvss_score?: Maybe<Scalars['Float']>;
+  guide_vulnerabilities: Array<BuildData_Guide_Vulnerability>;
   id: Scalars['String'];
+  /** An array relationship */
+  ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
   severity_name?: Maybe<Scalars['String']>;
   source: Scalars['String'];
   source_id: Scalars['String'];
+  summary?: Maybe<Scalars['String']>;
+};
+
+
+export type BuildData_VulnerabilityIgnored_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Ignored_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Ignored_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
 };
 
 export type BuildData_VulnerableRelease = {
   __typename?: 'BuildData_VulnerableRelease';
   affected_by: Array<BuildData_AffectedByVulnerability>;
+  beneath_minimum_severity: Scalars['Boolean'];
   chains: Array<Array<BuildData_DependencyNode>>;
   cvss?: Maybe<Scalars['Float']>;
   dev_only: Scalars['Boolean'];
-  release?: Maybe<BuildData_Release>;
-  severity?: Maybe<Scalars['String']>;
+  fix_versions: Array<Scalars['String']>;
+  guides: Array<BuildData_Guide>;
+  paths: Array<Scalars['String']>;
+  release: BuildData_Release;
+  severity: Scalars['String'];
   trivially_updatable: Scalars['String'];
 };
 
@@ -829,8 +869,8 @@ export type Builds = {
   /** An array relationship */
   manifests: Array<Manifests>;
   /** An object relationship */
-  project?: Maybe<Projects>;
-  project_id?: Maybe<Scalars['uuid']>;
+  project: Projects;
+  project_id: Scalars['uuid'];
   pull_request_id?: Maybe<Scalars['String']>;
   /** An array relationship */
   resolved_manifests: Array<Resolved_Manifest>;
@@ -2141,9 +2181,20 @@ export type Guide_Related_Guides = {
   __typename?: 'guide_related_guides';
   created_at: Scalars['timestamptz'];
   from_guide_id: Scalars['uuid'];
+  /** An object relationship */
+  guide: Guides;
   id: Scalars['uuid'];
+  /** An object relationship */
+  parent_guide: Guides;
   to_guide_unique_id: Scalars['String'];
   updated_at: Scalars['timestamptz'];
+};
+
+/** order by aggregate values of table "guide_related_guides" */
+export type Guide_Related_Guides_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Guide_Related_Guides_Max_Order_By>;
+  min?: InputMaybe<Guide_Related_Guides_Min_Order_By>;
 };
 
 /** input type for inserting array relation for remote table "guide_related_guides" */
@@ -2160,7 +2211,9 @@ export type Guide_Related_Guides_Bool_Exp = {
   _or?: InputMaybe<Array<Guide_Related_Guides_Bool_Exp>>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   from_guide_id?: InputMaybe<Uuid_Comparison_Exp>;
+  guide?: InputMaybe<Guides_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  parent_guide?: InputMaybe<Guides_Bool_Exp>;
   to_guide_unique_id?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
@@ -2184,6 +2237,24 @@ export type Guide_Related_Guides_Insert_Input = {
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
+/** order by max() on columns of table "guide_related_guides" */
+export type Guide_Related_Guides_Max_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  from_guide_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  to_guide_unique_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "guide_related_guides" */
+export type Guide_Related_Guides_Min_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  from_guide_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  to_guide_unique_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
 /** response of any mutation on the table "guide_related_guides" */
 export type Guide_Related_Guides_Mutation_Response = {
   __typename?: 'guide_related_guides_mutation_response';
@@ -2204,7 +2275,9 @@ export type Guide_Related_Guides_On_Conflict = {
 export type Guide_Related_Guides_Order_By = {
   created_at?: InputMaybe<Order_By>;
   from_guide_id?: InputMaybe<Order_By>;
+  guide?: InputMaybe<Guides_Order_By>;
   id?: InputMaybe<Order_By>;
+  parent_guide?: InputMaybe<Guides_Order_By>;
   to_guide_unique_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -2255,6 +2328,8 @@ export enum Guide_Related_Guides_Update_Column {
 export type Guide_Vulnerabilities = {
   __typename?: 'guide_vulnerabilities';
   created_at: Scalars['timestamptz'];
+  /** An object relationship */
+  guide: Guides;
   guide_id: Scalars['uuid'];
   id: Scalars['uuid'];
   updated_at: Scalars['timestamptz'];
@@ -2283,6 +2358,7 @@ export type Guide_Vulnerabilities_Bool_Exp = {
   _not?: InputMaybe<Guide_Vulnerabilities_Bool_Exp>;
   _or?: InputMaybe<Array<Guide_Vulnerabilities_Bool_Exp>>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  guide?: InputMaybe<Guides_Bool_Exp>;
   guide_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -2346,6 +2422,7 @@ export type Guide_Vulnerabilities_On_Conflict = {
 /** Ordering options when selecting data from "guide_vulnerabilities". */
 export type Guide_Vulnerabilities_Order_By = {
   created_at?: InputMaybe<Order_By>;
+  guide?: InputMaybe<Guides_Order_By>;
   guide_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
@@ -2395,6 +2472,53 @@ export enum Guide_Vulnerabilities_Update_Column {
   VulnerabilityId = 'vulnerability_id'
 }
 
+/** columns and relationships of "guides" */
+export type Guides = {
+  __typename?: 'guides';
+  body: Scalars['String'];
+  created_at: Scalars['timestamptz'];
+  data_source_link: Scalars['String'];
+  guide_unique_id: Scalars['String'];
+  /** An array relationship */
+  guide_vulnerabilities: Array<Guide_Vulnerabilities>;
+  id: Scalars['uuid'];
+  metadata: Scalars['jsonb'];
+  metadata_schema_version: Scalars['Int'];
+  /** An array relationship */
+  related_guides: Array<Guide_Related_Guides>;
+  severity: Scalars['severity_enum'];
+  summary: Scalars['String'];
+  tags: Scalars['_text'];
+  title: Scalars['String'];
+  updated_at: Scalars['timestamptz'];
+};
+
+
+/** columns and relationships of "guides" */
+export type GuidesGuide_VulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Guide_Vulnerabilities_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Guide_Vulnerabilities_Order_By>>;
+  where?: InputMaybe<Guide_Vulnerabilities_Bool_Exp>;
+};
+
+
+/** columns and relationships of "guides" */
+export type GuidesMetadataArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "guides" */
+export type GuidesRelated_GuidesArgs = {
+  distinct_on?: InputMaybe<Array<Guide_Related_Guides_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Guide_Related_Guides_Order_By>>;
+  where?: InputMaybe<Guide_Related_Guides_Bool_Exp>;
+};
+
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type Guides_Append_Input = {
   metadata?: InputMaybe<Scalars['jsonb']>;
@@ -2405,6 +2529,20 @@ export type Guides_Bool_Exp = {
   _and?: InputMaybe<Array<Guides_Bool_Exp>>;
   _not?: InputMaybe<Guides_Bool_Exp>;
   _or?: InputMaybe<Array<Guides_Bool_Exp>>;
+  body?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  data_source_link?: InputMaybe<String_Comparison_Exp>;
+  guide_unique_id?: InputMaybe<String_Comparison_Exp>;
+  guide_vulnerabilities?: InputMaybe<Guide_Vulnerabilities_Bool_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  metadata?: InputMaybe<Jsonb_Comparison_Exp>;
+  metadata_schema_version?: InputMaybe<Int_Comparison_Exp>;
+  related_guides?: InputMaybe<Guide_Related_Guides_Bool_Exp>;
+  severity?: InputMaybe<Severity_Enum_Comparison_Exp>;
+  summary?: InputMaybe<String_Comparison_Exp>;
+  tags?: InputMaybe<_Text_Comparison_Exp>;
+  title?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "guides" */
@@ -2460,6 +2598,8 @@ export type Guides_Mutation_Response = {
   __typename?: 'guides_mutation_response';
   /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Guides>;
 };
 
 /** input type for inserting object relation for remote table "guides" */
@@ -2476,10 +2616,61 @@ export type Guides_On_Conflict = {
   where?: InputMaybe<Guides_Bool_Exp>;
 };
 
+/** Ordering options when selecting data from "guides". */
+export type Guides_Order_By = {
+  body?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  data_source_link?: InputMaybe<Order_By>;
+  guide_unique_id?: InputMaybe<Order_By>;
+  guide_vulnerabilities_aggregate?: InputMaybe<Guide_Vulnerabilities_Aggregate_Order_By>;
+  id?: InputMaybe<Order_By>;
+  metadata?: InputMaybe<Order_By>;
+  metadata_schema_version?: InputMaybe<Order_By>;
+  related_guides_aggregate?: InputMaybe<Guide_Related_Guides_Aggregate_Order_By>;
+  severity?: InputMaybe<Order_By>;
+  summary?: InputMaybe<Order_By>;
+  tags?: InputMaybe<Order_By>;
+  title?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: guides */
+export type Guides_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
 /** prepend existing jsonb value of filtered columns with new jsonb value */
 export type Guides_Prepend_Input = {
   metadata?: InputMaybe<Scalars['jsonb']>;
 };
+
+/** select columns of table "guides" */
+export enum Guides_Select_Column {
+  /** column name */
+  Body = 'body',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  DataSourceLink = 'data_source_link',
+  /** column name */
+  GuideUniqueId = 'guide_unique_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Metadata = 'metadata',
+  /** column name */
+  MetadataSchemaVersion = 'metadata_schema_version',
+  /** column name */
+  Severity = 'severity',
+  /** column name */
+  Summary = 'summary',
+  /** column name */
+  Tags = 'tags',
+  /** column name */
+  Title = 'title',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
 
 /** input type for updating data in table "guides" */
 export type Guides_Set_Input = {
@@ -3629,6 +3820,8 @@ export type Mutation_Root = {
   insert_guide_vulnerabilities_one?: Maybe<Guide_Vulnerabilities>;
   /** insert data into the table: "guides" */
   insert_guides?: Maybe<Guides_Mutation_Response>;
+  /** insert a single row into the table: "guides" */
+  insert_guides_one?: Maybe<Guides>;
   /** insert data into the table: "manifest_dependency" */
   insert_manifest_dependency?: Maybe<Manifest_Dependency_Mutation_Response>;
   /** insert data into the table: "manifest_dependency_edge" */
@@ -3770,6 +3963,8 @@ export type Mutation_Root = {
   update_guide_vulnerabilities_by_pk?: Maybe<Guide_Vulnerabilities>;
   /** update data of the table: "guides" */
   update_guides?: Maybe<Guides_Mutation_Response>;
+  /** update single row of the table: "guides" */
+  update_guides_by_pk?: Maybe<Guides>;
   /** update data of the table: "manifest_dependency" */
   update_manifest_dependency?: Maybe<Manifest_Dependency_Mutation_Response>;
   /** update data of the table: "manifest_dependency_edge" */
@@ -4062,6 +4257,13 @@ export type Mutation_RootInsert_Guide_Vulnerabilities_OneArgs = {
 /** mutation root */
 export type Mutation_RootInsert_GuidesArgs = {
   objects: Array<Guides_Insert_Input>;
+  on_conflict?: InputMaybe<Guides_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Guides_OneArgs = {
+  object: Guides_Insert_Input;
   on_conflict?: InputMaybe<Guides_On_Conflict>;
 };
 
@@ -4600,6 +4802,19 @@ export type Mutation_RootUpdate_GuidesArgs = {
   _prepend?: InputMaybe<Guides_Prepend_Input>;
   _set?: InputMaybe<Guides_Set_Input>;
   where: Guides_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Guides_By_PkArgs = {
+  _append?: InputMaybe<Guides_Append_Input>;
+  _delete_at_path?: InputMaybe<Guides_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Guides_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Guides_Delete_Key_Input>;
+  _inc?: InputMaybe<Guides_Inc_Input>;
+  _prepend?: InputMaybe<Guides_Prepend_Input>;
+  _set?: InputMaybe<Guides_Set_Input>;
+  pk_columns: Guides_Pk_Columns_Input;
 };
 
 
@@ -7245,6 +7460,10 @@ export type Query_Root = {
   guide_vulnerabilities: Array<Guide_Vulnerabilities>;
   /** fetch data from the table: "guide_vulnerabilities" using primary key columns */
   guide_vulnerabilities_by_pk?: Maybe<Guide_Vulnerabilities>;
+  /** fetch data from the table: "guides" */
+  guides: Array<Guides>;
+  /** fetch data from the table: "guides" using primary key columns */
+  guides_by_pk?: Maybe<Guides>;
   /** fetch data from the table: "identities" */
   identities: Array<Identities>;
   /** fetch data from the table: "identities" using primary key columns */
@@ -7513,6 +7732,20 @@ export type Query_RootGuide_VulnerabilitiesArgs = {
 
 
 export type Query_RootGuide_Vulnerabilities_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootGuidesArgs = {
+  distinct_on?: InputMaybe<Array<Guides_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Guides_Order_By>>;
+  where?: InputMaybe<Guides_Bool_Exp>;
+};
+
+
+export type Query_RootGuides_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -7985,6 +8218,7 @@ export type Query_RootVulnerability_Severity_By_PkArgs = {
 
 export type Query_RootVulnerableReleasesFromBuildArgs = {
   buildId: Scalars['uuid'];
+  minimumSeverity?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -8548,6 +8782,10 @@ export type Subscription_Root = {
   guide_vulnerabilities: Array<Guide_Vulnerabilities>;
   /** fetch data from the table: "guide_vulnerabilities" using primary key columns */
   guide_vulnerabilities_by_pk?: Maybe<Guide_Vulnerabilities>;
+  /** fetch data from the table: "guides" */
+  guides: Array<Guides>;
+  /** fetch data from the table: "guides" using primary key columns */
+  guides_by_pk?: Maybe<Guides>;
   /** fetch data from the table: "identities" */
   identities: Array<Identities>;
   /** fetch data from the table: "identities" using primary key columns */
@@ -8807,6 +9045,20 @@ export type Subscription_RootGuide_VulnerabilitiesArgs = {
 
 
 export type Subscription_RootGuide_Vulnerabilities_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootGuidesArgs = {
+  distinct_on?: InputMaybe<Array<Guides_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Guides_Order_By>>;
+  where?: InputMaybe<Guides_Bool_Exp>;
+};
+
+
+export type Subscription_RootGuides_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -9453,6 +9705,7 @@ export type Vulnerability = {
   __typename?: 'vulnerability';
   /** An array relationship */
   affected: Array<Vulnerability_Affected>;
+  created_at: Scalars['timestamptz'];
   /** An array relationship */
   credits: Array<Vulnerability_Credit>;
   cvss_score?: Maybe<Scalars['Float']>;
@@ -9467,6 +9720,7 @@ export type Vulnerability = {
   id: Scalars['uuid'];
   /** An array relationship */
   ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
+  last_fetched?: Maybe<Scalars['timestamptz']>;
   modified: Scalars['timestamptz'];
   published?: Maybe<Scalars['timestamptz']>;
   /** An array relationship */
@@ -10168,6 +10422,7 @@ export type Vulnerability_Bool_Exp = {
   _not?: InputMaybe<Vulnerability_Bool_Exp>;
   _or?: InputMaybe<Array<Vulnerability_Bool_Exp>>;
   affected?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   credits?: InputMaybe<Vulnerability_Credit_Bool_Exp>;
   cvss_score?: InputMaybe<Float_Comparison_Exp>;
   database_specific?: InputMaybe<Jsonb_Comparison_Exp>;
@@ -10177,6 +10432,7 @@ export type Vulnerability_Bool_Exp = {
   guide_vulnerabilities?: InputMaybe<Guide_Vulnerabilities_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   ignored_vulnerabilities?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
+  last_fetched?: InputMaybe<Timestamptz_Comparison_Exp>;
   modified?: InputMaybe<Timestamptz_Comparison_Exp>;
   published?: InputMaybe<Timestamptz_Comparison_Exp>;
   references?: InputMaybe<Vulnerability_Reference_Bool_Exp>;
@@ -10462,6 +10718,7 @@ export type Vulnerability_Inc_Input = {
 /** input type for inserting data into table "vulnerability.vulnerability" */
 export type Vulnerability_Insert_Input = {
   affected?: InputMaybe<Vulnerability_Affected_Arr_Rel_Insert_Input>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   credits?: InputMaybe<Vulnerability_Credit_Arr_Rel_Insert_Input>;
   cvss_score?: InputMaybe<Scalars['Float']>;
   database_specific?: InputMaybe<Scalars['jsonb']>;
@@ -10470,6 +10727,7 @@ export type Vulnerability_Insert_Input = {
   findings?: InputMaybe<Findings_Arr_Rel_Insert_Input>;
   guide_vulnerabilities?: InputMaybe<Guide_Vulnerabilities_Arr_Rel_Insert_Input>;
   id?: InputMaybe<Scalars['uuid']>;
+  last_fetched?: InputMaybe<Scalars['timestamptz']>;
   modified?: InputMaybe<Scalars['timestamptz']>;
   published?: InputMaybe<Scalars['timestamptz']>;
   references?: InputMaybe<Vulnerability_Reference_Arr_Rel_Insert_Input>;
@@ -10509,6 +10767,7 @@ export type Vulnerability_On_Conflict = {
 /** Ordering options when selecting data from "vulnerability.vulnerability". */
 export type Vulnerability_Order_By = {
   affected_aggregate?: InputMaybe<Vulnerability_Affected_Aggregate_Order_By>;
+  created_at?: InputMaybe<Order_By>;
   credits_aggregate?: InputMaybe<Vulnerability_Credit_Aggregate_Order_By>;
   cvss_score?: InputMaybe<Order_By>;
   database_specific?: InputMaybe<Order_By>;
@@ -10518,6 +10777,7 @@ export type Vulnerability_Order_By = {
   guide_vulnerabilities_aggregate?: InputMaybe<Guide_Vulnerabilities_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
   ignored_vulnerabilities_aggregate?: InputMaybe<Ignored_Vulnerabilities_Aggregate_Order_By>;
+  last_fetched?: InputMaybe<Order_By>;
   modified?: InputMaybe<Order_By>;
   published?: InputMaybe<Order_By>;
   references_aggregate?: InputMaybe<Vulnerability_Reference_Aggregate_Order_By>;
@@ -10809,6 +11069,8 @@ export enum Vulnerability_Reference_Update_Column {
 /** select columns of table "vulnerability.vulnerability" */
 export enum Vulnerability_Select_Column {
   /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
   CvssScore = 'cvss_score',
   /** column name */
   DatabaseSpecific = 'database_specific',
@@ -10816,6 +11078,8 @@ export enum Vulnerability_Select_Column {
   Details = 'details',
   /** column name */
   Id = 'id',
+  /** column name */
+  LastFetched = 'last_fetched',
   /** column name */
   Modified = 'modified',
   /** column name */
@@ -10838,10 +11102,12 @@ export enum Vulnerability_Select_Column {
 
 /** input type for updating data in table "vulnerability.vulnerability" */
 export type Vulnerability_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   cvss_score?: InputMaybe<Scalars['Float']>;
   database_specific?: InputMaybe<Scalars['jsonb']>;
   details?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
+  last_fetched?: InputMaybe<Scalars['timestamptz']>;
   modified?: InputMaybe<Scalars['timestamptz']>;
   published?: InputMaybe<Scalars['timestamptz']>;
   reviewed_by_source?: InputMaybe<Scalars['Boolean']>;
@@ -10999,6 +11265,8 @@ export enum Vulnerability_Severity_Update_Column {
 /** update columns of table "vulnerability.vulnerability" */
 export enum Vulnerability_Update_Column {
   /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
   CvssScore = 'cvss_score',
   /** column name */
   DatabaseSpecific = 'database_specific',
@@ -11006,6 +11274,8 @@ export enum Vulnerability_Update_Column {
   Details = 'details',
   /** column name */
   Id = 'id',
+  /** column name */
+  LastFetched = 'last_fetched',
   /** column name */
   Modified = 'modified',
   /** column name */
@@ -11162,7 +11432,7 @@ export type GetBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, existing_github_check_id?: any | null, s3_url?: string | null, git_hash?: string | null, project?: { __typename?: 'projects', id: any, name: string, organization?: { __typename?: 'organizations', installation_id?: number | null, name: string } | null, settings: { __typename?: 'settings', pr_feedback_disabled?: boolean | null, pr_check_enabled?: boolean | null } } | null } | null };
+export type GetBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', pull_request_id?: string | null, existing_github_review_id?: string | null, existing_github_check_id?: any | null, s3_url?: string | null, git_hash?: string | null, project: { __typename?: 'projects', id: any, name: string, organization?: { __typename?: 'organizations', installation_id?: number | null, name: string } | null, settings: { __typename?: 'settings', pr_feedback_disabled?: boolean | null, pr_check_enabled?: boolean | null } } } | null };
 
 export type GetCloneRepoInfoFromRepoIdQueryVariables = Exact<{
   repo_github_id: Scalars['Int'];
@@ -11232,7 +11502,7 @@ export type GetTreeFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', id: any, parent_id: any, child_id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null } | null };
+export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', id: any, parent_id: any, child_id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } } | null };
 
 export type GetUserGitHubDataQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
