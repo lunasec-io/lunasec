@@ -49,6 +49,7 @@ type BuildData_Guide {
 
 type BuildData_Guide_Vulnerability {
     guide: BuildData_Guide
+    guide_id: String!
 }
 
 type BuildData_IgnoredVulnerability {
