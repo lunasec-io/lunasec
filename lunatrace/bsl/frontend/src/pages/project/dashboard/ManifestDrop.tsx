@@ -30,7 +30,6 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string; forHome
   project_id,
 }) => {
   const dispatch = useAppDispatch();
-  console.log('rendering dropzone for project id ', project_id);
   const navigate = useNavigate();
   const [generatePresignedUrl] = api.usePresignManifestUrlMutation();
   const [insertManifest] = api.useInsertManifestMutation();
@@ -69,7 +68,6 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string; forHome
       return;
     }
     const manifestId = insertRequest.insert_manifests_one.id;
-    console.log('manifest id is ', manifestId);
 
     // Upload the file directly to S3
     const options = {
@@ -80,8 +78,6 @@ export const ManifestDrop: React.FunctionComponent<{ project_id: string; forHome
 
     setUploadStatus(`Uploading ${file.name}`);
     const uploadResult = await axiosInstance.put(presign.url, file, options);
-    console.log('upload success ', uploadResult.data);
-    console.log('new file is at ', manifestUrl);
 
     setUploadStatus(`File uploaded, waiting for snapshot to begin`);
     // Tell lunatrace the file uploaded, which simultaneously records the file path in hasura and calls express to kick

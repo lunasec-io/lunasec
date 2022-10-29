@@ -24,7 +24,7 @@ log.addTransport(
   new JsonTransport({
     colors: true,
     minLevel: isProduction ? 'info' : 'debug',
-    pretty: !isProduction,
+    pretty: true,
   })
 );
 

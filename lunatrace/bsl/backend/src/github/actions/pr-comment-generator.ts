@@ -11,20 +11,24 @@
  * limitations under the License.
  *
  */
-import { filterFindingsNotIgnored, Finding, groupByPackage, VulnerablePackage } from '@lunatrace/lunatrace-common';
+import {
+  filterFindingsNotIgnored,
+  Finding,
+  groupByPackage,
+  VulnerablePackageLegacy,
+} from '@lunatrace/lunatrace-common';
 import markdownTable from 'markdown-table';
 import { Octokit } from 'octokit';
 
 import { InsertedScan } from '../../analysis/scan';
 import { hasura } from '../../hasura-api';
-import { updateBuildStatus } from '../../hasura-api/actions/update-build-status';
 import { GetBuildQuery } from '../../hasura-api/generated';
 import { newError } from '../../utils/errors';
 import { log } from '../../utils/log';
 import { generateGithubGraphqlClient } from '../api';
 import { getInstallationAccessToken } from '../auth';
 
-function formatLocationText(finding: VulnerablePackage<Finding>) {
+function formatLocationText(finding: VulnerablePackageLegacy<Finding>) {
   if (finding.locations.length === 0) {
     return 'Unknown';
   }

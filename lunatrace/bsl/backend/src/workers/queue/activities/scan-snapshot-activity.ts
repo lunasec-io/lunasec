@@ -100,9 +100,9 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
     return newError('dependency tree is empty');
   }
 
-  const rawManifests = rawBuildData.resolved_manifests as Omit<typeof rawBuildData['resolved_manifests'], '__typename'>;
+  const rawManifests = rawBuildData.resolved_manifests; // as Omit<typeof rawBuildData['resolved_manifests'], '__typename'>;
 
-  const depTree = buildTreeFromRawData(rawManifests);
+  const depTree = buildTreeFromRawData(rawManifests, 'Unknown', []);
   if (!depTree) {
     log.error('unable to build dependency tree', {
       rawManifests,

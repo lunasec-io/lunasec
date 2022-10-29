@@ -18,7 +18,7 @@ import { useBottomScrollListener } from 'react-bottom-scroll-listener';
 import api from '../../../api';
 import { GetProjectBuildsQuery } from '../../../api/generated';
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
-import { BuildInfo, ProjectInfo } from '../types';
+import { BuildInfo } from '../types';
 
 import { BuildList } from './BuildList';
 

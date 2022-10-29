@@ -11,15 +11,15 @@
  * limitations under the License.
  *
  */
-import { Finding, severityOrder, VulnerablePackage } from './types';
+import { Finding, severityOrder, VulnerablePackageLegacy } from './types';
 
 function sortBySeverity(a: Finding, b: Finding): number {
   return severityOrder.indexOf(b.severity) - severityOrder.indexOf(a.severity);
 }
 
-export function groupByPackage<F extends Finding>(project_id: string, findings: F[]): VulnerablePackage<F>[] {
+export function groupByPackage<F extends Finding>(project_id: string, findings: F[]): VulnerablePackageLegacy<F>[] {
   // a place to group vulnerabilities by package
-  const pkgs: Record<string, VulnerablePackage<F>> = {};
+  const pkgs: Record<string, VulnerablePackageLegacy<F>> = {};
   // sort by severity
   const sFindings = [...findings].sort(sortBySeverity);
   sFindings.forEach((f) => {
@@ -33,7 +33,7 @@ export function groupByPackage<F extends Finding>(project_id: string, findings: 
   return Object.values(pkgs);
 }
 
-function createNewVulnPackage<F extends Finding>(project_id: string, finding: F): VulnerablePackage<F> {
+function createNewVulnPackage<F extends Finding>(project_id: string, finding: F): VulnerablePackageLegacy<F> {
   return {
     created_at: finding.created_at, // might be better to sort and show the first date
     purl: finding.purl,
@@ -52,7 +52,7 @@ function createNewVulnPackage<F extends Finding>(project_id: string, finding: F)
   };
 }
 
-function mergeExistingFindingIntoPackage<F extends Finding>(vulnPackage: VulnerablePackage<F>, finding: F): void {
+function mergeExistingFindingIntoPackage<F extends Finding>(vulnPackage: VulnerablePackageLegacy<F>, finding: F): void {
   // add the finding to the finding list if its not a dupe
   const existingVulnerabilityIds = vulnPackage.findings.map((f) => f.vulnerability.id);
   const newVulnerabilityId = finding.vulnerability.id;
