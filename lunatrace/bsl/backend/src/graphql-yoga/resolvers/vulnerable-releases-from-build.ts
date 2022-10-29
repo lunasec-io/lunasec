@@ -12,7 +12,7 @@
  *
  */
 import { GraphQLYogaError } from '@graphql-yoga/node';
-import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common/build/main';
+import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common';
 
 import { hasura } from '../../hasura-api';
 import { GetTreeFromBuildQuery } from '../../hasura-api/generated';
