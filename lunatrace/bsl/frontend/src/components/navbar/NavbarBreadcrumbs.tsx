@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Breadcrumb, Spinner } from 'react-bootstrap';
 import { NavLink, Params } from 'react-router-dom';
 import useBreadCrumbs, {

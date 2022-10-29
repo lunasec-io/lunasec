@@ -28,6 +28,15 @@ query GetTreeFromBuild($build_id: uuid!) {
                                     source
                                     severity_name
                                     cvss_score
+                                    summary
+                                    guide_vulnerabilities {
+                                        guide_id
+                                        guide {
+                                            summary
+                                            id
+                                            title
+                                        }
+                                    }
                                 }
                                 ranges {
                                     introduced
