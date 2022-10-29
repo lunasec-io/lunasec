@@ -11,4 +11,19 @@
  * limitations under the License.
  *
  */
-export default {};
+
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+
+import { Guide } from '../types';
+
+export const GuideBlurb: React.FC<{ guide: Guide }> = ({ guide }) => {
+  return (
+    <>
+      <h2 className={'d-md-inline-block'}>{guide.title}</h2>
+      <p className={'ms-md-1'}>
+        {guide.summary} <NavLink to={`/guides/${guide.id}`}>Read more...</NavLink>
+      </p>
+    </>
+  );
+};

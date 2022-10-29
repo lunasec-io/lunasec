@@ -20,7 +20,7 @@ import { getUserId } from '../helpers/auth-helpers';
 type AuthenticatedRepoCloneUrlResolver = NonNullable<QueryResolvers['authenticatedRepoCloneUrl']>;
 
 export const authenticatedRepoCloneUrlResolver: AuthenticatedRepoCloneUrlResolver = async (parent, args, ctx, info) => {
-  const kratosUserId = getUserId(ctx);
+  const kratosUserId = getUserId(ctx, true);
 
   log.info('getting authenticated repo clone url', {
     userId: kratosUserId,

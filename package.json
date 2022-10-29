@@ -89,10 +89,10 @@
     "publish:release": "yarn run publish:release:sdks && yarn run publish:release:services && yarn run publish:release:demos",
     "prepare": "yarn run husky install",
     "monorepo:version": "yarn node -p 'require(\"./lerna.json\").version'",
-		"generate:lunatrace:backend": "cd lunatrace/bsl/backend && yarn generate",
-		"generate:lunatrace:frontend": "cd lunatrace/bsl/frontend && yarn generate",
-		"generate:go": "go generate ./...",
-		"generate": "yarn generate:go && yarn generate:lunatrace:backend && yarn generate:lunatrace:frontend"
+    "generate:lunatrace:backend": "cd lunatrace/bsl/backend && yarn generate",
+    "generate:lunatrace:frontend": "cd lunatrace/bsl/frontend && yarn generate",
+    "generate:go": "go generate ./...",
+    "generate": "yarn generate:go && yarn generate:lunatrace:backend && yarn generate:lunatrace:frontend"
   },
   "engines": {
     "node": "^16.0.0"

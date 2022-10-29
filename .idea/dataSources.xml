@@ -16,5 +16,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5435/lunatrace</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="lunatrace@localhost" uuid="cf0d288e-3a30-447f-8e7f-c5d4732f4315">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5431/lunatrace</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

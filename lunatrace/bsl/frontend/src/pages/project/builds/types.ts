@@ -12,18 +12,11 @@
  *
  */
 import { GetBuildDetailsQuery } from '../../../api/generated';
-import { DependencyTree } from '../../../dependency-tree/builds-dependency-tree';
-import { DependencyChain } from '../../../dependency-tree/types';
 
 export type BuildDetailInfo = NonNullable<GetBuildDetailsQuery['builds_by_pk']>;
-export type DependencyRelationshipInfo = NonNullable<
-  NonNullable<BuildDetailInfo['resolved_manifests']>[number]['child_edges_recursive']
->[number];
 
 export interface QuickViewProps {
   setVulnQuickViewId: (vulnId: string) => void;
   vulnQuickViewId: string | null;
 }
 
-export type DepTree = DependencyTree<DependencyRelationshipInfo>;
-export type DepChains = DependencyChain<DependencyRelationshipInfo>[];
