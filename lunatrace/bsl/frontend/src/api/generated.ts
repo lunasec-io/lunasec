@@ -77,7 +77,6 @@ export type BuildData_Guide = {
 export type BuildData_Guide_Vulnerability = {
   __typename?: 'BuildData_Guide_Vulnerability';
   guide?: Maybe<BuildData_Guide>;
-  guide_id: Scalars['String'];
 };
 
 export type BuildData_IgnoredVulnerability = {
