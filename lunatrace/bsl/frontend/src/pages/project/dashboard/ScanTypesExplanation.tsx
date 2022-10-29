@@ -13,7 +13,7 @@
  */
 import React from 'react';
 import { Card, Row } from 'react-bootstrap';
-import { AiFillCode, AiFillDiff, AiFillGithub } from 'react-icons/ai';
+import { AiFillGithub } from 'react-icons/ai';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { GithubAppUrl } from '../../../constants';

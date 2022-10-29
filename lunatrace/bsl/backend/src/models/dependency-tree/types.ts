@@ -16,6 +16,10 @@
 /*                    Input data as it comes from the database                */
 /* -------------------------------------------------------------------------- */
 
+export interface RawManifest {
+  path?: string | null;
+  child_edges_recursive?: RawEdge[] | null;
+}
 export interface RawEdge {
   child_id: string;
   parent_id?: string;
@@ -47,10 +51,12 @@ interface RawPackage {
 export interface RawVulnMeta {
   vulnerability: {
     id: string;
-    severity_name?: string;
+    severity_name?: string | null;
     cvss_score?: number | null;
     source: string;
     source_id: string;
+    summary?: string | null;
+    guide_vulnerabilities: Array<{ guide: RawGuide }>;
   };
   ranges: Array<{
     introduced?: string | null;
@@ -58,6 +64,17 @@ export interface RawVulnMeta {
   }>;
 }
 
+export interface RawGuide {
+  id: string;
+  title: string;
+  summary: string;
+}
+
+export interface IgnoredVulnerability {
+  vulnerability_id: string;
+  locations: string[];
+  note: string;
+}
 /* -------------------------------------------------------------------------- */
 /*                  Output data that is returned from the tree                */
 /* -------------------------------------------------------------------------- */
@@ -77,8 +94,13 @@ interface BuiltPackage extends RawPackage {
 }
 
 export interface BuiltVulnMeta extends RawVulnMeta {
-  trivially_updatable: boolean; // We add this by determining something can be updated to a non-vulnerable version without violating semver
+  trivially_updatable_to: string | null; // We add this by determining something can be updated to a non-vulnerable version without violating semver
   chains: DependencyChain[]; // each vuln has its own sublist of chains in addition to the global list in the main body of the release. This is in case some have been eliminated by false-positive analysis for only this vuln
+  path: string;
+  beneath_minimum_severity: boolean;
+  fix_versions: string[];
+  ignored: boolean;
+  ignored_vulnerability: IgnoredVulnerability | undefined;
 }
 
 export type DependencyChain = Array<BuiltNode>;
@@ -88,9 +110,13 @@ export type DependencyChain = Array<BuiltNode>;
 export interface VulnerableRelease {
   release: BuiltRelease;
   severity: string;
+  beneath_minimum_severity: boolean; // if all its vulns are beneath severity, mark the release as beneath severity as well
   chains: DependencyChain[];
   cvss: number | null; // the highest rating from all the vulns on the release, used for giving the user an at-a-glance rating
   dev_only: boolean;
   affected_by: Array<BuiltVulnMeta>;
   trivially_updatable: 'no' | 'partially' | 'yes';
+  paths: string[];
+  guides: RawGuide[];
+  fix_versions: string[];
 }

@@ -11,38 +11,38 @@
  * limitations under the License.
  *
  */
-import { severityOrder, VulnerablePackage } from '@lunatrace/lunatrace-common';
+import { SeverityNamesOsv } from '@lunatrace/lunatrace-common';
 import React, { useState } from 'react';
 import { Accordion, Card, Container, Row } from 'react-bootstrap';
 
 import { ConditionallyRender } from '../../../../../components/utils/ConditionallyRender';
-import { DepTree, QuickViewProps } from '../../types';
-import { FindingsTable } from '../findings/FindingsList';
-import { FindingsListHeader } from '../findings/FindingsListHeader';
-import { Finding } from '../types';
+import { QuickViewProps } from '../../types';
+import { VulnerablePackage } from '../types';
 
 import { GuideBlurb } from './GuideBlurb';
 import { PackageDetails } from './PackageDetails';
+import { FindingsTable } from './findings/FindingsList';
+import { FindingsListHeader } from './findings/FindingsListHeader';
 
 interface VulnerablePackageCardBodyProps {
-  pkg: VulnerablePackage<Finding>;
-  severityFilter: number;
+  pkg: VulnerablePackage;
   quickView: QuickViewProps;
-  depTree: DepTree | null;
+  severity: SeverityNamesOsv;
+  findings: VulnerablePackage['affected_by'];
+  setShouldFilterFindingsBySeverity: (should: boolean) => void;
+  shouldFilterFindingsBySeverity: boolean;
+  findingsHiddenBySeverityCount: number;
 }
 
 export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyProps> = ({
   pkg,
-  severityFilter,
   quickView,
-  depTree,
+  severity,
+  shouldFilterFindingsBySeverity,
+  setShouldFilterFindingsBySeverity,
+  findings,
+  findingsHiddenBySeverityCount,
 }) => {
-  const [shouldFilterFindings, setShouldFilterFindings] = useState(true);
-
-  const filteredFindings = pkg.findings.filter((f) => {
-    return severityOrder.indexOf(f.severity) >= severityFilter || !shouldFilterFindings;
-  });
-
   return (
     <Card.Body>
       <ConditionallyRender if={pkg.guides.length > 0}>
@@ -54,22 +54,17 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
       </ConditionallyRender>
 
       <div className="m-lg-4">
-        <PackageDetails pkg={pkg} depTree={depTree} />
+        <PackageDetails pkg={pkg} />
         <Row>
-          <Accordion defaultActiveKey={filteredFindings.length > 2 ? 'nonexistant' : '0'}>
+          <Accordion defaultActiveKey={findings.length > 2 ? 'nonexistant' : '0'}>
             <Accordion.Item eventKey="0">
-              <FindingsListHeader
-                filteredFindingsCount={filteredFindings.length}
-                shouldFilterFindings={shouldFilterFindings}
-                severityFilter={severityFilter}
-              />
+              <FindingsListHeader findingsCount={findings.length} severity={severity} />
               <FindingsTable
-                shouldFilterFindings={shouldFilterFindings}
-                filteredFindings={filteredFindings}
+                shouldFilterFindings={shouldFilterFindingsBySeverity}
+                filteredFindings={findings}
                 quickView={quickView}
-                setShouldFilterFindings={setShouldFilterFindings}
-                findingsCount={pkg.findings.length}
-                depTree={depTree}
+                setShouldFilterFindings={setShouldFilterFindingsBySeverity}
+                findingsHiddenBySeverityCount={findingsHiddenBySeverityCount}
               />
             </Accordion.Item>
           </Accordion>

@@ -11,15 +11,13 @@
  * limitations under the License.
  *
  */
-import { skipToken } from '@reduxjs/toolkit/query/react';
 import React, { useEffect, useState } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
-import { Box, Home, Lock, Menu, Settings } from 'react-feather';
+import { Box, Home, Menu, Settings } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 
 import api from '../../api';
-import { GetManifestQuery, GetProjectBuildsQuery } from '../../api/generated';
 import { SpinIfLoading } from '../../components/SpinIfLoading';
 import useBreakpoint from '../../hooks/useBreakpoint';
 import { useRecentProjects } from '../../hooks/useRecentProjects';

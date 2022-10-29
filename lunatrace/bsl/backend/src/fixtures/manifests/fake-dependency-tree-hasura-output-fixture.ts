@@ -11,135 +11,158 @@
  * limitations under the License.
  *
  */
-import { RawEdge } from '../../models/dependency-tree/types';
+import { RawManifest } from '../../models/dependency-tree/types';
 
-export const fakeDependencyTreeHasuraOutputFixture: Array<RawEdge> = [
+export const fakeDependencyTreeHasuraOutputFixture: Array<RawManifest> = [
   {
-    id: 'e1',
-    child_id: '1',
-    parent_id: '00000000-0000-0000-0000-000000000000',
-    child: {
-      id: '1',
-      range: '1.0.0',
-      release_id: '1',
-      release: {
-        id: '1',
-        version: '1.0.0',
-        package: {
-          affected_by_vulnerability: [],
-          name: 'foo',
-          package_manager: 'npm',
+    path: 'package-lock.json',
+    child_edges_recursive: [
+      {
+        id: 'e1',
+        child_id: '1',
+        parent_id: '00000000-0000-0000-0000-000000000000',
+        child: {
+          id: '1',
+          range: '1.0.0',
+          release_id: '1',
+          release: {
+            id: '1',
+            version: '1.0.0',
+            package: {
+              affected_by_vulnerability: [],
+              name: 'foo',
+              package_manager: 'npm',
+            },
+          },
         },
       },
-    },
-  },
-  {
-    id: 'e2',
-    child_id: '2',
-    parent_id: '1',
-    child: {
-      id: '2',
-      range: '1.0.0',
-      release_id: '2',
-      release: {
-        id: '2',
-        version: '1.0.0',
-        package: {
-          affected_by_vulnerability: [],
-          name: 'bar',
-          package_manager: 'npm',
+      {
+        id: 'e2',
+        child_id: '2',
+        parent_id: '1',
+        child: {
+          id: '2',
+          range: '1.0.0',
+          release_id: '2',
+          release: {
+            id: '2',
+            version: '1.0.0',
+            package: {
+              affected_by_vulnerability: [],
+              name: 'bar',
+              package_manager: 'npm',
+            },
+          },
         },
       },
-    },
-  },
-  {
-    id: 'e3',
-    child_id: '3',
-    parent_id: '2',
-    child: {
-      id: '3',
-      range: '1.0.0',
-      release_id: '3',
-      release: {
-        id: '3',
-        version: '1.0.0',
-        package: {
-          affected_by_vulnerability: [],
-          name: 'baz',
-          package_manager: 'npm',
+      {
+        id: 'e3',
+        child_id: '3',
+        parent_id: '2',
+        child: {
+          id: '3',
+          range: '1.0.0',
+          release_id: '3',
+          release: {
+            id: '3',
+            version: '1.0.0',
+            package: {
+              affected_by_vulnerability: [],
+              name: 'baz',
+              package_manager: 'npm',
+            },
+          },
         },
       },
-    },
-  },
-  {
-    id: 'e4',
-    child_id: '4',
-    parent_id: '3',
-    child: {
-      id: '4',
-      range: '^1.0.0',
-      release_id: '4',
-      release: {
-        version: '1.0.2',
-        id: '4',
-        package: {
-          affected_by_vulnerability: [
-            {
-              vulnerability: {
-                severity_name: 'Medium',
-                cvss_score: 7.2,
-                source: 'github',
-                source_id: 'GHSA123ABC',
-                id: 'a',
-              },
-              ranges: [
+      {
+        id: 'e4',
+        child_id: '4',
+        parent_id: '3',
+        child: {
+          id: '4',
+          range: '^1.0.0',
+          release_id: '4',
+          release: {
+            version: '1.0.2',
+            id: '4',
+            package: {
+              affected_by_vulnerability: [
                 {
-                  fixed: '1.0.3',
-                  introduced: '1.0.0',
+                  vulnerability: {
+                    severity_name: 'Medium',
+                    cvss_score: 7.2,
+                    source: 'github',
+                    source_id: 'GHSA123ABC',
+                    id: 'a',
+                    guide_vulnerabilities: [
+                      {
+                        guide: {
+                          title: 'fake guide title',
+                          id: 'g1',
+                          summary: 'a fake guide',
+                        },
+                      },
+                    ],
+                  },
+                  ranges: [
+                    {
+                      fixed: '1.0.3',
+                      introduced: '1.0.0',
+                    },
+                  ],
                 },
               ],
+              name: 'qux',
+              package_manager: 'npm',
             },
-          ],
-          name: 'qux',
-          package_manager: 'npm',
+          },
         },
       },
-    },
-  },
-  // This is to make sure duplicate nodes still work when they are at different places in the tree, and dont overwrite one another
-  {
-    id: 'e5',
-    child_id: '4',
-    parent_id: '1',
-    child: {
-      id: '4',
-      range: '^1.0.0',
-      release_id: '4',
-      release: {
-        version: '1.0.2',
-        id: '4',
-        package: {
-          affected_by_vulnerability: [
-            {
-              vulnerability: {
-                severity_name: 'Medium',
-                cvss_score: 7.2,
-                source: 'github',
-                source_id: 'GHSA123ABC',
-                id: 'a',
-              },
-              ranges: [
+      // This is to make sure duplicate nodes still work when they are at different places in the tree, and dont overwrite one another
+      {
+        id: 'e5',
+        child_id: '4',
+        parent_id: '1',
+        child: {
+          id: '4',
+          range: '^1.0.0',
+          release_id: '4',
+          release: {
+            version: '1.0.2',
+            id: '4',
+            package: {
+              affected_by_vulnerability: [
                 {
-                  fixed: '1.0.3',
-                  introduced: '1.0.0',
+                  vulnerability: {
+                    severity_name: 'Medium',
+                    cvss_score: 7.2,
+                    source: 'github',
+                    source_id: 'GHSA123ABC',
+                    id: 'a',
+                    guide_vulnerabilities: [
+                      {
+                        guide: {
+                          title: 'fake guide title',
+                          id: 'g1',
+                          summary: 'a fake guide',
+                        },
+                      },
+                    ],
+                  },
+                  ranges: [
+                    {
+                      fixed: '1.0.3',
+                      introduced: '1.0.0',
+                    },
+                  ],
                 },
               ],
+              name: 'qux',
+              package_manager: 'npm',
             },
-          ],
-          name: 'qux',
-          package_manager: 'npm',
+          },
         },
       },
-    },
+    ],
   },
 ];
