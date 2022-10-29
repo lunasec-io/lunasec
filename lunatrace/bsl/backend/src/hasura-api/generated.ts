@@ -51,14 +51,9 @@ export type Boolean_Comparison_Exp = {
 
 export type BuildData_AffectedByVulnerability = {
   __typename?: 'BuildData_AffectedByVulnerability';
-  beneath_minimum_severity: Scalars['Boolean'];
   chains?: Maybe<Array<Array<BuildData_DependencyNode>>>;
-  fix_versions: Array<Scalars['String']>;
-  ignored: Scalars['Boolean'];
-  ignored_vulnerability?: Maybe<BuildData_IgnoredVulnerability>;
-  path: Scalars['String'];
-  ranges: Array<BuildData_Range>;
-  trivially_updatable_to?: Maybe<Scalars['String']>;
+  ranges?: Maybe<Array<Maybe<BuildData_Range>>>;
+  trivially_updatable?: Maybe<Scalars['Boolean']>;
   vulnerability: BuildData_Vulnerability;
 };
 
@@ -68,24 +63,6 @@ export type BuildData_DependencyNode = {
   range: Scalars['String'];
   release: BuildData_Release;
   release_id: Scalars['String'];
-};
-
-export type BuildData_Guide = {
-  __typename?: 'BuildData_Guide';
-  id: Scalars['String'];
-  summary: Scalars['String'];
-  title: Scalars['String'];
-};
-
-export type BuildData_Guide_Vulnerability = {
-  __typename?: 'BuildData_Guide_Vulnerability';
-  guide?: Maybe<BuildData_Guide>;
-};
-
-export type BuildData_IgnoredVulnerability = {
-  __typename?: 'BuildData_IgnoredVulnerability';
-  locations: Array<Scalars['String']>;
-  note: Scalars['String'];
 };
 
 export type BuildData_Package = {
@@ -111,14 +88,12 @@ export type BuildData_Release = {
 export type BuildData_Vulnerability = {
   __typename?: 'BuildData_Vulnerability';
   cvss_score?: Maybe<Scalars['Float']>;
-  guide_vulnerabilities: Array<BuildData_Guide_Vulnerability>;
   id: Scalars['String'];
   /** An array relationship */
   ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
   severity_name?: Maybe<Scalars['String']>;
   source: Scalars['String'];
   source_id: Scalars['String'];
-  summary?: Maybe<Scalars['String']>;
 };
 
 
@@ -133,15 +108,11 @@ export type BuildData_VulnerabilityIgnored_VulnerabilitiesArgs = {
 export type BuildData_VulnerableRelease = {
   __typename?: 'BuildData_VulnerableRelease';
   affected_by: Array<BuildData_AffectedByVulnerability>;
-  beneath_minimum_severity: Scalars['Boolean'];
   chains: Array<Array<BuildData_DependencyNode>>;
   cvss?: Maybe<Scalars['Float']>;
   dev_only: Scalars['Boolean'];
-  fix_versions: Array<Scalars['String']>;
-  guides: Array<BuildData_Guide>;
-  paths: Array<Scalars['String']>;
-  release: BuildData_Release;
-  severity: Scalars['String'];
+  release?: Maybe<BuildData_Release>;
+  severity?: Maybe<Scalars['String']>;
   trivially_updatable: Scalars['String'];
 };
 
@@ -8218,7 +8189,6 @@ export type Query_RootVulnerability_Severity_By_PkArgs = {
 
 export type Query_RootVulnerableReleasesFromBuildArgs = {
   buildId: Scalars['uuid'];
-  minimumSeverity?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -11502,7 +11472,7 @@ export type GetTreeFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', id: any, parent_id: any, child_id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } } | null };
+export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', id: any, parent_id: any, child_id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null, summary?: string | null, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide_id: any, guide: { __typename?: 'guides', summary: string, id: any, title: string } }> }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } } | null };
 
 export type GetUserGitHubDataQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
@@ -11889,6 +11859,15 @@ export const GetTreeFromBuildDocument = gql`
                   source
                   severity_name
                   cvss_score
+                  summary
+                  guide_vulnerabilities {
+                    guide_id
+                    guide {
+                      summary
+                      id
+                      title
+                    }
+                  }
                 }
                 ranges {
                   introduced
