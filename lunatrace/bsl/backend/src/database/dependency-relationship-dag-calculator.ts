@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-import { promisify } from 'util';
 
 import { murmurHash128x64 } from 'murmurhash-native';
 import { DepTreeDep } from 'snyk-nodejs-lockfile-parser-lunatrace-fork/dist/parsers';

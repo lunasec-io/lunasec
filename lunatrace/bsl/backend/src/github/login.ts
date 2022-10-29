@@ -18,7 +18,7 @@ import { hasura } from '../hasura-api';
 import { Users_Constraint, Users_Update_Column } from '../hasura-api/generated';
 import { getGithubAccessTokenFromKratos } from '../kratos';
 import { MaybeError } from '../types/util';
-import { errorResponse, logError } from '../utils/errors';
+import { errorResponse } from '../utils/errors';
 import { log } from '../utils/log';
 import { catchError, threwError } from '../utils/try';
 

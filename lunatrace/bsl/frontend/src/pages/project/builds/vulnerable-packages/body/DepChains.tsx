@@ -11,22 +11,16 @@
  * limitations under the License.
  *
  */
-import { VulnerablePackage } from '@lunatrace/lunatrace-common';
 import React, { useState } from 'react';
 import { Badge, NavLink } from 'react-bootstrap';
 import { ChevronRight, ChevronsRight, Maximize2, Minimize2 } from 'react-feather';
 
-import { DepChains } from '../../types';
-import { Finding } from '../types';
+import { VulnerablePackage } from '../types';
 interface TreeInfoProps {
-  pkg: VulnerablePackage<Finding>;
-  depChains: DepChains | undefined;
+  pkg: VulnerablePackage;
 }
 
-export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depChains: chains }) => {
-  if (!chains) {
-    return null;
-  }
+export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
   // Determines if the package is the start, the middle, or the target package and then colors them appropriately
   const getBadgeColor = (depIndex: number, chainLength: number) => {
     if (depIndex === chainLength - 1) {
@@ -39,7 +33,7 @@ export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depChain
   };
 
   // Show the longest chains first, a hack to make expandable double chevrons show on deduped collapsed chains. Also it looks nice
-  chains.sort((a, b) => {
+  const chains = [...pkg.chains].sort((a, b) => {
     return b.length - a.length;
   });
   const isDirectDep = chains.length === 1 && chains[0].length === 1;
@@ -57,7 +51,7 @@ export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depChain
       <h5 className="darker">
         {isDirectDep ? (
           <>
-            Direct Dependency: <span className="lighter">{chains[0][0].child.range}</span>
+            Direct Dependency: <span className="lighter">{chains[0][0].range}</span>
           </>
         ) : (
           'Transitive Dependency'
@@ -71,7 +65,7 @@ export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depChain
       {!isDirectDep &&
         chains.map((chain) => {
           const visibleChain = isExpanded ? chain : [chain[0], chain[chain.length - 1]];
-          const dedupeSlug = visibleChain.reduce((slug, chain) => slug + chain.child.release.package.name, '');
+          const dedupeSlug = visibleChain.reduce((slug, chain) => slug + chain.release.package.name, '');
           if (chainDedupeSlugs.includes(dedupeSlug)) {
             return null;
           }
@@ -81,7 +75,7 @@ export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depChain
             <div className="one-point-two-em d-flex pb-1 pt-1" key={dedupeSlug}>
               {visibleChain.map((dep, index) => {
                 return (
-                  <React.Fragment key={dep.child_id}>
+                  <React.Fragment key={dep.id}>
                     <div className="me-1 ms-1 d-inline-flex justify-content-center" style={{ flexDirection: 'column' }}>
                       {index !== 0 &&
                         (chain.length > visibleChain.length ? (
@@ -95,13 +89,13 @@ export const TreeInfo: React.FunctionComponent<TreeInfoProps> = ({ pkg, depChain
                             style={{ marginLeft: 'auto', marginRight: 'auto', display: 'block' }}
                           />
                         ))}
-                      {isExpanded && <div style={{ fontSize: '.7rem' }}>{dep.child.range}</div>}
+                      {isExpanded && <div style={{ fontSize: '.7rem' }}>{dep.range}</div>}
                     </div>
                     <Badge text="dark" bg={getBadgeColor(index, visibleChain.length)}>
-                      <div>{dep.child.release.package.name}</div>
+                      <div>{dep.release.package.name}</div>
                       {isExpanded && (
                         <div className="mt-1" style={{ fontSize: '.7rem' }}>
-                          {dep.child.release.version}
+                          {dep.release.version}
                         </div>
                       )}
                     </Badge>

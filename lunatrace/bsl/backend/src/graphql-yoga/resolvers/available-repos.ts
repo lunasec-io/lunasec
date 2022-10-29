@@ -13,17 +13,15 @@
  */
 import { GraphQLYogaError } from '@graphql-yoga/node';
 
-import { getInstallationsFromUser } from '../../github/actions/get-installations-from-user';
 import { getReposFromInstallation } from '../../github/actions/get-repos-from-installation';
 import { getInstallationAccessToken } from '../../github/auth';
 import { hasura } from '../../hasura-api';
 import { GetOrganizationsFromUserQueryQuery } from '../../hasura-api/generated';
-import { GithubRepositoryInfo, RawInstallation } from '../../types/github';
+import { GithubRepositoryInfo } from '../../types/github';
 import { log } from '../../utils/log';
-import { notEmpty } from '../../utils/predicates';
 import { catchError, threwError } from '../../utils/try';
 import { QueryResolvers } from '../generated-resolver-types';
-import { getGithubUserToken, getUserId, isAuthenticated, throwIfUnauthenticated } from '../helpers/auth-helpers';
+import { isAuthenticated } from '../helpers/auth-helpers';
 
 type AvailableOrgsWithReposType = NonNullable<QueryResolvers['availableOrgsWithRepos']>;
 
