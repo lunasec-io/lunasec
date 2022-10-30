@@ -21,25 +21,28 @@ sidebar_position: 1
 
 ## What is LunaTrace
 
-LunaTrace is an Open Source supply chain security and auditing tool. At its heart is a web console the tracks your projects and
-their dependencies, looking for vulnerabilities and other issues. This console is provided as a SAAS ([available here and
-currently for free](https://lunatrace.lunasec.io)) or you can deploy it and manage it yourself. 
+LunaTrace is an Open Source supply chain security platform that helps protect you against vulnerabilities in 3rd party dependencies like Log4Shell.
+
+LunaTrace provides best-in-class vulnerability detection with the lowest false positive rate of any Software Composition Analysis (SCA) tool available on the market today.
+
+It's free to get started with by adding our [Cloud-hosted GitHub App](https://lunatrace.lunasec.io) to your CI pipeline (takes 1-2 minutes). If you'd like to host it yourself, or just peek under the hood, you can view the [Source Code on GitHub](https://github.com/lunasec-io/lunasec).
 
 ### What it scans
 
-LunaTrace connects to GitHub repositories. It automatically scans PRs and the main branch.
+LunaTrace connects to GitHub repositories and automatically scans all PRs as well as the main branch.
 
 ### What languages are supported
 
-Many languages are supported, however most advanced features only support JavaScript at the moment. Enhanced 
+Many languages are supported, however the most advanced features only support JavaScript (NPM) at the moment.
+
+Enhanced 
 dependency tree information, false positive elimination, and static analysis are currently JavaScript-only in 
 our custom engine. You will see this when enhanced analysis is enabled:
 
 ![enhanced analysis enabled](/img/enhanced-tree-data-icon.png)
 
 For other languages, LunaTrace is still able to list vulnerabilities at a level more comparable to 
-other 
-vulnerability scanners.
+other vulnerability scanners. (Just without any "tree data" or static analysis functionality available.)
 
 ### What it outputs
 
