@@ -38,8 +38,8 @@ const quotedGithubUrl = `"${githubUrl}"`
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: 'LunaSec',
-  tagline: 'Data security from the start.',
+  title: 'LunaTrace',
+  tagline: 'Vulnerability Control Center',
   url: 'https://www.lunasec.io',
   baseUrl: '/docs/',
   onBrokenLinks: 'throw',

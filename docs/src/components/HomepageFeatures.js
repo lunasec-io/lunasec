@@ -33,33 +33,31 @@ import styles from './HomepageFeatures.module.css';
 
 const FeatureList = [
   {
-    title: 'Designed For Developers',
+    title: 'The best supply-chain auditing tool for JavaScript',
     Svg: require('../../static/img/60e63e8c40f27c7c73def81f_Online storage_Monochromatic.svg').default,
     description: (
       <>
-        Data security for your software that doesn't require having a PHD in cryptography.
-        Ship without being blocked by security reviews.
+        Jam-packed with JavaScript specific auditing features, with a fall-back to basic auditing for other languages.
       </>
     ),
   },
   {
-    title: 'Powerful Security Features',
+    title: 'Situationally Aware',
     Svg: require('../../static/img/60e63e8c40f27c84c0def803_Analytics process_Monochromatic.svg').default,
     description: (
       <>
-        Remove sensitive data from your database with tokenization,
-        centralize all of your authorization checks,
-        add end-to-end encryption from your front-end to your backend,
-        add zero-trust computation to your backend, and more.
+        LunaTrace processes a complete model of your source code and dependency tree. Where it can, it uses this information
+          to eliminate false positives.
+          Where it can't, it exposes the information to you so that you can make a decision faster.
       </>
     ),
   },
   {
-    title: 'Designed by Security Engineers',
+    title: 'Open Source',
     Svg: require('../../static/img/60e63e8c40f27c3024def81b_Information flow_Monochromatic.svg').default,
     description: (
       <>
-        We built and designed LunaSec from years of experience helping developers write secure production software.
+        Built out of extendable, Open Source components that you can read, inspect, and even host for yourself.
       </>
     ),
   },
