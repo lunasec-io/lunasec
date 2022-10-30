@@ -65,7 +65,10 @@ const NavbarComponent: React.FunctionComponent = () => {
         {!setupWizardOpen && isAuthenticated ? <ProjectSearch /> : null}
 
         <Nav className="navbar-align flex-row">
-          <span className="d-inline-block login-navbar-button btn lighter p-2" onClick={toggleTheme}>
+          <a href="https://www.lunasec.io/docs/" className="nav-link" target="_blank" rel="noreferrer noopener">
+            <span className="d-inline-block login-navbar-button btn lighter nav-item">Docs</span>
+          </a>
+          <span className="d-inline-block login-navbar-button btn lighter p-2 nav-item" onClick={toggleTheme}>
             {theme === 'dark' ? <BsMoon size="30px" /> : <BsSun size="30px" />}
           </span>
           <NavbarUser />

@@ -43,7 +43,7 @@ const FeatureList = [
   },
   {
     title: 'Situationally Aware',
-    Svg: require('../../static/img/60e63e8c40f27c84c0def803_Analytics process_Monochromatic.svg').default,
+    Svg: require('../../static/img/60e63e8c40f27c3024def81b_Information flow_Monochromatic.svg').default,
     description: (
       <>
         LunaTrace processes a complete model of your source code and dependency tree. Where it can, it uses this information
@@ -54,7 +54,7 @@ const FeatureList = [
   },
   {
     title: 'Open Source',
-    Svg: require('../../static/img/60e63e8c40f27c3024def81b_Information flow_Monochromatic.svg').default,
+    Svg: require('../../static/img/60e63e8c40f27c84c0def803_Analytics process_Monochromatic.svg').default,
     description: (
       <>
         Built out of extendable, Open Source components that you can read, inspect, and even host for yourself.
