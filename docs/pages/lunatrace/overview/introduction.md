@@ -47,10 +47,10 @@ other vulnerability scanners. (Just without any "tree data" or static analysis f
 ### What it outputs
 
 LunaTrace shows detected vulnerabilities in your
-project's dependencies in a clean, fast interface.  It eliminates all the
-vulnerabilities it that can, based on situational information passed and our powerful analysis engine. It lets you
-know if this vulnerability is only in your `dev` dependencies, why the vulnerable package was included, and other 
-information you need to make a quick decision about the vulnerability.
+project's dependencies in a clean, fast interface.  It also displays which vulnerabilities the Static Analysis engine (SAST) determined are non-exploitable, thereby reducing the total number of "false positives" by up to 98%.
+
+You also will see when a vulnerability is only in your `dev` dependencies, why the vulnerable package was included, steps to patch, and any other 
+information you will need to quickly dig in.
 
 ![a sample vuln](/img/vuln-result-hover.png)
 
