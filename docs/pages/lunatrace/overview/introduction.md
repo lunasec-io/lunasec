@@ -41,7 +41,7 @@ our custom engine. You will see this when enhanced analysis is enabled:
 
 ![enhanced analysis enabled](/img/enhanced-tree-data-icon.png)
 
-For other languages, LunaTrace is still able to list vulnerabilities at a level more comparable to 
+For other languages, LunaTrace is still able to list vulnerabilities at a level comparable to 
 other vulnerability scanners. (Just without any "tree data" or static analysis functionality available.)
 
 ### What it outputs
