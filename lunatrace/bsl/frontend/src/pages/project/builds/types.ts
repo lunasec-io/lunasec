@@ -19,4 +19,3 @@ export interface QuickViewProps {
   setVulnQuickViewId: (vulnId: string) => void;
   vulnQuickViewId: string | null;
 }
-

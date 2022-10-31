@@ -42,7 +42,7 @@ const appApi = generatedApi.enhanceEndpoints({
       providesTags: ['Builds'],
     },
     GetVulnerableReleasesFromBuild: {
-      providesTags:['Builds'],
+      providesTags: ['Builds'],
     },
     InsertPersonalProjectAndOrg: {
       invalidatesTags: ['Projects'],
