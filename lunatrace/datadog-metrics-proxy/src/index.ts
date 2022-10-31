@@ -20,7 +20,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 const app = express();
 
 const validateDataDogForwardParam = (ddforward: string) => {
-  const re = /https:\/\/(\d|\w|-|_)+\.browser-intake-datadoghq\.com\/.*/;
+  const re = /https:\/\/(\d|\w|-|_)+\.browser-intake-datadoghq\.com\/.*/i;
   return re.test(ddforward);
 };
 
@@ -30,7 +30,8 @@ const proxyOptions = {
   xfwd: true,
 };
 
-app.options('/proxy', (req, res) => {
+function corsMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
+
   const origin = req.headers.origin;
 
   if (!origin || typeof origin !== 'string' || origin === '') {
@@ -38,20 +39,23 @@ app.options('/proxy', (req, res) => {
     return;
   }
 
+  let allowedOrigin = process.env.DATADOG_RUM_ORIGIN;
+
   if (process.env.DEVELOPMENT && origin.includes('localhost')) {
-    res.header('Access-Control-Allow-Origin', origin);
+    allowedOrigin = origin;
   }
 
-  if (origin === process.env.DATADOG_RUM_ORIGIN) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-
+  res.header('Access-Control-Allow-Origin', allowedOrigin);
   res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Content-Length');
+  next();
+}
+
+app.options('/proxy', corsMiddleware, (req: express.Request, res: express.Response) => {
   res.send();
 });
 
-app.post('/proxy', (req, res, next) => {
+app.post('/proxy', corsMiddleware, (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const ddforward = req.query.ddforward;
 
   if (!ddforward || typeof ddforward !== 'string') {
