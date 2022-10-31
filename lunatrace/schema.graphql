@@ -6,11 +6,11 @@ schema {
 
 """whether this query should be cached (Hasura Cloud only)"""
 directive @cached(
-  """refresh the cache entry"""
-  refresh: Boolean! = false
-
   """measured in seconds"""
   ttl: Int! = 60
+
+  """refresh the cache entry"""
+  refresh: Boolean! = false
 ) on QUERY
 
 type AuthenticatedRepoCloneUrlOutput {
@@ -120,7 +120,6 @@ type BuildData_VulnerableRelease {
   dev_only: Boolean!
   fix_versions: [String!]!
   guides: [BuildData_Guide!]!
-  ignored: Boolean!
   paths: [String!]!
   release: BuildData_Release!
   severity: String!
@@ -354,7 +353,7 @@ unique or primary key constraints on table "analysis.manifest_dependency_edge_re
 """
 enum analysis_manifest_dependency_edge_result_constraint {
   """
-  unique or primary key constraint on columns "manifest_dependency_edge_id", "vulnerability_id"
+  unique or primary key constraint on columns "manifest_dependency_edge_id", "vulnerability_id", "finding_source_version", "finding_source"
   """
   manifest_dependency_edge_result_manifest_dependency_edge_id_vul
 
@@ -12395,6 +12394,7 @@ type vulnerability {
     """filter the rows returned"""
     where: vulnerability_affected_bool_exp
   ): [vulnerability_affected!]!
+  created_at: timestamptz!
 
   """An array relationship"""
   credits(
@@ -12492,6 +12492,7 @@ type vulnerability {
     """filter the rows returned"""
     where: ignored_vulnerabilities_bool_exp
   ): [ignored_vulnerabilities!]!
+  last_fetched: timestamptz
   modified: timestamptz!
   published: timestamptz
 
@@ -13289,6 +13290,7 @@ input vulnerability_bool_exp {
   _not: vulnerability_bool_exp
   _or: [vulnerability_bool_exp!]
   affected: vulnerability_affected_bool_exp
+  created_at: timestamptz_comparison_exp
   credits: vulnerability_credit_bool_exp
   cvss_score: Float_comparison_exp
   database_specific: jsonb_comparison_exp
@@ -13298,6 +13300,7 @@ input vulnerability_bool_exp {
   guide_vulnerabilities: guide_vulnerabilities_bool_exp
   id: uuid_comparison_exp
   ignored_vulnerabilities: ignored_vulnerabilities_bool_exp
+  last_fetched: timestamptz_comparison_exp
   modified: timestamptz_comparison_exp
   published: timestamptz_comparison_exp
   references: vulnerability_reference_bool_exp
@@ -13670,6 +13673,7 @@ input type for inserting data into table "vulnerability.vulnerability"
 """
 input vulnerability_insert_input {
   affected: vulnerability_affected_arr_rel_insert_input
+  created_at: timestamptz
   credits: vulnerability_credit_arr_rel_insert_input
   cvss_score: Float
   database_specific: jsonb
@@ -13678,6 +13682,7 @@ input vulnerability_insert_input {
   findings: findings_arr_rel_insert_input
   guide_vulnerabilities: guide_vulnerabilities_arr_rel_insert_input
   id: uuid
+  last_fetched: timestamptz
   modified: timestamptz
   published: timestamptz
   references: vulnerability_reference_arr_rel_insert_input
@@ -13726,6 +13731,7 @@ Ordering options when selecting data from "vulnerability.vulnerability".
 """
 input vulnerability_order_by {
   affected_aggregate: vulnerability_affected_aggregate_order_by
+  created_at: order_by
   credits_aggregate: vulnerability_credit_aggregate_order_by
   cvss_score: order_by
   database_specific: order_by
@@ -13735,6 +13741,7 @@ input vulnerability_order_by {
   guide_vulnerabilities_aggregate: guide_vulnerabilities_aggregate_order_by
   id: order_by
   ignored_vulnerabilities_aggregate: ignored_vulnerabilities_aggregate_order_by
+  last_fetched: order_by
   modified: order_by
   published: order_by
   references_aggregate: vulnerability_reference_aggregate_order_by
@@ -14103,6 +14110,9 @@ select columns of table "vulnerability.vulnerability"
 """
 enum vulnerability_select_column {
   """column name"""
+  created_at
+
+  """column name"""
   cvss_score
 
   """column name"""
@@ -14113,6 +14123,9 @@ enum vulnerability_select_column {
 
   """column name"""
   id
+
+  """column name"""
+  last_fetched
 
   """column name"""
   modified
@@ -14146,10 +14159,12 @@ enum vulnerability_select_column {
 input type for updating data in table "vulnerability.vulnerability"
 """
 input vulnerability_set_input {
+  created_at: timestamptz
   cvss_score: Float
   database_specific: jsonb
   details: String
   id: uuid
+  last_fetched: timestamptz
   modified: timestamptz
   published: timestamptz
   reviewed_by_source: Boolean
@@ -14349,6 +14364,9 @@ update columns of table "vulnerability.vulnerability"
 """
 enum vulnerability_update_column {
   """column name"""
+  created_at
+
+  """column name"""
   cvss_score
 
   """column name"""
@@ -14359,6 +14377,9 @@ enum vulnerability_update_column {
 
   """column name"""
   id
+
+  """column name"""
+  last_fetched
 
   """column name"""
   modified
@@ -14519,3 +14540,4 @@ enum webhook_cache_update_column {
   """column name"""
   sqs_message_id
 }
+
