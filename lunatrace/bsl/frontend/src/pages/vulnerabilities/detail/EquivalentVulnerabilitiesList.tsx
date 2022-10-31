@@ -18,7 +18,9 @@ import { useNavigate } from 'react-router-dom';
 
 import { VulnInfoDetails } from '../types';
 
-export const AffectedPackagesList: React.FC<{ relatedVulns: VulnInfoDetails['equivalents'] }> = ({ relatedVulns }) => {
+export const EquivalentVulnerabilitiesList: React.FC<{ relatedVulns: VulnInfoDetails['equivalents'] }> = ({
+  relatedVulns,
+}) => {
   const navigate = useNavigate();
 
   return (
@@ -40,6 +42,16 @@ export const AffectedPackagesList: React.FC<{ relatedVulns: VulnInfoDetails['equ
                 {relatedVulns.map(({ equivalent_vulnerability: relatedVuln }) => {
                   const severity = getCvssVectorFromSeverities(relatedVuln.severities);
 
+                  if (!relatedVuln.last_fetched) {
+                    return (
+                      <tr key={relatedVuln.id}>
+                        <td>{relatedVuln.source}</td>
+                        <td>{relatedVuln.source_id}</td>
+                        <td>Not Synced</td>
+                        <td>Not Synced</td>
+                      </tr>
+                    );
+                  }
                   return (
                     <OverlayTrigger
                       placement="bottom"

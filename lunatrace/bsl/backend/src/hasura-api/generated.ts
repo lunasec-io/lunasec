@@ -80,7 +80,6 @@ export type BuildData_Guide = {
 export type BuildData_Guide_Vulnerability = {
   __typename?: 'BuildData_Guide_Vulnerability';
   guide?: Maybe<BuildData_Guide>;
-  guide_id: Scalars['String'];
 };
 
 export type BuildData_IgnoredVulnerability = {
@@ -9706,6 +9705,7 @@ export type Vulnerability = {
   __typename?: 'vulnerability';
   /** An array relationship */
   affected: Array<Vulnerability_Affected>;
+  created_at: Scalars['timestamptz'];
   /** An array relationship */
   credits: Array<Vulnerability_Credit>;
   cvss_score?: Maybe<Scalars['Float']>;
@@ -9720,6 +9720,7 @@ export type Vulnerability = {
   id: Scalars['uuid'];
   /** An array relationship */
   ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
+  last_fetched?: Maybe<Scalars['timestamptz']>;
   modified: Scalars['timestamptz'];
   published?: Maybe<Scalars['timestamptz']>;
   /** An array relationship */
@@ -10421,6 +10422,7 @@ export type Vulnerability_Bool_Exp = {
   _not?: InputMaybe<Vulnerability_Bool_Exp>;
   _or?: InputMaybe<Array<Vulnerability_Bool_Exp>>;
   affected?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   credits?: InputMaybe<Vulnerability_Credit_Bool_Exp>;
   cvss_score?: InputMaybe<Float_Comparison_Exp>;
   database_specific?: InputMaybe<Jsonb_Comparison_Exp>;
@@ -10430,6 +10432,7 @@ export type Vulnerability_Bool_Exp = {
   guide_vulnerabilities?: InputMaybe<Guide_Vulnerabilities_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   ignored_vulnerabilities?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
+  last_fetched?: InputMaybe<Timestamptz_Comparison_Exp>;
   modified?: InputMaybe<Timestamptz_Comparison_Exp>;
   published?: InputMaybe<Timestamptz_Comparison_Exp>;
   references?: InputMaybe<Vulnerability_Reference_Bool_Exp>;
@@ -10715,6 +10718,7 @@ export type Vulnerability_Inc_Input = {
 /** input type for inserting data into table "vulnerability.vulnerability" */
 export type Vulnerability_Insert_Input = {
   affected?: InputMaybe<Vulnerability_Affected_Arr_Rel_Insert_Input>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   credits?: InputMaybe<Vulnerability_Credit_Arr_Rel_Insert_Input>;
   cvss_score?: InputMaybe<Scalars['Float']>;
   database_specific?: InputMaybe<Scalars['jsonb']>;
@@ -10723,6 +10727,7 @@ export type Vulnerability_Insert_Input = {
   findings?: InputMaybe<Findings_Arr_Rel_Insert_Input>;
   guide_vulnerabilities?: InputMaybe<Guide_Vulnerabilities_Arr_Rel_Insert_Input>;
   id?: InputMaybe<Scalars['uuid']>;
+  last_fetched?: InputMaybe<Scalars['timestamptz']>;
   modified?: InputMaybe<Scalars['timestamptz']>;
   published?: InputMaybe<Scalars['timestamptz']>;
   references?: InputMaybe<Vulnerability_Reference_Arr_Rel_Insert_Input>;
@@ -10762,6 +10767,7 @@ export type Vulnerability_On_Conflict = {
 /** Ordering options when selecting data from "vulnerability.vulnerability". */
 export type Vulnerability_Order_By = {
   affected_aggregate?: InputMaybe<Vulnerability_Affected_Aggregate_Order_By>;
+  created_at?: InputMaybe<Order_By>;
   credits_aggregate?: InputMaybe<Vulnerability_Credit_Aggregate_Order_By>;
   cvss_score?: InputMaybe<Order_By>;
   database_specific?: InputMaybe<Order_By>;
@@ -10771,6 +10777,7 @@ export type Vulnerability_Order_By = {
   guide_vulnerabilities_aggregate?: InputMaybe<Guide_Vulnerabilities_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
   ignored_vulnerabilities_aggregate?: InputMaybe<Ignored_Vulnerabilities_Aggregate_Order_By>;
+  last_fetched?: InputMaybe<Order_By>;
   modified?: InputMaybe<Order_By>;
   published?: InputMaybe<Order_By>;
   references_aggregate?: InputMaybe<Vulnerability_Reference_Aggregate_Order_By>;
@@ -11062,6 +11069,8 @@ export enum Vulnerability_Reference_Update_Column {
 /** select columns of table "vulnerability.vulnerability" */
 export enum Vulnerability_Select_Column {
   /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
   CvssScore = 'cvss_score',
   /** column name */
   DatabaseSpecific = 'database_specific',
@@ -11069,6 +11078,8 @@ export enum Vulnerability_Select_Column {
   Details = 'details',
   /** column name */
   Id = 'id',
+  /** column name */
+  LastFetched = 'last_fetched',
   /** column name */
   Modified = 'modified',
   /** column name */
@@ -11091,10 +11102,12 @@ export enum Vulnerability_Select_Column {
 
 /** input type for updating data in table "vulnerability.vulnerability" */
 export type Vulnerability_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   cvss_score?: InputMaybe<Scalars['Float']>;
   database_specific?: InputMaybe<Scalars['jsonb']>;
   details?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
+  last_fetched?: InputMaybe<Scalars['timestamptz']>;
   modified?: InputMaybe<Scalars['timestamptz']>;
   published?: InputMaybe<Scalars['timestamptz']>;
   reviewed_by_source?: InputMaybe<Scalars['Boolean']>;
@@ -11252,6 +11265,8 @@ export enum Vulnerability_Severity_Update_Column {
 /** update columns of table "vulnerability.vulnerability" */
 export enum Vulnerability_Update_Column {
   /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
   CvssScore = 'cvss_score',
   /** column name */
   DatabaseSpecific = 'database_specific',
@@ -11259,6 +11274,8 @@ export enum Vulnerability_Update_Column {
   Details = 'details',
   /** column name */
   Id = 'id',
+  /** column name */
+  LastFetched = 'last_fetched',
   /** column name */
   Modified = 'modified',
   /** column name */

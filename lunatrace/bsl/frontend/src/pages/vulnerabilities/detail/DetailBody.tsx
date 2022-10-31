@@ -27,7 +27,7 @@ import { prettyDate } from '../../../utils/pretty-date';
 import { SourceLink } from '../SourceLink';
 import { VulnInfoDetails } from '../types';
 
-import { AffectedPackagesList } from './AffectedPackagesList';
+import { EquivalentVulnerabilitiesList } from './EquivalentVulnerabilitiesList';
 
 interface VulnerabilityDetailBodyProps {
   vuln: VulnInfoDetails;
@@ -225,7 +225,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
             </Card>
           </Col>
         </Row>
-        {vuln.equivalents.length < 1 ? null : <AffectedPackagesList relatedVulns={vuln.equivalents} />}
+        {vuln.equivalents.length < 1 ? null : <EquivalentVulnerabilitiesList relatedVulns={vuln.equivalents} />}
         <Row>
           <Col>
             <Card>
