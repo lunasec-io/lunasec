@@ -44,11 +44,20 @@ function HomepageHeader() {
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link
-            className="button button--secondary button--lg"
-            to="/docs/pages/lunadefend/overview/introduction/">
-            LunaSec Intro - 5min ⏱️
+            className="button button--info button--lg"
+            to="https://lunatrace.lunasec.io/">
+               Try it Free
           </Link>
         </div>
+          <p style={{marginBottom:"0px"}}>- or -</p>
+
+          <div className={styles.buttons}>
+              <Link
+                  className="button  button--primary-dark button--lg"
+                  to="/docs/pages/lunatrace/overview/introduction/">
+                  🕮 Read More
+              </Link>
+          </div>
       </div>
     </header>
   );
