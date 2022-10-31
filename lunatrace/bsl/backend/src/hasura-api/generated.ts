@@ -51,9 +51,14 @@ export type Boolean_Comparison_Exp = {
 
 export type BuildData_AffectedByVulnerability = {
   __typename?: 'BuildData_AffectedByVulnerability';
+  beneath_minimum_severity: Scalars['Boolean'];
   chains?: Maybe<Array<Array<BuildData_DependencyNode>>>;
-  ranges?: Maybe<Array<Maybe<BuildData_Range>>>;
-  trivially_updatable?: Maybe<Scalars['Boolean']>;
+  fix_versions: Array<Scalars['String']>;
+  ignored: Scalars['Boolean'];
+  ignored_vulnerability?: Maybe<BuildData_IgnoredVulnerability>;
+  path: Scalars['String'];
+  ranges: Array<BuildData_Range>;
+  trivially_updatable_to?: Maybe<Scalars['String']>;
   vulnerability: BuildData_Vulnerability;
 };
 
@@ -63,6 +68,24 @@ export type BuildData_DependencyNode = {
   range: Scalars['String'];
   release: BuildData_Release;
   release_id: Scalars['String'];
+};
+
+export type BuildData_Guide = {
+  __typename?: 'BuildData_Guide';
+  id: Scalars['String'];
+  summary: Scalars['String'];
+  title: Scalars['String'];
+};
+
+export type BuildData_Guide_Vulnerability = {
+  __typename?: 'BuildData_Guide_Vulnerability';
+  guide?: Maybe<BuildData_Guide>;
+};
+
+export type BuildData_IgnoredVulnerability = {
+  __typename?: 'BuildData_IgnoredVulnerability';
+  locations: Array<Scalars['String']>;
+  note: Scalars['String'];
 };
 
 export type BuildData_Package = {
@@ -88,12 +111,14 @@ export type BuildData_Release = {
 export type BuildData_Vulnerability = {
   __typename?: 'BuildData_Vulnerability';
   cvss_score?: Maybe<Scalars['Float']>;
+  guide_vulnerabilities: Array<BuildData_Guide_Vulnerability>;
   id: Scalars['String'];
   /** An array relationship */
   ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
   severity_name?: Maybe<Scalars['String']>;
   source: Scalars['String'];
   source_id: Scalars['String'];
+  summary?: Maybe<Scalars['String']>;
 };
 
 
@@ -108,11 +133,15 @@ export type BuildData_VulnerabilityIgnored_VulnerabilitiesArgs = {
 export type BuildData_VulnerableRelease = {
   __typename?: 'BuildData_VulnerableRelease';
   affected_by: Array<BuildData_AffectedByVulnerability>;
+  beneath_minimum_severity: Scalars['Boolean'];
   chains: Array<Array<BuildData_DependencyNode>>;
   cvss?: Maybe<Scalars['Float']>;
   dev_only: Scalars['Boolean'];
-  release?: Maybe<BuildData_Release>;
-  severity?: Maybe<Scalars['String']>;
+  fix_versions: Array<Scalars['String']>;
+  guides: Array<BuildData_Guide>;
+  paths: Array<Scalars['String']>;
+  release: BuildData_Release;
+  severity: Scalars['String'];
   trivially_updatable: Scalars['String'];
 };
 
@@ -8189,6 +8218,7 @@ export type Query_RootVulnerability_Severity_By_PkArgs = {
 
 export type Query_RootVulnerableReleasesFromBuildArgs = {
   buildId: Scalars['uuid'];
+  minimumSeverity?: InputMaybe<Scalars['String']>;
 };
 
 
