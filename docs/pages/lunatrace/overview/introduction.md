@@ -24,9 +24,15 @@ sidebar_position: 1
 LunaTrace is an Open Source supply chain security and auditing tool. At its heart is a web console the tracks your projects and
 their dependencies, looking for vulnerabilities and other issues. This console is provided as a SAAS ([available here and currently for free](https://lunatrace.lunasec.io)) or you can deploy it and manage it yourself.
 
-### What it scans
+### How to use it
 
 LunaTrace connects to GitHub repositories. It automatically scans PRs as well as the main branch.
+
+It's free to get started with by adding our [GitHub App](https://lunatrace.lunasec.io) to your GitHub 
+repository
+(takes 1-2 minutes). 
+
+If you'd like to host it yourself, or just peek under the hood, you can view the [Source Code on GitHub](https://github.com/lunasec-io/lunasec).
 
 ### What languages are supported
 
@@ -45,9 +51,9 @@ other vulnerability scanners.
 
 LunaTrace shows detected vulnerabilities in your
 project's dependencies in a clean, fast interface.
-It eliminates all the
-vulnerabilities it that can, based on situational information passed and our powerful analysis engine.
-You also will see when a vulnerability is only in your `dev` dependencies, why the vulnerable package was included 
+It automatically dismisses all the
+vulnerabilities that it can, based on situational information and our powerful analysis engine.
+You will see when a vulnerability is only in your `dev` dependencies, why the vulnerable package was included 
 in the dependency tree, 
 steps to patch, and other
 information you need to make a quick decision about the vulnerability.
