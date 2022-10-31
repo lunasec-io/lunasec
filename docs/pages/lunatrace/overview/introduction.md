@@ -21,36 +21,37 @@ sidebar_position: 1
 
 ## What is LunaTrace
 
-LunaTrace is an Open Source supply chain security platform that helps protect you against vulnerabilities in 3rd party dependencies like Log4Shell.
-
-LunaTrace provides best-in-class vulnerability detection with the lowest false positive rate of any Software Composition Analysis (SCA) tool available on the market today.
-
-It's free to get started with by adding our [Cloud-hosted GitHub App](https://lunatrace.lunasec.io) to your CI pipeline (takes 1-2 minutes). If you'd like to host it yourself, or just peek under the hood, you can view the [Source Code on GitHub](https://github.com/lunasec-io/lunasec).
+LunaTrace is an Open Source supply chain security and auditing tool. At its heart is a web console the tracks your projects and
+their dependencies, looking for vulnerabilities and other issues. This console is provided as a SAAS ([available here and currently for free](https://lunatrace.lunasec.io)) or you can deploy it and manage it yourself.
 
 ### What it scans
 
-LunaTrace connects to GitHub repositories and automatically scans all PRs as well as the main branch.
+LunaTrace connects to GitHub repositories. It automatically scans PRs as well as the main branch.
 
 ### What languages are supported
 
-Many languages are supported, however the most advanced features only support JavaScript (NPM) at the moment.
+Many languages are supported, however the most advanced features only support JavaScript at the moment.
 
 Enhanced 
 dependency tree information, false positive elimination, and static analysis are currently JavaScript-only in 
-our custom engine. You will see this when enhanced analysis is enabled:
+our analysis engine. You will see this when enhanced analysis is enabled:
 
 ![enhanced analysis enabled](/img/enhanced-tree-data-icon.png)
 
 For other languages, LunaTrace is still able to list vulnerabilities at a level comparable to 
-other vulnerability scanners. (Just without any "tree data" or static analysis functionality available.)
+other vulnerability scanners. 
 
 ### What it outputs
 
 LunaTrace shows detected vulnerabilities in your
-project's dependencies in a clean, fast interface.  It also displays which vulnerabilities the Static Analysis engine (SAST) determined are non-exploitable, thereby reducing the total number of "false positives" by up to 98%.
+project's dependencies in a clean, fast interface.
+It eliminates all the
+vulnerabilities it that can, based on situational information passed and our powerful analysis engine.
+You also will see when a vulnerability is only in your `dev` dependencies, why the vulnerable package was included 
+in the dependency tree, 
+steps to patch, and other
+information you need to make a quick decision about the vulnerability.
 
-You also will see when a vulnerability is only in your `dev` dependencies, why the vulnerable package was included, steps to patch, and any other 
-information you will need to quickly dig in.
 
 ![a sample vuln](/img/vuln-result-hover.png)
 
