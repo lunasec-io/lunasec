@@ -5,6 +5,9 @@ object_relationships:
   - name: build
     using:
       foreign_key_constraint_on: build_id
+  - name: manifest_dependency_node
+    using:
+      foreign_key_constraint_on: manifest_dependency_node_id
 array_relationships:
   - name: manifest_dependencies
     using:
