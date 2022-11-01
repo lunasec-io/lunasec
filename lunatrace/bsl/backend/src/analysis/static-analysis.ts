@@ -26,7 +26,7 @@ import { catchError, threwError } from '../utils/try';
 
 // TODO (cthompson) we probably want this to be a shared constant in a protobuf definition
 // this is the same constant as lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules/importedandcalled.go
-const importedAndCalledRuleVersion = 2;
+const importedAndCalledRuleVersion = 3;
 
 export async function queueManifestDependencyEdgeForStaticAnalysis(
   vulnerabilityId: string,
