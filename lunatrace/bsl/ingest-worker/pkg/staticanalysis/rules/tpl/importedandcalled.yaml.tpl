@@ -5,7 +5,10 @@ rules:
     patterns:
       - pattern-either:
           - pattern-inside: |
-              $IMPORT = require($PACKAGE)
+              $IMPORT = require("$PACKAGE")
+              ...
+          - pattern-inside: |
+              $IMPORT = require("$PACKAGE")(...)
               ...
           - pattern-inside: |
               import $IMPORT from "$PACKAGE"
@@ -19,9 +22,9 @@ rules:
           - pattern-inside: |
               import { ..., $X as $IMPORT,... } from "$PACKAGE"
               ...
-      - metavariable-comparison:
+      - metavariable-regex:
           metavariable: $PACKAGE
-          comparison: $PACKAGE == "{{ .PackageName }}"
+          regex: ^('|")?{{ .PackageName }}/?
       - pattern-either:
         - pattern-inside: $IMPORT.$FUNC(...)
         - pattern-inside: $IMPORT(...)
@@ -39,11 +42,12 @@ rules:
     pattern-sources:
     - pattern: $IMPORT = require("{{ .PackageName }}")
     pattern-sinks:
-    - patterns:
+    - pattern-either:
+      - patterns:
         - pattern: $IMPORT(...)
         - pattern-not: require(...)
-    - pattern: class $X extends $IMPORT { ... }
-    - pattern: class $X extends $IMPORT.$CLASS { ... }
+      - pattern: class $X extends $IMPORT { ... }
+      - pattern: class $X extends $IMPORT.$CLASS { ... }
     message: A vulnerable package was imported and called.
     languages:
       - javascript
