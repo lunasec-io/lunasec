@@ -11,12 +11,12 @@
  * limitations under the License.
  *
  */
-import { severityOrder, VulnerablePackageLegacy } from '@lunatrace/lunatrace-common';
+import { severityOrder, VulnerablePackageLegacy } from '@lunatrace/lunatrace-common/build/main';
 import React, { useState } from 'react';
 import { Accordion, Card, Container, Row } from 'react-bootstrap';
 
-import { ConditionallyRender } from '../../../../../components/utils/ConditionallyRender';
-import { QuickViewProps } from '../../types';
+import { ConditionallyRender } from '../../../../../../components/utils/ConditionallyRender';
+import { QuickViewProps } from '../../../types';
 import { FindingsTable } from '../findings/FindingsList';
 import { FindingsListHeader } from '../findings/FindingsListHeader';
 import { Finding } from '../types';
@@ -35,7 +35,7 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
   severityFilter,
   quickView,
 }) => {
-  const depTree = null
+  const depTree = null;
   const [shouldFilterFindings, setShouldFilterFindings] = useState(true);
 
   const filteredFindings = pkg.findings.filter((f) => {
@@ -53,7 +53,7 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
       </ConditionallyRender>
 
       <div className="m-lg-4">
-        <PackageDetails pkg={pkg}/>
+        <PackageDetails pkg={pkg} />
         <Row>
           <Accordion defaultActiveKey={filteredFindings.length > 2 ? 'nonexistant' : '0'}>
             <Accordion.Item eventKey="0">

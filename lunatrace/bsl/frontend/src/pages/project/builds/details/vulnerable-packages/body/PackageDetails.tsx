@@ -16,7 +16,7 @@ import { Col, Row } from 'react-bootstrap';
 import { AiOutlineCode } from 'react-icons/ai';
 import semver from 'semver';
 
-import { pluralizeIfMultiple } from '../../../../../utils/string-utils';
+import { pluralizeIfMultiple } from '../../../../../../utils/string-utils';
 import { VulnerablePackage } from '../types';
 
 import { DepChains } from './DepChains';

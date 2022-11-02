@@ -16,7 +16,7 @@ import { Card, Col, NavLink, OverlayTrigger, Popover, Row, Tooltip } from 'react
 import { CopyBlock, tomorrowNight } from 'react-code-blocks';
 import { FcUpload } from 'react-icons/fc';
 
-import useBreakpoint from '../../../../hooks/useBreakpoint';
+import useBreakpoint from '../../../../../hooks/useBreakpoint';
 
 import { VulnerablePackage } from './types';
 

@@ -16,13 +16,12 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { ArrowLeft } from 'react-feather';
 import { NavLink } from 'react-router-dom';
 
-import api from '../../../api';
-import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
-import { branchLink, branchName, commitLink } from '../../../utils/build-display-helpers';
-import { prettyDate } from '../../../utils/pretty-date';
-
-import { SourceIcon } from './SourceIcon';
-import { BuildDetailInfo } from './types';
+import api from '../../../../api';
+import { ConditionallyRender } from '../../../../components/utils/ConditionallyRender';
+import { branchLink, branchName, commitLink } from '../../../../utils/build-display-helpers';
+import { prettyDate } from '../../../../utils/pretty-date';
+import { SourceIcon } from '../SourceIcon';
+import { BuildDetailInfo } from '../types';
 
 export const BuildDetailsHeader: React.FC<{ build: BuildDetailInfo }> = ({ build }) => {
   const [getSbomUrl, sbomUrlResult, lastPromiseInfo] = api.useLazyGetSbomUrlQuery();

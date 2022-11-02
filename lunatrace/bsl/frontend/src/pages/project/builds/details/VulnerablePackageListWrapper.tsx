@@ -11,18 +11,17 @@
  * limitations under the License.
  *
  */
-import { SeverityNamesOsv } from '@lunatrace/lunatrace-common';
+import { SeverityNamesOsv } from '@lunatrace/lunatrace-common/build/main';
 import React, { useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 
-import api from '../../../api';
-import { SpinIfLoading } from '../../../components/SpinIfLoading';
+import api from '../../../../api';
+import { SpinIfLoading } from '../../../../components/SpinIfLoading';
+import { QuickViewProps } from '../types';
 
-import { QuickViewProps } from './types';
 import { LegacyGrypeVulnerablePackageList } from './vulnerable-packages-legacy-grype/LegacyGrypeVulnerablePackageList';
 import { Finding } from './vulnerable-packages-legacy-grype/types';
 import { VulnerablePackagesList } from './vulnerable-packages/VulnerablePackagesList';
-
 
 export interface VulnerablePackageListWrapperProps {
   findings: Finding[];

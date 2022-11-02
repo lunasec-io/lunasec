@@ -18,3 +18,8 @@ export const commonBuildProps: AssetImageProps = {
     buildArgs: false,
   },
 };
+
+// All other environment configs should inherit from this shared one
+export const baseEnvironmentVars = {
+  DEPLOYMENT_ENVIRONMENT: 'production',
+};
