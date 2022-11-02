@@ -11,11 +11,10 @@
  * limitations under the License.
  *
  */
-import { VulnerablePackageLegacy } from '@lunatrace/lunatrace-common';
+import { VulnerablePackageLegacy } from '@lunatrace/lunatrace-common/build/main';
 import React from 'react';
 import { Popover } from 'react-bootstrap';
 import { CopyBlock, tomorrowNight } from 'react-code-blocks';
-
 
 import { Finding } from './types';
 

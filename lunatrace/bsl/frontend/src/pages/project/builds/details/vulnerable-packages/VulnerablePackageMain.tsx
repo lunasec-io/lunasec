@@ -11,41 +11,68 @@
  * limitations under the License.
  *
  */
-import { VulnerablePackageLegacy } from '@lunatrace/lunatrace-common/build/main';
+import { SeverityNamesOsv } from '@lunatrace/lunatrace-common/build/main';
 import React, { useState } from 'react';
 import { Card, Dropdown, FloatingLabel, Form, FormControl, Spinner } from 'react-bootstrap';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { useParams } from 'react-router-dom';
 
-import api from '../../../../api';
-import { ConfirmationDailog } from '../../../../components/ConfirmationDialog';
-import {  QuickViewProps } from '../types';
+import api from '../../../../../api';
+import { ConfirmationDailog } from '../../../../../components/ConfirmationDialog';
+import { QuickViewProps } from '../../types';
 
 import { VulnerablePackageCardHeader } from './VulnerablePackageCardHeader';
 import { PackageCardBody } from './body/PackageCardBody';
-import { Finding } from './types';
+import { VulnerablePackage } from './types';
 
 interface VulnerablePackageMainProps {
-  pkg: VulnerablePackageLegacy<Finding>;
-  severityFilter: number;
+  pkg: VulnerablePackage;
   quickView: QuickViewProps;
+  severity: SeverityNamesOsv;
+  shouldIgnore: boolean;
 }
 
 export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMainProps> = ({
   pkg,
-  severityFilter,
   quickView,
+  severity,
+  shouldIgnore,
 }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [insertVulnIgnore, insertVulnIgnoreState] = api.useInsertIgnoredVulnerabilitiesMutation();
   const [ignoreNote, setIgnoreNote] = useState('');
+  const { project_id } = useParams();
+  const [shouldFilterFindingsBySeverity, setShouldFilterFindingsBySeverity] = useState(true);
+
+  const findingsAboveSeverity = pkg.affected_by.filter((affectedByVuln) => {
+    return !affectedByVuln.beneath_minimum_severity || !shouldFilterFindingsBySeverity;
+  });
+
+  const findingsHiddenBySeverityCount = pkg.affected_by.length - findingsAboveSeverity.length;
+
+  const findings = findingsAboveSeverity.filter((f) => {
+    if (!shouldIgnore) {
+      return true;
+    }
+    return !f.ignored;
+  });
+
+  if (findings.length === 0) {
+    return null;
+  }
+
+  const allFindingsIgnored = findings.every((f) => f.ignored);
 
   const bulkIgnoreVulns = async () => {
-    const toIgnore = pkg.findings.map((f) => {
+    if (!project_id) {
+      throw new Error('attempted to ignore a vuln but no project id is in the url');
+    }
+    const toIgnore = pkg.affected_by.map((vulnMeta) => {
       return {
-        vulnerability_id: f.vulnerability_id,
-        project_id: pkg.project_id,
+        vulnerability_id: vulnMeta.vulnerability.id,
+        project_id: project_id,
         note: ignoreNote,
-        locations: f.locations,
+        locations: [vulnMeta.path],
       };
     });
     await insertVulnIgnore({ objects: toIgnore });
@@ -88,8 +115,16 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
     <>
       <Card className="vulnpkg-card">
         {renderIgnoreUi()}
-        <VulnerablePackageCardHeader pkg={pkg}  />
-        <PackageCardBody pkg={pkg} severityFilter={severityFilter} quickView={quickView}/>
+        <VulnerablePackageCardHeader pkg={pkg} ignored={allFindingsIgnored} />
+        <PackageCardBody
+          findingsHiddenBySeverityCount={findingsHiddenBySeverityCount}
+          pkg={pkg}
+          quickView={quickView}
+          severity={severity}
+          findings={findings}
+          shouldFilterFindingsBySeverity={shouldFilterFindingsBySeverity}
+          setShouldFilterFindingsBySeverity={setShouldFilterFindingsBySeverity}
+        />
       </Card>
       <ConfirmationDailog
         title={`Ignore All Findings For This Package`}

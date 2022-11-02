@@ -11,12 +11,12 @@
  * limitations under the License.
  *
  */
-import { getCvssVectorFromSeverities, groupByPackage, severityOrder } from '@lunatrace/lunatrace-common';
+import { getCvssVectorFromSeverities, groupByPackage, severityOrder } from '@lunatrace/lunatrace-common/build/main';
 import React, { ChangeEvent, useState } from 'react';
 import { Col, Dropdown, Row } from 'react-bootstrap';
 import { AiOutlineMinusCircle } from 'react-icons/ai';
 
-import { QuickViewProps } from '../types';
+import { QuickViewProps } from '../../types';
 
 import { VulnerablePackageMain } from './VulnerablePackageMain';
 import { Finding } from './types';

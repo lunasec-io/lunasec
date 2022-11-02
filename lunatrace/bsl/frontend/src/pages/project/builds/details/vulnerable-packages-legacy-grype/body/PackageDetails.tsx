@@ -11,13 +11,12 @@
  * limitations under the License.
  *
  */
-import { VulnerablePackageLegacy } from '@lunatrace/lunatrace-common';
+import { VulnerablePackageLegacy } from '@lunatrace/lunatrace-common/build/main';
 import compareVersions from 'compare-versions';
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 
-
-import { pluralizeIfMultiple } from '../../../../../utils/string-utils';
+import { pluralizeIfMultiple } from '../../../../../../utils/string-utils';
 import { Finding } from '../types';
 
 interface PackageDetailsProps {
