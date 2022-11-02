@@ -23,6 +23,13 @@ array_relationships:
         table:
           name: package_maintainer
           schema: package
+  - name: release_dependencies
+    using:
+      foreign_key_constraint_on:
+        column: dependency_package_id
+        table:
+          name: release_dependency
+          schema: package
   - name: releases
     using:
       foreign_key_constraint_on:

@@ -15,8 +15,8 @@ import { GraphQLYogaError } from '@graphql-yoga/node';
 import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common';
 
 import { hasura } from '../../hasura-api';
-import { GetTreeFromBuildQuery } from '../../hasura-api/generated';
 import VulnerabilityDependencyTree from '../../models/vulnerability-dependency-tree';
+import { Analysis_Finding_Source_Enum, GetTreeFromBuildQuery } from '../../hasura-api/generated';
 import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';
 import { checkBuildsAreAuthorized, throwIfUnauthenticated } from '../helpers/auth-helpers';
@@ -28,7 +28,12 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
   const buildId = args.buildId;
   await checkBuildsAreAuthorized([buildId], ctx);
 
-  const { builds_by_pk: rawBuildData } = await hasura.GetTreeFromBuild({ build_id: buildId });
+  const { builds_by_pk: rawBuildData } = await hasura.GetTreeFromBuild({
+    build_id: buildId,
+    analysis_results_where: {
+      finding_source: { _eq: Analysis_Finding_Source_Enum.SemgrepImportedCalled },
+    },
+  });
   if (!rawBuildData) {
     throw new GraphQLYogaError('Error fetching build data from database');
   }
@@ -54,7 +59,14 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
   const vulnerableReleases = depTree.getVulnerableReleases();
 
   const totalTime = Date.now() - startTime;
+<<<<<<< HEAD
   log.info(`spent ${totalTime}ms processing tree`);
+=======
+  log.info('finished processing tree', {
+    totalTime,
+  });
+
+>>>>>>> 4a7b28fc (update imported and called rule analysis results on build page)
   return vulnerableReleases;
 };
 
@@ -62,13 +74,14 @@ type RequestData = NonNullable<GetTreeFromBuildQuery['builds_by_pk']>;
 type ManifestData = NonNullable<RequestData['resolved_manifests']>;
 type IgnoredVulnerabilities = NonNullable<RequestData['project']['ignored_vulnerabilities']>;
 
-export function buildTreeFromRawData<iManifestData>(
+export function buildTreeFromRawData(
   rawManifestData: ManifestData,
   ignoredVulnerabilities?: IgnoredVulnerabilities,
   minimumSeverity?: SeverityNamesOsv
 ): VulnerabilityDependencyTree | null {
   if (!rawManifestData || rawManifestData.length === 0) {
-    return null; //fallback to grype
+    // fallback to grype
+    return null;
   }
 
   // check how many dependencies there are to make sure there are any at all, not sure if this is necessary
@@ -76,7 +89,8 @@ export function buildTreeFromRawData<iManifestData>(
     return manifest.child_edges_recursive || [];
   });
   if (!mergedDependencies || mergedDependencies.length === 0) {
-    return null; //fallback to grype
+    // fallback to grype
+    return null;
   }
 
   return new VulnerabilityDependencyTree(rawManifestData, ignoredVulnerabilities, minimumSeverity);
