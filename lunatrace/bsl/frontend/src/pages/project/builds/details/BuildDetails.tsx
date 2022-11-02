@@ -18,15 +18,15 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 
-import api from '../../../api';
-import { SpinIfLoading } from '../../../components/SpinIfLoading';
-import useAppDispatch from '../../../hooks/useAppDispatch';
-import useBreakpoint from '../../../hooks/useBreakpoint';
-import { add } from '../../../store/slices/alerts';
+import api from '../../../../api';
+import { SpinIfLoading } from '../../../../components/SpinIfLoading';
+import useAppDispatch from '../../../../hooks/useAppDispatch';
+import useBreakpoint from '../../../../hooks/useBreakpoint';
+import { add } from '../../../../store/slices/alerts';
+import { BuildStateViewer } from '../BuildStateViewer';
+import { VulnQuickView } from '../VulnQuickView';
 
 import { BuildDetailsHeader } from './BuildDetailsHeader';
-import { BuildStateViewer } from './BuildStateViewer';
-import { VulnQuickView } from './VulnQuickView';
 import { VulnerablePackageListWrapper } from './VulnerablePackageListWrapper';
 
 export const BuildDetails: React.FunctionComponent = () => {

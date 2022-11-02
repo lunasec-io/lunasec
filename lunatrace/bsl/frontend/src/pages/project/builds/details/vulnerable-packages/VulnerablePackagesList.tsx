@@ -11,12 +11,12 @@
  * limitations under the License.
  *
  */
-import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common';
+import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common/build/main';
 import React, { ChangeEvent } from 'react';
 import { Button, Col, Dropdown, OverlayTrigger, Row } from 'react-bootstrap';
 import { FcPlus } from 'react-icons/fc';
 
-import { QuickViewProps } from '../types';
+import { QuickViewProps } from '../../types';
 
 import { AutoUpdatePopOverHOC } from './AutoUpdatePopOverHOC';
 import { VulnerablePackageMain } from './VulnerablePackageMain';

@@ -16,16 +16,16 @@ import { Accordion, Table } from 'react-bootstrap';
 import { ChevronDown, ChevronUp } from 'react-feather';
 
 import { QuickViewProps } from '../../../types';
-import { VulnMeta } from '../../types';
+import { Finding } from '../types';
 
-import { VulnInfo } from './VulnInfo';
+import { FindingItem } from './FindingItem';
 
 interface FindingsTableProps {
   shouldFilterFindings: boolean;
-  filteredFindings: VulnMeta[];
+  filteredFindings: Finding[];
   quickView: QuickViewProps;
   setShouldFilterFindings: (shouldFilter: boolean) => void;
-  findingsHiddenBySeverityCount: number;
+  findingsCount: number;
 }
 
 export const FindingsTable: React.FC<FindingsTableProps> = ({
@@ -33,7 +33,7 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
   filteredFindings,
   quickView,
   setShouldFilterFindings,
-  findingsHiddenBySeverityCount,
+  findingsCount,
 }) => {
   return (
     <Accordion.Body>
@@ -49,11 +49,12 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {filteredFindings.map((vulnMeta) => {
+          {filteredFindings.map((f) => {
             return (
-              <VulnInfo
-                key={vulnMeta.vulnerability.id}
-                vulnMeta={vulnMeta}
+              <FindingItem
+                patchable="no"
+                key={f.id}
+                finding={f}
                 setVulnQuickViewId={quickView.setVulnQuickViewId}
                 vulnQuickViewId={quickView.vulnQuickViewId}
               />
@@ -63,9 +64,9 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
       </Table>
 
       {shouldFilterFindings ? (
-        findingsHiddenBySeverityCount > 0 ? (
+        findingsCount > filteredFindings.length ? (
           <span style={{ cursor: 'pointer' }} onClick={() => setShouldFilterFindings(false)}>
-            Show {findingsHiddenBySeverityCount} lower severity findings
+            Show {findingsCount - filteredFindings.length} lower severity findings
             <ChevronDown />
           </span>
         ) : null

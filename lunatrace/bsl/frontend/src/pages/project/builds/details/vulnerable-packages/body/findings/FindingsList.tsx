@@ -15,17 +15,17 @@ import React from 'react';
 import { Accordion, Table } from 'react-bootstrap';
 import { ChevronDown, ChevronUp } from 'react-feather';
 
-import { QuickViewProps } from '../../types';
-import { Finding } from '../types';
+import { QuickViewProps } from '../../../../types';
+import { VulnMeta } from '../../types';
 
-import { FindingItem } from './FindingItem';
+import { VulnInfo } from './VulnInfo';
 
 interface FindingsTableProps {
   shouldFilterFindings: boolean;
-  filteredFindings: Finding[];
+  filteredFindings: VulnMeta[];
   quickView: QuickViewProps;
   setShouldFilterFindings: (shouldFilter: boolean) => void;
-  findingsCount: number;
+  findingsHiddenBySeverityCount: number;
 }
 
 export const FindingsTable: React.FC<FindingsTableProps> = ({
@@ -33,7 +33,7 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
   filteredFindings,
   quickView,
   setShouldFilterFindings,
-  findingsCount,
+  findingsHiddenBySeverityCount,
 }) => {
   return (
     <Accordion.Body>
@@ -49,12 +49,11 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {filteredFindings.map((f) => {
+          {filteredFindings.map((vulnMeta) => {
             return (
-              <FindingItem
-                patchable="no"
-                key={f.id}
-                finding={f}
+              <VulnInfo
+                key={vulnMeta.vulnerability.id}
+                vulnMeta={vulnMeta}
                 setVulnQuickViewId={quickView.setVulnQuickViewId}
                 vulnQuickViewId={quickView.vulnQuickViewId}
               />
@@ -64,9 +63,9 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
       </Table>
 
       {shouldFilterFindings ? (
-        findingsCount > filteredFindings.length ? (
+        findingsHiddenBySeverityCount > 0 ? (
           <span style={{ cursor: 'pointer' }} onClick={() => setShouldFilterFindings(false)}>
-            Show {findingsCount - filteredFindings.length} lower severity findings
+            Show {findingsHiddenBySeverityCount} lower severity findings
             <ChevronDown />
           </span>
         ) : null

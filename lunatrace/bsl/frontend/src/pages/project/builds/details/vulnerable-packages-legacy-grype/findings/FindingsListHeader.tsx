@@ -11,22 +11,28 @@
  * limitations under the License.
  *
  */
-import { SeverityNamesOsv } from '@lunatrace/lunatrace-common/build/main';
+import { severityOrder } from '@lunatrace/lunatrace-common/build/main';
 import React from 'react';
 import { Accordion } from 'react-bootstrap';
 
 import { pluralizeIfMultiple } from '../../../../../../utils/string-utils';
 
 interface FindingsListHeaderProps {
-  findingsCount: number;
-  severity: SeverityNamesOsv;
+  filteredFindingsCount: number;
+  shouldFilterFindings: boolean;
+  severityFilter: number;
 }
 
-export const FindingsListHeader: React.FunctionComponent<FindingsListHeaderProps> = ({ findingsCount, severity }) => {
+export const FindingsListHeader: React.FunctionComponent<FindingsListHeaderProps> = ({
+  filteredFindingsCount,
+  shouldFilterFindings,
+  severityFilter,
+}) => {
   const getSeverityDescription = () => {
-    if (severity !== 'Unknown') {
-      const extraSeverityInfo = severity === 'Critical' ? ' ' : ' (or higher) ';
-      return (severity as string) + extraSeverityInfo;
+    const appliedSecurityFilter = shouldFilterFindings && severityOrder[severityFilter] !== 'unknown';
+    if (appliedSecurityFilter) {
+      const extraSeverityInfo = severityFilter < severityOrder.indexOf('critical') ? ' (or higher) ' : ' ';
+      return severityOrder[severityFilter] + extraSeverityInfo;
     }
     return '';
   };
@@ -34,7 +40,7 @@ export const FindingsListHeader: React.FunctionComponent<FindingsListHeaderProps
   const severityDescription = getSeverityDescription();
 
   const headerTitle = severityDescription + 'finding';
-  const formattedHeaderTitle = pluralizeIfMultiple(findingsCount, headerTitle, true);
+  const formattedHeaderTitle = pluralizeIfMultiple(filteredFindingsCount, headerTitle, true);
 
   return <Accordion.Header>{formattedHeaderTitle}</Accordion.Header>;
 };

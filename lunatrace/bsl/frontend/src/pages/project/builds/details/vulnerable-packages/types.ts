@@ -12,7 +12,7 @@
  *
  */
 
-import { GetVulnerableReleasesFromBuildQuery } from '../../../../api/generated';
+import { GetVulnerableReleasesFromBuildQuery } from '../../../../../api/generated';
 
 export type VulnerablePackage = NonNullable<
   NonNullable<GetVulnerableReleasesFromBuildQuery>['vulnerableReleasesFromBuild']

@@ -11,12 +11,12 @@
  * limitations under the License.
  *
  */
-import { SeverityNamesOsv } from '@lunatrace/lunatrace-common';
+import { SeverityNamesOsv } from '@lunatrace/lunatrace-common/build/main';
 import React, { useState } from 'react';
 import { Accordion, Card, Container, Row } from 'react-bootstrap';
 
-import { ConditionallyRender } from '../../../../../components/utils/ConditionallyRender';
-import { QuickViewProps } from '../../types';
+import { ConditionallyRender } from '../../../../../../components/utils/ConditionallyRender';
+import { QuickViewProps } from '../../../types';
 import { VulnerablePackage } from '../types';
 
 import { GuideBlurb } from './GuideBlurb';
