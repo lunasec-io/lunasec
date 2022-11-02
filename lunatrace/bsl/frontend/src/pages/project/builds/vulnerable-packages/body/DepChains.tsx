@@ -16,22 +16,13 @@ import { Badge, NavLink } from 'react-bootstrap';
 import { ChevronRight, ChevronsRight, Maximize2, Minimize2 } from 'react-feather';
 
 import { VulnerablePackage } from '../types';
+
+import { ChainDep } from './ChainDep';
 interface TreeInfoProps {
   pkg: VulnerablePackage;
 }
 
 export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
-  // Determines if the package is the start, the middle, or the target package and then colors them appropriately
-  const getBadgeColor = (depIndex: number, chainLength: number) => {
-    if (depIndex === chainLength - 1) {
-      return 'success';
-    }
-    if (depIndex === 0) {
-      return 'primary';
-    }
-    return 'light';
-  };
-
   // Show the longest chains first, a hack to make expandable double chevrons show on deduped collapsed chains. Also it looks nice
   const chains = [...pkg.chains].sort((a, b) => {
     return b.length - a.length;
@@ -71,35 +62,35 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
           }
           chainDedupeSlugs.push(dedupeSlug);
 
+          /*
+           * since we might not have results for every edge in the dependency chain, we are collecting all the
+           * indexes where a dependency is not reachable in the chain, and then letting that affect the display
+           * of the rest of the chain (dependencies used further in the chain are not reachable if an index earlier
+           * in the list was observed as not reachable).
+           */
+          const notReachableIdxes = visibleChain.reduce((indexes, dep, idx) => {
+            if (dep.reachable) {
+              return indexes;
+            }
+            return [...indexes, idx];
+          }, [] as number[]);
+
           return (
             <div className="one-point-two-em d-flex pb-1 pt-1" key={dedupeSlug}>
               {visibleChain.map((dep, index) => {
+                console.log(index, notReachableIdxes);
+                const depIsReachable = notReachableIdxes.filter((i) => index > i).length === 0;
                 return (
-                  <React.Fragment key={dep.id}>
-                    <div className="me-1 ms-1 d-inline-flex justify-content-center" style={{ flexDirection: 'column' }}>
-                      {index !== 0 &&
-                        (chain.length > visibleChain.length ? (
-                          <NavLink className="p-0" onClick={() => setIsExpanded(true)} style={{ display: 'inline' }}>
-                            <ChevronsRight size="1em" className="" />
-                          </NavLink>
-                        ) : (
-                          <ChevronRight
-                            size="1em"
-                            className="mb-n1"
-                            style={{ marginLeft: 'auto', marginRight: 'auto', display: 'block' }}
-                          />
-                        ))}
-                      {isExpanded && <div style={{ fontSize: '.7rem' }}>{dep.range}</div>}
-                    </div>
-                    <Badge text="dark" bg={getBadgeColor(index, visibleChain.length)}>
-                      <div>{dep.release.package.name}</div>
-                      {isExpanded && (
-                        <div className="mt-1" style={{ fontSize: '.7rem' }}>
-                          {dep.release.version}
-                        </div>
-                      )}
-                    </Badge>
-                  </React.Fragment>
+                  <ChainDep
+                    key={dep.id}
+                    index={index}
+                    dep={dep}
+                    isExpanded={isExpanded}
+                    chainLength={chain.length}
+                    visibleChainLength={visibleChain.length}
+                    setIsExpanded={setIsExpanded}
+                    depIsReachable={depIsReachable}
+                  />
                 );
               })}
             </div>
