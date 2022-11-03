@@ -74,7 +74,6 @@ describe('The fake dependency tree', () => {
   });
   it('should show guides', () => {
     const guides = tree.vulnerableReleases[0].guides;
-    console.log('guides are', guides);
     expect(guides.length).toEqual(1);
     expect(guides[0].id).toEqual('g1');
   });
