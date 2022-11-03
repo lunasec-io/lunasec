@@ -38,25 +38,37 @@ export const ChainDep: React.FunctionComponent<DepProps> = ({
 }) => {
   const dependencyEdgeClassNames = ['mb-n1', !depIsReachable && 'text-warning'];
 
-  const dependencyEdgeIcon =
-    dep.reachable === Analysis_Finding_Type_Enum.Vulnerable ? (
+  const dependencyEdgeNotReachable = (
+    <OverlayTrigger
+      placement={'top'}
+      overlay={<Tooltip>No instances found of {dep.release.package.name} being imported and called.</Tooltip>}
+    >
+      <X
+        size="1em"
+        className="mb-n1 text-warning"
+        style={{ marginLeft: 'auto', marginRight: 'auto', display: 'block' }}
+      />
+    </OverlayTrigger>
+  );
+
+  const edgeIsReachableTooltip =
+    dep.reachable === Analysis_Finding_Type_Enum.Unknown || dep.reachable === Analysis_Finding_Type_Enum.Vulnerable
+      ? `${dep.release.package.name} was found to be imported and called.`
+      : `${dep.release.package.name} has not been analyzed for reachability`;
+
+  const depedencyEdgeIsReachable = (
+    <OverlayTrigger placement={'top'} overlay={<Tooltip>{edgeIsReachableTooltip}</Tooltip>}>
       <ChevronRight
         size="1em"
         className={classNames(dependencyEdgeClassNames)}
         style={{ marginLeft: 'auto', marginRight: 'auto', display: 'block' }}
       />
-    ) : (
-      <OverlayTrigger
-        placement={'top'}
-        overlay={<Tooltip>No instances found of {dep.release.package.name} being imported and called.</Tooltip>}
-      >
-        <X
-          size="1em"
-          className="mb-n1 text-warning"
-          style={{ marginLeft: 'auto', marginRight: 'auto', display: 'block' }}
-        />
-      </OverlayTrigger>
-    );
+    </OverlayTrigger>
+  );
+
+  const dependencyEdgeIcon =
+    dep.reachable === Analysis_Finding_Type_Enum.NotVulnerable ? dependencyEdgeNotReachable : depedencyEdgeIsReachable;
+
   return (
     <React.Fragment key={dep.id}>
       <div className="me-1 ms-1 d-inline-flex justify-content-center" style={{ flexDirection: 'column' }}>
