@@ -28,20 +28,18 @@ import {
 
 export class DependencyTree {
   // The following indexes are how the tree is "built". They allow high speed querying against the tree data without ever building a full tree in memory
-
   // This is and should remain the only index that holds a reference to the actual nodes. All parsing algorithms must use this index to resolve depNodes
-  public depNodesByEdgeId: Map<string, BuiltNode> = new Map();
+  public depNodesByEdgeSlug: Map<string, BuiltNode> = new Map();
   // Used to trace the structure of the tree from the bottom up
   public nodeIdToParentIds: Map<string, Set<string>> = new Map();
 
-  public nodeIdsToEdgeIds: Map<string, Set<string>> = new Map();
+  public nodeIdsToEdgeSlugs: Map<string, Set<string>> = new Map();
   // Used so we can quickly fetch all nodes that are the same release (ex React@1.0.0)
-  public depNodeEdgeIdsByReleaseId: Map<string, Set<string>> = new Map();
+  public depNodeEdgeSlugsByReleaseId: Map<string, Set<string>> = new Map();
   // Holds which nodes have been determined to be vulnerable, for later processing
-  public vulnerableDepNodeEdgeIds: Set<string> = new Set();
+  public vulnerableDepNodeEdgeSlugs: Set<string> = new Set();
 
-  public edgeIdsByParentChildSlug: Map<string, string> = new Map();
-
+  public edgeIdsByEdgeSlug: Map<string, string> = new Map();
   // This is the full computed dataset that we server directly to the frontend. This is the "output" format of the tree.
   // Note that other public methods, like getVulnerabilities() rearrange this same data into different shapes for easier parsing outside of the tree
   public vulnerableReleases: VulnerableRelease[];
@@ -61,12 +59,16 @@ export class DependencyTree {
         return;
       }
       flatEdges.forEach((edge) => {
+        if (!edge.parent_id) {
+          throw new Error('Missing edge parent ID, this should never happen, check SQL');
+        }
+        const edgeSlug = edge.parent_id + edge.child_id;
         // We modify some vulnerability data on the release and since that changes the whole type chain, we rebuild the release here
         const builtRelease: BuiltRelease = {
           ...edge.child.release,
           package: {
             ...edge.child.release.package,
-            affected_by_vulnerability: this.buildVulns(edge.child, edge.id, manifest.path || 'Unknown'),
+            affected_by_vulnerability: this.buildVulns(edge.child, edgeSlug, manifest.path || 'Unknown'),
           },
         };
         // flatten the parent id into the child so we can forget about edges as much as possible, and filter the vulns
@@ -75,11 +77,13 @@ export class DependencyTree {
           parent_id: edge.parent_id,
           release: builtRelease,
         };
+
+        this.edgeIdsByEdgeSlug.set(edgeSlug, edge.id);
         // Create a map from a given release to the list of depNodes
-        this.upsertValueIntoMapOfSets(this.depNodeEdgeIdsByReleaseId, depNode.release_id, edge.id);
+        this.upsertValueIntoMapOfSets(this.depNodeEdgeSlugsByReleaseId, depNode.release_id, edgeSlug);
 
         // a map for each node, we know all the edges that it was a child of
-        this.upsertValueIntoMapOfSets(this.nodeIdsToEdgeIds, depNode.id, edge.id);
+        this.upsertValueIntoMapOfSets(this.nodeIdsToEdgeSlugs, depNode.id, edgeSlug);
 
         // Create a lookup of child IDs that map to a set of nodes that include them (parents).
         const parentIdsToNode = this.nodeIdToParentIds.get(depNode.id) || new Set();
@@ -90,11 +94,7 @@ export class DependencyTree {
         }
 
         // Create a separate lookup to directly map an ID to a node
-        this.depNodesByEdgeId.set(edge.id, depNode);
-
-        // keep track of edge ids later in case theyre needed, since we arent storing or indexing edges anywhere else
-        const parentChildSlug = (edge.parent_id || '') + ':' + edge.child_id;
-        this.edgeIdsByParentChildSlug.set(parentChildSlug, edge.id);
+        this.depNodesByEdgeSlug.set(edgeSlug, depNode);
       });
     });
 
@@ -103,10 +103,10 @@ export class DependencyTree {
   }
 
   public getEdgeIdFromNodePair(firstNodeId: string, secondNodeId: string): string | undefined {
-    return this.edgeIdsByParentChildSlug.get(firstNodeId + ':' + secondNodeId);
+    return this.edgeIdsByEdgeSlug.get(firstNodeId + secondNodeId);
   }
 
-  private buildVulns(depNode: RawNode, edgeId: string, path: string): BuiltVulnMeta[] {
+  private buildVulns(depNode: RawNode, edgeSlug: string, path: string): BuiltVulnMeta[] {
     const builtVulns: BuiltVulnMeta[] = [];
     depNode.release.package.affected_by_vulnerability.forEach((vulnMeta) => {
       const vulnerableRange = this.convertRangesToSemverRange(vulnMeta.ranges);
@@ -123,7 +123,7 @@ export class DependencyTree {
       });
 
       // Add to the lookup of vulnerable deps for later
-      this.vulnerableDepNodeEdgeIds.add(edgeId);
+      this.vulnerableDepNodeEdgeSlugs.add(edgeSlug);
       // Mark the vulns that can be trivially updated
       const triviallyUpdatableTo = this.precomputeVulnTriviallyUpdatableTo(depNode.range, vulnMeta);
 
@@ -192,8 +192,8 @@ export class DependencyTree {
   private getVulnerableReleases(): VulnerableRelease[] {
     const vulnerableReleasesById: Record<string, VulnerableRelease> = {};
 
-    this.vulnerableDepNodeEdgeIds.forEach((edgeId) => {
-      const vulnerableDep = this.depNodesByEdgeId.get(edgeId);
+    this.vulnerableDepNodeEdgeSlugs.forEach((edgeSlug) => {
+      const vulnerableDep = this.depNodesByEdgeSlug.get(edgeSlug);
 
       if (!vulnerableDep) {
         throw new Error('failed to lookup depNode by id');
@@ -264,10 +264,6 @@ export class DependencyTree {
             return this.sortBySeverityName(v1.vulnerability.severity_name, v2.vulnerability.severity_name);
           });
         }
-        // add chains to the top level list of chains on the release, if this is the first vuln we have process on the edge (because we only want to do this once per edge)
-        if (vulnIndex === 0) {
-          existingRelease.chains = this.addNewChainsExcludingDuplicates(existingRelease.chains, chains);
-        }
 
         if (!existingRelease.paths.includes(affectedByVuln.path)) {
           existingRelease.paths.push(affectedByVuln.path);
@@ -305,22 +301,6 @@ export class DependencyTree {
       return false;
     }
     return !firstChain.some((dep, i) => dep.id !== secondChain[i].id);
-  }
-
-  //  this is unfortunately necessary because, since we may accidentally end up walking the same chains multiple times in our processing,
-  //  the easiest approach is to simply throw away duplicates
-  private addNewChainsExcludingDuplicates(
-    existingChains: DependencyChain[] | undefined,
-    newChains: DependencyChain[]
-  ): DependencyChain[] {
-    const chains = [...(existingChains || [])];
-    newChains.forEach((newChain) => {
-      const chainIsDuplicate = chains.some((existingChain) => this.chainsAreIdentical(existingChain, newChain));
-      if (!chainIsDuplicate) {
-        chains.push(newChain);
-      }
-    });
-    return chains;
   }
 
   private computeFixVersions(vuln: RawVulnMeta): string[] {
@@ -362,13 +342,13 @@ export class DependencyTree {
   }
 
   private checkIfReleaseTriviallyUpdatable(releaseId: string): 'yes' | 'partially' | 'no' {
-    const matchingEdgeIds = this.depNodeEdgeIdsByReleaseId.get(releaseId);
-    if (!matchingEdgeIds) {
+    const matchingEdgeSlugs = this.depNodeEdgeSlugsByReleaseId.get(releaseId);
+    if (!matchingEdgeSlugs) {
       throw new Error(`Failed to find release for id ${releaseId} while checking triviallyUpdatable`);
     }
 
-    const matchingDeps = [...matchingEdgeIds].map((edgeId) => {
-      const depNode = this.depNodesByEdgeId.get(edgeId);
+    const matchingDeps = [...matchingEdgeSlugs].map((edgeSlug) => {
+      const depNode = this.depNodesByEdgeSlug.get(edgeSlug);
       if (!depNode) {
         throw new Error('Missing dep node for dep id while checking triviallyUpdatable');
       }
@@ -430,12 +410,12 @@ export class DependencyTree {
       }
 
       parentNodeIds.forEach((parentNodeId) => {
-        const parentEdgeIds = this.nodeIdsToEdgeIds.get(parentNodeId);
+        const parentEdgeIds = this.nodeIdsToEdgeSlugs.get(parentNodeId);
         if (!parentEdgeIds) {
           throw new Error('Failed to find list of edge ids for node id');
         }
         parentEdgeIds.forEach((parentEdgeId) => {
-          const parentEdge = this.depNodesByEdgeId.get(parentEdgeId);
+          const parentEdge = this.depNodesByEdgeSlug.get(parentEdgeId);
           if (!parentEdge) {
             throw new Error(`Failed to find parent edge with id ${parentEdgeId} for child id ${dep.id}`);
           }
@@ -448,4 +428,23 @@ export class DependencyTree {
     recursivelyGenerateChainsWithStack(depNode, []);
     return flattenedChains;
   }
+
+  //  this is unfortunately necessary because, since we may accidentally end up walking the same chains multiple times in our processing,
+  //  the easiest approach is to simply throw away duplicates
+  // TODO: DEPRECATED
+  // private ddNewChainsExcludingDuplicates(
+  //   existingRelease: VulnerableRelease,
+  //   newChains: DependencyChain[]
+  // ): DependencyChain[] {
+  //   const chains = existingRelease.chains || [];
+  //   newChains.forEach((newChain) => {
+  //     const chainSlug = `${existingRelease.release.id}:${newChain.map((node) => node.id).toString()}`;
+  //     const chainIsDuplicate = this.chainDedupeSlugs.has(chainSlug);
+  //     if (!chainIsDuplicate) {
+  //       this.chainDedupeSlugs.add(chainSlug);
+  //       chains.push(newChain);
+  //     }
+  //   });
+  //   return chains;
+  // }
 }
