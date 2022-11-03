@@ -11,9 +11,10 @@
  * limitations under the License.
  *
  */
+import classNames from 'classnames';
 import React, { useState } from 'react';
-import { Badge, NavLink } from 'react-bootstrap';
-import { ChevronRight, ChevronsRight, Maximize2, Minimize2 } from 'react-feather';
+import { Badge, Col, NavLink, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { CheckCircle, ChevronRight, ChevronsRight, Maximize2, Minimize2 } from 'react-feather';
 
 import { Analysis_Finding_Type_Enum } from '../../../../../api/generated';
 import { VulnerablePackage } from '../types';
@@ -69,30 +70,53 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
            * of the rest of the chain (dependencies used further in the chain are not reachable if an index earlier
            * in the list was observed as not reachable).
            */
-          const notReachableIdxes = visibleChain.reduce((indexes, dep, idx) => {
-            if (dep.reachable !== Analysis_Finding_Type_Enum.NotVulnerable) {
-              return indexes;
+          const notReachableIndexes: number[] = [];
+          visibleChain.forEach((dep, idx) => {
+            if (dep.reachable === Analysis_Finding_Type_Enum.NotVulnerable) {
+              notReachableIndexes.push(idx);
             }
-            return [...indexes, idx];
-          }, [] as number[]);
+          });
+
+          const vulnerabilityIsReachable = notReachableIndexes.length === 0;
+          const chainTooltipMsg = vulnerabilityIsReachable
+            ? 'All dependencies in the vulnerable chain are imported and called. Vulnerability is likely to be relevant.'
+            : 'All dependencies in the vulnerable chain have been analyzed, but a continuous "imported and called" chain  was not found. Vulnerability is unlikely to be relevant.';
+
+          const chainHasBeenAnalyzed = !chain.some((d) => d.reachable === Analysis_Finding_Type_Enum.Error);
 
           return (
-            <div className="one-point-two-em d-flex pb-1 pt-1" key={dedupeSlug}>
-              {visibleChain.map((dep, index) => {
-                const depIsReachable = notReachableIdxes.filter((i) => index > i).length === 0;
-                return (
-                  <ChainDep
-                    key={dep.id}
-                    index={index}
-                    dep={dep}
-                    isExpanded={isExpanded}
-                    chainLength={chain.length}
-                    visibleChainLength={visibleChain.length}
-                    setIsExpanded={setIsExpanded}
-                    depIsReachable={depIsReachable}
-                  />
-                );
-              })}
+            <div key={dedupeSlug}>
+              <div className="one-point-two-em d-flex pb-1 pt-1">
+                {visibleChain.map((dep, index) => {
+                  const depIsReachable = !notReachableIndexes.some((i) => i < index);
+                  return (
+                    <ChainDep
+                      key={dep.id}
+                      index={index}
+                      dep={dep}
+                      isExpanded={isExpanded}
+                      chainLength={chain.length}
+                      visibleChainLength={visibleChain.length}
+                      setIsExpanded={setIsExpanded}
+                      depIsReachable={depIsReachable}
+                    />
+                  );
+                })}
+                <div className="me-1 ms-1 d-inline-flex justify-content-center" style={{ flexDirection: 'column' }}>
+                  {chainHasBeenAnalyzed && (
+                    <OverlayTrigger placement={'top'} overlay={<Tooltip>{chainTooltipMsg}</Tooltip>}>
+                      <CheckCircle
+                        className={classNames([
+                          'mb-1',
+                          'me-1',
+                          vulnerabilityIsReachable ? 'text-success' : 'text-warning',
+                        ])}
+                        size="1em"
+                      />
+                    </OverlayTrigger>
+                  )}
+                </div>
+              </div>
             </div>
           );
         })}
