@@ -12,9 +12,14 @@
  *
  */
 
+import fs from 'fs';
+import path from 'path';
+import util from 'util';
+
 import { fakeDependencyTreeHasuraOutputFixture } from '../fixtures/manifests/fake-dependency-tree-hasura-output-fixture';
 import { realDependencyTreeHasuraOutputFixture } from '../fixtures/manifests/real-dependency-tree-hasura-output';
 import { DependencyTree } from '../models/dependency-tree/builds-dependency-tree';
+import { DependencyChain, RawManifest } from '../models/dependency-tree/types';
 
 describe('The fake dependency tree', () => {
   const tree = new DependencyTree(fakeDependencyTreeHasuraOutputFixture, null, []);
@@ -85,3 +90,46 @@ describe('a real sample dependency tree', () => {
     expect(tree).toBeDefined();
   });
 });
+
+describe.only('huge docusaurus dependency tree', () => {
+  console.log('about to load tree data string from json file');
+  const rawTreeString = fs
+    .readFileSync(path.join(__dirname, '../fixtures/manifests/huge-docusaurus-tree-hasura-output.json'))
+    .toString();
+  console.log('loaded string');
+  const parsedTreeData = JSON.parse(rawTreeString) as RawManifest[];
+  console.log('manifests length', parsedTreeData.length);
+  const allEdges = [];
+  parsedTreeData.forEach((manifest) => {
+    allEdges.concat(manifest);
+  });
+  console.log('parsed tree data');
+  const tree = new DependencyTree(parsedTreeData, null, []);
+  console.log('chains are', tree.vulnerableReleases.map((r) => r.chains.length).toString());
+  it('should build', () => {
+    expect(tree).toBeDefined();
+  });
+
+  it('should have a sane first vuln', () => {
+    const firstVuln = tree.vulnerableReleases[0];
+    const firstVulnWithoutChains = { ...tree.vulnerableReleases[0] };
+    // @ts-ignore
+    delete firstVulnWithoutChains['chains'];
+    console.log(firstVulnWithoutChains);
+
+    // console.log('first twenty chains are ', util.inspect(firstTwentyChains, { depth: Infinity }));
+    const chainStrings = firstVuln.chains.map(chainToChainNames);
+    const chainStringSet = new Set(chainStrings);
+
+    console.log('chainstring count is ', chainStrings.length);
+    console.log('some chaingstrings are ', chainStrings.slice(0, 50));
+
+    expect(chainStrings.length).toEqual(chainStringSet.size);
+    // console.log('chain strings are', chainStrings);
+  });
+});
+
+function chainToChainNames(chain: DependencyChain): string {
+  return chain.map((node) => node.release.package.name + '@' + node.release.version + '%' + node.range).join('#');
+  // return chain.map((node) => node.id + node.parent_id).join('#');
+}
