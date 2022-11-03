@@ -19,6 +19,7 @@ import {
   BuiltRelease,
   BuiltVulnMeta,
   DependencyChain,
+  DependencyChainMap,
   IgnoredVulnerability,
   RawManifest,
   RawNode,
@@ -42,7 +43,7 @@ export class DependencyTree {
 
   public edgeIdsByParentChildSlug: Map<string, string> = new Map();
 
-  // This is the full computed dataset that we server directly to the frontend. This is the "output" format of the tree.
+  // This is the full computed dataset that we serve directly to the frontend. This is the "output" format of the tree.
   // Note that other public methods, like getVulnerabilities() rearrange this same data into different shapes for easier parsing outside of the tree
   public vulnerableReleases: VulnerableRelease[];
 
@@ -131,7 +132,7 @@ export class DependencyTree {
       const builtVuln: BuiltVulnMeta = {
         ...vulnMeta,
         trivially_updatable_to: triviallyUpdatableTo,
-        chains: [],
+        chains: new DependencyChainMap(),
         path,
         beneath_minimum_severity: beneathMinimumSeverity,
         fix_versions: this.computeFixVersions(vulnMeta),
@@ -179,7 +180,7 @@ export class DependencyTree {
           return;
         }
         // just merge the vulnData into the main vuln
-        existingVuln.chains = [...(existingVuln.chains || []), ...(newVuln.chains || [])];
+        existingVuln.chains.mergeChains(newVuln.chains);
         // todo: we arent dealing with the trivially updatable to field here yet but it should probably be made to be an array for these amalgamated vulns
         // existingVuln.trivially_updatable = existingVuln.trivially_updatable && newVuln.trivially_updatable;
       });
@@ -199,11 +200,12 @@ export class DependencyTree {
         throw new Error('failed to lookup depNode by id');
       }
 
-      const chains = this.getDependencyChainsOfDepNode(vulnerableDep);
+      const chains = new DependencyChainMap();
+      chains.mergeChains(this.getDependencyChainsOfDepNode(vulnerableDep));
 
       const release = vulnerableDep.release;
 
-      const devOnly = chains.every((chain) => {
+      const devOnly = chains.getChains().every((chain) => {
         const rootLabels = chain[0].labels;
         if (rootLabels && 'scope' in rootLabels && rootLabels.scope === 'dev') {
           return true;
@@ -266,7 +268,7 @@ export class DependencyTree {
         }
         // add chains to the top level list of chains on the release, if this is the first vuln we have process on the edge (because we only want to do this once per edge)
         if (vulnIndex === 0) {
-          existingRelease.chains = this.addNewChainsExcludingDuplicates(existingRelease.chains, chains);
+          existingRelease.chains.mergeChains(chains);
         }
 
         if (!existingRelease.paths.includes(affectedByVuln.path)) {
@@ -406,8 +408,8 @@ export class DependencyTree {
   }
 
   // Show us how a dependency is being included by other dependencies by creating a "chain".
-  private getDependencyChainsOfDepNode(depNode: BuiltNode): DependencyChain[] {
-    const flattenedChains: DependencyChain[] = [];
+  private getDependencyChainsOfDepNode(depNode: BuiltNode): DependencyChainMap {
+    const flattenedChains = new DependencyChainMap();
 
     // Flatten the chains
     const recursivelyGenerateChainsWithStack = (dep: BuiltNode, stack: DependencyChain) => {
@@ -420,7 +422,7 @@ export class DependencyTree {
       }
 
       if (!dep.parent_id || dep.parent_id === '00000000-0000-0000-0000-000000000000') {
-        flattenedChains.push(newStack);
+        flattenedChains.set(newStack);
         return;
       }
 

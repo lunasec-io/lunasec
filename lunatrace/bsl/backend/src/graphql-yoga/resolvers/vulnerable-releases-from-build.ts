@@ -18,7 +18,16 @@ import { hasura } from '../../hasura-api';
 import { GetTreeFromBuildQuery } from '../../hasura-api/generated';
 import { DependencyTree } from '../../models/dependency-tree/builds-dependency-tree';
 import { log } from '../../utils/log';
-import { QueryResolvers } from '../generated-resolver-types';
+import {
+  BuildData_AffectedByVulnerability,
+  BuildData_DependencyNode,
+  Maybe,
+  QueryResolvers,
+  QueryVulnerableReleasesFromBuildArgs,
+  RequireFields,
+  Resolver,
+  ResolversTypes,
+} from '../generated-resolver-types';
 import { checkBuildsAreAuthorized, throwIfUnauthenticated } from '../helpers/auth-helpers';
 
 type BuildVulnerabilitiesResolver = NonNullable<QueryResolvers['vulnerableReleasesFromBuild']>;

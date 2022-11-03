@@ -93,9 +93,37 @@ interface BuiltPackage extends RawPackage {
   affected_by_vulnerability: Array<BuiltVulnMeta>;
 }
 
+export class DependencyChainMap {
+  private chainMap: Map<string, DependencyChain> = new Map();
+
+  public set(value: DependencyChain): void {
+    this.chainMap.set(value.map((c) => c.id).toString(), value);
+  }
+
+  public has(value: DependencyChain): boolean {
+    return this.chainMap.has(value.map((c) => c.id).toString());
+  }
+
+  public mergeChains(newChains: DependencyChainMap): void {
+    newChains.getChains().forEach((chain) => {
+      if (!this.has(chain)) {
+        this.set(chain);
+      }
+    });
+  }
+
+  public getChains(): DependencyChain[] {
+    return Array.from(this.chainMap.values());
+  }
+}
+
 export interface BuiltVulnMeta extends RawVulnMeta {
   trivially_updatable_to: string | null; // We add this by determining something can be updated to a non-vulnerable version without violating semver
-  chains: DependencyChain[]; // each vuln has its own sublist of chains in addition to the global list in the main body of the release. This is in case some have been eliminated by false-positive analysis for only this vuln
+  /**
+   * Each vuln has its own sublist of chains in addition to the global list in the main body of the release.
+   * This is in case some have been eliminated by false-positive analysis for only this vuln
+   */
+  chains: DependencyChainMap;
   path: string;
   beneath_minimum_severity: boolean;
   fix_versions: string[];
@@ -111,7 +139,7 @@ export interface VulnerableRelease {
   release: BuiltRelease;
   severity: string;
   beneath_minimum_severity: boolean; // if all its vulns are beneath severity, mark the release as beneath severity as well
-  chains: DependencyChain[];
+  chains: DependencyChainMap;
   cvss: number | null; // the highest rating from all the vulns on the release, used for giving the user an at-a-glance rating
   dev_only: boolean;
   affected_by: Array<BuiltVulnMeta>;

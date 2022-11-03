@@ -7,7 +7,7 @@
   "scripts": {
     "start": "concurrently 'yarn dev:graphql:watch' 'yarn run start:server'",
     "start:server": "nodemon ./src/server.ts --enable-source-maps",
-    "start:worker": "nodemon src/workers/queue/start.ts --enable-source-maps",
+    "start:worker": "nodemon ./src/workers/queue/start.ts --enable-source-maps",
     "builds:rescan": "yarn run ts-node ./src/workers/triggered-jobs/rescan-latest-builds.ts",
     "prod:worker": "node build/workers/queue/start.js --enable-source-maps",
     "test:scan": "yarn run ts-node --files ./src/tests/local-scan-test.ts",

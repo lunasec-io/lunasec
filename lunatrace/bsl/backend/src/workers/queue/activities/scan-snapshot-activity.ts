@@ -12,7 +12,6 @@
  *
  */
 import { Readable } from 'stream';
-import util from 'util';
 import zlib from 'zlib';
 
 import validate from 'validator';
@@ -115,7 +114,7 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
 
   const queuedStaticAnalyses: Map<string, boolean> = new Map<string, boolean>();
   vulnerabilities.forEach((v) => {
-    v.chains.forEach((chain) => {
+    v.chains.getChains().forEach((chain) => {
       chain.forEach(async (node) => {
         if (!node.parent_id) {
           log.warn('parent id is not defined', {
