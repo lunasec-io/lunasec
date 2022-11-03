@@ -21,7 +21,7 @@ describe('The fake dependency tree', () => {
 
   it('should generate a dependency tree', () => {
     expect(tree).toBeDefined();
-    expect(tree.depNodesByEdgeId.size).toEqual(5);
+    expect(tree.depNodesByEdgeSlug.size).toEqual(5);
     expect(tree.nodeIdToParentIds.size).toEqual(3);
     expect(tree.nodeIdToParentIds.get('4')?.size).toEqual(2);
   });
@@ -32,6 +32,7 @@ describe('The fake dependency tree', () => {
 
     const vulnQux = vulnReleases[0];
     expect(vulnQux.trivially_updatable).toEqual('yes');
+    console.log('chains are', vulnQux.chains);
     expect(vulnQux.chains.length).toEqual(2);
     expect(vulnQux.paths).toEqual(['package-lock.json']);
     const chain = vulnQux.chains[0];
@@ -73,7 +74,6 @@ describe('The fake dependency tree', () => {
   });
   it('should show guides', () => {
     const guides = tree.vulnerableReleases[0].guides;
-    console.log('guides are', guides);
     expect(guides.length).toEqual(1);
     expect(guides[0].id).toEqual('g1');
   });
