@@ -23,3 +23,4 @@ export const commonBuildProps: AssetImageProps = {
 export const baseEnvironmentVars = {
   DEPLOYMENT_ENVIRONMENT: 'production',
 };
+
