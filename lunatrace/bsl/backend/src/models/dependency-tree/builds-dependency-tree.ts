@@ -27,17 +27,15 @@ import {
 } from './types';
 
 export class DependencyTree {
-  // The following indexes are how the tree is "built". They allow high speed querying against the tree data without ever building a full tree in memory
-  // This is and should remain the only index that holds a reference to the actual nodes. All parsing algorithms must use this index to resolve depNodes
-  public depNodesByEdgeSlug: Map<string, BuiltNode> = new Map();
+  public nodesByNodeId: Map<string, BuiltNode> = new Map();
   // Used to trace the structure of the tree from the bottom up
-  public nodeIdToParentIds: Map<string, Set<string>> = new Map();
+  public parentNodeIdsByNodeId: Map<string, Set<string>> = new Map();
 
-  public nodeIdsToEdgeSlugs: Map<string, Set<string>> = new Map();
+  public edgeSlugsByNodeId: Map<string, Set<string>> = new Map();
   // Used so we can quickly fetch all nodes that are the same release (ex React@1.0.0)
-  public depNodeEdgeSlugsByReleaseId: Map<string, Set<string>> = new Map();
+  public nodeIdsByReleaseId: Map<string, Set<string>> = new Map();
   // Holds which nodes have been determined to be vulnerable, for later processing
-  public vulnerableDepNodeEdgeSlugs: Set<string> = new Set();
+  public vulnerableDepNodesIds: Set<string> = new Set();
 
   public edgeIdsByEdgeSlug: Map<string, string> = new Map();
   // This is the full computed dataset that we server directly to the frontend. This is the "output" format of the tree.
@@ -68,33 +66,34 @@ export class DependencyTree {
           ...edge.child.release,
           package: {
             ...edge.child.release.package,
-            affected_by_vulnerability: this.buildVulns(edge.child, edgeSlug, manifest.path || 'Unknown'),
+            affected_by_vulnerability: this.buildVulns(edge.child, manifest.path || 'Unknown'),
           },
         };
         // flatten the parent id into the child so we can forget about edges as much as possible, and filter the vulns
         const depNode: BuiltNode = {
           ...edge.child,
+          type: 'node',
           parent_id: edge.parent_id,
           release: builtRelease,
         };
 
         this.edgeIdsByEdgeSlug.set(edgeSlug, edge.id);
         // Create a map from a given release to the list of depNodes
-        this.upsertValueIntoMapOfSets(this.depNodeEdgeSlugsByReleaseId, depNode.release_id, edgeSlug);
+        this.upsertValueIntoMapOfSets(this.nodeIdsByReleaseId, depNode.release_id, depNode.id);
 
         // a map for each node, we know all the edges that it was a child of
-        this.upsertValueIntoMapOfSets(this.nodeIdsToEdgeSlugs, depNode.id, edgeSlug);
+        this.upsertValueIntoMapOfSets(this.edgeSlugsByNodeId, depNode.id, edgeSlug);
 
         // Create a lookup of child IDs that map to a set of nodes that include them (parents).
-        const parentIdsToNode = this.nodeIdToParentIds.get(depNode.id) || new Set();
+        const parentIdsToNode = this.parentNodeIdsByNodeId.get(depNode.id) || new Set();
 
         if (depNode.parent_id && depNode.parent_id !== '00000000-0000-0000-0000-000000000000') {
           parentIdsToNode.add(depNode.parent_id);
-          this.nodeIdToParentIds.set(depNode.id, parentIdsToNode);
+          this.parentNodeIdsByNodeId.set(depNode.id, parentIdsToNode);
         }
 
         // Create a separate lookup to directly map an ID to a node
-        this.depNodesByEdgeSlug.set(edgeSlug, depNode);
+        this.nodesByNodeId.set(depNode.id, depNode);
       });
     });
 
@@ -106,7 +105,7 @@ export class DependencyTree {
     return this.edgeIdsByEdgeSlug.get(firstNodeId + secondNodeId);
   }
 
-  private buildVulns(depNode: RawNode, edgeSlug: string, path: string): BuiltVulnMeta[] {
+  private buildVulns(depNode: RawNode, path: string): BuiltVulnMeta[] {
     const builtVulns: BuiltVulnMeta[] = [];
     depNode.release.package.affected_by_vulnerability.forEach((vulnMeta) => {
       const vulnerableRange = this.convertRangesToSemverRange(vulnMeta.ranges);
@@ -123,7 +122,8 @@ export class DependencyTree {
       });
 
       // Add to the lookup of vulnerable deps for later
-      this.vulnerableDepNodeEdgeSlugs.add(edgeSlug);
+      this.vulnerableDepNodesIds.add(depNode.id);
+
       // Mark the vulns that can be trivially updated
       const triviallyUpdatableTo = this.precomputeVulnTriviallyUpdatableTo(depNode.range, vulnMeta);
 
@@ -192,11 +192,11 @@ export class DependencyTree {
   private getVulnerableReleases(): VulnerableRelease[] {
     const vulnerableReleasesById: Record<string, VulnerableRelease> = {};
 
-    this.vulnerableDepNodeEdgeSlugs.forEach((edgeSlug) => {
-      const vulnerableDep = this.depNodesByEdgeSlug.get(edgeSlug);
+    this.vulnerableDepNodesIds.forEach((vulnerableDepId) => {
+      const vulnerableDep = this.nodesByNodeId.get(vulnerableDepId);
 
       if (!vulnerableDep) {
-        throw new Error('failed to lookup depNode by id');
+        throw new Error('Could not find vulnerable dep node');
       }
 
       const chains = this.getDependencyChainsOfDepNode(vulnerableDep);
@@ -215,7 +215,7 @@ export class DependencyTree {
 
       // there might be multiple vulnerabilities for one release so loop through them
       // subsequent vulns on the same node will just merge together
-      vulnerableDep.release.package.affected_by_vulnerability.forEach((affectedByVuln, vulnIndex) => {
+      vulnerableDep.release.package.affected_by_vulnerability.forEach((affectedByVuln) => {
         //add the chains to the vulnerability
         affectedByVuln.chains = chains;
 
@@ -224,7 +224,7 @@ export class DependencyTree {
         const severity = rawSeverity && severityOrderOsv.includes(rawSeverity) ? rawSeverity : 'Unknown';
 
         const guidesFromVuln = affectedByVuln.vulnerability.guide_vulnerabilities.map((gv) => gv.guide);
-        // We arent tracking this release yet, make a new object
+        // We aren't tracking this release yet, make a new object
         if (!existingRelease) {
           const newVulnerableRelease: VulnerableRelease = {
             paths: [affectedByVuln.path],
@@ -233,7 +233,7 @@ export class DependencyTree {
             cvss: affectedByVuln.vulnerability.cvss_score || null,
             dev_only: devOnly,
             chains,
-            trivially_updatable: this.checkIfReleaseTriviallyUpdatable(release.id),
+            trivially_updatable: this.checkIfReleaseTriviallyUpdatable(vulnerableDep),
             affected_by: [affectedByVuln],
             beneath_minimum_severity: affectedByVuln.beneath_minimum_severity,
             guides: guidesFromVuln,
@@ -341,18 +341,20 @@ export class DependencyTree {
     return semverRange;
   }
 
-  private checkIfReleaseTriviallyUpdatable(releaseId: string): 'yes' | 'partially' | 'no' {
-    const matchingEdgeSlugs = this.depNodeEdgeSlugsByReleaseId.get(releaseId);
-    if (!matchingEdgeSlugs) {
+  private checkIfReleaseTriviallyUpdatable(depNode: BuiltNode): 'yes' | 'partially' | 'no' {
+    const releaseId = depNode.release_id;
+
+    const nodeIds = this.nodeIdsByReleaseId.get(releaseId);
+    if (!nodeIds) {
       throw new Error(`Failed to find release for id ${releaseId} while checking triviallyUpdatable`);
     }
 
-    const matchingDeps = [...matchingEdgeSlugs].map((edgeSlug) => {
-      const depNode = this.depNodesByEdgeSlug.get(edgeSlug);
-      if (!depNode) {
+    const matchingDeps = [...nodeIds].map((edgeSlug) => {
+      const node = this.nodesByNodeId.get(edgeSlug);
+      if (!node) {
         throw new Error('Missing dep node for dep id while checking triviallyUpdatable');
       }
-      return depNode;
+      return node;
     });
 
     let totalVulnCount = 0;
@@ -404,23 +406,17 @@ export class DependencyTree {
         return;
       }
 
-      const parentNodeIds = this.nodeIdToParentIds.get(dep.id);
+      const parentNodeIds = this.parentNodeIdsByNodeId.get(dep.id);
       if (!parentNodeIds) {
         throw new Error(`Failed to find parent edges for node id ${dep.id} in the tree`);
       }
 
       parentNodeIds.forEach((parentNodeId) => {
-        const parentEdgeIds = this.nodeIdsToEdgeSlugs.get(parentNodeId);
-        if (!parentEdgeIds) {
-          throw new Error('Failed to find list of edge ids for node id');
+        const parentNode = this.nodesByNodeId.get(parentNodeId);
+        if (!parentNode) {
+          throw new Error(`Failed to find parent node for node id ${parentNodeId} in the tree`);
         }
-        parentEdgeIds.forEach((parentEdgeId) => {
-          const parentEdge = this.depNodesByEdgeSlug.get(parentEdgeId);
-          if (!parentEdge) {
-            throw new Error(`Failed to find parent edge with id ${parentEdgeId} for child id ${dep.id}`);
-          }
-          recursivelyGenerateChainsWithStack(parentEdge, newStack);
-        });
+        recursivelyGenerateChainsWithStack(parentNode, newStack);
       });
     };
 
