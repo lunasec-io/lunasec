@@ -26,7 +26,7 @@ describe('The fake dependency tree', () => {
 
   it('should generate a dependency tree', () => {
     expect(tree).toBeDefined();
-    expect(tree.nodesByNodeId.size).toEqual(5);
+    expect(tree.nodesByNodeId.size).toEqual(4);
     expect(tree.parentNodeIdsByNodeId.size).toEqual(3);
     expect(tree.parentNodeIdsByNodeId.get('4')?.size).toEqual(2);
   });
@@ -37,7 +37,6 @@ describe('The fake dependency tree', () => {
 
     const vulnQux = vulnReleases[0];
     expect(vulnQux.trivially_updatable).toEqual('yes');
-    console.log('chains are', vulnQux.chains);
     expect(vulnQux.chains.length).toEqual(2);
     expect(vulnQux.paths).toEqual(['package-lock.json']);
     const chain = vulnQux.chains[0];
@@ -91,31 +90,14 @@ describe('a real sample dependency tree', () => {
   });
 });
 
-describe.only('huge docusaurus dependency tree', () => {
-  console.log('about to load tree data string from json file');
+describe('huge docusaurus dependency tree', () => {
   const rawTreeString = fs
     .readFileSync(path.join(__dirname, '../fixtures/manifests/huge-docusaurus-tree-hasura-output.json'))
     .toString();
-  console.log('loaded string');
   const parsedTreeData = JSON.parse(rawTreeString) as RawManifest[];
-  // console.log('manifests length', parsedTreeData.length);
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  const total = parsedTreeData.reduce((total: number, manifest) => {
-    return total + (manifest.child_edges_recursive ? manifest.child_edges_recursive.length : 0);
-  }, 0);
-  const mergedEdges = parsedTreeData.flatMap((manifest) => manifest.child_edges_recursive);
-  console.log('distinct edges', new Set(mergedEdges.map((e) => e?.id)).size);
-  parsedTreeData
-    .map((m) => m.child_edges_recursive)
-    .forEach((edges, i) => {
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      console.log('distinct edges in manifest #' + i, new Set(edges?.map((e) => e?.id)).size);
-    });
 
   const tree = new DependencyTree(parsedTreeData, null, []);
 
-  console.log('chains are', tree.vulnerableReleases.map((r) => r.chains.length).toString());
   it('should build', () => {
     expect(tree).toBeDefined();
   });
@@ -134,15 +116,10 @@ describe.only('huge docusaurus dependency tree', () => {
     const chainStrings = firstVuln.chains.map(chainToChainNames);
     const chainStringSet = new Set(chainStrings);
 
-    console.log('chainstring count is ', chainStrings.length);
-    console.log('some chaingstrings are ', chainStrings.slice(0, 50));
-
     expect(chainStrings.length).toEqual(chainStringSet.size);
-    // console.log('chain strings are', chainStrings);
   });
 });
 
 function chainToChainNames(chain: DependencyChain): string {
-  return chain.map((node) => node.id).join('#');
-  // return chain.map((node) => node.id + node.parent_id).join('#');
+  return chain.map((node) => node.release.package.name).join('#');
 }
