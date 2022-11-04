@@ -18,3 +18,4 @@ deploy-apigateway-to-firehose.ts
 **/generated-resolver-types.ts
 lunatrace/bsl/semgrep/
 **/real-dependency-tree-hasura-output.ts
+**/huge-docusaurus-tree-hasura-output.ts

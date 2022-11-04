@@ -12,18 +12,23 @@
  *
  */
 
+import fs from 'fs';
+import path from 'path';
+import util from 'util';
+
 import { fakeDependencyTreeHasuraOutputFixture } from '../fixtures/manifests/fake-dependency-tree-hasura-output-fixture';
 import { realDependencyTreeHasuraOutputFixture } from '../fixtures/manifests/real-dependency-tree-hasura-output';
 import { DependencyTree } from '../models/dependency-tree/builds-dependency-tree';
+import { DependencyChain, RawManifest } from '../models/dependency-tree/types';
 
 describe('The fake dependency tree', () => {
   const tree = new DependencyTree(fakeDependencyTreeHasuraOutputFixture, null, []);
 
   it('should generate a dependency tree', () => {
     expect(tree).toBeDefined();
-    expect(tree.depNodesByEdgeSlug.size).toEqual(5);
-    expect(tree.nodeIdToParentIds.size).toEqual(3);
-    expect(tree.nodeIdToParentIds.get('4')?.size).toEqual(2);
+    expect(tree.nodesByNodeId.size).toEqual(4);
+    expect(tree.parentNodeIdsByNodeId.size).toEqual(3);
+    expect(tree.parentNodeIdsByNodeId.get('4')?.size).toEqual(2);
   });
 
   it('Should show vulnerable releases properly', () => {
@@ -32,7 +37,6 @@ describe('The fake dependency tree', () => {
 
     const vulnQux = vulnReleases[0];
     expect(vulnQux.trivially_updatable).toEqual('yes');
-    console.log('chains are', vulnQux.chains);
     expect(vulnQux.chains.length).toEqual(2);
     expect(vulnQux.paths).toEqual(['package-lock.json']);
     const chain = vulnQux.chains[0];
@@ -85,3 +89,37 @@ describe('a real sample dependency tree', () => {
     expect(tree).toBeDefined();
   });
 });
+
+describe('huge docusaurus dependency tree', () => {
+  const rawTreeString = fs
+    .readFileSync(path.join(__dirname, '../fixtures/manifests/huge-docusaurus-tree-hasura-output.json'))
+    .toString();
+  const parsedTreeData = JSON.parse(rawTreeString) as RawManifest[];
+
+  const tree = new DependencyTree(parsedTreeData, null, []);
+
+  it('should build', () => {
+    expect(tree).toBeDefined();
+  });
+
+  it('should have a sane first vuln', () => {
+    const firstVuln = tree.vulnerableReleases[0];
+
+    const byCount: Map<string, number> = new Map();
+
+    firstVuln.chains.forEach((chain) => {
+      const chainName = chainToChainNames(chain);
+      const chainCount = byCount.get(chainName);
+      byCount.set(chainName, chainCount ? chainCount + 1 : 1);
+    });
+
+    const chainStrings = firstVuln.chains.map(chainToChainNames);
+    const chainStringSet = new Set(chainStrings);
+
+    expect(chainStrings.length).toEqual(chainStringSet.size);
+  });
+});
+
+function chainToChainNames(chain: DependencyChain): string {
+  return chain.map((node) => node.release.package.name).join('#');
+}
