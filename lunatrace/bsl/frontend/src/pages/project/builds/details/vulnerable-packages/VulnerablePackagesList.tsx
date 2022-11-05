@@ -67,19 +67,30 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
   return (
     <div className="vulnerability-list p-3">
       <Row>
-        <Col md="6">
-          <h2 className="d-inline-block me-3">Vulnerable Packages</h2>
-          <p className="mt-n2">
-            <FcPlus className="mb-1 me-1" />
-            Showing Enhanced Tree Data
-          </p>
-          {areUpdatesAvailable && (
-            <OverlayTrigger placement="bottom" trigger="click" rootClose overlay={AutoUpdatePopOverHOC(pkgsToUpdate)}>
-              <Button className="mb-2">Update</Button>
-            </OverlayTrigger>
-          )}
+        <Col lg="6">
+          <Row>
+            <Col>
+              <h2 className="d-inline-block me-3">Vulnerable Packages</h2>
+              <p className="mt-n2">
+                <FcPlus className="mb-1 me-1" />
+                Showing Enhanced Tree Data
+              </p>
+            </Col>
+            <Col xl="3">
+              {areUpdatesAvailable && (
+                <OverlayTrigger
+                  placement="bottom"
+                  trigger="click"
+                  rootClose
+                  overlay={AutoUpdatePopOverHOC(pkgsToUpdate)}
+                >
+                  <Button className="mb-2 d-inline-block w-100">Update</Button>
+                </OverlayTrigger>
+              )}
+            </Col>
+          </Row>
         </Col>
-        <Col md="6" style={{ display: 'flex', justifyContent: 'right' }}>
+        <Col lg="6" style={{ display: 'flex', justifyContent: 'right' }}>
           <label className="form-check mx-2 p-1 cursor-pointer user-select-none">
             <input className="form-check-input" type="checkbox" value="" onChange={handleShowIgnoredFindings} />
             Show Ignored
