@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { RawManifest } from '../../models/dependency-tree/types';
+import { RawManifest } from '../../../models/dependency-tree/types';
 
 export const fakeDependencyTreeHasuraOutputFixture: Array<RawManifest> = [
   {

@@ -17,6 +17,7 @@ import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common'
 import { hasura } from '../../hasura-api';
 import { GetTreeFromBuildQuery } from '../../hasura-api/generated';
 import { DependencyTree } from '../../models/dependency-tree/builds-dependency-tree';
+import VulnerabilityDependencyTree from '../../models/vulnerability-dependency-tree';
 import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';
 import { checkBuildsAreAuthorized, throwIfUnauthenticated } from '../helpers/auth-helpers';
@@ -39,19 +40,19 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
 
   const ignoredVulnerabilities = rawBuildData.project.ignored_vulnerabilities;
 
-  const minimumSeverity = args.minimumSeverity || null;
+  const minimumSeverity = args.minimumSeverity !== null ? args.minimumSeverity : undefined;
 
   if (!severityIsValid(minimumSeverity)) {
     throw new GraphQLYogaError(
       'Invalid minimum severity passed, acceptable arguments are: ' + JSON.stringify(severityOrderOsv)
     );
   }
-  const depTree = buildTreeFromRawData(rawManifests, minimumSeverity, ignoredVulnerabilities);
+  const depTree = buildTreeFromRawData(rawManifests, ignoredVulnerabilities, minimumSeverity);
   if (!depTree) {
     return null; // tells the client that we didnt get any tree info back and to fall back to grype (for now)
   }
 
-  const vulnerableReleases = depTree.vulnerableReleases;
+  const vulnerableReleases = depTree.getVulnerableReleases();
 
   const totalTime = Date.now() - startTime;
   log.info(`spent ${totalTime}ms processing tree`);
@@ -65,9 +66,9 @@ type IgnoredVulnerabilities = NonNullable<RequestData['project']['ignored_vulner
 
 export function buildTreeFromRawData<iManifestData>(
   rawManifestData: ManifestData,
-  minimumSeverity: SeverityNamesOsv | null,
-  ignoredVulnerabilities: IgnoredVulnerabilities
-): DependencyTree | null {
+  ignoredVulnerabilities?: IgnoredVulnerabilities,
+  minimumSeverity?: SeverityNamesOsv
+): VulnerabilityDependencyTree | null {
   if (!rawManifestData || rawManifestData.length === 0) {
     return null; //fallback to grype
   }
@@ -80,12 +81,9 @@ export function buildTreeFromRawData<iManifestData>(
     return null; //fallback to grype
   }
 
-  return new DependencyTree(rawManifestData, minimumSeverity, ignoredVulnerabilities);
+  return new VulnerabilityDependencyTree(rawManifestData, ignoredVulnerabilities, minimumSeverity);
 }
 
-function severityIsValid(name: string | null): name is SeverityNamesOsv | null {
-  if (name === null) {
-    return true;
-  }
-  return severityOrderOsv.includes(name);
+function severityIsValid(name: string | undefined): name is SeverityNamesOsv | undefined {
+  return !name || severityOrderOsv.includes(name);
 }
