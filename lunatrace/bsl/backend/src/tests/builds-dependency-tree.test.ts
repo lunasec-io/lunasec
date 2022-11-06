@@ -12,9 +12,10 @@
  *
  */
 
-import { fakeDependencyTreeHasuraOutputFixture } from '../fixtures/manifests/fake-dependency-tree-hasura-output-fixture';
-import { realDependencyTreeHasuraOutputFixture } from '../fixtures/manifests/real-dependency-tree-hasura-output';
 import { DependencyTree } from '../models/dependency-tree/builds-dependency-tree';
+
+import { fakeDependencyTreeHasuraOutputFixture } from './fixtures/manifests/fake-dependency-tree-hasura-output-fixture';
+import { realDependencyTreeHasuraOutputFixture } from './fixtures/manifests/real-dependency-tree-hasura-output';
 
 describe('The fake dependency tree', () => {
   const tree = new DependencyTree(fakeDependencyTreeHasuraOutputFixture, null, []);
