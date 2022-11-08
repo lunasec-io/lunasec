@@ -42,6 +42,11 @@ export interface PreSignedUrlGeneratorConfig {
   redirectToLocalhost?: boolean;
 }
 
+// 12345678-9012-... => 12/34/56
+function shardKeyForUUID(uuid: string): string {
+  return (uuid.replace('-', '').match(/.{1,2}/g) || ['unknown']).slice(0, 2).join('/');
+}
+
 export class AwsUtils {
   constructor(readonly config: PreSignedUrlGeneratorConfig) {}
 
@@ -149,11 +154,7 @@ export class AwsUtils {
   }
 
   public generateSbomS3Key(orgId: string, buildId: string): string {
-    const today = new Date();
-
-    return `${encodeURIComponent(
-      orgId
-    )}/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${encodeURIComponent(buildId)}`;
+    return `${encodeURIComponent(orgId)}/${shardKeyForUUID(buildId)}/${encodeURIComponent(buildId)}`;
   }
 }
 
