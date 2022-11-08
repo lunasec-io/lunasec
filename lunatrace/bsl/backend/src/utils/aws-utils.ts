@@ -158,11 +158,9 @@ export class AwsUtils {
   }
 
   public generateCodeS3Key(buildId: string): string {
-    const today = new Date();
+    const buildHex = buildId.replace('-', '').match(/.{1,2}/g) || ['code'];
 
-    return `code/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${encodeURIComponent(
-      buildId
-    )}`;
+    return `code/${buildHex.slice(0, 2).join('/')}/${encodeURIComponent(buildId)}`;
   }
 }
 

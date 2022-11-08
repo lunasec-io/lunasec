@@ -1,0 +1,5 @@
+mutation UpdateBuildShadowRelease($id: uuid!) {
+    update_builds_by_pk(pk_columns: {id: $id}) {
+        id
+    }
+}
