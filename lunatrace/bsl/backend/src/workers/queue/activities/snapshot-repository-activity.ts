@@ -17,6 +17,8 @@ import path from 'path';
 import util from 'util';
 import zlib from 'zlib';
 
+import tar, { FileStat } from 'tar';
+
 import { getWorkerBucketConfig } from '../../../config';
 import { getRepoCloneUrlWithAuth } from '../../../github/actions/get-repo-clone-url-with-auth';
 import { hasura } from '../../../hasura-api';
@@ -201,7 +203,17 @@ async function uploadWorktreeSnapshot(buildId: string, repoDir: string): Promise
   // upload the sbom to s3, streaming
   const fileKey = aws.generateCodeS3Key(buildId);
 
-  const s3Url = await aws.uploadGzipFileToS3(fileKey, bucketConfig.codeBucket, gzippedSbom);
+  const tarStream = await tar.c(
+    {
+      gzip: true,
+      filter(path: string, stat: FileStat): boolean {
+        return !path.startsWith('.git');
+      },
+    },
+    [repoDir]
+  );
+
+  const s3Url = await aws.uploadGzipFileToS3(fileKey, bucketConfig.codeBucket, tarStream);
   // update build to have s3 url
   // todo new gql
   const { update_builds_by_pk } = await hasura.SetBuildS3Url({ id: buildId, s3_url: s3Url });
