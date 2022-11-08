@@ -50,69 +50,64 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
   // Todo: most of the data processing logic for the chains happens IN the render. It's pretty terse, so it could happen before in a separate step
   // Also too many inline styles. Overall this needs a rewrite someday, in the mean time contact Forrest if it breaks
   return (
-    <PerfectScrollbar options={{}}>
-      <div style={{ maxHeight: '800px' }}>
-        <h5 className="darker">
-          {isDirectDep ? (
-            <>
-              Direct Dependency: <span className="lighter">{chains[0][0].range}</span>
-            </>
-          ) : (
-            'Transitive Dependency'
-          )}
-          {!isDirectDep && (
-            <NavLink onClick={() => setIsExpanded(!isExpanded)} style={{ display: 'inline' }}>
-              {isExpanded ? <Minimize2 size="1rem" /> : <Maximize2 size="1rem" />}
-            </NavLink>
-          )}
-        </h5>
-        {!isDirectDep &&
-          chains.map((chain) => {
-            const visibleChain = isExpanded ? chain : [chain[0], chain[chain.length - 1]];
-            const dedupeSlug = visibleChain.reduce((slug, chain) => slug + chain.release.package.name, '');
-            if (chainDedupeSlugs.includes(dedupeSlug)) {
-              return null;
-            }
-            chainDedupeSlugs.push(dedupeSlug);
+    <div style={{ maxHeight: '800px' }} className="overflow-auto pretty-scroll">
+      <h5 className="darker">
+        {isDirectDep ? (
+          <>
+            Direct Dependency: <span className="lighter">{chains[0][0].range}</span>
+          </>
+        ) : (
+          'Transitive Dependency'
+        )}
+        {!isDirectDep && (
+          <NavLink onClick={() => setIsExpanded(!isExpanded)} style={{ display: 'inline' }}>
+            {isExpanded ? <Minimize2 size="1rem" /> : <Maximize2 size="1rem" />}
+          </NavLink>
+        )}
+      </h5>
+      {!isDirectDep &&
+        chains.map((chain) => {
+          const visibleChain = isExpanded ? chain : [chain[0], chain[chain.length - 1]];
+          const dedupeSlug = visibleChain.reduce((slug, chain) => slug + chain.release.package.name, '');
+          if (chainDedupeSlugs.includes(dedupeSlug)) {
+            return null;
+          }
+          chainDedupeSlugs.push(dedupeSlug);
 
-            return (
-              <div className="one-point-two-em d-flex pb-1 pt-1" key={dedupeSlug}>
-                {visibleChain.map((dep, index) => {
-                  return (
-                    <React.Fragment key={dep.id}>
-                      <div
-                        className="me-1 ms-1 d-inline-flex justify-content-center"
-                        style={{ flexDirection: 'column' }}
-                      >
-                        {index !== 0 &&
-                          (chain.length > visibleChain.length ? (
-                            <NavLink className="p-0" onClick={() => setIsExpanded(true)} style={{ display: 'inline' }}>
-                              <ChevronsRight size="1em" className="" />
-                            </NavLink>
-                          ) : (
-                            <ChevronRight
-                              size="1em"
-                              className="mb-n1"
-                              style={{ marginLeft: 'auto', marginRight: 'auto', display: 'block' }}
-                            />
-                          ))}
-                        {isExpanded && <div style={{ fontSize: '.7rem' }}>{dep.range}</div>}
-                      </div>
-                      <Badge text="dark" bg={getBadgeColor(index, visibleChain.length)}>
-                        <div>{dep.release.package.name}</div>
-                        {isExpanded && (
-                          <div className="mt-1" style={{ fontSize: '.7rem' }}>
-                            {dep.release.version}
-                          </div>
-                        )}
-                      </Badge>
-                    </React.Fragment>
-                  );
-                })}
-              </div>
-            );
-          })}
-      </div>
-    </PerfectScrollbar>
+          return (
+            <div className="one-point-two-em d-flex pb-1 pt-1" key={dedupeSlug}>
+              {visibleChain.map((dep, index) => {
+                return (
+                  <React.Fragment key={dep.id}>
+                    <div className="me-1 ms-1 d-inline-flex justify-content-center" style={{ flexDirection: 'column' }}>
+                      {index !== 0 &&
+                        (chain.length > visibleChain.length ? (
+                          <NavLink className="p-0" onClick={() => setIsExpanded(true)} style={{ display: 'inline' }}>
+                            <ChevronsRight size="1em" className="" />
+                          </NavLink>
+                        ) : (
+                          <ChevronRight
+                            size="1em"
+                            className="mb-n1"
+                            style={{ marginLeft: 'auto', marginRight: 'auto', display: 'block' }}
+                          />
+                        ))}
+                      {isExpanded && <div style={{ fontSize: '.7rem' }}>{dep.range}</div>}
+                    </div>
+                    <Badge text="dark" bg={getBadgeColor(index, visibleChain.length)}>
+                      <div>{dep.release.package.name}</div>
+                      {isExpanded && (
+                        <div className="mt-1" style={{ fontSize: '.7rem' }}>
+                          {dep.release.version}
+                        </div>
+                      )}
+                    </Badge>
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          );
+        })}
+    </div>
   );
 };
