@@ -20,6 +20,7 @@ export interface ServerConfig {
 export interface WorkerBucketConfig {
   sbomBucket: string;
   manifestBucket: string;
+  codeBucket: string;
 }
 
 export interface StaticAnalysisConfig {

@@ -196,19 +196,18 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
   });
 }
 
-async function uploadWorktreeSnapshot(buildId: string, repoDir: string): Promise<void> {}
-
-// Todo: this doesn't generate a snapshot, this uploads to s3, it should be elsewhere
-export async function uploadSbomToS3(organizationId: string, buildId: string, gzippedSbom: zlib.Gzip) {
+async function uploadWorktreeSnapshot(buildId: string, repoDir: string): Promise<void> {
   const bucketConfig = getWorkerBucketConfig();
   // upload the sbom to s3, streaming
-  const newSbomS3Key = aws.generateSbomS3Key(organizationId, buildId);
-  const s3Url = await aws.uploadGzipFileToS3(newSbomS3Key, bucketConfig.sbomBucket, gzippedSbom);
+  const fileKey = aws.generateCodeS3Key(buildId);
+
+  const s3Url = await aws.uploadGzipFileToS3(fileKey, bucketConfig.codeBucket, gzippedSbom);
   // update build to have s3 url
+  // todo new gql
   const { update_builds_by_pk } = await hasura.SetBuildS3Url({ id: buildId, s3_url: s3Url });
   if (!update_builds_by_pk) {
     throw new Error('Failed to update build s3 url');
   }
   log.info('Updated S3 URL in hasuras build record', { update_builds_by_pk });
-  return s3Url;
+  return;
 }
