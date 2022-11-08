@@ -156,6 +156,14 @@ export class AwsUtils {
   public generateSbomS3Key(orgId: string, buildId: string): string {
     return `${encodeURIComponent(orgId)}/${shardKeyForUUID(buildId)}/${encodeURIComponent(buildId)}`;
   }
+
+  public generateCodeS3Key(buildId: string): string {
+    const today = new Date();
+
+    return `code/${today.getFullYear()}/${today.getMonth()}/${today.getDay()}/${today.getHours()}/${encodeURIComponent(
+      buildId
+    )}`;
+  }
 }
 
 // Just preconfigure things so we dont have to do this everywhere
