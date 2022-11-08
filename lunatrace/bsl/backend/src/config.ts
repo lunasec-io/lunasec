@@ -142,10 +142,12 @@ export function getHasuraConfig(): HasuraConfig {
 export function getWorkerBucketConfig(): WorkerBucketConfig {
   const sbomBucket = checkEnvVar('S3_SBOM_BUCKET');
   const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET');
+  const codeBucket = checkEnvVar('S3_CODE_BUCKET');
 
   return {
     sbomBucket,
     manifestBucket,
+    codeBucket,
   };
 }
 
