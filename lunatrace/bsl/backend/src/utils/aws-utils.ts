@@ -158,9 +158,7 @@ export class AwsUtils {
   }
 
   public generateCodeS3Key(buildId: string): string {
-    const buildHex = buildId.replace('-', '').match(/.{1,2}/g) || ['code'];
-
-    return `code/${buildHex.slice(0, 2).join('/')}/${encodeURIComponent(buildId)}`;
+    return `code/${shardKeyForUUID(buildId)}/${encodeURIComponent(buildId)}`;
   }
 }
 
