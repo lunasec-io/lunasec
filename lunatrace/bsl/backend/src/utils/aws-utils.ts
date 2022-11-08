@@ -154,8 +154,6 @@ export class AwsUtils {
   }
 
   public generateSbomS3Key(orgId: string, buildId: string): string {
-    const today = new Date();
-
     return `${encodeURIComponent(orgId)}/${shardKeyForUUID(buildId)}/${encodeURIComponent(buildId)}`;
   }
 }
