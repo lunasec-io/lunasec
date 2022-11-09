@@ -14,8 +14,11 @@
 import React, { useState } from 'react';
 import { Badge, NavLink } from 'react-bootstrap';
 import { ChevronRight, ChevronsRight, Maximize2, Minimize2 } from 'react-feather';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
+import 'react-perfect-scrollbar/dist/css/styles.css';
 import { VulnerablePackage } from '../types';
+
 interface TreeInfoProps {
   pkg: VulnerablePackage;
 }
@@ -47,7 +50,7 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
   // Todo: most of the data processing logic for the chains happens IN the render. It's pretty terse, so it could happen before in a separate step
   // Also too many inline styles. Overall this needs a rewrite someday, in the mean time contact Forrest if it breaks
   return (
-    <div>
+    <div style={{ maxHeight: '800px' }} className="overflow-auto pretty-scroll">
       <h5 className="darker">
         {isDirectDep ? (
           <>
