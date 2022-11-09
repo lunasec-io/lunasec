@@ -92,7 +92,7 @@ describe('a real sample dependency tree', () => {
 
 describe('huge docusaurus dependency tree', () => {
   const rawTreeString = fs
-    .readFileSync(path.join(__dirname, '../fixtures/manifests/huge-docusaurus-tree-hasura-output.json'))
+    .readFileSync(path.join(__dirname, 'fixtures/manifests/huge-docusaurus-tree-hasura-output.json'))
     .toString();
   const parsedTreeData = JSON.parse(rawTreeString) as RawManifest[];
 
