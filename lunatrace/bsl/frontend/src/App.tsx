@@ -27,15 +27,23 @@ import { routes } from './routes';
 import { store } from './store/store';
 import { startAtlas } from './utils/start-atlas-session-recording';
 
-function App() {
+function App(): JSX.Element {
   const content = useRoutes(routes);
   startAtlas();
+
+  // Canonical URL so that Google doesn't index the ELB URL
+  // https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls#rel-canonical-link-method
+  const canonicalUrl = `${process.env.REACT_APP_BASE_URL}${window.location.pathname}`;
+
   return (
     <HelmetProvider>
       <Helmet
         titleTemplate="%s | LunaTrace - Dependency Analysis and Live Tracking"
         defaultTitle="LunaTrace - Dependency Analysis and Live Tracking"
-      />
+        prioritizeSeoTags={true}
+      >
+        <link rel="canonical" href={canonicalUrl} />
+      </Helmet>
       <StoreProvider store={store}>
         <LoadSession>
           <ThemeProvider>
