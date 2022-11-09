@@ -16,7 +16,6 @@ import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common'
 
 import { hasura } from '../../hasura-api';
 import { GetTreeFromBuildQuery } from '../../hasura-api/generated';
-import { DependencyTree } from '../../models/dependency-tree/builds-dependency-tree';
 import VulnerabilityDependencyTree from '../../models/vulnerability-dependency-tree';
 import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';

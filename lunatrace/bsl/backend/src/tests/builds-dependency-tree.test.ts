@@ -15,24 +15,21 @@
 import fs from 'fs';
 import path from 'path';
 
-import { DependencyTree } from '../models/dependency-tree/builds-dependency-tree';
-import { DependencyChain, RawManifest } from '../models/dependency-tree/types';
+import VulnerabilityDependencyTree from '../models/vulnerability-dependency-tree';
+import { DependencyChain, Manifest } from '../models/vulnerability-dependency-tree/types';
 
 import { fakeDependencyTreeHasuraOutputFixture } from './fixtures/manifests/fake-dependency-tree-hasura-output-fixture';
 import { realDependencyTreeHasuraOutputFixture } from './fixtures/manifests/real-dependency-tree-hasura-output';
 
 describe('The fake dependency tree', () => {
-  const tree = new DependencyTree(fakeDependencyTreeHasuraOutputFixture, null, []);
+  const tree = new VulnerabilityDependencyTree(fakeDependencyTreeHasuraOutputFixture);
 
   it('should generate a dependency tree', () => {
     expect(tree).toBeDefined();
-    expect(tree.nodesByNodeId.size).toEqual(4);
-    expect(tree.parentNodeIdsByNodeId.size).toEqual(3);
-    expect(tree.parentNodeIdsByNodeId.get('4')?.size).toEqual(2);
   });
 
   it('Should show vulnerable releases properly', () => {
-    const vulnReleases = tree.vulnerableReleases;
+    const vulnReleases = tree.getVulnerableReleases();
     expect(vulnReleases.length).toEqual(1);
 
     const vulnQux = vulnReleases[0];
@@ -48,43 +45,29 @@ describe('The fake dependency tree', () => {
     expect(leafNode.id).toEqual('4');
   });
 
-  it('should show all vulnerabilities with getVulnerabilities()', () => {
-    const vulnerabilities = tree.getVulnerabilities();
-    expect(vulnerabilities.length).toEqual(1);
-    expect(vulnerabilities[0].vulnerability.source_id).toEqual('GHSA123ABC');
-    expect(vulnerabilities[0].chains.length).toEqual(2);
-    expect(vulnerabilities[0].chains[0].length).toEqual(4);
-    expect(vulnerabilities[0].chains[1].length).toEqual(2);
-  });
-
-  it('should convert chain to edge ids', () => {
-    const chain = tree.vulnerableReleases[0].chains[0];
-    const edgeId = tree.getEdgeIdFromNodePair(chain[0].id, chain[1].id);
-    expect(edgeId).toEqual('e2');
-  });
-
   it('should filter vulnerabilities by severity', () => {
-    const treeWithMiminumSeverity = new DependencyTree(fakeDependencyTreeHasuraOutputFixture, 'High', []);
-    expect(treeWithMiminumSeverity.vulnerableReleases.length).toEqual(1);
-    const vulnRelease = treeWithMiminumSeverity.vulnerableReleases[0];
+    const treeWithMiminumSeverity = new VulnerabilityDependencyTree(fakeDependencyTreeHasuraOutputFixture, [], 'High');
+    const vulnerableReleases = treeWithMiminumSeverity.getVulnerableReleases();
+    expect(vulnerableReleases.length).toEqual(1);
+    const vulnRelease = vulnerableReleases[0];
     expect(vulnRelease.beneath_minimum_severity).toEqual(true);
     expect(vulnRelease.affected_by[0].beneath_minimum_severity).toEqual(true);
   });
 
   it('should ignore vulnerabilities', () => {
     const ignored = [{ vulnerability_id: 'a', locations: ['package-lock.json'], note: 'this is the note' }];
-    const treeWithIgnored = new DependencyTree(fakeDependencyTreeHasuraOutputFixture, null, ignored);
-    expect(treeWithIgnored.vulnerableReleases[0].affected_by[0].ignored).toEqual(true);
+    const treeWithIgnored = new VulnerabilityDependencyTree(fakeDependencyTreeHasuraOutputFixture, ignored);
+    expect(treeWithIgnored.getVulnerableReleases()[0].affected_by[0].ignored).toEqual(true);
   });
   it('should show guides', () => {
-    const guides = tree.vulnerableReleases[0].guides;
+    const guides = tree.getVulnerableReleases()[0].guides;
     expect(guides.length).toEqual(1);
     expect(guides[0].id).toEqual('g1');
   });
 });
 
 describe('a real sample dependency tree', () => {
-  const tree = new DependencyTree(realDependencyTreeHasuraOutputFixture, null, []);
+  const tree = new VulnerabilityDependencyTree(realDependencyTreeHasuraOutputFixture);
   it('should build', () => {
     expect(tree).toBeDefined();
   });
@@ -94,16 +77,17 @@ describe('huge docusaurus dependency tree', () => {
   const rawTreeString = fs
     .readFileSync(path.join(__dirname, 'fixtures/manifests/huge-docusaurus-tree-hasura-output.json'))
     .toString();
-  const parsedTreeData = JSON.parse(rawTreeString) as RawManifest[];
+  const parsedTreeData = JSON.parse(rawTreeString) as Manifest[];
 
-  const tree = new DependencyTree(parsedTreeData, null, []);
+  const tree = new VulnerabilityDependencyTree(parsedTreeData);
 
   it('should build', () => {
     expect(tree).toBeDefined();
   });
 
   it('should have a sane first vuln', () => {
-    const firstVuln = tree.vulnerableReleases[0];
+    const vulnerableReleases = tree.getVulnerableReleases();
+    const firstVuln = vulnerableReleases[0];
 
     const byCount: Map<string, number> = new Map();
 
