@@ -14,7 +14,7 @@ describe('The fake dependency tree', () => {
   const parsedTreeData = JSON.parse(rawTreeString) as Manifest[];
 
   it('should generate a dependency tree from fake dependency tree', () => {
-    const tree = new VulnerabilityDependencyTree(fakeDependencyTreeHasuraOutputFixture as Array<Manifest>);
+    const tree = new VulnerabilityDependencyTree(fakeDependencyTreeHasuraOutputFixture);
     const vulnerableReleases = tree.getVulnerableReleases();
     expect(vulnerableReleases.length).toBe(1);
   });
@@ -27,5 +27,10 @@ describe('The fake dependency tree', () => {
     const tree = new VulnerabilityDependencyTree(parsedTreeData);
     const vulnerableReleases = tree.getVulnerableReleases();
     expect(vulnerableReleases.length).toBe(17);
+    vulnerableReleases.forEach((v) => {
+      if (v.release.package.name === 'node-fetch') {
+        console.log('asdf');
+      }
+    });
   });
 });
