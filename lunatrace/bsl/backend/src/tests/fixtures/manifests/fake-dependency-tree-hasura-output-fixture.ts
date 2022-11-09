@@ -1,3 +1,5 @@
+import { Manifest } from '../../../models/vulnerability-dependency-tree/types';
+
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
@@ -11,9 +13,7 @@
  * limitations under the License.
  *
  */
-import { RawManifest } from '../../../models/dependency-tree/types';
-
-export const fakeDependencyTreeHasuraOutputFixture: Array<RawManifest> = [
+export const fakeDependencyTreeHasuraOutputFixture: Array<Manifest> = [
   {
     path: 'package-lock.json',
     child_edges_recursive: [
