@@ -149,6 +149,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     const frontendContainerImage = ContainerImage.fromAsset('../frontend', {
       ...commonBuildProps,
       buildArgs: {
+        REACT_APP_BASE_URL: `https://${props.domainName}`,
         REACT_APP_GRAPHQL_URL: `https://${props.domainName}/v1/graphql`,
         REACT_APP_KRATOS_URL: `https://${props.domainName}/api/kratos`,
         REACT_APP_GITHUB_APP_LINK: props.gitHubAppLink,
@@ -317,7 +318,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     });
 
     // Update vulnerabilities job
-    const updateVulnerabilitiesJob = taskDef.addContainer('UpdateVulnerabilitiesJob', {
+    taskDef.addContainer('UpdateVulnerabilitiesJob', {
       memoryLimitMiB: 8 * 1024,
       cpu: 4 * 1024,
       image: ingestWorkerImage,
