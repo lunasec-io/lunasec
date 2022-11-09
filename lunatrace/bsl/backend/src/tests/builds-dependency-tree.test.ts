@@ -36,7 +36,7 @@ describe('The fake dependency tree', () => {
     expect(vulnQux.trivially_updatable).toEqual('yes');
     expect(vulnQux.chains.length).toEqual(2);
     expect(vulnQux.paths).toEqual(['package-lock.json']);
-    const chain = vulnQux.chains[0];
+    const chain = vulnQux.chains[1];
 
     const chainPackageNames = chain.map((dep) => dep.release.package.name);
     expect(chainPackageNames).toEqual(['foo', 'bar', 'baz', 'qux']);
