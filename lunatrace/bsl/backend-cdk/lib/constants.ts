@@ -21,6 +21,5 @@ export const commonBuildProps: AssetImageProps = {
 
 // All other environment configs should inherit from this shared one
 export const baseEnvironmentVars = {
-  DEPLOYMENT_ENVIRONMENT: 'production',
+  LUNATRACE_ENVIRONMENT: 'production',
 };
-
