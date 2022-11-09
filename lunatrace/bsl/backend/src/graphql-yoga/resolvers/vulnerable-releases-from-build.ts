@@ -56,7 +56,6 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
 
   const totalTime = Date.now() - startTime;
   log.info(`spent ${totalTime}ms processing tree`);
-
   return vulnerableReleases;
 };
 
