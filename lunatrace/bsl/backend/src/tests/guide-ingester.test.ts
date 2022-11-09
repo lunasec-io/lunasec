@@ -15,7 +15,7 @@
 import { readGuidesFromFolder } from '../guide-ingester/read-guides-from-folder';
 describe('guide ingester', () => {
   it('parses guides from disk', () => {
-    const guides = readGuidesFromFolder('./src/fixtures/guides');
+    const guides = readGuidesFromFolder('./src/test/fixtures/guides');
     const guide = guides[0];
     expect(guide).toHaveProperty('body');
     expect(guide).toHaveProperty('metadata');
