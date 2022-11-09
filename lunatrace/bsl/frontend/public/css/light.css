@@ -17995,6 +17995,26 @@ code.code-highlight {
   margin-top: 0.3rem;
 }
 
+.pretty-scroll::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+.pretty-scroll::-webkit-scrollbar-track {
+  display: none;
+}
+.pretty-scroll::-webkit-scrollbar-thumb {
+  margin: 3px;
+  border-radius: 10px;
+  background-color: transparent;
+  -webkit-box-shadow: inset 0 0 6px rgba(90, 90, 90, 0.7);
+}
+.pretty-scroll::-webkit-scrollbar-corner {
+  display: none;
+}
+.pretty-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: #dee6ed !important;
+}
+
 .darker {
   color: #6c757d;
 }
