@@ -55,12 +55,6 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
 
   const totalTime = Date.now() - startTime;
   log.info(`spent ${totalTime}ms processing tree`);
-  log.info(`calculating data size....`);
-  log.info('vulnerable releases number ', vulnerableReleases.length);
-  log.info('chain lengths', vulnerableReleases.map((vr) => vr.chains.length).toString());
-  log.info('last vulns', { package: vulnerableReleases[0].chains[5000].map((node) => node.id) });
-
-  log.info(`dataSize is`, Buffer.byteLength(JSON.stringify(vulnerableReleases), 'utf-8'));
   return vulnerableReleases;
 };
 
