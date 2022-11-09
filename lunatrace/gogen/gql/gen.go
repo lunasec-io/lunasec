@@ -5074,15 +5074,16 @@ func (v *Resolved_manifest_arr_rel_insert_input) GetOn_conflict() *Resolved_mani
 }
 
 type Resolved_manifest_bool_exp struct {
-	And                   []*Resolved_manifest_bool_exp      `json:"_and,omitempty"`
-	Not                   *Resolved_manifest_bool_exp        `json:"_not,omitempty"`
-	Or                    []*Resolved_manifest_bool_exp      `json:"_or,omitempty"`
-	Build                 *Builds_bool_exp                   `json:"build,omitempty"`
-	Build_id              *Uuid_comparison_exp               `json:"build_id,omitempty"`
-	Child_edges_recursive *Manifest_dependency_edge_bool_exp `json:"child_edges_recursive,omitempty"`
-	Id                    *Uuid_comparison_exp               `json:"id,omitempty"`
-	Manifest_dependencies *Manifest_dependency_bool_exp      `json:"manifest_dependencies,omitempty"`
-	Path                  *String_comparison_exp             `json:"path,omitempty"`
+	And                      []*Resolved_manifest_bool_exp      `json:"_and,omitempty"`
+	Not                      *Resolved_manifest_bool_exp        `json:"_not,omitempty"`
+	Or                       []*Resolved_manifest_bool_exp      `json:"_or,omitempty"`
+	Build                    *Builds_bool_exp                   `json:"build,omitempty"`
+	Build_id                 *Uuid_comparison_exp               `json:"build_id,omitempty"`
+	Child_edges_recursive    *Manifest_dependency_edge_bool_exp `json:"child_edges_recursive,omitempty"`
+	Id                       *Uuid_comparison_exp               `json:"id,omitempty"`
+	Manifest_dependencies    *Manifest_dependency_bool_exp      `json:"manifest_dependencies,omitempty"`
+	Manifest_dependency_node *Manifest_dependency_node_bool_exp `json:"manifest_dependency_node,omitempty"`
+	Path                     *String_comparison_exp             `json:"path,omitempty"`
 }
 
 // GetAnd returns Resolved_manifest_bool_exp.And, and is useful for accessing the field via an interface.
@@ -5113,6 +5114,11 @@ func (v *Resolved_manifest_bool_exp) GetManifest_dependencies() *Manifest_depend
 	return v.Manifest_dependencies
 }
 
+// GetManifest_dependency_node returns Resolved_manifest_bool_exp.Manifest_dependency_node, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_bool_exp) GetManifest_dependency_node() *Manifest_dependency_node_bool_exp {
+	return v.Manifest_dependency_node
+}
+
 // GetPath returns Resolved_manifest_bool_exp.Path, and is useful for accessing the field via an interface.
 func (v *Resolved_manifest_bool_exp) GetPath() *String_comparison_exp { return v.Path }
 
@@ -5124,11 +5130,12 @@ const (
 )
 
 type Resolved_manifest_insert_input struct {
-	Build                 *Builds_obj_rel_insert_input              `json:"build,omitempty"`
-	Build_id              *uuid.UUID                                `json:"build_id,omitempty"`
-	Id                    *uuid.UUID                                `json:"id,omitempty"`
-	Manifest_dependencies *Manifest_dependency_arr_rel_insert_input `json:"manifest_dependencies,omitempty"`
-	Path                  *string                                   `json:"path,omitempty"`
+	Build                    *Builds_obj_rel_insert_input                   `json:"build,omitempty"`
+	Build_id                 *uuid.UUID                                     `json:"build_id,omitempty"`
+	Id                       *uuid.UUID                                     `json:"id,omitempty"`
+	Manifest_dependencies    *Manifest_dependency_arr_rel_insert_input      `json:"manifest_dependencies,omitempty"`
+	Manifest_dependency_node *Manifest_dependency_node_obj_rel_insert_input `json:"manifest_dependency_node,omitempty"`
+	Path                     *string                                        `json:"path,omitempty"`
 }
 
 // GetBuild returns Resolved_manifest_insert_input.Build, and is useful for accessing the field via an interface.
@@ -5143,6 +5150,11 @@ func (v *Resolved_manifest_insert_input) GetId() *uuid.UUID { return v.Id }
 // GetManifest_dependencies returns Resolved_manifest_insert_input.Manifest_dependencies, and is useful for accessing the field via an interface.
 func (v *Resolved_manifest_insert_input) GetManifest_dependencies() *Manifest_dependency_arr_rel_insert_input {
 	return v.Manifest_dependencies
+}
+
+// GetManifest_dependency_node returns Resolved_manifest_insert_input.Manifest_dependency_node, and is useful for accessing the field via an interface.
+func (v *Resolved_manifest_insert_input) GetManifest_dependency_node() *Manifest_dependency_node_obj_rel_insert_input {
+	return v.Manifest_dependency_node
 }
 
 // GetPath returns Resolved_manifest_insert_input.Path, and is useful for accessing the field via an interface.
