@@ -55,17 +55,6 @@ query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!)
                     }
                 }
             }
-            chains {
-                id
-                range
-                release {
-                    id
-                    package {
-                        name
-                    }
-                    version
-                }
-            }
         }
         dev_only
         release {
