@@ -38,6 +38,7 @@ export type BuildData_DependencyNode = {
   __typename?: 'BuildData_DependencyNode';
   id: Scalars['String'];
   range: Scalars['String'];
+  reachable: Scalars['String'];
   release: BuildData_Release;
   release_id: Scalars['String'];
 };
@@ -360,6 +361,7 @@ export type BuildData_AffectedByVulnerabilityResolvers<ContextType = Context, Pa
 export type BuildData_DependencyNodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_DependencyNode'] = ResolversParentTypes['BuildData_DependencyNode']> = {
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   range?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  reachable?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   release?: Resolver<ResolversTypes['BuildData_Release'], ParentType, ContextType>;
   release_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

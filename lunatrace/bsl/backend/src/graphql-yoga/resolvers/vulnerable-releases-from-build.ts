@@ -15,8 +15,8 @@ import { GraphQLYogaError } from '@graphql-yoga/node';
 import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common';
 
 import { hasura } from '../../hasura-api';
-import VulnerabilityDependencyTree from '../../models/vulnerability-dependency-tree';
 import { Analysis_Finding_Source_Enum, GetTreeFromBuildQuery } from '../../hasura-api/generated';
+import VulnerabilityDependencyTree from '../../models/vulnerability-dependency-tree';
 import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';
 import { checkBuildsAreAuthorized, throwIfUnauthenticated } from '../helpers/auth-helpers';
@@ -30,9 +30,6 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
 
   const { builds_by_pk: rawBuildData } = await hasura.GetTreeFromBuild({
     build_id: buildId,
-    analysis_results_where: {
-      finding_source: { _eq: Analysis_Finding_Source_Enum.SemgrepImportedCalled },
-    },
   });
   if (!rawBuildData) {
     throw new GraphQLYogaError('Error fetching build data from database');
@@ -59,14 +56,10 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
   const vulnerableReleases = depTree.getVulnerableReleases();
 
   const totalTime = Date.now() - startTime;
-<<<<<<< HEAD
-  log.info(`spent ${totalTime}ms processing tree`);
-=======
   log.info('finished processing tree', {
     totalTime,
   });
 
->>>>>>> 4a7b28fc (update imported and called rule analysis results on build page)
   return vulnerableReleases;
 };
 
