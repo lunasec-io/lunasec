@@ -3,6 +3,7 @@ import React from 'react';
 import { Badge, NavLink, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { ChevronRight, ChevronsRight, X } from 'react-feather';
 
+import { Analysis_Finding_Type_Enum } from '../../../../../api/generated';
 import { ChainDepType } from '../types';
 
 interface DepProps {
@@ -37,24 +38,25 @@ export const ChainDep: React.FunctionComponent<DepProps> = ({
 }) => {
   const dependencyEdgeClassNames = ['mb-n1', !depIsReachable && 'text-warning'];
 
-  const dependencyEdgeIcon = dep.reachable ? (
-    <ChevronRight
-      size="1em"
-      className={classNames(dependencyEdgeClassNames)}
-      style={{ marginLeft: 'auto', marginRight: 'auto', display: 'block' }}
-    />
-  ) : (
-    <OverlayTrigger
-      placement={'top'}
-      overlay={<Tooltip>No instances found of {dep.release.package.name} being imported and called.</Tooltip>}
-    >
-      <X
+  const dependencyEdgeIcon =
+    dep.reachable === Analysis_Finding_Type_Enum.Vulnerable ? (
+      <ChevronRight
         size="1em"
-        className="mb-n1 text-warning"
+        className={classNames(dependencyEdgeClassNames)}
         style={{ marginLeft: 'auto', marginRight: 'auto', display: 'block' }}
       />
-    </OverlayTrigger>
-  );
+    ) : (
+      <OverlayTrigger
+        placement={'top'}
+        overlay={<Tooltip>No instances found of {dep.release.package.name} being imported and called.</Tooltip>}
+      >
+        <X
+          size="1em"
+          className="mb-n1 text-warning"
+          style={{ marginLeft: 'auto', marginRight: 'auto', display: 'block' }}
+        />
+      </OverlayTrigger>
+    );
   return (
     <React.Fragment key={dep.id}>
       <div className="me-1 ms-1 d-inline-flex justify-content-center" style={{ flexDirection: 'column' }}>

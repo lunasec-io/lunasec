@@ -36,7 +36,7 @@ type BuildData_AffectedByVulnerability {
 type BuildData_DependencyNode {
     id: String!
     range: String!
-    reachable: Boolean!
+    reachable: String!
     release: BuildData_Release!
     release_id: String!
 }
