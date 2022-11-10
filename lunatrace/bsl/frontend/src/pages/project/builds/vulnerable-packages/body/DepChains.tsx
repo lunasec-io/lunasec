@@ -15,6 +15,7 @@ import React, { useState } from 'react';
 import { Badge, NavLink } from 'react-bootstrap';
 import { ChevronRight, ChevronsRight, Maximize2, Minimize2 } from 'react-feather';
 
+import { Analysis_Finding_Type_Enum } from '../../../../../api/generated';
 import { VulnerablePackage } from '../types';
 
 import { ChainDep } from './ChainDep';
@@ -69,7 +70,7 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
            * in the list was observed as not reachable).
            */
           const notReachableIdxes = visibleChain.reduce((indexes, dep, idx) => {
-            if (dep.reachable) {
+            if (dep.reachable !== Analysis_Finding_Type_Enum.NotVulnerable) {
               return indexes;
             }
             return [...indexes, idx];
@@ -78,7 +79,6 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
           return (
             <div className="one-point-two-em d-flex pb-1 pt-1" key={dedupeSlug}>
               {visibleChain.map((dep, index) => {
-                console.log(index, notReachableIdxes);
                 const depIsReachable = notReachableIdxes.filter((i) => index > i).length === 0;
                 return (
                   <ChainDep
