@@ -65,6 +65,7 @@ export type BuildData_DependencyNode = {
   __typename?: 'BuildData_DependencyNode';
   id: Scalars['String'];
   range: Scalars['String'];
+  reachable: Scalars['String'];
   release: BuildData_Release;
   release_id: Scalars['String'];
 };
@@ -320,9 +321,36 @@ export type Analysis_Manifest_Dependency_Edge_ResultOutputArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
 
+/** order by aggregate values of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Aggregate_Order_By = {
+  avg?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Max_Order_By>;
+  min?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Min_Order_By>;
+  stddev?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Sum_Order_By>;
+  var_pop?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Var_Samp_Order_By>;
+  variance?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Variance_Order_By>;
+};
+
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type Analysis_Manifest_Dependency_Edge_Result_Append_Input = {
   output?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** input type for inserting array relation for remote table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Arr_Rel_Insert_Input = {
+  data: Array<Analysis_Manifest_Dependency_Edge_Result_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_On_Conflict>;
+};
+
+/** order by avg() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Avg_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "analysis.manifest_dependency_edge_result". All fields are combined with a logical 'AND'. */
@@ -382,6 +410,24 @@ export type Analysis_Manifest_Dependency_Edge_Result_Insert_Input = {
   output?: InputMaybe<Scalars['jsonb']>;
   vulnerability?: InputMaybe<Vulnerability_Obj_Rel_Insert_Input>;
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** order by max() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Max_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  finding_source_version?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_id?: InputMaybe<Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Min_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  finding_source_version?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_id?: InputMaybe<Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "analysis.manifest_dependency_edge_result" */
@@ -456,6 +502,26 @@ export type Analysis_Manifest_Dependency_Edge_Result_Set_Input = {
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
 
+/** order by stddev() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_pop() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Pop_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_samp() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Samp_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
+
+/** order by sum() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Sum_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
+
 /** update columns of table "analysis.manifest_dependency_edge_result" */
 export enum Analysis_Manifest_Dependency_Edge_Result_Update_Column {
   /** column name */
@@ -475,6 +541,21 @@ export enum Analysis_Manifest_Dependency_Edge_Result_Update_Column {
   /** column name */
   VulnerabilityId = 'vulnerability_id'
 }
+
+/** order by var_pop() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Var_Pop_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
+
+/** order by var_samp() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Var_Samp_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
+
+/** order by variance() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Variance_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
 
 /** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 export type Bigint_Comparison_Exp = {
@@ -3177,6 +3258,8 @@ export enum Manifest_Dependency_Constraint {
 /** columns and relationships of "manifest_dependency_edge" */
 export type Manifest_Dependency_Edge = {
   __typename?: 'manifest_dependency_edge';
+  /** An array relationship */
+  analysis_results: Array<Analysis_Manifest_Dependency_Edge_Result>;
   /** An object relationship */
   child: Manifest_Dependency_Node;
   child_id: Scalars['uuid'];
@@ -3184,6 +3267,16 @@ export type Manifest_Dependency_Edge = {
   /** An object relationship */
   parent: Manifest_Dependency_Node;
   parent_id: Scalars['uuid'];
+};
+
+
+/** columns and relationships of "manifest_dependency_edge" */
+export type Manifest_Dependency_EdgeAnalysis_ResultsArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
 };
 
 /** order by aggregate values of table "manifest_dependency_edge" */
@@ -3205,6 +3298,7 @@ export type Manifest_Dependency_Edge_Bool_Exp = {
   _and?: InputMaybe<Array<Manifest_Dependency_Edge_Bool_Exp>>;
   _not?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
   _or?: InputMaybe<Array<Manifest_Dependency_Edge_Bool_Exp>>;
+  analysis_results?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
   child?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   child_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -3222,6 +3316,7 @@ export enum Manifest_Dependency_Edge_Constraint {
 
 /** input type for inserting data into table "manifest_dependency_edge" */
 export type Manifest_Dependency_Edge_Insert_Input = {
+  analysis_results?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Arr_Rel_Insert_Input>;
   child?: InputMaybe<Manifest_Dependency_Node_Obj_Rel_Insert_Input>;
   child_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
@@ -3268,6 +3363,7 @@ export type Manifest_Dependency_Edge_On_Conflict = {
 
 /** Ordering options when selecting data from "manifest_dependency_edge". */
 export type Manifest_Dependency_Edge_Order_By = {
+  analysis_results_aggregate?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Aggregate_Order_By>;
   child?: InputMaybe<Manifest_Dependency_Node_Order_By>;
   child_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -3393,9 +3489,23 @@ export type Manifest_Dependency_NodeParent_EdgesArgs = {
   where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
 };
 
+/** order by aggregate values of table "manifest_dependency_node" */
+export type Manifest_Dependency_Node_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Manifest_Dependency_Node_Max_Order_By>;
+  min?: InputMaybe<Manifest_Dependency_Node_Min_Order_By>;
+};
+
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type Manifest_Dependency_Node_Append_Input = {
   labels?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** input type for inserting array relation for remote table "manifest_dependency_node" */
+export type Manifest_Dependency_Node_Arr_Rel_Insert_Input = {
+  data: Array<Manifest_Dependency_Node_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Manifest_Dependency_Node_On_Conflict>;
 };
 
 /** Boolean expression to filter rows from the table "manifest_dependency_node". All fields are combined with a logical 'AND'. */
@@ -3444,6 +3554,22 @@ export type Manifest_Dependency_Node_Insert_Input = {
   range?: InputMaybe<Scalars['String']>;
   release?: InputMaybe<Package_Release_Obj_Rel_Insert_Input>;
   release_id?: InputMaybe<Scalars['uuid']>;
+};
+
+/** order by max() on columns of table "manifest_dependency_node" */
+export type Manifest_Dependency_Node_Max_Order_By = {
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
+  id?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+  release_id?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "manifest_dependency_node" */
+export type Manifest_Dependency_Node_Min_Order_By = {
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
+  id?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+  release_id?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "manifest_dependency_node" */
@@ -5777,6 +5903,8 @@ export type Package = {
   package_maintainers: Array<Package_Package_Maintainer>;
   package_manager: Scalars['package_manager'];
   /** An array relationship */
+  release_dependencies: Array<Package_Release_Dependency>;
+  /** An array relationship */
   releases: Array<Package_Release>;
   upstream_data?: Maybe<Scalars['jsonb']>;
 };
@@ -5799,6 +5927,16 @@ export type PackagePackage_MaintainersArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Package_Package_Maintainer_Order_By>>;
   where?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
+};
+
+
+/** columns and relationships of "package.package" */
+export type PackageRelease_DependenciesArgs = {
+  distinct_on?: InputMaybe<Array<Package_Release_Dependency_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Package_Release_Dependency_Order_By>>;
+  where?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
 };
 
 
@@ -5858,6 +5996,7 @@ export type Package_Bool_Exp = {
   name?: InputMaybe<String_Comparison_Exp>;
   package_maintainers?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
   package_manager?: InputMaybe<Package_Manager_Comparison_Exp>;
+  release_dependencies?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
   releases?: InputMaybe<Package_Release_Bool_Exp>;
   upstream_data?: InputMaybe<Jsonb_Comparison_Exp>;
 };
@@ -5896,6 +6035,7 @@ export type Package_Insert_Input = {
   name?: InputMaybe<Scalars['String']>;
   package_maintainers?: InputMaybe<Package_Package_Maintainer_Arr_Rel_Insert_Input>;
   package_manager?: InputMaybe<Scalars['package_manager']>;
+  release_dependencies?: InputMaybe<Package_Release_Dependency_Arr_Rel_Insert_Input>;
   releases?: InputMaybe<Package_Release_Arr_Rel_Insert_Input>;
   upstream_data?: InputMaybe<Scalars['jsonb']>;
 };
@@ -6206,6 +6346,7 @@ export type Package_Order_By = {
   name?: InputMaybe<Order_By>;
   package_maintainers_aggregate?: InputMaybe<Package_Package_Maintainer_Aggregate_Order_By>;
   package_manager?: InputMaybe<Order_By>;
+  release_dependencies_aggregate?: InputMaybe<Package_Release_Dependency_Aggregate_Order_By>;
   releases_aggregate?: InputMaybe<Package_Release_Aggregate_Order_By>;
   upstream_data?: InputMaybe<Order_By>;
 };
@@ -6336,6 +6477,8 @@ export type Package_Release = {
   build_dependency_relationships: Array<Build_Dependency_Relationship>;
   fetched_time?: Maybe<Scalars['timestamptz']>;
   id: Scalars['uuid'];
+  /** An array relationship */
+  manifest_dependency_nodes: Array<Manifest_Dependency_Node>;
   mirrored_blob_url?: Maybe<Scalars['String']>;
   observed_time: Scalars['timestamptz'];
   /** An object relationship */
@@ -6362,6 +6505,16 @@ export type Package_ReleaseBuild_Dependency_RelationshipsArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
   where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+};
+
+
+/** columns and relationships of "package.release" */
+export type Package_ReleaseManifest_Dependency_NodesArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Node_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Node_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
 };
 
 
@@ -6418,6 +6571,7 @@ export type Package_Release_Bool_Exp = {
   build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   fetched_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  manifest_dependency_nodes?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   mirrored_blob_url?: InputMaybe<String_Comparison_Exp>;
   observed_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   package?: InputMaybe<Package_Bool_Exp>;
@@ -6629,6 +6783,7 @@ export type Package_Release_Insert_Input = {
   build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Arr_Rel_Insert_Input>;
   fetched_time?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
+  manifest_dependency_nodes?: InputMaybe<Manifest_Dependency_Node_Arr_Rel_Insert_Input>;
   mirrored_blob_url?: InputMaybe<Scalars['String']>;
   observed_time?: InputMaybe<Scalars['timestamptz']>;
   package?: InputMaybe<Package_Obj_Rel_Insert_Input>;
@@ -6881,6 +7036,7 @@ export type Package_Release_Order_By = {
   build_dependency_relationships_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
   fetched_time?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  manifest_dependency_nodes_aggregate?: InputMaybe<Manifest_Dependency_Node_Aggregate_Order_By>;
   mirrored_blob_url?: InputMaybe<Order_By>;
   observed_time?: InputMaybe<Order_By>;
   package?: InputMaybe<Package_Order_By>;
@@ -11501,10 +11657,11 @@ export type GetProjectFromRepoIdQuery = { __typename?: 'query_root', github_repo
 
 export type GetTreeFromBuildQueryVariables = Exact<{
   build_id: Scalars['uuid'];
+  analysis_results_where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
 }>;
 
 
-export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', id: any, parent_id: any, child_id: any, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null, summary?: string | null, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide_id: any, guide: { __typename?: 'guides', summary: string, id: any, title: string } }> }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } } | null };
+export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', id: any, parent_id: any, child_id: any, analysis_results: Array<{ __typename?: 'analysis_manifest_dependency_edge_result', finding_source_version: number, finding_source: Analysis_Finding_Source_Enum, finding_type: Analysis_Finding_Type_Enum }>, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null, summary?: string | null, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide_id: any, guide: { __typename?: 'guides', summary: string, id: any, title: string } }> }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } } | null };
 
 export type GetUserGitHubDataQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
@@ -11861,7 +12018,7 @@ export const GetProjectFromRepoIdDocument = gql`
 }
     `;
 export const GetTreeFromBuildDocument = gql`
-    query GetTreeFromBuild($build_id: uuid!) {
+    query GetTreeFromBuild($build_id: uuid!, $analysis_results_where: analysis_manifest_dependency_edge_result_bool_exp = {}) {
   builds_by_pk(id: $build_id) {
     resolved_manifests {
       id
@@ -11870,7 +12027,14 @@ export const GetTreeFromBuildDocument = gql`
         id
         parent_id
         child_id
-        id
+        analysis_results(
+          where: $analysis_results_where
+          order_by: {finding_source_version: desc}
+        ) {
+          finding_source_version
+          finding_source
+          finding_type
+        }
         child {
           id
           range
