@@ -1,7 +1,7 @@
-import {RawManifest} from "../../models/dependency-tree/types";
+import { Manifest } from "../../../models/vulnerability-dependency-tree/types";
 
 
-export const realDependencyTreeHasuraOutputFixture: Array<RawManifest> = [
+export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
     {
         "path": "/package-lock.json",
         "child_edges_recursive": [

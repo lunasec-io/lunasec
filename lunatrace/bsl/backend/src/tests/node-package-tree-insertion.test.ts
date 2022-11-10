@@ -94,7 +94,7 @@ const buildIdTwo = 'bbbbbbbb-cccc-5e6a-a2d5-f1deddd1319b';
 
 function testAllTreeTypes() {
   manifestFixtures.forEach((fixture) => {
-    const fixturePath = path.resolve(__dirname, '../fixtures/manifests', fixture.name);
+    const fixturePath = path.resolve(__dirname, 'fixtures/manifests', fixture.name);
     describe.skip(fixture.name, () => {
       it(`should call db when calling snapshotPinnedDependencies`, async () => {
         backup?.restore();

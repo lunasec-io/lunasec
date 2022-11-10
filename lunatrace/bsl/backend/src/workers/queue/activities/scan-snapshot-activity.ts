@@ -102,7 +102,7 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
 
   const rawManifests = rawBuildData.resolved_manifests; // as Omit<typeof rawBuildData['resolved_manifests'], '__typename'>;
 
-  const depTree = buildTreeFromRawData(rawManifests, 'Unknown', []);
+  const depTree = buildTreeFromRawData(rawManifests);
   if (!depTree) {
     log.error('unable to build dependency tree', {
       rawManifests,
@@ -110,51 +110,19 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
     return newError('unable to build dependency tree');
   }
 
-  const vulnerabilities = depTree.getVulnerabilities();
+  const edgeVulnerabilities = depTree.getEdgesWhereChildIsVulnerable();
   log.info('starting static analysis for dependency tree');
 
   const queuedStaticAnalyses: Map<string, boolean> = new Map<string, boolean>();
-  vulnerabilities.forEach((v) => {
-    v.chains.forEach((chain) => {
-      chain.forEach(async (node) => {
-        if (!node.parent_id) {
-          log.warn('parent id is not defined', {
-            vulnerabilities,
-            node,
-          });
-          return;
-        }
+  edgeVulnerabilities.forEach((vulnerableEdge) => {
+    if (queuedStaticAnalyses.get(vulnerableEdge.edgeId)) {
+      return;
+    }
+    queuedStaticAnalyses.set(vulnerableEdge.edgeId, true);
 
-        const edgeId = depTree.getEdgeIdFromNodePair(node.parent_id, node.id);
-        if (!edgeId) {
-          log.warn('cannot find edge id', {
-            vulnerabilities,
-            node,
-          });
-          return;
-        }
+    const vulnerabilityId = vulnerableEdge.vulnerabilityIds[0];
 
-        // TODO (cthompson) until we are scanning first party code, this is needed so we dont try to scan
-        // the made up edge from the recursive sql query.
-        if (edgeId === '00000000-0000-0000-0000-000000000000') {
-          return;
-        }
-
-        const key = v.vulnerability.id + edgeId;
-        if (queuedStaticAnalyses.get(key)) {
-          return;
-        }
-        queuedStaticAnalyses.set(key, true);
-
-        const resp = await queueManifestDependencyEdgeForStaticAnalysis(v.vulnerability.id, edgeId);
-        if (resp.error) {
-          log.error('failed to queue vulnerable edge for analysis', {
-            vulnerabilitiy: v.vulnerability.id,
-            edgeId: node,
-          });
-        }
-      });
-    });
+    void queueManifestDependencyEdgeForStaticAnalysis(vulnerabilityId, vulnerableEdge.edgeId);
   });
   return newResult(undefined);
 }

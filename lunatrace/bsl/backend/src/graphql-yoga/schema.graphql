@@ -1,7 +1,5 @@
-
 scalar uuid
 scalar jsonb
-
 
 type Query {
     """ get s3 presigned url for manifest upload, used by the CLI """
@@ -44,7 +42,6 @@ input SbomUploadUrlInput {
     projectId: uuid!
 }
 
-
 type SbomUploadUrlOutput {
     error: Boolean!
     uploadUrl: UploadUrl
@@ -76,7 +73,7 @@ type GithubRepository {
     gitUrl: String!
     ownerType: String!
     cloneUrl: String!
-defaultBranch: String!
+    defaultBranch: String!
 }
 
 type OrgWithRepos {
@@ -85,8 +82,7 @@ type OrgWithRepos {
     repos: [GithubRepository!]!
 }
 
-
-# ------- BEGIN VULNERABLE RELEASE RESPONSE TYPES BELOW, these reference the dependency-tree/types.ts
+# Vulnerable Release Types
 type BuildData_VulnerableRelease {
     dev_only: Boolean!
     severity: String!
@@ -106,15 +102,13 @@ type BuildData_IgnoredVulnerability {
     locations: [String!]!
 }
 
-
 type BuildData_AffectedByVulnerability {
     vulnerability: BuildData_Vulnerability!
     beneath_minimum_severity: Boolean!
     ranges: [BuildData_Range!]!
-    ignored:Boolean!
+    ignored: Boolean!
     ignored_vulnerability: BuildData_IgnoredVulnerability
     trivially_updatable_to: String
-    chains: [[BuildData_DependencyNode!]!] # each vuln has its own sublist of chains in addition to the global list in the main body of the release. This is in case some have been eliminated by false-positive analysis for only this vuln
     fix_versions: [String!]!
     path: String!
 }
@@ -135,15 +129,12 @@ type BuildData_Release {
     id: String!
     version: String!
     package: BuildData_Package!
-
 }
 
 type BuildData_Package {
     name: String!
     package_manager: String!
-    affected_by_vulnerability: [BuildData_AffectedByVulnerability!]
 }
-
 
 type BuildData_Vulnerability {
     id: String!
