@@ -16,7 +16,7 @@ describe('The fake dependency tree', () => {
   it('should generate a dependency tree from real dependency tree', () => {
     const tree = new VulnerabilityDependencyTree(realDependencyTreeHasuraOutputFixture);
     const vulnerableReleases = tree.getVulnerableReleases();
-    expect(vulnerableReleases.length).toBe(48);
+    expect(vulnerableReleases.length).toBe(6);
   });
   it('should generate a dependency tree from a very large dependency tree', () => {
     const rawTreeString = fs
