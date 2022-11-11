@@ -118,6 +118,7 @@ type BuildData_DependencyNode {
     range: String!
     release_id: String!
     release: BuildData_Release!
+    reachable: String!
 }
 
 type BuildData_Range {
