@@ -8,29 +8,26 @@ import { fakeDependencyTreeHasuraOutputFixture } from './fixtures/manifests/fake
 import { realDependencyTreeHasuraOutputFixture } from './fixtures/manifests/real-dependency-tree-hasura-output';
 
 describe('The fake dependency tree', () => {
-  const rawTreeString = fs
-    .readFileSync(path.join(__dirname, 'fixtures/manifests/huge-docusaurus-tree-hasura-output.json'))
-    .toString();
-  const parsedTreeData = JSON.parse(rawTreeString) as Manifest[];
-
   it('should generate a dependency tree from fake dependency tree', () => {
     const tree = new VulnerabilityDependencyTree(fakeDependencyTreeHasuraOutputFixture);
     const vulnerableReleases = tree.getVulnerableReleases();
     expect(vulnerableReleases.length).toBe(1);
   });
   it('should generate a dependency tree from real dependency tree', () => {
-    const tree = new VulnerabilityDependencyTree(realDependencyTreeHasuraOutputFixture as Array<Manifest>);
+    const tree = new VulnerabilityDependencyTree(realDependencyTreeHasuraOutputFixture);
     const vulnerableReleases = tree.getVulnerableReleases();
     expect(vulnerableReleases.length).toBe(48);
   });
   it('should generate a dependency tree from a very large dependency tree', () => {
+    const rawTreeString = fs
+      .readFileSync(path.join(__dirname, 'fixtures/manifests/huge-docusaurus-tree-hasura-output.json'))
+      .toString();
+    const parsedTreeData = JSON.parse(rawTreeString) as Manifest[];
+
+    parsedTreeData.forEach((t) => t.child_edges_recursive?.forEach((e) => (e.analysis_results = [])));
+
     const tree = new VulnerabilityDependencyTree(parsedTreeData);
     const vulnerableReleases = tree.getVulnerableReleases();
     expect(vulnerableReleases.length).toBe(17);
-    vulnerableReleases.forEach((v) => {
-      if (v.release.package.name === 'node-fetch') {
-        console.log('asdf');
-      }
-    });
   });
 });
