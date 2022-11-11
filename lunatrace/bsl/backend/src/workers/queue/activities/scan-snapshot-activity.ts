@@ -12,7 +12,6 @@
  *
  */
 import { Readable } from 'stream';
-import util from 'util';
 import zlib from 'zlib';
 
 import validate from 'validator';
@@ -100,7 +99,7 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
     return newError('dependency tree is empty');
   }
 
-  const rawManifests = rawBuildData.resolved_manifests; // as Omit<typeof rawBuildData['resolved_manifests'], '__typename'>;
+  const rawManifests = rawBuildData.resolved_manifests;
 
   const depTree = buildTreeFromRawData(rawManifests);
   if (!depTree) {
