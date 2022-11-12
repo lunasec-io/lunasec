@@ -85,28 +85,11 @@ async function performSnapshotOnRepository(
       s3Url: s3UploadRes,
     });
 
-    logger.info('Attempting to upload worktree snapshot for repository.');
-
-    try {
-      await uploadWorktreeSnapshot(buildId, repoDir);
-    } catch (err) {
-      logger.error(failedToUploadWorktreeSnapshotForRepository, {
-        error: err,
-      });
-      //todo new buildstateenum
-      updateBuildStatus(buildId, Build_State_Enum.SnapshotFailed, failedToUploadWorktreeSnapshotForRepository);
-
-      return {
-        error: true,
-        msg: failedToUploadWorktreeSnapshotForRepository,
-        rawError: err instanceof Error ? err : undefined,
-      };
-    }
-
     logger.info('Attempting to snapshot pinned dependencies for repository.');
 
+    let pkgTrees = null;
     try {
-      await snapshotPinnedDependencies(buildId, repoDir);
+      pkgTrees = await snapshotPinnedDependencies(buildId, repoDir);
     } catch (err) {
       logger.error('Failed to snapshot pinned dependencies for repository.', {
         error: err,
@@ -125,6 +108,28 @@ async function performSnapshotOnRepository(
     }
 
     logger.info('Successfully created snapshot for pinned dependencies for repository.');
+
+    logger.info('Attempting to upload worktree snapshot for repository.');
+    try {
+      await uploadWorktreeSnapshot(buildId, repoDir);
+    } catch (err) {
+      logger.error(failedToUploadWorktreeSnapshotForRepository, {
+        error: err,
+      });
+      //todo new buildstateenum
+      updateBuildStatus(buildId, Build_State_Enum.SnapshotFailed, failedToUploadWorktreeSnapshotForRepository);
+
+      return {
+        error: true,
+        msg: failedToUploadWorktreeSnapshotForRepository,
+        rawError: err instanceof Error ? err : undefined,
+      };
+    }
+
+    logger.info('Successfully created snapshots for repository.');
+
+    // create shadow releases using gql
+
     updateBuildStatus(buildId, Build_State_Enum.SnapshotCompleted);
 
     updateBuildStatus(buildId, Build_State_Enum.SnapshotScanQueued);
@@ -198,12 +203,12 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
   });
 }
 
-async function uploadWorktreeSnapshot(buildId: string, repoDir: string): Promise<void> {
+async function uploadWorktreeSnapshot(buildId: string, repoDir: string): Promise<string> {
   const bucketConfig = getWorkerBucketConfig();
   // upload the sbom to s3, streaming
   const fileKey = aws.generateCodeS3Key(buildId);
 
-  const tarStream = await tar.c(
+  const tarStream = tar.c(
     {
       gzip: true,
       filter(path: string, stat: FileStat): boolean {
@@ -213,13 +218,5 @@ async function uploadWorktreeSnapshot(buildId: string, repoDir: string): Promise
     [repoDir]
   );
 
-  const s3Url = await aws.uploadGzipFileToS3(fileKey, bucketConfig.codeBucket, tarStream);
-  // update build to have s3 url
-  // todo new gql
-  const { update_builds_by_pk } = await hasura.SetBuildS3Url({ id: buildId, s3_url: s3Url });
-  if (!update_builds_by_pk) {
-    throw new Error('Failed to update build s3 url');
-  }
-  log.info('Updated S3 URL in hasuras build record', { update_builds_by_pk });
-  return;
+  return await aws.uploadGzipFileToS3(fileKey, bucketConfig.codeBucket, tarStream);
 }
