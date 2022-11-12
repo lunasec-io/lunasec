@@ -71,7 +71,7 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
            * in the list was observed as not reachable).
            */
           const notReachableIndexes: number[] = [];
-          visibleChain.forEach((dep, idx) => {
+          chain.forEach((dep, idx) => {
             if (dep.reachable === Analysis_Finding_Type_Enum.NotVulnerable) {
               notReachableIndexes.push(idx);
             }
