@@ -23,6 +23,7 @@ import {
 } from '../database/dependency-relationship-dag-calculator';
 import { findFilesMatchingFilter } from '../utils/filesystem-utils';
 import { log } from '../utils/log';
+import { notEmpty } from '../utils/predicates';
 
 interface PackageDependenciesWithGraphAndMetadata {
   rootNode: DependencyGraphNode;
@@ -40,6 +41,7 @@ interface PackageDependenciesWithGraphAndMetadata {
 interface CollectedPackageTree {
   lockFilePath: string;
   error?: string;
+  rootNode?: PackageDependenciesWithGraphAndMetadata;
   dependencies: PackageDependenciesWithGraphAndMetadata[];
 }
 
@@ -101,6 +103,9 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
           dependencies: [],
         };
       }
+      if (!pkgTree) {
+        return;
+      }
 
       // This value is set to false by the library when there are zero dev dependencies
       const prodOrDevLabel = pkgTree.hasDevDependencies ? 'dev' : 'prod';
@@ -120,6 +125,7 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
       return {
         lockFilePath: lockFilePathWithLeadingSlash,
         dependencies: pkgDependenciesWithGraphAndMetadata,
+        //rootNode: pkgTree,
       };
     })
   );
@@ -472,7 +478,7 @@ export async function insertPackageManifestsIntoDatabase(
   });
 }
 
-export async function snapshotPinnedDependencies(buildId: string, repoDir: string): Promise<void> {
+export async function snapshotPinnedDependencies(buildId: string, repoDir: string): Promise<CollectedPackageTree[]> {
   const pkgGraphs = await collectPackageGraphsFromDirectory(repoDir);
 
   // Creates all nodes and edges for the dependency graph into the database
@@ -480,4 +486,6 @@ export async function snapshotPinnedDependencies(buildId: string, repoDir: strin
 
   // Creates all manifests and associated root dependencies into the database
   await insertPackageManifestsIntoDatabase(buildId, pkgGraphs);
+
+  return pkgGraphs;
 }
