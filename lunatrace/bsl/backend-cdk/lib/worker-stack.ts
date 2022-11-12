@@ -149,6 +149,12 @@ export class WorkerStack extends cdk.Stack {
       { lower: 200, change: +5 },
     ];
 
+    const staticAnalysisScalingSteps = [
+      { upper: 0, change: -1 },
+      { lower: 20, change: +1 },
+      { lower: 100, change: +5 },
+    ];
+
     const queueServices: QueueService[] = [
       {
         // TODO (cthompson) mount EFS to make available storage larger
@@ -168,7 +174,7 @@ export class WorkerStack extends cdk.Stack {
         ram: 8 * gb,
         cpu: 4 * gb,
         capacityProviderStrategies,
-        scalingSteps,
+        scalingSteps: staticAnalysisScalingSteps,
       },
       {
         name: 'ProcessWebhookQueue',

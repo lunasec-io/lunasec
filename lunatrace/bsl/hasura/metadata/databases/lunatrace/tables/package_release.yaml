@@ -16,13 +16,6 @@ array_relationships:
         table:
           name: build_dependency_relationship
           schema: public
-  - name: manifest_dependency_nodes
-    using:
-      foreign_key_constraint_on:
-        column: release_id
-        table:
-          name: manifest_dependency_node
-          schema: public
   - name: release_dependencies
     using:
       foreign_key_constraint_on:
