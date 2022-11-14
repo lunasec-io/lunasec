@@ -32,7 +32,7 @@ describe('The fake dependency tree', () => {
     expect(vulnerableReleases.length).toBe(17);
 
     const vulnerableEdges = tree.getEdgesWhereChildIsVulnerable();
-    console.log(vulnerableEdges.length);
+    expect(vulnerableEdges.length).toBe(54);
   });
 
   it('should generate a dependency tree from a very large dependency tree1', () => {
@@ -48,6 +48,6 @@ describe('The fake dependency tree', () => {
     expect(vulnerableReleases.length).toBe(17);
 
     const vulnerableEdges = tree.getVulnerabilities();
-    console.log(vulnerableEdges.length);
+    expect(vulnerableEdges.length).toBe(15);
   });
 });
