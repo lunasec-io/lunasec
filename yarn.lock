@@ -51242,9 +51242,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"snyk-nodejs-lockfile-parser-lunatrace-fork@portal:/home/forrest/code/nodejs-lockfile-parser::locator=lunasec%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "snyk-nodejs-lockfile-parser-lunatrace-fork@portal:/home/forrest/code/nodejs-lockfile-parser::locator=lunasec%40workspace%3A."
+"snyk-nodejs-lockfile-parser-lunatrace-fork@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "snyk-nodejs-lockfile-parser-lunatrace-fork@npm:1.0.0"
   dependencies:
     "@snyk/dep-graph": ^2.3.0
     "@snyk/graphlib": 2.1.9-patch.3
@@ -51261,9 +51261,10 @@ __metadata:
     tslib: ^1.9.3
     uuid: ^8.3.0
   bin:
-    parse-nodejs-lockfile: ./bin/index.js
+    parse-nodejs-lockfile: bin/index.js
+  checksum: 68e0e59b010c33e628ca644d93d582f1fd5e90a9353612d91589f583896abd6ab149a55afeedbb21549e0a00fae3e98a00d44cbf178e9b212fe3abee0306bafa
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "sockjs-client@npm:^1.5.0":
   version: 1.6.0
