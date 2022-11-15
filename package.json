@@ -125,7 +125,6 @@
     "node-gyp": "~9.0.0"
   },
   "resolutions": {
-    "snyk-nodejs-lockfile-parser": "portal:/home/forrest/code/nodejs-lockfile-parser",
-    "snyk-nodejs-lockfile-parser-lunatrace-fork": "portal:/home/forrest/code/nodejs-lockfile-parser"
+    "snyk-nodejs-lockfile-parser": "portal:/home/forrest/code/nodejs-lockfile-parser"
   }
 }
