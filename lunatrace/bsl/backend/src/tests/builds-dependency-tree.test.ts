@@ -95,7 +95,6 @@ describe('huge docusaurus dependency tree', () => {
   it('should have a sane first vuln', () => {
     const vulnerableReleases = tree.getVulnerableReleases();
     const firstVuln = vulnerableReleases[0];
-    const terserVuln = vulnerableReleases.filter((vr) => vr.release.package.name === 'terser')[0];
     const byCount: Map<string, number> = new Map();
 
     firstVuln.chains.forEach((chain) => {
