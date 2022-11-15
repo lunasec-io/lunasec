@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -13,7 +13,6 @@ package staticanalysis
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"github.com/google/uuid"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules"
@@ -53,18 +52,6 @@ func validateGetManifestDependencyEdgeResponse(logger zerolog.Logger, resp *gql.
 		return errors.New("parent dependency release is nil")
 	}
 	return nil
-}
-
-func marshalResults(logger zerolog.Logger, results *rules.SemgrepRuleOutput) json.RawMessage {
-	// empty the scanned paths since this can get quite large
-	results.Paths.Scanned = []string{}
-
-	marshalledResults, err := json.Marshal(results)
-	if err != nil {
-		logger.Warn().Err(err).Msg("failed to marshal results")
-		marshalledResults = nil
-	}
-	return marshalledResults
 }
 
 func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx context.Context, queueRecord QueueRecord) error {
@@ -292,8 +279,10 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 		return gql.Analysis_finding_type_enumError, nil
 	}
 
+	// we can only say that we definitely know that a vulnerability is not reachable, otherwise we can't
+	// say for certain if a vulnerability exists or not
 	if len(results.Results) > 0 {
-		return gql.Analysis_finding_type_enumVulnerable, results
+		return gql.Analysis_finding_type_enumUnknown, results
 	}
 	return gql.Analysis_finding_type_enumNotVulnerable, results
 }

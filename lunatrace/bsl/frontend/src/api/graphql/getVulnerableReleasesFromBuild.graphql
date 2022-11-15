@@ -22,6 +22,7 @@ query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!)
                 }
                 version
             }
+            reachable
         }
         release {
             version
@@ -53,17 +54,6 @@ query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!)
                         summary
                         title
                     }
-                }
-            }
-            chains {
-                id
-                range
-                release {
-                    id
-                    package {
-                        name
-                    }
-                    version
                 }
             }
         }
