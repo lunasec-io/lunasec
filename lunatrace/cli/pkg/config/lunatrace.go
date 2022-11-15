@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package config
 
 import (
@@ -73,6 +72,7 @@ func NewLunaTraceConfig(provider config.Provider) (appConfig types.LunaTraceConf
 			Msg("unable populate application config")
 		return
 	}
+	appConfig.LunaTraceEnvironment = os.Getenv("LUNATRACE_ENVIRONMENT")
 
 	// todo remove me
 	gql.TODOClient = graphql.NewClient(appConfig.GraphqlServer.Url, &http.Client{

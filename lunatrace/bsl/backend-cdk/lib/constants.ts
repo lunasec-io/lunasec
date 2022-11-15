@@ -20,3 +20,8 @@ export const commonBuildProps: AssetImageProps = {
   // TODO (cthompson) for some reason, if we don't invalidate the docker cache every deploy otherwise old containers will be used...
   extraHash: (Math.random() + 1).toString(36).substring(7),
 };
+
+// All other environment configs should inherit from this shared one
+export const baseEnvironmentVars = {
+  LUNATRACE_ENVIRONMENT: 'production',
+};

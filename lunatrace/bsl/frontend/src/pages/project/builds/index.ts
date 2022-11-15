@@ -11,5 +11,5 @@
  * limitations under the License.
  *
  */
-export * from './BuildDetails';
+export * from './details/BuildDetails';
 export * from './Builds';
