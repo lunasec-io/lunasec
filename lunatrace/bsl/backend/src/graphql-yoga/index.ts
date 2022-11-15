@@ -20,7 +20,7 @@ import { createServer } from '@graphql-yoga/node';
 import Express from 'express';
 
 import { jwtMiddleware } from '../utils/jwt-middleware';
-import { log } from '../utils/log';
+import { log, yogaLogger } from '../utils/log';
 
 import { resolvers } from './resolvers';
 
@@ -29,7 +29,7 @@ const schema = loadSchemaSync(join(__dirname, 'schema.graphql'), { loaders: [new
 const schemaWithResolvers = addResolversToSchema(schema, resolvers);
 
 const graphqlServer = createServer({
-  // logging: log, this MUST stay off except for debugging, it slows things down unbelievably for big payloads. We need to get off of yoga, it's awful
+  logging: yogaLogger,
   schema: schemaWithResolvers,
   graphiql: true,
   maskedErrors: false,
