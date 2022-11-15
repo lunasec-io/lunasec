@@ -8,7 +8,6 @@
 //
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package staticanalysis
 
 import (
@@ -26,27 +25,27 @@ import (
 
 func validateGetManifestDependencyEdgeResponse(logger zerolog.Logger, resp *gql.GetManifestDependencyEdgeResponse) error {
 	if resp.Manifest_dependency_edge_by_pk == nil {
-		logger.Error().
+		logger.Warn().
 			Msg("manifest dependency edge is nil")
 		return errors.New("manifest dependency edge nil")
 	}
 
 	if resp.Manifest_dependency_edge_by_pk.Child == nil {
-		logger.Error().
+		logger.Warn().
 			Interface("manifest dependency edge", resp.Manifest_dependency_edge_by_pk).
 			Msg("child dependency is nil")
 		return errors.New("child dependency is nil")
 	}
 
 	if resp.Manifest_dependency_edge_by_pk.Parent == nil {
-		logger.Error().
+		logger.Warn().
 			Interface("manifest dependency edge", resp.Manifest_dependency_edge_by_pk).
 			Msg("parent dependency is nil")
 		return errors.New("child dependency is nil")
 	}
 
 	if resp.Manifest_dependency_edge_by_pk.Parent.Release == nil {
-		logger.Error().
+		logger.Warn().
 			Interface("manifest dependency edge", resp.Manifest_dependency_edge_by_pk).
 			Msg("parent dependency release is nil")
 		return errors.New("parent dependency release is nil")
@@ -85,7 +84,10 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 
 	err = validateGetManifestDependencyEdgeResponse(logger, resp)
 	if err != nil {
-		return err
+		log.Warn().
+			Err(err).
+			Msg("failed to validate manifest dependency edge")
+		return nil
 	}
 
 	childPackageName := resp.Manifest_dependency_edge_by_pk.Child.Release.Package.Name
