@@ -29,7 +29,7 @@ const schema = loadSchemaSync(join(__dirname, 'schema.graphql'), { loaders: [new
 const schemaWithResolvers = addResolversToSchema(schema, resolvers);
 
 const graphqlServer = createServer({
-  logging: log,
+  // logging: log, this MUST stay off except for debugging, it slows things down unbelievably for big payloads. We need to get off of yoga, it's awful
   schema: schemaWithResolvers,
   graphiql: true,
   maskedErrors: false,

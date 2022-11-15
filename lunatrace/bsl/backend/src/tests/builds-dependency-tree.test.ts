@@ -73,7 +73,7 @@ describe('a real sample dependency tree', () => {
   });
 });
 
-describe('huge docusaurus dependency tree', () => {
+describe.only('huge docusaurus dependency tree', () => {
   const rawTreeString = fs
     .readFileSync(path.join(__dirname, 'fixtures/manifests/huge-docusaurus-tree-hasura-output.json'))
     .toString();
@@ -89,7 +89,9 @@ describe('huge docusaurus dependency tree', () => {
   it('should have a sane first vuln', () => {
     const vulnerableReleases = tree.getVulnerableReleases();
     const firstVuln = vulnerableReleases[0];
-
+    const terserVuln = vulnerableReleases.filter((vr) => vr.release.package.name === 'terser')[0];
+    const terserParents = terserVuln.chains.map((chain) => chain[chain.length - 2].release.package.name);
+    console.log(terserParents);
     const byCount: Map<string, number> = new Map();
 
     firstVuln.chains.forEach((chain) => {
@@ -102,6 +104,14 @@ describe('huge docusaurus dependency tree', () => {
     const chainStringSet = new Set(chainStrings);
 
     expect(chainStrings.length).toEqual(chainStringSet.size);
+  });
+
+  it('should have no duplicate chains', () => {
+    tree.getVulnerableReleases().forEach((vr) => {
+      const chainStrings = vr.chains.map((chain) => JSON.stringify(chain));
+      const chainStringSet = new Set(...chainStrings);
+      expect(chainStrings.length).toEqual(chainStringSet.size);
+    });
   });
 });
 
