@@ -39,6 +39,7 @@ type packageTable struct {
 	UpstreamData        postgres.ColumnString
 	LastFailedFetch     postgres.ColumnTimestampz
 	LastSuccessfulFetch postgres.ColumnTimestampz
+	Internal            postgres.ColumnBool
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -87,8 +88,9 @@ func newPackageTableImpl(schemaName, tableName, alias string) packageTable {
 		UpstreamDataColumn        = postgres.StringColumn("upstream_data")
 		LastFailedFetchColumn     = postgres.TimestampzColumn("last_failed_fetch")
 		LastSuccessfulFetchColumn = postgres.TimestampzColumn("last_successful_fetch")
-		allColumns                = postgres.ColumnList{IDColumn, PackageManagerColumn, CustomRegistryColumn, NameColumn, DescriptionColumn, UpstreamDataColumn, LastFailedFetchColumn, LastSuccessfulFetchColumn}
-		mutableColumns            = postgres.ColumnList{PackageManagerColumn, CustomRegistryColumn, NameColumn, DescriptionColumn, UpstreamDataColumn, LastFailedFetchColumn, LastSuccessfulFetchColumn}
+		InternalColumn            = postgres.BoolColumn("internal")
+		allColumns                = postgres.ColumnList{IDColumn, PackageManagerColumn, CustomRegistryColumn, NameColumn, DescriptionColumn, UpstreamDataColumn, LastFailedFetchColumn, LastSuccessfulFetchColumn, InternalColumn}
+		mutableColumns            = postgres.ColumnList{PackageManagerColumn, CustomRegistryColumn, NameColumn, DescriptionColumn, UpstreamDataColumn, LastFailedFetchColumn, LastSuccessfulFetchColumn, InternalColumn}
 	)
 
 	return packageTable{
@@ -103,6 +105,7 @@ func newPackageTableImpl(schemaName, tableName, alias string) packageTable {
 		UpstreamData:        UpstreamDataColumn,
 		LastFailedFetch:     LastFailedFetchColumn,
 		LastSuccessfulFetch: LastSuccessfulFetchColumn,
+		Internal:            InternalColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

@@ -49,7 +49,6 @@ export type Boolean_Comparison_Exp = {
 export type BuildData_AffectedByVulnerability = {
   __typename?: 'BuildData_AffectedByVulnerability';
   beneath_minimum_severity: Scalars['Boolean'];
-  chains?: Maybe<Array<Array<BuildData_DependencyNode>>>;
   fix_versions: Array<Scalars['String']>;
   ignored: Scalars['Boolean'];
   ignored_vulnerability?: Maybe<BuildData_IgnoredVulnerability>;
@@ -63,6 +62,7 @@ export type BuildData_DependencyNode = {
   __typename?: 'BuildData_DependencyNode';
   id: Scalars['String'];
   range: Scalars['String'];
+  reachable: Scalars['String'];
   release: BuildData_Release;
   release_id: Scalars['String'];
 };
@@ -87,7 +87,6 @@ export type BuildData_IgnoredVulnerability = {
 
 export type BuildData_Package = {
   __typename?: 'BuildData_Package';
-  affected_by_vulnerability?: Maybe<Array<BuildData_AffectedByVulnerability>>;
   name: Scalars['String'];
   package_manager: Scalars['String'];
 };
@@ -110,21 +109,10 @@ export type BuildData_Vulnerability = {
   cvss_score?: Maybe<Scalars['Float']>;
   guide_vulnerabilities: Array<BuildData_Guide_Vulnerability>;
   id: Scalars['String'];
-  /** An array relationship */
-  ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
   severity_name?: Maybe<Scalars['String']>;
   source: Scalars['String'];
   source_id: Scalars['String'];
   summary?: Maybe<Scalars['String']>;
-};
-
-
-export type BuildData_VulnerabilityIgnored_VulnerabilitiesArgs = {
-  distinct_on?: InputMaybe<Array<Ignored_Vulnerabilities_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Ignored_Vulnerabilities_Order_By>>;
-  where?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
 };
 
 export type BuildData_VulnerableRelease = {
@@ -360,10 +348,30 @@ export type Analysis_Manifest_Dependency_Edge_Result_Aggregate_FieldsCountArgs =
   distinct?: InputMaybe<Scalars['Boolean']>;
 };
 
+/** order by aggregate values of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Aggregate_Order_By = {
+  avg?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Max_Order_By>;
+  min?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Min_Order_By>;
+  stddev?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Sum_Order_By>;
+  var_pop?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Var_Samp_Order_By>;
+  variance?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Variance_Order_By>;
+};
+
 /** aggregate avg on columns */
 export type Analysis_Manifest_Dependency_Edge_Result_Avg_Fields = {
   __typename?: 'analysis_manifest_dependency_edge_result_avg_fields';
   finding_source_version?: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Avg_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "analysis.manifest_dependency_edge_result". All fields are combined with a logical 'AND'. */
@@ -393,6 +401,15 @@ export type Analysis_Manifest_Dependency_Edge_Result_Max_Fields = {
   vulnerability_id?: Maybe<Scalars['uuid']>;
 };
 
+/** order by max() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Max_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  finding_source_version?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_id?: InputMaybe<Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
+};
+
 /** aggregate min on columns */
 export type Analysis_Manifest_Dependency_Edge_Result_Min_Fields = {
   __typename?: 'analysis_manifest_dependency_edge_result_min_fields';
@@ -401,6 +418,15 @@ export type Analysis_Manifest_Dependency_Edge_Result_Min_Fields = {
   id?: Maybe<Scalars['uuid']>;
   manifest_dependency_edge_id?: Maybe<Scalars['uuid']>;
   vulnerability_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by min() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Min_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  finding_source_version?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_id?: InputMaybe<Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
 };
 
 /** Ordering options when selecting data from "analysis.manifest_dependency_edge_result". */
@@ -443,10 +469,20 @@ export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Fields = {
   finding_source_version?: Maybe<Scalars['Float']>;
 };
 
+/** order by stddev() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
+
 /** aggregate stddev_pop on columns */
 export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Pop_Fields = {
   __typename?: 'analysis_manifest_dependency_edge_result_stddev_pop_fields';
   finding_source_version?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Pop_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
@@ -455,10 +491,20 @@ export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Samp_Fields = {
   finding_source_version?: Maybe<Scalars['Float']>;
 };
 
+/** order by stddev_samp() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Samp_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
+
 /** aggregate sum on columns */
 export type Analysis_Manifest_Dependency_Edge_Result_Sum_Fields = {
   __typename?: 'analysis_manifest_dependency_edge_result_sum_fields';
   finding_source_version?: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Sum_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_pop on columns */
@@ -467,16 +513,31 @@ export type Analysis_Manifest_Dependency_Edge_Result_Var_Pop_Fields = {
   finding_source_version?: Maybe<Scalars['Float']>;
 };
 
+/** order by var_pop() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Var_Pop_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
+
 /** aggregate var_samp on columns */
 export type Analysis_Manifest_Dependency_Edge_Result_Var_Samp_Fields = {
   __typename?: 'analysis_manifest_dependency_edge_result_var_samp_fields';
   finding_source_version?: Maybe<Scalars['Float']>;
 };
 
+/** order by var_samp() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Var_Samp_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
+
 /** aggregate variance on columns */
 export type Analysis_Manifest_Dependency_Edge_Result_Variance_Fields = {
   __typename?: 'analysis_manifest_dependency_edge_result_variance_fields';
   finding_source_version?: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Variance_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
@@ -2610,7 +2671,12 @@ export type Latest_Default_Builds_Variance_Fields = {
   build_number?: Maybe<Scalars['Float']>;
 };
 
-/** direct dependencies of builds with pointers to their location in the merkel tree table */
+/**
+ * DEPRECATED:
+ * direct dependencies are now regular items in the merkel tree
+ *
+ * direct dependencies of builds with pointers to their location in the merkel tree table
+ */
 export type Manifest_Dependency = {
   __typename?: 'manifest_dependency';
   /** A computed field, executes function "manifest_dependency_child_edges_recursive" */
@@ -2625,7 +2691,12 @@ export type Manifest_Dependency = {
 };
 
 
-/** direct dependencies of builds with pointers to their location in the merkel tree table */
+/**
+ * DEPRECATED:
+ * direct dependencies are now regular items in the merkel tree
+ *
+ * direct dependencies of builds with pointers to their location in the merkel tree table
+ */
 export type Manifest_DependencyChild_Edges_RecursiveArgs = {
   distinct_on?: InputMaybe<Array<Manifest_Dependency_Edge_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -2656,6 +2727,10 @@ export type Manifest_Dependency_Bool_Exp = {
 /** columns and relationships of "manifest_dependency_edge" */
 export type Manifest_Dependency_Edge = {
   __typename?: 'manifest_dependency_edge';
+  /** An array relationship */
+  analysis_results: Array<Analysis_Manifest_Dependency_Edge_Result>;
+  /** An aggregate relationship */
+  analysis_results_aggregate: Analysis_Manifest_Dependency_Edge_Result_Aggregate;
   /** An object relationship */
   child: Manifest_Dependency_Node;
   child_id: Scalars['uuid'];
@@ -2663,6 +2738,26 @@ export type Manifest_Dependency_Edge = {
   /** An object relationship */
   parent: Manifest_Dependency_Node;
   parent_id: Scalars['uuid'];
+};
+
+
+/** columns and relationships of "manifest_dependency_edge" */
+export type Manifest_Dependency_EdgeAnalysis_ResultsArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
+};
+
+
+/** columns and relationships of "manifest_dependency_edge" */
+export type Manifest_Dependency_EdgeAnalysis_Results_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
 };
 
 /** order by aggregate values of table "manifest_dependency_edge" */
@@ -2677,6 +2772,7 @@ export type Manifest_Dependency_Edge_Bool_Exp = {
   _and?: InputMaybe<Array<Manifest_Dependency_Edge_Bool_Exp>>;
   _not?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
   _or?: InputMaybe<Array<Manifest_Dependency_Edge_Bool_Exp>>;
+  analysis_results?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
   child?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   child_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -2700,6 +2796,7 @@ export type Manifest_Dependency_Edge_Min_Order_By = {
 
 /** Ordering options when selecting data from "manifest_dependency_edge". */
 export type Manifest_Dependency_Edge_Order_By = {
+  analysis_results_aggregate?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Aggregate_Order_By>;
   child?: InputMaybe<Manifest_Dependency_Node_Order_By>;
   child_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -2785,6 +2882,13 @@ export type Manifest_Dependency_NodeParent_EdgesArgs = {
   where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
 };
 
+/** order by aggregate values of table "manifest_dependency_node" */
+export type Manifest_Dependency_Node_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Manifest_Dependency_Node_Max_Order_By>;
+  min?: InputMaybe<Manifest_Dependency_Node_Min_Order_By>;
+};
+
 /** Boolean expression to filter rows from the table "manifest_dependency_node". All fields are combined with a logical 'AND'. */
 export type Manifest_Dependency_Node_Bool_Exp = {
   _and?: InputMaybe<Array<Manifest_Dependency_Node_Bool_Exp>>;
@@ -2798,6 +2902,22 @@ export type Manifest_Dependency_Node_Bool_Exp = {
   range?: InputMaybe<String_Comparison_Exp>;
   release?: InputMaybe<Package_Release_Bool_Exp>;
   release_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** order by max() on columns of table "manifest_dependency_node" */
+export type Manifest_Dependency_Node_Max_Order_By = {
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
+  id?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+  release_id?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "manifest_dependency_node" */
+export type Manifest_Dependency_Node_Min_Order_By = {
+  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
+  id?: InputMaybe<Order_By>;
+  range?: InputMaybe<Order_By>;
+  release_id?: InputMaybe<Order_By>;
 };
 
 /** Ordering options when selecting data from "manifest_dependency_node". */
@@ -3690,6 +3810,8 @@ export type Package_Release = {
   build_dependency_relationships: Array<Build_Dependency_Relationship>;
   fetched_time?: Maybe<Scalars['timestamptz']>;
   id: Scalars['uuid'];
+  /** An array relationship */
+  manifest_dependency_nodes: Array<Manifest_Dependency_Node>;
   observed_time: Scalars['timestamptz'];
   /** An object relationship */
   package: Package;
@@ -3708,6 +3830,16 @@ export type Package_ReleaseBuild_Dependency_RelationshipsArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
   where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
+};
+
+
+/** columns and relationships of "package.release" */
+export type Package_ReleaseManifest_Dependency_NodesArgs = {
+  distinct_on?: InputMaybe<Array<Manifest_Dependency_Node_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Manifest_Dependency_Node_Order_By>>;
+  where?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
 };
 
 
@@ -3753,6 +3885,7 @@ export type Package_Release_Bool_Exp = {
   build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   fetched_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  manifest_dependency_nodes?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   observed_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   package?: InputMaybe<Package_Bool_Exp>;
   package_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -3813,6 +3946,7 @@ export type Package_Release_Order_By = {
   build_dependency_relationships_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
   fetched_time?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  manifest_dependency_nodes_aggregate?: InputMaybe<Manifest_Dependency_Node_Aggregate_Order_By>;
   observed_time?: InputMaybe<Order_By>;
   package?: InputMaybe<Package_Order_By>;
   package_id?: InputMaybe<Order_By>;
@@ -5026,6 +5160,8 @@ export type Resolved_Manifest = {
   id: Scalars['uuid'];
   /** An array relationship */
   manifest_dependencies: Array<Manifest_Dependency>;
+  /** An object relationship */
+  manifest_dependency_node?: Maybe<Manifest_Dependency_Node>;
   /** path in repo of manifest file. empty string if the ecosystem does not have a manifest file. */
   path?: Maybe<Scalars['String']>;
 };
@@ -5067,6 +5203,7 @@ export type Resolved_Manifest_Bool_Exp = {
   child_edges_recursive?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   manifest_dependencies?: InputMaybe<Manifest_Dependency_Bool_Exp>;
+  manifest_dependency_node?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   path?: InputMaybe<String_Comparison_Exp>;
 };
 
@@ -5093,6 +5230,7 @@ export type Resolved_Manifest_Order_By = {
   child_edges_recursive_aggregate?: InputMaybe<Manifest_Dependency_Edge_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
   manifest_dependencies_aggregate?: InputMaybe<Manifest_Dependency_Aggregate_Order_By>;
+  manifest_dependency_node?: InputMaybe<Manifest_Dependency_Node_Order_By>;
   path?: InputMaybe<Order_By>;
 };
 
@@ -7264,7 +7402,7 @@ export type GetVulnerableReleasesFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, beneath_minimum_severity: boolean, cvss?: number | null, severity: string, paths: Array<string>, fix_versions: Array<string>, dev_only: boolean, guides: Array<{ __typename?: 'BuildData_Guide', id: string, title: string, summary: string }>, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>>, release: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string, package_manager: string } }, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable_to?: string | null, beneath_minimum_severity: boolean, fix_versions: Array<string>, path: string, ignored: boolean, ignored_vulnerability?: { __typename?: 'BuildData_IgnoredVulnerability', locations: Array<string>, note: string } | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, summary?: string | null, id: string, source_id: string, guide_vulnerabilities: Array<{ __typename?: 'BuildData_Guide_Vulnerability', guide?: { __typename?: 'BuildData_Guide', id: string, summary: string, title: string } | null }> }, chains?: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>> | null }> }> | null };
+export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, beneath_minimum_severity: boolean, cvss?: number | null, severity: string, paths: Array<string>, fix_versions: Array<string>, dev_only: boolean, guides: Array<{ __typename?: 'BuildData_Guide', id: string, title: string, summary: string }>, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, reachable: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>>, release: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string, package_manager: string } }, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable_to?: string | null, beneath_minimum_severity: boolean, fix_versions: Array<string>, path: string, ignored: boolean, ignored_vulnerability?: { __typename?: 'BuildData_IgnoredVulnerability', locations: Array<string>, note: string } | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, summary?: string | null, id: string, source_id: string, guide_vulnerabilities: Array<{ __typename?: 'BuildData_Guide_Vulnerability', guide?: { __typename?: 'BuildData_Guide', id: string, summary: string, title: string } | null }> } }> }> | null };
 
 export type InsertNewOrgUserMutationVariables = Exact<{
   organization_id: Scalars['uuid'];
@@ -8014,6 +8152,7 @@ export const GetVulnerableReleasesFromBuildDocument = `
         }
         version
       }
+      reachable
     }
     release {
       version
@@ -8045,17 +8184,6 @@ export const GetVulnerableReleasesFromBuildDocument = `
             summary
             title
           }
-        }
-      }
-      chains {
-        id
-        range
-        release {
-          id
-          package {
-            name
-          }
-          version
         }
       }
     }

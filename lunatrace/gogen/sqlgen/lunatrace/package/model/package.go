@@ -36,4 +36,5 @@ type Package struct {
 	UpstreamData        *string
 	LastFailedFetch     *time.Time
 	LastSuccessfulFetch *time.Time
+	Internal            bool
 }
