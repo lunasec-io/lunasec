@@ -24,7 +24,6 @@ input Boolean_comparison_exp {
 
 type BuildData_AffectedByVulnerability {
     beneath_minimum_severity: Boolean!
-    chains: [[BuildData_DependencyNode!]!]
     fix_versions: [String!]!
     ignored: Boolean!
     ignored_vulnerability: BuildData_IgnoredVulnerability
@@ -37,6 +36,7 @@ type BuildData_AffectedByVulnerability {
 type BuildData_DependencyNode {
     id: String!
     range: String!
+    reachable: String!
     release: BuildData_Release!
     release_id: String!
 }
@@ -57,7 +57,6 @@ type BuildData_IgnoredVulnerability {
 }
 
 type BuildData_Package {
-    affected_by_vulnerability: [BuildData_AffectedByVulnerability!]
     name: String!
     package_manager: String!
 }
@@ -77,7 +76,6 @@ type BuildData_Vulnerability {
     cvss_score: Float
     guide_vulnerabilities: [BuildData_Guide_Vulnerability!]!
     id: String!
-    ignored_vulnerabilities(distinct_on: [ignored_vulnerabilities_select_column!], limit: Int, offset: Int, order_by: [ignored_vulnerabilities_order_by!], where: ignored_vulnerabilities_bool_exp): [ignored_vulnerabilities!]!
     severity_name: String
     source: String!
     source_id: String!
@@ -270,8 +268,31 @@ type analysis_manifest_dependency_edge_result {
     vulnerability_id: uuid!
 }
 
+input analysis_manifest_dependency_edge_result_aggregate_order_by {
+    avg: analysis_manifest_dependency_edge_result_avg_order_by
+    count: order_by
+    max: analysis_manifest_dependency_edge_result_max_order_by
+    min: analysis_manifest_dependency_edge_result_min_order_by
+    stddev: analysis_manifest_dependency_edge_result_stddev_order_by
+    stddev_pop: analysis_manifest_dependency_edge_result_stddev_pop_order_by
+    stddev_samp: analysis_manifest_dependency_edge_result_stddev_samp_order_by
+    sum: analysis_manifest_dependency_edge_result_sum_order_by
+    var_pop: analysis_manifest_dependency_edge_result_var_pop_order_by
+    var_samp: analysis_manifest_dependency_edge_result_var_samp_order_by
+    variance: analysis_manifest_dependency_edge_result_variance_order_by
+}
+
 input analysis_manifest_dependency_edge_result_append_input {
     output: jsonb
+}
+
+input analysis_manifest_dependency_edge_result_arr_rel_insert_input {
+    data: [analysis_manifest_dependency_edge_result_insert_input!]!
+    on_conflict: analysis_manifest_dependency_edge_result_on_conflict
+}
+
+input analysis_manifest_dependency_edge_result_avg_order_by {
+    finding_source_version: order_by
 }
 
 input analysis_manifest_dependency_edge_result_bool_exp {
@@ -322,6 +343,22 @@ input analysis_manifest_dependency_edge_result_insert_input {
     output: jsonb
     vulnerability: vulnerability_obj_rel_insert_input
     vulnerability_id: uuid
+}
+
+input analysis_manifest_dependency_edge_result_max_order_by {
+    created_at: order_by
+    finding_source_version: order_by
+    id: order_by
+    manifest_dependency_edge_id: order_by
+    vulnerability_id: order_by
+}
+
+input analysis_manifest_dependency_edge_result_min_order_by {
+    created_at: order_by
+    finding_source_version: order_by
+    id: order_by
+    manifest_dependency_edge_id: order_by
+    vulnerability_id: order_by
 }
 
 type analysis_manifest_dependency_edge_result_mutation_response {
@@ -378,6 +415,22 @@ input analysis_manifest_dependency_edge_result_set_input {
     vulnerability_id: uuid
 }
 
+input analysis_manifest_dependency_edge_result_stddev_order_by {
+    finding_source_version: order_by
+}
+
+input analysis_manifest_dependency_edge_result_stddev_pop_order_by {
+    finding_source_version: order_by
+}
+
+input analysis_manifest_dependency_edge_result_stddev_samp_order_by {
+    finding_source_version: order_by
+}
+
+input analysis_manifest_dependency_edge_result_sum_order_by {
+    finding_source_version: order_by
+}
+
 enum analysis_manifest_dependency_edge_result_update_column {
     created_at
     finding_source
@@ -387,6 +440,18 @@ enum analysis_manifest_dependency_edge_result_update_column {
     manifest_dependency_edge_id
     output
     vulnerability_id
+}
+
+input analysis_manifest_dependency_edge_result_var_pop_order_by {
+    finding_source_version: order_by
+}
+
+input analysis_manifest_dependency_edge_result_var_samp_order_by {
+    finding_source_version: order_by
+}
+
+input analysis_manifest_dependency_edge_result_variance_order_by {
+    finding_source_version: order_by
 }
 
 scalar bigint
@@ -2411,6 +2476,7 @@ enum manifest_dependency_constraint {
 }
 
 type manifest_dependency_edge {
+    analysis_results(distinct_on: [analysis_manifest_dependency_edge_result_select_column!], limit: Int, offset: Int, order_by: [analysis_manifest_dependency_edge_result_order_by!], where: analysis_manifest_dependency_edge_result_bool_exp): [analysis_manifest_dependency_edge_result!]!
     child: manifest_dependency_node!
     child_id: uuid!
     id: uuid!
@@ -2433,6 +2499,7 @@ input manifest_dependency_edge_bool_exp {
     _and: [manifest_dependency_edge_bool_exp!]
     _not: manifest_dependency_edge_bool_exp
     _or: [manifest_dependency_edge_bool_exp!]
+    analysis_results: analysis_manifest_dependency_edge_result_bool_exp
     child: manifest_dependency_node_bool_exp
     child_id: uuid_comparison_exp
     id: uuid_comparison_exp
@@ -2446,6 +2513,7 @@ enum manifest_dependency_edge_constraint {
 }
 
 input manifest_dependency_edge_insert_input {
+    analysis_results: analysis_manifest_dependency_edge_result_arr_rel_insert_input
     child: manifest_dependency_node_obj_rel_insert_input
     child_id: uuid
     id: uuid
@@ -2482,6 +2550,7 @@ input manifest_dependency_edge_on_conflict {
 }
 
 input manifest_dependency_edge_order_by {
+    analysis_results_aggregate: analysis_manifest_dependency_edge_result_aggregate_order_by
     child: manifest_dependency_node_order_by
     child_id: order_by
     id: order_by
@@ -2544,8 +2613,19 @@ type manifest_dependency_node {
     release_id: uuid!
 }
 
+input manifest_dependency_node_aggregate_order_by {
+    count: order_by
+    max: manifest_dependency_node_max_order_by
+    min: manifest_dependency_node_min_order_by
+}
+
 input manifest_dependency_node_append_input {
     labels: jsonb
+}
+
+input manifest_dependency_node_arr_rel_insert_input {
+    data: [manifest_dependency_node_insert_input!]!
+    on_conflict: manifest_dependency_node_on_conflict
 }
 
 input manifest_dependency_node_bool_exp {
@@ -2586,6 +2666,18 @@ input manifest_dependency_node_insert_input {
     range: String
     release: package_release_obj_rel_insert_input
     release_id: uuid
+}
+
+input manifest_dependency_node_max_order_by {
+    id: order_by
+    range: order_by
+    release_id: order_by
+}
+
+input manifest_dependency_node_min_order_by {
+    id: order_by
+    range: order_by
+    release_id: order_by
 }
 
 type manifest_dependency_node_mutation_response {
@@ -3347,6 +3439,7 @@ type package {
     name: String!
     package_maintainers(distinct_on: [package_package_maintainer_select_column!], limit: Int, offset: Int, order_by: [package_package_maintainer_order_by!], where: package_package_maintainer_bool_exp): [package_package_maintainer!]!
     package_manager: package_manager!
+    release_dependencies(distinct_on: [package_release_dependency_select_column!], limit: Int, offset: Int, order_by: [package_release_dependency_order_by!], where: package_release_dependency_bool_exp): [package_release_dependency!]!
     releases(distinct_on: [package_release_select_column!], limit: Int, offset: Int, order_by: [package_release_order_by!], where: package_release_bool_exp): [package_release!]!
     upstream_data(path: String): jsonb
 }
@@ -3379,6 +3472,7 @@ input package_bool_exp {
     name: String_comparison_exp
     package_maintainers: package_package_maintainer_bool_exp
     package_manager: package_manager_comparison_exp
+    release_dependencies: package_release_dependency_bool_exp
     releases: package_release_bool_exp
     upstream_data: jsonb_comparison_exp
 }
@@ -3410,6 +3504,7 @@ input package_insert_input {
     name: String
     package_maintainers: package_package_maintainer_arr_rel_insert_input
     package_manager: package_manager
+    release_dependencies: package_release_dependency_arr_rel_insert_input
     releases: package_release_arr_rel_insert_input
     upstream_data: jsonb
 }
@@ -3626,6 +3721,7 @@ input package_order_by {
     name: order_by
     package_maintainers_aggregate: package_package_maintainer_aggregate_order_by
     package_manager: order_by
+    release_dependencies_aggregate: package_release_dependency_aggregate_order_by
     releases_aggregate: package_release_aggregate_order_by
     upstream_data: order_by
 }
@@ -3725,6 +3821,7 @@ type package_release {
     build_dependency_relationships(distinct_on: [build_dependency_relationship_select_column!], limit: Int, offset: Int, order_by: [build_dependency_relationship_order_by!], where: build_dependency_relationship_bool_exp): [build_dependency_relationship!]!
     fetched_time: timestamptz
     id: uuid!
+    manifest_dependency_nodes(distinct_on: [manifest_dependency_node_select_column!], limit: Int, offset: Int, order_by: [manifest_dependency_node_order_by!], where: manifest_dependency_node_bool_exp): [manifest_dependency_node!]!
     mirrored_blob_url: String
     observed_time: timestamptz!
     package: package!
@@ -3762,6 +3859,7 @@ input package_release_bool_exp {
     build_dependency_relationships: build_dependency_relationship_bool_exp
     fetched_time: timestamptz_comparison_exp
     id: uuid_comparison_exp
+    manifest_dependency_nodes: manifest_dependency_node_bool_exp
     mirrored_blob_url: String_comparison_exp
     observed_time: timestamptz_comparison_exp
     package: package_bool_exp
@@ -3928,6 +4026,7 @@ input package_release_insert_input {
     build_dependency_relationships: build_dependency_relationship_arr_rel_insert_input
     fetched_time: timestamptz
     id: uuid
+    manifest_dependency_nodes: manifest_dependency_node_arr_rel_insert_input
     mirrored_blob_url: String
     observed_time: timestamptz
     package: package_obj_rel_insert_input
@@ -4125,6 +4224,7 @@ input package_release_order_by {
     build_dependency_relationships_aggregate: build_dependency_relationship_aggregate_order_by
     fetched_time: order_by
     id: order_by
+    manifest_dependency_nodes_aggregate: manifest_dependency_node_aggregate_order_by
     mirrored_blob_url: order_by
     observed_time: order_by
     package: package_order_by
@@ -4573,6 +4673,7 @@ type resolved_manifest {
     child_edges_recursive(distinct_on: [manifest_dependency_edge_select_column!], limit: Int, offset: Int, order_by: [manifest_dependency_edge_order_by!], where: manifest_dependency_edge_bool_exp): [manifest_dependency_edge!]
     id: uuid!
     manifest_dependencies(distinct_on: [manifest_dependency_select_column!], limit: Int, offset: Int, order_by: [manifest_dependency_order_by!], where: manifest_dependency_bool_exp): [manifest_dependency!]!
+    manifest_dependency_node: manifest_dependency_node
     path: String
 }
 
@@ -4596,6 +4697,7 @@ input resolved_manifest_bool_exp {
     child_edges_recursive: manifest_dependency_edge_bool_exp
     id: uuid_comparison_exp
     manifest_dependencies: manifest_dependency_bool_exp
+    manifest_dependency_node: manifest_dependency_node_bool_exp
     path: String_comparison_exp
 }
 
@@ -4609,6 +4711,7 @@ input resolved_manifest_insert_input {
     build_id: uuid
     id: uuid
     manifest_dependencies: manifest_dependency_arr_rel_insert_input
+    manifest_dependency_node: manifest_dependency_node_obj_rel_insert_input
     path: String
 }
 
@@ -4646,6 +4749,7 @@ input resolved_manifest_order_by {
     child_edges_recursive_aggregate: manifest_dependency_edge_aggregate_order_by
     id: order_by
     manifest_dependencies_aggregate: manifest_dependency_aggregate_order_by
+    manifest_dependency_node: manifest_dependency_node_order_by
     path: order_by
 }
 

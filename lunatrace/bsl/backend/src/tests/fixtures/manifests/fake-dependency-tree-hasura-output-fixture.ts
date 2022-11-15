@@ -1,3 +1,5 @@
+import { Manifest } from '../../../models/vulnerability-dependency-tree/types';
+
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
@@ -11,9 +13,7 @@
  * limitations under the License.
  *
  */
-import { RawManifest } from '../../models/dependency-tree/types';
-
-export const fakeDependencyTreeHasuraOutputFixture: Array<RawManifest> = [
+export const fakeDependencyTreeHasuraOutputFixture: Array<Manifest> = [
   {
     path: 'package-lock.json',
     child_edges_recursive: [
@@ -21,6 +21,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<RawManifest> = [
         id: 'e1',
         child_id: '1',
         parent_id: '00000000-0000-0000-0000-000000000000',
+        analysis_results: [],
         child: {
           id: '1',
           range: '1.0.0',
@@ -40,6 +41,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<RawManifest> = [
         id: 'e2',
         child_id: '2',
         parent_id: '1',
+        analysis_results: [],
         child: {
           id: '2',
           range: '1.0.0',
@@ -59,6 +61,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<RawManifest> = [
         id: 'e3',
         child_id: '3',
         parent_id: '2',
+        analysis_results: [],
         child: {
           id: '3',
           range: '1.0.0',
@@ -78,6 +81,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<RawManifest> = [
         id: 'e4',
         child_id: '4',
         parent_id: '3',
+        analysis_results: [],
         child: {
           id: '4',
           range: '^1.0.0',
@@ -123,6 +127,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<RawManifest> = [
         id: 'e5',
         child_id: '4',
         parent_id: '1',
+        analysis_results: [],
         child: {
           id: '4',
           range: '^1.0.0',

@@ -11,30 +11,21 @@
  * limitations under the License.
  *
  */
+import classNames from 'classnames';
 import React, { useState } from 'react';
-import { Badge, NavLink } from 'react-bootstrap';
-import { ChevronRight, ChevronsRight, Maximize2, Minimize2 } from 'react-feather';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import { NavLink, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { CheckCircle, Maximize2, Minimize2 } from 'react-feather';
 
 import 'react-perfect-scrollbar/dist/css/styles.css';
+import { Analysis_Finding_Type_Enum } from '../../../../../../api/generated';
 import { VulnerablePackage } from '../types';
 
+import { ChainDep } from './ChainDep';
 interface TreeInfoProps {
   pkg: VulnerablePackage;
 }
 
 export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
-  // Determines if the package is the start, the middle, or the target package and then colors them appropriately
-  const getBadgeColor = (depIndex: number, chainLength: number) => {
-    if (depIndex === chainLength - 1) {
-      return 'success';
-    }
-    if (depIndex === 0) {
-      return 'primary';
-    }
-    return 'light';
-  };
-
   // Show the longest chains first, a hack to make expandable double chevrons show on deduped collapsed chains. Also it looks nice
   const chains = [...pkg.chains].sort((a, b) => {
     return b.length - a.length;
@@ -74,37 +65,59 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
           }
           chainDedupeSlugs.push(dedupeSlug);
 
+          /*
+           * since we might not have results for every edge in the dependency chain, we are collecting all the
+           * indexes where a dependency is not reachable in the chain, and then letting that affect the display
+           * of the rest of the chain (dependencies used further in the chain are not reachable if an index earlier
+           * in the list was observed as not reachable).
+           */
+          const notReachableIndexes: number[] = [];
+          chain.forEach((dep, idx) => {
+            if (dep.reachable === Analysis_Finding_Type_Enum.NotVulnerable) {
+              notReachableIndexes.push(idx);
+            }
+          });
+
+          const vulnerabilityIsReachable = notReachableIndexes.length === 0;
+          const chainTooltipMsg = vulnerabilityIsReachable
+            ? 'All dependencies in the vulnerable chain are imported and called. Vulnerability is likely to be relevant.'
+            : 'All dependencies in the vulnerable chain have been analyzed, but a continuous "imported and called" chain  was not found. Vulnerability is unlikely to be relevant.';
+
+          const chainHasBeenAnalyzed = !chain.some((d) => d.reachable === Analysis_Finding_Type_Enum.Error);
+
           return (
-            <div className="one-point-two-em d-flex pb-1 pt-1" key={dedupeSlug}>
-              {visibleChain.map((dep, index) => {
-                return (
-                  <React.Fragment key={dep.id}>
-                    <div className="me-1 ms-1 d-inline-flex justify-content-center" style={{ flexDirection: 'column' }}>
-                      {index !== 0 &&
-                        (chain.length > visibleChain.length ? (
-                          <NavLink className="p-0" onClick={() => setIsExpanded(true)} style={{ display: 'inline' }}>
-                            <ChevronsRight size="1em" className="" />
-                          </NavLink>
-                        ) : (
-                          <ChevronRight
-                            size="1em"
-                            className="mb-n1"
-                            style={{ marginLeft: 'auto', marginRight: 'auto', display: 'block' }}
-                          />
-                        ))}
-                      {isExpanded && <div style={{ fontSize: '.7rem' }}>{dep.range}</div>}
-                    </div>
-                    <Badge text="dark" bg={getBadgeColor(index, visibleChain.length)}>
-                      <div>{dep.release.package.name}</div>
-                      {isExpanded && (
-                        <div className="mt-1" style={{ fontSize: '.7rem' }}>
-                          {dep.release.version}
-                        </div>
-                      )}
-                    </Badge>
-                  </React.Fragment>
-                );
-              })}
+            <div key={dedupeSlug}>
+              <div className="one-point-two-em d-flex pb-1 pt-1">
+                {visibleChain.map((dep, index) => {
+                  const depIsReachable = !notReachableIndexes.some((i) => i < index);
+                  return (
+                    <ChainDep
+                      key={dep.id}
+                      index={index}
+                      dep={dep}
+                      isExpanded={isExpanded}
+                      chainLength={chain.length}
+                      visibleChainLength={visibleChain.length}
+                      setIsExpanded={setIsExpanded}
+                      depIsReachable={depIsReachable}
+                    />
+                  );
+                })}
+                <div className="me-1 ms-1 d-inline-flex justify-content-center" style={{ flexDirection: 'column' }}>
+                  {chainHasBeenAnalyzed && (
+                    <OverlayTrigger placement={'top'} overlay={<Tooltip>{chainTooltipMsg}</Tooltip>}>
+                      <CheckCircle
+                        className={classNames([
+                          'mb-1',
+                          'me-1',
+                          vulnerabilityIsReachable ? 'text-success' : 'text-warning',
+                        ])}
+                        size="1em"
+                      />
+                    </OverlayTrigger>
+                  )}
+                </div>
+              </div>
             </div>
           );
         })}
