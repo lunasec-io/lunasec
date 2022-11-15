@@ -15,7 +15,7 @@ import { GraphQLYogaError } from '@graphql-yoga/node';
 import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common';
 
 import { hasura } from '../../hasura-api';
-import { Analysis_Finding_Source_Enum, GetTreeFromBuildQuery } from '../../hasura-api/generated';
+import { GetTreeFromBuildQuery } from '../../hasura-api/generated';
 import VulnerabilityDependencyTree from '../../models/vulnerability-dependency-tree';
 import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';
@@ -59,7 +59,6 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
   log.info('finished processing tree', {
     totalTime,
   });
-
   return vulnerableReleases;
 };
 

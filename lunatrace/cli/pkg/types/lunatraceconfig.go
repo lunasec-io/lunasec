@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package types
 
 type LunaTraceGraphqlServer struct {
@@ -32,9 +31,10 @@ type LunaTraceApp struct {
 }
 
 type LunaTraceConfig struct {
-	LunaTraceApp       `yaml:"app"`
-	LunaTraceGateway   `yaml:"gateway"`
-	ProjectAccessToken string `yaml:"project_access_token"`
+	LunaTraceApp         `yaml:"app"`
+	LunaTraceGateway     `yaml:"gateway"`
+	ProjectAccessToken   string `yaml:"project_access_token"`
+	LunaTraceEnvironment string
 }
 
 type LunaTraceAgentConfig struct {
