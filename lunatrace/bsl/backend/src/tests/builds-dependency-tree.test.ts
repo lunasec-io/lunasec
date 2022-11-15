@@ -28,12 +28,18 @@ describe('The fake dependency tree', () => {
     expect(tree).toBeDefined();
   });
 
+  it('should have the right parents for node 4', () => {
+    const parentIds = tree.graph.getParentEdges('4');
+    expect(parentIds).toEqual(new Set(['3', '1']));
+  });
+
   it('Should show vulnerable releases properly', () => {
     const vulnReleases = tree.getVulnerableReleases();
     expect(vulnReleases.length).toEqual(1);
 
     const vulnQux = vulnReleases[0];
     expect(vulnQux.trivially_updatable).toEqual('yes');
+    console.log('vulnQux is', vulnQux);
     expect(vulnQux.chains.length).toEqual(2);
     expect(vulnQux.paths).toEqual(['package-lock.json']);
     const chain = vulnQux.chains[1];
@@ -73,7 +79,7 @@ describe('a real sample dependency tree', () => {
   });
 });
 
-describe.only('huge docusaurus dependency tree', () => {
+describe('huge docusaurus dependency tree', () => {
   const rawTreeString = fs
     .readFileSync(path.join(__dirname, 'fixtures/manifests/huge-docusaurus-tree-hasura-output.json'))
     .toString();
@@ -90,8 +96,6 @@ describe.only('huge docusaurus dependency tree', () => {
     const vulnerableReleases = tree.getVulnerableReleases();
     const firstVuln = vulnerableReleases[0];
     const terserVuln = vulnerableReleases.filter((vr) => vr.release.package.name === 'terser')[0];
-    const terserParents = terserVuln.chains.map((chain) => chain[chain.length - 2].release.package.name);
-    console.log(terserParents);
     const byCount: Map<string, number> = new Map();
 
     firstVuln.chains.forEach((chain) => {
@@ -108,8 +112,12 @@ describe.only('huge docusaurus dependency tree', () => {
 
   it('should have no duplicate chains', () => {
     tree.getVulnerableReleases().forEach((vr) => {
-      const chainStrings = vr.chains.map((chain) => JSON.stringify(chain));
-      const chainStringSet = new Set(...chainStrings);
+      const chainStrings = vr.chains.map((chain) => {
+        const jsonSlug = JSON.stringify(chain);
+        return jsonSlug;
+      });
+
+      const chainStringSet = new Set(chainStrings);
       expect(chainStrings.length).toEqual(chainStringSet.size);
     });
   });
