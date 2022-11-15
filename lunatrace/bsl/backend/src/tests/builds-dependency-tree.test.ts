@@ -29,7 +29,7 @@ describe('The fake dependency tree', () => {
   });
 
   it('should have the right parents for node 4', () => {
-    const parentIds = tree.graph.getParentEdges('4');
+    const parentIds = tree.graph.getParentIds('4');
     expect(parentIds).toEqual(new Set(['3', '1']));
   });
 
