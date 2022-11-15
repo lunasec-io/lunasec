@@ -1,0 +1,28 @@
+
+.pretty-scroll {
+  &::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  &::-webkit-scrollbar-track {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    margin: 3px;
+    border-radius: 10px;
+    background-color: transparent;
+    -webkit-box-shadow: inset 0 0 6px rgba(90, 90, 90, 0.7);
+  }
+
+  &::-webkit-scrollbar-corner {
+    display: none;
+  }
+
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background-color: $gray-300 !important;
+    }
+  }
+}
