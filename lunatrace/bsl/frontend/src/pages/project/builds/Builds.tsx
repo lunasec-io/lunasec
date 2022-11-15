@@ -18,19 +18,20 @@ import { useBottomScrollListener } from 'react-bottom-scroll-listener';
 import api from '../../../api';
 import { GetProjectBuildsQuery } from '../../../api/generated';
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
-import { BuildInfo } from '../types';
+import { BuildInfo, ProjectInfo } from '../types';
 
 import { BuildList } from './BuildList';
+import { SnapShotExplainerAccordion } from './SnapShotExplainerAccordion';
 
 interface BuildsProps {
-  projectId: string;
+  project: ProjectInfo;
   buildLimit: number;
   loadMoreBuildsCallback: () => void;
   isFetching: boolean;
 }
 
 export const Builds: React.FunctionComponent<BuildsProps> = ({
-  projectId,
+  project,
   buildLimit,
   loadMoreBuildsCallback,
   isFetching,
@@ -45,7 +46,7 @@ export const Builds: React.FunctionComponent<BuildsProps> = ({
 
   useEffect(() => {
     const runningQuery = getProjectBuildsTrigger({
-      project_id: projectId,
+      project_id: project.id,
       build_limit: buildLimit,
     });
 
@@ -67,6 +68,7 @@ export const Builds: React.FunctionComponent<BuildsProps> = ({
   // TODO (cthompson) show an indication to the user that automatic polling has stopped and that they will need to refresh the page.
   return (
     <>
+      <SnapShotExplainerAccordion project={project} />
       <BuildList builds={builds} />
       <ConditionallyRender if={isFetching}>
         <Spinner animation="border" className="" />

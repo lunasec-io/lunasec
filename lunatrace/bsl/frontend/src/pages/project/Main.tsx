@@ -133,7 +133,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
       case 'builds':
         return (
           <Builds
-            projectId={p.id}
+            project={p}
             buildLimit={buildLimit}
             loadMoreBuildsCallback={loadMoreBuildsCallback}
             isFetching={isFetching}

@@ -17,12 +17,9 @@ import { AiFillGithub } from 'react-icons/ai';
 
 import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 import { GithubAppUrl } from '../../../constants';
-import { ProjectInfo, SetActiveTab } from '../types';
+import { ProjectInfo } from '../types';
 
-export const ScanTypesExplanation: React.FC<{ setActiveTab: SetActiveTab; project: ProjectInfo }> = ({
-  setActiveTab,
-  project,
-}) => {
+export const ScanTypesExplanation: React.FC<{ project: ProjectInfo }> = ({ project }) => {
   return (
     <>
       <Row className="justify-content-center mb-3">
@@ -37,7 +34,7 @@ export const ScanTypesExplanation: React.FC<{ setActiveTab: SetActiveTab; projec
           </Card.Title>
           <Card.Subtitle className="darker homepage-subtitle">
             Projects imported from GitHub will automatically take a snapshot of pull-requests, and notify of any
-            critical vulnerabilities in a comment on the PR.
+            critical vulnerabilities in a comment on the PR. To disable automatic comments, click settings.
           </Card.Subtitle>
           <Card.Title>
             <AiFillGithub className="m-3" size="40px" />
