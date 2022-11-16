@@ -2,7 +2,6 @@
 id: "false-positive-elimination"
 title: "False Positive Elimination"
 sidebar_label: "False Positive Elimination"
-sidebar_position: 1
 ---
 
 <!--
