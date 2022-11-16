@@ -1,7 +1,7 @@
 ---
-id: "vulnerability-database"
-title: "Vulnerability Database"
-sidebar_label: "Vulnerability Database"
+id: "guides"
+title: "Guides"
+sidebar_label: "Guides"
 ---
 
 <!--
@@ -18,9 +18,12 @@ sidebar_label: "Vulnerability Database"
   ~
 -->
 
-LunaTrace has a database of vulnerability information that is aggregated from multiple sources including:
-* GitHub Reviewed Security Advisories
-* NVD
+Guides are a collection of curated data about vulnerabilities. They are published by LunaSec in a structured format.
 
-
-The database is enriched with [Guides](../guides) from LunaTrace's security engineers about important vulnerabilities.
+## Parts of a Guide
+### Metadata
+* Structured information about the vulnerability.
+* Can be convered to OSV.
+### Body
+* Detailed information and analysis from LunaSec's security engineers.
+* Tips for mitigation and incident response
