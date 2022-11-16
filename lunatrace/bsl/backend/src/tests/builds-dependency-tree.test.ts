@@ -120,6 +120,22 @@ describe('huge docusaurus dependency tree', () => {
       expect(chainStrings.length).toEqual(chainStringSet.size);
     });
   });
+
+  it('should generate the right number of vulnerabilities', () => {
+    const rawTreeString = fs
+      .readFileSync(path.join(__dirname, 'fixtures/manifests/huge-docusaurus-tree-hasura-output.json'))
+      .toString();
+    const parsedTreeData = JSON.parse(rawTreeString) as Manifest[];
+
+    parsedTreeData.forEach((t) => t.child_edges_recursive?.forEach((e) => (e.analysis_results = [])));
+
+    const tree = new VulnerabilityDependencyTree(parsedTreeData);
+    const vulnerableReleases = tree.getVulnerableReleases();
+    expect(vulnerableReleases.length).toBe(17);
+
+    const vulnerableEdges = tree.getEdgesWhereChildIsVulnerable();
+    expect(vulnerableEdges.length).toBe(54);
+  });
 });
 
 function chainToChainNames(chain: DependencyChain): string {
