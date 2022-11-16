@@ -3489,23 +3489,9 @@ export type Manifest_Dependency_NodeParent_EdgesArgs = {
   where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
 };
 
-/** order by aggregate values of table "manifest_dependency_node" */
-export type Manifest_Dependency_Node_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Manifest_Dependency_Node_Max_Order_By>;
-  min?: InputMaybe<Manifest_Dependency_Node_Min_Order_By>;
-};
-
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type Manifest_Dependency_Node_Append_Input = {
   labels?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** input type for inserting array relation for remote table "manifest_dependency_node" */
-export type Manifest_Dependency_Node_Arr_Rel_Insert_Input = {
-  data: Array<Manifest_Dependency_Node_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Manifest_Dependency_Node_On_Conflict>;
 };
 
 /** Boolean expression to filter rows from the table "manifest_dependency_node". All fields are combined with a logical 'AND'. */
@@ -3554,22 +3540,6 @@ export type Manifest_Dependency_Node_Insert_Input = {
   range?: InputMaybe<Scalars['String']>;
   release?: InputMaybe<Package_Release_Obj_Rel_Insert_Input>;
   release_id?: InputMaybe<Scalars['uuid']>;
-};
-
-/** order by max() on columns of table "manifest_dependency_node" */
-export type Manifest_Dependency_Node_Max_Order_By = {
-  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
-  id?: InputMaybe<Order_By>;
-  range?: InputMaybe<Order_By>;
-  release_id?: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "manifest_dependency_node" */
-export type Manifest_Dependency_Node_Min_Order_By = {
-  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
-  id?: InputMaybe<Order_By>;
-  range?: InputMaybe<Order_By>;
-  release_id?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "manifest_dependency_node" */
@@ -5903,8 +5873,6 @@ export type Package = {
   package_maintainers: Array<Package_Package_Maintainer>;
   package_manager: Scalars['package_manager'];
   /** An array relationship */
-  release_dependencies: Array<Package_Release_Dependency>;
-  /** An array relationship */
   releases: Array<Package_Release>;
   upstream_data?: Maybe<Scalars['jsonb']>;
 };
@@ -5927,16 +5895,6 @@ export type PackagePackage_MaintainersArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Package_Package_Maintainer_Order_By>>;
   where?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
-};
-
-
-/** columns and relationships of "package.package" */
-export type PackageRelease_DependenciesArgs = {
-  distinct_on?: InputMaybe<Array<Package_Release_Dependency_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Package_Release_Dependency_Order_By>>;
-  where?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
 };
 
 
@@ -5996,7 +5954,6 @@ export type Package_Bool_Exp = {
   name?: InputMaybe<String_Comparison_Exp>;
   package_maintainers?: InputMaybe<Package_Package_Maintainer_Bool_Exp>;
   package_manager?: InputMaybe<Package_Manager_Comparison_Exp>;
-  release_dependencies?: InputMaybe<Package_Release_Dependency_Bool_Exp>;
   releases?: InputMaybe<Package_Release_Bool_Exp>;
   upstream_data?: InputMaybe<Jsonb_Comparison_Exp>;
 };
@@ -6035,7 +5992,6 @@ export type Package_Insert_Input = {
   name?: InputMaybe<Scalars['String']>;
   package_maintainers?: InputMaybe<Package_Package_Maintainer_Arr_Rel_Insert_Input>;
   package_manager?: InputMaybe<Scalars['package_manager']>;
-  release_dependencies?: InputMaybe<Package_Release_Dependency_Arr_Rel_Insert_Input>;
   releases?: InputMaybe<Package_Release_Arr_Rel_Insert_Input>;
   upstream_data?: InputMaybe<Scalars['jsonb']>;
 };
@@ -6346,7 +6302,6 @@ export type Package_Order_By = {
   name?: InputMaybe<Order_By>;
   package_maintainers_aggregate?: InputMaybe<Package_Package_Maintainer_Aggregate_Order_By>;
   package_manager?: InputMaybe<Order_By>;
-  release_dependencies_aggregate?: InputMaybe<Package_Release_Dependency_Aggregate_Order_By>;
   releases_aggregate?: InputMaybe<Package_Release_Aggregate_Order_By>;
   upstream_data?: InputMaybe<Order_By>;
 };
@@ -6477,8 +6432,6 @@ export type Package_Release = {
   build_dependency_relationships: Array<Build_Dependency_Relationship>;
   fetched_time?: Maybe<Scalars['timestamptz']>;
   id: Scalars['uuid'];
-  /** An array relationship */
-  manifest_dependency_nodes: Array<Manifest_Dependency_Node>;
   mirrored_blob_url?: Maybe<Scalars['String']>;
   observed_time: Scalars['timestamptz'];
   /** An object relationship */
@@ -6505,16 +6458,6 @@ export type Package_ReleaseBuild_Dependency_RelationshipsArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
   where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
-};
-
-
-/** columns and relationships of "package.release" */
-export type Package_ReleaseManifest_Dependency_NodesArgs = {
-  distinct_on?: InputMaybe<Array<Manifest_Dependency_Node_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Manifest_Dependency_Node_Order_By>>;
-  where?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
 };
 
 
@@ -6571,7 +6514,6 @@ export type Package_Release_Bool_Exp = {
   build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   fetched_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  manifest_dependency_nodes?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   mirrored_blob_url?: InputMaybe<String_Comparison_Exp>;
   observed_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   package?: InputMaybe<Package_Bool_Exp>;
@@ -6783,7 +6725,6 @@ export type Package_Release_Insert_Input = {
   build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Arr_Rel_Insert_Input>;
   fetched_time?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
-  manifest_dependency_nodes?: InputMaybe<Manifest_Dependency_Node_Arr_Rel_Insert_Input>;
   mirrored_blob_url?: InputMaybe<Scalars['String']>;
   observed_time?: InputMaybe<Scalars['timestamptz']>;
   package?: InputMaybe<Package_Obj_Rel_Insert_Input>;
@@ -7036,7 +6977,6 @@ export type Package_Release_Order_By = {
   build_dependency_relationships_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
   fetched_time?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  manifest_dependency_nodes_aggregate?: InputMaybe<Manifest_Dependency_Node_Aggregate_Order_By>;
   mirrored_blob_url?: InputMaybe<Order_By>;
   observed_time?: InputMaybe<Order_By>;
   package?: InputMaybe<Package_Order_By>;

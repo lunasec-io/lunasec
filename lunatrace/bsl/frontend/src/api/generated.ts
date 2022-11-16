@@ -2882,13 +2882,6 @@ export type Manifest_Dependency_NodeParent_EdgesArgs = {
   where?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
 };
 
-/** order by aggregate values of table "manifest_dependency_node" */
-export type Manifest_Dependency_Node_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Manifest_Dependency_Node_Max_Order_By>;
-  min?: InputMaybe<Manifest_Dependency_Node_Min_Order_By>;
-};
-
 /** Boolean expression to filter rows from the table "manifest_dependency_node". All fields are combined with a logical 'AND'. */
 export type Manifest_Dependency_Node_Bool_Exp = {
   _and?: InputMaybe<Array<Manifest_Dependency_Node_Bool_Exp>>;
@@ -2902,22 +2895,6 @@ export type Manifest_Dependency_Node_Bool_Exp = {
   range?: InputMaybe<String_Comparison_Exp>;
   release?: InputMaybe<Package_Release_Bool_Exp>;
   release_id?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** order by max() on columns of table "manifest_dependency_node" */
-export type Manifest_Dependency_Node_Max_Order_By = {
-  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
-  id?: InputMaybe<Order_By>;
-  range?: InputMaybe<Order_By>;
-  release_id?: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "manifest_dependency_node" */
-export type Manifest_Dependency_Node_Min_Order_By = {
-  /** merkle tree hash of dependency relationship and its transitive dependencies. not a random UUID. */
-  id?: InputMaybe<Order_By>;
-  range?: InputMaybe<Order_By>;
-  release_id?: InputMaybe<Order_By>;
 };
 
 /** Ordering options when selecting data from "manifest_dependency_node". */
@@ -3810,8 +3787,6 @@ export type Package_Release = {
   build_dependency_relationships: Array<Build_Dependency_Relationship>;
   fetched_time?: Maybe<Scalars['timestamptz']>;
   id: Scalars['uuid'];
-  /** An array relationship */
-  manifest_dependency_nodes: Array<Manifest_Dependency_Node>;
   observed_time: Scalars['timestamptz'];
   /** An object relationship */
   package: Package;
@@ -3830,16 +3805,6 @@ export type Package_ReleaseBuild_Dependency_RelationshipsArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Build_Dependency_Relationship_Order_By>>;
   where?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
-};
-
-
-/** columns and relationships of "package.release" */
-export type Package_ReleaseManifest_Dependency_NodesArgs = {
-  distinct_on?: InputMaybe<Array<Manifest_Dependency_Node_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Manifest_Dependency_Node_Order_By>>;
-  where?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
 };
 
 
@@ -3885,7 +3850,6 @@ export type Package_Release_Bool_Exp = {
   build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   fetched_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  manifest_dependency_nodes?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   observed_time?: InputMaybe<Timestamptz_Comparison_Exp>;
   package?: InputMaybe<Package_Bool_Exp>;
   package_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -3946,7 +3910,6 @@ export type Package_Release_Order_By = {
   build_dependency_relationships_aggregate?: InputMaybe<Build_Dependency_Relationship_Aggregate_Order_By>;
   fetched_time?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  manifest_dependency_nodes_aggregate?: InputMaybe<Manifest_Dependency_Node_Aggregate_Order_By>;
   observed_time?: InputMaybe<Order_By>;
   package?: InputMaybe<Package_Order_By>;
   package_id?: InputMaybe<Order_By>;
