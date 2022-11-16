@@ -20,6 +20,6 @@ sidebar_position: 2
 -->
 
 Steps for getting started:
-* Install the GitHub app
-* View your most important vulnerabilities
-* Create your first upgrade Pull Request
+* Add our [GitHub App](https://lunatrace.lunasec.io) to your GitHub repository (takes 1-2 minutes).
+* View your most important vulnerabilities.
+* Create your first upgrade Pull Request.

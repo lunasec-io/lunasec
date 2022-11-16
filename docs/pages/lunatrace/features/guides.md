@@ -23,7 +23,7 @@ Guides are a collection of curated data about vulnerabilities. They are publishe
 ## Parts of a Guide
 ### Metadata
 * Structured information about the vulnerability.
-* Can be convered to OSV.
+* Can be converted to OSV.
 ### Body
 * Detailed information and analysis from LunaSec's security engineers.
 * Tips for mitigation and incident response
