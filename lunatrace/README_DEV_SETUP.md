@@ -85,7 +85,7 @@ S3_MANIFEST_BUCKET=xxx
 QUEUE_NAME=xxx
 
 
-LUNATRACE_GRAPHQL_SERVER_URL=http://localhost:8080/v1/graphqlGGG
+LUNATRACE_GRAPHQL_SERVER_URL=http://localhost:8080/v1/graphql
 LUNATRACE_GRAPHQL_SERVER_SECRET=myadminsecretkey
 ```
 
