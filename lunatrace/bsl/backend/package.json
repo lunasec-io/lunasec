@@ -64,6 +64,7 @@
     "concurrently": "^7.0.0",
     "config": "^3.3.6",
     "cors": "^2.8.5",
+    "cwe-sdk-javascript": "git+https://github.com/lunasec-io/cwe-sdk-javascript.git#0bfce29f746d94d4354217f02cae2faa67c93995",
     "deepmerge": "^4.2.2",
     "dotenv": "^10.0.0",
     "eventsource": "^2.0.0",
