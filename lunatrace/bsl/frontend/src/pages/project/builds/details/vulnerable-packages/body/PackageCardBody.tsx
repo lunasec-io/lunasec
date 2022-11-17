@@ -14,6 +14,7 @@
 import { SeverityNamesOsv } from '@lunatrace/lunatrace-common/build/main';
 import React, { useState } from 'react';
 import { Accordion, Badge, Card, Container, Row } from 'react-bootstrap';
+import { ExternalLink } from 'react-feather';
 
 import { ConditionallyRender } from '../../../../../../components/utils/ConditionallyRender';
 import { QuickViewProps } from '../../../types';
@@ -47,7 +48,17 @@ const CweBadges: React.FC<CweBadgesProps> = ({ cwes }) => {
     <>
       {cwes.map((c) => (
         <div key={c.id} className={'mr-2'}>
-          <Badge bg={'light'}>{c.cwe_id}</Badge> <span>{c.name}</span>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            href={`https://cwe.mitre.org/data/definitions/${c.cwe_id.toLowerCase().replace('cwe-', '')}.html`}
+            className="m-1"
+          >
+            <Badge bg={'light'}>{c.cwe_id}</Badge>
+          </a>{' '}
+          <ExternalLink size="1em" className="mb-1 me-1" />
+          <span>{c.name}</span>
         </div>
       ))}
     </>

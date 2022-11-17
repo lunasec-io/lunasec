@@ -14,6 +14,7 @@
 import React from 'react';
 import { Card, Col, NavLink, OverlayTrigger, Popover, Row, Tooltip } from 'react-bootstrap';
 import { CopyBlock, tomorrowNight } from 'react-code-blocks';
+import { Upload } from 'react-feather';
 import { FcUpload } from 'react-icons/fc';
 
 import { PackageManagerLink } from '../../../../../components/PackageManagerLink';
@@ -72,11 +73,10 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
     const mdOrLarger = useBreakpoint('md');
     return (
       <>
-        {', '}
         <OverlayTrigger trigger="click" rootClose placement={mdOrLarger ? 'right' : 'bottom'} overlay={renderToolTip}>
-          <NavLink className="primary-color d-inline m-0 p-0">
+          <NavLink className="primary-color d-inline mx-1 p-0">
             {trivialUpdateStatus === 'partially' ? 'partially ' : ''}updatable
-            <FcUpload color="black" className="pb-1" />
+            <Upload size="1em" className="pb-1" />
           </NavLink>
         </OverlayTrigger>
       </>
