@@ -18,11 +18,13 @@ import { ExternalLink } from 'react-feather';
 import { NavLink } from 'react-router-dom';
 
 import { Markdown } from '../../../components/Markdown';
+import { PackageManagerLink } from '../../../components/PackageManagerLink';
 import {
   formatPackageManagerUrlForPackage,
   getAffectedVersionConstraint,
   getFixedVersions,
 } from '../../../utils/advisory';
+import { formatPackageName } from '../../../utils/package';
 import { prettyDate } from '../../../utils/pretty-date';
 import { SourceLink } from '../SourceLink';
 import { VulnInfoDetails } from '../types';
@@ -186,29 +188,14 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                     {vuln.affected.map((affected) => {
                       const getPackageColumn = () => {
                         const packageName = affected.package?.name;
-                        const nameOverflow = packageName && packageName.length > 41 ? '...' : '';
-                        const formattedPackageName = packageName?.substring(0, 40) || '';
-                        const formattedName = formattedPackageName + nameOverflow;
-
                         const packageManager = affected.package?.package_manager;
+                        const formattedName = formatPackageName(packageName);
+
                         if (packageName && packageManager) {
-                          const packageManagerLink = formatPackageManagerUrlForPackage(packageManager, packageName);
-                          if (packageManagerLink === null) {
-                            return <>{formattedName}</>;
-                          }
                           return (
                             <>
-                              {formattedName} -
-                              <a
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()}
-                                href={packageManagerLink}
-                                className="m-1"
-                              >
-                                <ExternalLink size="1em" className="mb-1 me-1" />
-                                {packageManager}
-                              </a>
+                              <>{formattedName}</>
+                              <PackageManagerLink packageName={packageName} packageManager={packageManager} />
                             </>
                           );
                         }
