@@ -47,3 +47,4 @@
 - "!include vulnerability_reference.yaml"
 - "!include vulnerability_severity.yaml"
 - "!include vulnerability_vulnerability.yaml"
+- "!include vulnerability_vulnerability_cwe.yaml"

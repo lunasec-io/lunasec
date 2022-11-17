@@ -74,12 +74,18 @@ type BuildData_Release {
 
 type BuildData_Vulnerability {
     cvss_score: Float
+    cwes: [BuildData_VulnerabilityCwe!]!
     guide_vulnerabilities: [BuildData_Guide_Vulnerability!]!
     id: String!
     severity_name: String
     source: String!
     source_id: String!
     summary: String
+}
+
+type BuildData_VulnerabilityCwe {
+    cwe_id: String!
+    id: String!
 }
 
 type BuildData_VulnerableRelease {
@@ -2613,19 +2619,8 @@ type manifest_dependency_node {
     release_id: uuid!
 }
 
-input manifest_dependency_node_aggregate_order_by {
-    count: order_by
-    max: manifest_dependency_node_max_order_by
-    min: manifest_dependency_node_min_order_by
-}
-
 input manifest_dependency_node_append_input {
     labels: jsonb
-}
-
-input manifest_dependency_node_arr_rel_insert_input {
-    data: [manifest_dependency_node_insert_input!]!
-    on_conflict: manifest_dependency_node_on_conflict
 }
 
 input manifest_dependency_node_bool_exp {
@@ -2666,18 +2661,6 @@ input manifest_dependency_node_insert_input {
     range: String
     release: package_release_obj_rel_insert_input
     release_id: uuid
-}
-
-input manifest_dependency_node_max_order_by {
-    id: order_by
-    range: order_by
-    release_id: order_by
-}
-
-input manifest_dependency_node_min_order_by {
-    id: order_by
-    range: order_by
-    release_id: order_by
 }
 
 type manifest_dependency_node_mutation_response {
@@ -2998,6 +2981,8 @@ type mutation_root {
     insert_vulnerability_reference_one(object: vulnerability_reference_insert_input!, on_conflict: vulnerability_reference_on_conflict): vulnerability_reference
     insert_vulnerability_severity(objects: [vulnerability_severity_insert_input!]!, on_conflict: vulnerability_severity_on_conflict): vulnerability_severity_mutation_response
     insert_vulnerability_severity_one(object: vulnerability_severity_insert_input!, on_conflict: vulnerability_severity_on_conflict): vulnerability_severity
+    insert_vulnerability_vulnerability_cwe(objects: [vulnerability_vulnerability_cwe_insert_input!]!, on_conflict: vulnerability_vulnerability_cwe_on_conflict): vulnerability_vulnerability_cwe_mutation_response
+    insert_vulnerability_vulnerability_cwe_one(object: vulnerability_vulnerability_cwe_insert_input!, on_conflict: vulnerability_vulnerability_cwe_on_conflict): vulnerability_vulnerability_cwe
     insert_webhook_cache(objects: [webhook_cache_insert_input!]!, on_conflict: webhook_cache_on_conflict): webhook_cache_mutation_response
     insert_webhook_cache_one(object: webhook_cache_insert_input!, on_conflict: webhook_cache_on_conflict): webhook_cache
     installSelectedRepos(orgs: [OrgsWithReposInput!]!): InstallSelectedReposResponse
@@ -3067,6 +3052,8 @@ type mutation_root {
     update_vulnerability_reference_by_pk(_set: vulnerability_reference_set_input, pk_columns: vulnerability_reference_pk_columns_input!): vulnerability_reference
     update_vulnerability_severity(_set: vulnerability_severity_set_input, where: vulnerability_severity_bool_exp!): vulnerability_severity_mutation_response
     update_vulnerability_severity_by_pk(_set: vulnerability_severity_set_input, pk_columns: vulnerability_severity_pk_columns_input!): vulnerability_severity
+    update_vulnerability_vulnerability_cwe(_set: vulnerability_vulnerability_cwe_set_input, where: vulnerability_vulnerability_cwe_bool_exp!): vulnerability_vulnerability_cwe_mutation_response
+    update_vulnerability_vulnerability_cwe_by_pk(_set: vulnerability_vulnerability_cwe_set_input, pk_columns: vulnerability_vulnerability_cwe_pk_columns_input!): vulnerability_vulnerability_cwe
     update_webhook_cache(_set: webhook_cache_set_input, where: webhook_cache_bool_exp!): webhook_cache_mutation_response
     update_webhook_cache_by_pk(_set: webhook_cache_set_input, pk_columns: webhook_cache_pk_columns_input!): webhook_cache
 }
@@ -3439,7 +3426,6 @@ type package {
     name: String!
     package_maintainers(distinct_on: [package_package_maintainer_select_column!], limit: Int, offset: Int, order_by: [package_package_maintainer_order_by!], where: package_package_maintainer_bool_exp): [package_package_maintainer!]!
     package_manager: package_manager!
-    release_dependencies(distinct_on: [package_release_dependency_select_column!], limit: Int, offset: Int, order_by: [package_release_dependency_order_by!], where: package_release_dependency_bool_exp): [package_release_dependency!]!
     releases(distinct_on: [package_release_select_column!], limit: Int, offset: Int, order_by: [package_release_order_by!], where: package_release_bool_exp): [package_release!]!
     upstream_data(path: String): jsonb
 }
@@ -3472,7 +3458,6 @@ input package_bool_exp {
     name: String_comparison_exp
     package_maintainers: package_package_maintainer_bool_exp
     package_manager: package_manager_comparison_exp
-    release_dependencies: package_release_dependency_bool_exp
     releases: package_release_bool_exp
     upstream_data: jsonb_comparison_exp
 }
@@ -3504,7 +3489,6 @@ input package_insert_input {
     name: String
     package_maintainers: package_package_maintainer_arr_rel_insert_input
     package_manager: package_manager
-    release_dependencies: package_release_dependency_arr_rel_insert_input
     releases: package_release_arr_rel_insert_input
     upstream_data: jsonb
 }
@@ -3721,7 +3705,6 @@ input package_order_by {
     name: order_by
     package_maintainers_aggregate: package_package_maintainer_aggregate_order_by
     package_manager: order_by
-    release_dependencies_aggregate: package_release_dependency_aggregate_order_by
     releases_aggregate: package_release_aggregate_order_by
     upstream_data: order_by
 }
@@ -3821,7 +3804,6 @@ type package_release {
     build_dependency_relationships(distinct_on: [build_dependency_relationship_select_column!], limit: Int, offset: Int, order_by: [build_dependency_relationship_order_by!], where: build_dependency_relationship_bool_exp): [build_dependency_relationship!]!
     fetched_time: timestamptz
     id: uuid!
-    manifest_dependency_nodes(distinct_on: [manifest_dependency_node_select_column!], limit: Int, offset: Int, order_by: [manifest_dependency_node_order_by!], where: manifest_dependency_node_bool_exp): [manifest_dependency_node!]!
     mirrored_blob_url: String
     observed_time: timestamptz!
     package: package!
@@ -3859,7 +3841,6 @@ input package_release_bool_exp {
     build_dependency_relationships: build_dependency_relationship_bool_exp
     fetched_time: timestamptz_comparison_exp
     id: uuid_comparison_exp
-    manifest_dependency_nodes: manifest_dependency_node_bool_exp
     mirrored_blob_url: String_comparison_exp
     observed_time: timestamptz_comparison_exp
     package: package_bool_exp
@@ -4026,7 +4007,6 @@ input package_release_insert_input {
     build_dependency_relationships: build_dependency_relationship_arr_rel_insert_input
     fetched_time: timestamptz
     id: uuid
-    manifest_dependency_nodes: manifest_dependency_node_arr_rel_insert_input
     mirrored_blob_url: String
     observed_time: timestamptz
     package: package_obj_rel_insert_input
@@ -4224,7 +4204,6 @@ input package_release_order_by {
     build_dependency_relationships_aggregate: build_dependency_relationship_aggregate_order_by
     fetched_time: order_by
     id: order_by
-    manifest_dependency_nodes_aggregate: manifest_dependency_node_aggregate_order_by
     mirrored_blob_url: order_by
     observed_time: order_by
     package: package_order_by
@@ -4648,6 +4627,8 @@ type query_root {
     vulnerability_reference_by_pk(id: uuid!): vulnerability_reference
     vulnerability_severity(distinct_on: [vulnerability_severity_select_column!], limit: Int, offset: Int, order_by: [vulnerability_severity_order_by!], where: vulnerability_severity_bool_exp): [vulnerability_severity!]!
     vulnerability_severity_by_pk(id: uuid!): vulnerability_severity
+    vulnerability_vulnerability_cwe(distinct_on: [vulnerability_vulnerability_cwe_select_column!], limit: Int, offset: Int, order_by: [vulnerability_vulnerability_cwe_order_by!], where: vulnerability_vulnerability_cwe_bool_exp): [vulnerability_vulnerability_cwe!]!
+    vulnerability_vulnerability_cwe_by_pk(id: uuid!): vulnerability_vulnerability_cwe
     vulnerableReleasesFromBuild(buildId: uuid!, minimumSeverity: String): [BuildData_VulnerableRelease!]
     webhook_cache(distinct_on: [webhook_cache_select_column!], limit: Int, offset: Int, order_by: [webhook_cache_order_by!], where: webhook_cache_bool_exp): [webhook_cache!]!
     webhook_cache_by_pk(delivery_id: uuid!): webhook_cache
@@ -5118,6 +5099,8 @@ type subscription_root {
     vulnerability_reference_by_pk(id: uuid!): vulnerability_reference
     vulnerability_severity(distinct_on: [vulnerability_severity_select_column!], limit: Int, offset: Int, order_by: [vulnerability_severity_order_by!], where: vulnerability_severity_bool_exp): [vulnerability_severity!]!
     vulnerability_severity_by_pk(id: uuid!): vulnerability_severity
+    vulnerability_vulnerability_cwe(distinct_on: [vulnerability_vulnerability_cwe_select_column!], limit: Int, offset: Int, order_by: [vulnerability_vulnerability_cwe_order_by!], where: vulnerability_vulnerability_cwe_bool_exp): [vulnerability_vulnerability_cwe!]!
+    vulnerability_vulnerability_cwe_by_pk(id: uuid!): vulnerability_vulnerability_cwe
     webhook_cache(distinct_on: [webhook_cache_select_column!], limit: Int, offset: Int, order_by: [webhook_cache_order_by!], where: webhook_cache_bool_exp): [webhook_cache!]!
     webhook_cache_by_pk(delivery_id: uuid!): webhook_cache
 }
@@ -5269,6 +5252,7 @@ type vulnerability {
     created_at: timestamptz!
     credits(distinct_on: [vulnerability_credit_select_column!], limit: Int, offset: Int, order_by: [vulnerability_credit_order_by!], where: vulnerability_credit_bool_exp): [vulnerability_credit!]!
     cvss_score: Float
+    cwes(distinct_on: [vulnerability_vulnerability_cwe_select_column!], limit: Int, offset: Int, order_by: [vulnerability_vulnerability_cwe_order_by!], where: vulnerability_vulnerability_cwe_bool_exp): [vulnerability_vulnerability_cwe!]!
     database_specific(path: String): jsonb
     details: String
     equivalents(distinct_on: [vulnerability_equivalent_select_column!], limit: Int, offset: Int, order_by: [vulnerability_equivalent_order_by!], where: vulnerability_equivalent_bool_exp): [vulnerability_equivalent!]!
@@ -5711,6 +5695,7 @@ input vulnerability_bool_exp {
     created_at: timestamptz_comparison_exp
     credits: vulnerability_credit_bool_exp
     cvss_score: Float_comparison_exp
+    cwes: vulnerability_vulnerability_cwe_bool_exp
     database_specific: jsonb_comparison_exp
     details: String_comparison_exp
     equivalents: vulnerability_equivalent_bool_exp
@@ -5942,6 +5927,7 @@ input vulnerability_insert_input {
     created_at: timestamptz
     credits: vulnerability_credit_arr_rel_insert_input
     cvss_score: Float
+    cwes: vulnerability_vulnerability_cwe_arr_rel_insert_input
     database_specific: jsonb
     details: String
     equivalents: vulnerability_equivalent_arr_rel_insert_input
@@ -5983,6 +5969,7 @@ input vulnerability_order_by {
     created_at: order_by
     credits_aggregate: vulnerability_credit_aggregate_order_by
     cvss_score: order_by
+    cwes_aggregate: vulnerability_vulnerability_cwe_aggregate_order_by
     database_specific: order_by
     details: order_by
     equivalents_aggregate: vulnerability_equivalent_aggregate_order_by
@@ -6377,6 +6364,98 @@ enum vulnerability_update_column {
     summary
     upstream_data
     withdrawn
+}
+
+type vulnerability_vulnerability_cwe {
+    cwe_id: String!
+    id: uuid!
+    vulnerability: vulnerability!
+    vulnerability_id: uuid!
+}
+
+input vulnerability_vulnerability_cwe_aggregate_order_by {
+    count: order_by
+    max: vulnerability_vulnerability_cwe_max_order_by
+    min: vulnerability_vulnerability_cwe_min_order_by
+}
+
+input vulnerability_vulnerability_cwe_arr_rel_insert_input {
+    data: [vulnerability_vulnerability_cwe_insert_input!]!
+    on_conflict: vulnerability_vulnerability_cwe_on_conflict
+}
+
+input vulnerability_vulnerability_cwe_bool_exp {
+    _and: [vulnerability_vulnerability_cwe_bool_exp!]
+    _not: vulnerability_vulnerability_cwe_bool_exp
+    _or: [vulnerability_vulnerability_cwe_bool_exp!]
+    cwe_id: String_comparison_exp
+    id: uuid_comparison_exp
+    vulnerability: vulnerability_bool_exp
+    vulnerability_id: uuid_comparison_exp
+}
+
+enum vulnerability_vulnerability_cwe_constraint {
+    vulnerability_cwe_pkey
+    vulnerability_cwe_vulnerability_id_cwe_key
+}
+
+input vulnerability_vulnerability_cwe_insert_input {
+    cwe_id: String
+    id: uuid
+    vulnerability: vulnerability_obj_rel_insert_input
+    vulnerability_id: uuid
+}
+
+input vulnerability_vulnerability_cwe_max_order_by {
+    cwe_id: order_by
+    id: order_by
+    vulnerability_id: order_by
+}
+
+input vulnerability_vulnerability_cwe_min_order_by {
+    cwe_id: order_by
+    id: order_by
+    vulnerability_id: order_by
+}
+
+type vulnerability_vulnerability_cwe_mutation_response {
+    affected_rows: Int!
+    returning: [vulnerability_vulnerability_cwe!]!
+}
+
+input vulnerability_vulnerability_cwe_on_conflict {
+    constraint: vulnerability_vulnerability_cwe_constraint!
+    update_columns: [vulnerability_vulnerability_cwe_update_column!]! = []
+    where: vulnerability_vulnerability_cwe_bool_exp
+}
+
+input vulnerability_vulnerability_cwe_order_by {
+    cwe_id: order_by
+    id: order_by
+    vulnerability: vulnerability_order_by
+    vulnerability_id: order_by
+}
+
+input vulnerability_vulnerability_cwe_pk_columns_input {
+    id: uuid!
+}
+
+enum vulnerability_vulnerability_cwe_select_column {
+    cwe_id
+    id
+    vulnerability_id
+}
+
+input vulnerability_vulnerability_cwe_set_input {
+    cwe_id: String
+    id: uuid
+    vulnerability_id: uuid
+}
+
+enum vulnerability_vulnerability_cwe_update_column {
+    cwe_id
+    id
+    vulnerability_id
 }
 
 type webhook_cache {

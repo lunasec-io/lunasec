@@ -13,7 +13,7 @@
  */
 import { SeverityNamesOsv } from '@lunatrace/lunatrace-common/build/main';
 import React, { useState } from 'react';
-import { Accordion, Card, Container, Row } from 'react-bootstrap';
+import { Accordion, Badge, Card, Container, Row } from 'react-bootstrap';
 
 import { ConditionallyRender } from '../../../../../../components/utils/ConditionallyRender';
 import { QuickViewProps } from '../../../types';
@@ -33,6 +33,29 @@ interface VulnerablePackageCardBodyProps {
   shouldFilterFindingsBySeverity: boolean;
   findingsHiddenBySeverityCount: number;
 }
+
+interface CweBadgesProps {
+  cwes: {
+    id: string;
+    name?: string | null;
+    cwe_id: string;
+  }[];
+}
+
+const CweBadges: React.FC<CweBadgesProps> = ({ cwes }) => {
+  return (
+    <>
+      {cwes.map((c) => (
+        <>
+          <Badge key={c.id} bg={'light'}>
+            {c.cwe_id}
+          </Badge>
+          <p>{c.name}</p>
+        </>
+      ))}
+    </>
+  );
+};
 
 export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyProps> = ({
   pkg,
@@ -55,6 +78,9 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
 
       <div className="m-lg-4">
         <PackageDetails pkg={pkg} />
+        {findings.map((f, idx) => (
+          <CweBadges key={idx} cwes={f.vulnerability.cwes} />
+        ))}
         <Row>
           <Accordion defaultActiveKey={findings.length > 2 ? 'nonexistant' : '0'}>
             <Accordion.Item eventKey="0">

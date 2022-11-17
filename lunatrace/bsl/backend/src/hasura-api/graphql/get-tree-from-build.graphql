@@ -41,6 +41,10 @@ query GetTreeFromBuild($build_id: uuid!, $analysis_results_where: analysis_manif
                                             title
                                         }
                                     }
+                                    cwes {
+                                        id
+                                        cwe_id
+                                    }
                                 }
                                 ranges {
                                     introduced
