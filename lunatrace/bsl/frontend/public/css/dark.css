@@ -17615,6 +17615,10 @@ pre[class*=language-] {
   margin-bottom: 6px;
 }
 
+.vulnerablePackage-update-popover {
+  max-width: min(98%, 800px);
+}
+
 .wide-tooltip > .tooltip-inner {
   max-width: 50em;
 }

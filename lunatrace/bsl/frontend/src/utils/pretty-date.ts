@@ -62,8 +62,9 @@ export function prettyDate(date: Date, showTime = true) {
     return `${minutesSince} minute${minutesSince > 1 ? 's' : ''} ago`;
   }
 
+  // TODO: bring this back when our timezones are fixed, right now it sort of hides the issue by saying "just now" which is better than showing negative seconds
   // if it was posted in the last minute
-  else {
-    return 'Just now';
-  }
+  //   return `${secondsSince} seconds ago`;
+
+  return 'Just now';
 }
