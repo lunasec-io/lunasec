@@ -107,6 +107,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         },
                       },
                     ],
+                    cwes: [],
                   },
                   ranges: [
                     {
@@ -153,6 +154,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         },
                       },
                     ],
+                    cwes: [],
                   },
                   ranges: [
                     {
