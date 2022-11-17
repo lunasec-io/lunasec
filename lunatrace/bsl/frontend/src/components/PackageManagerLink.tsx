@@ -22,8 +22,8 @@ export const PackageManagerLink: React.FC<PackageManagerLinkProps> = ({ packageN
         href={packageManagerLink}
         className="m-1"
       >
-        <ExternalLink size="1em" className="mb-1 me-1" />
         {packageManager}
+        <ExternalLink size="1em" className="mb-1 mx-1" />
       </a>
     </>
   );
