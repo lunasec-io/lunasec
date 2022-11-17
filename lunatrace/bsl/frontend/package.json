@@ -107,7 +107,7 @@
   "scripts": {
     "sass:pull": "git submodule init && git submodule update",
     "sass:build": "sass src/scss/main:public/css",
-    "dev:sass:watch": "yarn run sass:build && watch 'yarn run sass:build && echo sass_rebuilt' ./src/scss",
+    "sass:watch": "yarn run sass:build && watch 'yarn run sass:build && echo sass_rebuilt' ./src/scss",
     "dev:graphql:watch": "yarn run generate && watch 'yarn run generate' ./src/api/graphql",
     "sass:autoprefixer": "postcss public/css/*.css --use autoprefixer -d public/css",
     "build:css": "npm-run-all sass:build sass:autoprefixer",
