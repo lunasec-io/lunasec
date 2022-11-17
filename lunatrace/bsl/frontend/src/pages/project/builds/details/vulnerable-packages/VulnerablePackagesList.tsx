@@ -16,11 +16,12 @@ import React, { ChangeEvent } from 'react';
 import { Button, Col, Dropdown, OverlayTrigger, Row } from 'react-bootstrap';
 import { FcPlus } from 'react-icons/fc';
 
+import { isDirectDep } from '../../../../../utils/package';
 import { QuickViewProps } from '../../types';
 
 import { AutoUpdatePopOverHOC } from './AutoUpdatePopOverHOC';
-import { VulnerablePackageMain } from './VulnerablePackageMain';
 import { VulnerablePackage } from './types';
+import { VulnerablePackageMain } from './vulnerable-package-card/VulnerablePackageMain';
 
 interface FindingListProps {
   quickView: QuickViewProps;
@@ -42,7 +43,7 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
   // Todo: not sure if this should include below minimum severity packages or not, might be confusing. For now we are, though
   const pkgsToUpdate = vulnerablePackages.filter((pkg) => {
     if (pkg.trivially_updatable === 'yes' || pkg.trivially_updatable === 'partially') {
-      return true;
+      return isDirectDep(pkg); // only show the overall update queue for direct deps that could be updated, transitives don't work
     }
   });
 
