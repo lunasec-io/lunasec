@@ -55,6 +55,11 @@ query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!)
                         title
                     }
                 }
+                cwes {
+                    id
+                    name
+                    cwe_id
+                }
             }
         }
         dev_only

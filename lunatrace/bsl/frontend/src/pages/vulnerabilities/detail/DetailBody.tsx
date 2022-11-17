@@ -13,7 +13,7 @@
  */
 import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
-import { Card, Col, Container, Modal, Row, Table } from 'react-bootstrap';
+import { Badge, Card, Col, Container, Modal, Row, Table } from 'react-bootstrap';
 import { ExternalLink } from 'react-feather';
 import { NavLink } from 'react-router-dom';
 
@@ -117,7 +117,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                         {severity.cvss3OverallSeverityText}
                       </h4>
                     ) : (
-                      <h4 style={{ display: 'inline' }}>unknown</h4>
+                      <h4 style={{ display: 'inline' }}>{vuln.severity_name}</h4>
                     )}
                   </div>
                 </Modal.Title>
@@ -156,6 +156,13 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
               </Card.Header>
               <Modal.Body>
                 <Markdown markdown={vuln.details || ''}></Markdown>
+                <div>
+                  {vuln.cwes.map((c) => (
+                    <Badge key={c.id} bg={'light'}>
+                      {c.cwe_id}
+                    </Badge>
+                  ))}
+                </div>
               </Modal.Body>
             </Card>
           </Col>
