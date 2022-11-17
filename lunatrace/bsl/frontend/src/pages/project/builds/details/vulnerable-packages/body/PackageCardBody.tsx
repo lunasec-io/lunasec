@@ -46,12 +46,9 @@ const CweBadges: React.FC<CweBadgesProps> = ({ cwes }) => {
   return (
     <>
       {cwes.map((c) => (
-        <>
-          <Badge key={c.id} bg={'light'}>
-            {c.cwe_id}
-          </Badge>
-          <p>{c.name}</p>
-        </>
+        <div key={c.id} className={'mr-2'}>
+          <Badge bg={'light'}>{c.cwe_id}</Badge> <span>{c.name}</span>
+        </div>
       ))}
     </>
   );
@@ -78,11 +75,13 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
 
       <div className="m-lg-4">
         <PackageDetails pkg={pkg} />
-        {findings.map((f, idx) => (
-          <CweBadges key={idx} cwes={f.vulnerability.cwes} />
-        ))}
+        <Row className={'mb-2'}>
+          {findings.map((f, idx) => (
+            <CweBadges key={idx} cwes={f.vulnerability.cwes} />
+          ))}
+        </Row>
         <Row>
-          <Accordion defaultActiveKey={findings.length > 2 ? 'nonexistant' : '0'}>
+          <Accordion defaultActiveKey={''}>
             <Accordion.Item eventKey="0">
               <FindingsListHeader findingsCount={findings.length} severity={severity} />
               <FindingsTable
