@@ -191,6 +191,8 @@ export class WorkerStack extends cdk.Stack {
         name: 'ProcessSbomQueue',
         queue: sbomQueue,
         visibility: 300,
+        ram: 8 * gb,
+        cpu: 4 * gb,
         capacityProviderStrategies,
         scalingSteps,
       },
