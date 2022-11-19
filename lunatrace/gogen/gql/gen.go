@@ -57,37 +57,6 @@ const (
 	Analysis_finding_source_enumSemgrepImportedCalled Analysis_finding_source_enum = "semgrep_imported_called"
 )
 
-type Analysis_finding_source_enum_comparison_exp struct {
-	Eq      *Analysis_finding_source_enum  `json:"_eq,omitempty"`
-	In      []Analysis_finding_source_enum `json:"_in,omitempty"`
-	Is_null *bool                          `json:"_is_null,omitempty"`
-	Neq     *Analysis_finding_source_enum  `json:"_neq,omitempty"`
-	Nin     []Analysis_finding_source_enum `json:"_nin,omitempty"`
-}
-
-// GetEq returns Analysis_finding_source_enum_comparison_exp.Eq, and is useful for accessing the field via an interface.
-func (v *Analysis_finding_source_enum_comparison_exp) GetEq() *Analysis_finding_source_enum {
-	return v.Eq
-}
-
-// GetIn returns Analysis_finding_source_enum_comparison_exp.In, and is useful for accessing the field via an interface.
-func (v *Analysis_finding_source_enum_comparison_exp) GetIn() []Analysis_finding_source_enum {
-	return v.In
-}
-
-// GetIs_null returns Analysis_finding_source_enum_comparison_exp.Is_null, and is useful for accessing the field via an interface.
-func (v *Analysis_finding_source_enum_comparison_exp) GetIs_null() *bool { return v.Is_null }
-
-// GetNeq returns Analysis_finding_source_enum_comparison_exp.Neq, and is useful for accessing the field via an interface.
-func (v *Analysis_finding_source_enum_comparison_exp) GetNeq() *Analysis_finding_source_enum {
-	return v.Neq
-}
-
-// GetNin returns Analysis_finding_source_enum_comparison_exp.Nin, and is useful for accessing the field via an interface.
-func (v *Analysis_finding_source_enum_comparison_exp) GetNin() []Analysis_finding_source_enum {
-	return v.Nin
-}
-
 type Analysis_finding_type_enum string
 
 const (
@@ -95,134 +64,6 @@ const (
 	Analysis_finding_type_enumNotVulnerable Analysis_finding_type_enum = "not_vulnerable"
 	Analysis_finding_type_enumUnknown       Analysis_finding_type_enum = "unknown"
 	Analysis_finding_type_enumVulnerable    Analysis_finding_type_enum = "vulnerable"
-)
-
-type Analysis_finding_type_enum_comparison_exp struct {
-	Eq      *Analysis_finding_type_enum  `json:"_eq,omitempty"`
-	In      []Analysis_finding_type_enum `json:"_in,omitempty"`
-	Is_null *bool                        `json:"_is_null,omitempty"`
-	Neq     *Analysis_finding_type_enum  `json:"_neq,omitempty"`
-	Nin     []Analysis_finding_type_enum `json:"_nin,omitempty"`
-}
-
-// GetEq returns Analysis_finding_type_enum_comparison_exp.Eq, and is useful for accessing the field via an interface.
-func (v *Analysis_finding_type_enum_comparison_exp) GetEq() *Analysis_finding_type_enum { return v.Eq }
-
-// GetIn returns Analysis_finding_type_enum_comparison_exp.In, and is useful for accessing the field via an interface.
-func (v *Analysis_finding_type_enum_comparison_exp) GetIn() []Analysis_finding_type_enum { return v.In }
-
-// GetIs_null returns Analysis_finding_type_enum_comparison_exp.Is_null, and is useful for accessing the field via an interface.
-func (v *Analysis_finding_type_enum_comparison_exp) GetIs_null() *bool { return v.Is_null }
-
-// GetNeq returns Analysis_finding_type_enum_comparison_exp.Neq, and is useful for accessing the field via an interface.
-func (v *Analysis_finding_type_enum_comparison_exp) GetNeq() *Analysis_finding_type_enum {
-	return v.Neq
-}
-
-// GetNin returns Analysis_finding_type_enum_comparison_exp.Nin, and is useful for accessing the field via an interface.
-func (v *Analysis_finding_type_enum_comparison_exp) GetNin() []Analysis_finding_type_enum {
-	return v.Nin
-}
-
-type Analysis_manifest_dependency_edge_result_arr_rel_insert_input struct {
-	Data        []*Analysis_manifest_dependency_edge_result_insert_input `json:"data,omitempty"`
-	On_conflict *Analysis_manifest_dependency_edge_result_on_conflict    `json:"on_conflict,omitempty"`
-}
-
-// GetData returns Analysis_manifest_dependency_edge_result_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_arr_rel_insert_input) GetData() []*Analysis_manifest_dependency_edge_result_insert_input {
-	return v.Data
-}
-
-// GetOn_conflict returns Analysis_manifest_dependency_edge_result_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_arr_rel_insert_input) GetOn_conflict() *Analysis_manifest_dependency_edge_result_on_conflict {
-	return v.On_conflict
-}
-
-type Analysis_manifest_dependency_edge_result_bool_exp struct {
-	And                         []*Analysis_manifest_dependency_edge_result_bool_exp `json:"_and,omitempty"`
-	Not                         *Analysis_manifest_dependency_edge_result_bool_exp   `json:"_not,omitempty"`
-	Or                          []*Analysis_manifest_dependency_edge_result_bool_exp `json:"_or,omitempty"`
-	Created_at                  *Timestamptz_comparison_exp                          `json:"created_at,omitempty"`
-	Finding_source              *Analysis_finding_source_enum_comparison_exp         `json:"finding_source,omitempty"`
-	Finding_source_version      *Int_comparison_exp                                  `json:"finding_source_version,omitempty"`
-	Finding_type                *Analysis_finding_type_enum_comparison_exp           `json:"finding_type,omitempty"`
-	Id                          *Uuid_comparison_exp                                 `json:"id,omitempty"`
-	Manifest_dependency_edge    *Manifest_dependency_edge_bool_exp                   `json:"manifest_dependency_edge,omitempty"`
-	Manifest_dependency_edge_id *Uuid_comparison_exp                                 `json:"manifest_dependency_edge_id,omitempty"`
-	Output                      *Jsonb_comparison_exp                                `json:"output,omitempty"`
-	Vulnerability               *Vulnerability_bool_exp                              `json:"vulnerability,omitempty"`
-	Vulnerability_id            *Uuid_comparison_exp                                 `json:"vulnerability_id,omitempty"`
-}
-
-// GetAnd returns Analysis_manifest_dependency_edge_result_bool_exp.And, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetAnd() []*Analysis_manifest_dependency_edge_result_bool_exp {
-	return v.And
-}
-
-// GetNot returns Analysis_manifest_dependency_edge_result_bool_exp.Not, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetNot() *Analysis_manifest_dependency_edge_result_bool_exp {
-	return v.Not
-}
-
-// GetOr returns Analysis_manifest_dependency_edge_result_bool_exp.Or, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetOr() []*Analysis_manifest_dependency_edge_result_bool_exp {
-	return v.Or
-}
-
-// GetCreated_at returns Analysis_manifest_dependency_edge_result_bool_exp.Created_at, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetCreated_at() *Timestamptz_comparison_exp {
-	return v.Created_at
-}
-
-// GetFinding_source returns Analysis_manifest_dependency_edge_result_bool_exp.Finding_source, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetFinding_source() *Analysis_finding_source_enum_comparison_exp {
-	return v.Finding_source
-}
-
-// GetFinding_source_version returns Analysis_manifest_dependency_edge_result_bool_exp.Finding_source_version, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetFinding_source_version() *Int_comparison_exp {
-	return v.Finding_source_version
-}
-
-// GetFinding_type returns Analysis_manifest_dependency_edge_result_bool_exp.Finding_type, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetFinding_type() *Analysis_finding_type_enum_comparison_exp {
-	return v.Finding_type
-}
-
-// GetId returns Analysis_manifest_dependency_edge_result_bool_exp.Id, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
-
-// GetManifest_dependency_edge returns Analysis_manifest_dependency_edge_result_bool_exp.Manifest_dependency_edge, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetManifest_dependency_edge() *Manifest_dependency_edge_bool_exp {
-	return v.Manifest_dependency_edge
-}
-
-// GetManifest_dependency_edge_id returns Analysis_manifest_dependency_edge_result_bool_exp.Manifest_dependency_edge_id, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetManifest_dependency_edge_id() *Uuid_comparison_exp {
-	return v.Manifest_dependency_edge_id
-}
-
-// GetOutput returns Analysis_manifest_dependency_edge_result_bool_exp.Output, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetOutput() *Jsonb_comparison_exp {
-	return v.Output
-}
-
-// GetVulnerability returns Analysis_manifest_dependency_edge_result_bool_exp.Vulnerability, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetVulnerability() *Vulnerability_bool_exp {
-	return v.Vulnerability
-}
-
-// GetVulnerability_id returns Analysis_manifest_dependency_edge_result_bool_exp.Vulnerability_id, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetVulnerability_id() *Uuid_comparison_exp {
-	return v.Vulnerability_id
-}
-
-type Analysis_manifest_dependency_edge_result_constraint string
-
-const (
-	Analysis_manifest_dependency_edge_result_constraintManifestDependencyEdgeResultManifestDependencyEdgeIdVul Analysis_manifest_dependency_edge_result_constraint = "manifest_dependency_edge_result_manifest_dependency_edge_id_vul"
-	Analysis_manifest_dependency_edge_result_constraintManifestDependencyEdgeResultPkey                        Analysis_manifest_dependency_edge_result_constraint = "manifest_dependency_edge_result_pkey"
 )
 
 type Analysis_manifest_dependency_edge_result_insert_input struct {
@@ -285,40 +126,6 @@ func (v *Analysis_manifest_dependency_edge_result_insert_input) GetVulnerability
 func (v *Analysis_manifest_dependency_edge_result_insert_input) GetVulnerability_id() *uuid.UUID {
 	return v.Vulnerability_id
 }
-
-type Analysis_manifest_dependency_edge_result_on_conflict struct {
-	Constraint     Analysis_manifest_dependency_edge_result_constraint      `json:"constraint,omitempty"`
-	Update_columns []Analysis_manifest_dependency_edge_result_update_column `json:"update_columns,omitempty"`
-	Where          *Analysis_manifest_dependency_edge_result_bool_exp       `json:"where,omitempty"`
-}
-
-// GetConstraint returns Analysis_manifest_dependency_edge_result_on_conflict.Constraint, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_on_conflict) GetConstraint() Analysis_manifest_dependency_edge_result_constraint {
-	return v.Constraint
-}
-
-// GetUpdate_columns returns Analysis_manifest_dependency_edge_result_on_conflict.Update_columns, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_on_conflict) GetUpdate_columns() []Analysis_manifest_dependency_edge_result_update_column {
-	return v.Update_columns
-}
-
-// GetWhere returns Analysis_manifest_dependency_edge_result_on_conflict.Where, and is useful for accessing the field via an interface.
-func (v *Analysis_manifest_dependency_edge_result_on_conflict) GetWhere() *Analysis_manifest_dependency_edge_result_bool_exp {
-	return v.Where
-}
-
-type Analysis_manifest_dependency_edge_result_update_column string
-
-const (
-	Analysis_manifest_dependency_edge_result_update_columnCreatedAt                Analysis_manifest_dependency_edge_result_update_column = "created_at"
-	Analysis_manifest_dependency_edge_result_update_columnFindingSource            Analysis_manifest_dependency_edge_result_update_column = "finding_source"
-	Analysis_manifest_dependency_edge_result_update_columnFindingSourceVersion     Analysis_manifest_dependency_edge_result_update_column = "finding_source_version"
-	Analysis_manifest_dependency_edge_result_update_columnFindingType              Analysis_manifest_dependency_edge_result_update_column = "finding_type"
-	Analysis_manifest_dependency_edge_result_update_columnId                       Analysis_manifest_dependency_edge_result_update_column = "id"
-	Analysis_manifest_dependency_edge_result_update_columnManifestDependencyEdgeId Analysis_manifest_dependency_edge_result_update_column = "manifest_dependency_edge_id"
-	Analysis_manifest_dependency_edge_result_update_columnOutput                   Analysis_manifest_dependency_edge_result_update_column = "output"
-	Analysis_manifest_dependency_edge_result_update_columnVulnerabilityId          Analysis_manifest_dependency_edge_result_update_column = "vulnerability_id"
-)
 
 type Bigint_comparison_exp struct {
 	Eq      *int64  `json:"_eq,omitempty"`
@@ -3037,15 +2844,14 @@ func (v *Manifest_dependency_edge_arr_rel_insert_input) GetOn_conflict() *Manife
 }
 
 type Manifest_dependency_edge_bool_exp struct {
-	And              []*Manifest_dependency_edge_bool_exp               `json:"_and,omitempty"`
-	Not              *Manifest_dependency_edge_bool_exp                 `json:"_not,omitempty"`
-	Or               []*Manifest_dependency_edge_bool_exp               `json:"_or,omitempty"`
-	Analysis_results *Analysis_manifest_dependency_edge_result_bool_exp `json:"analysis_results,omitempty"`
-	Child            *Manifest_dependency_node_bool_exp                 `json:"child,omitempty"`
-	Child_id         *Uuid_comparison_exp                               `json:"child_id,omitempty"`
-	Id               *Uuid_comparison_exp                               `json:"id,omitempty"`
-	Parent           *Manifest_dependency_node_bool_exp                 `json:"parent,omitempty"`
-	Parent_id        *Uuid_comparison_exp                               `json:"parent_id,omitempty"`
+	And       []*Manifest_dependency_edge_bool_exp `json:"_and,omitempty"`
+	Not       *Manifest_dependency_edge_bool_exp   `json:"_not,omitempty"`
+	Or        []*Manifest_dependency_edge_bool_exp `json:"_or,omitempty"`
+	Child     *Manifest_dependency_node_bool_exp   `json:"child,omitempty"`
+	Child_id  *Uuid_comparison_exp                 `json:"child_id,omitempty"`
+	Id        *Uuid_comparison_exp                 `json:"id,omitempty"`
+	Parent    *Manifest_dependency_node_bool_exp   `json:"parent,omitempty"`
+	Parent_id *Uuid_comparison_exp                 `json:"parent_id,omitempty"`
 }
 
 // GetAnd returns Manifest_dependency_edge_bool_exp.And, and is useful for accessing the field via an interface.
@@ -3058,11 +2864,6 @@ func (v *Manifest_dependency_edge_bool_exp) GetNot() *Manifest_dependency_edge_b
 
 // GetOr returns Manifest_dependency_edge_bool_exp.Or, and is useful for accessing the field via an interface.
 func (v *Manifest_dependency_edge_bool_exp) GetOr() []*Manifest_dependency_edge_bool_exp { return v.Or }
-
-// GetAnalysis_results returns Manifest_dependency_edge_bool_exp.Analysis_results, and is useful for accessing the field via an interface.
-func (v *Manifest_dependency_edge_bool_exp) GetAnalysis_results() *Analysis_manifest_dependency_edge_result_bool_exp {
-	return v.Analysis_results
-}
 
 // GetChild returns Manifest_dependency_edge_bool_exp.Child, and is useful for accessing the field via an interface.
 func (v *Manifest_dependency_edge_bool_exp) GetChild() *Manifest_dependency_node_bool_exp {
@@ -3091,17 +2892,11 @@ const (
 )
 
 type Manifest_dependency_edge_insert_input struct {
-	Analysis_results *Analysis_manifest_dependency_edge_result_arr_rel_insert_input `json:"analysis_results,omitempty"`
-	Child            *Manifest_dependency_node_obj_rel_insert_input                 `json:"child,omitempty"`
-	Child_id         *uuid.UUID                                                     `json:"child_id,omitempty"`
-	Id               *uuid.UUID                                                     `json:"id,omitempty"`
-	Parent           *Manifest_dependency_node_obj_rel_insert_input                 `json:"parent,omitempty"`
-	Parent_id        *uuid.UUID                                                     `json:"parent_id,omitempty"`
-}
-
-// GetAnalysis_results returns Manifest_dependency_edge_insert_input.Analysis_results, and is useful for accessing the field via an interface.
-func (v *Manifest_dependency_edge_insert_input) GetAnalysis_results() *Analysis_manifest_dependency_edge_result_arr_rel_insert_input {
-	return v.Analysis_results
+	Child     *Manifest_dependency_node_obj_rel_insert_input `json:"child,omitempty"`
+	Child_id  *uuid.UUID                                     `json:"child_id,omitempty"`
+	Id        *uuid.UUID                                     `json:"id,omitempty"`
+	Parent    *Manifest_dependency_node_obj_rel_insert_input `json:"parent,omitempty"`
+	Parent_id *uuid.UUID                                     `json:"parent_id,omitempty"`
 }
 
 // GetChild returns Manifest_dependency_edge_insert_input.Child, and is useful for accessing the field via an interface.

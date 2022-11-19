@@ -28,12 +28,18 @@ describe('The fake dependency tree', () => {
     expect(tree).toBeDefined();
   });
 
+  it('should have the right parents for node 4', () => {
+    const parentIds = tree.graph.getParentIds('4');
+    expect(parentIds).toEqual(new Set(['3', '1']));
+  });
+
   it('Should show vulnerable releases properly', () => {
     const vulnReleases = tree.getVulnerableReleases();
     expect(vulnReleases.length).toEqual(1);
 
     const vulnQux = vulnReleases[0];
     expect(vulnQux.trivially_updatable).toEqual('yes');
+    console.log('vulnQux is', vulnQux);
     expect(vulnQux.chains.length).toEqual(2);
     expect(vulnQux.paths).toEqual(['package-lock.json']);
     const chain = vulnQux.chains[1];
@@ -89,7 +95,6 @@ describe('huge docusaurus dependency tree', () => {
   it('should have a sane first vuln', () => {
     const vulnerableReleases = tree.getVulnerableReleases();
     const firstVuln = vulnerableReleases[0];
-
     const byCount: Map<string, number> = new Map();
 
     firstVuln.chains.forEach((chain) => {
@@ -102,6 +107,34 @@ describe('huge docusaurus dependency tree', () => {
     const chainStringSet = new Set(chainStrings);
 
     expect(chainStrings.length).toEqual(chainStringSet.size);
+  });
+
+  it('should have no duplicate chains', () => {
+    tree.getVulnerableReleases().forEach((vr) => {
+      const chainStrings = vr.chains.map((chain) => {
+        const jsonSlug = JSON.stringify(chain);
+        return jsonSlug;
+      });
+
+      const chainStringSet = new Set(chainStrings);
+      expect(chainStrings.length).toEqual(chainStringSet.size);
+    });
+  });
+
+  it('should generate the right number of vulnerabilities', () => {
+    const rawTreeString = fs
+      .readFileSync(path.join(__dirname, 'fixtures/manifests/huge-docusaurus-tree-hasura-output.json'))
+      .toString();
+    const parsedTreeData = JSON.parse(rawTreeString) as Manifest[];
+
+    parsedTreeData.forEach((t) => t.child_edges_recursive?.forEach((e) => (e.analysis_results = [])));
+
+    const tree = new VulnerabilityDependencyTree(parsedTreeData);
+    const vulnerableReleases = tree.getVulnerableReleases();
+    expect(vulnerableReleases.length).toBe(17);
+
+    const vulnerableEdges = tree.getEdgesWhereChildIsVulnerable();
+    expect(vulnerableEdges.length).toBe(54);
   });
 });
 
