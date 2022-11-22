@@ -43,7 +43,11 @@ query GetTreeFromBuild($build_id: uuid!, $analysis_results_where: analysis_manif
                                     }
                                     cwes {
                                         id
-                                        cwe_id
+                                        cwe {
+                                            id
+                                            name
+                                            description
+                                        }
                                     }
                                 }
                                 ranges {

@@ -13,22 +13,19 @@
  */
 import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
 import React from 'react';
-import { Badge, Card, Col, Container, Modal, Row, Table } from 'react-bootstrap';
+import { Card, Col, Container, Modal, Row, Table } from 'react-bootstrap';
 import { ExternalLink } from 'react-feather';
 import { NavLink } from 'react-router-dom';
 
 import { Markdown } from '../../../components/Markdown';
 import { PackageManagerLink } from '../../../components/PackageManagerLink';
-import {
-  formatPackageManagerUrlForPackage,
-  getAffectedVersionConstraint,
-  getFixedVersions,
-} from '../../../utils/advisory';
+import { getAffectedVersionConstraint, getFixedVersions } from '../../../utils/advisory';
 import { formatPackageName } from '../../../utils/package';
 import { prettyDate } from '../../../utils/pretty-date';
 import { SourceLink } from '../SourceLink';
 import { VulnInfoDetails } from '../types';
 
+import { CweBadge } from './CweBadge';
 import { EquivalentVulnerabilitiesList } from './EquivalentVulnerabilitiesList';
 
 interface VulnerabilityDetailBodyProps {
@@ -160,9 +157,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                 <Markdown markdown={vuln.details || ''}></Markdown>
                 <div>
                   {vuln.cwes.map((c) => (
-                    <Badge key={c.id} bg={'light'}>
-                      {c.cwe_id}
-                    </Badge>
+                    <CweBadge key={c.id} id={c.cwe.id} name={c.cwe.name} />
                   ))}
                 </div>
               </Modal.Body>
