@@ -35,36 +35,6 @@ interface VulnerablePackageCardBodyProps {
   findingsHiddenBySeverityCount: number;
 }
 
-interface CweBadgesProps {
-  cwes: {
-    id: string;
-    name?: string | null;
-    cwe_id: string;
-  }[];
-}
-
-const CweBadges: React.FC<CweBadgesProps> = ({ cwes }) => {
-  return (
-    <>
-      {cwes.map((c) => (
-        <div key={c.id} className={'mr-2'}>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            href={`https://cwe.mitre.org/data/definitions/${c.cwe_id.toLowerCase().replace('cwe-', '')}.html`}
-            className="m-1"
-          >
-            <Badge bg={'light'}>{c.cwe_id}</Badge>
-          </a>{' '}
-          <ExternalLink size="1em" className="mb-1 me-1" />
-          <span>{c.name}</span>
-        </div>
-      ))}
-    </>
-  );
-};
-
 export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyProps> = ({
   pkg,
   quickView,
@@ -86,11 +56,6 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
 
       <div className="m-lg-4">
         <PackageDetails pkg={pkg} />
-        <Row className={'mb-2'}>
-          {findings.map((f, idx) => (
-            <CweBadges key={idx} cwes={f.vulnerability.cwes} />
-          ))}
-        </Row>
         <Row>
           <Accordion defaultActiveKey={''}>
             <Accordion.Item eventKey="0">
