@@ -64,6 +64,7 @@ export type BuildData_AffectedByVulnerability = {
 export type BuildData_Cwe = {
   __typename?: 'BuildData_Cwe';
   description: Scalars['String'];
+  id: Scalars['Int'];
   name: Scalars['String'];
 };
 
