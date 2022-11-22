@@ -34,6 +34,13 @@ export type BuildData_AffectedByVulnerability = {
   vulnerability: BuildData_Vulnerability;
 };
 
+export type BuildData_Cwe = {
+  __typename?: 'BuildData_Cwe';
+  description: Scalars['String'];
+  id: Scalars['Int'];
+  name: Scalars['String'];
+};
+
 export type BuildData_DependencyNode = {
   __typename?: 'BuildData_DependencyNode';
   id: Scalars['String'];
@@ -94,9 +101,8 @@ export type BuildData_Vulnerability = {
 
 export type BuildData_VulnerabilityCwe = {
   __typename?: 'BuildData_VulnerabilityCwe';
-  cwe_id: Scalars['String'];
+  cwe: BuildData_Cwe;
   id: Scalars['String'];
-  name?: Maybe<Scalars['String']>;
 };
 
 export type BuildData_VulnerableRelease = {
@@ -292,6 +298,7 @@ export type ResolversTypes = {
   AuthenticatedRepoCloneUrlOutput: ResolverTypeWrapper<AuthenticatedRepoCloneUrlOutput>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BuildData_AffectedByVulnerability: ResolverTypeWrapper<BuildData_AffectedByVulnerability>;
+  BuildData_Cwe: ResolverTypeWrapper<BuildData_Cwe>;
   BuildData_DependencyNode: ResolverTypeWrapper<BuildData_DependencyNode>;
   BuildData_Guide: ResolverTypeWrapper<BuildData_Guide>;
   BuildData_Guide_Vulnerability: ResolverTypeWrapper<BuildData_Guide_Vulnerability>;
@@ -324,6 +331,7 @@ export type ResolversParentTypes = {
   AuthenticatedRepoCloneUrlOutput: AuthenticatedRepoCloneUrlOutput;
   Boolean: Scalars['Boolean'];
   BuildData_AffectedByVulnerability: BuildData_AffectedByVulnerability;
+  BuildData_Cwe: BuildData_Cwe;
   BuildData_DependencyNode: BuildData_DependencyNode;
   BuildData_Guide: BuildData_Guide;
   BuildData_Guide_Vulnerability: BuildData_Guide_Vulnerability;
@@ -365,6 +373,13 @@ export type BuildData_AffectedByVulnerabilityResolvers<ContextType = Context, Pa
   ranges?: Resolver<Array<ResolversTypes['BuildData_Range']>, ParentType, ContextType>;
   trivially_updatable_to?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   vulnerability?: Resolver<ResolversTypes['BuildData_Vulnerability'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BuildData_CweResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_Cwe'] = ResolversParentTypes['BuildData_Cwe']> = {
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -427,9 +442,8 @@ export type BuildData_VulnerabilityResolvers<ContextType = Context, ParentType e
 };
 
 export type BuildData_VulnerabilityCweResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_VulnerabilityCwe'] = ResolversParentTypes['BuildData_VulnerabilityCwe']> = {
-  cwe_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  cwe?: Resolver<ResolversTypes['BuildData_Cwe'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -519,6 +533,7 @@ export interface UuidScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 export type Resolvers<ContextType = Context> = {
   AuthenticatedRepoCloneUrlOutput?: AuthenticatedRepoCloneUrlOutputResolvers<ContextType>;
   BuildData_AffectedByVulnerability?: BuildData_AffectedByVulnerabilityResolvers<ContextType>;
+  BuildData_Cwe?: BuildData_CweResolvers<ContextType>;
   BuildData_DependencyNode?: BuildData_DependencyNodeResolvers<ContextType>;
   BuildData_Guide?: BuildData_GuideResolvers<ContextType>;
   BuildData_Guide_Vulnerability?: BuildData_Guide_VulnerabilityResolvers<ContextType>;

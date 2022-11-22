@@ -150,8 +150,13 @@ type BuildData_Vulnerability {
 
 type BuildData_VulnerabilityCwe {
     id: String!
-    name: String
-    cwe_id: String!
+    cwe: BuildData_Cwe!
+}
+
+type BuildData_Cwe {
+    id: Int!
+    name: String!
+    description: String!
 }
 
 type BuildData_Guide_Vulnerability {

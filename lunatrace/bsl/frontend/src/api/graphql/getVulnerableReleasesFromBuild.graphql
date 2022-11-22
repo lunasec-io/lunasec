@@ -57,8 +57,11 @@ query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!)
                 }
                 cwes {
                     id
-                    name
-                    cwe_id
+                    cwe {
+                        id
+                        name
+                        description
+                    }
                 }
             }
         }

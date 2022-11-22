@@ -24,7 +24,6 @@ input Boolean_comparison_exp {
 
 type BuildData_AffectedByVulnerability {
     beneath_minimum_severity: Boolean!
-    chains: [[BuildData_DependencyNode!]!]
     fix_versions: [String!]!
     ignored: Boolean!
     ignored_vulnerability: BuildData_IgnoredVulnerability
@@ -37,6 +36,7 @@ type BuildData_AffectedByVulnerability {
 type BuildData_DependencyNode {
     id: String!
     range: String!
+    reachable: String!
     release: BuildData_Release!
     release_id: String!
 }
@@ -57,7 +57,6 @@ type BuildData_IgnoredVulnerability {
 }
 
 type BuildData_Package {
-    affected_by_vulnerability: [BuildData_AffectedByVulnerability!]
     name: String!
     package_manager: String!
 }
@@ -87,6 +86,7 @@ type BuildData_Vulnerability {
 type BuildData_VulnerabilityCwe {
     cwe_id: String!
     id: String!
+    name: String
 }
 
 type BuildData_VulnerableRelease {
@@ -275,8 +275,31 @@ type analysis_manifest_dependency_edge_result {
     vulnerability_id: uuid!
 }
 
+input analysis_manifest_dependency_edge_result_aggregate_order_by {
+    avg: analysis_manifest_dependency_edge_result_avg_order_by
+    count: order_by
+    max: analysis_manifest_dependency_edge_result_max_order_by
+    min: analysis_manifest_dependency_edge_result_min_order_by
+    stddev: analysis_manifest_dependency_edge_result_stddev_order_by
+    stddev_pop: analysis_manifest_dependency_edge_result_stddev_pop_order_by
+    stddev_samp: analysis_manifest_dependency_edge_result_stddev_samp_order_by
+    sum: analysis_manifest_dependency_edge_result_sum_order_by
+    var_pop: analysis_manifest_dependency_edge_result_var_pop_order_by
+    var_samp: analysis_manifest_dependency_edge_result_var_samp_order_by
+    variance: analysis_manifest_dependency_edge_result_variance_order_by
+}
+
 input analysis_manifest_dependency_edge_result_append_input {
     output: jsonb
+}
+
+input analysis_manifest_dependency_edge_result_arr_rel_insert_input {
+    data: [analysis_manifest_dependency_edge_result_insert_input!]!
+    on_conflict: analysis_manifest_dependency_edge_result_on_conflict
+}
+
+input analysis_manifest_dependency_edge_result_avg_order_by {
+    finding_source_version: order_by
 }
 
 input analysis_manifest_dependency_edge_result_bool_exp {
@@ -327,6 +350,22 @@ input analysis_manifest_dependency_edge_result_insert_input {
     output: jsonb
     vulnerability: vulnerability_obj_rel_insert_input
     vulnerability_id: uuid
+}
+
+input analysis_manifest_dependency_edge_result_max_order_by {
+    created_at: order_by
+    finding_source_version: order_by
+    id: order_by
+    manifest_dependency_edge_id: order_by
+    vulnerability_id: order_by
+}
+
+input analysis_manifest_dependency_edge_result_min_order_by {
+    created_at: order_by
+    finding_source_version: order_by
+    id: order_by
+    manifest_dependency_edge_id: order_by
+    vulnerability_id: order_by
 }
 
 type analysis_manifest_dependency_edge_result_mutation_response {
@@ -383,6 +422,22 @@ input analysis_manifest_dependency_edge_result_set_input {
     vulnerability_id: uuid
 }
 
+input analysis_manifest_dependency_edge_result_stddev_order_by {
+    finding_source_version: order_by
+}
+
+input analysis_manifest_dependency_edge_result_stddev_pop_order_by {
+    finding_source_version: order_by
+}
+
+input analysis_manifest_dependency_edge_result_stddev_samp_order_by {
+    finding_source_version: order_by
+}
+
+input analysis_manifest_dependency_edge_result_sum_order_by {
+    finding_source_version: order_by
+}
+
 enum analysis_manifest_dependency_edge_result_update_column {
     created_at
     finding_source
@@ -392,6 +447,18 @@ enum analysis_manifest_dependency_edge_result_update_column {
     manifest_dependency_edge_id
     output
     vulnerability_id
+}
+
+input analysis_manifest_dependency_edge_result_var_pop_order_by {
+    finding_source_version: order_by
+}
+
+input analysis_manifest_dependency_edge_result_var_samp_order_by {
+    finding_source_version: order_by
+}
+
+input analysis_manifest_dependency_edge_result_variance_order_by {
+    finding_source_version: order_by
 }
 
 scalar bigint
@@ -2416,6 +2483,7 @@ enum manifest_dependency_constraint {
 }
 
 type manifest_dependency_edge {
+    analysis_results(distinct_on: [analysis_manifest_dependency_edge_result_select_column!], limit: Int, offset: Int, order_by: [analysis_manifest_dependency_edge_result_order_by!], where: analysis_manifest_dependency_edge_result_bool_exp): [analysis_manifest_dependency_edge_result!]!
     child: manifest_dependency_node!
     child_id: uuid!
     id: uuid!
@@ -2438,6 +2506,7 @@ input manifest_dependency_edge_bool_exp {
     _and: [manifest_dependency_edge_bool_exp!]
     _not: manifest_dependency_edge_bool_exp
     _or: [manifest_dependency_edge_bool_exp!]
+    analysis_results: analysis_manifest_dependency_edge_result_bool_exp
     child: manifest_dependency_node_bool_exp
     child_id: uuid_comparison_exp
     id: uuid_comparison_exp
@@ -2451,6 +2520,7 @@ enum manifest_dependency_edge_constraint {
 }
 
 input manifest_dependency_edge_insert_input {
+    analysis_results: analysis_manifest_dependency_edge_result_arr_rel_insert_input
     child: manifest_dependency_node_obj_rel_insert_input
     child_id: uuid
     id: uuid
@@ -2487,6 +2557,7 @@ input manifest_dependency_edge_on_conflict {
 }
 
 input manifest_dependency_edge_order_by {
+    analysis_results_aggregate: analysis_manifest_dependency_edge_result_aggregate_order_by
     child: manifest_dependency_node_order_by
     child_id: order_by
     id: order_by
@@ -2902,6 +2973,8 @@ type mutation_root {
     insert_vulnerability_affected_version_one(object: vulnerability_affected_version_insert_input!, on_conflict: vulnerability_affected_version_on_conflict): vulnerability_affected_version
     insert_vulnerability_credit(objects: [vulnerability_credit_insert_input!]!, on_conflict: vulnerability_credit_on_conflict): vulnerability_credit_mutation_response
     insert_vulnerability_credit_one(object: vulnerability_credit_insert_input!, on_conflict: vulnerability_credit_on_conflict): vulnerability_credit
+    insert_vulnerability_cwe(objects: [vulnerability_cwe_insert_input!]!, on_conflict: vulnerability_cwe_on_conflict): vulnerability_cwe_mutation_response
+    insert_vulnerability_cwe_one(object: vulnerability_cwe_insert_input!, on_conflict: vulnerability_cwe_on_conflict): vulnerability_cwe
     insert_vulnerability_equivalent(objects: [vulnerability_equivalent_insert_input!]!, on_conflict: vulnerability_equivalent_on_conflict): vulnerability_equivalent_mutation_response
     insert_vulnerability_equivalent_one(object: vulnerability_equivalent_insert_input!, on_conflict: vulnerability_equivalent_on_conflict): vulnerability_equivalent
     insert_vulnerability_one(object: vulnerability_insert_input!, on_conflict: vulnerability_on_conflict): vulnerability
@@ -2975,6 +3048,8 @@ type mutation_root {
     update_vulnerability_by_pk(_append: vulnerability_append_input, _delete_at_path: vulnerability_delete_at_path_input, _delete_elem: vulnerability_delete_elem_input, _delete_key: vulnerability_delete_key_input, _inc: vulnerability_inc_input, _prepend: vulnerability_prepend_input, _set: vulnerability_set_input, pk_columns: vulnerability_pk_columns_input!): vulnerability
     update_vulnerability_credit(_set: vulnerability_credit_set_input, where: vulnerability_credit_bool_exp!): vulnerability_credit_mutation_response
     update_vulnerability_credit_by_pk(_set: vulnerability_credit_set_input, pk_columns: vulnerability_credit_pk_columns_input!): vulnerability_credit
+    update_vulnerability_cwe(_inc: vulnerability_cwe_inc_input, _set: vulnerability_cwe_set_input, where: vulnerability_cwe_bool_exp!): vulnerability_cwe_mutation_response
+    update_vulnerability_cwe_by_pk(_inc: vulnerability_cwe_inc_input, _set: vulnerability_cwe_set_input, pk_columns: vulnerability_cwe_pk_columns_input!): vulnerability_cwe
     update_vulnerability_equivalent(_set: vulnerability_equivalent_set_input, where: vulnerability_equivalent_bool_exp!): vulnerability_equivalent_mutation_response
     update_vulnerability_range(_set: vulnerability_range_set_input, where: vulnerability_range_bool_exp!): vulnerability_range_mutation_response
     update_vulnerability_range_by_pk(_set: vulnerability_range_set_input, pk_columns: vulnerability_range_pk_columns_input!): vulnerability_range
@@ -2982,8 +3057,8 @@ type mutation_root {
     update_vulnerability_reference_by_pk(_set: vulnerability_reference_set_input, pk_columns: vulnerability_reference_pk_columns_input!): vulnerability_reference
     update_vulnerability_severity(_set: vulnerability_severity_set_input, where: vulnerability_severity_bool_exp!): vulnerability_severity_mutation_response
     update_vulnerability_severity_by_pk(_set: vulnerability_severity_set_input, pk_columns: vulnerability_severity_pk_columns_input!): vulnerability_severity
-    update_vulnerability_vulnerability_cwe(_set: vulnerability_vulnerability_cwe_set_input, where: vulnerability_vulnerability_cwe_bool_exp!): vulnerability_vulnerability_cwe_mutation_response
-    update_vulnerability_vulnerability_cwe_by_pk(_set: vulnerability_vulnerability_cwe_set_input, pk_columns: vulnerability_vulnerability_cwe_pk_columns_input!): vulnerability_vulnerability_cwe
+    update_vulnerability_vulnerability_cwe(_inc: vulnerability_vulnerability_cwe_inc_input, _set: vulnerability_vulnerability_cwe_set_input, where: vulnerability_vulnerability_cwe_bool_exp!): vulnerability_vulnerability_cwe_mutation_response
+    update_vulnerability_vulnerability_cwe_by_pk(_inc: vulnerability_vulnerability_cwe_inc_input, _set: vulnerability_vulnerability_cwe_set_input, pk_columns: vulnerability_vulnerability_cwe_pk_columns_input!): vulnerability_vulnerability_cwe
     update_webhook_cache(_set: webhook_cache_set_input, where: webhook_cache_bool_exp!): webhook_cache_mutation_response
     update_webhook_cache_by_pk(_set: webhook_cache_set_input, pk_columns: webhook_cache_pk_columns_input!): webhook_cache
 }
@@ -4550,6 +4625,8 @@ type query_root {
     vulnerability_by_pk(id: uuid!): vulnerability
     vulnerability_credit(distinct_on: [vulnerability_credit_select_column!], limit: Int, offset: Int, order_by: [vulnerability_credit_order_by!], where: vulnerability_credit_bool_exp): [vulnerability_credit!]!
     vulnerability_credit_by_pk(id: uuid!): vulnerability_credit
+    vulnerability_cwe(distinct_on: [vulnerability_cwe_select_column!], limit: Int, offset: Int, order_by: [vulnerability_cwe_order_by!], where: vulnerability_cwe_bool_exp): [vulnerability_cwe!]!
+    vulnerability_cwe_by_pk(id: Int!): vulnerability_cwe
     vulnerability_equivalent(distinct_on: [vulnerability_equivalent_select_column!], limit: Int, offset: Int, order_by: [vulnerability_equivalent_order_by!], where: vulnerability_equivalent_bool_exp): [vulnerability_equivalent!]!
     vulnerability_range(distinct_on: [vulnerability_range_select_column!], limit: Int, offset: Int, order_by: [vulnerability_range_order_by!], where: vulnerability_range_bool_exp): [vulnerability_range!]!
     vulnerability_range_by_pk(id: uuid!): vulnerability_range
@@ -5022,6 +5099,8 @@ type subscription_root {
     vulnerability_by_pk(id: uuid!): vulnerability
     vulnerability_credit(distinct_on: [vulnerability_credit_select_column!], limit: Int, offset: Int, order_by: [vulnerability_credit_order_by!], where: vulnerability_credit_bool_exp): [vulnerability_credit!]!
     vulnerability_credit_by_pk(id: uuid!): vulnerability_credit
+    vulnerability_cwe(distinct_on: [vulnerability_cwe_select_column!], limit: Int, offset: Int, order_by: [vulnerability_cwe_order_by!], where: vulnerability_cwe_bool_exp): [vulnerability_cwe!]!
+    vulnerability_cwe_by_pk(id: Int!): vulnerability_cwe
     vulnerability_equivalent(distinct_on: [vulnerability_equivalent_select_column!], limit: Int, offset: Int, order_by: [vulnerability_equivalent_order_by!], where: vulnerability_equivalent_bool_exp): [vulnerability_equivalent!]!
     vulnerability_range(distinct_on: [vulnerability_range_select_column!], limit: Int, offset: Int, order_by: [vulnerability_range_order_by!], where: vulnerability_range_bool_exp): [vulnerability_range!]!
     vulnerability_range_by_pk(id: uuid!): vulnerability_range
@@ -5751,6 +5830,86 @@ enum vulnerability_credit_update_column {
     vulnerability_id
 }
 
+type vulnerability_cwe {
+    description: String!
+    extended_description: String!
+    id: Int!
+    name: String!
+}
+
+input vulnerability_cwe_bool_exp {
+    _and: [vulnerability_cwe_bool_exp!]
+    _not: vulnerability_cwe_bool_exp
+    _or: [vulnerability_cwe_bool_exp!]
+    description: String_comparison_exp
+    extended_description: String_comparison_exp
+    id: Int_comparison_exp
+    name: String_comparison_exp
+}
+
+enum vulnerability_cwe_constraint {
+    cwe_pkey
+}
+
+input vulnerability_cwe_inc_input {
+    id: Int
+}
+
+input vulnerability_cwe_insert_input {
+    description: String
+    extended_description: String
+    id: Int
+    name: String
+}
+
+type vulnerability_cwe_mutation_response {
+    affected_rows: Int!
+    returning: [vulnerability_cwe!]!
+}
+
+input vulnerability_cwe_obj_rel_insert_input {
+    data: vulnerability_cwe_insert_input!
+    on_conflict: vulnerability_cwe_on_conflict
+}
+
+input vulnerability_cwe_on_conflict {
+    constraint: vulnerability_cwe_constraint!
+    update_columns: [vulnerability_cwe_update_column!]! = []
+    where: vulnerability_cwe_bool_exp
+}
+
+input vulnerability_cwe_order_by {
+    description: order_by
+    extended_description: order_by
+    id: order_by
+    name: order_by
+}
+
+input vulnerability_cwe_pk_columns_input {
+    id: Int!
+}
+
+enum vulnerability_cwe_select_column {
+    description
+    extended_description
+    id
+    name
+}
+
+input vulnerability_cwe_set_input {
+    description: String
+    extended_description: String
+    id: Int
+    name: String
+}
+
+enum vulnerability_cwe_update_column {
+    description
+    extended_description
+    id
+    name
+}
+
 input vulnerability_delete_at_path_input {
     database_specific: [String!]
     upstream_data: [String!]
@@ -6297,16 +6456,25 @@ enum vulnerability_update_column {
 }
 
 type vulnerability_vulnerability_cwe {
-    cwe_id: String!
+    cwe: vulnerability_cwe!
+    cwe_id: Int!
     id: uuid!
     vulnerability: vulnerability!
     vulnerability_id: uuid!
 }
 
 input vulnerability_vulnerability_cwe_aggregate_order_by {
+    avg: vulnerability_vulnerability_cwe_avg_order_by
     count: order_by
     max: vulnerability_vulnerability_cwe_max_order_by
     min: vulnerability_vulnerability_cwe_min_order_by
+    stddev: vulnerability_vulnerability_cwe_stddev_order_by
+    stddev_pop: vulnerability_vulnerability_cwe_stddev_pop_order_by
+    stddev_samp: vulnerability_vulnerability_cwe_stddev_samp_order_by
+    sum: vulnerability_vulnerability_cwe_sum_order_by
+    var_pop: vulnerability_vulnerability_cwe_var_pop_order_by
+    var_samp: vulnerability_vulnerability_cwe_var_samp_order_by
+    variance: vulnerability_vulnerability_cwe_variance_order_by
 }
 
 input vulnerability_vulnerability_cwe_arr_rel_insert_input {
@@ -6314,11 +6482,16 @@ input vulnerability_vulnerability_cwe_arr_rel_insert_input {
     on_conflict: vulnerability_vulnerability_cwe_on_conflict
 }
 
+input vulnerability_vulnerability_cwe_avg_order_by {
+    cwe_id: order_by
+}
+
 input vulnerability_vulnerability_cwe_bool_exp {
     _and: [vulnerability_vulnerability_cwe_bool_exp!]
     _not: vulnerability_vulnerability_cwe_bool_exp
     _or: [vulnerability_vulnerability_cwe_bool_exp!]
-    cwe_id: String_comparison_exp
+    cwe: vulnerability_cwe_bool_exp
+    cwe_id: Int_comparison_exp
     id: uuid_comparison_exp
     vulnerability: vulnerability_bool_exp
     vulnerability_id: uuid_comparison_exp
@@ -6326,11 +6499,15 @@ input vulnerability_vulnerability_cwe_bool_exp {
 
 enum vulnerability_vulnerability_cwe_constraint {
     vulnerability_cwe_pkey
-    vulnerability_cwe_vulnerability_id_cwe_key
+}
+
+input vulnerability_vulnerability_cwe_inc_input {
+    cwe_id: Int
 }
 
 input vulnerability_vulnerability_cwe_insert_input {
-    cwe_id: String
+    cwe: vulnerability_cwe_obj_rel_insert_input
+    cwe_id: Int
     id: uuid
     vulnerability: vulnerability_obj_rel_insert_input
     vulnerability_id: uuid
@@ -6360,6 +6537,7 @@ input vulnerability_vulnerability_cwe_on_conflict {
 }
 
 input vulnerability_vulnerability_cwe_order_by {
+    cwe: vulnerability_cwe_order_by
     cwe_id: order_by
     id: order_by
     vulnerability: vulnerability_order_by
@@ -6377,15 +6555,43 @@ enum vulnerability_vulnerability_cwe_select_column {
 }
 
 input vulnerability_vulnerability_cwe_set_input {
-    cwe_id: String
+    cwe_id: Int
     id: uuid
     vulnerability_id: uuid
+}
+
+input vulnerability_vulnerability_cwe_stddev_order_by {
+    cwe_id: order_by
+}
+
+input vulnerability_vulnerability_cwe_stddev_pop_order_by {
+    cwe_id: order_by
+}
+
+input vulnerability_vulnerability_cwe_stddev_samp_order_by {
+    cwe_id: order_by
+}
+
+input vulnerability_vulnerability_cwe_sum_order_by {
+    cwe_id: order_by
 }
 
 enum vulnerability_vulnerability_cwe_update_column {
     cwe_id
     id
     vulnerability_id
+}
+
+input vulnerability_vulnerability_cwe_var_pop_order_by {
+    cwe_id: order_by
+}
+
+input vulnerability_vulnerability_cwe_var_samp_order_by {
+    cwe_id: order_by
+}
+
+input vulnerability_vulnerability_cwe_variance_order_by {
+    cwe_id: order_by
 }
 
 type webhook_cache {
