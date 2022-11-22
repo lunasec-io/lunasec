@@ -43,7 +43,8 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
   // Todo: not sure if this should include below minimum severity packages or not, might be confusing. For now we are, though
   const pkgsToUpdate = vulnerablePackages.filter((pkg) => {
     if (pkg.trivially_updatable === 'yes' || pkg.trivially_updatable === 'partially') {
-      return isDirectDep(pkg); // only show the overall update queue for direct deps that could be updated, transitives don't work
+      // only show the overall update queue for direct deps that could be updated, transitives don't work
+      return isDirectDep(pkg);
     }
   });
 
