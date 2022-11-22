@@ -30,8 +30,8 @@ The score doesn't always map well to how likely the vulnerability is to have an 
 ## EPSS is an attempt to quantify how likely an exploit is
 
 When we see a high CVSS score, we are often left wondering: "What is the actual risk of this?" The EPSS score, by contrast,
-is an attempt to quantify how likely it is that vulnerability is to actually be exploited in the wild. The score is a probability
-of the estimated likelihood of exploitation expressed from 0 to 1 or 0% to 100%.
+is an attempt to quantify how likely it is that vulnerability is to actually be exploited in the wild. The score is
+expressed as the probability of the estimated likelihood of exploitation from 0 to 1 or 0% to 100%.
 
 It stands for "Exploit Prediction Scoring System."
 
@@ -95,17 +95,16 @@ of signal for that.
 CVSS scores are calculated based on a limited set of inputs and the mathematical formula can be evaluated by a human.
 
 In contrast, the machine learning based approach of EPSS is more opaque. The model is not open source, and it is more difficult
-to introspect the results. The only output of the model surfaced to consumers is the EPSS score itself.
+to introspect the results. The only output of the model surfaced to consumers is the EPSS score itself. Previous versions
+of the model were detailed in academic papers
 
 ## Is EPSS relevant
 
 The shortcomings of CVSS and existing scanning tools are pretty well known, and in fact, we are trying to build a business
 disrupting that. As far as we can tell, EPSS is a good idea and a needed step on the way to less bogus work for security engineers.
 
-
-
 Once we get more of a feel for the data over the next month or so, we'd like to integrate showing EPSS scores into [LunaTrace](/pages/lunatrace/overview/introduction/).
-After all, it's free and very easy for us to do. Please let us know if this is something you're excited about.
+After all, it's free and would provide value to our users. Please let us know if this is something you're excited about.
 
 ## Resources
 
