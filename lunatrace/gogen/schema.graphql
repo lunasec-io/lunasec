@@ -33,6 +33,12 @@ type BuildData_AffectedByVulnerability {
     vulnerability: BuildData_Vulnerability!
 }
 
+type BuildData_Cwe {
+    description: String!
+    id: Int!
+    name: String!
+}
+
 type BuildData_DependencyNode {
     id: String!
     range: String!
@@ -84,9 +90,8 @@ type BuildData_Vulnerability {
 }
 
 type BuildData_VulnerabilityCwe {
-    cwe_id: String!
+    cwe: BuildData_Cwe!
     id: String!
-    name: String
 }
 
 type BuildData_VulnerableRelease {
