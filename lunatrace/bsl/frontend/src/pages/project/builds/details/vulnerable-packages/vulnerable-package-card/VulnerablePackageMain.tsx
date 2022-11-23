@@ -17,13 +17,13 @@ import { Card, Dropdown, FloatingLabel, Form, FormControl, Spinner } from 'react
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useParams } from 'react-router-dom';
 
-import api from '../../../../../api';
-import { ConfirmationDailog } from '../../../../../components/ConfirmationDialog';
-import { QuickViewProps } from '../../types';
+import api from '../../../../../../api';
+import { ConfirmationDailog } from '../../../../../../components/ConfirmationDialog';
+import { QuickViewProps } from '../../../types';
+import { VulnerablePackage } from '../types';
 
+import { PackageCardBody } from './PackageCardBody';
 import { VulnerablePackageCardHeader } from './VulnerablePackageCardHeader';
-import { PackageCardBody } from './body/PackageCardBody';
-import { VulnerablePackage } from './types';
 
 interface VulnerablePackageMainProps {
   pkg: VulnerablePackage;

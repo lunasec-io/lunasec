@@ -15,12 +15,12 @@ import React from 'react';
 import { Card, Col, NavLink, OverlayTrigger, Popover, Row, Tooltip } from 'react-bootstrap';
 import { CopyBlock, tomorrowNight } from 'react-code-blocks';
 import { Upload } from 'react-feather';
-import { FcUpload } from 'react-icons/fc';
 
-import { PackageManagerLink } from '../../../../../components/PackageManagerLink';
-import useBreakpoint from '../../../../../hooks/useBreakpoint';
+import { PackageManagerLink } from '../../../../../../components/PackageManagerLink';
+import useBreakpoint from '../../../../../../hooks/useBreakpoint';
+import { VulnerablePackage } from '../types';
 
-import { VulnerablePackage } from './types';
+import { PackageUpdatablePopOver } from './PackageUpdatablePopOver';
 
 interface VulnerablePackageCardHeaderProps {
   ignored: boolean;
@@ -31,57 +31,6 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
   pkg,
   ignored,
 }) => {
-  const renderUpdatableStatus = () => {
-    const trivialUpdateStatus = pkg.trivially_updatable;
-
-    if (!trivialUpdateStatus || trivialUpdateStatus === 'no') {
-      return null;
-    }
-
-    const renderToolTip = (props: React.ComponentProps<typeof Tooltip>) => {
-      return (
-        <Popover className="vulnerablePackage-update-popover" {...props}>
-          <Popover.Header>Trivially Updatable</Popover.Header>
-          <Popover.Body>
-            A fix is available within the semver range this package was requested with, meaning that the{' '}
-            <strong>project lockfile</strong> is probably the only thing constraining the package to the vulnerable
-            version.
-            <hr className="m-1" />
-            This command will update the package:
-            <CopyBlock
-              text={`npm update ${pkg.release.package.name}`}
-              language="bash"
-              showLineNumbers={false}
-              startingLineNumber={false}
-              theme={tomorrowNight}
-              codeBlock
-            />
-            or for Yarn:
-            <CopyBlock
-              text={`yarn upgrade ${pkg.release.package.name}`}
-              language="bash"
-              showLineNumbers={false}
-              startingLineNumber={false}
-              theme={tomorrowNight}
-              codeBlock
-            />
-          </Popover.Body>
-        </Popover>
-      );
-    };
-
-    const mdOrLarger = useBreakpoint('md');
-    return (
-      <>
-        <OverlayTrigger trigger="click" rootClose placement={mdOrLarger ? 'right' : 'bottom'} overlay={renderToolTip}>
-          <NavLink className="primary-color d-inline mx-1 p-0">
-            {trivialUpdateStatus === 'partially' ? 'partially ' : ''}updatable
-            <Upload size="1em" className="pb-1" />
-          </NavLink>
-        </OverlayTrigger>
-      </>
-    );
-  };
   return (
     <Card.Header>
       <div className="ms-lg-4 me-lg-4">
@@ -93,7 +42,7 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
             <Card.Subtitle>
               <span className="darker">Version: </span>
               {pkg.release.version}
-              {renderUpdatableStatus()}
+              <PackageUpdatablePopOver pkg={pkg} />
               <PackageManagerLink
                 packageName={pkg.release.package.name}
                 packageManager={pkg.release.package.package_manager}
