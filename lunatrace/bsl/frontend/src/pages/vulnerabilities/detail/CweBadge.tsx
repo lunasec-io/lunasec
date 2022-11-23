@@ -14,14 +14,15 @@ interface CweBadgeProps {
 
 export const CweBadge: React.FC<CweBadgeProps> = ({ id, name, quickView, tooltipDescription }) => {
   const cweBadge = (
-    <div style={{ display: 'inline-block' }}>
-      {quickView !== null ? (
+    <div style={{ display: 'inline-flex' }}>
+      {quickView ? (
         <Badge
           style={{ cursor: 'pointer' }}
           bg={'light'}
           onClick={() => quickView?.setVulnQuickViewState(cweQuickViewState(id))}
+          className={'mx-1'}
         >
-          {id}
+          CWE-{id}
         </Badge>
       ) : (
         <div>
@@ -30,10 +31,9 @@ export const CweBadge: React.FC<CweBadgeProps> = ({ id, name, quickView, tooltip
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
             href={`https://cwe.mitre.org/data/definitions/${id}.html`}
-            className="m-1"
           >
-            <Badge bg={'light'}>{id}</Badge>
-          </a>{' '}
+            <Badge bg={'light'}>CWE-{id}</Badge>
+          </a>
           <ExternalLink size="1em" className="mb-1 me-1" />
         </div>
       )}
