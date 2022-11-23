@@ -18,6 +18,7 @@ import { CheckCircle, Maximize2, Minimize2 } from 'react-feather';
 
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import { Analysis_Finding_Type_Enum } from '../../../../../../api/generated';
+import { LinkInNewTab } from '../../../../../../components/utils/LinkInNewTab';
 import { VulnerablePackage } from '../types';
 
 import { ChainDep } from './ChainDep';
@@ -81,7 +82,7 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
           const vulnerabilityIsReachable = notReachableIndexes.length === 0;
           const chainTooltipMsg = vulnerabilityIsReachable
             ? 'All dependencies in the vulnerable chain are imported and called. Vulnerability is likely to be relevant.'
-            : 'All dependencies in the vulnerable chain have been analyzed, but a continuous "imported and called" chain  was not found. Vulnerability is unlikely to be relevant.';
+            : 'A continuous "imported and called" chain was not found. Vulnerability may not be relevant.';
 
           const chainHasBeenAnalyzed = !chain.some((d) => d.reachable === Analysis_Finding_Type_Enum.Error);
 
@@ -105,7 +106,18 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
                 })}
                 <div className="me-1 ms-1 d-inline-flex justify-content-center" style={{ flexDirection: 'column' }}>
                   {chainHasBeenAnalyzed && (
-                    <OverlayTrigger placement={'top'} overlay={<Tooltip>{chainTooltipMsg}</Tooltip>}>
+                    <OverlayTrigger
+                      delay={{ hide: 2000, show: 0 }}
+                      placement={'top'}
+                      overlay={(
+                        <Tooltip>
+                          {chainTooltipMsg}{' '}
+                          <LinkInNewTab href="https://www.lunasec.io/docs/pages/lunatrace/features/static-analysis/#reachability-analysis">
+                            See Documentation
+                          </LinkInNewTab>
+                        </Tooltip>
+                      )}
+                    >
                       <CheckCircle
                         className={classNames([
                           'mb-1',
