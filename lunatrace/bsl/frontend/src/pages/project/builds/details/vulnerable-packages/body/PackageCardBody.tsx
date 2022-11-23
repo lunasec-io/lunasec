@@ -57,7 +57,7 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
       <div className="m-lg-4">
         <PackageDetails pkg={pkg} />
         <Row>
-          <Accordion defaultActiveKey={''}>
+          <Accordion defaultActiveKey={findings.length > 2 ? 'nonexistant' : '0'}>
             <Accordion.Item eventKey="0">
               <FindingsListHeader findingsCount={findings.length} severity={severity} />
               <FindingsTable
