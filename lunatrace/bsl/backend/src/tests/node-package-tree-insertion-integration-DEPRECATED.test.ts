@@ -189,7 +189,7 @@ function testAllTreeTypes() {
   });
 }
 
-describe('building node dependency trees from fixture:', () => {
+describe.skip('building node dependency trees from fixture:', () => {
   beforeEach(async () => {
     if (backup === null) {
       await pgPromiseDb.none(loadSql('setup-db.sql'));
