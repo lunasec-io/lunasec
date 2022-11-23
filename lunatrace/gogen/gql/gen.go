@@ -8214,7 +8214,7 @@ func InsertVulnerabilityCWE(
 		OpName: "InsertVulnerabilityCWE",
 		Query: `
 mutation InsertVulnerabilityCWE ($objects: [vulnerability_cwe_insert_input!]!) {
-	insert_vulnerability_cwe(objects: $objects, on_conflict: {constraint:cwe_pkey}) {
+	insert_vulnerability_cwe(objects: $objects, on_conflict: {constraint:cwe_pkey,update_columns:[id,name,description,extended_description]}) {
 		returning {
 			id
 		}
