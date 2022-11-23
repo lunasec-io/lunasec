@@ -41,7 +41,7 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
         <thead>
           <tr>
             <th>Vulnerability ID</th>
-            <th>CWEs</th>
+            <th>Vulnerability Categories</th>
             <th>Severity</th>
             <th>CVSS</th>
             <th>Fix</th>
