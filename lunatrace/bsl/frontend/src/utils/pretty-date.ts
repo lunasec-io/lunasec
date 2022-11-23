@@ -62,8 +62,5 @@ export function prettyDate(date: Date, showTime = true) {
     return `${minutesSince} minute${minutesSince > 1 ? 's' : ''} ago`;
   }
 
-  // if it was posted in the last minute
-  else {
-    return `${secondsSince} seconds ago`;
-  }
+  return `${secondsSince} seconds ago`;
 }

@@ -41,11 +41,20 @@ export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ p
         <Col xl={6} lg={12}>
           <h5>
             <span className="darker">Ecosystem: </span>
-            <span className="text-capitalize">{pkg.release.package.package_manager}</span>
+            <span className="text-capitalize">
+              {pkg.release.package.package_manager === 'npm' ? 'javascript' : pkg.release.package.package_manager}
+            </span>
           </h5>
           <h5>
             <span className="darker">{pluralizeIfMultiple(pkg.paths.length, 'Path') + ': '}</span>
-            <span className="lighter mx-1">{pkg.paths}</span>
+            {pkg.paths.map((path, index) => {
+              return (
+                <>
+                  {index > 0 && <br />}
+                  <span className="lighter mx-1">{path}</span>
+                </>
+              );
+            })}
           </h5>
           {pkg.dev_only && (
             <h5>
