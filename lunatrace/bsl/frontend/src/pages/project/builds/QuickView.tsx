@@ -18,15 +18,54 @@ import { ArrowLeft } from 'react-feather';
 import api from '../../../api';
 import { StickyScrollableElement } from '../../../components/utils/StickyScrollableElement';
 import { VulnerabilityDetailBody } from '../../vulnerabilities/detail/DetailBody';
+
+import { CweDetails } from './CweDetails';
+import { QuickViewCwe, QuickViewProps, QuickViewState, QuickViewVulnerability } from './types';
+
 interface VulnQuickViewProps {
-  vulnId: string;
-  setVulnId: (vulnId: string | null) => void;
+  quickView: QuickViewProps;
   sideBySideView: boolean;
 }
 
-export const VulnQuickView: React.FC<VulnQuickViewProps> = ({ vulnId, setVulnId, sideBySideView }) => {
-  const { data, isFetching } = api.useGetVulnerabilityDetailsQuery({ vulnerability_id: vulnId });
+interface CweQuickViewProps {
+  cweState: QuickViewCwe;
+  sideBySideView: boolean;
+}
 
+interface VulnerabilityQuickViewProps {
+  vulnState: QuickViewVulnerability;
+  sideBySideView: boolean;
+}
+
+const CweQuickView: React.FC<CweQuickViewProps> = ({ cweState, sideBySideView }) => {
+  const { data, isFetching } = api.useGetCweDetailsQuery({ id: cweState.id });
+
+  return (
+    <>
+      {data && data.vulnerability_cwe_by_pk && !isFetching ? (
+        <CweDetails cwe={data.vulnerability_cwe_by_pk} isEmbedded={true} sideBySideView={sideBySideView} />
+      ) : (
+        <Spinner animation="border" />
+      )}
+    </>
+  );
+};
+
+const VulnerabilityQuickView: React.FC<VulnerabilityQuickViewProps> = ({ vulnState, sideBySideView }) => {
+  const { data, isFetching } = api.useGetVulnerabilityDetailsQuery({ vulnerability_id: vulnState.id });
+
+  return (
+    <>
+      {data && data.vulnerability_by_pk && !isFetching ? (
+        <VulnerabilityDetailBody vuln={data.vulnerability_by_pk} isEmbedded={true} sideBySideView={sideBySideView} />
+      ) : (
+        <Spinner animation="border" />
+      )}
+    </>
+  );
+};
+
+export const QuickView: React.FC<VulnQuickViewProps> = ({ quickView, sideBySideView }) => {
   const CloseButton = (
     <Row className="m-4">
       <Button onClick={() => closeQuickView()} variant="light">
@@ -37,7 +76,7 @@ export const VulnQuickView: React.FC<VulnQuickViewProps> = ({ vulnId, setVulnId,
   );
 
   function closeQuickView() {
-    setVulnId(null);
+    quickView.setVulnQuickViewState(null);
   }
 
   // hacks to catch the back button and use it to close the vuln quick view without leaving the snapshot altogether
@@ -59,18 +98,23 @@ export const VulnQuickView: React.FC<VulnQuickViewProps> = ({ vulnId, setVulnId,
     };
   }, []);
 
+  const quickViewComponent = () => {
+    if (quickView.quickViewState?.type === 'vulnerability') {
+      return <VulnerabilityQuickView vulnState={quickView.quickViewState} sideBySideView={sideBySideView} />;
+    }
+    if (quickView.quickViewState?.type === 'cwe') {
+      return <CweQuickView cweState={quickView.quickViewState} sideBySideView={sideBySideView} />;
+    }
+    return null;
+  };
+
   return (
     <>
       <StickyScrollableElement enabled={sideBySideView}>
-        <h2 className="text-center">Vulnerability Quick View</h2>
+        <h2 className="text-center">Quick View</h2>
 
         {CloseButton}
-
-        {data && data.vulnerability_by_pk && !isFetching ? (
-          <VulnerabilityDetailBody vuln={data.vulnerability_by_pk} isEmbedded={true} sideBySideView={sideBySideView} />
-        ) : (
-          <Spinner animation="border" />
-        )}
+        {quickViewComponent()}
         {CloseButton}
       </StickyScrollableElement>
     </>

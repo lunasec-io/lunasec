@@ -14,8 +14,9 @@
 import React from 'react';
 import { Card, Col, NavLink, OverlayTrigger, Popover, Row, Tooltip } from 'react-bootstrap';
 import { CopyBlock, tomorrowNight } from 'react-code-blocks';
-import { FcUpload } from 'react-icons/fc';
+import { Upload } from 'react-feather';
 
+import { PackageManagerLink } from '../../../../../../components/PackageManagerLink';
 import useBreakpoint from '../../../../../../hooks/useBreakpoint';
 import { VulnerablePackage } from '../types';
 
@@ -42,6 +43,10 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
               <span className="darker">Version: </span>
               {pkg.release.version}
               <PackageUpdatablePopOver pkg={pkg} />
+              <PackageManagerLink
+                packageName={pkg.release.package.name}
+                packageManager={pkg.release.package.package_manager}
+              />
             </Card.Subtitle>
           </Col>
           <Col sm={{ span: 6 }}>

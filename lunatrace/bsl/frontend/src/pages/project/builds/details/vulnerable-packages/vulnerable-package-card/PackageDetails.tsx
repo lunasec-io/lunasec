@@ -16,6 +16,7 @@ import { Col, Row } from 'react-bootstrap';
 import { AiOutlineCode } from 'react-icons/ai';
 import semver from 'semver';
 
+import { PackageManagerLink } from '../../../../../../components/PackageManagerLink';
 import { pluralizeIfMultiple } from '../../../../../../utils/string-utils';
 import { VulnerablePackage } from '../types';
 
@@ -39,12 +40,6 @@ export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ p
       )}
       <Row>
         <Col xl={6} lg={12}>
-          <h5>
-            <span className="darker">Ecosystem: </span>
-            <span className="text-capitalize">
-              {pkg.release.package.package_manager === 'npm' ? 'javascript' : pkg.release.package.package_manager}
-            </span>
-          </h5>
           <h5>
             <span className="darker">{pluralizeIfMultiple(pkg.paths.length, 'Path') + ': '}</span>
             {pkg.paths.map((path, index) => {

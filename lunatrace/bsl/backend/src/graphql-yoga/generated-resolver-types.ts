@@ -34,6 +34,13 @@ export type BuildData_AffectedByVulnerability = {
   vulnerability: BuildData_Vulnerability;
 };
 
+export type BuildData_Cwe = {
+  __typename?: 'BuildData_Cwe';
+  description: Scalars['String'];
+  id: Scalars['Int'];
+  name: Scalars['String'];
+};
+
 export type BuildData_DependencyNode = {
   __typename?: 'BuildData_DependencyNode';
   id: Scalars['String'];
@@ -83,12 +90,19 @@ export type BuildData_Release = {
 export type BuildData_Vulnerability = {
   __typename?: 'BuildData_Vulnerability';
   cvss_score?: Maybe<Scalars['Float']>;
+  cwes: Array<BuildData_VulnerabilityCwe>;
   guide_vulnerabilities: Array<BuildData_Guide_Vulnerability>;
   id: Scalars['String'];
   severity_name?: Maybe<Scalars['String']>;
   source: Scalars['String'];
   source_id: Scalars['String'];
   summary?: Maybe<Scalars['String']>;
+};
+
+export type BuildData_VulnerabilityCwe = {
+  __typename?: 'BuildData_VulnerabilityCwe';
+  cwe: BuildData_Cwe;
+  id: Scalars['String'];
 };
 
 export type BuildData_VulnerableRelease = {
@@ -284,6 +298,7 @@ export type ResolversTypes = {
   AuthenticatedRepoCloneUrlOutput: ResolverTypeWrapper<AuthenticatedRepoCloneUrlOutput>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BuildData_AffectedByVulnerability: ResolverTypeWrapper<BuildData_AffectedByVulnerability>;
+  BuildData_Cwe: ResolverTypeWrapper<BuildData_Cwe>;
   BuildData_DependencyNode: ResolverTypeWrapper<BuildData_DependencyNode>;
   BuildData_Guide: ResolverTypeWrapper<BuildData_Guide>;
   BuildData_Guide_Vulnerability: ResolverTypeWrapper<BuildData_Guide_Vulnerability>;
@@ -292,6 +307,7 @@ export type ResolversTypes = {
   BuildData_Range: ResolverTypeWrapper<BuildData_Range>;
   BuildData_Release: ResolverTypeWrapper<BuildData_Release>;
   BuildData_Vulnerability: ResolverTypeWrapper<BuildData_Vulnerability>;
+  BuildData_VulnerabilityCwe: ResolverTypeWrapper<BuildData_VulnerabilityCwe>;
   BuildData_VulnerableRelease: ResolverTypeWrapper<BuildData_VulnerableRelease>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   GithubRepository: ResolverTypeWrapper<GithubRepository>;
@@ -315,6 +331,7 @@ export type ResolversParentTypes = {
   AuthenticatedRepoCloneUrlOutput: AuthenticatedRepoCloneUrlOutput;
   Boolean: Scalars['Boolean'];
   BuildData_AffectedByVulnerability: BuildData_AffectedByVulnerability;
+  BuildData_Cwe: BuildData_Cwe;
   BuildData_DependencyNode: BuildData_DependencyNode;
   BuildData_Guide: BuildData_Guide;
   BuildData_Guide_Vulnerability: BuildData_Guide_Vulnerability;
@@ -323,6 +340,7 @@ export type ResolversParentTypes = {
   BuildData_Range: BuildData_Range;
   BuildData_Release: BuildData_Release;
   BuildData_Vulnerability: BuildData_Vulnerability;
+  BuildData_VulnerabilityCwe: BuildData_VulnerabilityCwe;
   BuildData_VulnerableRelease: BuildData_VulnerableRelease;
   Float: Scalars['Float'];
   GithubRepository: GithubRepository;
@@ -355,6 +373,13 @@ export type BuildData_AffectedByVulnerabilityResolvers<ContextType = Context, Pa
   ranges?: Resolver<Array<ResolversTypes['BuildData_Range']>, ParentType, ContextType>;
   trivially_updatable_to?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   vulnerability?: Resolver<ResolversTypes['BuildData_Vulnerability'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BuildData_CweResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_Cwe'] = ResolversParentTypes['BuildData_Cwe']> = {
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -406,12 +431,19 @@ export type BuildData_ReleaseResolvers<ContextType = Context, ParentType extends
 
 export type BuildData_VulnerabilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_Vulnerability'] = ResolversParentTypes['BuildData_Vulnerability']> = {
   cvss_score?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  cwes?: Resolver<Array<ResolversTypes['BuildData_VulnerabilityCwe']>, ParentType, ContextType>;
   guide_vulnerabilities?: Resolver<Array<ResolversTypes['BuildData_Guide_Vulnerability']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   severity_name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   source?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   source_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   summary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BuildData_VulnerabilityCweResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_VulnerabilityCwe'] = ResolversParentTypes['BuildData_VulnerabilityCwe']> = {
+  cwe?: Resolver<ResolversTypes['BuildData_Cwe'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -501,6 +533,7 @@ export interface UuidScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 export type Resolvers<ContextType = Context> = {
   AuthenticatedRepoCloneUrlOutput?: AuthenticatedRepoCloneUrlOutputResolvers<ContextType>;
   BuildData_AffectedByVulnerability?: BuildData_AffectedByVulnerabilityResolvers<ContextType>;
+  BuildData_Cwe?: BuildData_CweResolvers<ContextType>;
   BuildData_DependencyNode?: BuildData_DependencyNodeResolvers<ContextType>;
   BuildData_Guide?: BuildData_GuideResolvers<ContextType>;
   BuildData_Guide_Vulnerability?: BuildData_Guide_VulnerabilityResolvers<ContextType>;
@@ -509,6 +542,7 @@ export type Resolvers<ContextType = Context> = {
   BuildData_Range?: BuildData_RangeResolvers<ContextType>;
   BuildData_Release?: BuildData_ReleaseResolvers<ContextType>;
   BuildData_Vulnerability?: BuildData_VulnerabilityResolvers<ContextType>;
+  BuildData_VulnerabilityCwe?: BuildData_VulnerabilityCweResolvers<ContextType>;
   BuildData_VulnerableRelease?: BuildData_VulnerableReleaseResolvers<ContextType>;
   GithubRepository?: GithubRepositoryResolvers<ContextType>;
   InstallSelectedReposResponse?: InstallSelectedReposResponseResolvers<ContextType>;

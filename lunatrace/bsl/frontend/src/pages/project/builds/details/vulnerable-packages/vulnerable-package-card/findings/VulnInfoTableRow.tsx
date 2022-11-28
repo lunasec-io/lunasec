@@ -13,21 +13,23 @@
  */
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { FloatingLabel, Form, FormControl, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
+import { Badge, FloatingLabel, Form, FormControl, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { XSquare } from 'react-feather';
 import { useParams } from 'react-router-dom';
 
 import api from '../../../../../../../api';
 import { ConfirmationDailog } from '../../../../../../../components/ConfirmationDialog';
+import { CweBadge } from '../../../../../../vulnerabilities/detail/CweBadge';
+import { vulnerabilityOpenInQuickView, vulnerabilityQuickViewState } from '../../../../state';
+import { QuickViewProps } from '../../../../types';
 import { VulnMeta } from '../../types';
 
 interface VulnerabilityTableItemProps {
   vulnMeta: VulnMeta;
-  setVulnQuickViewId: (vulnId: string) => void;
-  vulnQuickViewId: string | null;
+  quickView: QuickViewProps;
 }
 
-export const VulnInfo: React.FC<VulnerabilityTableItemProps> = ({ vulnMeta, setVulnQuickViewId, vulnQuickViewId }) => {
+export const VulnInfoTableRow: React.FC<VulnerabilityTableItemProps> = ({ vulnMeta, quickView }) => {
   const [insertVulnIgnore, insertVulnIgnoreState] = api.useInsertIgnoredVulnerabilitiesMutation();
   const { project_id } = useParams();
 
@@ -77,15 +79,34 @@ export const VulnInfo: React.FC<VulnerabilityTableItemProps> = ({ vulnMeta, setV
     );
   };
 
-  const vulnId = vulnQuickViewId === vulnMeta.vulnerability.id;
-
-  const rowClassNames = classNames('vuln-table-item', { open: vulnId, ignored: vulnMeta.ignored });
+  const rowClassNames = classNames('vuln-table-item', {
+    open: vulnerabilityOpenInQuickView(quickView.quickViewState, vulnMeta.vulnerability.id),
+    ignored: vulnMeta.ignored,
+  });
 
   const fixVersions = vulnMeta.fix_versions;
 
   const rowValues = [
-    vulnMeta.vulnerability.source,
-    vulnMeta.vulnerability.source_id,
+    <OverlayTrigger
+      placement="bottom"
+      overlay={<Tooltip className="wide-tooltip">{vulnMeta.vulnerability.summary}</Tooltip>}
+      key={vulnMeta.vulnerability.id}
+    >
+      <Badge
+        bg={'light'}
+        style={{ cursor: 'pointer' }}
+        onClick={(e) => {
+          quickView.setVulnQuickViewState(vulnerabilityQuickViewState(vulnMeta.vulnerability.id));
+        }}
+      >
+        {vulnMeta.vulnerability.source_id}
+      </Badge>
+    </OverlayTrigger>,
+    <div key={vulnMeta.vulnerability.id}>
+      {vulnMeta.vulnerability.cwes.map((c) => (
+        <CweBadge key={c.id} id={c.cwe.id} name={c.cwe.name} quickView={quickView} tooltipDescription={true} />
+      ))}
+    </div>,
     vulnMeta.vulnerability.severity_name,
     vulnMeta.vulnerability.cvss_score ? vulnMeta.vulnerability.cvss_score : 'Unknown',
     fixVersions.length > 0 ? fixVersions.join(', ') : 'None',
@@ -94,29 +115,16 @@ export const VulnInfo: React.FC<VulnerabilityTableItemProps> = ({ vulnMeta, setV
 
   return (
     <>
-      <OverlayTrigger
-        placement="bottom"
-        overlay={<Tooltip className="wide-tooltip">{vulnMeta.vulnerability.summary}</Tooltip>}
-        key={vulnMeta.vulnerability.id}
-      >
-        <tr
-          style={{ cursor: 'pointer' }}
-          onClick={(e) => {
-            setVulnQuickViewId(vulnMeta.vulnerability.id);
-          }}
-          className={rowClassNames}
-          key={vulnMeta.vulnerability.id}
-        >
-          {rowValues.map((value, idx) => {
-            const classNames = vulnMeta.ignored ? 'text-decoration-line-through' : '';
-            return (
-              <td key={idx} className={classNames}>
-                {value}
-              </td>
-            );
-          })}
-        </tr>
-      </OverlayTrigger>
+      <tr className={rowClassNames} key={vulnMeta.vulnerability.id}>
+        {rowValues.map((value, idx) => {
+          const classNames = vulnMeta.ignored ? 'text-decoration-line-through' : '';
+          return (
+            <td key={idx} className={classNames}>
+              {value}
+            </td>
+          );
+        })}
+      </tr>
       {renderIgnoreNote()}
 
       <ConfirmationDailog

@@ -74,7 +74,7 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
                         className={severity ? `${severity.cvss3OverallSeverityText}` : ''}
                         style={{ display: 'inline' }}
                       >
-                        {severity ? toTitleCase(severity.cvss3OverallSeverityText) : 'unknown'}
+                        {severity ? toTitleCase(severity.cvss3OverallSeverityText) : vuln.severity_name}
                       </h4>
                     </div>
                   </Card.Title>

@@ -77,8 +77,6 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
                 <FcPlus className="mb-1 me-1" />
                 Showing Enhanced Tree Data
               </p>
-            </Col>
-            <Col xl="3">
               {areUpdatesAvailable && (
                 <OverlayTrigger
                   placement="bottom"
@@ -86,7 +84,7 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
                   rootClose
                   overlay={AutoUpdatePopOverHOC(pkgsToUpdate)}
                 >
-                  <Button className="mb-2 d-inline-block w-100">Update</Button>
+                  <Button className="mb-2 d-inline-block">Update Packages</Button>
                 </OverlayTrigger>
               )}
             </Col>
