@@ -50,15 +50,7 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
         </thead>
         <tbody>
           {filteredFindings.map((f) => {
-            return (
-              <FindingItem
-                patchable="no"
-                key={f.id}
-                finding={f}
-                setVulnQuickViewId={quickView.setVulnQuickViewId}
-                vulnQuickViewId={quickView.vulnQuickViewId}
-              />
-            );
+            return <FindingItem patchable="no" key={f.id} finding={f} quickView={quickView} />;
           })}
         </tbody>
       </Table>

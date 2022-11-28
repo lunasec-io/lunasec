@@ -28,8 +28,6 @@ export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ p
   const pkgLocations = pkg.locations.join(', ');
   const recommendVersion = fixVersions.sort(compareVersions).reverse()[0];
 
-  const depTree = null;
-
   return (
     <div className="mb-3">
       {pkg.fix_state === 'fixed' && (
