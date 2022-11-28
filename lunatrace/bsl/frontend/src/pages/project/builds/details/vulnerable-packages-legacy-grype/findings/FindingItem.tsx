@@ -23,21 +23,17 @@ import semver from 'semver';
 import api from '../../../../../../api';
 import { ConfirmationDailog } from '../../../../../../components/ConfirmationDialog';
 import { toTitleCase } from '../../../../../../utils/string-utils';
+import { vulnerabilityOpenInQuickView, vulnerabilityQuickViewState } from '../../../state';
+import { QuickViewProps } from '../../../types';
 import { Finding } from '../types';
 
 interface VulnerabilityTableItemProps {
   finding: Finding;
-  setVulnQuickViewId: (vulnId: string) => void;
-  vulnQuickViewId: string | null;
+  quickView: QuickViewProps;
   patchable: string | undefined;
 }
 
-export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({
-  finding,
-  setVulnQuickViewId,
-  vulnQuickViewId,
-  patchable,
-}) => {
+export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({ finding, quickView, patchable }) => {
   const [insertVulnIgnore, insertVulnIgnoreState] = api.useInsertIgnoredVulnerabilitiesMutation();
   const { project_id } = useParams();
 
@@ -91,9 +87,10 @@ export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({
 
   const severity = getCvssVectorFromSeverities(finding.vulnerability.severities);
 
-  const openInQuickView = vulnQuickViewId === finding.vulnerability_id;
-
-  const rowClassNames = classNames('vuln-table-item', { open: openInQuickView, ignored: findingIsIgnored });
+  const rowClassNames = classNames('vuln-table-item', {
+    open: vulnerabilityOpenInQuickView(quickView.quickViewState, finding.vulnerability_id),
+    ignored: findingIsIgnored,
+  });
 
   // TODO (cthompson) this should be moved into common
   // TODO: (forrest) All this logic should get moved into the backend if possible eventually, frontend should be thin
@@ -132,7 +129,7 @@ export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({
         <tr
           style={{ cursor: 'pointer' }}
           onClick={(e) => {
-            setVulnQuickViewId(finding.vulnerability_id as string);
+            quickView.setVulnQuickViewState(vulnerabilityQuickViewState(finding.vulnerability_id as string));
           }}
           className={rowClassNames}
           key={finding.id}

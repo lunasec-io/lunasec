@@ -145,6 +145,18 @@ type BuildData_Vulnerability {
     source: String!
     source_id: String!
     guide_vulnerabilities: [BuildData_Guide_Vulnerability!]!
+    cwes: [BuildData_VulnerabilityCwe!]!
+}
+
+type BuildData_VulnerabilityCwe {
+    id: String!
+    cwe: BuildData_Cwe!
+}
+
+type BuildData_Cwe {
+    id: Int!
+    name: String!
+    description: String!
 }
 
 type BuildData_Guide_Vulnerability {

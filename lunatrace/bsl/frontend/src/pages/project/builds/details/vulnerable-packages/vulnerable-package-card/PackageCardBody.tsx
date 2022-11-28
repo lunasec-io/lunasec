@@ -13,7 +13,8 @@
  */
 import { SeverityNamesOsv } from '@lunatrace/lunatrace-common/build/main';
 import React, { useState } from 'react';
-import { Accordion, Card, Container, Row } from 'react-bootstrap';
+import { Accordion, Badge, Card, Container, Row } from 'react-bootstrap';
+import { ExternalLink } from 'react-feather';
 
 import { ConditionallyRender } from '../../../../../../components/utils/ConditionallyRender';
 import { QuickViewProps } from '../../../types';
