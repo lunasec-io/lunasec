@@ -55,7 +55,9 @@ async function performSnapshotOnRepository(
     repoDir = await mkdTemp(path.join(os.tmpdir(), appPrefix));
     logger = logger.child('snapshot-repository-activity', { repoDir });
     // the rest of your app goes here
-    const sbom = generateSbomFromAsset('repository', cloneUrl, gitBranch, gitCommit);
+    const sbom = generateSbomFromAsset('repository', cloneUrl, gitBranch, gitCommit, {
+      workspace: repoDir,
+    });
 
     if (sbom === null) {
       logger.error('Failed to generated SBOM for repository.');
@@ -87,9 +89,9 @@ async function performSnapshotOnRepository(
 
     logger.info('Attempting to snapshot pinned dependencies for repository.');
 
-    let pkgTrees = null;
+    const pkgTrees = null;
     try {
-      pkgTrees = await snapshotPinnedDependencies(buildId, repoDir);
+      await snapshotPinnedDependencies(buildId, repoDir);
     } catch (err) {
       logger.error('Failed to snapshot pinned dependencies for repository.', {
         error: err,
@@ -198,7 +200,7 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
 
   const installationId = req.installationId.toString();
 
-  return await logger.provideFields({ buildId: req.buildId, record: req, installationId }, async () => {
+  return await log.provideFields({ buildId: req.buildId, record: req, installationId }, async () => {
     return performSnapshotOnRepository(installationId, req.buildId, repoClone.cloneUrl, req.gitBranch, req.gitCommit);
   });
 }
