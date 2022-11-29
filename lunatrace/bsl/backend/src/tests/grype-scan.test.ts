@@ -21,7 +21,7 @@ jest.setTimeout(20000);
 describe('Grype scanner', () => {
   // TODO: restore this test once the server secret dependency is fixed
   it.skip('should run scan from local file', async () => {
-    const res = await runLunaTraceScan(fs.createReadStream(path.join(__dirname, '/../fixtures/sbom.json')));
+    const res = await runLunaTraceScan(fs.createReadStream('fixtures/sbom.json'));
     expect(res).toBeTruthy();
     log.info('res from grype scan is ', res);
   });

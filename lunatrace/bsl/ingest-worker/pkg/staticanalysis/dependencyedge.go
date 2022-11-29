@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -8,12 +8,10 @@
 //
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package staticanalysis
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"github.com/google/uuid"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules"
@@ -27,44 +25,32 @@ import (
 
 func validateGetManifestDependencyEdgeResponse(logger zerolog.Logger, resp *gql.GetManifestDependencyEdgeResponse) error {
 	if resp.Manifest_dependency_edge_by_pk == nil {
-		logger.Error().
+		logger.Warn().
 			Msg("manifest dependency edge is nil")
 		return errors.New("manifest dependency edge nil")
 	}
 
 	if resp.Manifest_dependency_edge_by_pk.Child == nil {
-		logger.Error().
+		logger.Warn().
 			Interface("manifest dependency edge", resp.Manifest_dependency_edge_by_pk).
 			Msg("child dependency is nil")
 		return errors.New("child dependency is nil")
 	}
 
 	if resp.Manifest_dependency_edge_by_pk.Parent == nil {
-		logger.Error().
+		logger.Warn().
 			Interface("manifest dependency edge", resp.Manifest_dependency_edge_by_pk).
 			Msg("parent dependency is nil")
 		return errors.New("child dependency is nil")
 	}
 
 	if resp.Manifest_dependency_edge_by_pk.Parent.Release == nil {
-		logger.Error().
+		logger.Warn().
 			Interface("manifest dependency edge", resp.Manifest_dependency_edge_by_pk).
 			Msg("parent dependency release is nil")
 		return errors.New("parent dependency release is nil")
 	}
 	return nil
-}
-
-func marshalResults(logger zerolog.Logger, results *rules.SemgrepRuleOutput) json.RawMessage {
-	// empty the scanned paths since this can get quite large
-	results.Paths.Scanned = []string{}
-
-	marshalledResults, err := json.Marshal(results)
-	if err != nil {
-		logger.Warn().Err(err).Msg("failed to marshal results")
-		marshalledResults = nil
-	}
-	return marshalledResults
 }
 
 func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx context.Context, queueRecord QueueRecord) error {
@@ -98,7 +84,10 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 
 	err = validateGetManifestDependencyEdgeResponse(logger, resp)
 	if err != nil {
-		return err
+		log.Warn().
+			Err(err).
+			Msg("failed to validate manifest dependency edge")
+		return nil
 	}
 
 	childPackageName := resp.Manifest_dependency_edge_by_pk.Child.Release.Package.Name
@@ -292,8 +281,10 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 		return gql.Analysis_finding_type_enumError, nil
 	}
 
+	// we can only say that we definitely know that a vulnerability is not reachable, otherwise we can't
+	// say for certain if a vulnerability exists or not
 	if len(results.Results) > 0 {
-		return gql.Analysis_finding_type_enumVulnerable, results
+		return gql.Analysis_finding_type_enumUnknown, results
 	}
 	return gql.Analysis_finding_type_enumNotVulnerable, results
 }

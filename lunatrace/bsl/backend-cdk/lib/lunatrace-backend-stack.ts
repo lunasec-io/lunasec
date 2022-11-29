@@ -36,7 +36,7 @@ import { Duration } from '@aws-cdk/core';
 
 import { StackInputs } from '../inputs/types';
 
-import { commonBuildProps } from './constants';
+import { baseEnvironmentVars, commonBuildProps } from './constants';
 import { addDatadogToTaskDefinition, datadogLogDriverForService } from './datadog-fargate-integration';
 import { WorkerStack } from './worker-stack';
 import { WorkerStorageStack } from './worker-storage-stack';
@@ -149,6 +149,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     const frontendContainerImage = ContainerImage.fromAsset('../frontend', {
       ...commonBuildProps,
       buildArgs: {
+        REACT_APP_BASE_URL: `https://${props.domainName}`,
         REACT_APP_GRAPHQL_URL: `https://${props.domainName}/v1/graphql`,
         REACT_APP_KRATOS_URL: `https://${props.domainName}/api/kratos`,
         REACT_APP_GITHUB_APP_LINK: props.gitHubAppLink,
@@ -184,6 +185,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       logging: datadogLogDriverForService('lunatrace', 'oathkeeper'),
       entryPoint: ['oathkeeper', '--config', '/config/generated/config.yaml', 'serve'],
       environment: {
+        ...baseEnvironmentVars,
         MUTATORS_ID_TOKEN_CONFIG_JWKS_URL: oryConfigBucket.s3UrlForObject(oathkeeperJwksFile),
       },
       healthCheck: {
@@ -227,6 +229,7 @@ export class LunatraceBackendStack extends cdk.Stack {
         'serve',
       ],
       environment: {
+        ...baseEnvironmentVars,
         // Set this to 'trace' if you need more data
         LOG_LEVEL: 'debug',
       },
@@ -256,6 +259,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       portMappings: [{ containerPort: 3002 }],
       logging: datadogLogDriverForService('lunatrace', 'backend'),
       environment: {
+        ...baseEnvironmentVars,
         GITHUB_APP_ID: props.gitHubAppId,
         S3_SBOM_BUCKET: storageStackStage.sbomBucket.bucketName,
         S3_MANIFEST_BUCKET: storageStackStage.manifestBucket.bucketName,
@@ -292,6 +296,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       portMappings: [{ containerPort: 8080 }],
       logging: datadogLogDriverForService('lunatrace', 'hasura'),
       environment: {
+        ...baseEnvironmentVars,
         HASURA_GRAPHQL_CORS_DOMAIN: `${publicBaseUrl}, http://localhost:9695`,
         HASURA_GRAPHQL_ENABLE_CONSOLE: 'true',
         HASURA_GRAPHQL_PG_CONNECTIONS: '100',
@@ -317,14 +322,12 @@ export class LunatraceBackendStack extends cdk.Stack {
     });
 
     // Update vulnerabilities job
-    const updateVulnerabilitiesJob = taskDef.addContainer('UpdateVulnerabilitiesJob', {
+    taskDef.addContainer('UpdateVulnerabilitiesJob', {
       memoryLimitMiB: 8 * 1024,
       cpu: 4 * 1024,
       image: ingestWorkerImage,
       logging: datadogLogDriverForService('lunatrace', 'UpdateVulnerabilitiesJob'),
-      environment: {
-        LUNATRACE_GRAPHQL_SERVER_URL: 'http://localhost:8080/v1/graphql',
-      },
+      environment: { ...baseEnvironmentVars, LUNATRACE_GRAPHQL_SERVER_URL: 'http://localhost:8080/v1/graphql' },
       command: ['vulnerability', 'ingest', '--source', 'ghsa', '--cron', '0 0 * * *'],
       secrets: {
         LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
@@ -345,6 +348,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       portMappings: [{ containerPort: registryPort }],
       logging: datadogLogDriverForService('lunatrace', 'NPMRegistryProxy'),
       environment: {
+        ...baseEnvironmentVars,
         LUNATRACE_PROXY_PORT: registryPort.toString(10),
         LUNATRACE_PROXY_STAGE: 'release',
       },
@@ -359,6 +363,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       logging: datadogLogDriverForService('lunatrace', 'NPMReplicator'),
       command: ['package', 'replicate', '--resume'],
       environment: {
+        ...baseEnvironmentVars,
         LUNATRACE_GRAPHQL_SERVER_URL: 'http://localhost:8080/v1/graphql',
       },
       secrets: {
