@@ -52,3 +52,23 @@ if (logConfig.enableLogIOLogging) {
     })
   );
 }
+
+// Yoga logger needs a different log level because it's way too noisy
+export const yogaLogger = new LunaLogger({ loggerName: 'yoga-logger' });
+
+yogaLogger.addTransport(
+  new JsonTransport({
+    colors: !isProduction,
+    minLevel: 'warn',
+    pretty: !isProduction,
+  })
+);
+
+if (logConfig.logFilePath) {
+  yogaLogger.addTransport(
+    new FileTransport({
+      filename: logConfig.logFilePath,
+      minLevel: 'warn',
+    })
+  );
+}

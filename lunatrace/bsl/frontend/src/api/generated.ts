@@ -49,7 +49,6 @@ export type Boolean_Comparison_Exp = {
 export type BuildData_AffectedByVulnerability = {
   __typename?: 'BuildData_AffectedByVulnerability';
   beneath_minimum_severity: Scalars['Boolean'];
-  chains?: Maybe<Array<Array<BuildData_DependencyNode>>>;
   fix_versions: Array<Scalars['String']>;
   ignored: Scalars['Boolean'];
   ignored_vulnerability?: Maybe<BuildData_IgnoredVulnerability>;
@@ -59,10 +58,18 @@ export type BuildData_AffectedByVulnerability = {
   vulnerability: BuildData_Vulnerability;
 };
 
+export type BuildData_Cwe = {
+  __typename?: 'BuildData_Cwe';
+  description: Scalars['String'];
+  id: Scalars['Int'];
+  name: Scalars['String'];
+};
+
 export type BuildData_DependencyNode = {
   __typename?: 'BuildData_DependencyNode';
   id: Scalars['String'];
   range: Scalars['String'];
+  reachable: Scalars['String'];
   release: BuildData_Release;
   release_id: Scalars['String'];
 };
@@ -87,7 +94,6 @@ export type BuildData_IgnoredVulnerability = {
 
 export type BuildData_Package = {
   __typename?: 'BuildData_Package';
-  affected_by_vulnerability?: Maybe<Array<BuildData_AffectedByVulnerability>>;
   name: Scalars['String'];
   package_manager: Scalars['String'];
 };
@@ -108,23 +114,19 @@ export type BuildData_Release = {
 export type BuildData_Vulnerability = {
   __typename?: 'BuildData_Vulnerability';
   cvss_score?: Maybe<Scalars['Float']>;
+  cwes: Array<BuildData_VulnerabilityCwe>;
   guide_vulnerabilities: Array<BuildData_Guide_Vulnerability>;
   id: Scalars['String'];
-  /** An array relationship */
-  ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
   severity_name?: Maybe<Scalars['String']>;
   source: Scalars['String'];
   source_id: Scalars['String'];
   summary?: Maybe<Scalars['String']>;
 };
 
-
-export type BuildData_VulnerabilityIgnored_VulnerabilitiesArgs = {
-  distinct_on?: InputMaybe<Array<Ignored_Vulnerabilities_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Ignored_Vulnerabilities_Order_By>>;
-  where?: InputMaybe<Ignored_Vulnerabilities_Bool_Exp>;
+export type BuildData_VulnerabilityCwe = {
+  __typename?: 'BuildData_VulnerabilityCwe';
+  cwe: BuildData_Cwe;
+  id: Scalars['String'];
 };
 
 export type BuildData_VulnerableRelease = {
@@ -360,10 +362,30 @@ export type Analysis_Manifest_Dependency_Edge_Result_Aggregate_FieldsCountArgs =
   distinct?: InputMaybe<Scalars['Boolean']>;
 };
 
+/** order by aggregate values of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Aggregate_Order_By = {
+  avg?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Max_Order_By>;
+  min?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Min_Order_By>;
+  stddev?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Sum_Order_By>;
+  var_pop?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Var_Samp_Order_By>;
+  variance?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Variance_Order_By>;
+};
+
 /** aggregate avg on columns */
 export type Analysis_Manifest_Dependency_Edge_Result_Avg_Fields = {
   __typename?: 'analysis_manifest_dependency_edge_result_avg_fields';
   finding_source_version?: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Avg_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "analysis.manifest_dependency_edge_result". All fields are combined with a logical 'AND'. */
@@ -393,6 +415,15 @@ export type Analysis_Manifest_Dependency_Edge_Result_Max_Fields = {
   vulnerability_id?: Maybe<Scalars['uuid']>;
 };
 
+/** order by max() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Max_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  finding_source_version?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_id?: InputMaybe<Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
+};
+
 /** aggregate min on columns */
 export type Analysis_Manifest_Dependency_Edge_Result_Min_Fields = {
   __typename?: 'analysis_manifest_dependency_edge_result_min_fields';
@@ -401,6 +432,15 @@ export type Analysis_Manifest_Dependency_Edge_Result_Min_Fields = {
   id?: Maybe<Scalars['uuid']>;
   manifest_dependency_edge_id?: Maybe<Scalars['uuid']>;
   vulnerability_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by min() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Min_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  finding_source_version?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_id?: InputMaybe<Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
 };
 
 /** Ordering options when selecting data from "analysis.manifest_dependency_edge_result". */
@@ -443,10 +483,20 @@ export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Fields = {
   finding_source_version?: Maybe<Scalars['Float']>;
 };
 
+/** order by stddev() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
+
 /** aggregate stddev_pop on columns */
 export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Pop_Fields = {
   __typename?: 'analysis_manifest_dependency_edge_result_stddev_pop_fields';
   finding_source_version?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Pop_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
@@ -455,10 +505,20 @@ export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Samp_Fields = {
   finding_source_version?: Maybe<Scalars['Float']>;
 };
 
+/** order by stddev_samp() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Stddev_Samp_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
+
 /** aggregate sum on columns */
 export type Analysis_Manifest_Dependency_Edge_Result_Sum_Fields = {
   __typename?: 'analysis_manifest_dependency_edge_result_sum_fields';
   finding_source_version?: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Sum_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_pop on columns */
@@ -467,16 +527,31 @@ export type Analysis_Manifest_Dependency_Edge_Result_Var_Pop_Fields = {
   finding_source_version?: Maybe<Scalars['Float']>;
 };
 
+/** order by var_pop() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Var_Pop_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
+
 /** aggregate var_samp on columns */
 export type Analysis_Manifest_Dependency_Edge_Result_Var_Samp_Fields = {
   __typename?: 'analysis_manifest_dependency_edge_result_var_samp_fields';
   finding_source_version?: Maybe<Scalars['Float']>;
 };
 
+/** order by var_samp() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Var_Samp_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
+};
+
 /** aggregate variance on columns */
 export type Analysis_Manifest_Dependency_Edge_Result_Variance_Fields = {
   __typename?: 'analysis_manifest_dependency_edge_result_variance_fields';
   finding_source_version?: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Variance_Order_By = {
+  finding_source_version?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
@@ -2610,7 +2685,12 @@ export type Latest_Default_Builds_Variance_Fields = {
   build_number?: Maybe<Scalars['Float']>;
 };
 
-/** direct dependencies of builds with pointers to their location in the merkel tree table */
+/**
+ * DEPRECATED:
+ * direct dependencies are now regular items in the merkel tree
+ *
+ * direct dependencies of builds with pointers to their location in the merkel tree table
+ */
 export type Manifest_Dependency = {
   __typename?: 'manifest_dependency';
   /** A computed field, executes function "manifest_dependency_child_edges_recursive" */
@@ -2625,7 +2705,12 @@ export type Manifest_Dependency = {
 };
 
 
-/** direct dependencies of builds with pointers to their location in the merkel tree table */
+/**
+ * DEPRECATED:
+ * direct dependencies are now regular items in the merkel tree
+ *
+ * direct dependencies of builds with pointers to their location in the merkel tree table
+ */
 export type Manifest_DependencyChild_Edges_RecursiveArgs = {
   distinct_on?: InputMaybe<Array<Manifest_Dependency_Edge_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -2656,6 +2741,10 @@ export type Manifest_Dependency_Bool_Exp = {
 /** columns and relationships of "manifest_dependency_edge" */
 export type Manifest_Dependency_Edge = {
   __typename?: 'manifest_dependency_edge';
+  /** An array relationship */
+  analysis_results: Array<Analysis_Manifest_Dependency_Edge_Result>;
+  /** An aggregate relationship */
+  analysis_results_aggregate: Analysis_Manifest_Dependency_Edge_Result_Aggregate;
   /** An object relationship */
   child: Manifest_Dependency_Node;
   child_id: Scalars['uuid'];
@@ -2663,6 +2752,26 @@ export type Manifest_Dependency_Edge = {
   /** An object relationship */
   parent: Manifest_Dependency_Node;
   parent_id: Scalars['uuid'];
+};
+
+
+/** columns and relationships of "manifest_dependency_edge" */
+export type Manifest_Dependency_EdgeAnalysis_ResultsArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
+};
+
+
+/** columns and relationships of "manifest_dependency_edge" */
+export type Manifest_Dependency_EdgeAnalysis_Results_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
 };
 
 /** order by aggregate values of table "manifest_dependency_edge" */
@@ -2677,6 +2786,7 @@ export type Manifest_Dependency_Edge_Bool_Exp = {
   _and?: InputMaybe<Array<Manifest_Dependency_Edge_Bool_Exp>>;
   _not?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
   _or?: InputMaybe<Array<Manifest_Dependency_Edge_Bool_Exp>>;
+  analysis_results?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
   child?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   child_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -2700,6 +2810,7 @@ export type Manifest_Dependency_Edge_Min_Order_By = {
 
 /** Ordering options when selecting data from "manifest_dependency_edge". */
 export type Manifest_Dependency_Edge_Order_By = {
+  analysis_results_aggregate?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Aggregate_Order_By>;
   child?: InputMaybe<Manifest_Dependency_Node_Order_By>;
   child_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -4416,6 +4527,10 @@ export type Query_Root = {
   vulnerability_credit: Array<Vulnerability_Credit>;
   /** fetch data from the table: "vulnerability.credit" using primary key columns */
   vulnerability_credit_by_pk?: Maybe<Vulnerability_Credit>;
+  /** fetch data from the table: "vulnerability.cwe" */
+  vulnerability_cwe: Array<Vulnerability_Cwe>;
+  /** fetch data from the table: "vulnerability.cwe" using primary key columns */
+  vulnerability_cwe_by_pk?: Maybe<Vulnerability_Cwe>;
   /** fetch data from the table: "vulnerability.equivalent" */
   vulnerability_equivalent: Array<Vulnerability_Equivalent>;
   /** fetch data from the table: "vulnerability.range" */
@@ -4430,6 +4545,10 @@ export type Query_Root = {
   vulnerability_severity: Array<Vulnerability_Severity>;
   /** fetch data from the table: "vulnerability.severity" using primary key columns */
   vulnerability_severity_by_pk?: Maybe<Vulnerability_Severity>;
+  /** fetch data from the table: "vulnerability.vulnerability_cwe" */
+  vulnerability_vulnerability_cwe: Array<Vulnerability_Vulnerability_Cwe>;
+  /** fetch data from the table: "vulnerability.vulnerability_cwe" using primary key columns */
+  vulnerability_vulnerability_cwe_by_pk?: Maybe<Vulnerability_Vulnerability_Cwe>;
   vulnerableReleasesFromBuild?: Maybe<Array<BuildData_VulnerableRelease>>;
 };
 
@@ -4946,6 +5065,20 @@ export type Query_RootVulnerability_Credit_By_PkArgs = {
 };
 
 
+export type Query_RootVulnerability_CweArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Cwe_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Cwe_Order_By>>;
+  where?: InputMaybe<Vulnerability_Cwe_Bool_Exp>;
+};
+
+
+export type Query_RootVulnerability_Cwe_By_PkArgs = {
+  id: Scalars['Int'];
+};
+
+
 export type Query_RootVulnerability_EquivalentArgs = {
   distinct_on?: InputMaybe<Array<Vulnerability_Equivalent_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -4997,6 +5130,20 @@ export type Query_RootVulnerability_Severity_By_PkArgs = {
 };
 
 
+export type Query_RootVulnerability_Vulnerability_CweArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Vulnerability_Cwe_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Vulnerability_Cwe_Order_By>>;
+  where?: InputMaybe<Vulnerability_Vulnerability_Cwe_Bool_Exp>;
+};
+
+
+export type Query_RootVulnerability_Vulnerability_Cwe_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
 export type Query_RootVulnerableReleasesFromBuildArgs = {
   buildId: Scalars['uuid'];
   minimumSeverity?: InputMaybe<Scalars['String']>;
@@ -5026,6 +5173,8 @@ export type Resolved_Manifest = {
   id: Scalars['uuid'];
   /** An array relationship */
   manifest_dependencies: Array<Manifest_Dependency>;
+  /** An object relationship */
+  manifest_dependency_node?: Maybe<Manifest_Dependency_Node>;
   /** path in repo of manifest file. empty string if the ecosystem does not have a manifest file. */
   path?: Maybe<Scalars['String']>;
 };
@@ -5067,6 +5216,7 @@ export type Resolved_Manifest_Bool_Exp = {
   child_edges_recursive?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   manifest_dependencies?: InputMaybe<Manifest_Dependency_Bool_Exp>;
+  manifest_dependency_node?: InputMaybe<Manifest_Dependency_Node_Bool_Exp>;
   path?: InputMaybe<String_Comparison_Exp>;
 };
 
@@ -5093,6 +5243,7 @@ export type Resolved_Manifest_Order_By = {
   child_edges_recursive_aggregate?: InputMaybe<Manifest_Dependency_Edge_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
   manifest_dependencies_aggregate?: InputMaybe<Manifest_Dependency_Aggregate_Order_By>;
+  manifest_dependency_node?: InputMaybe<Manifest_Dependency_Node_Order_By>;
   path?: InputMaybe<Order_By>;
 };
 
@@ -5616,6 +5767,10 @@ export type Subscription_Root = {
   vulnerability_credit: Array<Vulnerability_Credit>;
   /** fetch data from the table: "vulnerability.credit" using primary key columns */
   vulnerability_credit_by_pk?: Maybe<Vulnerability_Credit>;
+  /** fetch data from the table: "vulnerability.cwe" */
+  vulnerability_cwe: Array<Vulnerability_Cwe>;
+  /** fetch data from the table: "vulnerability.cwe" using primary key columns */
+  vulnerability_cwe_by_pk?: Maybe<Vulnerability_Cwe>;
   /** fetch data from the table: "vulnerability.equivalent" */
   vulnerability_equivalent: Array<Vulnerability_Equivalent>;
   /** fetch data from the table: "vulnerability.range" */
@@ -5630,6 +5785,10 @@ export type Subscription_Root = {
   vulnerability_severity: Array<Vulnerability_Severity>;
   /** fetch data from the table: "vulnerability.severity" using primary key columns */
   vulnerability_severity_by_pk?: Maybe<Vulnerability_Severity>;
+  /** fetch data from the table: "vulnerability.vulnerability_cwe" */
+  vulnerability_vulnerability_cwe: Array<Vulnerability_Vulnerability_Cwe>;
+  /** fetch data from the table: "vulnerability.vulnerability_cwe" using primary key columns */
+  vulnerability_vulnerability_cwe_by_pk?: Maybe<Vulnerability_Vulnerability_Cwe>;
 };
 
 
@@ -6129,6 +6288,20 @@ export type Subscription_RootVulnerability_Credit_By_PkArgs = {
 };
 
 
+export type Subscription_RootVulnerability_CweArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Cwe_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Cwe_Order_By>>;
+  where?: InputMaybe<Vulnerability_Cwe_Bool_Exp>;
+};
+
+
+export type Subscription_RootVulnerability_Cwe_By_PkArgs = {
+  id: Scalars['Int'];
+};
+
+
 export type Subscription_RootVulnerability_EquivalentArgs = {
   distinct_on?: InputMaybe<Array<Vulnerability_Equivalent_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -6176,6 +6349,20 @@ export type Subscription_RootVulnerability_SeverityArgs = {
 
 
 export type Subscription_RootVulnerability_Severity_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootVulnerability_Vulnerability_CweArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Vulnerability_Cwe_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Vulnerability_Cwe_Order_By>>;
+  where?: InputMaybe<Vulnerability_Vulnerability_Cwe_Bool_Exp>;
+};
+
+
+export type Subscription_RootVulnerability_Vulnerability_Cwe_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -6284,6 +6471,8 @@ export type Vulnerability = {
   /** An array relationship */
   credits: Array<Vulnerability_Credit>;
   cvss_score?: Maybe<Scalars['Float']>;
+  /** An array relationship */
+  cwes: Array<Vulnerability_Vulnerability_Cwe>;
   database_specific?: Maybe<Scalars['jsonb']>;
   details?: Maybe<Scalars['String']>;
   /** An array relationship */
@@ -6331,6 +6520,16 @@ export type VulnerabilityCreditsArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Vulnerability_Credit_Order_By>>;
   where?: InputMaybe<Vulnerability_Credit_Bool_Exp>;
+};
+
+
+/** columns and relationships of "vulnerability.vulnerability" */
+export type VulnerabilityCwesArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Vulnerability_Cwe_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Vulnerability_Cwe_Order_By>>;
+  where?: InputMaybe<Vulnerability_Vulnerability_Cwe_Bool_Exp>;
 };
 
 
@@ -6708,6 +6907,7 @@ export type Vulnerability_Bool_Exp = {
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   credits?: InputMaybe<Vulnerability_Credit_Bool_Exp>;
   cvss_score?: InputMaybe<Float_Comparison_Exp>;
+  cwes?: InputMaybe<Vulnerability_Vulnerability_Cwe_Bool_Exp>;
   database_specific?: InputMaybe<Jsonb_Comparison_Exp>;
   details?: InputMaybe<String_Comparison_Exp>;
   equivalents?: InputMaybe<Vulnerability_Equivalent_Bool_Exp>;
@@ -6794,6 +6994,46 @@ export enum Vulnerability_Credit_Select_Column {
   VulnerabilityId = 'vulnerability_id'
 }
 
+/** Common Weakness Enumeration's as defined by Mitre (https://cwe.mitre.org/data/definitions/699.html) */
+export type Vulnerability_Cwe = {
+  __typename?: 'vulnerability_cwe';
+  description: Scalars['String'];
+  extended_description: Scalars['String'];
+  id: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+/** Boolean expression to filter rows from the table "vulnerability.cwe". All fields are combined with a logical 'AND'. */
+export type Vulnerability_Cwe_Bool_Exp = {
+  _and?: InputMaybe<Array<Vulnerability_Cwe_Bool_Exp>>;
+  _not?: InputMaybe<Vulnerability_Cwe_Bool_Exp>;
+  _or?: InputMaybe<Array<Vulnerability_Cwe_Bool_Exp>>;
+  description?: InputMaybe<String_Comparison_Exp>;
+  extended_description?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "vulnerability.cwe". */
+export type Vulnerability_Cwe_Order_By = {
+  description?: InputMaybe<Order_By>;
+  extended_description?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "vulnerability.cwe" */
+export enum Vulnerability_Cwe_Select_Column {
+  /** column name */
+  Description = 'description',
+  /** column name */
+  ExtendedDescription = 'extended_description',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name'
+}
+
 /** columns and relationships of "vulnerability.equivalent" */
 export type Vulnerability_Equivalent = {
   __typename?: 'vulnerability_equivalent';
@@ -6857,6 +7097,7 @@ export type Vulnerability_Order_By = {
   created_at?: InputMaybe<Order_By>;
   credits_aggregate?: InputMaybe<Vulnerability_Credit_Aggregate_Order_By>;
   cvss_score?: InputMaybe<Order_By>;
+  cwes_aggregate?: InputMaybe<Vulnerability_Vulnerability_Cwe_Aggregate_Order_By>;
   database_specific?: InputMaybe<Order_By>;
   details?: InputMaybe<Order_By>;
   equivalents_aggregate?: InputMaybe<Vulnerability_Equivalent_Aggregate_Order_By>;
@@ -7120,6 +7361,118 @@ export enum Vulnerability_Severity_Select_Column {
   VulnerabilityId = 'vulnerability_id'
 }
 
+/** CWEs that are defined for a vulnerability */
+export type Vulnerability_Vulnerability_Cwe = {
+  __typename?: 'vulnerability_vulnerability_cwe';
+  /** An object relationship */
+  cwe: Vulnerability_Cwe;
+  cwe_id: Scalars['Int'];
+  id: Scalars['uuid'];
+  /** An object relationship */
+  vulnerability: Vulnerability;
+  vulnerability_id: Scalars['uuid'];
+};
+
+/** order by aggregate values of table "vulnerability.vulnerability_cwe" */
+export type Vulnerability_Vulnerability_Cwe_Aggregate_Order_By = {
+  avg?: InputMaybe<Vulnerability_Vulnerability_Cwe_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Vulnerability_Vulnerability_Cwe_Max_Order_By>;
+  min?: InputMaybe<Vulnerability_Vulnerability_Cwe_Min_Order_By>;
+  stddev?: InputMaybe<Vulnerability_Vulnerability_Cwe_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Vulnerability_Vulnerability_Cwe_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Vulnerability_Vulnerability_Cwe_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Vulnerability_Vulnerability_Cwe_Sum_Order_By>;
+  var_pop?: InputMaybe<Vulnerability_Vulnerability_Cwe_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Vulnerability_Vulnerability_Cwe_Var_Samp_Order_By>;
+  variance?: InputMaybe<Vulnerability_Vulnerability_Cwe_Variance_Order_By>;
+};
+
+/** order by avg() on columns of table "vulnerability.vulnerability_cwe" */
+export type Vulnerability_Vulnerability_Cwe_Avg_Order_By = {
+  cwe_id?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "vulnerability.vulnerability_cwe". All fields are combined with a logical 'AND'. */
+export type Vulnerability_Vulnerability_Cwe_Bool_Exp = {
+  _and?: InputMaybe<Array<Vulnerability_Vulnerability_Cwe_Bool_Exp>>;
+  _not?: InputMaybe<Vulnerability_Vulnerability_Cwe_Bool_Exp>;
+  _or?: InputMaybe<Array<Vulnerability_Vulnerability_Cwe_Bool_Exp>>;
+  cwe?: InputMaybe<Vulnerability_Cwe_Bool_Exp>;
+  cwe_id?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  vulnerability?: InputMaybe<Vulnerability_Bool_Exp>;
+  vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** order by max() on columns of table "vulnerability.vulnerability_cwe" */
+export type Vulnerability_Vulnerability_Cwe_Max_Order_By = {
+  cwe_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "vulnerability.vulnerability_cwe" */
+export type Vulnerability_Vulnerability_Cwe_Min_Order_By = {
+  cwe_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "vulnerability.vulnerability_cwe". */
+export type Vulnerability_Vulnerability_Cwe_Order_By = {
+  cwe?: InputMaybe<Vulnerability_Cwe_Order_By>;
+  cwe_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  vulnerability?: InputMaybe<Vulnerability_Order_By>;
+  vulnerability_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "vulnerability.vulnerability_cwe" */
+export enum Vulnerability_Vulnerability_Cwe_Select_Column {
+  /** column name */
+  CweId = 'cwe_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  VulnerabilityId = 'vulnerability_id'
+}
+
+/** order by stddev() on columns of table "vulnerability.vulnerability_cwe" */
+export type Vulnerability_Vulnerability_Cwe_Stddev_Order_By = {
+  cwe_id?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_pop() on columns of table "vulnerability.vulnerability_cwe" */
+export type Vulnerability_Vulnerability_Cwe_Stddev_Pop_Order_By = {
+  cwe_id?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_samp() on columns of table "vulnerability.vulnerability_cwe" */
+export type Vulnerability_Vulnerability_Cwe_Stddev_Samp_Order_By = {
+  cwe_id?: InputMaybe<Order_By>;
+};
+
+/** order by sum() on columns of table "vulnerability.vulnerability_cwe" */
+export type Vulnerability_Vulnerability_Cwe_Sum_Order_By = {
+  cwe_id?: InputMaybe<Order_By>;
+};
+
+/** order by var_pop() on columns of table "vulnerability.vulnerability_cwe" */
+export type Vulnerability_Vulnerability_Cwe_Var_Pop_Order_By = {
+  cwe_id?: InputMaybe<Order_By>;
+};
+
+/** order by var_samp() on columns of table "vulnerability.vulnerability_cwe" */
+export type Vulnerability_Vulnerability_Cwe_Var_Samp_Order_By = {
+  cwe_id?: InputMaybe<Order_By>;
+};
+
+/** order by variance() on columns of table "vulnerability.vulnerability_cwe" */
+export type Vulnerability_Vulnerability_Cwe_Variance_Order_By = {
+  cwe_id?: InputMaybe<Order_By>;
+};
+
 export type DeleteProjectAccessTokenMutationVariables = Exact<{
   id: Scalars['uuid'];
 }>;
@@ -7174,6 +7527,13 @@ export type GetCurrentUserInfoQueryVariables = Exact<{
 
 
 export type GetCurrentUserInfoQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', role: any }> };
+
+export type GetCweDetailsQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type GetCweDetailsQuery = { __typename?: 'query_root', vulnerability_cwe_by_pk?: { __typename?: 'vulnerability_cwe', description: string, extended_description: string, id: number, name: string } | null };
 
 export type GetGuideDetailsQueryVariables = Exact<{
   id: Scalars['uuid'];
@@ -7249,14 +7609,14 @@ export type SearchVulnerabilitiesQueryVariables = Exact<{
 }>;
 
 
-export type SearchVulnerabilitiesQuery = { __typename?: 'query_root', vulnerability: Array<{ __typename?: 'vulnerability', database_specific?: any | null, details?: string | null, source: string, source_id: string, summary?: string | null, withdrawn?: any | null, published?: any | null, modified: any, id: any, affected: Array<{ __typename?: 'vulnerability_affected', database_specific?: any | null, ecosystem_specific?: any | null, id: any, package: { __typename?: 'package', name: string, id: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', database_specific?: any | null, event: string, id: any, type: any, version: string }> }>, severities: Array<{ __typename?: 'vulnerability_severity', id: any, score: string, source: string, type: string }> }> };
+export type SearchVulnerabilitiesQuery = { __typename?: 'query_root', vulnerability: Array<{ __typename?: 'vulnerability', database_specific?: any | null, details?: string | null, source: string, source_id: string, summary?: string | null, withdrawn?: any | null, published?: any | null, modified: any, severity_name?: any | null, id: any, affected: Array<{ __typename?: 'vulnerability_affected', database_specific?: any | null, ecosystem_specific?: any | null, id: any, package: { __typename?: 'package', name: string, id: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', database_specific?: any | null, event: string, id: any, type: any, version: string }> }>, severities: Array<{ __typename?: 'vulnerability_severity', id: any, score: string, source: string, type: string }> }> };
 
 export type GetVulnerabilityDetailsQueryVariables = Exact<{
   vulnerability_id: Scalars['uuid'];
 }>;
 
 
-export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerability_by_pk?: { __typename?: 'vulnerability', database_specific?: any | null, details?: string | null, source: string, source_id: string, summary?: string | null, withdrawn?: any | null, last_fetched?: any | null, published?: any | null, modified: any, id: any, affected: Array<{ __typename?: 'vulnerability_affected', database_specific?: any | null, ecosystem_specific?: any | null, id: any, package: { __typename?: 'package', name: string, package_manager: any, id: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', database_specific?: any | null, event: string, id: any, type: any, version: string }>, affected_versions: Array<{ __typename?: 'vulnerability_affected_version', database_specific?: any | null, id: any, version: string }> }>, equivalents: Array<{ __typename?: 'vulnerability_equivalent', equivalent_vulnerability: { __typename?: 'vulnerability', id: any, source: string, source_id: string, summary?: string | null, last_fetched?: any | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, type: string, score: string, source: string }> } }>, findings: Array<{ __typename?: 'findings', id: any, build_id: any, latest_default_build?: { __typename?: 'latest_default_builds', id?: any | null, build_number?: number | null, created_at?: any | null, project_id?: any | null, project?: { __typename?: 'projects', name: string, id: any } | null } | null }>, references: Array<{ __typename?: 'vulnerability_reference', id: any, type: any, url: string }>, severities: Array<{ __typename?: 'vulnerability_severity', id: any, score: string, source: string, type: string }> } | null };
+export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerability_by_pk?: { __typename?: 'vulnerability', database_specific?: any | null, details?: string | null, source: string, source_id: string, summary?: string | null, withdrawn?: any | null, last_fetched?: any | null, published?: any | null, modified: any, id: any, severity_name?: any | null, affected: Array<{ __typename?: 'vulnerability_affected', database_specific?: any | null, ecosystem_specific?: any | null, id: any, package: { __typename?: 'package', name: string, package_manager: any, id: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', database_specific?: any | null, event: string, id: any, type: any, version: string }>, affected_versions: Array<{ __typename?: 'vulnerability_affected_version', database_specific?: any | null, id: any, version: string }> }>, equivalents: Array<{ __typename?: 'vulnerability_equivalent', equivalent_vulnerability: { __typename?: 'vulnerability', id: any, source: string, source_id: string, summary?: string | null, last_fetched?: any | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, type: string, score: string, source: string }> } }>, findings: Array<{ __typename?: 'findings', id: any, build_id: any, latest_default_build?: { __typename?: 'latest_default_builds', id?: any | null, build_number?: number | null, created_at?: any | null, project_id?: any | null, project?: { __typename?: 'projects', name: string, id: any } | null } | null }>, references: Array<{ __typename?: 'vulnerability_reference', id: any, type: any, url: string }>, severities: Array<{ __typename?: 'vulnerability_severity', id: any, score: string, source: string, type: string }>, cwes: Array<{ __typename?: 'vulnerability_vulnerability_cwe', id: any, cwe: { __typename?: 'vulnerability_cwe', id: number, name: string, description: string } }> } | null };
 
 export type GetVulnerableReleasesFromBuildQueryVariables = Exact<{
   buildId: Scalars['uuid'];
@@ -7264,7 +7624,7 @@ export type GetVulnerableReleasesFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, beneath_minimum_severity: boolean, cvss?: number | null, severity: string, paths: Array<string>, fix_versions: Array<string>, dev_only: boolean, guides: Array<{ __typename?: 'BuildData_Guide', id: string, title: string, summary: string }>, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>>, release: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string, package_manager: string } }, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable_to?: string | null, beneath_minimum_severity: boolean, fix_versions: Array<string>, path: string, ignored: boolean, ignored_vulnerability?: { __typename?: 'BuildData_IgnoredVulnerability', locations: Array<string>, note: string } | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, summary?: string | null, id: string, source_id: string, guide_vulnerabilities: Array<{ __typename?: 'BuildData_Guide_Vulnerability', guide?: { __typename?: 'BuildData_Guide', id: string, summary: string, title: string } | null }> }, chains?: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>> | null }> }> | null };
+export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, beneath_minimum_severity: boolean, cvss?: number | null, severity: string, paths: Array<string>, fix_versions: Array<string>, dev_only: boolean, guides: Array<{ __typename?: 'BuildData_Guide', id: string, title: string, summary: string }>, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, reachable: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>>, release: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string, package_manager: string } }, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable_to?: string | null, beneath_minimum_severity: boolean, fix_versions: Array<string>, path: string, ignored: boolean, ignored_vulnerability?: { __typename?: 'BuildData_IgnoredVulnerability', locations: Array<string>, note: string } | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, summary?: string | null, id: string, source_id: string, guide_vulnerabilities: Array<{ __typename?: 'BuildData_Guide_Vulnerability', guide?: { __typename?: 'BuildData_Guide', id: string, summary: string, title: string } | null }>, cwes: Array<{ __typename?: 'BuildData_VulnerabilityCwe', id: string, cwe: { __typename?: 'BuildData_Cwe', id: number, name: string, description: string } }> } }> }> | null };
 
 export type InsertNewOrgUserMutationVariables = Exact<{
   organization_id: Scalars['uuid'];
@@ -7543,6 +7903,16 @@ export const GetCurrentUserInfoDocument = `
     query GetCurrentUserInfo($kratos_id: uuid!) {
   users(where: {kratos_id: {_eq: $kratos_id}}) {
     role
+  }
+}
+    `;
+export const GetCweDetailsDocument = `
+    query GetCweDetails($id: Int!) {
+  vulnerability_cwe_by_pk(id: $id) {
+    description
+    extended_description
+    id
+    name
   }
 }
     `;
@@ -7870,7 +8240,7 @@ export const GetSidebarInfoDocument = `
 export const SearchVulnerabilitiesDocument = `
     query SearchVulnerabilities($search: String!, $source: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerability_order_by!] = {}, $limit: Int!) {
   vulnerability(
-    where: {_and: [{severities: {id: {_is_null: false}}}, {affected: {id: {_is_null: false}}}, {source: $source}, {_or: [{source_id: {_ilike: $search}}, {summary: {_ilike: $search}}, {affected: {package: {name: {_ilike: $search}}}}]}]}
+    where: {_and: [{affected: {id: {_is_null: false}}}, {source: $source}, {_or: [{source_id: {_ilike: $search}}, {summary: {_ilike: $search}}, {affected: {package: {name: {_ilike: $search}}}}]}]}
     limit: $limit
     order_by: $order_by
   ) {
@@ -7904,6 +8274,7 @@ export const SearchVulnerabilitiesDocument = `
     withdrawn
     published
     modified
+    severity_name
     id
   }
 }
@@ -7983,6 +8354,15 @@ export const GetVulnerabilityDetailsDocument = `
     published
     modified
     id
+    cwes {
+      id
+      cwe {
+        id
+        name
+        description
+      }
+    }
+    severity_name
   }
 }
     `;
@@ -8014,6 +8394,7 @@ export const GetVulnerableReleasesFromBuildDocument = `
         }
         version
       }
+      reachable
     }
     release {
       version
@@ -8046,16 +8427,13 @@ export const GetVulnerableReleasesFromBuildDocument = `
             title
           }
         }
-      }
-      chains {
-        id
-        range
-        release {
+        cwes {
           id
-          package {
+          cwe {
+            id
             name
+            description
           }
-          version
         }
       }
     }
@@ -8170,6 +8548,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetCurrentUserInfo: build.query<GetCurrentUserInfoQuery, GetCurrentUserInfoQueryVariables>({
       query: (variables) => ({ document: GetCurrentUserInfoDocument, variables })
+    }),
+    GetCweDetails: build.query<GetCweDetailsQuery, GetCweDetailsQueryVariables>({
+      query: (variables) => ({ document: GetCweDetailsDocument, variables })
     }),
     GetGuideDetails: build.query<GetGuideDetailsQuery, GetGuideDetailsQueryVariables>({
       query: (variables) => ({ document: GetGuideDetailsDocument, variables })

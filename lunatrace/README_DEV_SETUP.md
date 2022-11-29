@@ -90,7 +90,12 @@ S3_SBOM_BUCKET=xxx
 S3_MANIFEST_BUCKET=xxx
 S3_CODE_BUCKET=xxx
 QUEUE_NAME=xxx
+
+
+LUNATRACE_GRAPHQL_SERVER_URL=http://localhost:8080/v1/graphql
+LUNATRACE_GRAPHQL_SERVER_SECRET=myadminsecretkey
 ```
+
 
 ### Adding github app private key
 
