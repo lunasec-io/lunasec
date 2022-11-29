@@ -214,7 +214,7 @@ async function uploadWorktreeSnapshot(buildId: string, repoDir: string): Promise
     {
       gzip: true,
       filter(path: string, stat: FileStat): boolean {
-        return !path.startsWith('.git');
+        return !path.includes('/.git/');
       },
     },
     [repoDir]
