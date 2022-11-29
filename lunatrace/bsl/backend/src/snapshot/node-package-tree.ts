@@ -41,8 +41,9 @@ interface PackageDependenciesWithGraphAndMetadata {
 interface CollectedPackageTree {
   lockFilePath: string;
   error?: string;
-  rootNode?: PackageDependenciesWithGraphAndMetadata;
   dependencies: PackageDependenciesWithGraphAndMetadata[];
+  packageManager?: string;
+  lockfileVersion?: number;
 }
 
 interface ManifestDependencyEdge {
@@ -103,9 +104,6 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
           dependencies: [],
         };
       }
-      if (!pkgTree) {
-        return;
-      }
 
       // This value is set to false by the library when there are zero dev dependencies
       const prodOrDevLabel = pkgTree.hasDevDependencies ? 'dev' : 'prod';
@@ -125,7 +123,8 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
       return {
         lockFilePath: lockFilePathWithLeadingSlash,
         dependencies: pkgDependenciesWithGraphAndMetadata,
-        //rootNode: pkgTree,
+        packageManager: pkgTree?.meta?.packageManager,
+        lockfileVersion: pkgTree?.meta?.lockfileVersion,
       };
     })
   );
@@ -438,15 +437,15 @@ export async function insertPackageManifestsIntoDatabase(
 
   log.info(`Inserting package manifests into database`, { length: pkgGraphs.length });
 
-  await db.tx(async (t) => {
+  await db.tx(async (trsx) => {
     await Promise.all(
       pkgGraphs.map(async (pkgGraph) => {
-        const manifestId = await t.one<{ id: string }>(
-          `INSERT INTO resolved_manifest (build_id, path)
-           VALUES ($1, $2)
+        const manifestId = await trsx.one<{ id: string }>(
+          `INSERT INTO resolved_manifest (build_id, path, package_manager, lockfile_version)
+           VALUES ($1, $2, $3, $4)
            ON CONFLICT DO NOTHING
            RETURNING id`,
-          [buildId, pkgGraph.lockFilePath]
+          [buildId, pkgGraph.lockFilePath, pkgGraph.packageManager, pkgGraph.lockfileVersion]
         );
 
         log.info(`Inserted manifest for build`, {
@@ -472,20 +471,18 @@ export async function insertPackageManifestsIntoDatabase(
           'manifest_dependency'
         );
 
-        await t.none(insertQuery + ' ON CONFLICT DO NOTHING');
+        await trsx.none(insertQuery + ' ON CONFLICT DO NOTHING');
       })
     );
   });
 }
 
-export async function snapshotPinnedDependencies(buildId: string, repoDir: string): Promise<CollectedPackageTree[]> {
-  const pkgGraphs = await collectPackageGraphsFromDirectory(repoDir);
+export async function snapshotPinnedDependencies(buildId: string, repoDir: string): Promise<void> {
+  const pkgTree = await collectPackageGraphsFromDirectory(repoDir);
 
   // Creates all nodes and edges for the dependency graph into the database
-  await insertPackageGraphsIntoDatabase(buildId, pkgGraphs);
+  await insertPackageGraphsIntoDatabase(buildId, pkgTree);
 
   // Creates all manifests and associated root dependencies into the database
-  await insertPackageManifestsIntoDatabase(buildId, pkgGraphs);
-
-  return pkgGraphs;
+  await insertPackageManifestsIntoDatabase(buildId, pkgTree);
 }
