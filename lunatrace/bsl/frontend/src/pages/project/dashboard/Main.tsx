@@ -42,20 +42,6 @@ export const ProjectDashboardMain: React.FunctionComponent<ProjectDashboardMainP
         {/*</Col>*/}
       </Row>
       {/*Github URL Github Name short github description blurb most recent several builds, master first probably*/}
-      <Accordion flush={false} defaultActiveKey={project.builds.length > 0 ? '' : '0'}>
-        <Accordion.Item eventKey="0">
-          <Accordion.Header>
-            {' '}
-            <AiOutlineInfoCircle className="me-2" size="1rem" />{' '}
-            {project.builds.length > 0
-              ? 'When is a snapshot created'
-              : 'How to take your first snapshot and start seeing vulnerabilities'}
-          </Accordion.Header>
-          <Accordion.Body>
-            <ScanTypesExplanation project={project} setActiveTab={setActiveTab} />
-          </Accordion.Body>
-        </Accordion.Item>
-      </Accordion>
       <ConditionallyRender if={isAdmin}>
         <hr />
         <ProjectCloneForAdmin project={project} />

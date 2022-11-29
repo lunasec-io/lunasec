@@ -17,49 +17,55 @@
   <img src='docs/static/img/logo-black-text.svg' width='60%'>
 </p>
 
-# Our Software
+# LunaTrace
+
+LunaTrace is an Open Source supply chain security and auditing tool. At its heart is a web console the tracks your projects and their dependencies, looking for vulnerabilities and other issues. This console is provided as a SAAS ([available here for free](https://lunatrace.lunasec.io/)) or you can deploy it and manage it yourself.
+
+Please see our [LunaTrace documentation](https://www.lunasec.io/docs/pages/lunatrace/overview/introduction/) for more information.
+
+## Short Introduction Video
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=ugdSyR2L6sY">
+    <img alt="LunaTrace Introduction Video" src="https://img.youtube.com/vi/ugdSyR2L6sY/maxresdefault.jpg" width="70%">
+  </a>
+</p>
+
+## Repo Structure
 
 We're a team of Security Engineers on a mission to make awesome Open Source Application Security tooling. It all lives
-in this repo. Here's a breakdown of everything we've built.
+in this monorepo and here's a breakdown of where everything we've built lives.
 
 - **[LunaTrace](./lunatrace)**: A free alternative to services like GitHub Dependabot or [Snyk](https://snyk.io) that 
 automatically monitors for your dependencies for vulnerabilities. It automatically integrates with GitHub Pull Requests
 to notify you of new CVEs _before_ you deploy to production. Try it out in one-click via our [GitHub App](https://github.com/apps/lunatrace-by-lunasec/). 
     - **Status**: Production ready and under active development (our primary focus).
-- **[LunaDefend](./lunadefend)**: An end-to-end suite of security software built 
- around Tokenization designed to _proactively_ protect your sensitive data from being hacked, as well as providing an 
- easier path towards compliance (SOC2, GDPR, PCI-DSS, etc).
-    - **Status**: Production ready and maintained (our secondary focus).
 - **[Log4Shell CLI](./tools/log4shell)**: A small command line utility to scan for Log4Shell. Also supports patching JAR files against
   Log4Shell, scanning running processes on your system, and more. Follow our
   [Mitigation Guide](https://www.lunasec.io/docs/blog/log4j-zero-day-mitigation-guide/) for more context.
     - **Status**: Production ready and used by thousands of companies. Superseded by LunaTrace.
 - **[Our Security Blog](https://www.lunasec.io/docs/blog/)**: Our ramblings to the internet. This is where we broke the news about the log4j vulnerability and gave it the name [Log4Shell](https://www.lunasec.io/docs/blog/tags/log-4-shell).  The blog lives in this repo under `/docs/blog` if you feel 
  like contributing!
+    - **Status**: Continuously updated and any requests for us to write about topics is encouraged.
+- **[LunaDefend](./lunadefend)**: An end-to-end suite of security software built 
+ around Tokenization designed to _proactively_ protect your sensitive data from being hacked, as well as providing an 
+ easier path towards compliance (SOC2, GDPR, PCI-DSS, etc).
+    - **Status**: Unmaintained (but feel free to open issues).
 
-## Custom Support from the LunaSec Team
-We offer paid support, onboarding, and additional enterprise features for LunaSec to help you reach your security or
-compliance milestones faster. Our team of security engineers is very flexible and happy to work with you.
+## Support
 
-If you're interested, [please send us a message](https://www.lunasec.io/contact).
+If you find yourself stuck, you're missing a feature, or you just want to clear up some confusion, then please
+[join our Slack Community](https://join.slack.com/t/lunaseccommunity/shared_invite/zt-178lvngk1-SHS6bMkQS71YWtCne2XWhA) to speak with us.
 
-<p align="center">
-  <a href="https://www.lunasec.io/contact">
-    <img alt="LunaSec Premium Support Link" src='docs/static/img/premium-support-icon.png' width='70%'>
-  </a>
-</p>
-
-## Need Help?
-If you find yourself stuck, you're missing a feature, or you just want to clear up some confusion, then please head over
-to our [GitHub Discussions board](https://github.com/lunasec-io/lunasec/discussions) to talk with our team.
-
-We're a small team and our resources are limited for how much assistance we've able to provide. 
-If your needs are urgent, or you would like us to review your code/implementation, then please consider [inquiring about our custom support packages](#custom-support-from-the-lunasec-team).
+We're a small team and we're always looking for more feedback about what problems we can help solve, so we'd love if you took a moment to [try out LunaTrace](https://lunatrace.lunasec.io) and, if you like it, share it with your colleagues and friends. The hardest part of our mission to build better security tools is simply getting people to realize that they exist!
 
 ## Contributing
-We welcome community contributions, and we've documented the requirements for contributions [here](CONTRIBUTING.md).
+We welcome community contributions and we've documented the requirements for contributions [here](CONTRIBUTING.md).
+
+If you'd like to contribute ideas or feedback, you can do so by either [opening a GitHub issue](https://github.com/lunasec-io/lunasec/issues/new) or [speaking with us on Slack](https://join.slack.com/t/lunaseccommunity/shared_invite/zt-178lvngk1-SHS6bMkQS71YWtCne2XWhA).
 
 ## See Also
+
 For more information about LunaSec including tutorials, examples, and technical information, please visit
 our [documentation](https://www.lunasec.io/docs/).  
 For marketing information, sales, or to get in touch, visit our website: [https://www.lunasec.io/](https://www.lunasec.io/).

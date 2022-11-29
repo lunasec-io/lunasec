@@ -18,3 +18,60 @@
  go build -o bin/analysiscli cmd/analysiscli/main.go
  ln -s /home/breadchris/projects/lunasec/lunatrace/bsl/ingest-worker/bin/analysiscli /home/breadchris/.local/bin/analysiscli
 ```
+
+## Service Configuration Variables
+See the [config](config) folder for the development configurations for each of the services.
+For example, the default config for the [ingestworker](config/ingestworker/dev.yaml) looks like this.
+
+```yaml
+graphql:
+  url: http://localhost:4455/v1/graphql
+  secret: myadminsecretkey
+db:
+  dsn: postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable
+```
+
+This file will help populate the [config struct](pkg/config/ingestworker/config.go) for the ingestworker. Note that in this config struct
+there are environment variables and default values defined. This is not required for local development, but having environment variables defined
+for the config options is important for production since fargate does not let you mount a config file to have these values populated. 
+
+Each of the top level fields in the struct represent a configuration for the various [fx modules](https://github.com/uber-go/fx) that a particular service uses.
+Not having configuration values defined for an fx module will throw an error during the module loading test and/or runtime. 
+
+To see how a module accesses these configuration variables, you can look at [dbfx](pkg/dbfx/config.go)
+```go
+package dbfx
+
+type Config struct {
+    DSN string `yaml:"dsn"`
+}
+
+func NewConfig(provider config.Provider) (config Config, err error) {
+    value := provider.Get("db")
+
+    err = value.Populate(&config)
+    // ...
+}
+```
+
+The `dsn` yaml field matches up to the `dsn` that is defined in the development config yaml as well as the `dsn` defined in the [config struct](pkg/config/ingestworker/config.go)
+for the ingestworker. dbfx is pulling in this configuration value in locally to be used.
+
+Structuring configuration values in this way lets us reliably reuse the dbfx module across different services easily. For example,
+the dbfx module is also being used in the queuehandler and so its configuration for the db is identical to that of the ingestworker:
+```yaml
+db:
+  dsn: postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable
+```
+
+So there are two types of configs at play, there is the app config which will accept configuration values from the user
+(yaml or env vars) (and creates a  config.Provider ) and then the fx module config which is some contained functionality
+(connecting to a db) which requires some configuration value. The two are bridged by the config.Provider which will be passed to the fx module:
+
+```go
+func NewConfig(provider config.Provider) (config Config, err error) {
+    value := provider.Get("db")
+```
+
+and the fx module accesses the key from the config where it knows the values exist
+

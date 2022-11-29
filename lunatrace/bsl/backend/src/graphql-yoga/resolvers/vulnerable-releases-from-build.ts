@@ -16,7 +16,7 @@ import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common'
 
 import { hasura } from '../../hasura-api';
 import { GetTreeFromBuildQuery } from '../../hasura-api/generated';
-import { DependencyTree } from '../../models/dependency-tree/builds-dependency-tree';
+import VulnerabilityDependencyTree from '../../models/vulnerability-dependency-tree';
 import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';
 import { checkBuildsAreAuthorized, throwIfUnauthenticated } from '../helpers/auth-helpers';
@@ -28,7 +28,9 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
   const buildId = args.buildId;
   await checkBuildsAreAuthorized([buildId], ctx);
 
-  const { builds_by_pk: rawBuildData } = await hasura.GetTreeFromBuild({ build_id: buildId });
+  const { builds_by_pk: rawBuildData } = await hasura.GetTreeFromBuild({
+    build_id: buildId,
+  });
   if (!rawBuildData) {
     throw new GraphQLYogaError('Error fetching build data from database');
   }
@@ -39,22 +41,24 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
 
   const ignoredVulnerabilities = rawBuildData.project.ignored_vulnerabilities;
 
-  const minimumSeverity = args.minimumSeverity || null;
+  const minimumSeverity = args.minimumSeverity !== null ? args.minimumSeverity : undefined;
 
   if (!severityIsValid(minimumSeverity)) {
     throw new GraphQLYogaError(
       'Invalid minimum severity passed, acceptable arguments are: ' + JSON.stringify(severityOrderOsv)
     );
   }
-  const depTree = buildTreeFromRawData(rawManifests, minimumSeverity, ignoredVulnerabilities);
+  const depTree = buildTreeFromRawData(rawManifests, ignoredVulnerabilities, minimumSeverity);
   if (!depTree) {
     return null; // tells the client that we didnt get any tree info back and to fall back to grype (for now)
   }
 
-  const vulnerableReleases = depTree.vulnerableReleases;
+  const vulnerableReleases = depTree.getVulnerableReleases();
 
   const totalTime = Date.now() - startTime;
-  log.info(`spent ${totalTime}ms processing tree`);
+  log.info('finished processing tree', {
+    totalTime,
+  });
   return vulnerableReleases;
 };
 
@@ -62,13 +66,14 @@ type RequestData = NonNullable<GetTreeFromBuildQuery['builds_by_pk']>;
 type ManifestData = NonNullable<RequestData['resolved_manifests']>;
 type IgnoredVulnerabilities = NonNullable<RequestData['project']['ignored_vulnerabilities']>;
 
-export function buildTreeFromRawData<iManifestData>(
+export function buildTreeFromRawData(
   rawManifestData: ManifestData,
-  minimumSeverity: SeverityNamesOsv | null,
-  ignoredVulnerabilities: IgnoredVulnerabilities
-): DependencyTree | null {
+  ignoredVulnerabilities?: IgnoredVulnerabilities,
+  minimumSeverity?: SeverityNamesOsv
+): VulnerabilityDependencyTree | null {
   if (!rawManifestData || rawManifestData.length === 0) {
-    return null; //fallback to grype
+    // fallback to grype
+    return null;
   }
 
   // check how many dependencies there are to make sure there are any at all, not sure if this is necessary
@@ -76,15 +81,13 @@ export function buildTreeFromRawData<iManifestData>(
     return manifest.child_edges_recursive || [];
   });
   if (!mergedDependencies || mergedDependencies.length === 0) {
-    return null; //fallback to grype
+    // fallback to grype
+    return null;
   }
 
-  return new DependencyTree(rawManifestData, minimumSeverity, ignoredVulnerabilities);
+  return new VulnerabilityDependencyTree(rawManifestData, ignoredVulnerabilities, minimumSeverity);
 }
 
-function severityIsValid(name: string | null): name is SeverityNamesOsv | null {
-  if (name === null) {
-    return true;
-  }
-  return severityOrderOsv.includes(name);
+function severityIsValid(name: string | undefined): name is SeverityNamesOsv | undefined {
+  return !name || severityOrderOsv.includes(name);
 }
