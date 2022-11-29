@@ -212,6 +212,7 @@ async function uploadWorktreeSnapshot(buildId: string, repoDir: string): Promise
 
   const tarStream = tar.c(
     {
+      cwd: repoDir,
       gzip: true,
       filter(path: string, stat: FileStat): boolean {
         return !path.includes('/.git/');
