@@ -18,8 +18,8 @@ jobs:
           # the below token should have repo scope and must be manually added by you in the repository's secret
           PERSONAL_ACCESS_TOKEN : ${{ secrets.CLA_PERSONAL_ACCESS_TOKEN }}
         with:
-          path-to-signatures: '.github/signatures/80bb018e24.json'
-          path-to-document: 'https://github.com/contributor-assistant/github-action/blob/80bb018e241231d4bc1775847655299d5a932223/SAPCLA.md' # e.g. a CLA or a DCO document
+          path-to-signatures: '.github/signatures/539184d206.json'
+          path-to-document: 'https://gist.github.com/freeqaz/539184d206e06868653e02d36530b20b' # e.g. a CLA or a DCO document
           # branch should not be protected
           branch: 'master'
           allowlist: github-action*,bot*
