@@ -939,7 +939,7 @@ export type Builds = {
   /** An array relationship */
   build_logs: Array<Build_Log>;
   build_number?: Maybe<Scalars['Int']>;
-  created_at: Scalars['timestamp'];
+  created_at: Scalars['timestamptz'];
   existing_github_check_id?: Maybe<Scalars['bigint']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   /** An array relationship */
@@ -1097,7 +1097,7 @@ export type Builds_Bool_Exp = {
   build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   build_logs?: InputMaybe<Build_Log_Bool_Exp>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   existing_github_check_id?: InputMaybe<Bigint_Comparison_Exp>;
   existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
   findings?: InputMaybe<Findings_Bool_Exp>;
@@ -1137,7 +1137,7 @@ export type Builds_Insert_Input = {
   build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Arr_Rel_Insert_Input>;
   build_logs?: InputMaybe<Build_Log_Arr_Rel_Insert_Input>;
   build_number?: InputMaybe<Scalars['Int']>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   existing_github_check_id?: InputMaybe<Scalars['bigint']>;
   existing_github_review_id?: InputMaybe<Scalars['String']>;
   findings?: InputMaybe<Findings_Arr_Rel_Insert_Input>;
@@ -1160,7 +1160,7 @@ export type Builds_Max_Fields = {
   __typename?: 'builds_max_fields';
   agent_access_token?: Maybe<Scalars['uuid']>;
   build_number?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   existing_github_check_id?: Maybe<Scalars['bigint']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
@@ -1195,7 +1195,7 @@ export type Builds_Min_Fields = {
   __typename?: 'builds_min_fields';
   agent_access_token?: Maybe<Scalars['uuid']>;
   build_number?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   existing_github_check_id?: Maybe<Scalars['bigint']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
@@ -1311,7 +1311,7 @@ export enum Builds_Select_Column {
 export type Builds_Set_Input = {
   agent_access_token?: InputMaybe<Scalars['uuid']>;
   build_number?: InputMaybe<Scalars['Int']>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   existing_github_check_id?: InputMaybe<Scalars['bigint']>;
   existing_github_review_id?: InputMaybe<Scalars['String']>;
   git_branch?: InputMaybe<Scalars['String']>;
@@ -1469,7 +1469,7 @@ export type Date_Comparison_Exp = {
 export type Default_Branch_Builds = {
   __typename?: 'default_branch_builds';
   build_number?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
@@ -1538,7 +1538,7 @@ export type Default_Branch_Builds_Bool_Exp = {
   _not?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
   _or?: InputMaybe<Array<Default_Branch_Builds_Bool_Exp>>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
   findings?: InputMaybe<Findings_Bool_Exp>;
   git_branch?: InputMaybe<String_Comparison_Exp>;
@@ -1556,7 +1556,7 @@ export type Default_Branch_Builds_Bool_Exp = {
 /** input type for inserting data into table "default_branch_builds" */
 export type Default_Branch_Builds_Insert_Input = {
   build_number?: InputMaybe<Scalars['Int']>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   existing_github_review_id?: InputMaybe<Scalars['String']>;
   findings?: InputMaybe<Findings_Arr_Rel_Insert_Input>;
   git_branch?: InputMaybe<Scalars['String']>;
@@ -1690,7 +1690,7 @@ export type Findings = {
   /** An object relationship */
   build: Builds;
   build_id: Scalars['uuid'];
-  created_at: Scalars['timestamp'];
+  created_at: Scalars['timestamptz'];
   dedupe_slug: Scalars['String'];
   /** An object relationship */
   default_branch_build?: Maybe<Default_Branch_Builds>;
@@ -1737,7 +1737,7 @@ export type Findings_Bool_Exp = {
   _or?: InputMaybe<Array<Findings_Bool_Exp>>;
   build?: InputMaybe<Builds_Bool_Exp>;
   build_id?: InputMaybe<Uuid_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   dedupe_slug?: InputMaybe<String_Comparison_Exp>;
   default_branch_build?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
   fix_state?: InputMaybe<Fix_State_Enum_Comparison_Exp>;
@@ -1772,7 +1772,7 @@ export enum Findings_Constraint {
 export type Findings_Insert_Input = {
   build?: InputMaybe<Builds_Obj_Rel_Insert_Input>;
   build_id?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   dedupe_slug?: InputMaybe<Scalars['String']>;
   default_branch_build?: InputMaybe<Default_Branch_Builds_Obj_Rel_Insert_Input>;
   fix_state?: InputMaybe<Scalars['fix_state_enum']>;
@@ -1930,7 +1930,7 @@ export enum Findings_Select_Column {
 /** input type for updating data in table "findings" */
 export type Findings_Set_Input = {
   build_id?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   dedupe_slug?: InputMaybe<Scalars['String']>;
   fix_state?: InputMaybe<Scalars['fix_state_enum']>;
   fix_versions?: InputMaybe<Scalars['_text']>;
@@ -3115,7 +3115,7 @@ export type Latest_Builds = {
   __typename?: 'latest_builds';
   agent_access_token?: Maybe<Scalars['uuid']>;
   build_number?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
   git_hash?: Maybe<Scalars['String']>;
@@ -3134,7 +3134,7 @@ export type Latest_Builds_Bool_Exp = {
   _or?: InputMaybe<Array<Latest_Builds_Bool_Exp>>;
   agent_access_token?: InputMaybe<Uuid_Comparison_Exp>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
   git_branch?: InputMaybe<String_Comparison_Exp>;
   git_hash?: InputMaybe<String_Comparison_Exp>;
@@ -3674,13 +3674,13 @@ export enum Manifest_Dependency_Update_Column {
   ManifestId = 'manifest_id'
 }
 
-/** columns and relationships of "manifests" */
+/** DEPRECATED. Use public.resolved_manifest */
 export type Manifests = {
   __typename?: 'manifests';
   /** An object relationship */
   build?: Maybe<Builds>;
   build_id?: Maybe<Scalars['uuid']>;
-  created_at: Scalars['timestamp'];
+  created_at: Scalars['timestamptz'];
   filename: Scalars['String'];
   id: Scalars['uuid'];
   message?: Maybe<Scalars['String']>;
@@ -3713,7 +3713,7 @@ export type Manifests_Bool_Exp = {
   _or?: InputMaybe<Array<Manifests_Bool_Exp>>;
   build?: InputMaybe<Builds_Bool_Exp>;
   build_id?: InputMaybe<Uuid_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   filename?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   message?: InputMaybe<String_Comparison_Exp>;
@@ -3736,7 +3736,7 @@ export enum Manifests_Constraint {
 export type Manifests_Insert_Input = {
   build?: InputMaybe<Builds_Obj_Rel_Insert_Input>;
   build_id?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   filename?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   message?: InputMaybe<Scalars['String']>;
@@ -3834,7 +3834,7 @@ export enum Manifests_Select_Column {
 /** input type for updating data in table "manifests" */
 export type Manifests_Set_Input = {
   build_id?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   filename?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   message?: InputMaybe<Scalars['String']>;
@@ -5634,7 +5634,7 @@ export enum Organization_User_Update_Column {
 /** columns and relationships of "organizations" */
 export type Organizations = {
   __typename?: 'organizations';
-  createdAt: Scalars['timestamp'];
+  createdAt: Scalars['timestamptz'];
   /** An object relationship */
   creator?: Maybe<Users>;
   creator_id?: Maybe<Scalars['uuid']>;
@@ -5726,7 +5726,7 @@ export type Organizations_Bool_Exp = {
   _and?: InputMaybe<Array<Organizations_Bool_Exp>>;
   _not?: InputMaybe<Organizations_Bool_Exp>;
   _or?: InputMaybe<Array<Organizations_Bool_Exp>>;
-  createdAt?: InputMaybe<Timestamp_Comparison_Exp>;
+  createdAt?: InputMaybe<Timestamptz_Comparison_Exp>;
   creator?: InputMaybe<Users_Bool_Exp>;
   creator_id?: InputMaybe<Uuid_Comparison_Exp>;
   github_id?: InputMaybe<Int_Comparison_Exp>;
@@ -5760,7 +5760,7 @@ export type Organizations_Inc_Input = {
 
 /** input type for inserting data into table "organizations" */
 export type Organizations_Insert_Input = {
-  createdAt?: InputMaybe<Scalars['timestamp']>;
+  createdAt?: InputMaybe<Scalars['timestamptz']>;
   creator?: InputMaybe<Users_Obj_Rel_Insert_Input>;
   creator_id?: InputMaybe<Scalars['uuid']>;
   github_id?: InputMaybe<Scalars['Int']>;
@@ -5777,7 +5777,7 @@ export type Organizations_Insert_Input = {
 /** aggregate max on columns */
 export type Organizations_Max_Fields = {
   __typename?: 'organizations_max_fields';
-  createdAt?: Maybe<Scalars['timestamp']>;
+  createdAt?: Maybe<Scalars['timestamptz']>;
   creator_id?: Maybe<Scalars['uuid']>;
   github_id?: Maybe<Scalars['Int']>;
   github_node_id?: Maybe<Scalars['String']>;
@@ -5790,7 +5790,7 @@ export type Organizations_Max_Fields = {
 /** aggregate min on columns */
 export type Organizations_Min_Fields = {
   __typename?: 'organizations_min_fields';
-  createdAt?: Maybe<Scalars['timestamp']>;
+  createdAt?: Maybe<Scalars['timestamptz']>;
   creator_id?: Maybe<Scalars['uuid']>;
   github_id?: Maybe<Scalars['Int']>;
   github_node_id?: Maybe<Scalars['String']>;
@@ -5866,7 +5866,7 @@ export enum Organizations_Select_Column {
 
 /** input type for updating data in table "organizations" */
 export type Organizations_Set_Input = {
-  createdAt?: InputMaybe<Scalars['timestamp']>;
+  createdAt?: InputMaybe<Scalars['timestamptz']>;
   creator_id?: InputMaybe<Scalars['uuid']>;
   github_id?: InputMaybe<Scalars['Int']>;
   github_node_id?: InputMaybe<Scalars['String']>;
@@ -7281,7 +7281,7 @@ export type Projects = {
   builds: Array<Builds>;
   /** An aggregate relationship */
   builds_aggregate: Builds_Aggregate;
-  created_at: Scalars['timestamp'];
+  created_at: Scalars['timestamptz'];
   /** An array relationship */
   default_branch_builds: Array<Default_Branch_Builds>;
   /** An array relationship */
@@ -7429,7 +7429,7 @@ export type Projects_Bool_Exp = {
   _not?: InputMaybe<Projects_Bool_Exp>;
   _or?: InputMaybe<Array<Projects_Bool_Exp>>;
   builds?: InputMaybe<Builds_Bool_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   default_branch_builds?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
   github_repositories?: InputMaybe<Github_Repositories_Bool_Exp>;
   github_repository?: InputMaybe<Github_Repositories_Bool_Exp>;
@@ -7457,7 +7457,7 @@ export enum Projects_Constraint {
 /** input type for inserting data into table "projects" */
 export type Projects_Insert_Input = {
   builds?: InputMaybe<Builds_Arr_Rel_Insert_Input>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   default_branch_builds?: InputMaybe<Default_Branch_Builds_Arr_Rel_Insert_Input>;
   github_repositories?: InputMaybe<Github_Repositories_Arr_Rel_Insert_Input>;
   github_repository?: InputMaybe<Github_Repositories_Obj_Rel_Insert_Input>;
@@ -7473,7 +7473,7 @@ export type Projects_Insert_Input = {
 /** aggregate max on columns */
 export type Projects_Max_Fields = {
   __typename?: 'projects_max_fields';
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
   name?: Maybe<Scalars['String']>;
   organization_id?: Maybe<Scalars['uuid']>;
@@ -7494,7 +7494,7 @@ export type Projects_Max_Order_By = {
 /** aggregate min on columns */
 export type Projects_Min_Fields = {
   __typename?: 'projects_min_fields';
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
   name?: Maybe<Scalars['String']>;
   organization_id?: Maybe<Scalars['uuid']>;
@@ -7578,7 +7578,7 @@ export enum Projects_Select_Column {
 
 /** input type for updating data in table "projects" */
 export type Projects_Set_Input = {
-  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['uuid']>;
   name?: InputMaybe<Scalars['String']>;
   organization_id?: InputMaybe<Scalars['uuid']>;
@@ -8640,7 +8640,7 @@ export type Scans = {
   /** An object relationship */
   build: Builds;
   build_id: Scalars['uuid'];
-  created_at: Scalars['timestamp'];
+  created_at: Scalars['timestamptz'];
   db_date: Scalars['date'];
   distro_name: Scalars['String'];
   distro_version: Scalars['String'];
@@ -8697,7 +8697,7 @@ export type Scans_Bool_Exp = {
   _or?: InputMaybe<Array<Scans_Bool_Exp>>;
   build?: InputMaybe<Builds_Bool_Exp>;
   build_id?: InputMaybe<Uuid_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   db_date?: InputMaybe<Date_Comparison_Exp>;
   distro_name?: InputMaybe<String_Comparison_Exp>;
   distro_version?: InputMaybe<String_Comparison_Exp>;
@@ -8726,7 +8726,7 @@ export type Scans_Inc_Input = {
 export type Scans_Insert_Input = {
   build?: InputMaybe<Builds_Obj_Rel_Insert_Input>;
   build_id?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   db_date?: InputMaybe<Scalars['date']>;
   distro_name?: InputMaybe<Scalars['String']>;
   distro_version?: InputMaybe<Scalars['String']>;
@@ -8837,7 +8837,7 @@ export enum Scans_Select_Column {
 /** input type for updating data in table "scans" */
 export type Scans_Set_Input = {
   build_id?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   db_date?: InputMaybe<Scalars['date']>;
   distro_name?: InputMaybe<Scalars['String']>;
   distro_version?: InputMaybe<Scalars['String']>;
@@ -8910,7 +8910,7 @@ export type Scans_Variance_Order_By = {
 /** columns and relationships of "settings" */
 export type Settings = {
   __typename?: 'settings';
-  created_at: Scalars['timestamp'];
+  created_at: Scalars['timestamptz'];
   id: Scalars['uuid'];
   /** An object relationship */
   organization?: Maybe<Organizations>;
@@ -8925,7 +8925,7 @@ export type Settings_Bool_Exp = {
   _and?: InputMaybe<Array<Settings_Bool_Exp>>;
   _not?: InputMaybe<Settings_Bool_Exp>;
   _or?: InputMaybe<Array<Settings_Bool_Exp>>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   organization?: InputMaybe<Organizations_Bool_Exp>;
   pr_check_enabled?: InputMaybe<Boolean_Comparison_Exp>;
@@ -11732,7 +11732,9 @@ export type Vulnerability_Vulnerability_Cwe_Bool_Exp = {
 /** unique or primary key constraints on table "vulnerability.vulnerability_cwe" */
 export enum Vulnerability_Vulnerability_Cwe_Constraint {
   /** unique or primary key constraint on columns "id" */
-  VulnerabilityCwePkey = 'vulnerability_cwe_pkey'
+  VulnerabilityCwePkey = 'vulnerability_cwe_pkey',
+  /** unique or primary key constraint on columns "cwe_id", "vulnerability_id" */
+  VulnerabilityCweVulnerabilityIdCweIdKey = 'vulnerability_cwe_vulnerability_id_cwe_id_key'
 }
 
 /** input type for incrementing numeric columns in table "vulnerability.vulnerability_cwe" */
@@ -11858,7 +11860,7 @@ export type Vulnerability_Vulnerability_Cwe_Variance_Order_By = {
 /** columns and relationships of "webhook_cache" */
 export type Webhook_Cache = {
   __typename?: 'webhook_cache';
-  created_at: Scalars['timestamp'];
+  created_at: Scalars['timestamptz'];
   data: Scalars['jsonb'];
   delivery_id: Scalars['uuid'];
   event_type: Scalars['String'];
@@ -11878,7 +11880,7 @@ export type Webhook_Cache_Bool_Exp = {
   _and?: InputMaybe<Array<Webhook_Cache_Bool_Exp>>;
   _not?: InputMaybe<Webhook_Cache_Bool_Exp>;
   _or?: InputMaybe<Array<Webhook_Cache_Bool_Exp>>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   data?: InputMaybe<Jsonb_Comparison_Exp>;
   delivery_id?: InputMaybe<Uuid_Comparison_Exp>;
   event_type?: InputMaybe<String_Comparison_Exp>;
@@ -11895,7 +11897,7 @@ export enum Webhook_Cache_Constraint {
 
 /** input type for inserting data into table "webhook_cache" */
 export type Webhook_Cache_Insert_Input = {
-  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   data?: InputMaybe<Scalars['jsonb']>;
   delivery_id?: InputMaybe<Scalars['uuid']>;
   event_type?: InputMaybe<Scalars['String']>;
