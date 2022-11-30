@@ -4,5 +4,6 @@ query GetCweDetails($id: Int!) {
     extended_description
     id
     name
+    common_name
   }
 }

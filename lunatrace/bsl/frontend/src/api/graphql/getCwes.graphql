@@ -1,0 +1,9 @@
+query GetCwes($limit: Int!, $offset: Int!, $where: vulnerability_cwe_bool_exp = {}) {
+  vulnerability_cwe(limit: $limit, offset: $offset, where: $where, order_by: {id: desc}) {
+    id
+    name
+    description
+    extended_description
+    common_name
+  }
+}

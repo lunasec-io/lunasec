@@ -8,11 +8,12 @@ import { QuickViewProps } from '../../project/builds/types';
 interface CweBadgeProps {
   id: number;
   name: string;
+  common_name?: string;
   quickView?: QuickViewProps;
   tooltipDescription?: boolean;
 }
 
-export const CweBadge: React.FC<CweBadgeProps> = ({ id, name, quickView, tooltipDescription }) => {
+export const CweBadge: React.FC<CweBadgeProps> = ({ id, name, common_name, quickView, tooltipDescription }) => {
   const cweBadge = (
     <div style={{ display: 'inline-flex' }}>
       {quickView ? (
@@ -22,7 +23,7 @@ export const CweBadge: React.FC<CweBadgeProps> = ({ id, name, quickView, tooltip
           onClick={() => quickView?.setVulnQuickViewState(cweQuickViewState(id))}
           className={'mx-1'}
         >
-          CWE-{id}
+          {common_name ? common_name : `CWE-${id}`}
         </Badge>
       ) : (
         <div>
