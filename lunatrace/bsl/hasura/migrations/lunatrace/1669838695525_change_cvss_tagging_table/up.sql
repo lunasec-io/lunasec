@@ -4,9 +4,13 @@ DROP TABLE public.project_environmental_adjustment;
 CREATE TABLE public.project_folder_settings
 (
     id         uuid PRIMARY KEY DEFAULT (gen_random_uuid()),
+    precedence INTEGER NOT NULL,
     path_glob  TEXT NOT NULL,
     project_id uuid NOT NULL REFERENCES public.projects ON DELETE CASCADE,
-    ignore     bool             DEFAULT FALSE
+    ignore     bool             DEFAULT FALSE,
+    UNIQUE (project_id, path_glob),
+    -- as a bonus this unique will also create an index that makes sorting by precedence cheap
+    UNIQUE (project_id, precedence)
 );
 
 
