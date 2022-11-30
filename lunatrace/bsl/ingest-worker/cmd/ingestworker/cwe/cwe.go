@@ -13,6 +13,7 @@ package cwe
 import (
 	"github.com/ajvpot/clifx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/cwe"
+	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
 )
@@ -34,7 +35,14 @@ func NewCommand(p Params) clifx.CommandResult {
 					Flags:       []cli.Flag{},
 					Subcommands: []*cli.Command{},
 					Action: func(ctx *cli.Context) error {
-						return p.Ingester.Ingest(ctx.Context)
+						log.Info().
+							Msg("Updating CWEs")
+						err := p.Ingester.Ingest(ctx.Context)
+						if err == nil {
+							log.Info().
+								Msg("Updated CWEs")
+						}
+						return err
 					},
 				},
 			},

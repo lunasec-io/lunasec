@@ -157,6 +157,7 @@ type BuildData_Cwe {
     id: Int!
     name: String!
     description: String!
+    common_name: String
 }
 
 type BuildData_Guide_Vulnerability {

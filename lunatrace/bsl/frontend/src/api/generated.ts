@@ -60,6 +60,7 @@ export type BuildData_AffectedByVulnerability = {
 
 export type BuildData_Cwe = {
   __typename?: 'BuildData_Cwe';
+  common_name: Scalars['String'];
   description: Scalars['String'];
   id: Scalars['Int'];
   name: Scalars['String'];
@@ -767,7 +768,7 @@ export type Builds = {
   /** An array relationship */
   build_logs: Array<Build_Log>;
   build_number?: Maybe<Scalars['Int']>;
-  created_at: Scalars['timestamp'];
+  created_at: Scalars['timestamptz'];
   existing_github_check_id?: Maybe<Scalars['bigint']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   /** An array relationship */
@@ -941,7 +942,7 @@ export type Builds_Bool_Exp = {
   build_dependency_relationships?: InputMaybe<Build_Dependency_Relationship_Bool_Exp>;
   build_logs?: InputMaybe<Build_Log_Bool_Exp>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   existing_github_check_id?: InputMaybe<Bigint_Comparison_Exp>;
   existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
   findings?: InputMaybe<Findings_Bool_Exp>;
@@ -963,7 +964,7 @@ export type Builds_Bool_Exp = {
 export type Builds_Max_Fields = {
   __typename?: 'builds_max_fields';
   build_number?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   existing_github_check_id?: Maybe<Scalars['bigint']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
@@ -996,7 +997,7 @@ export type Builds_Max_Order_By = {
 export type Builds_Min_Fields = {
   __typename?: 'builds_min_fields';
   build_number?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   existing_github_check_id?: Maybe<Scalars['bigint']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
@@ -1216,7 +1217,7 @@ export type Date_Comparison_Exp = {
 export type Default_Branch_Builds = {
   __typename?: 'default_branch_builds';
   build_number?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
@@ -1340,7 +1341,7 @@ export type Default_Branch_Builds_Bool_Exp = {
   _not?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
   _or?: InputMaybe<Array<Default_Branch_Builds_Bool_Exp>>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
   findings?: InputMaybe<Findings_Bool_Exp>;
   git_branch?: InputMaybe<String_Comparison_Exp>;
@@ -1359,7 +1360,7 @@ export type Default_Branch_Builds_Bool_Exp = {
 export type Default_Branch_Builds_Max_Fields = {
   __typename?: 'default_branch_builds_max_fields';
   build_number?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
   git_hash?: Maybe<Scalars['String']>;
@@ -1390,7 +1391,7 @@ export type Default_Branch_Builds_Max_Order_By = {
 export type Default_Branch_Builds_Min_Fields = {
   __typename?: 'default_branch_builds_min_fields';
   build_number?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
   git_hash?: Maybe<Scalars['String']>;
@@ -1544,7 +1545,7 @@ export type Findings = {
   /** An object relationship */
   build: Builds;
   build_id: Scalars['uuid'];
-  created_at: Scalars['timestamp'];
+  created_at: Scalars['timestamptz'];
   dedupe_slug: Scalars['String'];
   /** An object relationship */
   default_branch_build?: Maybe<Default_Branch_Builds>;
@@ -1608,7 +1609,7 @@ export type Findings_Bool_Exp = {
   _or?: InputMaybe<Array<Findings_Bool_Exp>>;
   build?: InputMaybe<Builds_Bool_Exp>;
   build_id?: InputMaybe<Uuid_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   dedupe_slug?: InputMaybe<String_Comparison_Exp>;
   default_branch_build?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
   fix_state?: InputMaybe<Fix_State_Enum_Comparison_Exp>;
@@ -1636,7 +1637,7 @@ export type Findings_Bool_Exp = {
 export type Findings_Max_Fields = {
   __typename?: 'findings_max_fields';
   build_id?: Maybe<Scalars['uuid']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   dedupe_slug?: Maybe<Scalars['String']>;
   fix_state?: Maybe<Scalars['fix_state_enum']>;
   id?: Maybe<Scalars['uuid']>;
@@ -1679,7 +1680,7 @@ export type Findings_Max_Order_By = {
 export type Findings_Min_Fields = {
   __typename?: 'findings_min_fields';
   build_id?: Maybe<Scalars['uuid']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   dedupe_slug?: Maybe<Scalars['String']>;
   fix_state?: Maybe<Scalars['fix_state_enum']>;
   id?: Maybe<Scalars['uuid']>;
@@ -2500,7 +2501,7 @@ export type Jsonb_Comparison_Exp = {
 export type Latest_Default_Builds = {
   __typename?: 'latest_default_builds';
   build_number?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
   git_hash?: Maybe<Scalars['String']>;
@@ -2556,7 +2557,7 @@ export type Latest_Default_Builds_Bool_Exp = {
   _not?: InputMaybe<Latest_Default_Builds_Bool_Exp>;
   _or?: InputMaybe<Array<Latest_Default_Builds_Bool_Exp>>;
   build_number?: InputMaybe<Int_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   existing_github_review_id?: InputMaybe<String_Comparison_Exp>;
   git_branch?: InputMaybe<String_Comparison_Exp>;
   git_hash?: InputMaybe<String_Comparison_Exp>;
@@ -2573,7 +2574,7 @@ export type Latest_Default_Builds_Bool_Exp = {
 export type Latest_Default_Builds_Max_Fields = {
   __typename?: 'latest_default_builds_max_fields';
   build_number?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
   git_hash?: Maybe<Scalars['String']>;
@@ -2589,7 +2590,7 @@ export type Latest_Default_Builds_Max_Fields = {
 export type Latest_Default_Builds_Min_Fields = {
   __typename?: 'latest_default_builds_min_fields';
   build_number?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   existing_github_review_id?: Maybe<Scalars['String']>;
   git_branch?: Maybe<Scalars['String']>;
   git_hash?: Maybe<Scalars['String']>;
@@ -2952,13 +2953,13 @@ export enum Manifest_Dependency_Select_Column {
   ManifestId = 'manifest_id'
 }
 
-/** columns and relationships of "manifests" */
+/** DEPRECATED. Use public.resolved_manifest */
 export type Manifests = {
   __typename?: 'manifests';
   /** An object relationship */
   build?: Maybe<Builds>;
   build_id?: Maybe<Scalars['uuid']>;
-  created_at: Scalars['timestamp'];
+  created_at: Scalars['timestamptz'];
   filename: Scalars['String'];
   id: Scalars['uuid'];
   message?: Maybe<Scalars['String']>;
@@ -2991,7 +2992,7 @@ export type Manifests_Bool_Exp = {
   _or?: InputMaybe<Array<Manifests_Bool_Exp>>;
   build?: InputMaybe<Builds_Bool_Exp>;
   build_id?: InputMaybe<Uuid_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   filename?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   message?: InputMaybe<String_Comparison_Exp>;
@@ -3012,7 +3013,7 @@ export enum Manifests_Constraint {
 
 /** input type for inserting data into table "manifests" */
 export type Manifests_Insert_Input = {
-  created_at?: InputMaybe<Scalars['timestamp']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
   filename?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['uuid']>;
   project?: InputMaybe<Projects_Obj_Rel_Insert_Input>;
@@ -3569,7 +3570,7 @@ export enum Organization_User_Update_Column {
 /** columns and relationships of "organizations" */
 export type Organizations = {
   __typename?: 'organizations';
-  createdAt: Scalars['timestamp'];
+  createdAt: Scalars['timestamptz'];
   /** An object relationship */
   creator?: Maybe<Users>;
   id: Scalars['uuid'];
@@ -3609,7 +3610,7 @@ export type Organizations_Bool_Exp = {
   _and?: InputMaybe<Array<Organizations_Bool_Exp>>;
   _not?: InputMaybe<Organizations_Bool_Exp>;
   _or?: InputMaybe<Array<Organizations_Bool_Exp>>;
-  createdAt?: InputMaybe<Timestamp_Comparison_Exp>;
+  createdAt?: InputMaybe<Timestamptz_Comparison_Exp>;
   creator?: InputMaybe<Users_Bool_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   installation_id?: InputMaybe<Int_Comparison_Exp>;
@@ -3976,12 +3977,12 @@ export enum Package_Select_Column {
 /** columns and relationships of "project_access_tokens" */
 export type Project_Access_Tokens = {
   __typename?: 'project_access_tokens';
-  created_at: Scalars['timestamp'];
+  created_at: Scalars['timestamptz'];
   /** An object relationship */
   created_by_user?: Maybe<Identities>;
   created_by_user_id?: Maybe<Scalars['uuid']>;
   id: Scalars['uuid'];
-  last_used?: Maybe<Scalars['timestamp']>;
+  last_used?: Maybe<Scalars['timestamptz']>;
   name?: Maybe<Scalars['String']>;
   /** An object relationship */
   project: Projects;
@@ -4007,11 +4008,11 @@ export type Project_Access_Tokens_Bool_Exp = {
   _and?: InputMaybe<Array<Project_Access_Tokens_Bool_Exp>>;
   _not?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
   _or?: InputMaybe<Array<Project_Access_Tokens_Bool_Exp>>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   created_by_user?: InputMaybe<Identities_Bool_Exp>;
   created_by_user_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  last_used?: InputMaybe<Timestamp_Comparison_Exp>;
+  last_used?: InputMaybe<Timestamptz_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   project?: InputMaybe<Projects_Bool_Exp>;
   project_uuid?: InputMaybe<Uuid_Comparison_Exp>;
@@ -4110,7 +4111,7 @@ export type Projects = {
   builds: Array<Builds>;
   /** An aggregate relationship */
   builds_aggregate: Builds_Aggregate;
-  created_at: Scalars['timestamp'];
+  created_at: Scalars['timestamptz'];
   /** An array relationship */
   default_branch_builds: Array<Default_Branch_Builds>;
   /** An aggregate relationship */
@@ -4248,7 +4249,7 @@ export type Projects_Bool_Exp = {
   _not?: InputMaybe<Projects_Bool_Exp>;
   _or?: InputMaybe<Array<Projects_Bool_Exp>>;
   builds?: InputMaybe<Builds_Bool_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   default_branch_builds?: InputMaybe<Default_Branch_Builds_Bool_Exp>;
   github_repositories?: InputMaybe<Github_Repositories_Bool_Exp>;
   github_repository?: InputMaybe<Github_Repositories_Bool_Exp>;
@@ -5263,7 +5264,7 @@ export type Scans = {
   /** An object relationship */
   build: Builds;
   build_id: Scalars['uuid'];
-  created_at: Scalars['timestamp'];
+  created_at: Scalars['timestamptz'];
   db_date: Scalars['date'];
   distro_name: Scalars['String'];
   distro_version: Scalars['String'];
@@ -5361,7 +5362,7 @@ export type Scans_Bool_Exp = {
   _or?: InputMaybe<Array<Scans_Bool_Exp>>;
   build?: InputMaybe<Builds_Bool_Exp>;
   build_id?: InputMaybe<Uuid_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   db_date?: InputMaybe<Date_Comparison_Exp>;
   distro_name?: InputMaybe<String_Comparison_Exp>;
   distro_version?: InputMaybe<String_Comparison_Exp>;
@@ -5377,7 +5378,7 @@ export type Scans_Bool_Exp = {
 export type Scans_Max_Fields = {
   __typename?: 'scans_max_fields';
   build_id?: Maybe<Scalars['uuid']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   db_date?: Maybe<Scalars['date']>;
   distro_name?: Maybe<Scalars['String']>;
   distro_version?: Maybe<Scalars['String']>;
@@ -5406,7 +5407,7 @@ export type Scans_Max_Order_By = {
 export type Scans_Min_Fields = {
   __typename?: 'scans_min_fields';
   build_id?: Maybe<Scalars['uuid']>;
-  created_at?: Maybe<Scalars['timestamp']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
   db_date?: Maybe<Scalars['date']>;
   distro_name?: Maybe<Scalars['String']>;
   distro_version?: Maybe<Scalars['String']>;
@@ -5551,7 +5552,7 @@ export type Scans_Variance_Order_By = {
 /** columns and relationships of "settings" */
 export type Settings = {
   __typename?: 'settings';
-  created_at: Scalars['timestamp'];
+  created_at: Scalars['timestamptz'];
   id: Scalars['uuid'];
   /** An object relationship */
   organization?: Maybe<Organizations>;
@@ -5566,7 +5567,7 @@ export type Settings_Bool_Exp = {
   _and?: InputMaybe<Array<Settings_Bool_Exp>>;
   _not?: InputMaybe<Settings_Bool_Exp>;
   _or?: InputMaybe<Array<Settings_Bool_Exp>>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   organization?: InputMaybe<Organizations_Bool_Exp>;
   pr_check_enabled?: InputMaybe<Boolean_Comparison_Exp>;
@@ -6997,6 +6998,7 @@ export enum Vulnerability_Credit_Select_Column {
 /** Common Weakness Enumeration's as defined by Mitre (https://cwe.mitre.org/data/definitions/699.html) */
 export type Vulnerability_Cwe = {
   __typename?: 'vulnerability_cwe';
+  common_name?: Maybe<Scalars['String']>;
   description: Scalars['String'];
   extended_description: Scalars['String'];
   id: Scalars['Int'];
@@ -7008,6 +7010,7 @@ export type Vulnerability_Cwe_Bool_Exp = {
   _and?: InputMaybe<Array<Vulnerability_Cwe_Bool_Exp>>;
   _not?: InputMaybe<Vulnerability_Cwe_Bool_Exp>;
   _or?: InputMaybe<Array<Vulnerability_Cwe_Bool_Exp>>;
+  common_name?: InputMaybe<String_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
   extended_description?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
@@ -7016,6 +7019,7 @@ export type Vulnerability_Cwe_Bool_Exp = {
 
 /** Ordering options when selecting data from "vulnerability.cwe". */
 export type Vulnerability_Cwe_Order_By = {
+  common_name?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
   extended_description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -7024,6 +7028,8 @@ export type Vulnerability_Cwe_Order_By = {
 
 /** select columns of table "vulnerability.cwe" */
 export enum Vulnerability_Cwe_Select_Column {
+  /** column name */
+  CommonName = 'common_name',
   /** column name */
   Description = 'description',
   /** column name */
@@ -7533,7 +7539,16 @@ export type GetCweDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetCweDetailsQuery = { __typename?: 'query_root', vulnerability_cwe_by_pk?: { __typename?: 'vulnerability_cwe', description: string, extended_description: string, id: number, name: string } | null };
+export type GetCweDetailsQuery = { __typename?: 'query_root', vulnerability_cwe_by_pk?: { __typename?: 'vulnerability_cwe', description: string, extended_description: string, id: number, name: string, common_name?: string | null } | null };
+
+export type GetCwesQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  offset: Scalars['Int'];
+  where?: InputMaybe<Vulnerability_Cwe_Bool_Exp>;
+}>;
+
+
+export type GetCwesQuery = { __typename?: 'query_root', vulnerability_cwe: Array<{ __typename?: 'vulnerability_cwe', id: number, name: string, description: string, extended_description: string, common_name?: string | null }> };
 
 export type GetGuideDetailsQueryVariables = Exact<{
   id: Scalars['uuid'];
@@ -7624,7 +7639,7 @@ export type GetVulnerableReleasesFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, beneath_minimum_severity: boolean, cvss?: number | null, severity: string, paths: Array<string>, fix_versions: Array<string>, dev_only: boolean, guides: Array<{ __typename?: 'BuildData_Guide', id: string, title: string, summary: string }>, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, reachable: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>>, release: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string, package_manager: string } }, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable_to?: string | null, beneath_minimum_severity: boolean, fix_versions: Array<string>, path: string, ignored: boolean, ignored_vulnerability?: { __typename?: 'BuildData_IgnoredVulnerability', locations: Array<string>, note: string } | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, summary?: string | null, id: string, source_id: string, guide_vulnerabilities: Array<{ __typename?: 'BuildData_Guide_Vulnerability', guide?: { __typename?: 'BuildData_Guide', id: string, summary: string, title: string } | null }>, cwes: Array<{ __typename?: 'BuildData_VulnerabilityCwe', id: string, cwe: { __typename?: 'BuildData_Cwe', id: number, name: string, description: string } }> } }> }> | null };
+export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, beneath_minimum_severity: boolean, cvss?: number | null, severity: string, paths: Array<string>, fix_versions: Array<string>, dev_only: boolean, guides: Array<{ __typename?: 'BuildData_Guide', id: string, title: string, summary: string }>, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, reachable: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>>, release: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string, package_manager: string } }, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable_to?: string | null, beneath_minimum_severity: boolean, fix_versions: Array<string>, path: string, ignored: boolean, ignored_vulnerability?: { __typename?: 'BuildData_IgnoredVulnerability', locations: Array<string>, note: string } | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, summary?: string | null, id: string, source_id: string, guide_vulnerabilities: Array<{ __typename?: 'BuildData_Guide_Vulnerability', guide?: { __typename?: 'BuildData_Guide', id: string, summary: string, title: string } | null }>, cwes: Array<{ __typename?: 'BuildData_VulnerabilityCwe', id: string, cwe: { __typename?: 'BuildData_Cwe', id: number, name: string, description: string, common_name: string } }> } }> }> | null };
 
 export type InsertNewOrgUserMutationVariables = Exact<{
   organization_id: Scalars['uuid'];
@@ -7913,6 +7928,23 @@ export const GetCweDetailsDocument = `
     extended_description
     id
     name
+    common_name
+  }
+}
+    `;
+export const GetCwesDocument = `
+    query GetCwes($limit: Int!, $offset: Int!, $where: vulnerability_cwe_bool_exp = {}) {
+  vulnerability_cwe(
+    limit: $limit
+    offset: $offset
+    where: $where
+    order_by: {id: desc}
+  ) {
+    id
+    name
+    description
+    extended_description
+    common_name
   }
 }
     `;
@@ -8433,6 +8465,7 @@ export const GetVulnerableReleasesFromBuildDocument = `
             id
             name
             description
+            common_name
           }
         }
       }
@@ -8551,6 +8584,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetCweDetails: build.query<GetCweDetailsQuery, GetCweDetailsQueryVariables>({
       query: (variables) => ({ document: GetCweDetailsDocument, variables })
+    }),
+    GetCwes: build.query<GetCwesQuery, GetCwesQueryVariables>({
+      query: (variables) => ({ document: GetCwesDocument, variables })
     }),
     GetGuideDetails: build.query<GetGuideDetailsQuery, GetGuideDetailsQueryVariables>({
       query: (variables) => ({ document: GetGuideDetailsDocument, variables })

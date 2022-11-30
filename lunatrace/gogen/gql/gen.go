@@ -754,7 +754,7 @@ type Builds_bool_exp struct {
 	Build_dependency_relationships *Build_dependency_relationship_bool_exp `json:"build_dependency_relationships,omitempty"`
 	Build_logs                     *Build_log_bool_exp                     `json:"build_logs,omitempty"`
 	Build_number                   *Int_comparison_exp                     `json:"build_number,omitempty"`
-	Created_at                     *Timestamp_comparison_exp               `json:"created_at,omitempty"`
+	Created_at                     *Timestamptz_comparison_exp             `json:"created_at,omitempty"`
 	Existing_github_check_id       *Bigint_comparison_exp                  `json:"existing_github_check_id,omitempty"`
 	Existing_github_review_id      *String_comparison_exp                  `json:"existing_github_review_id,omitempty"`
 	Findings                       *Findings_bool_exp                      `json:"findings,omitempty"`
@@ -796,7 +796,7 @@ func (v *Builds_bool_exp) GetBuild_logs() *Build_log_bool_exp { return v.Build_l
 func (v *Builds_bool_exp) GetBuild_number() *Int_comparison_exp { return v.Build_number }
 
 // GetCreated_at returns Builds_bool_exp.Created_at, and is useful for accessing the field via an interface.
-func (v *Builds_bool_exp) GetCreated_at() *Timestamp_comparison_exp { return v.Created_at }
+func (v *Builds_bool_exp) GetCreated_at() *Timestamptz_comparison_exp { return v.Created_at }
 
 // GetExisting_github_check_id returns Builds_bool_exp.Existing_github_check_id, and is useful for accessing the field via an interface.
 func (v *Builds_bool_exp) GetExisting_github_check_id() *Bigint_comparison_exp {
@@ -1080,7 +1080,7 @@ type Default_branch_builds_bool_exp struct {
 	Not                       *Default_branch_builds_bool_exp    `json:"_not,omitempty"`
 	Or                        []*Default_branch_builds_bool_exp  `json:"_or,omitempty"`
 	Build_number              *Int_comparison_exp                `json:"build_number,omitempty"`
-	Created_at                *Timestamp_comparison_exp          `json:"created_at,omitempty"`
+	Created_at                *Timestamptz_comparison_exp        `json:"created_at,omitempty"`
 	Existing_github_review_id *String_comparison_exp             `json:"existing_github_review_id,omitempty"`
 	Findings                  *Findings_bool_exp                 `json:"findings,omitempty"`
 	Git_branch                *String_comparison_exp             `json:"git_branch,omitempty"`
@@ -1108,7 +1108,7 @@ func (v *Default_branch_builds_bool_exp) GetOr() []*Default_branch_builds_bool_e
 func (v *Default_branch_builds_bool_exp) GetBuild_number() *Int_comparison_exp { return v.Build_number }
 
 // GetCreated_at returns Default_branch_builds_bool_exp.Created_at, and is useful for accessing the field via an interface.
-func (v *Default_branch_builds_bool_exp) GetCreated_at() *Timestamp_comparison_exp {
+func (v *Default_branch_builds_bool_exp) GetCreated_at() *Timestamptz_comparison_exp {
 	return v.Created_at
 }
 
@@ -1259,7 +1259,7 @@ type Findings_bool_exp struct {
 	Or                   []*Findings_bool_exp            `json:"_or,omitempty"`
 	Build                *Builds_bool_exp                `json:"build,omitempty"`
 	Build_id             *Uuid_comparison_exp            `json:"build_id,omitempty"`
-	Created_at           *Timestamp_comparison_exp       `json:"created_at,omitempty"`
+	Created_at           *Timestamptz_comparison_exp     `json:"created_at,omitempty"`
 	Dedupe_slug          *String_comparison_exp          `json:"dedupe_slug,omitempty"`
 	Default_branch_build *Default_branch_builds_bool_exp `json:"default_branch_build,omitempty"`
 	Fix_state            *Fix_state_enum_comparison_exp  `json:"fix_state,omitempty"`
@@ -1298,7 +1298,7 @@ func (v *Findings_bool_exp) GetBuild() *Builds_bool_exp { return v.Build }
 func (v *Findings_bool_exp) GetBuild_id() *Uuid_comparison_exp { return v.Build_id }
 
 // GetCreated_at returns Findings_bool_exp.Created_at, and is useful for accessing the field via an interface.
-func (v *Findings_bool_exp) GetCreated_at() *Timestamp_comparison_exp { return v.Created_at }
+func (v *Findings_bool_exp) GetCreated_at() *Timestamptz_comparison_exp { return v.Created_at }
 
 // GetDedupe_slug returns Findings_bool_exp.Dedupe_slug, and is useful for accessing the field via an interface.
 func (v *Findings_bool_exp) GetDedupe_slug() *String_comparison_exp { return v.Dedupe_slug }
@@ -3405,20 +3405,20 @@ func (v *Manifests_arr_rel_insert_input) GetOn_conflict() *Manifests_on_conflict
 }
 
 type Manifests_bool_exp struct {
-	And        []*Manifests_bool_exp     `json:"_and,omitempty"`
-	Not        *Manifests_bool_exp       `json:"_not,omitempty"`
-	Or         []*Manifests_bool_exp     `json:"_or,omitempty"`
-	Build      *Builds_bool_exp          `json:"build,omitempty"`
-	Build_id   *Uuid_comparison_exp      `json:"build_id,omitempty"`
-	Created_at *Timestamp_comparison_exp `json:"created_at,omitempty"`
-	Filename   *String_comparison_exp    `json:"filename,omitempty"`
-	Id         *Uuid_comparison_exp      `json:"id,omitempty"`
-	Message    *String_comparison_exp    `json:"message,omitempty"`
-	Project    *Projects_bool_exp        `json:"project,omitempty"`
-	Project_id *Uuid_comparison_exp      `json:"project_id,omitempty"`
-	S3_key     *String_comparison_exp    `json:"s3_key,omitempty"`
-	S3_url     *String_comparison_exp    `json:"s3_url,omitempty"`
-	Status     *String_comparison_exp    `json:"status,omitempty"`
+	And        []*Manifests_bool_exp       `json:"_and,omitempty"`
+	Not        *Manifests_bool_exp         `json:"_not,omitempty"`
+	Or         []*Manifests_bool_exp       `json:"_or,omitempty"`
+	Build      *Builds_bool_exp            `json:"build,omitempty"`
+	Build_id   *Uuid_comparison_exp        `json:"build_id,omitempty"`
+	Created_at *Timestamptz_comparison_exp `json:"created_at,omitempty"`
+	Filename   *String_comparison_exp      `json:"filename,omitempty"`
+	Id         *Uuid_comparison_exp        `json:"id,omitempty"`
+	Message    *String_comparison_exp      `json:"message,omitempty"`
+	Project    *Projects_bool_exp          `json:"project,omitempty"`
+	Project_id *Uuid_comparison_exp        `json:"project_id,omitempty"`
+	S3_key     *String_comparison_exp      `json:"s3_key,omitempty"`
+	S3_url     *String_comparison_exp      `json:"s3_url,omitempty"`
+	Status     *String_comparison_exp      `json:"status,omitempty"`
 }
 
 // GetAnd returns Manifests_bool_exp.And, and is useful for accessing the field via an interface.
@@ -3437,7 +3437,7 @@ func (v *Manifests_bool_exp) GetBuild() *Builds_bool_exp { return v.Build }
 func (v *Manifests_bool_exp) GetBuild_id() *Uuid_comparison_exp { return v.Build_id }
 
 // GetCreated_at returns Manifests_bool_exp.Created_at, and is useful for accessing the field via an interface.
-func (v *Manifests_bool_exp) GetCreated_at() *Timestamp_comparison_exp { return v.Created_at }
+func (v *Manifests_bool_exp) GetCreated_at() *Timestamptz_comparison_exp { return v.Created_at }
 
 // GetFilename returns Manifests_bool_exp.Filename, and is useful for accessing the field via an interface.
 func (v *Manifests_bool_exp) GetFilename() *String_comparison_exp { return v.Filename }
@@ -3729,7 +3729,7 @@ type Organizations_bool_exp struct {
 	And                []*Organizations_bool_exp   `json:"_and,omitempty"`
 	Not                *Organizations_bool_exp     `json:"_not,omitempty"`
 	Or                 []*Organizations_bool_exp   `json:"_or,omitempty"`
-	CreatedAt          *Timestamp_comparison_exp   `json:"createdAt,omitempty"`
+	CreatedAt          *Timestamptz_comparison_exp `json:"createdAt,omitempty"`
 	Creator            *Users_bool_exp             `json:"creator,omitempty"`
 	Creator_id         *Uuid_comparison_exp        `json:"creator_id,omitempty"`
 	Github_id          *Int_comparison_exp         `json:"github_id,omitempty"`
@@ -3753,7 +3753,7 @@ func (v *Organizations_bool_exp) GetNot() *Organizations_bool_exp { return v.Not
 func (v *Organizations_bool_exp) GetOr() []*Organizations_bool_exp { return v.Or }
 
 // GetCreatedAt returns Organizations_bool_exp.CreatedAt, and is useful for accessing the field via an interface.
-func (v *Organizations_bool_exp) GetCreatedAt() *Timestamp_comparison_exp { return v.CreatedAt }
+func (v *Organizations_bool_exp) GetCreatedAt() *Timestamptz_comparison_exp { return v.CreatedAt }
 
 // GetCreator returns Organizations_bool_exp.Creator, and is useful for accessing the field via an interface.
 func (v *Organizations_bool_exp) GetCreator() *Users_bool_exp { return v.Creator }
@@ -5067,7 +5067,7 @@ type Projects_bool_exp struct {
 	Not                     *Projects_bool_exp                `json:"_not,omitempty"`
 	Or                      []*Projects_bool_exp              `json:"_or,omitempty"`
 	Builds                  *Builds_bool_exp                  `json:"builds,omitempty"`
-	Created_at              *Timestamp_comparison_exp         `json:"created_at,omitempty"`
+	Created_at              *Timestamptz_comparison_exp       `json:"created_at,omitempty"`
 	Default_branch_builds   *Default_branch_builds_bool_exp   `json:"default_branch_builds,omitempty"`
 	Github_repositories     *Github_repositories_bool_exp     `json:"github_repositories,omitempty"`
 	Github_repository       *Github_repositories_bool_exp     `json:"github_repository,omitempty"`
@@ -5097,7 +5097,7 @@ func (v *Projects_bool_exp) GetOr() []*Projects_bool_exp { return v.Or }
 func (v *Projects_bool_exp) GetBuilds() *Builds_bool_exp { return v.Builds }
 
 // GetCreated_at returns Projects_bool_exp.Created_at, and is useful for accessing the field via an interface.
-func (v *Projects_bool_exp) GetCreated_at() *Timestamp_comparison_exp { return v.Created_at }
+func (v *Projects_bool_exp) GetCreated_at() *Timestamptz_comparison_exp { return v.Created_at }
 
 // GetDefault_branch_builds returns Projects_bool_exp.Default_branch_builds, and is useful for accessing the field via an interface.
 func (v *Projects_bool_exp) GetDefault_branch_builds() *Default_branch_builds_bool_exp {
@@ -5449,21 +5449,21 @@ func (v *Scans_arr_rel_insert_input) GetData() []*Scans_insert_input { return v.
 func (v *Scans_arr_rel_insert_input) GetOn_conflict() *Scans_on_conflict { return v.On_conflict }
 
 type Scans_bool_exp struct {
-	And            []*Scans_bool_exp         `json:"_and,omitempty"`
-	Not            *Scans_bool_exp           `json:"_not,omitempty"`
-	Or             []*Scans_bool_exp         `json:"_or,omitempty"`
-	Build          *Builds_bool_exp          `json:"build,omitempty"`
-	Build_id       *Uuid_comparison_exp      `json:"build_id,omitempty"`
-	Created_at     *Timestamp_comparison_exp `json:"created_at,omitempty"`
-	Db_date        *Date_comparison_exp      `json:"db_date,omitempty"`
-	Distro_name    *String_comparison_exp    `json:"distro_name,omitempty"`
-	Distro_version *String_comparison_exp    `json:"distro_version,omitempty"`
-	Findings       *Findings_bool_exp        `json:"findings,omitempty"`
-	Grype_version  *String_comparison_exp    `json:"grype_version,omitempty"`
-	Id             *Uuid_comparison_exp      `json:"id,omitempty"`
-	Scan_number    *Int_comparison_exp       `json:"scan_number,omitempty"`
-	Source_type    *String_comparison_exp    `json:"source_type,omitempty"`
-	Target         *String_comparison_exp    `json:"target,omitempty"`
+	And            []*Scans_bool_exp           `json:"_and,omitempty"`
+	Not            *Scans_bool_exp             `json:"_not,omitempty"`
+	Or             []*Scans_bool_exp           `json:"_or,omitempty"`
+	Build          *Builds_bool_exp            `json:"build,omitempty"`
+	Build_id       *Uuid_comparison_exp        `json:"build_id,omitempty"`
+	Created_at     *Timestamptz_comparison_exp `json:"created_at,omitempty"`
+	Db_date        *Date_comparison_exp        `json:"db_date,omitempty"`
+	Distro_name    *String_comparison_exp      `json:"distro_name,omitempty"`
+	Distro_version *String_comparison_exp      `json:"distro_version,omitempty"`
+	Findings       *Findings_bool_exp          `json:"findings,omitempty"`
+	Grype_version  *String_comparison_exp      `json:"grype_version,omitempty"`
+	Id             *Uuid_comparison_exp        `json:"id,omitempty"`
+	Scan_number    *Int_comparison_exp         `json:"scan_number,omitempty"`
+	Source_type    *String_comparison_exp      `json:"source_type,omitempty"`
+	Target         *String_comparison_exp      `json:"target,omitempty"`
 }
 
 // GetAnd returns Scans_bool_exp.And, and is useful for accessing the field via an interface.
@@ -5482,7 +5482,7 @@ func (v *Scans_bool_exp) GetBuild() *Builds_bool_exp { return v.Build }
 func (v *Scans_bool_exp) GetBuild_id() *Uuid_comparison_exp { return v.Build_id }
 
 // GetCreated_at returns Scans_bool_exp.Created_at, and is useful for accessing the field via an interface.
-func (v *Scans_bool_exp) GetCreated_at() *Timestamp_comparison_exp { return v.Created_at }
+func (v *Scans_bool_exp) GetCreated_at() *Timestamptz_comparison_exp { return v.Created_at }
 
 // GetDb_date returns Scans_bool_exp.Db_date, and is useful for accessing the field via an interface.
 func (v *Scans_bool_exp) GetDb_date() *Date_comparison_exp { return v.Db_date }
@@ -5629,15 +5629,15 @@ type SetBuildS3UrlUpdate_builds_by_pkBuilds struct {
 func (v *SetBuildS3UrlUpdate_builds_by_pkBuilds) GetId() uuid.UUID { return v.Id }
 
 type Settings_bool_exp struct {
-	And                  []*Settings_bool_exp      `json:"_and,omitempty"`
-	Not                  *Settings_bool_exp        `json:"_not,omitempty"`
-	Or                   []*Settings_bool_exp      `json:"_or,omitempty"`
-	Created_at           *Timestamp_comparison_exp `json:"created_at,omitempty"`
-	Id                   *Uuid_comparison_exp      `json:"id,omitempty"`
-	Organization         *Organizations_bool_exp   `json:"organization,omitempty"`
-	Pr_check_enabled     *Boolean_comparison_exp   `json:"pr_check_enabled,omitempty"`
-	Pr_feedback_disabled *Boolean_comparison_exp   `json:"pr_feedback_disabled,omitempty"`
-	Project              *Projects_bool_exp        `json:"project,omitempty"`
+	And                  []*Settings_bool_exp        `json:"_and,omitempty"`
+	Not                  *Settings_bool_exp          `json:"_not,omitempty"`
+	Or                   []*Settings_bool_exp        `json:"_or,omitempty"`
+	Created_at           *Timestamptz_comparison_exp `json:"created_at,omitempty"`
+	Id                   *Uuid_comparison_exp        `json:"id,omitempty"`
+	Organization         *Organizations_bool_exp     `json:"organization,omitempty"`
+	Pr_check_enabled     *Boolean_comparison_exp     `json:"pr_check_enabled,omitempty"`
+	Pr_feedback_disabled *Boolean_comparison_exp     `json:"pr_feedback_disabled,omitempty"`
+	Project              *Projects_bool_exp          `json:"project,omitempty"`
 }
 
 // GetAnd returns Settings_bool_exp.And, and is useful for accessing the field via an interface.
@@ -5650,7 +5650,7 @@ func (v *Settings_bool_exp) GetNot() *Settings_bool_exp { return v.Not }
 func (v *Settings_bool_exp) GetOr() []*Settings_bool_exp { return v.Or }
 
 // GetCreated_at returns Settings_bool_exp.Created_at, and is useful for accessing the field via an interface.
-func (v *Settings_bool_exp) GetCreated_at() *Timestamp_comparison_exp { return v.Created_at }
+func (v *Settings_bool_exp) GetCreated_at() *Timestamptz_comparison_exp { return v.Created_at }
 
 // GetId returns Settings_bool_exp.Id, and is useful for accessing the field via an interface.
 func (v *Settings_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
@@ -6930,6 +6930,7 @@ type Vulnerability_cwe_bool_exp struct {
 	And                  []*Vulnerability_cwe_bool_exp `json:"_and,omitempty"`
 	Not                  *Vulnerability_cwe_bool_exp   `json:"_not,omitempty"`
 	Or                   []*Vulnerability_cwe_bool_exp `json:"_or,omitempty"`
+	Common_name          *String_comparison_exp        `json:"common_name,omitempty"`
 	Description          *String_comparison_exp        `json:"description,omitempty"`
 	Extended_description *String_comparison_exp        `json:"extended_description,omitempty"`
 	Id                   *Int_comparison_exp           `json:"id,omitempty"`
@@ -6944,6 +6945,9 @@ func (v *Vulnerability_cwe_bool_exp) GetNot() *Vulnerability_cwe_bool_exp { retu
 
 // GetOr returns Vulnerability_cwe_bool_exp.Or, and is useful for accessing the field via an interface.
 func (v *Vulnerability_cwe_bool_exp) GetOr() []*Vulnerability_cwe_bool_exp { return v.Or }
+
+// GetCommon_name returns Vulnerability_cwe_bool_exp.Common_name, and is useful for accessing the field via an interface.
+func (v *Vulnerability_cwe_bool_exp) GetCommon_name() *String_comparison_exp { return v.Common_name }
 
 // GetDescription returns Vulnerability_cwe_bool_exp.Description, and is useful for accessing the field via an interface.
 func (v *Vulnerability_cwe_bool_exp) GetDescription() *String_comparison_exp { return v.Description }
@@ -6966,11 +6970,15 @@ const (
 )
 
 type Vulnerability_cwe_insert_input struct {
+	Common_name          *string `json:"common_name,omitempty"`
 	Description          *string `json:"description,omitempty"`
 	Extended_description *string `json:"extended_description,omitempty"`
 	Id                   *int    `json:"id,omitempty"`
 	Name                 *string `json:"name,omitempty"`
 }
+
+// GetCommon_name returns Vulnerability_cwe_insert_input.Common_name, and is useful for accessing the field via an interface.
+func (v *Vulnerability_cwe_insert_input) GetCommon_name() *string { return v.Common_name }
 
 // GetDescription returns Vulnerability_cwe_insert_input.Description, and is useful for accessing the field via an interface.
 func (v *Vulnerability_cwe_insert_input) GetDescription() *string { return v.Description }
@@ -7023,6 +7031,7 @@ func (v *Vulnerability_cwe_on_conflict) GetWhere() *Vulnerability_cwe_bool_exp {
 type Vulnerability_cwe_update_column string
 
 const (
+	Vulnerability_cwe_update_columnCommonName          Vulnerability_cwe_update_column = "common_name"
 	Vulnerability_cwe_update_columnDescription         Vulnerability_cwe_update_column = "description"
 	Vulnerability_cwe_update_columnExtendedDescription Vulnerability_cwe_update_column = "extended_description"
 	Vulnerability_cwe_update_columnId                  Vulnerability_cwe_update_column = "id"
@@ -7852,12 +7861,18 @@ func (v *__InsertNewBuildQueryInput) GetGit_hash() *string { return v.Git_hash }
 
 // __InsertVulnerabilityCWEInput is used internally by genqlient
 type __InsertVulnerabilityCWEInput struct {
-	Objects []*Vulnerability_cwe_insert_input `json:"objects,omitempty"`
+	Objects        []*Vulnerability_cwe_insert_input `json:"objects,omitempty"`
+	Update_columns []Vulnerability_cwe_update_column `json:"update_columns,omitempty"`
 }
 
 // GetObjects returns __InsertVulnerabilityCWEInput.Objects, and is useful for accessing the field via an interface.
 func (v *__InsertVulnerabilityCWEInput) GetObjects() []*Vulnerability_cwe_insert_input {
 	return v.Objects
+}
+
+// GetUpdate_columns returns __InsertVulnerabilityCWEInput.Update_columns, and is useful for accessing the field via an interface.
+func (v *__InsertVulnerabilityCWEInput) GetUpdate_columns() []Vulnerability_cwe_update_column {
+	return v.Update_columns
 }
 
 // __PackageFetchTimeInput is used internally by genqlient
@@ -8209,12 +8224,13 @@ func InsertVulnerabilityCWE(
 	ctx context.Context,
 	client graphql.Client,
 	objects []*Vulnerability_cwe_insert_input,
+	update_columns []Vulnerability_cwe_update_column,
 ) (*InsertVulnerabilityCWEResponse, error) {
 	req := &graphql.Request{
 		OpName: "InsertVulnerabilityCWE",
 		Query: `
-mutation InsertVulnerabilityCWE ($objects: [vulnerability_cwe_insert_input!]!) {
-	insert_vulnerability_cwe(objects: $objects, on_conflict: {constraint:cwe_pkey,update_columns:[id,name,description,extended_description]}) {
+mutation InsertVulnerabilityCWE ($objects: [vulnerability_cwe_insert_input!]!, $update_columns: [vulnerability_cwe_update_column!]!) {
+	insert_vulnerability_cwe(objects: $objects, on_conflict: {constraint:cwe_pkey,update_columns:$update_columns}) {
 		returning {
 			id
 		}
@@ -8222,7 +8238,8 @@ mutation InsertVulnerabilityCWE ($objects: [vulnerability_cwe_insert_input!]!) {
 }
 `,
 		Variables: &__InsertVulnerabilityCWEInput{
-			Objects: objects,
+			Objects:        objects,
+			Update_columns: update_columns,
 		},
 	}
 	var err error
