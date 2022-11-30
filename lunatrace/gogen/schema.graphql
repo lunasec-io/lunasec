@@ -753,7 +753,7 @@ type builds {
     build_dependency_relationships(distinct_on: [build_dependency_relationship_select_column!], limit: Int, offset: Int, order_by: [build_dependency_relationship_order_by!], where: build_dependency_relationship_bool_exp): [build_dependency_relationship!]!
     build_logs(distinct_on: [build_log_select_column!], limit: Int, offset: Int, order_by: [build_log_order_by!], where: build_log_bool_exp): [build_log!]!
     build_number: Int
-    created_at: timestamp!
+    created_at: timestamptz!
     existing_github_check_id: bigint
     existing_github_review_id: String
     findings(distinct_on: [findings_select_column!], limit: Int, offset: Int, order_by: [findings_order_by!], where: findings_bool_exp): [findings!]!
@@ -828,7 +828,7 @@ input builds_bool_exp {
     build_dependency_relationships: build_dependency_relationship_bool_exp
     build_logs: build_log_bool_exp
     build_number: Int_comparison_exp
-    created_at: timestamp_comparison_exp
+    created_at: timestamptz_comparison_exp
     existing_github_check_id: bigint_comparison_exp
     existing_github_review_id: String_comparison_exp
     findings: findings_bool_exp
@@ -862,7 +862,7 @@ input builds_insert_input {
     build_dependency_relationships: build_dependency_relationship_arr_rel_insert_input
     build_logs: build_log_arr_rel_insert_input
     build_number: Int
-    created_at: timestamp
+    created_at: timestamptz
     existing_github_check_id: bigint
     existing_github_review_id: String
     findings: findings_arr_rel_insert_input
@@ -883,7 +883,7 @@ input builds_insert_input {
 type builds_max_fields {
     agent_access_token: uuid
     build_number: Int
-    created_at: timestamp
+    created_at: timestamptz
     existing_github_check_id: bigint
     existing_github_review_id: String
     git_branch: String
@@ -915,7 +915,7 @@ input builds_max_order_by {
 type builds_min_fields {
     agent_access_token: uuid
     build_number: Int
-    created_at: timestamp
+    created_at: timestamptz
     existing_github_check_id: bigint
     existing_github_review_id: String
     git_branch: String
@@ -1006,7 +1006,7 @@ enum builds_select_column {
 input builds_set_input {
     agent_access_token: uuid
     build_number: Int
-    created_at: timestamp
+    created_at: timestamptz
     existing_github_check_id: bigint
     existing_github_review_id: String
     git_branch: String
@@ -1131,7 +1131,7 @@ input date_comparison_exp {
 
 type default_branch_builds {
     build_number: Int
-    created_at: timestamp
+    created_at: timestamptz
     existing_github_review_id: String
     findings(distinct_on: [findings_select_column!], limit: Int, offset: Int, order_by: [findings_order_by!], where: findings_bool_exp): [findings!]!
     git_branch: String
@@ -1173,7 +1173,7 @@ input default_branch_builds_bool_exp {
     _not: default_branch_builds_bool_exp
     _or: [default_branch_builds_bool_exp!]
     build_number: Int_comparison_exp
-    created_at: timestamp_comparison_exp
+    created_at: timestamptz_comparison_exp
     existing_github_review_id: String_comparison_exp
     findings: findings_bool_exp
     git_branch: String_comparison_exp
@@ -1190,7 +1190,7 @@ input default_branch_builds_bool_exp {
 
 input default_branch_builds_insert_input {
     build_number: Int
-    created_at: timestamp
+    created_at: timestamptz
     existing_github_review_id: String
     findings: findings_arr_rel_insert_input
     git_branch: String
@@ -1298,7 +1298,7 @@ input default_branch_builds_variance_order_by {
 type findings {
     build: builds!
     build_id: uuid!
-    created_at: timestamp!
+    created_at: timestamptz!
     dedupe_slug: String!
     default_branch_build: default_branch_builds
     fix_state: fix_state_enum!
@@ -1338,7 +1338,7 @@ input findings_bool_exp {
     _or: [findings_bool_exp!]
     build: builds_bool_exp
     build_id: uuid_comparison_exp
-    created_at: timestamp_comparison_exp
+    created_at: timestamptz_comparison_exp
     dedupe_slug: String_comparison_exp
     default_branch_build: default_branch_builds_bool_exp
     fix_state: fix_state_enum_comparison_exp
@@ -1369,7 +1369,7 @@ enum findings_constraint {
 input findings_insert_input {
     build: builds_obj_rel_insert_input
     build_id: uuid
-    created_at: timestamp
+    created_at: timestamptz
     dedupe_slug: String
     default_branch_build: default_branch_builds_obj_rel_insert_input
     fix_state: fix_state_enum
@@ -1497,7 +1497,7 @@ enum findings_select_column {
 
 input findings_set_input {
     build_id: uuid
-    created_at: timestamp
+    created_at: timestamptz
     dedupe_slug: String
     fix_state: fix_state_enum
     fix_versions: _text
@@ -2379,7 +2379,7 @@ input jsonb_comparison_exp {
 type latest_builds {
     agent_access_token: uuid
     build_number: Int
-    created_at: timestamp
+    created_at: timestamptz
     existing_github_review_id: String
     git_branch: String
     git_hash: String
@@ -2397,7 +2397,7 @@ input latest_builds_bool_exp {
     _or: [latest_builds_bool_exp!]
     agent_access_token: uuid_comparison_exp
     build_number: Int_comparison_exp
-    created_at: timestamp_comparison_exp
+    created_at: timestamptz_comparison_exp
     existing_github_review_id: String_comparison_exp
     git_branch: String_comparison_exp
     git_hash: String_comparison_exp
@@ -2757,7 +2757,7 @@ enum manifest_dependency_update_column {
 type manifests {
     build: builds
     build_id: uuid
-    created_at: timestamp!
+    created_at: timestamptz!
     filename: String!
     id: uuid!
     message: String
@@ -2785,7 +2785,7 @@ input manifests_bool_exp {
     _or: [manifests_bool_exp!]
     build: builds_bool_exp
     build_id: uuid_comparison_exp
-    created_at: timestamp_comparison_exp
+    created_at: timestamptz_comparison_exp
     filename: String_comparison_exp
     id: uuid_comparison_exp
     message: String_comparison_exp
@@ -2804,7 +2804,7 @@ enum manifests_constraint {
 input manifests_insert_input {
     build: builds_obj_rel_insert_input
     build_id: uuid
-    created_at: timestamp
+    created_at: timestamptz
     filename: String
     id: uuid
     message: String
@@ -2882,7 +2882,7 @@ enum manifests_select_column {
 
 input manifests_set_input {
     build_id: uuid
-    created_at: timestamp
+    created_at: timestamptz
     filename: String
     id: uuid
     message: String
@@ -3215,7 +3215,7 @@ enum organization_user_update_column {
 }
 
 type organizations {
-    createdAt: timestamp!
+    createdAt: timestamptz!
     creator: users
     creator_id: uuid
     github_id: Int
@@ -3258,7 +3258,7 @@ input organizations_bool_exp {
     _and: [organizations_bool_exp!]
     _not: organizations_bool_exp
     _or: [organizations_bool_exp!]
-    createdAt: timestamp_comparison_exp
+    createdAt: timestamptz_comparison_exp
     creator: users_bool_exp
     creator_id: uuid_comparison_exp
     github_id: Int_comparison_exp
@@ -3285,7 +3285,7 @@ input organizations_inc_input {
 }
 
 input organizations_insert_input {
-    createdAt: timestamp
+    createdAt: timestamptz
     creator: users_obj_rel_insert_input
     creator_id: uuid
     github_id: Int
@@ -3300,7 +3300,7 @@ input organizations_insert_input {
 }
 
 type organizations_max_fields {
-    createdAt: timestamp
+    createdAt: timestamptz
     creator_id: uuid
     github_id: Int
     github_node_id: String
@@ -3311,7 +3311,7 @@ type organizations_max_fields {
 }
 
 type organizations_min_fields {
-    createdAt: timestamp
+    createdAt: timestamptz
     creator_id: uuid
     github_id: Int
     github_node_id: String
@@ -3368,7 +3368,7 @@ enum organizations_select_column {
 }
 
 input organizations_set_input {
-    createdAt: timestamp
+    createdAt: timestamptz
     creator_id: uuid
     github_id: Int
     github_node_id: String
@@ -4365,7 +4365,7 @@ enum project_access_tokens_select_column {
 type projects {
     builds(distinct_on: [builds_select_column!], limit: Int, offset: Int, order_by: [builds_order_by!], where: builds_bool_exp): [builds!]!
     builds_aggregate(distinct_on: [builds_select_column!], limit: Int, offset: Int, order_by: [builds_order_by!], where: builds_bool_exp): builds_aggregate!
-    created_at: timestamp!
+    created_at: timestamptz!
     default_branch_builds(distinct_on: [default_branch_builds_select_column!], limit: Int, offset: Int, order_by: [default_branch_builds_order_by!], where: default_branch_builds_bool_exp): [default_branch_builds!]!
     github_repositories(distinct_on: [github_repositories_select_column!], limit: Int, offset: Int, order_by: [github_repositories_order_by!], where: github_repositories_bool_exp): [github_repositories!]!
     github_repository: github_repositories
@@ -4409,7 +4409,7 @@ input projects_bool_exp {
     _not: projects_bool_exp
     _or: [projects_bool_exp!]
     builds: builds_bool_exp
-    created_at: timestamp_comparison_exp
+    created_at: timestamptz_comparison_exp
     default_branch_builds: default_branch_builds_bool_exp
     github_repositories: github_repositories_bool_exp
     github_repository: github_repositories_bool_exp
@@ -4433,7 +4433,7 @@ enum projects_constraint {
 
 input projects_insert_input {
     builds: builds_arr_rel_insert_input
-    created_at: timestamp
+    created_at: timestamptz
     default_branch_builds: default_branch_builds_arr_rel_insert_input
     github_repositories: github_repositories_arr_rel_insert_input
     github_repository: github_repositories_obj_rel_insert_input
@@ -4447,7 +4447,7 @@ input projects_insert_input {
 }
 
 type projects_max_fields {
-    created_at: timestamp
+    created_at: timestamptz
     id: uuid
     name: String
     organization_id: uuid
@@ -4465,7 +4465,7 @@ input projects_max_order_by {
 }
 
 type projects_min_fields {
-    created_at: timestamp
+    created_at: timestamptz
     id: uuid
     name: String
     organization_id: uuid
@@ -4531,7 +4531,7 @@ enum projects_select_column {
 }
 
 input projects_set_input {
-    created_at: timestamp
+    created_at: timestamptz
     id: uuid
     name: String
     organization_id: uuid
@@ -4771,7 +4771,7 @@ enum resolved_manifest_update_column {
 type scans {
     build: builds!
     build_id: uuid!
-    created_at: timestamp!
+    created_at: timestamptz!
     db_date: date!
     distro_name: String!
     distro_version: String!
@@ -4812,7 +4812,7 @@ input scans_bool_exp {
     _or: [scans_bool_exp!]
     build: builds_bool_exp
     build_id: uuid_comparison_exp
-    created_at: timestamp_comparison_exp
+    created_at: timestamptz_comparison_exp
     db_date: date_comparison_exp
     distro_name: String_comparison_exp
     distro_version: String_comparison_exp
@@ -4836,7 +4836,7 @@ input scans_inc_input {
 input scans_insert_input {
     build: builds_obj_rel_insert_input
     build_id: uuid
-    created_at: timestamp
+    created_at: timestamptz
     db_date: date
     distro_name: String
     distro_version: String
@@ -4924,7 +4924,7 @@ enum scans_select_column {
 
 input scans_set_input {
     build_id: uuid
-    created_at: timestamp
+    created_at: timestamptz
     db_date: date
     distro_name: String
     distro_version: String
@@ -4977,7 +4977,7 @@ input scans_variance_order_by {
 }
 
 type settings {
-    created_at: timestamp!
+    created_at: timestamptz!
     id: uuid!
     organization: organizations
     pr_check_enabled: Boolean
@@ -4989,7 +4989,7 @@ input settings_bool_exp {
     _and: [settings_bool_exp!]
     _not: settings_bool_exp
     _or: [settings_bool_exp!]
-    created_at: timestamp_comparison_exp
+    created_at: timestamptz_comparison_exp
     id: uuid_comparison_exp
     organization: organizations_bool_exp
     pr_check_enabled: Boolean_comparison_exp
@@ -5836,6 +5836,7 @@ enum vulnerability_credit_update_column {
 }
 
 type vulnerability_cwe {
+    common_name: String
     description: String!
     extended_description: String!
     id: Int!
@@ -5846,6 +5847,7 @@ input vulnerability_cwe_bool_exp {
     _and: [vulnerability_cwe_bool_exp!]
     _not: vulnerability_cwe_bool_exp
     _or: [vulnerability_cwe_bool_exp!]
+    common_name: String_comparison_exp
     description: String_comparison_exp
     extended_description: String_comparison_exp
     id: Int_comparison_exp
@@ -5861,6 +5863,7 @@ input vulnerability_cwe_inc_input {
 }
 
 input vulnerability_cwe_insert_input {
+    common_name: String
     description: String
     extended_description: String
     id: Int
@@ -5884,6 +5887,7 @@ input vulnerability_cwe_on_conflict {
 }
 
 input vulnerability_cwe_order_by {
+    common_name: order_by
     description: order_by
     extended_description: order_by
     id: order_by
@@ -5895,6 +5899,7 @@ input vulnerability_cwe_pk_columns_input {
 }
 
 enum vulnerability_cwe_select_column {
+    common_name
     description
     extended_description
     id
@@ -5902,6 +5907,7 @@ enum vulnerability_cwe_select_column {
 }
 
 input vulnerability_cwe_set_input {
+    common_name: String
     description: String
     extended_description: String
     id: Int
@@ -5909,6 +5915,7 @@ input vulnerability_cwe_set_input {
 }
 
 enum vulnerability_cwe_update_column {
+    common_name
     description
     extended_description
     id
@@ -6600,7 +6607,7 @@ input vulnerability_vulnerability_cwe_variance_order_by {
 }
 
 type webhook_cache {
-    created_at: timestamp!
+    created_at: timestamptz!
     data(path: String): jsonb!
     delivery_id: uuid!
     event_type: String!
@@ -6613,7 +6620,7 @@ input webhook_cache_bool_exp {
     _and: [webhook_cache_bool_exp!]
     _not: webhook_cache_bool_exp
     _or: [webhook_cache_bool_exp!]
-    created_at: timestamp_comparison_exp
+    created_at: timestamptz_comparison_exp
     data: jsonb_comparison_exp
     delivery_id: uuid_comparison_exp
     event_type: String_comparison_exp
@@ -6627,7 +6634,7 @@ enum webhook_cache_constraint {
 }
 
 input webhook_cache_insert_input {
-    created_at: timestamp
+    created_at: timestamptz
     data: jsonb
     delivery_id: uuid
     event_type: String
