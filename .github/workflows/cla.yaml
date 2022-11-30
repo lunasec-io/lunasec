@@ -18,8 +18,8 @@ jobs:
           # the below token should have repo scope and must be manually added by you in the repository's secret
           PERSONAL_ACCESS_TOKEN : ${{ secrets.CLA_PERSONAL_ACCESS_TOKEN }}
         with:
-          path-to-signatures: '.github/signatures/539184d206.json'
+          path-to-signatures: 'signatures/539184d206.json'
           path-to-document: 'https://gist.github.com/freeqaz/539184d206e06868653e02d36530b20b' # e.g. a CLA or a DCO document
-          # branch should not be protected
-          branch: 'master'
-          allowlist: github-action*,bot*
+          remote-organization-name: lunasec-io
+          remote-repository-name: cla-sigs
+          allowlist: 'github-action*,bot*,*[bot]'
