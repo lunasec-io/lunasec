@@ -17,9 +17,9 @@ import { ArrowLeft } from 'react-feather';
 
 import api from '../../../api';
 import { StickyScrollableElement } from '../../../components/utils/StickyScrollableElement';
+import { CweDetails } from '../../cwes/detail/CweDetails';
 import { VulnerabilityDetailBody } from '../../vulnerabilities/detail/DetailBody';
 
-import { CweDetails } from './CweDetails';
 import { QuickViewCwe, QuickViewProps, QuickViewState, QuickViewVulnerability } from './types';
 
 interface VulnQuickViewProps {
@@ -43,7 +43,7 @@ const CweQuickView: React.FC<CweQuickViewProps> = ({ cweState, sideBySideView })
   return (
     <>
       {data && data.vulnerability_cwe_by_pk && !isFetching ? (
-        <CweDetails cwe={data.vulnerability_cwe_by_pk} isEmbedded={true} sideBySideView={sideBySideView} />
+        <CweDetails cwe={data.vulnerability_cwe_by_pk} sideBySideView={sideBySideView} />
       ) : (
         <Spinner animation="border" />
       )}

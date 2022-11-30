@@ -36,6 +36,7 @@ export type BuildData_AffectedByVulnerability = {
 
 export type BuildData_Cwe = {
   __typename?: 'BuildData_Cwe';
+  common_name?: Maybe<Scalars['String']>;
   description: Scalars['String'];
   id: Scalars['Int'];
   name: Scalars['String'];
@@ -377,6 +378,7 @@ export type BuildData_AffectedByVulnerabilityResolvers<ContextType = Context, Pa
 };
 
 export type BuildData_CweResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_Cwe'] = ResolversParentTypes['BuildData_Cwe']> = {
+  common_name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

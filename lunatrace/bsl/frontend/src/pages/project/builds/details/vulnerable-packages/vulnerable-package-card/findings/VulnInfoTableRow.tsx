@@ -104,7 +104,14 @@ export const VulnInfoTableRow: React.FC<VulnerabilityTableItemProps> = ({ vulnMe
     </OverlayTrigger>,
     <div key={vulnMeta.vulnerability.id}>
       {vulnMeta.vulnerability.cwes.map((c) => (
-        <CweBadge key={c.id} id={c.cwe.id} name={c.cwe.name} quickView={quickView} tooltipDescription={true} />
+        <CweBadge
+          key={c.id}
+          id={c.cwe.id}
+          name={c.cwe.name}
+          common_name={c.cwe.common_name}
+          quickView={quickView}
+          tooltipDescription={true}
+        />
       ))}
     </div>,
     vulnMeta.vulnerability.severity_name,
