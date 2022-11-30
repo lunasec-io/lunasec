@@ -118,7 +118,7 @@ async function performSnapshotOnRepository(
       logger.error(failedToUploadWorktreeSnapshotForRepository, {
         error: err,
       });
-      //todo new buildstateenum
+
       updateBuildStatus(buildId, Build_State_Enum.SnapshotFailed, failedToUploadWorktreeSnapshotForRepository);
 
       return {
