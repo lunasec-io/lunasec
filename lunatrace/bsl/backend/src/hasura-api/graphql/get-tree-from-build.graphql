@@ -47,6 +47,7 @@ query GetTreeFromBuild($build_id: uuid!, $analysis_results_where: analysis_manif
                                             id
                                             name
                                             description
+                                            common_name
                                         }
                                     }
                                 }
