@@ -15,19 +15,14 @@ import React from 'react';
 import { Card, Col, Container, Modal, Row, Table } from 'react-bootstrap';
 import { ExternalLink } from 'react-feather';
 
-import { CweInfoDetails } from './types';
+import { CweInfoDetails } from '../../project/builds/types';
 
 interface CweDetailBodyProps {
   cwe: CweInfoDetails;
-  isEmbedded?: boolean;
   sideBySideView?: boolean;
 }
 
-export const CweDetails: React.FunctionComponent<CweDetailBodyProps> = ({
-  isEmbedded = false,
-  sideBySideView = false,
-  cwe,
-}) => {
+export const CweDetails: React.FunctionComponent<CweDetailBodyProps> = ({ sideBySideView = false, cwe }) => {
   return (
     <>
       <Container className="vulnerability-detail-page">
@@ -45,13 +40,19 @@ export const CweDetails: React.FunctionComponent<CweDetailBodyProps> = ({
             </a>
           </Col>
           <hr />
-          <Col md={sideBySideView ? '12' : '8'} xs="12">
+          <Col md="12">
             <Card>
               <Card.Header>
                 <span className="lighter">{cwe.name}</span>
               </Card.Header>
               <Card.Body>
+                {cwe.common_name ? (
+                  <p>
+                    <span className={'lighter'}>Common Name:</span> {cwe.common_name}
+                  </p>
+                ) : null}
                 {cwe.description}
+                <hr />
                 {cwe.extended_description}
               </Card.Body>
             </Card>
