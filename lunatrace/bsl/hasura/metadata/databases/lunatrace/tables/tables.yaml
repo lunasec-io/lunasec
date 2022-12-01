@@ -1,6 +1,7 @@
 - "!include analysis_finding_source.yaml"
 - "!include analysis_finding_type.yaml"
 - "!include analysis_manifest_dependency_edge_result.yaml"
+- "!include analysis_manifest_dependency_edge_result_location.yaml"
 - "!include package_license.yaml"
 - "!include package_maintainer.yaml"
 - "!include package_package.yaml"
