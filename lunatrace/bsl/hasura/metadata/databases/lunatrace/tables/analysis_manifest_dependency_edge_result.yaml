@@ -8,6 +8,14 @@ object_relationships:
   - name: vulnerability
     using:
       foreign_key_constraint_on: vulnerability_id
+array_relationships:
+  - name: locations
+    using:
+      foreign_key_constraint_on:
+        column: manifest_dependency_edge_result_id
+        table:
+          name: manifest_dependency_edge_result_location
+          schema: analysis
 insert_permissions:
   - role: service
     permission:
