@@ -35,12 +35,14 @@ interface WorkerQueues {
 export interface WorkerStorageStackState extends WorkerQueues {
   sbomBucket: Bucket;
   manifestBucket: Bucket;
+  codeBucket: Bucket;
   grypeDatabaseBucket: Bucket;
 }
 
 export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackState {
   public sbomBucket: Bucket;
   public manifestBucket: Bucket;
+  public codeBucket: Bucket;
   public grypeDatabaseBucket: Bucket;
   public processManifestSqsQueue: Queue | null;
   public processSbomSqsQueue: Queue | null;
@@ -55,6 +57,7 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
 
     this.sbomBucket = stackState.sbomBucket;
     this.manifestBucket = stackState.manifestBucket;
+    this.codeBucket = stackState.codeBucket;
     this.grypeDatabaseBucket = stackState.grypeDatabaseBucket;
     this.processManifestSqsQueue = stackState.processManifestSqsQueue;
     this.processSbomSqsQueue = stackState.processSbomSqsQueue;
@@ -215,6 +218,8 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
 
     const sbomBucket = new Bucket(context, 'SbomBucket');
 
+    const codeBucket = new Bucket(context, 'CodeBucket');
+
     const manifestBucket = new Bucket(context, 'ManifestBucket', {
       cors: [
         {
@@ -249,6 +254,11 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
       description: 'Name of the Manifest Bucket',
     });
 
+    new cdk.CfnOutput(context, codeBucket.node.id + 'Name', {
+      value: codeBucket.bucketName,
+      description: 'Name of the Code Bucket',
+    });
+
     new cdk.CfnOutput(context, grypeDatabaseBucket.node.id + 'Name', {
       value: grypeDatabaseBucket.bucketName,
       description: 'Name of the Grype Database Bucket',
@@ -258,6 +268,7 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
       sbomBucket,
       manifestBucket,
       grypeDatabaseBucket,
+      codeBucket,
       ...workerQueues,
     };
   }
