@@ -53,10 +53,10 @@ func validateGetManifestDependencyEdgeResponse(logger zerolog.Logger, resp *gql.
 	return nil
 }
 
-func getManifestDependencyEdgeCallsites(output *rules.SemgrepRuleOutput) *gql.Analysis_manifest_dependency_edge_result_callsite_arr_rel_insert_input {
-	var callsites []*gql.Analysis_manifest_dependency_edge_result_callsite_insert_input
+func getManifestDependencyEdgeLocations(output *rules.SemgrepRuleOutput) *gql.Analysis_manifest_dependency_edge_result_location_arr_rel_insert_input {
+	var locations []*gql.Analysis_manifest_dependency_edge_result_location_insert_input
 	for _, result := range output.Results {
-		callsites = append(callsites, &gql.Analysis_manifest_dependency_edge_result_callsite_insert_input{
+		locations = append(locations, &gql.Analysis_manifest_dependency_edge_result_location_insert_input{
 			End_column:   util.Ptr(int(result.End.Col)),
 			End_row:      util.Ptr(int(result.End.Line)),
 			Path:         util.Ptr(result.Path),
@@ -65,8 +65,8 @@ func getManifestDependencyEdgeCallsites(output *rules.SemgrepRuleOutput) *gql.An
 		})
 	}
 
-	return &gql.Analysis_manifest_dependency_edge_result_callsite_arr_rel_insert_input{
-		Data: callsites,
+	return &gql.Analysis_manifest_dependency_edge_result_location_arr_rel_insert_input{
+		Data: locations,
 	}
 }
 
@@ -121,14 +121,14 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 		ctx, logger, upstreamBlobUrl, manifestDependencyEdgeUUID, parentPackageName, childPackageName,
 	)
 
-	var callsites *gql.Analysis_manifest_dependency_edge_result_callsite_arr_rel_insert_input
+	var locations *gql.Analysis_manifest_dependency_edge_result_location_arr_rel_insert_input
 	if results != nil {
-		callsites = getManifestDependencyEdgeCallsites(results)
+		locations = getManifestDependencyEdgeLocations(results)
 	}
 
 	logger.Info().
 		Str("finding type", string(findingType)).
-		Interface("callsites", callsites).
+		Interface("locations", locations).
 		Msg("saving results of analysis")
 
 	result := &gql.Analysis_manifest_dependency_edge_result_insert_input{
@@ -137,7 +137,7 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 		Finding_source_version:      util.Ptr(rules.ImportedAndCalledRuleVersion),
 		Manifest_dependency_edge_id: util.Ptr(manifestDependencyEdgeUUID),
 		Vulnerability_id:            util.Ptr(vulnerabilityUUID),
-		Callsites:                   callsites,
+		Locations:                   locations,
 	}
 
 	analysisResp, err := gql.InsertManifestDependencyEdgeAnalysis(ctx, s.GQLClient, result)
