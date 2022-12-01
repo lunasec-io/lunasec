@@ -140,19 +140,20 @@ func (v *Analysis_manifest_dependency_edge_result_arr_rel_insert_input) GetOn_co
 }
 
 type Analysis_manifest_dependency_edge_result_bool_exp struct {
-	And                         []*Analysis_manifest_dependency_edge_result_bool_exp `json:"_and,omitempty"`
-	Not                         *Analysis_manifest_dependency_edge_result_bool_exp   `json:"_not,omitempty"`
-	Or                          []*Analysis_manifest_dependency_edge_result_bool_exp `json:"_or,omitempty"`
-	Created_at                  *Timestamptz_comparison_exp                          `json:"created_at,omitempty"`
-	Finding_source              *Analysis_finding_source_enum_comparison_exp         `json:"finding_source,omitempty"`
-	Finding_source_version      *Int_comparison_exp                                  `json:"finding_source_version,omitempty"`
-	Finding_type                *Analysis_finding_type_enum_comparison_exp           `json:"finding_type,omitempty"`
-	Id                          *Uuid_comparison_exp                                 `json:"id,omitempty"`
-	Manifest_dependency_edge    *Manifest_dependency_edge_bool_exp                   `json:"manifest_dependency_edge,omitempty"`
-	Manifest_dependency_edge_id *Uuid_comparison_exp                                 `json:"manifest_dependency_edge_id,omitempty"`
-	Output                      *Jsonb_comparison_exp                                `json:"output,omitempty"`
-	Vulnerability               *Vulnerability_bool_exp                              `json:"vulnerability,omitempty"`
-	Vulnerability_id            *Uuid_comparison_exp                                 `json:"vulnerability_id,omitempty"`
+	And                         []*Analysis_manifest_dependency_edge_result_bool_exp        `json:"_and,omitempty"`
+	Not                         *Analysis_manifest_dependency_edge_result_bool_exp          `json:"_not,omitempty"`
+	Or                          []*Analysis_manifest_dependency_edge_result_bool_exp        `json:"_or,omitempty"`
+	Callsites                   *Analysis_manifest_dependency_edge_result_callsite_bool_exp `json:"callsites,omitempty"`
+	Created_at                  *Timestamptz_comparison_exp                                 `json:"created_at,omitempty"`
+	Finding_source              *Analysis_finding_source_enum_comparison_exp                `json:"finding_source,omitempty"`
+	Finding_source_version      *Int_comparison_exp                                         `json:"finding_source_version,omitempty"`
+	Finding_type                *Analysis_finding_type_enum_comparison_exp                  `json:"finding_type,omitempty"`
+	Id                          *Uuid_comparison_exp                                        `json:"id,omitempty"`
+	Manifest_dependency_edge    *Manifest_dependency_edge_bool_exp                          `json:"manifest_dependency_edge,omitempty"`
+	Manifest_dependency_edge_id *Uuid_comparison_exp                                        `json:"manifest_dependency_edge_id,omitempty"`
+	Output                      *Jsonb_comparison_exp                                       `json:"output,omitempty"`
+	Vulnerability               *Vulnerability_bool_exp                                     `json:"vulnerability,omitempty"`
+	Vulnerability_id            *Uuid_comparison_exp                                        `json:"vulnerability_id,omitempty"`
 }
 
 // GetAnd returns Analysis_manifest_dependency_edge_result_bool_exp.And, and is useful for accessing the field via an interface.
@@ -168,6 +169,11 @@ func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetNot() *Analysis_m
 // GetOr returns Analysis_manifest_dependency_edge_result_bool_exp.Or, and is useful for accessing the field via an interface.
 func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetOr() []*Analysis_manifest_dependency_edge_result_bool_exp {
 	return v.Or
+}
+
+// GetCallsites returns Analysis_manifest_dependency_edge_result_bool_exp.Callsites, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetCallsites() *Analysis_manifest_dependency_edge_result_callsite_bool_exp {
+	return v.Callsites
 }
 
 // GetCreated_at returns Analysis_manifest_dependency_edge_result_bool_exp.Created_at, and is useful for accessing the field via an interface.
@@ -218,6 +224,168 @@ func (v *Analysis_manifest_dependency_edge_result_bool_exp) GetVulnerability_id(
 	return v.Vulnerability_id
 }
 
+type Analysis_manifest_dependency_edge_result_callsite_arr_rel_insert_input struct {
+	Data        []*Analysis_manifest_dependency_edge_result_callsite_insert_input `json:"data,omitempty"`
+	On_conflict *Analysis_manifest_dependency_edge_result_callsite_on_conflict    `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Analysis_manifest_dependency_edge_result_callsite_arr_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_arr_rel_insert_input) GetData() []*Analysis_manifest_dependency_edge_result_callsite_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Analysis_manifest_dependency_edge_result_callsite_arr_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_arr_rel_insert_input) GetOn_conflict() *Analysis_manifest_dependency_edge_result_callsite_on_conflict {
+	return v.On_conflict
+}
+
+type Analysis_manifest_dependency_edge_result_callsite_bool_exp struct {
+	And                                []*Analysis_manifest_dependency_edge_result_callsite_bool_exp `json:"_and,omitempty"`
+	Not                                *Analysis_manifest_dependency_edge_result_callsite_bool_exp   `json:"_not,omitempty"`
+	Or                                 []*Analysis_manifest_dependency_edge_result_callsite_bool_exp `json:"_or,omitempty"`
+	End_column                         *Int_comparison_exp                                           `json:"end_column,omitempty"`
+	End_row                            *Int_comparison_exp                                           `json:"end_row,omitempty"`
+	Id                                 *Uuid_comparison_exp                                          `json:"id,omitempty"`
+	Manifest_dependency_edge_result_id *Uuid_comparison_exp                                          `json:"manifest_dependency_edge_result_id,omitempty"`
+	Path                               *String_comparison_exp                                        `json:"path,omitempty"`
+	Start_column                       *Int_comparison_exp                                           `json:"start_column,omitempty"`
+	Start_row                          *Int_comparison_exp                                           `json:"start_row,omitempty"`
+}
+
+// GetAnd returns Analysis_manifest_dependency_edge_result_callsite_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_bool_exp) GetAnd() []*Analysis_manifest_dependency_edge_result_callsite_bool_exp {
+	return v.And
+}
+
+// GetNot returns Analysis_manifest_dependency_edge_result_callsite_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_bool_exp) GetNot() *Analysis_manifest_dependency_edge_result_callsite_bool_exp {
+	return v.Not
+}
+
+// GetOr returns Analysis_manifest_dependency_edge_result_callsite_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_bool_exp) GetOr() []*Analysis_manifest_dependency_edge_result_callsite_bool_exp {
+	return v.Or
+}
+
+// GetEnd_column returns Analysis_manifest_dependency_edge_result_callsite_bool_exp.End_column, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_bool_exp) GetEnd_column() *Int_comparison_exp {
+	return v.End_column
+}
+
+// GetEnd_row returns Analysis_manifest_dependency_edge_result_callsite_bool_exp.End_row, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_bool_exp) GetEnd_row() *Int_comparison_exp {
+	return v.End_row
+}
+
+// GetId returns Analysis_manifest_dependency_edge_result_callsite_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_bool_exp) GetId() *Uuid_comparison_exp {
+	return v.Id
+}
+
+// GetManifest_dependency_edge_result_id returns Analysis_manifest_dependency_edge_result_callsite_bool_exp.Manifest_dependency_edge_result_id, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_bool_exp) GetManifest_dependency_edge_result_id() *Uuid_comparison_exp {
+	return v.Manifest_dependency_edge_result_id
+}
+
+// GetPath returns Analysis_manifest_dependency_edge_result_callsite_bool_exp.Path, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_bool_exp) GetPath() *String_comparison_exp {
+	return v.Path
+}
+
+// GetStart_column returns Analysis_manifest_dependency_edge_result_callsite_bool_exp.Start_column, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_bool_exp) GetStart_column() *Int_comparison_exp {
+	return v.Start_column
+}
+
+// GetStart_row returns Analysis_manifest_dependency_edge_result_callsite_bool_exp.Start_row, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_bool_exp) GetStart_row() *Int_comparison_exp {
+	return v.Start_row
+}
+
+type Analysis_manifest_dependency_edge_result_callsite_constraint string
+
+const (
+	Analysis_manifest_dependency_edge_result_callsite_constraintManifestDependencyEdgeResultCallsitePkey Analysis_manifest_dependency_edge_result_callsite_constraint = "manifest_dependency_edge_result_callsite_pkey"
+)
+
+type Analysis_manifest_dependency_edge_result_callsite_insert_input struct {
+	End_column                         *int       `json:"end_column,omitempty"`
+	End_row                            *int       `json:"end_row,omitempty"`
+	Id                                 *uuid.UUID `json:"id,omitempty"`
+	Manifest_dependency_edge_result_id *uuid.UUID `json:"manifest_dependency_edge_result_id,omitempty"`
+	Path                               *string    `json:"path,omitempty"`
+	Start_column                       *int       `json:"start_column,omitempty"`
+	Start_row                          *int       `json:"start_row,omitempty"`
+}
+
+// GetEnd_column returns Analysis_manifest_dependency_edge_result_callsite_insert_input.End_column, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_insert_input) GetEnd_column() *int {
+	return v.End_column
+}
+
+// GetEnd_row returns Analysis_manifest_dependency_edge_result_callsite_insert_input.End_row, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_insert_input) GetEnd_row() *int {
+	return v.End_row
+}
+
+// GetId returns Analysis_manifest_dependency_edge_result_callsite_insert_input.Id, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_insert_input) GetId() *uuid.UUID {
+	return v.Id
+}
+
+// GetManifest_dependency_edge_result_id returns Analysis_manifest_dependency_edge_result_callsite_insert_input.Manifest_dependency_edge_result_id, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_insert_input) GetManifest_dependency_edge_result_id() *uuid.UUID {
+	return v.Manifest_dependency_edge_result_id
+}
+
+// GetPath returns Analysis_manifest_dependency_edge_result_callsite_insert_input.Path, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_insert_input) GetPath() *string {
+	return v.Path
+}
+
+// GetStart_column returns Analysis_manifest_dependency_edge_result_callsite_insert_input.Start_column, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_insert_input) GetStart_column() *int {
+	return v.Start_column
+}
+
+// GetStart_row returns Analysis_manifest_dependency_edge_result_callsite_insert_input.Start_row, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_insert_input) GetStart_row() *int {
+	return v.Start_row
+}
+
+type Analysis_manifest_dependency_edge_result_callsite_on_conflict struct {
+	Constraint     Analysis_manifest_dependency_edge_result_callsite_constraint      `json:"constraint,omitempty"`
+	Update_columns []Analysis_manifest_dependency_edge_result_callsite_update_column `json:"update_columns,omitempty"`
+	Where          *Analysis_manifest_dependency_edge_result_callsite_bool_exp       `json:"where,omitempty"`
+}
+
+// GetConstraint returns Analysis_manifest_dependency_edge_result_callsite_on_conflict.Constraint, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_on_conflict) GetConstraint() Analysis_manifest_dependency_edge_result_callsite_constraint {
+	return v.Constraint
+}
+
+// GetUpdate_columns returns Analysis_manifest_dependency_edge_result_callsite_on_conflict.Update_columns, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_on_conflict) GetUpdate_columns() []Analysis_manifest_dependency_edge_result_callsite_update_column {
+	return v.Update_columns
+}
+
+// GetWhere returns Analysis_manifest_dependency_edge_result_callsite_on_conflict.Where, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_callsite_on_conflict) GetWhere() *Analysis_manifest_dependency_edge_result_callsite_bool_exp {
+	return v.Where
+}
+
+type Analysis_manifest_dependency_edge_result_callsite_update_column string
+
+const (
+	Analysis_manifest_dependency_edge_result_callsite_update_columnEndColumn                      Analysis_manifest_dependency_edge_result_callsite_update_column = "end_column"
+	Analysis_manifest_dependency_edge_result_callsite_update_columnEndRow                         Analysis_manifest_dependency_edge_result_callsite_update_column = "end_row"
+	Analysis_manifest_dependency_edge_result_callsite_update_columnId                             Analysis_manifest_dependency_edge_result_callsite_update_column = "id"
+	Analysis_manifest_dependency_edge_result_callsite_update_columnManifestDependencyEdgeResultId Analysis_manifest_dependency_edge_result_callsite_update_column = "manifest_dependency_edge_result_id"
+	Analysis_manifest_dependency_edge_result_callsite_update_columnPath                           Analysis_manifest_dependency_edge_result_callsite_update_column = "path"
+	Analysis_manifest_dependency_edge_result_callsite_update_columnStartColumn                    Analysis_manifest_dependency_edge_result_callsite_update_column = "start_column"
+	Analysis_manifest_dependency_edge_result_callsite_update_columnStartRow                       Analysis_manifest_dependency_edge_result_callsite_update_column = "start_row"
+)
+
 type Analysis_manifest_dependency_edge_result_constraint string
 
 const (
@@ -226,16 +394,22 @@ const (
 )
 
 type Analysis_manifest_dependency_edge_result_insert_input struct {
-	Created_at                  *time.Time                                     `json:"created_at,omitempty"`
-	Finding_source              *Analysis_finding_source_enum                  `json:"finding_source,omitempty"`
-	Finding_source_version      *int                                           `json:"finding_source_version,omitempty"`
-	Finding_type                *Analysis_finding_type_enum                    `json:"finding_type,omitempty"`
-	Id                          *uuid.UUID                                     `json:"id,omitempty"`
-	Manifest_dependency_edge    *Manifest_dependency_edge_obj_rel_insert_input `json:"manifest_dependency_edge,omitempty"`
-	Manifest_dependency_edge_id *uuid.UUID                                     `json:"manifest_dependency_edge_id,omitempty"`
-	Output                      *json.RawMessage                               `json:"output,omitempty"`
-	Vulnerability               *Vulnerability_obj_rel_insert_input            `json:"vulnerability,omitempty"`
-	Vulnerability_id            *uuid.UUID                                     `json:"vulnerability_id,omitempty"`
+	Callsites                   *Analysis_manifest_dependency_edge_result_callsite_arr_rel_insert_input `json:"callsites,omitempty"`
+	Created_at                  *time.Time                                                              `json:"created_at,omitempty"`
+	Finding_source              *Analysis_finding_source_enum                                           `json:"finding_source,omitempty"`
+	Finding_source_version      *int                                                                    `json:"finding_source_version,omitempty"`
+	Finding_type                *Analysis_finding_type_enum                                             `json:"finding_type,omitempty"`
+	Id                          *uuid.UUID                                                              `json:"id,omitempty"`
+	Manifest_dependency_edge    *Manifest_dependency_edge_obj_rel_insert_input                          `json:"manifest_dependency_edge,omitempty"`
+	Manifest_dependency_edge_id *uuid.UUID                                                              `json:"manifest_dependency_edge_id,omitempty"`
+	Output                      *json.RawMessage                                                        `json:"output,omitempty"`
+	Vulnerability               *Vulnerability_obj_rel_insert_input                                     `json:"vulnerability,omitempty"`
+	Vulnerability_id            *uuid.UUID                                                              `json:"vulnerability_id,omitempty"`
+}
+
+// GetCallsites returns Analysis_manifest_dependency_edge_result_insert_input.Callsites, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_insert_input) GetCallsites() *Analysis_manifest_dependency_edge_result_callsite_arr_rel_insert_input {
+	return v.Callsites
 }
 
 // GetCreated_at returns Analysis_manifest_dependency_edge_result_insert_input.Created_at, and is useful for accessing the field via an interface.
