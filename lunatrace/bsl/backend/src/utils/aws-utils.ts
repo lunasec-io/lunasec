@@ -62,10 +62,7 @@ export class AwsUtils {
   }
 
   // deprecated
-  public async bundleStreamChunks(stream: GetObjectCommandOutput['Body']): Promise<Buffer> {
-    if (!(stream instanceof Readable)) {
-      throw new Error('S3 load stream is of wrong type');
-    }
+  public async bundleStreamChunks(stream: Readable): Promise<Buffer> {
     const chunks: Buffer[] = [];
     return new Promise((resolve, reject) => {
       stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
@@ -91,7 +88,7 @@ export class AwsUtils {
     return [Body, ContentLength];
   }
 
-  public async uploadGzipFileToS3(key: string, bucket: string, body: ReadableStream | Readable, region?: string) {
+  public async uploadGzipFileToS3(key: string, bucket: string, body: Readable, region?: string) {
     const bundledUploadData = await this.bundleStreamChunks(body); // streaming uploads appear to be straight up broken, in all their forms.  tire fire
 
     const s3Client = new S3Client({ region: region || this.config.awsRegion, credentials: this.config.awsCredentials });
@@ -155,6 +152,10 @@ export class AwsUtils {
 
   public generateSbomS3Key(orgId: string, buildId: string): string {
     return `${encodeURIComponent(orgId)}/${shardKeyForUUID(buildId)}/${encodeURIComponent(buildId)}`;
+  }
+
+  public generateCodeS3Key(buildId: string): string {
+    return `code/${shardKeyForUUID(buildId)}/${encodeURIComponent(buildId)}`;
   }
 }
 
