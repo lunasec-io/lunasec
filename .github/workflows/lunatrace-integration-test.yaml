@@ -47,6 +47,7 @@ jobs:
           cd lunatrace/bsl/backend
           
           export S3_SBOM_BUCKET=fake
+          export S3_CODE_BUCKET=fake
           export S3_MANIFEST_BUCKET=fake
           export PROCESS_WEBHOOK_QUEUE=fake
           export PROCESS_REPOSITORY_QUEUE=fake

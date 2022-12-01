@@ -23,6 +23,7 @@ import {
 } from '../database/dependency-relationship-dag-calculator';
 import { findFilesMatchingFilter } from '../utils/filesystem-utils';
 import { log } from '../utils/log';
+import { notEmpty } from '../utils/predicates';
 
 interface PackageDependenciesWithGraphAndMetadata {
   rootNode: DependencyGraphNode;
