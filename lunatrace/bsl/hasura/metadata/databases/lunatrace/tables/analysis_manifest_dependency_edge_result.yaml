@@ -9,12 +9,12 @@ object_relationships:
     using:
       foreign_key_constraint_on: vulnerability_id
 array_relationships:
-  - name: callsites
+  - name: locations
     using:
       foreign_key_constraint_on:
         column: manifest_dependency_edge_result_id
         table:
-          name: manifest_dependency_edge_result_callsite
+          name: manifest_dependency_edge_result_location
           schema: analysis
 insert_permissions:
   - role: service
