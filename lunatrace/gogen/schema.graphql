@@ -34,6 +34,7 @@ type BuildData_AffectedByVulnerability {
 }
 
 type BuildData_Cwe {
+    common_name: String
     description: String!
     id: Int!
     name: String!
@@ -273,6 +274,7 @@ type analysis_manifest_dependency_edge_result {
     finding_source_version: Int!
     finding_type: analysis_finding_type_enum!
     id: uuid!
+    locations(distinct_on: [analysis_manifest_dependency_edge_result_location_select_column!], limit: Int, offset: Int, order_by: [analysis_manifest_dependency_edge_result_location_order_by!], where: analysis_manifest_dependency_edge_result_location_bool_exp): [analysis_manifest_dependency_edge_result_location!]!
     manifest_dependency_edge: manifest_dependency_edge!
     manifest_dependency_edge_id: uuid!
     output(path: String): jsonb
@@ -316,6 +318,7 @@ input analysis_manifest_dependency_edge_result_bool_exp {
     finding_source_version: Int_comparison_exp
     finding_type: analysis_finding_type_enum_comparison_exp
     id: uuid_comparison_exp
+    locations: analysis_manifest_dependency_edge_result_location_bool_exp
     manifest_dependency_edge: manifest_dependency_edge_bool_exp
     manifest_dependency_edge_id: uuid_comparison_exp
     output: jsonb_comparison_exp
@@ -350,11 +353,206 @@ input analysis_manifest_dependency_edge_result_insert_input {
     finding_source_version: Int
     finding_type: analysis_finding_type_enum
     id: uuid
+    locations: analysis_manifest_dependency_edge_result_location_arr_rel_insert_input
     manifest_dependency_edge: manifest_dependency_edge_obj_rel_insert_input
     manifest_dependency_edge_id: uuid
     output: jsonb
     vulnerability: vulnerability_obj_rel_insert_input
     vulnerability_id: uuid
+}
+
+type analysis_manifest_dependency_edge_result_location {
+    end_column: Int!
+    end_row: Int!
+    id: uuid!
+    manifest_dependency_edge_result_id: uuid!
+    path: String!
+    start_column: Int!
+    start_row: Int!
+}
+
+input analysis_manifest_dependency_edge_result_location_aggregate_order_by {
+    avg: analysis_manifest_dependency_edge_result_location_avg_order_by
+    count: order_by
+    max: analysis_manifest_dependency_edge_result_location_max_order_by
+    min: analysis_manifest_dependency_edge_result_location_min_order_by
+    stddev: analysis_manifest_dependency_edge_result_location_stddev_order_by
+    stddev_pop: analysis_manifest_dependency_edge_result_location_stddev_pop_order_by
+    stddev_samp: analysis_manifest_dependency_edge_result_location_stddev_samp_order_by
+    sum: analysis_manifest_dependency_edge_result_location_sum_order_by
+    var_pop: analysis_manifest_dependency_edge_result_location_var_pop_order_by
+    var_samp: analysis_manifest_dependency_edge_result_location_var_samp_order_by
+    variance: analysis_manifest_dependency_edge_result_location_variance_order_by
+}
+
+input analysis_manifest_dependency_edge_result_location_arr_rel_insert_input {
+    data: [analysis_manifest_dependency_edge_result_location_insert_input!]!
+    on_conflict: analysis_manifest_dependency_edge_result_location_on_conflict
+}
+
+input analysis_manifest_dependency_edge_result_location_avg_order_by {
+    end_column: order_by
+    end_row: order_by
+    start_column: order_by
+    start_row: order_by
+}
+
+input analysis_manifest_dependency_edge_result_location_bool_exp {
+    _and: [analysis_manifest_dependency_edge_result_location_bool_exp!]
+    _not: analysis_manifest_dependency_edge_result_location_bool_exp
+    _or: [analysis_manifest_dependency_edge_result_location_bool_exp!]
+    end_column: Int_comparison_exp
+    end_row: Int_comparison_exp
+    id: uuid_comparison_exp
+    manifest_dependency_edge_result_id: uuid_comparison_exp
+    path: String_comparison_exp
+    start_column: Int_comparison_exp
+    start_row: Int_comparison_exp
+}
+
+enum analysis_manifest_dependency_edge_result_location_constraint {
+    manifest_dependency_edge_result_callsite_pkey
+}
+
+input analysis_manifest_dependency_edge_result_location_inc_input {
+    end_column: Int
+    end_row: Int
+    start_column: Int
+    start_row: Int
+}
+
+input analysis_manifest_dependency_edge_result_location_insert_input {
+    end_column: Int
+    end_row: Int
+    id: uuid
+    manifest_dependency_edge_result_id: uuid
+    path: String
+    start_column: Int
+    start_row: Int
+}
+
+input analysis_manifest_dependency_edge_result_location_max_order_by {
+    end_column: order_by
+    end_row: order_by
+    id: order_by
+    manifest_dependency_edge_result_id: order_by
+    path: order_by
+    start_column: order_by
+    start_row: order_by
+}
+
+input analysis_manifest_dependency_edge_result_location_min_order_by {
+    end_column: order_by
+    end_row: order_by
+    id: order_by
+    manifest_dependency_edge_result_id: order_by
+    path: order_by
+    start_column: order_by
+    start_row: order_by
+}
+
+type analysis_manifest_dependency_edge_result_location_mutation_response {
+    affected_rows: Int!
+    returning: [analysis_manifest_dependency_edge_result_location!]!
+}
+
+input analysis_manifest_dependency_edge_result_location_on_conflict {
+    constraint: analysis_manifest_dependency_edge_result_location_constraint!
+    update_columns: [analysis_manifest_dependency_edge_result_location_update_column!]! = []
+    where: analysis_manifest_dependency_edge_result_location_bool_exp
+}
+
+input analysis_manifest_dependency_edge_result_location_order_by {
+    end_column: order_by
+    end_row: order_by
+    id: order_by
+    manifest_dependency_edge_result_id: order_by
+    path: order_by
+    start_column: order_by
+    start_row: order_by
+}
+
+input analysis_manifest_dependency_edge_result_location_pk_columns_input {
+    id: uuid!
+}
+
+enum analysis_manifest_dependency_edge_result_location_select_column {
+    end_column
+    end_row
+    id
+    manifest_dependency_edge_result_id
+    path
+    start_column
+    start_row
+}
+
+input analysis_manifest_dependency_edge_result_location_set_input {
+    end_column: Int
+    end_row: Int
+    id: uuid
+    manifest_dependency_edge_result_id: uuid
+    path: String
+    start_column: Int
+    start_row: Int
+}
+
+input analysis_manifest_dependency_edge_result_location_stddev_order_by {
+    end_column: order_by
+    end_row: order_by
+    start_column: order_by
+    start_row: order_by
+}
+
+input analysis_manifest_dependency_edge_result_location_stddev_pop_order_by {
+    end_column: order_by
+    end_row: order_by
+    start_column: order_by
+    start_row: order_by
+}
+
+input analysis_manifest_dependency_edge_result_location_stddev_samp_order_by {
+    end_column: order_by
+    end_row: order_by
+    start_column: order_by
+    start_row: order_by
+}
+
+input analysis_manifest_dependency_edge_result_location_sum_order_by {
+    end_column: order_by
+    end_row: order_by
+    start_column: order_by
+    start_row: order_by
+}
+
+enum analysis_manifest_dependency_edge_result_location_update_column {
+    end_column
+    end_row
+    id
+    manifest_dependency_edge_result_id
+    path
+    start_column
+    start_row
+}
+
+input analysis_manifest_dependency_edge_result_location_var_pop_order_by {
+    end_column: order_by
+    end_row: order_by
+    start_column: order_by
+    start_row: order_by
+}
+
+input analysis_manifest_dependency_edge_result_location_var_samp_order_by {
+    end_column: order_by
+    end_row: order_by
+    start_column: order_by
+    start_row: order_by
+}
+
+input analysis_manifest_dependency_edge_result_location_variance_order_by {
+    end_column: order_by
+    end_row: order_by
+    start_column: order_by
+    start_row: order_by
 }
 
 input analysis_manifest_dependency_edge_result_max_order_by {
@@ -390,6 +588,7 @@ input analysis_manifest_dependency_edge_result_order_by {
     finding_source_version: order_by
     finding_type: order_by
     id: order_by
+    locations_aggregate: analysis_manifest_dependency_edge_result_location_aggregate_order_by
     manifest_dependency_edge: manifest_dependency_edge_order_by
     manifest_dependency_edge_id: order_by
     output: order_by
@@ -2918,6 +3117,8 @@ type mutation_root {
     delete_vulnerability_range(where: vulnerability_range_bool_exp!): vulnerability_range_mutation_response
     delete_vulnerability_range_by_pk(id: uuid!): vulnerability_range
     insert_analysis_manifest_dependency_edge_result(objects: [analysis_manifest_dependency_edge_result_insert_input!]!, on_conflict: analysis_manifest_dependency_edge_result_on_conflict): analysis_manifest_dependency_edge_result_mutation_response
+    insert_analysis_manifest_dependency_edge_result_location(objects: [analysis_manifest_dependency_edge_result_location_insert_input!]!, on_conflict: analysis_manifest_dependency_edge_result_location_on_conflict): analysis_manifest_dependency_edge_result_location_mutation_response
+    insert_analysis_manifest_dependency_edge_result_location_one(object: analysis_manifest_dependency_edge_result_location_insert_input!, on_conflict: analysis_manifest_dependency_edge_result_location_on_conflict): analysis_manifest_dependency_edge_result_location
     insert_analysis_manifest_dependency_edge_result_one(object: analysis_manifest_dependency_edge_result_insert_input!, on_conflict: analysis_manifest_dependency_edge_result_on_conflict): analysis_manifest_dependency_edge_result
     insert_build_dependency_relationship(objects: [build_dependency_relationship_insert_input!]!, on_conflict: build_dependency_relationship_on_conflict): build_dependency_relationship_mutation_response
     insert_build_dependency_relationship_one(object: build_dependency_relationship_insert_input!, on_conflict: build_dependency_relationship_on_conflict): build_dependency_relationship
@@ -2997,6 +3198,8 @@ type mutation_root {
     presignManifestUpload(project_id: uuid!): PresignedUrlResponse
     update_analysis_manifest_dependency_edge_result(_append: analysis_manifest_dependency_edge_result_append_input, _delete_at_path: analysis_manifest_dependency_edge_result_delete_at_path_input, _delete_elem: analysis_manifest_dependency_edge_result_delete_elem_input, _delete_key: analysis_manifest_dependency_edge_result_delete_key_input, _inc: analysis_manifest_dependency_edge_result_inc_input, _prepend: analysis_manifest_dependency_edge_result_prepend_input, _set: analysis_manifest_dependency_edge_result_set_input, where: analysis_manifest_dependency_edge_result_bool_exp!): analysis_manifest_dependency_edge_result_mutation_response
     update_analysis_manifest_dependency_edge_result_by_pk(_append: analysis_manifest_dependency_edge_result_append_input, _delete_at_path: analysis_manifest_dependency_edge_result_delete_at_path_input, _delete_elem: analysis_manifest_dependency_edge_result_delete_elem_input, _delete_key: analysis_manifest_dependency_edge_result_delete_key_input, _inc: analysis_manifest_dependency_edge_result_inc_input, _prepend: analysis_manifest_dependency_edge_result_prepend_input, _set: analysis_manifest_dependency_edge_result_set_input, pk_columns: analysis_manifest_dependency_edge_result_pk_columns_input!): analysis_manifest_dependency_edge_result
+    update_analysis_manifest_dependency_edge_result_location(_inc: analysis_manifest_dependency_edge_result_location_inc_input, _set: analysis_manifest_dependency_edge_result_location_set_input, where: analysis_manifest_dependency_edge_result_location_bool_exp!): analysis_manifest_dependency_edge_result_location_mutation_response
+    update_analysis_manifest_dependency_edge_result_location_by_pk(_inc: analysis_manifest_dependency_edge_result_location_inc_input, _set: analysis_manifest_dependency_edge_result_location_set_input, pk_columns: analysis_manifest_dependency_edge_result_location_pk_columns_input!): analysis_manifest_dependency_edge_result_location
     update_build_dependency_relationship(_append: build_dependency_relationship_append_input, _delete_at_path: build_dependency_relationship_delete_at_path_input, _delete_elem: build_dependency_relationship_delete_elem_input, _delete_key: build_dependency_relationship_delete_key_input, _prepend: build_dependency_relationship_prepend_input, _set: build_dependency_relationship_set_input, where: build_dependency_relationship_bool_exp!): build_dependency_relationship_mutation_response
     update_build_dependency_relationship_by_pk(_append: build_dependency_relationship_append_input, _delete_at_path: build_dependency_relationship_delete_at_path_input, _delete_elem: build_dependency_relationship_delete_elem_input, _delete_key: build_dependency_relationship_delete_key_input, _prepend: build_dependency_relationship_prepend_input, _set: build_dependency_relationship_set_input, pk_columns: build_dependency_relationship_pk_columns_input!): build_dependency_relationship
     update_builds(_inc: builds_inc_input, _set: builds_set_input, where: builds_bool_exp!): builds_mutation_response
@@ -4551,6 +4754,8 @@ enum projects_update_column {
 type query_root {
     analysis_manifest_dependency_edge_result(distinct_on: [analysis_manifest_dependency_edge_result_select_column!], limit: Int, offset: Int, order_by: [analysis_manifest_dependency_edge_result_order_by!], where: analysis_manifest_dependency_edge_result_bool_exp): [analysis_manifest_dependency_edge_result!]!
     analysis_manifest_dependency_edge_result_by_pk(id: uuid!): analysis_manifest_dependency_edge_result
+    analysis_manifest_dependency_edge_result_location(distinct_on: [analysis_manifest_dependency_edge_result_location_select_column!], limit: Int, offset: Int, order_by: [analysis_manifest_dependency_edge_result_location_order_by!], where: analysis_manifest_dependency_edge_result_location_bool_exp): [analysis_manifest_dependency_edge_result_location!]!
+    analysis_manifest_dependency_edge_result_location_by_pk(id: uuid!): analysis_manifest_dependency_edge_result_location
     authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
     availableOrgsWithRepos: [OrgWithRepos!]
     build_dependency_relationship(distinct_on: [build_dependency_relationship_select_column!], limit: Int, offset: Int, order_by: [build_dependency_relationship_order_by!], where: build_dependency_relationship_bool_exp): [build_dependency_relationship!]!
@@ -5030,6 +5235,8 @@ input severity_enum_comparison_exp {
 type subscription_root {
     analysis_manifest_dependency_edge_result(distinct_on: [analysis_manifest_dependency_edge_result_select_column!], limit: Int, offset: Int, order_by: [analysis_manifest_dependency_edge_result_order_by!], where: analysis_manifest_dependency_edge_result_bool_exp): [analysis_manifest_dependency_edge_result!]!
     analysis_manifest_dependency_edge_result_by_pk(id: uuid!): analysis_manifest_dependency_edge_result
+    analysis_manifest_dependency_edge_result_location(distinct_on: [analysis_manifest_dependency_edge_result_location_select_column!], limit: Int, offset: Int, order_by: [analysis_manifest_dependency_edge_result_location_order_by!], where: analysis_manifest_dependency_edge_result_location_bool_exp): [analysis_manifest_dependency_edge_result_location!]!
+    analysis_manifest_dependency_edge_result_location_by_pk(id: uuid!): analysis_manifest_dependency_edge_result_location
     build_dependency_relationship(distinct_on: [build_dependency_relationship_select_column!], limit: Int, offset: Int, order_by: [build_dependency_relationship_order_by!], where: build_dependency_relationship_bool_exp): [build_dependency_relationship!]!
     build_dependency_relationship_by_pk(id: uuid!): build_dependency_relationship
     build_log(distinct_on: [build_log_select_column!], limit: Int, offset: Int, order_by: [build_log_order_by!], where: build_log_bool_exp): [build_log!]!
