@@ -13,6 +13,8 @@ CREATE TABLE public.project_folder_settings
     UNIQUE (project_id, precedence)
 );
 
+COMMENT ON COLUMN public.project_folder_settings.precedence IS 'Lower values have a higher precedence, one being the highest';
+
 
 CREATE TABLE public.folder_environmental_adjustment
 (
