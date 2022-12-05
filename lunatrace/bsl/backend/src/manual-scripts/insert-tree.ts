@@ -24,6 +24,6 @@ console.log('loading from ', fixturePath);
 void snapshotPinnedDependencies(
   '736de7fc-2df3-4438-af90-b3596f65dd8d',
   fixturePath,
-  undefined,
+  'http://some.code.url',
   '999fe4f2-9f6c-4e11-9b00-56fe2092ad2c'
 );
