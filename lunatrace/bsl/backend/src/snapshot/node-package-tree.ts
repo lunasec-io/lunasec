@@ -72,7 +72,10 @@ function sortEdges(a: ManifestDependencyEdge, b: ManifestDependencyEdge): number
   return 0;
 }
 
-export async function collectPackageGraphsFromDirectory(repoDir: string): Promise<CollectedPackageTree[]> {
+export async function collectPackageGraphsFromDirectory(
+  repoDir: string,
+  rootUniqueId?: string
+): Promise<CollectedPackageTree[]> {
   const lockFilePaths = await findFilesMatchingFilter(repoDir, (_directory, entryName) => {
     return /package-lock\.json|yarn\.lock$/.test(entryName);
   });
@@ -108,6 +111,11 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
 
       // This value is set to false by the library when there are zero dev dependencies
       const prodOrDevLabel = pkgTree.hasDevDependencies ? 'dev' : 'prod';
+
+      // Add the unique id to the version of the root node if requested so it has a unique key in the db.
+      if (rootUniqueId) {
+        pkgTree.version = `${pkgTree.version}-${rootUniqueId}`;
+      }
 
       const pkgDependenciesWithGraphAndMetadata = [pkgTree, ...Object.values(pkgTree.dependencies)].map((pkg) => {
         return {
@@ -203,8 +211,7 @@ async function getPackageReleaseId<Ext>(t: ITask<Ext>, packageId: string, versio
 async function insertNodesToDatabase<Ext>(
   t: ITask<Ext>,
   queryData: DependencyGraphNode[],
-  projectId: string,
-  buildId: string
+  projectId: string
 ): Promise<void> {
   if (queryData.length === 0) {
     return;
@@ -236,12 +243,7 @@ async function insertNodesToDatabase<Ext>(
         !isTopLevel
       );
 
-      const packageReleaseId = await getPackageReleaseId(
-        t,
-        packageId,
-        isTopLevel ? `${packageData?.version}-${buildId}-unique` : packageData.version || '',
-        node.mirroredBlobUrl
-      );
+      const packageReleaseId = await getPackageReleaseId(t, packageId, packageData.version || '', node.mirroredBlobUrl);
 
       return {
         id: node.treeHashId,
@@ -306,12 +308,7 @@ async function findCurrentlyKnownDependencies(query: string, manifestIds: string
   return currentlyKnownIds;
 }
 
-async function insertPackageGraphsIntoDatabase(
-  projectId: string,
-  buildId: string,
-  pkgGraphs: CollectedPackageTree[],
-  codeUrl: string
-) {
+async function insertPackageGraphsIntoDatabase(projectId: string, pkgGraphs: CollectedPackageTree[], codeUrl: string) {
   log.info(`Inserting package graphs into database`, { length: pkgGraphs.length });
 
   if (pkgGraphs.length === 0) {
@@ -350,9 +347,11 @@ async function insertPackageGraphsIntoDatabase(
 
   pkgGraphs.forEach((pkgGraph) => {
     pkgGraph.dependencies.forEach((pkg) => {
+      // assign the code url to root nodes
       if (!pkg.node.parent) {
         pkg.node.mirroredBlobUrl = codeUrl;
       }
+
       if (currentlyKnownRootIds.has(pkg.node.treeHashId)) {
         return;
       }
@@ -391,6 +390,10 @@ async function insertPackageGraphsIntoDatabase(
   // We're mutating state which is where bugs stem from.
   // This will reduce memory usage though, so we'll allow it.
   for (const id of currentlyKnownTransitiveDependencyIds) {
+    // always insert root nodes even if they're known
+    if (!dependencyNodeMap?.get(id)?.parent) {
+      continue;
+    }
     dependencyNodeMap.delete(id);
   }
 
@@ -420,7 +423,7 @@ async function insertPackageGraphsIntoDatabase(
       for (let i = 0; i < dependencyNodeMap.size; i += 999) {
         const dependencySlice = sortedDependencyNodes.slice(i, i + 999);
 
-        await insertNodesToDatabase(t, dependencySlice, projectId, buildId);
+        await insertNodesToDatabase(t, dependencySlice, projectId);
 
         log.info(`Inserted nodes (${i + dependencySlice.length}/${dependencyNodeMap.size})`, {
           length: dependencySlice.length,
@@ -514,10 +517,10 @@ export async function snapshotPinnedDependencies(
   codeUrl: string,
   projectId?: string
 ): Promise<void> {
-  const pkgTree = await collectPackageGraphsFromDirectory(repoDir);
+  const pkgTree = await collectPackageGraphsFromDirectory(repoDir, buildId);
 
   // Creates all nodes and edges for the dependency graph into the database
-  await insertPackageGraphsIntoDatabase(projectId || '', buildId, pkgTree, codeUrl);
+  await insertPackageGraphsIntoDatabase(projectId || '', pkgTree, codeUrl);
 
   // Creates all manifests and associated root dependencies into the database
   await insertPackageManifestsIntoDatabase(buildId, pkgTree);
