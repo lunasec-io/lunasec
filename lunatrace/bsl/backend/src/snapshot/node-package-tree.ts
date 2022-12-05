@@ -109,14 +109,14 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
       // This value is set to false by the library when there are zero dev dependencies
       const prodOrDevLabel = pkgTree.hasDevDependencies ? 'dev' : 'prod';
 
-      const pkgDependenciesWithGraphAndMetadata = [...Object.values(pkgTree.dependencies), pkgTree].map((pkg) => {
+      const pkgDependenciesWithGraphAndMetadata = [pkgTree, ...Object.values(pkgTree.dependencies)].map((pkg) => {
         return {
           node: dfsGenerateMerkleTreeFromDepTree(pkg),
           // If there is nothing in the labels, then we know that it is a prod dependency
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           labels: pkg.labels ?? ({ scope: prodOrDevLabel } as any),
           name: pkg.name,
-          range: pkg.range,
+          range: pkg.range || pkg.version,
           version: pkg.version,
         };
       });
