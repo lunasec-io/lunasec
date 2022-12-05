@@ -231,7 +231,7 @@ async function insertNodesToDatabase<Ext>(
         packageData.name || '',
         packageData.packageManager,
         // top nodes should use a custom namespace per org.
-        isTopLevel ? 'lunatrace-internal-project-' + projectId : packageData.customRegistry,
+        isTopLevel ? `lunatrace-internal-project-${projectId}` : packageData.customRegistry,
         // top nodes don't have a parent and are internal.
         !isTopLevel
       );
@@ -239,7 +239,7 @@ async function insertNodesToDatabase<Ext>(
       const packageReleaseId = await getPackageReleaseId(
         t,
         packageId,
-        isTopLevel ? `${packageData?.version}-${buildId}` : packageData.version || '',
+        isTopLevel ? `${packageData?.version}-${buildId}-unique` : packageData.version || '',
         node.mirroredBlobUrl
       );
 
