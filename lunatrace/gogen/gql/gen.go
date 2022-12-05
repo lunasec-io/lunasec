@@ -379,7 +379,7 @@ func (v *Analysis_manifest_dependency_edge_result_location_bool_exp) GetStart_ro
 type Analysis_manifest_dependency_edge_result_location_constraint string
 
 const (
-	Analysis_manifest_dependency_edge_result_location_constraintManifestDependencyEdgeResultCallsitePkey Analysis_manifest_dependency_edge_result_location_constraint = "manifest_dependency_edge_result_callsite_pkey"
+	Analysis_manifest_dependency_edge_result_location_constraintManifestDependencyEdgeResultLocationPkey Analysis_manifest_dependency_edge_result_location_constraint = "manifest_dependency_edge_result_location_pkey"
 )
 
 type Analysis_manifest_dependency_edge_result_location_insert_input struct {
@@ -1818,6 +1818,7 @@ func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_depende
 // GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release includes the requested fields of the GraphQL type package_release.
 type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release struct {
 	Upstream_blob_url *string                                                                                                                                     `json:"upstream_blob_url"`
+	Mirrored_blob_url *string                                                                                                                                     `json:"mirrored_blob_url"`
 	Version           string                                                                                                                                      `json:"version"`
 	Package           *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_releasePackage `json:"package"`
 }
@@ -1825,6 +1826,11 @@ type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_
 // GetUpstream_blob_url returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release.Upstream_blob_url, and is useful for accessing the field via an interface.
 func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release) GetUpstream_blob_url() *string {
 	return v.Upstream_blob_url
+}
+
+// GetMirrored_blob_url returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release.Mirrored_blob_url, and is useful for accessing the field via an interface.
+func (v *GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release) GetMirrored_blob_url() *string {
+	return v.Mirrored_blob_url
 }
 
 // GetVersion returns GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edgeParentManifest_dependency_nodeReleasePackage_release.Version, and is useful for accessing the field via an interface.
@@ -7902,7 +7908,8 @@ func (v *Vulnerability_vulnerability_cwe_bool_exp) GetVulnerability_id() *Uuid_c
 type Vulnerability_vulnerability_cwe_constraint string
 
 const (
-	Vulnerability_vulnerability_cwe_constraintVulnerabilityCwePkey Vulnerability_vulnerability_cwe_constraint = "vulnerability_cwe_pkey"
+	Vulnerability_vulnerability_cwe_constraintVulnerabilityCwePkey                    Vulnerability_vulnerability_cwe_constraint = "vulnerability_cwe_pkey"
+	Vulnerability_vulnerability_cwe_constraintVulnerabilityCweVulnerabilityIdCweIdKey Vulnerability_vulnerability_cwe_constraint = "vulnerability_cwe_vulnerability_id_cwe_id_key"
 )
 
 type Vulnerability_vulnerability_cwe_insert_input struct {
@@ -8159,6 +8166,7 @@ query GetManifestDependencyEdge ($id: uuid!) {
 		parent {
 			release {
 				upstream_blob_url
+				mirrored_blob_url
 				version
 				package {
 					name
