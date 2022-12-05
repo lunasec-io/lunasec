@@ -443,11 +443,11 @@ export async function insertPackageManifestsIntoDatabase(
     await Promise.all(
       pkgGraphs.map(async (pkgGraph) => {
         const manifestId = await trsx.one<{ id: string }>(
-          `INSERT INTO resolved_manifest (build_id, path, package_manager, lockfile_version)
-           VALUES ($1, $2, $3, $4)
+          `INSERT INTO resolved_manifest (build_id, path, package_manager, lockfile_version, manifest_dependency_node_id)
+           VALUES ($1, $2, $3, $4, $5)
            ON CONFLICT DO NOTHING
            RETURNING id`,
-          [buildId, pkgGraph.lockFilePath, pkgGraph.packageManager, pkgGraph.lockfileVersion]
+          [buildId, pkgGraph.lockFilePath, pkgGraph.packageManager, pkgGraph.lockfileVersion, pkgGraph.rootTreeHashID]
         );
 
         log.info(`Inserted manifest for build`, {
