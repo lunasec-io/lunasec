@@ -87,31 +87,8 @@ async function performSnapshotOnRepository(
       s3Url: s3UploadRes,
     });
 
-    logger.info('Attempting to snapshot pinned dependencies for repository.');
-
-    const pkgTrees = null;
-    try {
-      await snapshotPinnedDependencies(buildId, repoDir);
-    } catch (err) {
-      logger.error('Failed to snapshot pinned dependencies for repository.', {
-        error: err,
-      });
-      updateBuildStatus(
-        buildId,
-        Build_State_Enum.SnapshotFailed,
-        'Failed to snapshot pinned dependencies for repository.'
-      );
-
-      return {
-        error: true,
-        msg: 'failed to snapshot pinned dependencies',
-        rawError: err instanceof Error ? err : undefined,
-      };
-    }
-
-    logger.info('Successfully created snapshot for pinned dependencies for repository.');
-
     logger.info('Attempting to upload worktree snapshot for repository.');
+    const codeURL = '';
     try {
       await uploadWorktreeSnapshot(buildId, repoDir);
     } catch (err) {
@@ -130,7 +107,29 @@ async function performSnapshotOnRepository(
 
     logger.info('Successfully created snapshots for repository.');
 
-    // create shadow releases using gql
+    // create releases with uploaded tar url.
+    logger.info('Attempting to snapshot pinned dependencies for repository.');
+
+    try {
+      await snapshotPinnedDependencies(buildId, repoDir, codeURL);
+    } catch (err) {
+      logger.error('Failed to snapshot pinned dependencies for repository.', {
+        error: err,
+      });
+      updateBuildStatus(
+        buildId,
+        Build_State_Enum.SnapshotFailed,
+        'Failed to snapshot pinned dependencies for repository.'
+      );
+
+      return {
+        error: true,
+        msg: 'failed to snapshot pinned dependencies',
+        rawError: err instanceof Error ? err : undefined,
+      };
+    }
+
+    logger.info('Successfully created snapshot for pinned dependencies for repository.');
 
     updateBuildStatus(buildId, Build_State_Enum.SnapshotCompleted);
 

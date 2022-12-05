@@ -14,7 +14,7 @@
 import path from 'path';
 
 import { ITask } from 'pg-promise';
-import { buildDepTreeFromFiles } from 'snyk-nodejs-lockfile-parser-lunatrace-fork';
+import { buildDepTreeFromFiles, PkgTree } from 'snyk-nodejs-lockfile-parser-lunatrace-fork';
 
 import { db, pgp } from '../database/db';
 import {
@@ -108,7 +108,7 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
       // This value is set to false by the library when there are zero dev dependencies
       const prodOrDevLabel = pkgTree.hasDevDependencies ? 'dev' : 'prod';
 
-      const pkgDependenciesWithGraphAndMetadata = Object.values(pkgTree.dependencies).map((pkg) => {
+      const pkgDependenciesWithGraphAndMetadata = [...Object.values(pkgTree.dependencies), pkgTree].map((pkg) => {
         return {
           rootNode: dfsGenerateMerkleTreeFromDepTree(pkg),
           // If there is nothing in the labels, then we know that it is a prod dependency
@@ -477,7 +477,7 @@ export async function insertPackageManifestsIntoDatabase(
   });
 }
 
-export async function snapshotPinnedDependencies(buildId: string, repoDir: string): Promise<void> {
+export async function snapshotPinnedDependencies(buildId: string, repoDir: string, codeUrl: string): Promise<void> {
   const pkgTree = await collectPackageGraphsFromDirectory(repoDir);
 
   // Creates all nodes and edges for the dependency graph into the database
