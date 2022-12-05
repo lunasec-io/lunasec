@@ -26,7 +26,7 @@ import { log } from '../utils/log';
 import { notEmpty } from '../utils/predicates';
 
 interface PackageDependenciesWithGraphAndMetadata {
-  rootNode: DependencyGraphNode;
+  node: DependencyGraphNode;
   labels?: {
     [key: string]: string | undefined;
     scope?: 'dev' | 'prod';
@@ -44,6 +44,7 @@ interface CollectedPackageTree {
   dependencies: PackageDependenciesWithGraphAndMetadata[];
   packageManager?: string;
   lockfileVersion?: number;
+  rootTreeHashID?: string;
 }
 
 interface ManifestDependencyEdge {
@@ -110,7 +111,7 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
 
       const pkgDependenciesWithGraphAndMetadata = [...Object.values(pkgTree.dependencies), pkgTree].map((pkg) => {
         return {
-          rootNode: dfsGenerateMerkleTreeFromDepTree(pkg),
+          node: dfsGenerateMerkleTreeFromDepTree(pkg),
           // If there is nothing in the labels, then we know that it is a prod dependency
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           labels: pkg.labels ?? ({ scope: prodOrDevLabel } as any),
@@ -125,6 +126,7 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
         dependencies: pkgDependenciesWithGraphAndMetadata,
         packageManager: pkgTree?.meta?.packageManager,
         lockfileVersion: pkgTree?.meta?.lockfileVersion,
+        rootTreeHashID: dfsGenerateMerkleTreeFromDepTree(pkgTree).treeHashId,
       };
     })
   );
@@ -294,7 +296,7 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
   // Is it safe for us to display the raw error from the Snyk library, or is that a security risk?
 
   const uniqueRootDependencyHashes = pkgGraphs.flatMap((pkgGraph) =>
-    pkgGraph.dependencies.map((pkg) => pkg.rootNode.treeHashId)
+    pkgGraph.dependencies.map((pkg) => pkg.node.treeHashId)
   );
 
   // Remove duplicates
@@ -322,11 +324,11 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   pkgGraphs.forEach((pkgGraph) => {
     pkgGraph.dependencies.forEach((pkg) => {
-      if (currentlyKnownRootIds.has(pkg.rootNode.treeHashId)) {
+      if (currentlyKnownRootIds.has(pkg.node.treeHashId)) {
         return;
       }
 
-      const dependencyMap = packageGraphToUniqueDependencyNodes(pkg.rootNode);
+      const dependencyMap = packageGraphToUniqueDependencyNodes(pkg.node);
 
       // Merge down the map to only include the unique nodes
       for (const [key, value] of dependencyMap) {
@@ -465,7 +467,7 @@ export async function insertPackageManifestsIntoDatabase(
         const insertQuery = pgp.helpers.insert(
           pkgGraph.dependencies.map((pkg) => ({
             manifest_id: manifestId.id,
-            manifest_dependency_node_id: pkg.rootNode.treeHashId,
+            manifest_dependency_node_id: pkg.node.treeHashId,
           })),
           dependencyColumns,
           'manifest_dependency'
