@@ -146,7 +146,13 @@ function packageGraphToUniqueDependencyNodes(rootNode: DependencyGraphNode): Map
   return uniqueDependencyMap;
 }
 
-async function upsertAndGetPackageId<Ext>(t: ITask<Ext>, name: string, packageManager: string, customRegistry: string) {
+async function upsertAndGetPackageId<Ext>(
+  t: ITask<Ext>,
+  name: string,
+  packageManager: string,
+  customRegistry: string,
+  internal?: boolean
+) {
   const selectPackageIdQuery = `SELECT id FROM package.package WHERE name = $1 AND package_manager = $2 AND custom_registry = $3`;
 
   const packageId = await t.oneOrNone<{ id: string }>(selectPackageIdQuery, [name, packageManager, customRegistry]);
@@ -156,11 +162,11 @@ async function upsertAndGetPackageId<Ext>(t: ITask<Ext>, name: string, packageMa
   }
 
   const newPackageId = await t.oneOrNone<{ id: string }>(
-    `INSERT INTO package.package (name, package_manager, custom_registry)
-           VALUES ($1, $2, $3)
+    `INSERT INTO package.package (name, package_manager, custom_registry, internal)
+           VALUES ($1, $2, $3, $4)
            ON CONFLICT DO NOTHING
            RETURNING id`,
-    [name, packageManager, customRegistry]
+    [name, packageManager, customRegistry, internal]
   );
 
   if (newPackageId && newPackageId.id) {
@@ -194,7 +200,11 @@ async function getPackageReleaseId<Ext>(t: ITask<Ext>, packageId: string, versio
   return (await t.one<{ id: string }>(selectPackageReleaseIdQuery, [packageId, version])).id;
 }
 
-async function insertNodesToDatabase<Ext>(t: ITask<Ext>, queryData: DependencyGraphNode[]): Promise<void> {
+async function insertNodesToDatabase<Ext>(
+  t: ITask<Ext>,
+  queryData: DependencyGraphNode[],
+  projectId: string
+): Promise<void> {
   if (queryData.length === 0) {
     return;
   }
@@ -213,11 +223,16 @@ async function insertNodesToDatabase<Ext>(t: ITask<Ext>, queryData: DependencyGr
         customRegistry: node.customRegistry,
       };
 
+      const isTopLevel = !!node.parent;
+
       const packageId = await upsertAndGetPackageId(
         t,
         packageData.name || '',
         packageData.packageManager,
-        packageData.customRegistry
+        // top nodes should use a custom namespace per org.
+        isTopLevel ? 'lunatrace-internal-project-' + projectId : packageData.customRegistry,
+        // top nodes don't have a parent and are internal.
+        !isTopLevel
       );
 
       const packageReleaseId = await getPackageReleaseId(t, packageId, packageData.version || '');
@@ -285,7 +300,7 @@ async function findCurrentlyKnownDependencies(query: string, manifestIds: string
   return currentlyKnownIds;
 }
 
-async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: CollectedPackageTree[]) {
+async function insertPackageGraphsIntoDatabase(projectId: string, buildId: string, pkgGraphs: CollectedPackageTree[]) {
   log.info(`Inserting package graphs into database`, { length: pkgGraphs.length });
 
   if (pkgGraphs.length === 0) {
@@ -391,7 +406,7 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
       for (let i = 0; i < dependencyNodeMap.size; i += 999) {
         const dependencySlice = sortedDependencyNodes.slice(i, i + 999);
 
-        await insertNodesToDatabase(t, dependencySlice);
+        await insertNodesToDatabase(t, dependencySlice, projectId);
 
         log.info(`Inserted nodes (${i + dependencySlice.length}/${dependencyNodeMap.size})`, {
           length: dependencySlice.length,
@@ -479,11 +494,16 @@ export async function insertPackageManifestsIntoDatabase(
   });
 }
 
-export async function snapshotPinnedDependencies(buildId: string, repoDir: string, codeUrl: string): Promise<void> {
+export async function snapshotPinnedDependencies(
+  buildId: string,
+  repoDir: string,
+  codeUrl: string,
+  projectId?: string
+): Promise<void> {
   const pkgTree = await collectPackageGraphsFromDirectory(repoDir);
 
   // Creates all nodes and edges for the dependency graph into the database
-  await insertPackageGraphsIntoDatabase(buildId, pkgTree);
+  await insertPackageGraphsIntoDatabase(projectId || '', buildId, pkgTree);
 
   // Creates all manifests and associated root dependencies into the database
   await insertPackageManifestsIntoDatabase(buildId, pkgTree);

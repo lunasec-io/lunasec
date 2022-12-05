@@ -43,7 +43,8 @@ async function performSnapshotOnRepository(
   buildId: string,
   cloneUrl: string,
   gitBranch: string,
-  gitCommit?: string
+  gitCommit?: string,
+  projectId?: string
 ): Promise<MaybeErrorVoid> {
   let logger = log.child('snapshot-repository-activity');
   logger.info('Starting to snapshot repository.');
@@ -111,7 +112,7 @@ async function performSnapshotOnRepository(
     logger.info('Attempting to snapshot pinned dependencies for repository.');
 
     try {
-      await snapshotPinnedDependencies(buildId, repoDir, codeURL);
+      await snapshotPinnedDependencies(buildId, repoDir, codeURL, projectId);
     } catch (err) {
       logger.error('Failed to snapshot pinned dependencies for repository.', {
         error: err,
@@ -200,7 +201,14 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
   const installationId = req.installationId.toString();
 
   return await log.provideFields({ buildId: req.buildId, record: req, installationId }, async () => {
-    return performSnapshotOnRepository(installationId, req.buildId, repoClone.cloneUrl, req.gitBranch, req.gitCommit);
+    return performSnapshotOnRepository(
+      installationId,
+      req.buildId,
+      repoClone.cloneUrl,
+      req.gitBranch,
+      req.gitCommit,
+      req.projectId
+    );
   });
 }
 
