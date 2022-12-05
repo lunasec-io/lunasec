@@ -390,10 +390,6 @@ async function insertPackageGraphsIntoDatabase(projectId: string, pkgGraphs: Col
   // We're mutating state which is where bugs stem from.
   // This will reduce memory usage though, so we'll allow it.
   for (const id of currentlyKnownTransitiveDependencyIds) {
-    // always insert root nodes even if they're known
-    if (!dependencyNodeMap?.get(id)?.parent) {
-      continue;
-    }
     dependencyNodeMap.delete(id);
   }
 
