@@ -89,9 +89,9 @@ async function performSnapshotOnRepository(
     });
 
     logger.info('Attempting to upload worktree snapshot for repository.');
-    const codeURL = '';
+    let codeURL = '';
     try {
-      await uploadWorktreeSnapshot(buildId, repoDir);
+      codeURL = await uploadWorktreeSnapshot(buildId, repoDir);
     } catch (err) {
       logger.error(failedToUploadWorktreeSnapshotForRepository, {
         error: err,

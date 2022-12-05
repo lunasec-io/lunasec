@@ -176,7 +176,7 @@ async function upsertAndGetPackageId<Ext>(
   return (await t.one<{ id: string }>(selectPackageIdQuery, [name, packageManager, customRegistry])).id;
 }
 
-async function getPackageReleaseId<Ext>(t: ITask<Ext>, packageId: string, version: string) {
+async function getPackageReleaseId<Ext>(t: ITask<Ext>, packageId: string, version: string, mirrored_blob_url?: string) {
   const selectPackageReleaseIdQuery = `SELECT id FROM package.release WHERE package_id = $1 AND version = $2`;
 
   const packageReleaseId = await t.oneOrNone<{ id: string }>(selectPackageReleaseIdQuery, [packageId, version]);
@@ -186,11 +186,11 @@ async function getPackageReleaseId<Ext>(t: ITask<Ext>, packageId: string, versio
   }
 
   const newPackageReleaseId = await t.oneOrNone<{ id: string }>(
-    `INSERT INTO package.release (package_id, version)
-             VALUES ($1, $2)
+    `INSERT INTO package.release (package_id, version, mirrored_blob_url)
+             VALUES ($1, $2, $3)
              ON CONFLICT DO NOTHING
              RETURNING id`,
-    [packageId, version]
+    [packageId, version, mirrored_blob_url]
   );
 
   if (newPackageReleaseId && newPackageReleaseId.id) {
@@ -235,7 +235,7 @@ async function insertNodesToDatabase<Ext>(
         !isTopLevel
       );
 
-      const packageReleaseId = await getPackageReleaseId(t, packageId, packageData.version || '');
+      const packageReleaseId = await getPackageReleaseId(t, packageId, packageData.version || '', node.mirroredBlobUrl);
 
       return {
         id: node.treeHashId,
@@ -300,7 +300,12 @@ async function findCurrentlyKnownDependencies(query: string, manifestIds: string
   return currentlyKnownIds;
 }
 
-async function insertPackageGraphsIntoDatabase(projectId: string, buildId: string, pkgGraphs: CollectedPackageTree[]) {
+async function insertPackageGraphsIntoDatabase(
+  projectId: string,
+  buildId: string,
+  pkgGraphs: CollectedPackageTree[],
+  codeUrl: string
+) {
   log.info(`Inserting package graphs into database`, { length: pkgGraphs.length });
 
   if (pkgGraphs.length === 0) {
@@ -339,6 +344,9 @@ async function insertPackageGraphsIntoDatabase(projectId: string, buildId: strin
 
   pkgGraphs.forEach((pkgGraph) => {
     pkgGraph.dependencies.forEach((pkg) => {
+      if (!pkg.node.parent) {
+        pkg.node.mirroredBlobUrl = codeUrl;
+      }
       if (currentlyKnownRootIds.has(pkg.node.treeHashId)) {
         return;
       }
@@ -503,7 +511,7 @@ export async function snapshotPinnedDependencies(
   const pkgTree = await collectPackageGraphsFromDirectory(repoDir);
 
   // Creates all nodes and edges for the dependency graph into the database
-  await insertPackageGraphsIntoDatabase(projectId || '', buildId, pkgTree);
+  await insertPackageGraphsIntoDatabase(projectId || '', buildId, pkgTree, codeUrl);
 
   // Creates all manifests and associated root dependencies into the database
   await insertPackageManifestsIntoDatabase(buildId, pkgTree);
