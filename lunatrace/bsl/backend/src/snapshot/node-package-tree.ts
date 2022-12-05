@@ -203,7 +203,8 @@ async function getPackageReleaseId<Ext>(t: ITask<Ext>, packageId: string, versio
 async function insertNodesToDatabase<Ext>(
   t: ITask<Ext>,
   queryData: DependencyGraphNode[],
-  projectId: string
+  projectId: string,
+  buildId: string
 ): Promise<void> {
   if (queryData.length === 0) {
     return;
@@ -235,7 +236,12 @@ async function insertNodesToDatabase<Ext>(
         !isTopLevel
       );
 
-      const packageReleaseId = await getPackageReleaseId(t, packageId, packageData.version || '', node.mirroredBlobUrl);
+      const packageReleaseId = await getPackageReleaseId(
+        t,
+        packageId,
+        isTopLevel ? `${packageData?.version}-${buildId}` : packageData.version || '',
+        node.mirroredBlobUrl
+      );
 
       return {
         id: node.treeHashId,
@@ -414,7 +420,7 @@ async function insertPackageGraphsIntoDatabase(
       for (let i = 0; i < dependencyNodeMap.size; i += 999) {
         const dependencySlice = sortedDependencyNodes.slice(i, i + 999);
 
-        await insertNodesToDatabase(t, dependencySlice, projectId);
+        await insertNodesToDatabase(t, dependencySlice, projectId, buildId);
 
         log.info(`Inserted nodes (${i + dependencySlice.length}/${dependencyNodeMap.size})`, {
           length: dependencySlice.length,
