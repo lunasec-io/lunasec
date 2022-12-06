@@ -12,12 +12,16 @@
  *
  */
 import { GraphQLYogaError } from '@graphql-yoga/node';
+import { LunaLogger } from '@lunatrace/logger/build/main';
 import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common';
 
 import { hasura } from '../../hasura-api';
 import { GetTreeFromBuildQuery } from '../../hasura-api/generated';
 import VulnerabilityDependencyTree from '../../models/vulnerability-dependency-tree';
+import { Manifest, ManifestEdge, ManifestNode } from '../../models/vulnerability-dependency-tree/types';
 import { log } from '../../utils/log';
+import { newBenchmarkTable, start } from '../../utils/performance';
+import { notEmpty } from '../../utils/predicates';
 import { QueryResolvers } from '../generated-resolver-types';
 import { checkBuildsAreAuthorized, throwIfUnauthenticated } from '../helpers/auth-helpers';
 
@@ -28,14 +32,17 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
   const buildId = args.buildId;
   await checkBuildsAreAuthorized([buildId], ctx);
 
+  const logger = log.child('vulnerable-releases-resolver', { buildId });
+
+  logger.info('getting build data');
+
   const { builds_by_pk: rawBuildData } = await hasura.GetTreeFromBuild({
     build_id: buildId,
   });
+
   if (!rawBuildData) {
     throw new GraphQLYogaError('Error fetching build data from database');
   }
-
-  const startTime = Date.now();
 
   const rawManifests = rawBuildData.resolved_manifests;
 
@@ -48,45 +55,73 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
       'Invalid minimum severity passed, acceptable arguments are: ' + JSON.stringify(severityOrderOsv)
     );
   }
-  const depTree = buildTreeFromRawData(rawManifests, ignoredVulnerabilities, minimumSeverity);
-  if (!depTree) {
-    return null; // tells the client that we didnt get any tree info back and to fall back to grype (for now)
+
+  const uniqueChildIds = new Set<string>();
+  rawManifests.forEach((m) => {
+    m.child_edges_recursive?.forEach((c) => {
+      uniqueChildIds.add(c.child_id);
+    });
+  });
+
+  const childIdList = [...uniqueChildIds.values()];
+
+  logger.info('collecting child information', {
+    childrenCount: childIdList.length,
+  });
+
+  const { manifest_dependency_node: childrenInfo } = await hasura.GetManifestDependencyEdgeChildren({
+    ids: childIdList,
+  });
+
+  const childInfoLookup = new Map<string, ManifestNode>();
+  childrenInfo.forEach((c) => {
+    childInfoLookup.set(c.id, c);
+  });
+
+  const manifests: Array<Manifest> = rawManifests
+    .map((m) => {
+      return {
+        ...m,
+        child_edges_recursive: m.child_edges_recursive
+          ?.map((c): ManifestEdge | undefined => {
+            const child = childInfoLookup.get(c.child_id);
+            if (!child) {
+              return undefined;
+            }
+            return {
+              ...c,
+              child,
+            };
+          })
+          .filter(notEmpty),
+      };
+    })
+    .filter(notEmpty);
+
+  logger.info('building tree', {
+    childrenInfo: childrenInfo.length,
+    manifests: manifests.length,
+  });
+
+  if (!manifests || manifests.length === 0) {
+    // fallback to grype
+    logger.warn('no manifest data to build tree from');
+    return null;
   }
 
-  const vulnerableReleases = depTree.getVulnerableReleases();
+  const depTree = new VulnerabilityDependencyTree(manifests, ignoredVulnerabilities, minimumSeverity);
+  if (!depTree) {
+    // tells the client that we didnt get any tree info back and to fall back to grype (for now)
+    return null;
+  }
 
-  const totalTime = Date.now() - startTime;
-  log.info('finished processing tree', {
-    totalTime,
-  });
+  logger.info('building vulnerable releases');
+
+  const vulnerableReleases = depTree.getVulnerableReleases(true);
+
+  logger.info('finished processing tree');
   return vulnerableReleases;
 };
-
-type RequestData = NonNullable<GetTreeFromBuildQuery['builds_by_pk']>;
-type ManifestData = NonNullable<RequestData['resolved_manifests']>;
-type IgnoredVulnerabilities = NonNullable<RequestData['project']['ignored_vulnerabilities']>;
-
-export function buildTreeFromRawData(
-  rawManifestData: ManifestData,
-  ignoredVulnerabilities?: IgnoredVulnerabilities,
-  minimumSeverity?: SeverityNamesOsv
-): VulnerabilityDependencyTree | null {
-  if (!rawManifestData || rawManifestData.length === 0) {
-    // fallback to grype
-    return null;
-  }
-
-  // check how many dependencies there are to make sure there are any at all, not sure if this is necessary
-  const mergedDependencies = rawManifestData.flatMap((manifest) => {
-    return manifest.child_edges_recursive || [];
-  });
-  if (!mergedDependencies || mergedDependencies.length === 0) {
-    // fallback to grype
-    return null;
-  }
-
-  return new VulnerabilityDependencyTree(rawManifestData, ignoredVulnerabilities, minimumSeverity);
-}
 
 function severityIsValid(name: string | undefined): name is SeverityNamesOsv | undefined {
   return !name || severityOrderOsv.includes(name);

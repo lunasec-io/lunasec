@@ -18,6 +18,10 @@ export type VulnerablePackage = NonNullable<
   NonNullable<GetVulnerableReleasesFromBuildQuery>['vulnerableReleasesFromBuild']
 >[number];
 
+export type Chain = NonNullable<
+  NonNullable<GetVulnerableReleasesFromBuildQuery>['vulnerableReleasesFromBuild']
+>[number]['chains'][number];
+
 export type Guide = VulnerablePackage['guides'][number];
 
 export type VulnMeta = VulnerablePackage['affected_by'][number];

@@ -60,7 +60,7 @@ export type BuildData_AffectedByVulnerability = {
 
 export type BuildData_Cwe = {
   __typename?: 'BuildData_Cwe';
-  common_name: Scalars['String'];
+  common_name?: Maybe<Scalars['String']>;
   description: Scalars['String'];
   id: Scalars['Int'];
   name: Scalars['String'];
@@ -318,6 +318,10 @@ export type Analysis_Manifest_Dependency_Edge_Result = {
   finding_source_version: Scalars['Int'];
   finding_type: Analysis_Finding_Type_Enum;
   id: Scalars['uuid'];
+  /** An array relationship */
+  locations: Array<Analysis_Manifest_Dependency_Edge_Result_Location>;
+  /** An aggregate relationship */
+  locations_aggregate: Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate;
   /** An object relationship */
   manifest_dependency_edge: Manifest_Dependency_Edge;
   manifest_dependency_edge_id: Scalars['uuid'];
@@ -325,6 +329,26 @@ export type Analysis_Manifest_Dependency_Edge_Result = {
   /** An object relationship */
   vulnerability: Vulnerability;
   vulnerability_id: Scalars['uuid'];
+};
+
+
+/** columns and relationships of "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_ResultLocationsArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
+};
+
+
+/** columns and relationships of "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_ResultLocations_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
 };
 
 
@@ -399,11 +423,294 @@ export type Analysis_Manifest_Dependency_Edge_Result_Bool_Exp = {
   finding_source_version?: InputMaybe<Int_Comparison_Exp>;
   finding_type?: InputMaybe<Analysis_Finding_Type_Enum_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  locations?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
   manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
   manifest_dependency_edge_id?: InputMaybe<Uuid_Comparison_Exp>;
   output?: InputMaybe<Jsonb_Comparison_Exp>;
   vulnerability?: InputMaybe<Vulnerability_Bool_Exp>;
   vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** Callsite of a child dependency being imported and used inside of a parent manifest dependency. */
+export type Analysis_Manifest_Dependency_Edge_Result_Location = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location';
+  end_column: Scalars['Int'];
+  end_row: Scalars['Int'];
+  id: Scalars['uuid'];
+  manifest_dependency_edge_result_id: Scalars['uuid'];
+  path: Scalars['String'];
+  start_column: Scalars['Int'];
+  start_row: Scalars['Int'];
+};
+
+/** aggregated selection of "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_aggregate';
+  aggregate?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate_Fields>;
+  nodes: Array<Analysis_Manifest_Dependency_Edge_Result_Location>;
+};
+
+/** aggregate fields of "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_aggregate_fields';
+  avg?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Max_Fields>;
+  min?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Min_Fields>;
+  stddev?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Fields>;
+  stddev_pop?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Samp_Fields>;
+  sum?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Sum_Fields>;
+  var_pop?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Var_Pop_Fields>;
+  var_samp?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Var_Samp_Fields>;
+  variance?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Variance_Fields>;
+};
+
+
+/** aggregate fields of "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate_Order_By = {
+  avg?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Max_Order_By>;
+  min?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Min_Order_By>;
+  stddev?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Sum_Order_By>;
+  var_pop?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Var_Samp_Order_By>;
+  variance?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Variance_Order_By>;
+};
+
+/** aggregate avg on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Avg_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_avg_fields';
+  end_column?: Maybe<Scalars['Float']>;
+  end_row?: Maybe<Scalars['Float']>;
+  start_column?: Maybe<Scalars['Float']>;
+  start_row?: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Avg_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "analysis.manifest_dependency_edge_result_location". All fields are combined with a logical 'AND'. */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp = {
+  _and?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>>;
+  _not?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
+  _or?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>>;
+  end_column?: InputMaybe<Int_Comparison_Exp>;
+  end_row?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  manifest_dependency_edge_result_id?: InputMaybe<Uuid_Comparison_Exp>;
+  path?: InputMaybe<String_Comparison_Exp>;
+  start_column?: InputMaybe<Int_Comparison_Exp>;
+  start_row?: InputMaybe<Int_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Max_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_max_fields';
+  end_column?: Maybe<Scalars['Int']>;
+  end_row?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
+  manifest_dependency_edge_result_id?: Maybe<Scalars['uuid']>;
+  path?: Maybe<Scalars['String']>;
+  start_column?: Maybe<Scalars['Int']>;
+  start_row?: Maybe<Scalars['Int']>;
+};
+
+/** order by max() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Max_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_result_id?: InputMaybe<Order_By>;
+  path?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Min_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_min_fields';
+  end_column?: Maybe<Scalars['Int']>;
+  end_row?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
+  manifest_dependency_edge_result_id?: Maybe<Scalars['uuid']>;
+  path?: Maybe<Scalars['String']>;
+  start_column?: Maybe<Scalars['Int']>;
+  start_row?: Maybe<Scalars['Int']>;
+};
+
+/** order by min() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Min_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_result_id?: InputMaybe<Order_By>;
+  path?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "analysis.manifest_dependency_edge_result_location". */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_result_id?: InputMaybe<Order_By>;
+  path?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "analysis.manifest_dependency_edge_result_location" */
+export enum Analysis_Manifest_Dependency_Edge_Result_Location_Select_Column {
+  /** column name */
+  EndColumn = 'end_column',
+  /** column name */
+  EndRow = 'end_row',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ManifestDependencyEdgeResultId = 'manifest_dependency_edge_result_id',
+  /** column name */
+  Path = 'path',
+  /** column name */
+  StartColumn = 'start_column',
+  /** column name */
+  StartRow = 'start_row'
+}
+
+/** aggregate stddev on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_stddev_fields';
+  end_column?: Maybe<Scalars['Float']>;
+  end_row?: Maybe<Scalars['Float']>;
+  start_column?: Maybe<Scalars['Float']>;
+  start_row?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Pop_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_stddev_pop_fields';
+  end_column?: Maybe<Scalars['Float']>;
+  end_row?: Maybe<Scalars['Float']>;
+  start_column?: Maybe<Scalars['Float']>;
+  start_row?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Pop_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Samp_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_stddev_samp_fields';
+  end_column?: Maybe<Scalars['Float']>;
+  end_row?: Maybe<Scalars['Float']>;
+  start_column?: Maybe<Scalars['Float']>;
+  start_row?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Samp_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Sum_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_sum_fields';
+  end_column?: Maybe<Scalars['Int']>;
+  end_row?: Maybe<Scalars['Int']>;
+  start_column?: Maybe<Scalars['Int']>;
+  start_row?: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Sum_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_pop on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Var_Pop_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_var_pop_fields';
+  end_column?: Maybe<Scalars['Float']>;
+  end_row?: Maybe<Scalars['Float']>;
+  start_column?: Maybe<Scalars['Float']>;
+  start_row?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Var_Pop_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Var_Samp_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_var_samp_fields';
+  end_column?: Maybe<Scalars['Float']>;
+  end_row?: Maybe<Scalars['Float']>;
+  start_column?: Maybe<Scalars['Float']>;
+  start_row?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Var_Samp_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Variance_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_variance_fields';
+  end_column?: Maybe<Scalars['Float']>;
+  end_row?: Maybe<Scalars['Float']>;
+  start_column?: Maybe<Scalars['Float']>;
+  start_row?: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Variance_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
 };
 
 /** aggregate max on columns */
@@ -451,6 +758,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Order_By = {
   finding_source_version?: InputMaybe<Order_By>;
   finding_type?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  locations_aggregate?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate_Order_By>;
   manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Order_By>;
   manifest_dependency_edge_id?: InputMaybe<Order_By>;
   output?: InputMaybe<Order_By>;
@@ -4392,6 +4700,12 @@ export type Query_Root = {
   analysis_manifest_dependency_edge_result_aggregate: Analysis_Manifest_Dependency_Edge_Result_Aggregate;
   /** fetch data from the table: "analysis.manifest_dependency_edge_result" using primary key columns */
   analysis_manifest_dependency_edge_result_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result>;
+  /** fetch data from the table: "analysis.manifest_dependency_edge_result_location" */
+  analysis_manifest_dependency_edge_result_location: Array<Analysis_Manifest_Dependency_Edge_Result_Location>;
+  /** fetch aggregated fields from the table: "analysis.manifest_dependency_edge_result_location" */
+  analysis_manifest_dependency_edge_result_location_aggregate: Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate;
+  /** fetch data from the table: "analysis.manifest_dependency_edge_result_location" using primary key columns */
+  analysis_manifest_dependency_edge_result_location_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location>;
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   availableOrgsWithRepos?: Maybe<Array<OrgWithRepos>>;
   /** fetch data from the table: "build_dependency_relationship" */
@@ -4573,6 +4887,29 @@ export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_AggregateArgs = {
 
 
 export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_LocationArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
+};
+
+
+export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_Location_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
+};
+
+
+export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_Location_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -5638,6 +5975,12 @@ export type Subscription_Root = {
   analysis_manifest_dependency_edge_result_aggregate: Analysis_Manifest_Dependency_Edge_Result_Aggregate;
   /** fetch data from the table: "analysis.manifest_dependency_edge_result" using primary key columns */
   analysis_manifest_dependency_edge_result_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result>;
+  /** fetch data from the table: "analysis.manifest_dependency_edge_result_location" */
+  analysis_manifest_dependency_edge_result_location: Array<Analysis_Manifest_Dependency_Edge_Result_Location>;
+  /** fetch aggregated fields from the table: "analysis.manifest_dependency_edge_result_location" */
+  analysis_manifest_dependency_edge_result_location_aggregate: Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate;
+  /** fetch data from the table: "analysis.manifest_dependency_edge_result_location" using primary key columns */
+  analysis_manifest_dependency_edge_result_location_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -5812,6 +6155,29 @@ export type Subscription_RootAnalysis_Manifest_Dependency_Edge_Result_AggregateA
 
 
 export type Subscription_RootAnalysis_Manifest_Dependency_Edge_Result_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootAnalysis_Manifest_Dependency_Edge_Result_LocationArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
+};
+
+
+export type Subscription_RootAnalysis_Manifest_Dependency_Edge_Result_Location_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
+};
+
+
+export type Subscription_RootAnalysis_Manifest_Dependency_Edge_Result_Location_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -7639,7 +8005,7 @@ export type GetVulnerableReleasesFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, beneath_minimum_severity: boolean, cvss?: number | null, severity: string, paths: Array<string>, fix_versions: Array<string>, dev_only: boolean, guides: Array<{ __typename?: 'BuildData_Guide', id: string, title: string, summary: string }>, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, reachable: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>>, release: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string, package_manager: string } }, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable_to?: string | null, beneath_minimum_severity: boolean, fix_versions: Array<string>, path: string, ignored: boolean, ignored_vulnerability?: { __typename?: 'BuildData_IgnoredVulnerability', locations: Array<string>, note: string } | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, summary?: string | null, id: string, source_id: string, guide_vulnerabilities: Array<{ __typename?: 'BuildData_Guide_Vulnerability', guide?: { __typename?: 'BuildData_Guide', id: string, summary: string, title: string } | null }>, cwes: Array<{ __typename?: 'BuildData_VulnerabilityCwe', id: string, cwe: { __typename?: 'BuildData_Cwe', id: number, name: string, description: string, common_name: string } }> } }> }> | null };
+export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, beneath_minimum_severity: boolean, cvss?: number | null, severity: string, paths: Array<string>, fix_versions: Array<string>, dev_only: boolean, guides: Array<{ __typename?: 'BuildData_Guide', id: string, title: string, summary: string }>, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, reachable: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>>, release: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string, package_manager: string } }, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable_to?: string | null, beneath_minimum_severity: boolean, fix_versions: Array<string>, path: string, ignored: boolean, ignored_vulnerability?: { __typename?: 'BuildData_IgnoredVulnerability', locations: Array<string>, note: string } | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, summary?: string | null, id: string, source_id: string, guide_vulnerabilities: Array<{ __typename?: 'BuildData_Guide_Vulnerability', guide?: { __typename?: 'BuildData_Guide', id: string, summary: string, title: string } | null }>, cwes: Array<{ __typename?: 'BuildData_VulnerabilityCwe', id: string, cwe: { __typename?: 'BuildData_Cwe', id: number, name: string, description: string, common_name?: string | null } }> } }> }> | null };
 
 export type InsertNewOrgUserMutationVariables = Exact<{
   organization_id: Scalars['uuid'];
