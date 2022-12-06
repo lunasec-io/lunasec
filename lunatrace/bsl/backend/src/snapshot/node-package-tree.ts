@@ -117,7 +117,8 @@ export async function collectPackageGraphsFromDirectory(
         pkgTree.version = `${pkgTree.version}-${rootUniqueId}`;
       }
 
-      const pkgDependenciesWithGraphAndMetadata = [pkgTree, ...Object.values(pkgTree.dependencies)].map((pkg) => {
+      const flatDeps = [pkgTree, ...Object.values(pkgTree.dependencies)];
+      const pkgDependenciesWithGraphAndMetadata = flatDeps.map((pkg) => {
         return {
           node: dfsGenerateMerkleTreeFromDepTree(pkg),
           // If there is nothing in the labels, then we know that it is a prod dependency
