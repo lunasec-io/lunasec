@@ -19,11 +19,12 @@ import validate from 'validator';
 import { InsertedScan, performSnapshotScanAndCollectReport } from '../../../analysis/scan';
 import { queueManifestDependencyEdgeForStaticAnalysis } from '../../../analysis/static-analysis';
 import { interactWithPR } from '../../../github/actions/pr-comment-generator';
-import { buildTreeFromRawData } from '../../../graphql-yoga/resolvers/vulnerable-releases-from-build';
 import { hasura } from '../../../hasura-api';
 import { updateBuildStatus } from '../../../hasura-api/actions/update-build-status';
 import { updateManifestStatus } from '../../../hasura-api/actions/update-manifest-status';
 import { Build_State_Enum } from '../../../hasura-api/generated';
+import VulnerabilityDependencyTree from '../../../models/vulnerability-dependency-tree';
+import { vulnerabilityTreeFromHasura } from '../../../models/vulnerability-dependency-tree/vulnerability-tree-from-hasura';
 import { S3ObjectMetadata } from '../../../types/s3';
 import { SbomBucketInfo } from '../../../types/scan';
 import { MaybeError, MaybeErrorVoid } from '../../../types/util';
@@ -101,15 +102,16 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
 
   const rawManifests = rawBuildData.resolved_manifests;
 
-  const depTree = buildTreeFromRawData(rawManifests);
-  if (!depTree) {
+  const logger = log.child('static-analysis', { buildId });
+  const depTree = await vulnerabilityTreeFromHasura(logger, buildId);
+  if (depTree.error) {
     log.error('unable to build dependency tree', {
       rawManifests,
     });
     return newError('unable to build dependency tree');
   }
 
-  const edgeVulnerabilities = depTree.getEdgesWhereChildIsVulnerable();
+  const edgeVulnerabilities = depTree.res.getEdgesWhereChildIsVulnerable();
   log.info('starting static analysis for dependency tree');
 
   const queuedStaticAnalyses: Map<string, boolean> = new Map<string, boolean>();

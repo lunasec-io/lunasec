@@ -12,16 +12,10 @@
  *
  */
 import { GraphQLYogaError } from '@graphql-yoga/node';
-import { LunaLogger } from '@lunatrace/logger/build/main';
 import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common';
 
-import { hasura } from '../../hasura-api';
-import { GetTreeFromBuildQuery } from '../../hasura-api/generated';
-import VulnerabilityDependencyTree from '../../models/vulnerability-dependency-tree';
-import { Manifest, ManifestEdge, ManifestNode } from '../../models/vulnerability-dependency-tree/types';
+import { vulnerabilityTreeFromHasura } from '../../models/vulnerability-dependency-tree/vulnerability-tree-from-hasura';
 import { log } from '../../utils/log';
-import { newBenchmarkTable, start } from '../../utils/performance';
-import { notEmpty } from '../../utils/predicates';
 import { QueryResolvers } from '../generated-resolver-types';
 import { checkBuildsAreAuthorized, throwIfUnauthenticated } from '../helpers/auth-helpers';
 
@@ -36,18 +30,6 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
 
   logger.info('getting build data');
 
-  const { builds_by_pk: rawBuildData } = await hasura.GetTreeFromBuild({
-    build_id: buildId,
-  });
-
-  if (!rawBuildData) {
-    throw new GraphQLYogaError('Error fetching build data from database');
-  }
-
-  const rawManifests = rawBuildData.resolved_manifests;
-
-  const ignoredVulnerabilities = rawBuildData.project.ignored_vulnerabilities;
-
   const minimumSeverity = args.minimumSeverity !== null ? args.minimumSeverity : undefined;
 
   if (!severityIsValid(minimumSeverity)) {
@@ -56,68 +38,17 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
     );
   }
 
-  const uniqueChildIds = new Set<string>();
-  rawManifests.forEach((m) => {
-    m.child_edges_recursive?.forEach((c) => {
-      uniqueChildIds.add(c.child_id);
+  const depTree = await vulnerabilityTreeFromHasura(logger, buildId, minimumSeverity);
+  if (depTree.error) {
+    logger.error('unable to build dependency tree', {
+      error: depTree.msg,
     });
-  });
-
-  const childIdList = [...uniqueChildIds.values()];
-
-  logger.info('collecting child information', {
-    childrenCount: childIdList.length,
-  });
-
-  const { manifest_dependency_node: childrenInfo } = await hasura.GetManifestDependencyEdgeChildren({
-    ids: childIdList,
-  });
-
-  const childInfoLookup = new Map<string, ManifestNode>();
-  childrenInfo.forEach((c) => {
-    childInfoLookup.set(c.id, c);
-  });
-
-  const manifests: Array<Manifest> = rawManifests
-    .map((m) => {
-      return {
-        ...m,
-        child_edges_recursive: m.child_edges_recursive
-          ?.map((c): ManifestEdge | undefined => {
-            const child = childInfoLookup.get(c.child_id);
-            if (!child) {
-              return undefined;
-            }
-            return {
-              ...c,
-              child,
-            };
-          })
-          .filter(notEmpty),
-      };
-    })
-    .filter(notEmpty);
-
-  logger.info('building tree', {
-    childrenInfo: childrenInfo.length,
-    manifests: manifests.length,
-  });
-
-  if (!manifests || manifests.length === 0) {
-    // fallback to grype
-    logger.warn('no manifest data to build tree from');
-    return null;
-  }
-
-  const depTree = new VulnerabilityDependencyTree(manifests, ignoredVulnerabilities, minimumSeverity);
-  if (!depTree) {
-    // tells the client that we didnt get any tree info back and to fall back to grype (for now)
     return null;
   }
 
   logger.info('building vulnerable releases');
 
-  const vulnerableReleases = depTree.getVulnerableReleases(true);
+  const vulnerableReleases = depTree.res.getVulnerableReleases(true);
 
   logger.info('finished processing tree');
   return vulnerableReleases;
