@@ -8,22 +8,24 @@
 //
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package staticanalysis
 
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/Khan/genqlient/graphql"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queuefx"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
+
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queuefx"
 )
 
 type QueueRecord struct {
 	VulnerabilityID          string `json:"vulnerability_id"`
 	ManifestDependencyEdgeId string `json:"manifest_dependency_edge_id"`
+	SaveResults              bool   `json:"save_results"`
 }
 
 type Params struct {
