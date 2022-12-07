@@ -129,12 +129,30 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 		ctx, logger, upstreamBlobUrl, manifestDependencyEdgeUUID, parentPackageName, childPackageName,
 	)
 
+	if queueRecord.SaveResults {
+		logger.Info().Msg("saving results")
+		err = s.saveResults(ctx, results, findingType, manifestDependencyEdgeUUID, vulnerabilityUUID)
+		if err != nil {
+			return err
+		}
+	} else {
+		logger.Info().Msg("skipped saving results")
+	}
+
+	return nil
+}
+
+func (s *staticAnalysisQueueHandler) saveResults(ctx context.Context, results *rules.SemgrepRuleOutput, findingType gql.Analysis_finding_type_enum, manifestDependencyEdgeUUID uuid.UUID, vulnerabilityUUID uuid.UUID) error {
+	logger := log.With().
+		Str("mde", manifestDependencyEdgeUUID.String()).
+		Str("vuln", vulnerabilityUUID.String()).
+		Logger()
 	var locations *gql.Analysis_manifest_dependency_edge_result_location_arr_rel_insert_input
 	if results != nil {
 		locations = getManifestDependencyEdgeLocations(results)
 	}
 
-	logger.Info().
+	log.Info().
 		Str("finding type", string(findingType)).
 		Interface("locations", locations).
 		Msg("saving results of analysis")
@@ -160,7 +178,7 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 
 	insertedAnalysisID := analysisResp.GetInsert_analysis_manifest_dependency_edge_result_one().GetId().String()
 
-	log.Info().
+	logger.Info().
 		Str("results id", insertedAnalysisID).
 		Msg("inserted edge analysis results")
 	return nil

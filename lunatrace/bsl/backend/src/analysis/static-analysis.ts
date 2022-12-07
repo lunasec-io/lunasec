@@ -69,6 +69,8 @@ export async function queueManifestDependencyEdgeForStaticAnalysis(
   const req: ProcessStaticAnalysisRequest = {
     vulnerability_id: vulnerabilityId,
     manifest_dependency_edge_id: manifestDependencyEdgeId,
+    // todo fixme
+    save_results: false,
   };
 
   const sqsEvent: LunaTraceStaticAnalysisSqsMessage = {
