@@ -11,7 +11,6 @@
 package main
 
 import (
-	"context"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/cwe"
 	packageCommand "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/package"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/vulnerability"
@@ -23,7 +22,6 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"net/http"
@@ -48,12 +46,6 @@ func main() {
 		graphqlfx.Module,
 		dbfx.Module,
 		registry.NPMModule,
-
-		fx.Invoke(func() {
-			util.RunOnProcessExit(func() {
-				util.RemoveCleanupDirs()
-			})
-		}),
 
 		fx.Provide(
 			cwe2.NewCWEIngester,
@@ -86,12 +78,5 @@ func main() {
 		fx.Provide(
 			packageCommand.NewCommand,
 		),
-
-		fx.Invoke(func(lc fx.Lifecycle) {
-			lc.Append(fx.Hook{OnStop: func(_ context.Context) error {
-				util.RemoveCleanupDirs()
-				return nil
-			}})
-		}),
 	)
 }
