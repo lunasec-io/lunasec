@@ -406,6 +406,288 @@ export type Analysis_Manifest_Dependency_Edge_Result_Bool_Exp = {
   vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
+/** Location of a child dependency located inside of a parent manifest dependency. */
+export type Analysis_Manifest_Dependency_Edge_Result_Location = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location';
+  end_column: Scalars['Int'];
+  end_row: Scalars['Int'];
+  id: Scalars['uuid'];
+  manifest_dependency_edge_result_id: Scalars['uuid'];
+  path: Scalars['String'];
+  start_column: Scalars['Int'];
+  start_row: Scalars['Int'];
+};
+
+/** aggregated selection of "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_aggregate';
+  aggregate?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate_Fields>;
+  nodes: Array<Analysis_Manifest_Dependency_Edge_Result_Location>;
+};
+
+/** aggregate fields of "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_aggregate_fields';
+  avg?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Max_Fields>;
+  min?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Min_Fields>;
+  stddev?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Fields>;
+  stddev_pop?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Samp_Fields>;
+  sum?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Sum_Fields>;
+  var_pop?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Var_Pop_Fields>;
+  var_samp?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Var_Samp_Fields>;
+  variance?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Variance_Fields>;
+};
+
+
+/** aggregate fields of "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate_Order_By = {
+  avg?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Max_Order_By>;
+  min?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Min_Order_By>;
+  stddev?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Sum_Order_By>;
+  var_pop?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Var_Samp_Order_By>;
+  variance?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Variance_Order_By>;
+};
+
+/** aggregate avg on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Avg_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_avg_fields';
+  end_column?: Maybe<Scalars['Float']>;
+  end_row?: Maybe<Scalars['Float']>;
+  start_column?: Maybe<Scalars['Float']>;
+  start_row?: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Avg_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "analysis.manifest_dependency_edge_result_location". All fields are combined with a logical 'AND'. */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp = {
+  _and?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>>;
+  _not?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
+  _or?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>>;
+  end_column?: InputMaybe<Int_Comparison_Exp>;
+  end_row?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  manifest_dependency_edge_result_id?: InputMaybe<Uuid_Comparison_Exp>;
+  path?: InputMaybe<String_Comparison_Exp>;
+  start_column?: InputMaybe<Int_Comparison_Exp>;
+  start_row?: InputMaybe<Int_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Max_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_max_fields';
+  end_column?: Maybe<Scalars['Int']>;
+  end_row?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
+  manifest_dependency_edge_result_id?: Maybe<Scalars['uuid']>;
+  path?: Maybe<Scalars['String']>;
+  start_column?: Maybe<Scalars['Int']>;
+  start_row?: Maybe<Scalars['Int']>;
+};
+
+/** order by max() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Max_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_result_id?: InputMaybe<Order_By>;
+  path?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Min_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_min_fields';
+  end_column?: Maybe<Scalars['Int']>;
+  end_row?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
+  manifest_dependency_edge_result_id?: Maybe<Scalars['uuid']>;
+  path?: Maybe<Scalars['String']>;
+  start_column?: Maybe<Scalars['Int']>;
+  start_row?: Maybe<Scalars['Int']>;
+};
+
+/** order by min() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Min_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_result_id?: InputMaybe<Order_By>;
+  path?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "analysis.manifest_dependency_edge_result_location". */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_result_id?: InputMaybe<Order_By>;
+  path?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "analysis.manifest_dependency_edge_result_location" */
+export enum Analysis_Manifest_Dependency_Edge_Result_Location_Select_Column {
+  /** column name */
+  EndColumn = 'end_column',
+  /** column name */
+  EndRow = 'end_row',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ManifestDependencyEdgeResultId = 'manifest_dependency_edge_result_id',
+  /** column name */
+  Path = 'path',
+  /** column name */
+  StartColumn = 'start_column',
+  /** column name */
+  StartRow = 'start_row'
+}
+
+/** aggregate stddev on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_stddev_fields';
+  end_column?: Maybe<Scalars['Float']>;
+  end_row?: Maybe<Scalars['Float']>;
+  start_column?: Maybe<Scalars['Float']>;
+  start_row?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Pop_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_stddev_pop_fields';
+  end_column?: Maybe<Scalars['Float']>;
+  end_row?: Maybe<Scalars['Float']>;
+  start_column?: Maybe<Scalars['Float']>;
+  start_row?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Pop_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Samp_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_stddev_samp_fields';
+  end_column?: Maybe<Scalars['Float']>;
+  end_row?: Maybe<Scalars['Float']>;
+  start_column?: Maybe<Scalars['Float']>;
+  start_row?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Samp_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Sum_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_sum_fields';
+  end_column?: Maybe<Scalars['Int']>;
+  end_row?: Maybe<Scalars['Int']>;
+  start_column?: Maybe<Scalars['Int']>;
+  start_row?: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Sum_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_pop on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Var_Pop_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_var_pop_fields';
+  end_column?: Maybe<Scalars['Float']>;
+  end_row?: Maybe<Scalars['Float']>;
+  start_column?: Maybe<Scalars['Float']>;
+  start_row?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Var_Pop_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Var_Samp_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_var_samp_fields';
+  end_column?: Maybe<Scalars['Float']>;
+  end_row?: Maybe<Scalars['Float']>;
+  start_column?: Maybe<Scalars['Float']>;
+  start_row?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Var_Samp_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Variance_Fields = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_variance_fields';
+  end_column?: Maybe<Scalars['Float']>;
+  end_row?: Maybe<Scalars['Float']>;
+  start_column?: Maybe<Scalars['Float']>;
+  start_row?: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Variance_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
 /** aggregate max on columns */
 export type Analysis_Manifest_Dependency_Edge_Result_Max_Fields = {
   __typename?: 'analysis_manifest_dependency_edge_result_max_fields';
@@ -2855,7 +3137,7 @@ export type Manifest_Dependency_Node = {
   labels?: Maybe<Scalars['jsonb']>;
   /** An array relationship */
   parent_edges: Array<Manifest_Dependency_Edge>;
-  range: Scalars['String'];
+  range?: Maybe<Scalars['String']>;
   /** An object relationship */
   release: Package_Release;
   release_id: Scalars['uuid'];

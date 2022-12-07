@@ -4846,7 +4846,7 @@ type query_root {
     vulnerability_severity_by_pk(id: uuid!): vulnerability_severity
     vulnerability_vulnerability_cwe(distinct_on: [vulnerability_vulnerability_cwe_select_column!], limit: Int, offset: Int, order_by: [vulnerability_vulnerability_cwe_order_by!], where: vulnerability_vulnerability_cwe_bool_exp): [vulnerability_vulnerability_cwe!]!
     vulnerability_vulnerability_cwe_by_pk(id: uuid!): vulnerability_vulnerability_cwe
-    vulnerableReleasesFromBuild(buildId: uuid!, minimumSeverity: String): [BuildData_VulnerableRelease!]
+    vulnerableReleasesFromBuild(buildId: uuid!, minimumSeverity: String, previewChains: Boolean): [BuildData_VulnerableRelease!]
     webhook_cache(distinct_on: [webhook_cache_select_column!], limit: Int, offset: Int, order_by: [webhook_cache_order_by!], where: webhook_cache_bool_exp): [webhook_cache!]!
     webhook_cache_by_pk(delivery_id: uuid!): webhook_cache
 }
