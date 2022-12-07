@@ -34,7 +34,7 @@ interface PackageDependenciesWithGraphAndMetadata {
     missingLockFileEntry?: 'true';
   };
   name?: string;
-  range?: string | null;
+  range: string;
   version?: string;
 }
 
@@ -125,7 +125,7 @@ export async function collectPackageGraphsFromDirectory(
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           labels: pkg.labels ?? ({ scope: prodOrDevLabel } as any),
           name: pkg.name,
-          range: pkg.range || pkg.version,
+          range: pkg.range || pkg.version || '',
           version: pkg.version,
         };
       });
