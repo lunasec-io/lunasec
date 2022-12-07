@@ -322,7 +322,7 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(ctx context.C
 		Str("tmp dir", tmpDir).
 		Msg("extracting package code")
 
-	err = util.ExtractTarGz(upstreamUrlResp.Body, tmpDir)
+	err = util.ExtractTarGz(codeBlobStream, tmpDir)
 	if err != nil {
 		logger.Error().
 			Err(err).
