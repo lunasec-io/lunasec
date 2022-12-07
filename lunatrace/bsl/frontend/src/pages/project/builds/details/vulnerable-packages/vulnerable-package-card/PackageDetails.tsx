@@ -26,28 +26,18 @@ interface PackageDetailsProps {
 }
 
 export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ pkg }) => {
-  const recommendedVersion = semver.rsort([...pkg.fix_versions])[0];
-
   return (
     <div className="mb-3">
-      {recommendedVersion && (
-        <Row>
-          <h5>
-            <span className="darker">Recommended version: </span>
-            {recommendedVersion}
-          </h5>
-        </Row>
-      )}
-      <Row>
-        <Col xl={6} lg={12}>
+      <Row className={'d-flex flex-row'}>
+        <Col xl={6} lg={12} className={'flex-grow-1'}>
           <h5>
             <span className="darker">{pluralizeIfMultiple(pkg.paths.length, 'Path') + ': '}</span>
             {pkg.paths.map((path, index) => {
               return (
-                <>
+                <div key={index}>
                   {index > 0 && <br />}
                   <span className="lighter mx-1">{path}</span>
-                </>
+                </div>
               );
             })}
           </h5>

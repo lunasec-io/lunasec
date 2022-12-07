@@ -15,6 +15,7 @@ import React from 'react';
 import { Card, Col, NavLink, OverlayTrigger, Popover, Row, Tooltip } from 'react-bootstrap';
 import { CopyBlock, tomorrowNight } from 'react-code-blocks';
 import { Upload } from 'react-feather';
+import semver from 'semver';
 
 import { PackageManagerLink } from '../../../../../../components/PackageManagerLink';
 import useBreakpoint from '../../../../../../hooks/useBreakpoint';
@@ -31,17 +32,24 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
   pkg,
   ignored,
 }) => {
+  const recommendedVersion = semver.rsort([...pkg.fix_versions])[0];
   return (
     <Card.Header>
-      <div className="ms-lg-4 me-lg-4">
+      <div className="ms-lg-2 me-lg-2">
         <Row>
           <Col sm="6">
             <Card.Title>
               <h2 className={ignored ? 'text-decoration-line-through' : ''}>{pkg.release.package.name}</h2>
             </Card.Title>
             <Card.Subtitle>
-              <span className="darker">Version: </span>
+              <span className="darker">Installed: </span>
               {pkg.release.version}
+              {recommendedVersion && (
+                <>
+                  <span className="darker">, Recommended: </span>
+                  {recommendedVersion}
+                </>
+              )}
               <PackageUpdatablePopOver pkg={pkg} />
               <PackageManagerLink
                 packageName={pkg.release.package.name}

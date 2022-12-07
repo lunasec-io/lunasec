@@ -72,7 +72,7 @@ export const PackageUpdatablePopOver: React.FC<{ pkg: VulnerablePackage }> = ({ 
   const mdOrLarger = useBreakpoint('md');
   return (
     <>
-      {', '}
+      {' '}
       <OverlayTrigger trigger="click" rootClose placement={mdOrLarger ? 'right' : 'bottom'} overlay={renderToolTip}>
         <NavLink className="primary-color d-inline m-0 p-0">
           {trivialUpdateStatus === 'partially' ? 'partially ' : ''}updatable

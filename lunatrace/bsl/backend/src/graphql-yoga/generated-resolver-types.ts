@@ -208,6 +208,7 @@ export type QuerySbomUrlArgs = {
 export type QueryVulnerableReleasesFromBuildArgs = {
   buildId: Scalars['uuid'];
   minimumSeverity?: InputMaybe<Scalars['String']>;
+  previewChains?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type SbomUploadUrlInput = {
