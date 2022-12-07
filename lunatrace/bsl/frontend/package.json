@@ -29,6 +29,7 @@
     "prettify-date": "^1.4.0",
     "process": "~0.11.10",
     "react": "17.0.2",
+    "react-beautiful-dnd": "~13.1.1",
     "react-bootstrap": "^2.1.1",
     "react-bootstrap-typeahead": "^6.0.0-alpha.6",
     "react-bottom-scroll-listener": "^5.0.0",

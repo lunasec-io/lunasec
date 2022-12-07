@@ -1,5 +1,19 @@
 query GetProject($project_id: uuid!, $build_limit: Int = 10) {
     projects_by_pk(id: $project_id) {
+    	project_folder_settings {
+          id
+          ignore
+          root
+          project_id
+          path_glob
+          precedence
+          folder_environmental_adjustments {
+            id
+            cvss_environmental_adjustment {
+              name
+            }
+          }
+        }
         created_at
         id
         name

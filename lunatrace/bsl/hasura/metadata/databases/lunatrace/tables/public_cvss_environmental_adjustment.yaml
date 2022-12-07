@@ -1,0 +1,48 @@
+table:
+  name: cvss_environmental_adjustment
+  schema: public
+array_relationships:
+  - name: folder_environmental_adjustments
+    using:
+      foreign_key_constraint_on:
+        column: cvss_environmental_adjustment_id
+        table:
+          name: folder_environmental_adjustment
+          schema: public
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - id
+        - created_at
+        - name
+        - attack_vector
+        - attack_complexity
+        - privileges_required
+        - user_interaction
+        - scope
+        - confidentiality_impact
+        - integrity_impact
+        - availability_impact
+        - confidentiality_requirement
+        - integrity_requirement
+        - availability_requirement
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - id
+        - created_at
+        - name
+        - attack_vector
+        - attack_complexity
+        - privileges_required
+        - user_interaction
+        - scope
+        - confidentiality_impact
+        - integrity_impact
+        - availability_impact
+        - confidentiality_requirement
+        - integrity_requirement
+        - availability_requirement
+      filter: {}

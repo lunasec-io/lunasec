@@ -28,7 +28,12 @@ generates:
             reference_type: "'advisory'|'article'|'fix'|'git'|'package'|'report'|'web'"
             package_manager: string
             bigint: number
-
+            cvss_low_medium_high: never
+            cvss_none_low_high: never
+            cvss_vector: never
+            cvss_interaction: never
+            cvss_scope: never
+            cvss_complexity: never
       - "typescript-operations"
       - "typescript-rtk-query":
           importBaseApiFrom: './baseApi'

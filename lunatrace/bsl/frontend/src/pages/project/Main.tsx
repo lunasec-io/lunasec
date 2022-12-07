@@ -13,7 +13,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
-import { Box, Home, Menu, Settings } from 'react-feather';
+import { Box, Home, Menu, Settings, Shuffle } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 
@@ -25,6 +25,7 @@ import { useRecentProjects } from '../../hooks/useRecentProjects';
 import { ProjectHeader } from './Header';
 import { Builds } from './builds';
 import { ProjectDashboardMain } from './dashboard/Main';
+import { RiskAdjustmentMain } from './risk-adjustment/RiskAdjustmentMain';
 import { SecretsMain } from './secrets/Main';
 import { ProjectSettingsMain } from './settings/Main';
 import { ProjectInfo, TabName } from './types';
@@ -101,6 +102,16 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
                   <Box size="1em" className="mb-2 me-1" /> Snapshots
                 </Nav.Link>
               </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  onClick={() => {
+                    setActiveTab('filters');
+                  }}
+                  eventKey="filters"
+                >
+                  <Shuffle size="1em" className="mb-2 me-1" /> Risk Adjustment
+                </Nav.Link>
+              </Nav.Item>
               {/*<Nav.Item className="ms-lg-auto">*/}
               {/*  <Nav.Link onClick={() => setActiveTab('secrets')} eventKey="secrets">*/}
               {/*    <Lock size="1em" className="mb-2 me-1" /> Secrets and Keys*/}
@@ -143,6 +154,8 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
         return <SecretsMain project={p} />;
       case 'settings':
         return <ProjectSettingsMain project={p} />;
+      case 'filters':
+        return <RiskAdjustmentMain project={p} />;
       default:
         return <ProjectMain />;
     }
