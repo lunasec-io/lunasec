@@ -427,6 +427,244 @@ export type Analysis_Manifest_Dependency_Edge_Result_Insert_Input = {
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
 
+/** Location of a child dependency located inside of a parent manifest dependency. */
+export type Analysis_Manifest_Dependency_Edge_Result_Location = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location';
+  end_column: Scalars['Int'];
+  end_row: Scalars['Int'];
+  id: Scalars['uuid'];
+  manifest_dependency_edge_result_id: Scalars['uuid'];
+  path: Scalars['String'];
+  start_column: Scalars['Int'];
+  start_row: Scalars['Int'];
+};
+
+/** order by aggregate values of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate_Order_By = {
+  avg?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Max_Order_By>;
+  min?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Min_Order_By>;
+  stddev?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Sum_Order_By>;
+  var_pop?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Var_Samp_Order_By>;
+  variance?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Arr_Rel_Insert_Input = {
+  data: Array<Analysis_Manifest_Dependency_Edge_Result_Location_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_On_Conflict>;
+};
+
+/** order by avg() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Avg_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "analysis.manifest_dependency_edge_result_location". All fields are combined with a logical 'AND'. */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp = {
+  _and?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>>;
+  _not?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
+  _or?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>>;
+  end_column?: InputMaybe<Int_Comparison_Exp>;
+  end_row?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  manifest_dependency_edge_result_id?: InputMaybe<Uuid_Comparison_Exp>;
+  path?: InputMaybe<String_Comparison_Exp>;
+  start_column?: InputMaybe<Int_Comparison_Exp>;
+  start_row?: InputMaybe<Int_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "analysis.manifest_dependency_edge_result_location" */
+export enum Analysis_Manifest_Dependency_Edge_Result_Location_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  ManifestDependencyEdgeResultLocationPkey = 'manifest_dependency_edge_result_location_pkey'
+}
+
+/** input type for incrementing numeric columns in table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Inc_Input = {
+  end_column?: InputMaybe<Scalars['Int']>;
+  end_row?: InputMaybe<Scalars['Int']>;
+  start_column?: InputMaybe<Scalars['Int']>;
+  start_row?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Insert_Input = {
+  end_column?: InputMaybe<Scalars['Int']>;
+  end_row?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  manifest_dependency_edge_result_id?: InputMaybe<Scalars['uuid']>;
+  path?: InputMaybe<Scalars['String']>;
+  start_column?: InputMaybe<Scalars['Int']>;
+  start_row?: InputMaybe<Scalars['Int']>;
+};
+
+/** order by max() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Max_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_result_id?: InputMaybe<Order_By>;
+  path?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Min_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_result_id?: InputMaybe<Order_By>;
+  path?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Mutation_Response = {
+  __typename?: 'analysis_manifest_dependency_edge_result_location_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Analysis_Manifest_Dependency_Edge_Result_Location>;
+};
+
+/** on_conflict condition type for table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_On_Conflict = {
+  constraint: Analysis_Manifest_Dependency_Edge_Result_Location_Constraint;
+  update_columns?: Array<Analysis_Manifest_Dependency_Edge_Result_Location_Update_Column>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "analysis.manifest_dependency_edge_result_location". */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_result_id?: InputMaybe<Order_By>;
+  path?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: analysis_manifest_dependency_edge_result_location */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "analysis.manifest_dependency_edge_result_location" */
+export enum Analysis_Manifest_Dependency_Edge_Result_Location_Select_Column {
+  /** column name */
+  EndColumn = 'end_column',
+  /** column name */
+  EndRow = 'end_row',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ManifestDependencyEdgeResultId = 'manifest_dependency_edge_result_id',
+  /** column name */
+  Path = 'path',
+  /** column name */
+  StartColumn = 'start_column',
+  /** column name */
+  StartRow = 'start_row'
+}
+
+/** input type for updating data in table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Set_Input = {
+  end_column?: InputMaybe<Scalars['Int']>;
+  end_row?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  manifest_dependency_edge_result_id?: InputMaybe<Scalars['uuid']>;
+  path?: InputMaybe<Scalars['String']>;
+  start_column?: InputMaybe<Scalars['Int']>;
+  start_row?: InputMaybe<Scalars['Int']>;
+};
+
+/** order by stddev() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_pop() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Pop_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_samp() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Stddev_Samp_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** order by sum() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Sum_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** update columns of table "analysis.manifest_dependency_edge_result_location" */
+export enum Analysis_Manifest_Dependency_Edge_Result_Location_Update_Column {
+  /** column name */
+  EndColumn = 'end_column',
+  /** column name */
+  EndRow = 'end_row',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ManifestDependencyEdgeResultId = 'manifest_dependency_edge_result_id',
+  /** column name */
+  Path = 'path',
+  /** column name */
+  StartColumn = 'start_column',
+  /** column name */
+  StartRow = 'start_row'
+}
+
+/** order by var_pop() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Var_Pop_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** order by var_samp() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Var_Samp_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
+/** order by variance() on columns of table "analysis.manifest_dependency_edge_result_location" */
+export type Analysis_Manifest_Dependency_Edge_Result_Location_Variance_Order_By = {
+  end_column?: InputMaybe<Order_By>;
+  end_row?: InputMaybe<Order_By>;
+  start_column?: InputMaybe<Order_By>;
+  start_row?: InputMaybe<Order_By>;
+};
+
 /** order by max() on columns of table "analysis.manifest_dependency_edge_result" */
 export type Analysis_Manifest_Dependency_Edge_Result_Max_Order_By = {
   created_at?: InputMaybe<Order_By>;
@@ -3462,7 +3700,7 @@ export type Manifest_Dependency_Node = {
   labels?: Maybe<Scalars['jsonb']>;
   /** An array relationship */
   parent_edges: Array<Manifest_Dependency_Edge>;
-  range: Scalars['String'];
+  range?: Maybe<Scalars['String']>;
   /** An object relationship */
   release: Package_Release;
   release_id: Scalars['uuid'];
@@ -12039,6 +12277,13 @@ export type GetManifestDependencyEdgeAnalysisResultQueryVariables = Exact<{
 
 
 export type GetManifestDependencyEdgeAnalysisResultQuery = { __typename?: 'query_root', analysis_manifest_dependency_edge_result: Array<{ __typename?: 'analysis_manifest_dependency_edge_result', id: any, finding_type: Analysis_Finding_Type_Enum }> };
+
+export type GetManifestDependencyEdgeChildrenQueryVariables = Exact<{
+  ids: Array<Scalars['uuid']> | Scalars['uuid'];
+}>;
+
+
+export type GetManifestDependencyEdgeChildrenQuery = { __typename?: 'query_root', manifest_dependency_node: Array<{ __typename?: 'manifest_dependency_node', id: any, range?: string | null, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null, summary?: string | null, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide_id: any, guide: { __typename?: 'guides', summary: string, id: any, title: string } }>, cwes: Array<{ __typename?: 'vulnerability_vulnerability_cwe', id: any, cwe: { __typename?: 'vulnerability_cwe', id: number, name: string, description: string, common_name?: string | null } }> }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } }> };
 
 export type GetOrganizationFromInstallationIdQueryVariables = Exact<{
   installation_id?: InputMaybe<Scalars['Int']>;
