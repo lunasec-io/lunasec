@@ -43,7 +43,8 @@ async function performSnapshotOnRepository(
   buildId: string,
   cloneUrl: string,
   gitBranch: string,
-  gitCommit?: string
+  gitCommit?: string,
+  projectId?: string
 ): Promise<MaybeErrorVoid> {
   let logger = log.child('snapshot-repository-activity');
   logger.info('Starting to snapshot repository.');
@@ -87,11 +88,31 @@ async function performSnapshotOnRepository(
       s3Url: s3UploadRes,
     });
 
+    logger.info('Attempting to upload worktree snapshot for repository.');
+    let codeURL = '';
+    try {
+      codeURL = await uploadWorktreeSnapshot(buildId, repoDir);
+    } catch (err) {
+      logger.error(failedToUploadWorktreeSnapshotForRepository, {
+        error: err,
+      });
+
+      updateBuildStatus(buildId, Build_State_Enum.SnapshotFailed, failedToUploadWorktreeSnapshotForRepository);
+
+      return {
+        error: true,
+        msg: failedToUploadWorktreeSnapshotForRepository,
+        rawError: err instanceof Error ? err : undefined,
+      };
+    }
+
+    logger.info('Successfully created snapshots for repository.');
+
+    // create releases with uploaded tar url.
     logger.info('Attempting to snapshot pinned dependencies for repository.');
 
-    const pkgTrees = null;
     try {
-      await snapshotPinnedDependencies(buildId, repoDir);
+      await snapshotPinnedDependencies(buildId, repoDir, codeURL, projectId);
     } catch (err) {
       logger.error('Failed to snapshot pinned dependencies for repository.', {
         error: err,
@@ -110,27 +131,6 @@ async function performSnapshotOnRepository(
     }
 
     logger.info('Successfully created snapshot for pinned dependencies for repository.');
-
-    logger.info('Attempting to upload worktree snapshot for repository.');
-    try {
-      await uploadWorktreeSnapshot(buildId, repoDir);
-    } catch (err) {
-      logger.error(failedToUploadWorktreeSnapshotForRepository, {
-        error: err,
-      });
-
-      updateBuildStatus(buildId, Build_State_Enum.SnapshotFailed, failedToUploadWorktreeSnapshotForRepository);
-
-      return {
-        error: true,
-        msg: failedToUploadWorktreeSnapshotForRepository,
-        rawError: err instanceof Error ? err : undefined,
-      };
-    }
-
-    logger.info('Successfully created snapshots for repository.');
-
-    // create shadow releases using gql
 
     updateBuildStatus(buildId, Build_State_Enum.SnapshotCompleted);
 
@@ -201,7 +201,14 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
   const installationId = req.installationId.toString();
 
   return await log.provideFields({ buildId: req.buildId, record: req, installationId }, async () => {
-    return performSnapshotOnRepository(installationId, req.buildId, repoClone.cloneUrl, req.gitBranch, req.gitCommit);
+    return performSnapshotOnRepository(
+      installationId,
+      req.buildId,
+      repoClone.cloneUrl,
+      req.gitBranch,
+      req.gitCommit,
+      req.projectId
+    );
   });
 }
 

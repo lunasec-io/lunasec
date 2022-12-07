@@ -13,14 +13,16 @@ package staticanalysis
 import (
 	"context"
 	"errors"
+	"net/http"
+	"os"
+
 	"github.com/google/uuid"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
-	"net/http"
-	"os"
 )
 
 func validateGetManifestDependencyEdgeResponse(logger zerolog.Logger, resp *gql.GetManifestDependencyEdgeResponse) error {
@@ -111,6 +113,12 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 
 	parentPackageName := resp.Manifest_dependency_edge_by_pk.Parent.Release.Package.Name
 	upstreamBlobUrl := resp.Manifest_dependency_edge_by_pk.Parent.Release.Upstream_blob_url
+
+	// use the mirroredBlobUrl if we have it
+	mirroredBlobUrl := resp.Manifest_dependency_edge_by_pk.Parent.Release.Mirrored_blob_url
+	if mirroredBlobUrl != nil {
+		upstreamBlobUrl = mirroredBlobUrl
+	}
 
 	logger = logger.With().
 		Str("parent package", parentPackageName).
@@ -265,6 +273,7 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 	logger.Info().
 		Msg("statically analyzing parent child relationship")
 
+	// todo s3 creds?
 	upstreamUrlResp, err := http.Get(resolvedBlobUrl)
 	if err != nil {
 		logger.Error().

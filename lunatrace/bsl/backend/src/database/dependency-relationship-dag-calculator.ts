@@ -20,6 +20,7 @@ import { DepTreeDep } from 'snyk-nodejs-lockfile-parser-lunatrace-fork/dist/pars
 export interface DependencyGraphNode {
   treeHashId: string;
   packageData: DepTreeDep;
+  mirroredBlobUrl?: string;
   packageEcosystem: string;
   customRegistry: string;
   parentRange?: string;
