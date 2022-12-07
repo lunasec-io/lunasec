@@ -13,7 +13,7 @@
  */
 import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common/build/main';
 import React, { ChangeEvent } from 'react';
-import { Button, Col, Dropdown, OverlayTrigger, Row } from 'react-bootstrap';
+import { Button, Col, Dropdown, Form, OverlayTrigger, Row } from 'react-bootstrap';
 import { FcPlus } from 'react-icons/fc';
 
 import { isDirectDep } from '../../../../../utils/package';
@@ -26,6 +26,7 @@ import { VulnerablePackageMain } from './vulnerable-package-card/VulnerablePacka
 interface FindingListProps {
   quickView: QuickViewProps;
   setIgnoreFindings: (ignored: boolean) => void;
+  setShowCompleteAnalysis: (complete: boolean) => void;
   vulnerablePackages: VulnerablePackage[];
   severity: SeverityNamesOsv;
   setSeverity: (s: SeverityNamesOsv) => void;
@@ -35,6 +36,7 @@ interface FindingListProps {
 export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> = ({
   quickView,
   setIgnoreFindings,
+  setShowCompleteAnalysis,
   vulnerablePackages,
   severity,
   setSeverity,
@@ -51,6 +53,7 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
   const packagesFilteredBySeverity = vulnerablePackages.filter((p) => !p.beneath_minimum_severity);
 
   const handleShowIgnoredFindings = (e: ChangeEvent<HTMLInputElement>) => setIgnoreFindings(!e.target.checked);
+  const handleShowCompleteAnalysis = (e: ChangeEvent<HTMLInputElement>) => setShowCompleteAnalysis(e.target.checked);
 
   const pkgCards = packagesFilteredBySeverity.map((p) => {
     return (
@@ -91,33 +94,33 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
           </Row>
         </Col>
         <Col lg="6" style={{ display: 'flex', justifyContent: 'right' }}>
-          <label className="form-check mx-2 p-1 cursor-pointer user-select-none">
-            <input className="form-check-input" type="checkbox" value="" onChange={handleShowIgnoredFindings} />
-            Show Ignored
-          </label>
-          <Dropdown align={{ md: 'end' }} className="d-inline me-2">
-            <Dropdown.Toggle variant="secondary" className="text-capitalize">
-              Minimum Severity: {severity === 'Unknown' ? 'None' : severity}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Header>
-                Lowest severity to show <hr className="m-1" />
-              </Dropdown.Header>
-              {severityOrderOsv
-                .map((severityName) => {
-                  return (
-                    <Dropdown.Item
-                      active={severityName === severity}
-                      onClick={() => setSeverity(severityName as SeverityNamesOsv)}
-                      key={severityName}
-                    >
-                      {severityName === 'Unknown' ? 'None' : severityName}
-                    </Dropdown.Item>
-                  );
-                })
-                .reverse()}
-            </Dropdown.Menu>
-          </Dropdown>
+          <Form>
+            <Form.Check type={'checkbox'} label={'Show Ignored'} onChange={handleShowIgnoredFindings} />
+            <Form.Check type={'checkbox'} label={'Show Complete Analysis'} onChange={handleShowCompleteAnalysis} />
+            <Dropdown align={{ md: 'end' }} className="d-inline me-2">
+              <Dropdown.Toggle variant="secondary" className="text-capitalize">
+                Minimum Severity: {severity === 'Unknown' ? 'None' : severity}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Header>
+                  Lowest severity to show <hr className="m-1" />
+                </Dropdown.Header>
+                {severityOrderOsv
+                  .map((severityName) => {
+                    return (
+                      <Dropdown.Item
+                        active={severityName === severity}
+                        onClick={() => setSeverity(severityName as SeverityNamesOsv)}
+                        key={severityName}
+                      >
+                        {severityName === 'Unknown' ? 'None' : severityName}
+                      </Dropdown.Item>
+                    );
+                  })
+                  .reverse()}
+              </Dropdown.Menu>
+            </Dropdown>
+          </Form>
         </Col>
       </Row>
       <br />

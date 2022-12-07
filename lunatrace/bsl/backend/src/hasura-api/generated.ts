@@ -63,7 +63,7 @@ export type BuildData_AffectedByVulnerability = {
 
 export type BuildData_Cwe = {
   __typename?: 'BuildData_Cwe';
-  common_name: Scalars['String'];
+  common_name?: Maybe<Scalars['String']>;
   description: Scalars['String'];
   id: Scalars['Int'];
   name: Scalars['String'];
@@ -321,6 +321,8 @@ export type Analysis_Manifest_Dependency_Edge_Result = {
   finding_source_version: Scalars['Int'];
   finding_type: Analysis_Finding_Type_Enum;
   id: Scalars['uuid'];
+  /** An array relationship */
+  locations: Array<Analysis_Manifest_Dependency_Edge_Result_Location>;
   /** An object relationship */
   manifest_dependency_edge: Manifest_Dependency_Edge;
   manifest_dependency_edge_id: Scalars['uuid'];
@@ -328,6 +330,16 @@ export type Analysis_Manifest_Dependency_Edge_Result = {
   /** An object relationship */
   vulnerability: Vulnerability;
   vulnerability_id: Scalars['uuid'];
+};
+
+
+/** columns and relationships of "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_ResultLocationsArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
 };
 
 
@@ -378,6 +390,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Bool_Exp = {
   finding_source_version?: InputMaybe<Int_Comparison_Exp>;
   finding_type?: InputMaybe<Analysis_Finding_Type_Enum_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  locations?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
   manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Bool_Exp>;
   manifest_dependency_edge_id?: InputMaybe<Uuid_Comparison_Exp>;
   output?: InputMaybe<Jsonb_Comparison_Exp>;
@@ -420,6 +433,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Insert_Input = {
   finding_source_version?: InputMaybe<Scalars['Int']>;
   finding_type?: InputMaybe<Analysis_Finding_Type_Enum>;
   id?: InputMaybe<Scalars['uuid']>;
+  locations?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Arr_Rel_Insert_Input>;
   manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Obj_Rel_Insert_Input>;
   manifest_dependency_edge_id?: InputMaybe<Scalars['uuid']>;
   output?: InputMaybe<Scalars['jsonb']>;
@@ -706,6 +720,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Order_By = {
   finding_source_version?: InputMaybe<Order_By>;
   finding_type?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  locations_aggregate?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Aggregate_Order_By>;
   manifest_dependency_edge?: InputMaybe<Manifest_Dependency_Edge_Order_By>;
   manifest_dependency_edge_id?: InputMaybe<Order_By>;
   output?: InputMaybe<Order_By>;
@@ -4134,6 +4149,10 @@ export type Mutation_Root = {
   delete_vulnerability_range_by_pk?: Maybe<Vulnerability_Range>;
   /** insert data into the table: "analysis.manifest_dependency_edge_result" */
   insert_analysis_manifest_dependency_edge_result?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Mutation_Response>;
+  /** insert data into the table: "analysis.manifest_dependency_edge_result_location" */
+  insert_analysis_manifest_dependency_edge_result_location?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Mutation_Response>;
+  /** insert a single row into the table: "analysis.manifest_dependency_edge_result_location" */
+  insert_analysis_manifest_dependency_edge_result_location_one?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location>;
   /** insert a single row into the table: "analysis.manifest_dependency_edge_result" */
   insert_analysis_manifest_dependency_edge_result_one?: Maybe<Analysis_Manifest_Dependency_Edge_Result>;
   /** insert data into the table: "build_dependency_relationship" */
@@ -4291,6 +4310,10 @@ export type Mutation_Root = {
   update_analysis_manifest_dependency_edge_result?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Mutation_Response>;
   /** update single row of the table: "analysis.manifest_dependency_edge_result" */
   update_analysis_manifest_dependency_edge_result_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result>;
+  /** update data of the table: "analysis.manifest_dependency_edge_result_location" */
+  update_analysis_manifest_dependency_edge_result_location?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location_Mutation_Response>;
+  /** update single row of the table: "analysis.manifest_dependency_edge_result_location" */
+  update_analysis_manifest_dependency_edge_result_location_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location>;
   /** update data of the table: "build_dependency_relationship" */
   update_build_dependency_relationship?: Maybe<Build_Dependency_Relationship_Mutation_Response>;
   /** update single row of the table: "build_dependency_relationship" */
@@ -4508,6 +4531,20 @@ export type Mutation_RootDelete_Vulnerability_Range_By_PkArgs = {
 export type Mutation_RootInsert_Analysis_Manifest_Dependency_Edge_ResultArgs = {
   objects: Array<Analysis_Manifest_Dependency_Edge_Result_Insert_Input>;
   on_conflict?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Analysis_Manifest_Dependency_Edge_Result_LocationArgs = {
+  objects: Array<Analysis_Manifest_Dependency_Edge_Result_Location_Insert_Input>;
+  on_conflict?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Analysis_Manifest_Dependency_Edge_Result_Location_OneArgs = {
+  object: Analysis_Manifest_Dependency_Edge_Result_Location_Insert_Input;
+  on_conflict?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_On_Conflict>;
 };
 
 
@@ -5071,6 +5108,22 @@ export type Mutation_RootUpdate_Analysis_Manifest_Dependency_Edge_Result_By_PkAr
   _prepend?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Prepend_Input>;
   _set?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Set_Input>;
   pk_columns: Analysis_Manifest_Dependency_Edge_Result_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Analysis_Manifest_Dependency_Edge_Result_LocationArgs = {
+  _inc?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Inc_Input>;
+  _set?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Set_Input>;
+  where: Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Analysis_Manifest_Dependency_Edge_Result_Location_By_PkArgs = {
+  _inc?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Inc_Input>;
+  _set?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Set_Input>;
+  pk_columns: Analysis_Manifest_Dependency_Edge_Result_Location_Pk_Columns_Input;
 };
 
 
@@ -7847,6 +7900,10 @@ export type Query_Root = {
   analysis_manifest_dependency_edge_result: Array<Analysis_Manifest_Dependency_Edge_Result>;
   /** fetch data from the table: "analysis.manifest_dependency_edge_result" using primary key columns */
   analysis_manifest_dependency_edge_result_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result>;
+  /** fetch data from the table: "analysis.manifest_dependency_edge_result_location" */
+  analysis_manifest_dependency_edge_result_location: Array<Analysis_Manifest_Dependency_Edge_Result_Location>;
+  /** fetch data from the table: "analysis.manifest_dependency_edge_result_location" using primary key columns */
+  analysis_manifest_dependency_edge_result_location_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location>;
   authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   availableOrgsWithRepos?: Maybe<Array<OrgWithRepos>>;
   /** fetch data from the table: "build_dependency_relationship" */
@@ -8041,6 +8098,20 @@ export type Query_RootAnalysis_Manifest_Dependency_Edge_ResultArgs = {
 
 
 export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_LocationArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
+};
+
+
+export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_Location_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -8677,6 +8748,7 @@ export type Query_RootVulnerability_Vulnerability_Cwe_By_PkArgs = {
 export type Query_RootVulnerableReleasesFromBuildArgs = {
   buildId: Scalars['uuid'];
   minimumSeverity?: InputMaybe<Scalars['String']>;
+  previewChains?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -9213,6 +9285,10 @@ export type Subscription_Root = {
   analysis_manifest_dependency_edge_result: Array<Analysis_Manifest_Dependency_Edge_Result>;
   /** fetch data from the table: "analysis.manifest_dependency_edge_result" using primary key columns */
   analysis_manifest_dependency_edge_result_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result>;
+  /** fetch data from the table: "analysis.manifest_dependency_edge_result_location" */
+  analysis_manifest_dependency_edge_result_location: Array<Analysis_Manifest_Dependency_Edge_Result_Location>;
+  /** fetch data from the table: "analysis.manifest_dependency_edge_result_location" using primary key columns */
+  analysis_manifest_dependency_edge_result_location_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -9400,6 +9476,20 @@ export type Subscription_RootAnalysis_Manifest_Dependency_Edge_ResultArgs = {
 
 
 export type Subscription_RootAnalysis_Manifest_Dependency_Edge_Result_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootAnalysis_Manifest_Dependency_Edge_Result_LocationArgs = {
+  distinct_on?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Analysis_Manifest_Dependency_Edge_Result_Location_Order_By>>;
+  where?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp>;
+};
+
+
+export type Subscription_RootAnalysis_Manifest_Dependency_Edge_Result_Location_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -11980,9 +12070,7 @@ export type Vulnerability_Vulnerability_Cwe_Bool_Exp = {
 /** unique or primary key constraints on table "vulnerability.vulnerability_cwe" */
 export enum Vulnerability_Vulnerability_Cwe_Constraint {
   /** unique or primary key constraint on columns "id" */
-  VulnerabilityCwePkey = 'vulnerability_cwe_pkey',
-  /** unique or primary key constraint on columns "cwe_id", "vulnerability_id" */
-  VulnerabilityCweVulnerabilityIdCweIdKey = 'vulnerability_cwe_vulnerability_id_cwe_id_key'
+  VulnerabilityCwePkey = 'vulnerability_cwe_pkey'
 }
 
 /** input type for incrementing numeric columns in table "vulnerability.vulnerability_cwe" */
@@ -12319,7 +12407,7 @@ export type GetTreeFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', id: any, parent_id: any, child_id: any, analysis_results: Array<{ __typename?: 'analysis_manifest_dependency_edge_result', finding_source_version: number, finding_source: Analysis_Finding_Source_Enum, finding_type: Analysis_Finding_Type_Enum }>, child: { __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null, summary?: string | null, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide_id: any, guide: { __typename?: 'guides', summary: string, id: any, title: string } }>, cwes: Array<{ __typename?: 'vulnerability_vulnerability_cwe', id: any, cwe: { __typename?: 'vulnerability_cwe', id: number, name: string, description: string, common_name?: string | null } }> }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } } }> | null }>, project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } } | null };
+export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', id: any, parent_id: any, child_id: any, analysis_results: Array<{ __typename?: 'analysis_manifest_dependency_edge_result', finding_source_version: number, finding_source: Analysis_Finding_Source_Enum, finding_type: Analysis_Finding_Type_Enum }> }> | null }>, project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } } | null };
 
 export type GetUserGitHubDataQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
@@ -12640,6 +12728,57 @@ export const GetManifestDependencyEdgeAnalysisResultDocument = gql`
   }
 }
     `;
+export const GetManifestDependencyEdgeChildrenDocument = gql`
+    query GetManifestDependencyEdgeChildren($ids: [uuid!]!) {
+  manifest_dependency_node(where: {id: {_in: $ids}}) {
+    id
+    range
+    labels
+    release_id
+    release {
+      id
+      fetched_time
+      version
+      package {
+        name
+        last_successful_fetch
+        package_manager
+        affected_by_vulnerability {
+          vulnerability {
+            id
+            source_id
+            source
+            severity_name
+            cvss_score
+            summary
+            guide_vulnerabilities {
+              guide_id
+              guide {
+                summary
+                id
+                title
+              }
+            }
+            cwes {
+              id
+              cwe {
+                id
+                name
+                description
+                common_name
+              }
+            }
+          }
+          ranges {
+            introduced
+            fixed
+          }
+        }
+      }
+    }
+  }
+}
+    `;
 export const GetOrganizationFromInstallationIdDocument = gql`
     query GetOrganizationFromInstallationId($installation_id: Int) {
   organizations(where: {installation_id: {_eq: $installation_id}}) {
@@ -12692,53 +12831,6 @@ export const GetTreeFromBuildDocument = gql`
           finding_source_version
           finding_source
           finding_type
-        }
-        child {
-          id
-          range
-          labels
-          release_id
-          release {
-            id
-            fetched_time
-            version
-            package {
-              name
-              last_successful_fetch
-              package_manager
-              affected_by_vulnerability {
-                vulnerability {
-                  id
-                  source_id
-                  source
-                  severity_name
-                  cvss_score
-                  summary
-                  guide_vulnerabilities {
-                    guide_id
-                    guide {
-                      summary
-                      id
-                      title
-                    }
-                  }
-                  cwes {
-                    id
-                    cwe {
-                      id
-                      name
-                      description
-                      common_name
-                    }
-                  }
-                }
-                ranges {
-                  introduced
-                  fixed
-                }
-              }
-            }
-          }
         }
       }
     }
@@ -13087,6 +13179,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     GetManifestDependencyEdgeAnalysisResult(variables: GetManifestDependencyEdgeAnalysisResultQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetManifestDependencyEdgeAnalysisResultQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetManifestDependencyEdgeAnalysisResultQuery>(GetManifestDependencyEdgeAnalysisResultDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetManifestDependencyEdgeAnalysisResult', 'query');
+    },
+    GetManifestDependencyEdgeChildren(variables: GetManifestDependencyEdgeChildrenQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetManifestDependencyEdgeChildrenQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetManifestDependencyEdgeChildrenQuery>(GetManifestDependencyEdgeChildrenDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetManifestDependencyEdgeChildren', 'query');
     },
     GetOrganizationFromInstallationId(variables?: GetOrganizationFromInstallationIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetOrganizationFromInstallationIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetOrganizationFromInstallationIdQuery>(GetOrganizationFromInstallationIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetOrganizationFromInstallationId', 'query');

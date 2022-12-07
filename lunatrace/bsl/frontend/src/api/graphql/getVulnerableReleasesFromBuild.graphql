@@ -1,5 +1,5 @@
-query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!) {
-    vulnerableReleasesFromBuild(buildId: $buildId, minimumSeverity: $minimumSeverity) {
+query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!, $previewChains: Boolean) {
+    vulnerableReleasesFromBuild(buildId: $buildId, minimumSeverity: $minimumSeverity, previewChains: $previewChains) {
         trivially_updatable
         beneath_minimum_severity
         cvss
