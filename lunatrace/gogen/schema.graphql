@@ -411,7 +411,7 @@ input analysis_manifest_dependency_edge_result_location_bool_exp {
 }
 
 enum analysis_manifest_dependency_edge_result_location_constraint {
-    manifest_dependency_edge_result_callsite_pkey
+    manifest_dependency_edge_result_location_pkey
 }
 
 input analysis_manifest_dependency_edge_result_location_inc_input {
@@ -2819,7 +2819,7 @@ type manifest_dependency_node {
     id: uuid!
     labels(path: String): jsonb
     parent_edges(distinct_on: [manifest_dependency_edge_select_column!], limit: Int, offset: Int, order_by: [manifest_dependency_edge_order_by!], where: manifest_dependency_edge_bool_exp): [manifest_dependency_edge!]!
-    range: String!
+    range: String
     release: package_release!
     release_id: uuid!
 }
@@ -6718,6 +6718,7 @@ input vulnerability_vulnerability_cwe_bool_exp {
 
 enum vulnerability_vulnerability_cwe_constraint {
     vulnerability_cwe_pkey
+    vulnerability_cwe_vulnerability_id_cwe_id_key
 }
 
 input vulnerability_vulnerability_cwe_inc_input {

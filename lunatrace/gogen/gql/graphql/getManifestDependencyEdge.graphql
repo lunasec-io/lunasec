@@ -10,6 +10,7 @@ query GetManifestDependencyEdge($id: uuid!) {
     parent {
       release {
         upstream_blob_url
+        mirrored_blob_url
         version
         package {
           name
