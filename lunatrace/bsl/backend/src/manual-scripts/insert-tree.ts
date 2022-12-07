@@ -21,4 +21,9 @@ import { snapshotPinnedDependencies } from '../snapshot/node-package-tree';
 const fixturePath = path.resolve(os.homedir(), 'tmp/beer-me');
 console.log('loading from ', fixturePath);
 // again change the buildId to whatever you want
-void snapshotPinnedDependencies('736de7fc-2df3-4438-af90-b3596f65dd8d', fixturePath);
+void snapshotPinnedDependencies(
+  '736de7fc-2df3-4438-af90-b3596f65dd8d',
+  fixturePath,
+  'http://some.code.url',
+  '999fe4f2-9f6c-4e11-9b00-56fe2092ad2c'
+);
