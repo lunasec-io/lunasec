@@ -34,7 +34,7 @@ interface PackageDependenciesWithGraphAndMetadata {
     missingLockFileEntry?: 'true';
   };
   name?: string;
-  range?: string | null;
+  range?: string;
   version?: string;
 }
 
