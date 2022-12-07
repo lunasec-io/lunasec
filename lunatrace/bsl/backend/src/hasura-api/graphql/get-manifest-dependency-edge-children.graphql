@@ -1,0 +1,49 @@
+query GetManifestDependencyEdgeChildren($ids: [uuid!]!) {
+  manifest_dependency_node(where: {id: {_in: $ids}}) {
+    id
+    range
+    labels
+    release_id
+    release {
+      id
+      fetched_time
+      version
+      package {
+        name
+        last_successful_fetch
+        package_manager
+        affected_by_vulnerability {
+          vulnerability {
+            id
+            source_id
+            source
+            severity_name
+            cvss_score
+            summary
+            guide_vulnerabilities {
+              guide_id
+              guide {
+                summary
+                id
+                title
+              }
+            }
+            cwes {
+              id
+              cwe {
+                id
+                name
+                description
+                common_name
+              }
+            }
+          }
+          ranges {
+            introduced
+            fixed
+          }
+        }
+      }
+    }
+  }
+}

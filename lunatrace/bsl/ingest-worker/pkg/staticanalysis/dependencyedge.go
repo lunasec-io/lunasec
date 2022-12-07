@@ -56,6 +56,10 @@ func validateGetManifestDependencyEdgeResponse(logger zerolog.Logger, resp *gql.
 }
 
 func getManifestDependencyEdgeLocations(output *rules.SemgrepRuleOutput) *gql.Analysis_manifest_dependency_edge_result_location_arr_rel_insert_input {
+	if len(output.Results) == 0 {
+		return nil
+	}
+
 	var locations []*gql.Analysis_manifest_dependency_edge_result_location_insert_input
 	for _, result := range output.Results {
 		locations = append(locations, &gql.Analysis_manifest_dependency_edge_result_location_insert_input{
