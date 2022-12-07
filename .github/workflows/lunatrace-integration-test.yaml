@@ -116,18 +116,15 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           commit-message: Update generated files
-          committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           base: ${{ github.head_ref }}
           branch: regenerate/${{ github.head_ref }}
           delete-branch: true
-          title: "Regenerate files for ${{ github.ref_name }}"
+          title: "Regenerate files for ${{ github.head_ref }}"
           body: |
             Update generated files
           labels: |
             automated
-          assignees: ${{ github.actor }}
-          reviewers: ${{ github.actor }}
+          assignees: ${{ !contains(github.actor, '[bot]') && github.actor }}
           draft: false
       - name: Fail if there were changes
         if: ${{ steps.cpr.outputs.pull-request-number }}
