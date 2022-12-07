@@ -23,7 +23,6 @@ import { hasura } from '../../../hasura-api';
 import { updateBuildStatus } from '../../../hasura-api/actions/update-build-status';
 import { updateManifestStatus } from '../../../hasura-api/actions/update-manifest-status';
 import { Build_State_Enum } from '../../../hasura-api/generated';
-import VulnerabilityDependencyTree from '../../../models/vulnerability-dependency-tree';
 import { vulnerabilityTreeFromHasura } from '../../../models/vulnerability-dependency-tree/vulnerability-tree-from-hasura';
 import { S3ObjectMetadata } from '../../../types/s3';
 import { SbomBucketInfo } from '../../../types/scan';

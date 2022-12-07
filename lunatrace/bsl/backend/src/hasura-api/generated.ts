@@ -8748,6 +8748,7 @@ export type Query_RootVulnerability_Vulnerability_Cwe_By_PkArgs = {
 export type Query_RootVulnerableReleasesFromBuildArgs = {
   buildId: Scalars['uuid'];
   minimumSeverity?: InputMaybe<Scalars['String']>;
+  previewChains?: InputMaybe<Scalars['Boolean']>;
 };
 
 

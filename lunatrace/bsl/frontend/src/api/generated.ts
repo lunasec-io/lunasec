@@ -5485,6 +5485,7 @@ export type Query_RootVulnerability_Vulnerability_Cwe_By_PkArgs = {
 export type Query_RootVulnerableReleasesFromBuildArgs = {
   buildId: Scalars['uuid'];
   minimumSeverity?: InputMaybe<Scalars['String']>;
+  previewChains?: InputMaybe<Scalars['Boolean']>;
 };
 
 /** Boolean expression to compare columns of type "reference_type". All fields are combined with logical 'AND'. */
@@ -8002,6 +8003,7 @@ export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerab
 export type GetVulnerableReleasesFromBuildQueryVariables = Exact<{
   buildId: Scalars['uuid'];
   minimumSeverity: Scalars['String'];
+  previewChains?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 
@@ -8765,10 +8767,11 @@ export const GetVulnerabilityDetailsDocument = `
 }
     `;
 export const GetVulnerableReleasesFromBuildDocument = `
-    query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!) {
+    query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!, $previewChains: Boolean) {
   vulnerableReleasesFromBuild(
     buildId: $buildId
     minimumSeverity: $minimumSeverity
+    previewChains: $previewChains
   ) {
     trivially_updatable
     beneath_minimum_severity
