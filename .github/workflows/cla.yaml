@@ -22,4 +22,4 @@ jobs:
           path-to-document: 'https://gist.github.com/freeqaz/539184d206e06868653e02d36530b20b/3e859f604061d0cc14c9067ec56ac95141d0db34' # e.g. a CLA or a DCO document
           remote-organization-name: lunasec-io
           remote-repository-name: cla-sigs
-          allowlist: 'github-action*,bot*,*[bot]'
+          allowlist: 'github-actions[bot]'
