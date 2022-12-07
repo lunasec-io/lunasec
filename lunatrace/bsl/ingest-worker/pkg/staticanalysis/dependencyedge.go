@@ -13,12 +13,16 @@ package staticanalysis
 import (
 	"context"
 	"errors"
+	"io"
 	"net/http"
+	"net/url"
 	"os"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"gocloud.dev/blob"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
@@ -129,16 +133,32 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 		Str("child package", childPackageName).
 		Logger()
 
-	findingType, results := s.runSemgrepRuleOnParentPackage(
-		ctx, logger, upstreamBlobUrl, manifestDependencyEdgeUUID, parentPackageName, childPackageName,
-	)
+	findingType, results := s.runSemgrepRuleOnParentPackage(ctx, logger, upstreamBlobUrl, manifestDependencyEdgeUUID, parentPackageName, childPackageName)
 
+	if queueRecord.SaveResults {
+		logger.Info().Msg("saving results")
+		err = s.saveResults(ctx, results, findingType, manifestDependencyEdgeUUID, vulnerabilityUUID)
+		if err != nil {
+			return err
+		}
+	} else {
+		logger.Info().Msg("skipped saving results")
+	}
+
+	return nil
+}
+
+func (s *staticAnalysisQueueHandler) saveResults(ctx context.Context, results *rules.SemgrepRuleOutput, findingType gql.Analysis_finding_type_enum, manifestDependencyEdgeUUID uuid.UUID, vulnerabilityUUID uuid.UUID) error {
+	logger := log.With().
+		Str("mde", manifestDependencyEdgeUUID.String()).
+		Str("vuln", vulnerabilityUUID.String()).
+		Logger()
 	var locations *gql.Analysis_manifest_dependency_edge_result_location_arr_rel_insert_input
 	if results != nil {
 		locations = getManifestDependencyEdgeLocations(results)
 	}
 
-	logger.Info().
+	log.Info().
 		Str("finding type", string(findingType)).
 		Interface("locations", locations).
 		Msg("saving results of analysis")
@@ -154,48 +174,32 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 
 	analysisResp, err := gql.InsertManifestDependencyEdgeAnalysis(ctx, s.GQLClient, result)
 	if err != nil {
-		util.LogGraphqlError(
-			logger,
-			"failed to insert edge analysis",
-			err,
-		)
+		util.LogGraphqlError(logger, "failed to insert edge analysis", err)
 		return err
 	}
 
 	insertedAnalysisID := analysisResp.GetInsert_analysis_manifest_dependency_edge_result_one().GetId().String()
 
-	log.Info().
+	logger.Info().
 		Str("results id", insertedAnalysisID).
 		Msg("inserted edge analysis results")
 	return nil
 }
 
-func (s *staticAnalysisQueueHandler) getManifestDependencyEdge(
-	ctx context.Context,
-	manifestDependencyEdgeUUID uuid.UUID,
-) (*gql.GetManifestDependencyEdgeResponse, error) {
+func (s *staticAnalysisQueueHandler) getManifestDependencyEdge(ctx context.Context, manifestDependencyEdgeUUID uuid.UUID) (*gql.GetManifestDependencyEdgeResponse, error) {
 	logger := log.With().
 		Str("manifest dependency edge", manifestDependencyEdgeUUID.String()).
 		Logger()
 
 	resp, err := gql.GetManifestDependencyEdge(ctx, s.GQLClient, manifestDependencyEdgeUUID)
 	if err != nil {
-		util.LogGraphqlError(
-			logger,
-			"failed to get manifest dependency edge",
-			err,
-		)
+		util.LogGraphqlError(logger, "failed to get manifest dependency edge", err)
 		return nil, err
 	}
 	return resp, nil
 }
 
-func (s *staticAnalysisQueueHandler) getUpstreamUrlForPackage(
-	ctx context.Context,
-	logger zerolog.Logger,
-	manifestDependencyEdgeUUID uuid.UUID,
-	packageName string,
-) (string, error) {
+func (s *staticAnalysisQueueHandler) getUpstreamUrlForPackage(ctx context.Context, logger zerolog.Logger, manifestDependencyEdgeUUID uuid.UUID, packageName string) (string, error) {
 	logger = logger.With().Str("package name", packageName).Logger()
 
 	logger.Info().
@@ -251,14 +255,7 @@ func (s *staticAnalysisQueueHandler) getUpstreamUrlForPackage(
 	*/
 }
 
-func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
-	ctx context.Context,
-	logger zerolog.Logger,
-	upstreamBlobUrl *string,
-	manifestDependencyEdgeUUID uuid.UUID,
-	parentPackageName,
-	childPackageName string,
-) (gql.Analysis_finding_type_enum, *rules.SemgrepRuleOutput) {
+func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(ctx context.Context, logger zerolog.Logger, upstreamBlobUrl *string, manifestDependencyEdgeUUID uuid.UUID, parentPackageName, childPackageName string) (gql.Analysis_finding_type_enum, *rules.SemgrepRuleOutput) {
 	var err error
 
 	var resolvedBlobUrl string
@@ -278,13 +275,43 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 		Msg("statically analyzing parent child relationship")
 
 	// todo s3 creds?
-	upstreamUrlResp, err := http.Get(resolvedBlobUrl)
+
+	parsedResolvedBlobUrl, err := url.Parse(resolvedBlobUrl)
 	if err != nil {
 		logger.Error().
 			Err(err).
-			Msg("failed to download package blob")
+			Msg("failed to parse upstream blob url")
 		return gql.Analysis_finding_type_enumError, nil
 	}
+
+	var codeBlobStream io.ReadCloser
+
+	if strings.Contains(parsedResolvedBlobUrl.Host, ".s3.") {
+		b, err := blob.OpenBucket(ctx, "s3://"+strings.Split(parsedResolvedBlobUrl.Host, ".")[0])
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("failed to open package bucket from s3")
+			return gql.Analysis_finding_type_enumError, nil
+		}
+		codeBlobStream, err = b.NewReader(ctx, parsedResolvedBlobUrl.Path, nil)
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("failed to open package blob from s3")
+			return gql.Analysis_finding_type_enumError, nil
+		}
+	} else {
+		upstreamUrlResp, err := http.Get(resolvedBlobUrl)
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("failed to download package blob")
+			return gql.Analysis_finding_type_enumError, nil
+		}
+		codeBlobStream = upstreamUrlResp.Body
+	}
+	defer codeBlobStream.Close()
 
 	tmpDir, err := os.MkdirTemp("", "")
 	if err != nil {
@@ -299,7 +326,7 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 		Str("tmp dir", tmpDir).
 		Msg("extracting package code")
 
-	err = util.ExtractTarGz(upstreamUrlResp.Body, tmpDir)
+	err = util.ExtractTarGz(codeBlobStream, tmpDir)
 	if err != nil {
 		logger.Error().
 			Err(err).
