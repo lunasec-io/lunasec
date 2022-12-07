@@ -3,14 +3,17 @@ query GetTreeFromBuild($build_id: uuid!, $analysis_results_where: analysis_manif
         resolved_manifests {
             id
             path
-            child_edges_recursive {
+            manifest_dependency_node {
                 id
-                parent_id
-                child_id
-                analysis_results(where: $analysis_results_where, order_by: {finding_source_version: desc}) {
-                  finding_source_version
-                  finding_source
-                  finding_type
+                child_edges_recursive {
+                    id
+                    parent_id
+                    child_id
+                    analysis_results(where: $analysis_results_where, order_by: {finding_source_version: desc}) {
+                        finding_source_version
+                        finding_source
+                        finding_type
+                    }
                 }
             }
         }
