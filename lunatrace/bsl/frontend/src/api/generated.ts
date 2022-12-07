@@ -3163,7 +3163,7 @@ export type Manifest_Dependency_Node = {
   labels?: Maybe<Scalars['jsonb']>;
   /** An array relationship */
   parent_edges: Array<Manifest_Dependency_Edge>;
-  range?: Maybe<Scalars['String']>;
+  range: Scalars['String'];
   /** An object relationship */
   release: Package_Release;
   release_id: Scalars['uuid'];
