@@ -108,7 +108,7 @@ export const VulnInfoTableRow: React.FC<VulnerabilityTableItemProps> = ({ vulnMe
           key={c.id}
           id={c.cwe.id}
           name={c.cwe.name}
-          common_name={c.cwe.common_name}
+          common_name={c.cwe.common_name || undefined}
           quickView={quickView}
           tooltipDescription={true}
         />
