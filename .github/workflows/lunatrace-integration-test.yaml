@@ -110,25 +110,9 @@ jobs:
             echo "::set-output name=changes::true"
           fi
 
-      - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v4
-        if: github.event_name == 'pull_request'
+      - name: suggester / shellcheck
+        uses: reviewdog/action-suggester@v1
         with:
-          commit-message: Update generated files
-          base: ${{ github.head_ref }}
-          branch: regenerate/${{ github.head_ref }}
-          delete-branch: true
-          title: "Regenerate files for ${{ github.head_ref }}"
-          body: |
-            Update generated files
-          labels: |
-            automated
-          assignees: ${{ !contains(github.actor, '[bot]') && github.actor }}
-          draft: false
+          tool_name: shellcheck
       - name: Fail if there were changes
-        if: ${{ steps.cpr.outputs.pull-request-number }}
-        run: |
-          echo "Generated files don't match, pull request created:"
-          echo "${{ steps.cpr.outputs.pull-request-url }}"
-          exit 1
+        run: git diff -p --exit-code -- . ':(exclude)lunatrace/schema.graphql'
