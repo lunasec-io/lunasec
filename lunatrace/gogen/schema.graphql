@@ -2827,6 +2827,8 @@ type manifest_dependency_node {
 input manifest_dependency_node_append_input {
     labels: jsonb
 }
+test
+
 
 input manifest_dependency_node_bool_exp {
     _and: [manifest_dependency_node_bool_exp!]
@@ -2891,17 +2893,7 @@ input manifest_dependency_node_order_by {
     labels: order_by
     parent_edges_aggregate: manifest_dependency_edge_aggregate_order_by
     range: order_by
-    release: package_release_order_by
-    release_id: order_by
-}
-
-input manifest_dependency_node_pk_columns_input {
-    id: uuid!
-}
-
-input manifest_dependency_node_prepend_input {
-    labels: jsonb
-}
+    release: package_releas
 
 enum manifest_dependency_node_select_column {
     id
@@ -3061,11 +3053,6 @@ input manifests_order_by {
     s3_key: order_by
     s3_url: order_by
     status: order_by
-}
-
-input manifests_pk_columns_input {
-    id: uuid!
-}
 
 enum manifests_select_column {
     build_id
@@ -3166,7 +3153,7 @@ type mutation_root {
     insert_projects_one(object: projects_insert_input!, on_conflict: projects_on_conflict): projects
     insert_resolved_manifest(objects: [resolved_manifest_insert_input!]!, on_conflict: resolved_manifest_on_conflict): resolved_manifest_mutation_response
     insert_resolved_manifest_one(object: resolved_manifest_insert_input!, on_conflict: resolved_manifest_on_conflict): resolved_manifest
-    insert_scans(objects: [scans_insert_input!]!, on_conflict: scans_on_conflict): scans_mutation_response
+    insert_scans(objects: [scans_jkjhinsert_input!]!, on_conflict: scans_on_conflict): scans_mutation_response
     insert_scans_one(object: scans_insert_input!, on_conflict: scans_on_conflict): scans
     insert_users(objects: [users_insert_input!]!, on_conflict: users_on_conflict): users_mutation_response
     insert_users_one(object: users_insert_input!, on_conflict: users_on_conflict): users
