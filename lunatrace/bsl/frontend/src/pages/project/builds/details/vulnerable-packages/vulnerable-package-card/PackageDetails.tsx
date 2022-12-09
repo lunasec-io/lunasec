@@ -26,6 +26,11 @@ interface PackageDetailsProps {
 }
 
 export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ pkg }) => {
+  console.log(
+    pkg.chains.map((c) => {
+      c.map((d) => d.locations);
+    })
+  );
   return (
     <div className="mb-3">
       <Row className={'d-flex flex-row'}>

@@ -88,7 +88,7 @@ async function performSnapshotOnRepository(
       s3Url: s3UploadRes,
     });
 
-    logger.info('Attempting to upload worktree snapshot for repository.');
+    logger.info('Attempting to upload worktree for repository.');
     let codeURL = '';
     try {
       codeURL = await uploadWorktreeSnapshot(buildId, repoDir);
@@ -106,7 +106,9 @@ async function performSnapshotOnRepository(
       };
     }
 
-    logger.info('Successfully created snapshots for repository.');
+    logger.info('Successfully uploaded worktree for repository.', {
+      codeURL,
+    });
 
     // create releases with uploaded tar url.
     logger.info('Attempting to snapshot pinned dependencies for repository.');

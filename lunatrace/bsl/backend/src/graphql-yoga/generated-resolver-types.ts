@@ -45,6 +45,7 @@ export type BuildData_Cwe = {
 export type BuildData_DependencyNode = {
   __typename?: 'BuildData_DependencyNode';
   id: Scalars['String'];
+  locations: Array<BuildData_Location>;
   range: Scalars['String'];
   reachable: Scalars['String'];
   release: BuildData_Release;
@@ -67,6 +68,16 @@ export type BuildData_IgnoredVulnerability = {
   __typename?: 'BuildData_IgnoredVulnerability';
   locations: Array<Scalars['String']>;
   note: Scalars['String'];
+};
+
+export type BuildData_Location = {
+  __typename?: 'BuildData_Location';
+  end_column: Scalars['Int'];
+  end_row: Scalars['Int'];
+  id: Scalars['String'];
+  path: Scalars['String'];
+  start_column: Scalars['Int'];
+  start_row: Scalars['Int'];
 };
 
 export type BuildData_Package = {
@@ -305,6 +316,7 @@ export type ResolversTypes = {
   BuildData_Guide: ResolverTypeWrapper<BuildData_Guide>;
   BuildData_Guide_Vulnerability: ResolverTypeWrapper<BuildData_Guide_Vulnerability>;
   BuildData_IgnoredVulnerability: ResolverTypeWrapper<BuildData_IgnoredVulnerability>;
+  BuildData_Location: ResolverTypeWrapper<BuildData_Location>;
   BuildData_Package: ResolverTypeWrapper<BuildData_Package>;
   BuildData_Range: ResolverTypeWrapper<BuildData_Range>;
   BuildData_Release: ResolverTypeWrapper<BuildData_Release>;
@@ -338,6 +350,7 @@ export type ResolversParentTypes = {
   BuildData_Guide: BuildData_Guide;
   BuildData_Guide_Vulnerability: BuildData_Guide_Vulnerability;
   BuildData_IgnoredVulnerability: BuildData_IgnoredVulnerability;
+  BuildData_Location: BuildData_Location;
   BuildData_Package: BuildData_Package;
   BuildData_Range: BuildData_Range;
   BuildData_Release: BuildData_Release;
@@ -388,6 +401,7 @@ export type BuildData_CweResolvers<ContextType = Context, ParentType extends Res
 
 export type BuildData_DependencyNodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_DependencyNode'] = ResolversParentTypes['BuildData_DependencyNode']> = {
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  locations?: Resolver<Array<ResolversTypes['BuildData_Location']>, ParentType, ContextType>;
   range?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   reachable?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   release?: Resolver<ResolversTypes['BuildData_Release'], ParentType, ContextType>;
@@ -410,6 +424,16 @@ export type BuildData_Guide_VulnerabilityResolvers<ContextType = Context, Parent
 export type BuildData_IgnoredVulnerabilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_IgnoredVulnerability'] = ResolversParentTypes['BuildData_IgnoredVulnerability']> = {
   locations?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   note?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BuildData_LocationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_Location'] = ResolversParentTypes['BuildData_Location']> = {
+  end_column?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  end_row?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  path?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  start_column?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  start_row?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -541,6 +565,7 @@ export type Resolvers<ContextType = Context> = {
   BuildData_Guide?: BuildData_GuideResolvers<ContextType>;
   BuildData_Guide_Vulnerability?: BuildData_Guide_VulnerabilityResolvers<ContextType>;
   BuildData_IgnoredVulnerability?: BuildData_IgnoredVulnerabilityResolvers<ContextType>;
+  BuildData_Location?: BuildData_LocationResolvers<ContextType>;
   BuildData_Package?: BuildData_PackageResolvers<ContextType>;
   BuildData_Range?: BuildData_RangeResolvers<ContextType>;
   BuildData_Release?: BuildData_ReleaseResolvers<ContextType>;

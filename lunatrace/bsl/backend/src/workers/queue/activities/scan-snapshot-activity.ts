@@ -23,6 +23,7 @@ import { hasura } from '../../../hasura-api';
 import { updateBuildStatus } from '../../../hasura-api/actions/update-build-status';
 import { updateManifestStatus } from '../../../hasura-api/actions/update-manifest-status';
 import { Build_State_Enum } from '../../../hasura-api/generated';
+import { nilEdge } from '../../../models/vulnerability-dependency-tree';
 import { vulnerabilityTreeFromHasura } from '../../../models/vulnerability-dependency-tree/vulnerability-tree-from-hasura';
 import { S3ObjectMetadata } from '../../../types/s3';
 import { SbomBucketInfo } from '../../../types/scan';
@@ -115,6 +116,10 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
 
   const queuedStaticAnalyses: Map<string, boolean> = new Map<string, boolean>();
   edgeVulnerabilities.forEach((vulnerableEdge) => {
+    if (vulnerableEdge.edgeId === nilEdge) {
+      return;
+    }
+
     if (queuedStaticAnalyses.get(vulnerableEdge.edgeId)) {
       return;
     }

@@ -441,7 +441,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Insert_Input = {
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
 
-/** Location of a child dependency located inside of a parent manifest dependency. */
+/** Callsite of a child dependency being imported and used inside of a parent manifest dependency. */
 export type Analysis_Manifest_Dependency_Edge_Result_Location = {
   __typename?: 'analysis_manifest_dependency_edge_result_location';
   end_column: Scalars['Int'];
@@ -500,7 +500,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp = {
 /** unique or primary key constraints on table "analysis.manifest_dependency_edge_result_location" */
 export enum Analysis_Manifest_Dependency_Edge_Result_Location_Constraint {
   /** unique or primary key constraint on columns "id" */
-  ManifestDependencyEdgeResultLocationPkey = 'manifest_dependency_edge_result_location_pkey'
+  ManifestDependencyEdgeResultCallsitePkey = 'manifest_dependency_edge_result_callsite_pkey'
 }
 
 /** input type for incrementing numeric columns in table "analysis.manifest_dependency_edge_result_location" */
@@ -12070,9 +12070,7 @@ export type Vulnerability_Vulnerability_Cwe_Bool_Exp = {
 /** unique or primary key constraints on table "vulnerability.vulnerability_cwe" */
 export enum Vulnerability_Vulnerability_Cwe_Constraint {
   /** unique or primary key constraint on columns "id" */
-  VulnerabilityCwePkey = 'vulnerability_cwe_pkey',
-  /** unique or primary key constraint on columns "cwe_id", "vulnerability_id" */
-  VulnerabilityCweVulnerabilityIdCweIdKey = 'vulnerability_cwe_vulnerability_id_cwe_id_key'
+  VulnerabilityCwePkey = 'vulnerability_cwe_pkey'
 }
 
 /** input type for incrementing numeric columns in table "vulnerability.vulnerability_cwe" */
@@ -12409,7 +12407,7 @@ export type GetTreeFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', id: any, parent_id: any, child_id: any, analysis_results: Array<{ __typename?: 'analysis_manifest_dependency_edge_result', finding_source_version: number, finding_source: Analysis_Finding_Source_Enum, finding_type: Analysis_Finding_Type_Enum }> }> | null }>, project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } } | null };
+export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', id: any, parent_id: any, child_id: any, analysis_results: Array<{ __typename?: 'analysis_manifest_dependency_edge_result', finding_source_version: number, finding_source: Analysis_Finding_Source_Enum, finding_type: Analysis_Finding_Type_Enum, locations: Array<{ __typename?: 'analysis_manifest_dependency_edge_result_location', id: any, path: string, start_row: number, start_column: number, end_row: number, end_column: number }> }> }> | null }>, project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } } | null };
 
 export type GetUserGitHubDataQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
@@ -12833,6 +12831,14 @@ export const GetTreeFromBuildDocument = gql`
           finding_source_version
           finding_source
           finding_type
+          locations {
+            id
+            path
+            start_row
+            start_column
+            end_row
+            end_column
+          }
         }
       }
     }

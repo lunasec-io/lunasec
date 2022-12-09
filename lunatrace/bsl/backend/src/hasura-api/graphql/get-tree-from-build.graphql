@@ -11,6 +11,14 @@ query GetTreeFromBuild($build_id: uuid!, $analysis_results_where: analysis_manif
                   finding_source_version
                   finding_source
                   finding_type
+                  locations {
+                      id
+                      path
+                      start_row
+                      start_column
+                      end_row
+                      end_column
+                  }
                 }
             }
         }

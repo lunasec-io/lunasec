@@ -13,6 +13,7 @@ package staticanalysis
 import (
 	"context"
 	"errors"
+	"gocloud.dev/blob"
 	"io"
 	"net/http"
 	"net/url"
@@ -22,7 +23,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"gocloud.dev/blob"
+	_ "gocloud.dev/blob/s3blob"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
@@ -111,7 +112,7 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 
 	err = validateGetManifestDependencyEdgeResponse(logger, resp)
 	if err != nil {
-		log.Warn().
+		logger.Warn().
 			Err(err).
 			Msg("failed to validate manifest dependency edge")
 		return nil
@@ -255,7 +256,45 @@ func (s *staticAnalysisQueueHandler) getUpstreamUrlForPackage(ctx context.Contex
 	*/
 }
 
-func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(ctx context.Context, logger zerolog.Logger, upstreamBlobUrl *string, manifestDependencyEdgeUUID uuid.UUID, parentPackageName, childPackageName string) (gql.Analysis_finding_type_enum, *rules.SemgrepRuleOutput) {
+func getCodeBlobStream(ctx context.Context, logger zerolog.Logger, resolvedBlobUrl string, parsedResolvedBlobUrl *url.URL) (io.ReadCloser, error) {
+	var codeBlobStream io.ReadCloser
+
+	if strings.Contains(parsedResolvedBlobUrl.Host, ".s3.") {
+		b, err := blob.OpenBucket(ctx, "s3://"+strings.Split(parsedResolvedBlobUrl.Host, ".")[0])
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("failed to open bucket from s3")
+			return nil, err
+		}
+
+		codeBlobStream, err = b.NewReader(ctx, parsedResolvedBlobUrl.Path, nil)
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("failed to open package blob from s3")
+			return nil, err
+		}
+	} else {
+		upstreamUrlResp, err := http.Get(resolvedBlobUrl)
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("failed to download resolved blob url")
+			return nil, err
+		}
+		codeBlobStream = upstreamUrlResp.Body
+	}
+	return codeBlobStream, nil
+}
+
+func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
+	ctx context.Context,
+	logger zerolog.Logger,
+	upstreamBlobUrl *string,
+	manifestDependencyEdgeUUID uuid.UUID,
+	parentPackageName, childPackageName string,
+) (gql.Analysis_finding_type_enum, *rules.SemgrepRuleOutput) {
 	var err error
 
 	var resolvedBlobUrl string
@@ -284,32 +323,12 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(ctx context.C
 		return gql.Analysis_finding_type_enumError, nil
 	}
 
-	var codeBlobStream io.ReadCloser
-
-	if strings.Contains(parsedResolvedBlobUrl.Host, ".s3.") {
-		b, err := blob.OpenBucket(ctx, "s3://"+strings.Split(parsedResolvedBlobUrl.Host, ".")[0])
-		if err != nil {
-			logger.Error().
-				Err(err).
-				Msg("failed to open package bucket from s3")
-			return gql.Analysis_finding_type_enumError, nil
-		}
-		codeBlobStream, err = b.NewReader(ctx, parsedResolvedBlobUrl.Path, nil)
-		if err != nil {
-			logger.Error().
-				Err(err).
-				Msg("failed to open package blob from s3")
-			return gql.Analysis_finding_type_enumError, nil
-		}
-	} else {
-		upstreamUrlResp, err := http.Get(resolvedBlobUrl)
-		if err != nil {
-			logger.Error().
-				Err(err).
-				Msg("failed to download package blob")
-			return gql.Analysis_finding_type_enumError, nil
-		}
-		codeBlobStream = upstreamUrlResp.Body
+	codeBlobStream, err := getCodeBlobStream(ctx, logger, resolvedBlobUrl, parsedResolvedBlobUrl)
+	if err != nil {
+		logger.Error().
+			Err(err).
+			Msg("failed to open package code")
+		return gql.Analysis_finding_type_enumError, nil
 	}
 	defer codeBlobStream.Close()
 

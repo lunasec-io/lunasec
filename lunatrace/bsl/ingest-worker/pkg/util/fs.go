@@ -1,6 +1,6 @@
 // Copyright by LunaSec (owned by Refinery Labs, Inc)
 //
-// Licensed under the Business Source License v1.1 
+// Licensed under the Business Source License v1.1
 // (the "License"); you may not use this file except in compliance with the
 // License. You may obtain a copy of the License at
 //
@@ -14,7 +14,6 @@ package util
 import (
 	"archive/tar"
 	"compress/gzip"
-	"errors"
 	"fmt"
 	"github.com/rs/zerolog/log"
 	"io"
@@ -25,7 +24,7 @@ import (
 func ExtractTarGz(gzipStream io.Reader, dir string) error {
 	uncompressedStream, err := gzip.NewReader(gzipStream)
 	if err != nil {
-		return errors.New("NewReader failed")
+		return fmt.Errorf("NewReader failed: %v", err)
 	}
 
 	tarReader := tar.NewReader(uncompressedStream)
