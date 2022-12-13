@@ -13,36 +13,38 @@ select_permissions:
   - role: service
     permission:
       columns:
-        - id
-        - created_at
-        - name
-        - attack_vector
         - attack_complexity
-        - privileges_required
-        - user_interaction
-        - scope
-        - confidentiality_impact
-        - integrity_impact
+        - attack_vector
         - availability_impact
-        - confidentiality_requirement
-        - integrity_requirement
         - availability_requirement
+        - confidentiality_impact
+        - confidentiality_requirement
+        - created_at
+        - group_name
+        - id
+        - integrity_impact
+        - integrity_requirement
+        - name
+        - privileges_required
+        - scope
+        - user_interaction
       filter: {}
   - role: user
     permission:
       columns:
-        - id
-        - created_at
-        - name
-        - attack_vector
         - attack_complexity
-        - privileges_required
-        - user_interaction
-        - scope
-        - confidentiality_impact
-        - integrity_impact
+        - attack_vector
         - availability_impact
-        - confidentiality_requirement
-        - integrity_requirement
         - availability_requirement
+        - confidentiality_impact
+        - confidentiality_requirement
+        - created_at
+        - group_name
+        - id
+        - integrity_impact
+        - integrity_requirement
+        - name
+        - privileges_required
+        - scope
+        - user_interaction
       filter: {}

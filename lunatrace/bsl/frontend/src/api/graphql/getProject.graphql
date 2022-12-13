@@ -9,6 +9,8 @@ query GetProject($project_id: uuid!, $build_limit: Int = 10) {
           precedence
           folder_environmental_adjustments {
             id
+              cvss_environmental_adjustment_id
+              project_folder_settings_id
             cvss_environmental_adjustment {
               name
             }

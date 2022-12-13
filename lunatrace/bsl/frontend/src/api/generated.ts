@@ -1216,6 +1216,7 @@ export type Cvss_Environmental_Adjustment = {
   created_at?: Maybe<Scalars['timestamptz']>;
   /** An array relationship */
   folder_environmental_adjustments: Array<Folder_Environmental_Adjustment>;
+  group_name: Scalars['String'];
   id: Scalars['uuid'];
   integrity_impact: Scalars['cvss_none_low_high'];
   integrity_requirement: Scalars['cvss_low_medium_high'];
@@ -1248,6 +1249,7 @@ export type Cvss_Environmental_Adjustment_Bool_Exp = {
   confidentiality_requirement?: InputMaybe<Cvss_Low_Medium_High_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   folder_environmental_adjustments?: InputMaybe<Folder_Environmental_Adjustment_Bool_Exp>;
+  group_name?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   integrity_impact?: InputMaybe<Cvss_None_Low_High_Comparison_Exp>;
   integrity_requirement?: InputMaybe<Cvss_Low_Medium_High_Comparison_Exp>;
@@ -1267,6 +1269,7 @@ export type Cvss_Environmental_Adjustment_Order_By = {
   confidentiality_requirement?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   folder_environmental_adjustments_aggregate?: InputMaybe<Folder_Environmental_Adjustment_Aggregate_Order_By>;
+  group_name?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   integrity_impact?: InputMaybe<Order_By>;
   integrity_requirement?: InputMaybe<Order_By>;
@@ -1292,6 +1295,8 @@ export enum Cvss_Environmental_Adjustment_Select_Column {
   ConfidentialityRequirement = 'confidentiality_requirement',
   /** column name */
   CreatedAt = 'created_at',
+  /** column name */
+  GroupName = 'group_name',
   /** column name */
   Id = 'id',
   /** column name */
@@ -4623,7 +4628,11 @@ export enum Project_Folder_Settings_Constraint {
   /** unique or primary key constraint on columns "project_id", "path_glob" */
   ProjectFolderSettingsProjectIdPathGlobKey = 'project_folder_settings_project_id_path_glob_key',
   /** unique or primary key constraint on columns "project_id", "precedence" */
-  ProjectFolderSettingsProjectIdPrecedenceKey = 'project_folder_settings_project_id_precedence_key'
+  ProjectFolderSettingsProjectIdPrecedenceKey = 'project_folder_settings_project_id_precedence_key',
+  /** unique or primary key constraint on columns "project_id", "precedence" */
+  ProjectFolderSettingsProjectIdPrecedenceKey1 = 'project_folder_settings_project_id_precedence_key1',
+  /** unique or primary key constraint on columns "project_id", "precedence" */
+  ProjectFolderSettingsProjectIdPrecedenceKey2 = 'project_folder_settings_project_id_precedence_key2'
 }
 
 /** input type for incrementing numeric columns in table "project_folder_settings" */
@@ -8236,7 +8245,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id: any, project_folder_settings: Array<{ __typename?: 'project_folder_settings', id: any, ignore?: boolean | null, root: boolean, project_id: any, path_glob: string, precedence: number, folder_environmental_adjustments: Array<{ __typename?: 'folder_environmental_adjustment', id: any, cvss_environmental_adjustment: { __typename?: 'cvss_environmental_adjustment', name: string } }> }>, settings: { __typename?: 'settings', id: any, pr_feedback_disabled?: boolean | null, pr_check_enabled?: boolean | null }, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, default_branch?: string | null, traits: any } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id: any, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', language: string, purl: string, severity: any, locations: any, vulnerability: { __typename?: 'vulnerability', severities: Array<{ __typename?: 'vulnerability_severity', id: any, source: string, type: string, score: string }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', locations: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }>, builds_aggregate: { __typename?: 'builds_aggregate', aggregate?: { __typename?: 'builds_aggregate_fields', count: number } | null }, default_branch_builds: Array<{ __typename?: 'default_branch_builds', build_number?: number | null, created_at?: any | null, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id?: any | null, source_type?: any | null, project_id?: any | null, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }>, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability: { __typename?: 'vulnerability', id: any, summary?: string | null, source: string, source_id: string, severities: Array<{ __typename?: 'vulnerability_severity', id: any, source: string, type: string, score: string }>, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, severity: any, summary: string, created_at: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> }> } | null };
+export type GetProjectQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', created_at: any, id: any, name: string, organization_id?: any | null, repo?: string | null, settings_id: any, project_folder_settings: Array<{ __typename?: 'project_folder_settings', id: any, ignore?: boolean | null, root: boolean, project_id: any, path_glob: string, precedence: number, folder_environmental_adjustments: Array<{ __typename?: 'folder_environmental_adjustment', id: any, cvss_environmental_adjustment_id: any, project_folder_settings_id: any, cvss_environmental_adjustment: { __typename?: 'cvss_environmental_adjustment', name: string } }> }>, settings: { __typename?: 'settings', id: any, pr_feedback_disabled?: boolean | null, pr_check_enabled?: boolean | null }, organization?: { __typename?: 'organizations', name: string } | null, github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, default_branch?: string | null, traits: any } | null, project_access_tokens: Array<{ __typename?: 'project_access_tokens', id: any, project_uuid: any, name?: string | null, created_at: any, last_used?: any | null, created_by_user?: { __typename?: 'identities', traits: any } | null }>, builds: Array<{ __typename?: 'builds', id: any, created_at: any, build_number?: number | null, project_id: any, source_type: any, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, findings: Array<{ __typename?: 'findings', language: string, purl: string, severity: any, locations: any, vulnerability: { __typename?: 'vulnerability', severities: Array<{ __typename?: 'vulnerability_severity', id: any, source: string, type: string, score: string }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', locations: any }> } }>, scans_aggregate: { __typename?: 'scans_aggregate', aggregate?: { __typename?: 'scans_aggregate_fields', count: number } | null }, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }> }>, builds_aggregate: { __typename?: 'builds_aggregate', aggregate?: { __typename?: 'builds_aggregate_fields', count: number } | null }, default_branch_builds: Array<{ __typename?: 'default_branch_builds', build_number?: number | null, created_at?: any | null, git_branch?: string | null, git_hash?: string | null, git_remote?: string | null, id?: any | null, source_type?: any | null, project_id?: any | null, scans: Array<{ __typename?: 'scans', created_at: any, scan_number?: number | null }>, project?: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } | null, findings: Array<{ __typename?: 'findings', fix_state: any, fix_versions?: any | null, package_name: string, created_at: any, id: any, language: string, locations: any, matcher: string, purl: string, severity: any, type: string, version: string, updated_at: any, version_matcher: string, virtual_path?: string | null, vulnerability_id: any, vulnerability: { __typename?: 'vulnerability', id: any, summary?: string | null, source: string, source_id: string, severities: Array<{ __typename?: 'vulnerability_severity', id: any, source: string, type: string, score: string }>, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide: { __typename?: 'guides', id: any, body: string, metadata: any, title: string, severity: any, summary: string, created_at: any, metadata_schema_version: number, related_guides: Array<{ __typename?: 'guide_related_guides', guide: { __typename?: 'guides', title: string, summary: string, id: any } }> } }>, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', creator_id?: any | null, id: any, locations: any, note: string, project_id: any, vulnerability_id: any }> } }> }> } | null };
 
 export type GetProjectBuildsQueryVariables = Exact<{
   project_id: Scalars['uuid'];
@@ -8318,6 +8327,13 @@ export type InsertProjectAccessTokenMutationVariables = Exact<{
 
 export type InsertProjectAccessTokenMutation = { __typename?: 'mutation_root', insert_project_access_tokens_one?: { __typename?: 'project_access_tokens', id: any } | null };
 
+export type InsertFolderEnvironmentalAdjustmentMutationVariables = Exact<{
+  object?: InputMaybe<Folder_Environmental_Adjustment_Insert_Input>;
+}>;
+
+
+export type InsertFolderEnvironmentalAdjustmentMutation = { __typename?: 'mutation_root', insert_folder_environmental_adjustment_one?: { __typename?: 'folder_environmental_adjustment', id: any } | null };
+
 export type InsertIgnoredVulnerabilitiesMutationVariables = Exact<{
   objects: Array<Ignored_Vulnerabilities_Insert_Input> | Ignored_Vulnerabilities_Insert_Input;
 }>;
@@ -8342,6 +8358,13 @@ export type InsertProjectMutationVariables = Exact<{
 
 
 export type InsertProjectMutation = { __typename?: 'mutation_root', insert_projects_one?: { __typename?: 'projects', id: any } | null };
+
+export type InsertProjectFolderSettingMutationVariables = Exact<{
+  object?: InputMaybe<Project_Folder_Settings_Insert_Input>;
+}>;
+
+
+export type InsertProjectFolderSettingMutation = { __typename?: 'mutation_root', insert_project_folder_settings_one?: { __typename?: 'project_folder_settings', id: any } | null };
 
 export type InstallSelectedReposMutationVariables = Exact<{
   orgs: Array<OrgsWithReposInput> | OrgsWithReposInput;
@@ -8655,6 +8678,8 @@ export const GetProjectDocument = `
       precedence
       folder_environmental_adjustments {
         id
+        cvss_environmental_adjustment_id
+        project_folder_settings_id
         cvss_environmental_adjustment {
           name
         }
@@ -9137,6 +9162,13 @@ export const InsertProjectAccessTokenDocument = `
   }
 }
     `;
+export const InsertFolderEnvironmentalAdjustmentDocument = `
+    mutation InsertFolderEnvironmentalAdjustment($object: folder_environmental_adjustment_insert_input = {}) {
+  insert_folder_environmental_adjustment_one(object: $object) {
+    id
+  }
+}
+    `;
 export const InsertIgnoredVulnerabilitiesDocument = `
     mutation InsertIgnoredVulnerabilities($objects: [ignored_vulnerabilities_insert_input!]!) {
   insert_ignored_vulnerabilities(
@@ -9159,6 +9191,13 @@ export const InsertManifestDocument = `
 export const InsertProjectDocument = `
     mutation InsertProject($name: String!, $organization_id: uuid!) {
   insert_projects_one(object: {name: $name, organization_id: $organization_id}) {
+    id
+  }
+}
+    `;
+export const InsertProjectFolderSettingDocument = `
+    mutation InsertProjectFolderSetting($object: project_folder_settings_insert_input = {}) {
+  insert_project_folder_settings_one(object: $object) {
     id
   }
 }
@@ -9265,6 +9304,9 @@ const injectedRtkApi = api.injectEndpoints({
     InsertProjectAccessToken: build.mutation<InsertProjectAccessTokenMutation, InsertProjectAccessTokenMutationVariables>({
       query: (variables) => ({ document: InsertProjectAccessTokenDocument, variables })
     }),
+    InsertFolderEnvironmentalAdjustment: build.mutation<InsertFolderEnvironmentalAdjustmentMutation, InsertFolderEnvironmentalAdjustmentMutationVariables | void>({
+      query: (variables) => ({ document: InsertFolderEnvironmentalAdjustmentDocument, variables })
+    }),
     InsertIgnoredVulnerabilities: build.mutation<InsertIgnoredVulnerabilitiesMutation, InsertIgnoredVulnerabilitiesMutationVariables>({
       query: (variables) => ({ document: InsertIgnoredVulnerabilitiesDocument, variables })
     }),
@@ -9273,6 +9315,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     InsertProject: build.mutation<InsertProjectMutation, InsertProjectMutationVariables>({
       query: (variables) => ({ document: InsertProjectDocument, variables })
+    }),
+    InsertProjectFolderSetting: build.mutation<InsertProjectFolderSettingMutation, InsertProjectFolderSettingMutationVariables | void>({
+      query: (variables) => ({ document: InsertProjectFolderSettingDocument, variables })
     }),
     InstallSelectedRepos: build.mutation<InstallSelectedReposMutation, InstallSelectedReposMutationVariables>({
       query: (variables) => ({ document: InstallSelectedReposDocument, variables })
