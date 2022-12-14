@@ -180,6 +180,6 @@ This is important because otherwise the GraphQL code gen stuff will probably not
 
 Open up `http://localhost:4455/` and you should hit the front-end of the app. If it's busted... go hit us up on Slack
 and we'll help you sort it out. 
-([Invite for the Slack](https://join.slack.com/t/lunaseccommunity/shared_invite/zt-1a8cdfqdg-LbgCYuxzQl7iyZzZ4H4Idw))
+([Invite for the Discord](https://discord.gg/2EbHdAR5w7))
 
 Hopefully this works. Please improve this doc when you use it and something is broken or could be improved. Thanks!
