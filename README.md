@@ -55,14 +55,14 @@ to notify you of new CVEs _before_ you deploy to production. Try it out in one-c
 ## Support
 
 If you find yourself stuck, you're missing a feature, or you just want to clear up some confusion, then please
-[join our Slack Community](https://join.slack.com/t/lunaseccommunity/shared_invite/zt-178lvngk1-SHS6bMkQS71YWtCne2XWhA) to speak with us.
+[join our Discord Community](https://discord.gg/2EbHdAR5w7) to speak with us.
 
 We're a small team and we're always looking for more feedback about what problems we can help solve, so we'd love if you took a moment to [try out LunaTrace](https://lunatrace.lunasec.io) and, if you like it, share it with your colleagues and friends. The hardest part of our mission to build better security tools is simply getting people to realize that they exist!
 
 ## Contributing
 We welcome community contributions and we've documented the requirements for contributions [here](CONTRIBUTING.md).
 
-If you'd like to contribute ideas or feedback, you can do so by either [opening a GitHub issue](https://github.com/lunasec-io/lunasec/issues/new) or [speaking with us on Slack](https://join.slack.com/t/lunaseccommunity/shared_invite/zt-178lvngk1-SHS6bMkQS71YWtCne2XWhA).
+If you'd like to contribute ideas or feedback, you can do so by either [opening a GitHub issue](https://github.com/lunasec-io/lunasec/issues/new) or [speaking with us on Discord](https://discord.gg/2EbHdAR5w7).
 
 ## See Also
 
