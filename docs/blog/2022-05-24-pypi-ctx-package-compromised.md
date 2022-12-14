@@ -116,7 +116,7 @@ If updating isn't an option, you may also verify that you're not using any of th
 - `ctx` versions `0.2.2` and `0.2.6` (Python)
 - `Phpass` versions are unknown (PHP)
   - It's unlikely more than a few dozen users are affected due to the [small download count](https://web.archive.org/web/20220519155745/https://packagist.org/packages/hautelook/phpass/stats)
-  - If you have more information, please tell us on [Slack](https://join.slack.com/t/lunaseccommunity/shared_invite/zt-1a8cdfqdg-LbgCYuxzQl7iyZzZ4H4Idw) or [GitHub](https://github.com/lunasec-io/lunasec).
+  - If you have more information, please tell us on [Discord](https://discord.gg/2EbHdAR5w7) or [GitHub](https://github.com/lunasec-io/lunasec).
 
 ## External References
 
@@ -155,7 +155,7 @@ What is LunaTrace? It's our Open Source security platform that automatically dis
 dependencies and gives you expert security guides with remediation steps and automated patches.
 
 Whether you're a developer or a security professional, we'd love to hear from you! Drop us a line by 
-[joining our Slack](https://join.slack.com/t/lunaseccommunity/shared_invite/zt-1a8cdfqdg-LbgCYuxzQl7iyZzZ4H4Idw) or 
+[joining our Discord](https://discord.gg/2EbHdAR5w7) or 
 trying out LunaTrace on your [GitHub repo for free](https://github.com/marketplace/lunatrace-by-lunasec).
 
 

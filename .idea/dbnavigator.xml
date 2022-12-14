@@ -32,6 +32,9 @@
       <console name="LunaTrace" type="STANDARD" schema="" session="Main" />
     </connection>
   </component>
+  <component name="DBNavigator.Project.DatabaseEditorStateManager">
+    <last-used-providers />
+  </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files />
   </component>
