@@ -10302,6 +10302,8 @@ export type Vulnerability = {
   cwes: Array<Vulnerability_Vulnerability_Cwe>;
   database_specific?: Maybe<Scalars['jsonb']>;
   details?: Maybe<Scalars['String']>;
+  epss_percentile?: Maybe<Scalars['Float']>;
+  epss_score?: Maybe<Scalars['Float']>;
   /** An array relationship */
   equivalents: Array<Vulnerability_Equivalent>;
   /** An array relationship */
@@ -11029,6 +11031,8 @@ export type Vulnerability_Bool_Exp = {
   cwes?: InputMaybe<Vulnerability_Vulnerability_Cwe_Bool_Exp>;
   database_specific?: InputMaybe<Jsonb_Comparison_Exp>;
   details?: InputMaybe<String_Comparison_Exp>;
+  epss_percentile?: InputMaybe<Float_Comparison_Exp>;
+  epss_score?: InputMaybe<Float_Comparison_Exp>;
   equivalents?: InputMaybe<Vulnerability_Equivalent_Bool_Exp>;
   findings?: InputMaybe<Findings_Bool_Exp>;
   guide_vulnerabilities?: InputMaybe<Guide_Vulnerabilities_Bool_Exp>;
@@ -11431,6 +11435,8 @@ export enum Vulnerability_Equivalent_Update_Column {
 /** input type for incrementing numeric columns in table "vulnerability.vulnerability" */
 export type Vulnerability_Inc_Input = {
   cvss_score?: InputMaybe<Scalars['Float']>;
+  epss_percentile?: InputMaybe<Scalars['Float']>;
+  epss_score?: InputMaybe<Scalars['Float']>;
 };
 
 /** input type for inserting data into table "vulnerability.vulnerability" */
@@ -11442,6 +11448,8 @@ export type Vulnerability_Insert_Input = {
   cwes?: InputMaybe<Vulnerability_Vulnerability_Cwe_Arr_Rel_Insert_Input>;
   database_specific?: InputMaybe<Scalars['jsonb']>;
   details?: InputMaybe<Scalars['String']>;
+  epss_percentile?: InputMaybe<Scalars['Float']>;
+  epss_score?: InputMaybe<Scalars['Float']>;
   equivalents?: InputMaybe<Vulnerability_Equivalent_Arr_Rel_Insert_Input>;
   findings?: InputMaybe<Findings_Arr_Rel_Insert_Input>;
   guide_vulnerabilities?: InputMaybe<Guide_Vulnerabilities_Arr_Rel_Insert_Input>;
@@ -11492,6 +11500,8 @@ export type Vulnerability_Order_By = {
   cwes_aggregate?: InputMaybe<Vulnerability_Vulnerability_Cwe_Aggregate_Order_By>;
   database_specific?: InputMaybe<Order_By>;
   details?: InputMaybe<Order_By>;
+  epss_percentile?: InputMaybe<Order_By>;
+  epss_score?: InputMaybe<Order_By>;
   equivalents_aggregate?: InputMaybe<Vulnerability_Equivalent_Aggregate_Order_By>;
   findings_aggregate?: InputMaybe<Findings_Aggregate_Order_By>;
   guide_vulnerabilities_aggregate?: InputMaybe<Guide_Vulnerabilities_Aggregate_Order_By>;
@@ -11797,6 +11807,10 @@ export enum Vulnerability_Select_Column {
   /** column name */
   Details = 'details',
   /** column name */
+  EpssPercentile = 'epss_percentile',
+  /** column name */
+  EpssScore = 'epss_score',
+  /** column name */
   Id = 'id',
   /** column name */
   LastFetched = 'last_fetched',
@@ -11826,6 +11840,8 @@ export type Vulnerability_Set_Input = {
   cvss_score?: InputMaybe<Scalars['Float']>;
   database_specific?: InputMaybe<Scalars['jsonb']>;
   details?: InputMaybe<Scalars['String']>;
+  epss_percentile?: InputMaybe<Scalars['Float']>;
+  epss_score?: InputMaybe<Scalars['Float']>;
   id?: InputMaybe<Scalars['uuid']>;
   last_fetched?: InputMaybe<Scalars['timestamptz']>;
   modified?: InputMaybe<Scalars['timestamptz']>;
@@ -11992,6 +12008,10 @@ export enum Vulnerability_Update_Column {
   DatabaseSpecific = 'database_specific',
   /** column name */
   Details = 'details',
+  /** column name */
+  EpssPercentile = 'epss_percentile',
+  /** column name */
+  EpssScore = 'epss_score',
   /** column name */
   Id = 'id',
   /** column name */
