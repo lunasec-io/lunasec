@@ -97,7 +97,6 @@ export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ p
               {pkg.paths.map((path, index) => {
                 return (
                   <li key={index}>
-                    {index > 0 && <br />}
                     <span className="lighter mx-1">{path}</span>
                   </li>
                 );
