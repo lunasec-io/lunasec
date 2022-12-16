@@ -16,5 +16,17 @@ VALUES ('frontend-or-backend', 'frontend'),
        ('internet', 'internet exposed'),
        ('internet', 'not internet exposed'),
        ('pii', 'PII'),
+       ('pii', 'no PII'),
        ('tests', 'tests'),
        ('ignore', 'ignore all');
+
+ALTER TABLE project_folder_settings
+    DROP CONSTRAINT project_folder_settings_project_id_precedence_key;
+
+-- this is a good reason to use named constraints, PG generated these dupes when it migrated up and down on my machine so these are here to clean up anyone else if they are in a similar situation
+ALTER TABLE project_folder_settings
+    DROP CONSTRAINT IF EXISTS project_folder_settings_project_id_precedence_key1;
+
+ALTER TABLE project_folder_settings
+    DROP CONSTRAINT IF EXISTS project_folder_settings_project_id_precedence_key2;
+

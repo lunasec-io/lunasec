@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { Box, Home, Menu, Settings, Shuffle } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
@@ -38,20 +38,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
   // Load project information
   const { data, isLoading, refetch, isFetching } = api.useGetProjectQuery({
     project_id: project_id as string,
-    build_limit: buildLimit,
   });
-
-  // pass this down to the build view so we can lazy load more builds..not true pagination but probably good enough
-  // will get slower as the user gets lower since it will be reloading more and more builds
-  const loadMoreBuildsCallback = () => {
-    if (data && data.projects_by_pk) {
-      const buildCount = data.projects_by_pk.builds.length;
-      if (buildCount !== data.projects_by_pk.builds_aggregate.aggregate?.count) {
-        setBuildLimit(buildLimit + 50);
-        refetch();
-      }
-    }
-  };
 
   const isLarge = useBreakpoint('lg');
 
@@ -132,7 +119,6 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
         </Navbar>
 
         <br />
-        {renderProjectSubPage(p, buildLimit)}
       </>
     );
   };
@@ -142,14 +128,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
       case 'dashboard':
         return <ProjectDashboardMain project={p} setActiveTab={setActiveTab} />;
       case 'builds':
-        return (
-          <Builds
-            project={p}
-            buildLimit={buildLimit}
-            loadMoreBuildsCallback={loadMoreBuildsCallback}
-            isFetching={isFetching}
-          />
-        );
+        return <Builds project={p} />;
       case 'secrets':
         return <SecretsMain project={p} />;
       case 'settings':
@@ -161,11 +140,21 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
     }
   };
 
+  const renderBody = () => {
+    if (!data || !data.projects_by_pk) {
+      return null;
+    }
+    return (
+      <>
+        {renderProjectNavAndHeader(data.projects_by_pk)}
+        {renderProjectSubPage(data.projects_by_pk, buildLimit)}
+      </>
+    );
+  };
+
   return (
     <SpinIfLoading isLoading={isLoading}>
-      <Container className="project-page">
-        {data && data.projects_by_pk ? renderProjectNavAndHeader(data.projects_by_pk) : null}
-      </Container>
+      <Container className="project-page">{renderBody()}</Container>
     </SpinIfLoading>
   );
 };

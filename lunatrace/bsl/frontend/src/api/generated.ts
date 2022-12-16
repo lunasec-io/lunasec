@@ -8241,7 +8241,6 @@ export type GetManifestQuery = { __typename?: 'query_root', manifests_by_pk?: { 
 
 export type GetProjectQueryVariables = Exact<{
   project_id: Scalars['uuid'];
-  build_limit?: InputMaybe<Scalars['Int']>;
 }>;
 
 
@@ -8327,13 +8326,6 @@ export type InsertProjectAccessTokenMutationVariables = Exact<{
 
 export type InsertProjectAccessTokenMutation = { __typename?: 'mutation_root', insert_project_access_tokens_one?: { __typename?: 'project_access_tokens', id: any } | null };
 
-export type InsertFolderEnvironmentalAdjustmentMutationVariables = Exact<{
-  object?: InputMaybe<Folder_Environmental_Adjustment_Insert_Input>;
-}>;
-
-
-export type InsertFolderEnvironmentalAdjustmentMutation = { __typename?: 'mutation_root', insert_folder_environmental_adjustment_one?: { __typename?: 'folder_environmental_adjustment', id: any } | null };
-
 export type InsertIgnoredVulnerabilitiesMutationVariables = Exact<{
   objects: Array<Ignored_Vulnerabilities_Insert_Input> | Ignored_Vulnerabilities_Insert_Input;
 }>;
@@ -8359,13 +8351,6 @@ export type InsertProjectMutationVariables = Exact<{
 
 export type InsertProjectMutation = { __typename?: 'mutation_root', insert_projects_one?: { __typename?: 'projects', id: any } | null };
 
-export type InsertProjectFolderSettingMutationVariables = Exact<{
-  object?: InputMaybe<Project_Folder_Settings_Insert_Input>;
-}>;
-
-
-export type InsertProjectFolderSettingMutation = { __typename?: 'mutation_root', insert_project_folder_settings_one?: { __typename?: 'project_folder_settings', id: any } | null };
-
 export type InstallSelectedReposMutationVariables = Exact<{
   orgs: Array<OrgsWithReposInput> | OrgsWithReposInput;
 }>;
@@ -8387,6 +8372,42 @@ export type UpdateSettingsMutationVariables = Exact<{
 
 
 export type UpdateSettingsMutation = { __typename?: 'mutation_root', update_settings_by_pk?: { __typename?: 'settings', id: any } | null };
+
+export type DeleteFolderAdjustmentMutationVariables = Exact<{
+  id: Scalars['uuid'];
+}>;
+
+
+export type DeleteFolderAdjustmentMutation = { __typename?: 'mutation_root', delete_folder_environmental_adjustment_by_pk?: { __typename?: 'folder_environmental_adjustment', id: any } | null };
+
+export type DeleteProjectFolderSettingMutationVariables = Exact<{
+  id: Scalars['uuid'];
+}>;
+
+
+export type DeleteProjectFolderSettingMutation = { __typename?: 'mutation_root', delete_project_folder_settings_by_pk?: { __typename?: 'project_folder_settings', id: any } | null };
+
+export type InsertFolderEnvironmentalAdjustmentMutationVariables = Exact<{
+  object?: InputMaybe<Folder_Environmental_Adjustment_Insert_Input>;
+}>;
+
+
+export type InsertFolderEnvironmentalAdjustmentMutation = { __typename?: 'mutation_root', insert_folder_environmental_adjustment_one?: { __typename?: 'folder_environmental_adjustment', id: any } | null };
+
+export type InsertProjectFolderSettingMutationVariables = Exact<{
+  object?: InputMaybe<Project_Folder_Settings_Insert_Input>;
+}>;
+
+
+export type InsertProjectFolderSettingMutation = { __typename?: 'mutation_root', insert_project_folder_settings_one?: { __typename?: 'project_folder_settings', id: any } | null };
+
+export type SetProjectFolderSettingsIgnoreMutationVariables = Exact<{
+  id: Scalars['uuid'];
+  ignore: Scalars['Boolean'];
+}>;
+
+
+export type SetProjectFolderSettingsIgnoreMutation = { __typename?: 'mutation_root', update_project_folder_settings_by_pk?: { __typename?: 'project_folder_settings', id: any } | null };
 
 
 export const DeleteProjectAccessTokenDocument = `
@@ -8667,7 +8688,7 @@ export const GetManifestDocument = `
 }
     `;
 export const GetProjectDocument = `
-    query GetProject($project_id: uuid!, $build_limit: Int = 10) {
+    query GetProject($project_id: uuid!) {
   projects_by_pk(id: $project_id) {
     project_folder_settings {
       id
@@ -8715,7 +8736,7 @@ export const GetProjectDocument = `
         traits
       }
     }
-    builds(order_by: {created_at: desc}, limit: $build_limit) {
+    builds(order_by: {created_at: desc}, limit: 1) {
       id
       created_at
       build_number
@@ -9162,13 +9183,6 @@ export const InsertProjectAccessTokenDocument = `
   }
 }
     `;
-export const InsertFolderEnvironmentalAdjustmentDocument = `
-    mutation InsertFolderEnvironmentalAdjustment($object: folder_environmental_adjustment_insert_input = {}) {
-  insert_folder_environmental_adjustment_one(object: $object) {
-    id
-  }
-}
-    `;
 export const InsertIgnoredVulnerabilitiesDocument = `
     mutation InsertIgnoredVulnerabilities($objects: [ignored_vulnerabilities_insert_input!]!) {
   insert_ignored_vulnerabilities(
@@ -9195,13 +9209,6 @@ export const InsertProjectDocument = `
   }
 }
     `;
-export const InsertProjectFolderSettingDocument = `
-    mutation InsertProjectFolderSetting($object: project_folder_settings_insert_input = {}) {
-  insert_project_folder_settings_one(object: $object) {
-    id
-  }
-}
-    `;
 export const InstallSelectedReposDocument = `
     mutation InstallSelectedRepos($orgs: [OrgsWithReposInput!]!) {
   installSelectedRepos(orgs: $orgs) {
@@ -9222,6 +9229,44 @@ export const PresignManifestUrlDocument = `
 export const UpdateSettingsDocument = `
     mutation UpdateSettings($id: uuid!, $settings: settings_set_input!) {
   update_settings_by_pk(pk_columns: {id: $id}, _set: $settings) {
+    id
+  }
+}
+    `;
+export const DeleteFolderAdjustmentDocument = `
+    mutation DeleteFolderAdjustment($id: uuid!) {
+  delete_folder_environmental_adjustment_by_pk(id: $id) {
+    id
+  }
+}
+    `;
+export const DeleteProjectFolderSettingDocument = `
+    mutation DeleteProjectFolderSetting($id: uuid!) {
+  delete_project_folder_settings_by_pk(id: $id) {
+    id
+  }
+}
+    `;
+export const InsertFolderEnvironmentalAdjustmentDocument = `
+    mutation InsertFolderEnvironmentalAdjustment($object: folder_environmental_adjustment_insert_input = {}) {
+  insert_folder_environmental_adjustment_one(object: $object) {
+    id
+  }
+}
+    `;
+export const InsertProjectFolderSettingDocument = `
+    mutation InsertProjectFolderSetting($object: project_folder_settings_insert_input = {}) {
+  insert_project_folder_settings_one(object: $object) {
+    id
+  }
+}
+    `;
+export const SetProjectFolderSettingsIgnoreDocument = `
+    mutation SetProjectFolderSettingsIgnore($id: uuid!, $ignore: Boolean!) {
+  update_project_folder_settings_by_pk(
+    pk_columns: {id: $id}
+    _set: {ignore: $ignore}
+  ) {
     id
   }
 }
@@ -9304,9 +9349,6 @@ const injectedRtkApi = api.injectEndpoints({
     InsertProjectAccessToken: build.mutation<InsertProjectAccessTokenMutation, InsertProjectAccessTokenMutationVariables>({
       query: (variables) => ({ document: InsertProjectAccessTokenDocument, variables })
     }),
-    InsertFolderEnvironmentalAdjustment: build.mutation<InsertFolderEnvironmentalAdjustmentMutation, InsertFolderEnvironmentalAdjustmentMutationVariables | void>({
-      query: (variables) => ({ document: InsertFolderEnvironmentalAdjustmentDocument, variables })
-    }),
     InsertIgnoredVulnerabilities: build.mutation<InsertIgnoredVulnerabilitiesMutation, InsertIgnoredVulnerabilitiesMutationVariables>({
       query: (variables) => ({ document: InsertIgnoredVulnerabilitiesDocument, variables })
     }),
@@ -9316,9 +9358,6 @@ const injectedRtkApi = api.injectEndpoints({
     InsertProject: build.mutation<InsertProjectMutation, InsertProjectMutationVariables>({
       query: (variables) => ({ document: InsertProjectDocument, variables })
     }),
-    InsertProjectFolderSetting: build.mutation<InsertProjectFolderSettingMutation, InsertProjectFolderSettingMutationVariables | void>({
-      query: (variables) => ({ document: InsertProjectFolderSettingDocument, variables })
-    }),
     InstallSelectedRepos: build.mutation<InstallSelectedReposMutation, InstallSelectedReposMutationVariables>({
       query: (variables) => ({ document: InstallSelectedReposDocument, variables })
     }),
@@ -9327,6 +9366,21 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     UpdateSettings: build.mutation<UpdateSettingsMutation, UpdateSettingsMutationVariables>({
       query: (variables) => ({ document: UpdateSettingsDocument, variables })
+    }),
+    DeleteFolderAdjustment: build.mutation<DeleteFolderAdjustmentMutation, DeleteFolderAdjustmentMutationVariables>({
+      query: (variables) => ({ document: DeleteFolderAdjustmentDocument, variables })
+    }),
+    DeleteProjectFolderSetting: build.mutation<DeleteProjectFolderSettingMutation, DeleteProjectFolderSettingMutationVariables>({
+      query: (variables) => ({ document: DeleteProjectFolderSettingDocument, variables })
+    }),
+    InsertFolderEnvironmentalAdjustment: build.mutation<InsertFolderEnvironmentalAdjustmentMutation, InsertFolderEnvironmentalAdjustmentMutationVariables | void>({
+      query: (variables) => ({ document: InsertFolderEnvironmentalAdjustmentDocument, variables })
+    }),
+    InsertProjectFolderSetting: build.mutation<InsertProjectFolderSettingMutation, InsertProjectFolderSettingMutationVariables | void>({
+      query: (variables) => ({ document: InsertProjectFolderSettingDocument, variables })
+    }),
+    SetProjectFolderSettingsIgnore: build.mutation<SetProjectFolderSettingsIgnoreMutation, SetProjectFolderSettingsIgnoreMutationVariables>({
+      query: (variables) => ({ document: SetProjectFolderSettingsIgnoreDocument, variables })
     }),
   }),
 });

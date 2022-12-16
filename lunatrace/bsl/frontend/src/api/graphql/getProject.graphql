@@ -1,4 +1,4 @@
-query GetProject($project_id: uuid!, $build_limit: Int = 10) {
+query GetProject($project_id: uuid!) {
     projects_by_pk(id: $project_id) {
     	project_folder_settings {
           id
@@ -47,7 +47,9 @@ query GetProject($project_id: uuid!, $build_limit: Int = 10) {
                 traits
             }
         }
-        builds(order_by: {created_at: desc}, limit: $build_limit) {
+#       We load one build in order to show some aggregation data and overviews,
+#        especially in cases where there isnt a build on a default branch, just some PR branch
+        builds(order_by: {created_at: desc}, limit: 1) {
             id
             created_at
             build_number

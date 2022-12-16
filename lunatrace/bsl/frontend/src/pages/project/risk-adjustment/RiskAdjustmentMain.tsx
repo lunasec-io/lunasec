@@ -18,8 +18,7 @@ import { Info } from 'react-feather';
 import { ProjectInfo } from '../types';
 
 import { FolderList } from './FolderList';
-import { FolderSettings } from './FolderSettings';
-import { SettingRadio } from './SettingRadio';
+import { NewFolderForm } from './NewFolderForm';
 
 interface FiltersProps {
   project: ProjectInfo;
@@ -34,14 +33,15 @@ export const RiskAdjustmentMain: React.FC<FiltersProps> = ({ project }) => {
         </Col>
         <Col md className="mt-md-1">
           <p>
-            <Info size="1.2em" className="mb-1 me-2" /> Configure some simple information about the project. LunaTrace
-            uses this data to adjust vulnerability scores and automatically ignore vulnerabilities in some cases.
-            Configuring these settings properly will vastly decrease the rate of false-positives.
+            <Info size="1.2em" className="mb-1 me-2" /> LunaTrace uses these simple settings to adjust vulnerability
+            scores and automatically ignore vulnerabilities in some cases. Configuring these settings properly will
+            de-prioritize vulnerabilities that may be irrelevant. If unsure whether a setting applies, leave it unset.
           </p>
         </Col>
       </Row>
       <hr />
       <FolderList project={project} />
+      <NewFolderForm project={project} />
     </Container>
   );
 };

@@ -3,3 +3,4 @@ mutation InsertFolderEnvironmentalAdjustment($object: folder_environmental_adjus
         id
     }
 }
+

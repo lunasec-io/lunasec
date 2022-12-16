@@ -3,3 +3,4 @@ mutation InsertProjectFolderSetting($object: project_folder_settings_insert_inpu
         id
     }
 }
+

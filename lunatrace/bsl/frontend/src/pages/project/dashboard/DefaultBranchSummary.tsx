@@ -33,7 +33,7 @@ export const DefaultBranchSummary: React.FC<DefaultBranchSummaryProps> = ({ proj
   const defaultBranchBuilds = project.default_branch_builds;
   const defaultBranchBuild = defaultBranchBuilds ? defaultBranchBuilds[0] : null;
   const latestBuildAnyBranch = project.builds[0];
-  // Prefer a build on the default branch if available, otherwise use a build from any branch just so we can show something here
+  // Prefer a build on the default branch if available, otherwise use a builddev:sass from any branch just so we can show something here
   const build = defaultBranchBuild || latestBuildAnyBranch;
   if (!build) {
     return (

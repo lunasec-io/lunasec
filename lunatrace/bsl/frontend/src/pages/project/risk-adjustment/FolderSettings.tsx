@@ -11,8 +11,13 @@
  * limitations under the License.
  *
  */
-import React, { useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Button, Col, Form, InputGroup, Row, Spinner } from 'react-bootstrap';
+import { AiOutlineCheck } from 'react-icons/ai';
+import { TiDeleteOutline } from 'react-icons/ti';
+
+import api from '../../../api';
+import { ConditionallyRender } from '../../../components/utils/ConditionallyRender';
 
 import { SettingRadio } from './SettingRadio';
 import { FolderEnvironmentalAdjustment, SavedFolderSetting } from './types';
@@ -33,10 +38,10 @@ interface FolderTagProps {
   savedSettings: SavedFolderSetting | null | undefined;
 }
 export const FolderSettings: React.FC<FolderTagProps> = ({ savedSettings, availableSettings }) => {
+  if (!savedSettings) {
+    return null;
+  }
   const getSavedSetting = (optionNames: string[]): FolderEnvironmentalAdjustment | null => {
-    if (!savedSettings) {
-      return null;
-    }
     for (const adjustmentJoin of savedSettings.folder_environmental_adjustments) {
       if (optionNames.includes(adjustmentJoin.cvss_environmental_adjustment.name)) {
         return adjustmentJoin;
@@ -45,108 +50,83 @@ export const FolderSettings: React.FC<FolderTagProps> = ({ savedSettings, availa
     return null;
   };
 
-  // const createGetterSetter = (optionNames: string[]): SettingGetterSetter => {
-  //   return useState<string | null>(getPresetOption(optionNames));
-  // };
-  //
-  // const createOptionObject = function (optionNames: string[]): OptionObject {
-  //   const [value, setter] = createGetterSetter(optionNames);
-  //   return {
-  //     options: optionNames,
-  //     value,
-  //     setter,
-  //   };
-  // };
-  //
-  // const allOptionNames = [
-  //   ['frontend', 'backend'],
-  //   ['internet exposed', 'not internet exposed'],
-  //   ['PII', 'no PII'],
-  // ];
-  //
-  // if (isNotRoot) {
-  //   allOptionNames.push(['tests'], ['ignore all']);
-  // }
+  const [deleteFolderSetting, deleteFolderSettingResults] = api.useDeleteProjectFolderSettingMutation();
+  const submitDelete = () => {
+    if (deleteFolderSettingResults.isLoading) {
+      return;
+    }
+    void deleteFolderSetting({ id: savedSettings.id });
+  };
 
-  // const allOptions = allOptionNames.map(createOptionObject);
-  //
-  // const frontendBackendOptions = ['frontend', 'backend'];
-  // ``;
-  // const [frontendBackendSelected, setFrontendBackendSelected] = createGetterSetter(frontendBackendOptions);
-  //
-  // const internetFacingOptions = ['internet exposed', 'not internet exposed'];
-  // const [internetFacingSelected, setInternetFacingSelected] = createGetterSetter(internetFacingOptions);
-  //
-  // //
-  // // const setFrontendBackendSelectedWithSideEffects = (option: typeof frontendBackendOptions[number] | null) => {
-  // //   if (option !== 'backend') {
-  // //     setInternetFacingSelected(null);
-  // //   }
-  // //   setFrontendBackendSelected(option);
-  // // };
-  //
-  // const piiOptions = ['PII', 'no PII'];
-  // const [piiSelected, setPiiSelected] = createGetterSetter(piiOptions);
-  //
-  // const testsOptions = ['tests'];
-  // const [testsSelected, setTestsSelected] = createGetterSetter(testsOptions);
-  //
-  // const ignoreOptions = ['ignore all'];
-  // const [ignoreOption, setIgnoreOption] = createGetterSetter(ignoreOptions);
+  // Keep track of ignore state locally and also keep it updated with remote state when available
+  const [triggerIgnore, ignoreResults] = api.useSetProjectFolderSettingsIgnoreMutation();
+  const [ignoreFolder, setIgnoreFolder] = useState(savedSettings.ignore);
+  useEffect(() => {
+    setIgnoreFolder(savedSettings.ignore);
+  }, [savedSettings]);
 
-  // FolderTags.returnSelectedTags = () => {
-  //   return allOptions.map((o) => o.value).filter((o) => !!o);
-  // };
+  const submitIgnore = (setTo: boolean) => {
+    if (ignoreResults.isLoading) {
+      return null;
+    }
+    setIgnoreFolder(setTo);
+    void triggerIgnore({ id: savedSettings.id, ignore: setTo });
+  };
 
   return (
     <Row>
-      {availableSettings.map((availableSettingsGroup) => {
-        const savedSetting = getSavedSetting(availableSettingsGroup);
-        return (
-          <Col key={availableSettings.toString()} md="auto" className="mt-3">
-            <SettingRadio savedSetting={savedSetting} availableSettings={availableSettingsGroup} />
-          </Col>
-        );
-      })}
+      <ConditionallyRender if={!savedSettings.root}>
+        <h4 className="mb-2" style={{ color: 'var(--bs-teal)' }}>
+          {savedSettings.path_glob}
+        </h4>
+        <Col>
+          <InputGroup style={{ maxWidth: '80px' }}>
+            <Form.Control></Form.Control>
+            <Button>
+              <AiOutlineCheck className="mb-1" />
+            </Button>
+          </InputGroup>
+        </Col>
+        <Col xs="auto">
+          <Button
+            variant={ignoreFolder ? 'warning' : 'outline-secondary'}
+            className="mb-3"
+            disabled={ignoreResults.isLoading}
+            onClick={() => submitIgnore(!savedSettings.ignore)}
+          >
+            Ignore All
+          </Button>
+        </Col>
+      </ConditionallyRender>
+
+      {!savedSettings.ignore &&
+        availableSettings.map((availableSettingsGroup) => {
+          const savedSetting = getSavedSetting(availableSettingsGroup);
+          return (
+            <Col key={availableSettingsGroup.toString()} md="auto" className="mb-3">
+              <SettingRadio
+                folderSettingsId={savedSettings.id}
+                savedSetting={savedSetting}
+                availableSettings={availableSettingsGroup}
+              />
+            </Col>
+          );
+        })}
+      <ConditionallyRender if={!savedSettings.root}>
+        <Col xs="12" md="auto" className="float-xs-end mb-3">
+          <Button className="float-md-end" variant="outline-danger" onClick={submitDelete}>
+            {deleteFolderSettingResults.isLoading ? (
+              <Spinner animation="border" size="sm" />
+            ) : (
+              <>
+                <TiDeleteOutline size="1.2rem" className="mb-1 me-1" /> Remove
+              </>
+            )}
+          </Button>{' '}
+        </Col>
+      </ConditionallyRender>
+
+      <hr />
     </Row>
   );
-
-  // return (
-  //   <Row>
-  //     {allOptions.map((o) => {
-  //       <Col md="auto" className="mt-3">
-  //         <TagRadio options={o.options} selectedOption={o.value} setSelectedOption={o.setter} />
-  //       </Col>;
-  //     })}
-  //     <Col md="auto" className="mt-3">
-  //       <TagRadio
-  //         options={frontendBackendOptions}
-  //         selectedOption={frontendBackendSelected}
-  //         setSelectedOption={setFrontendBackendSelectedWithSideEffects}
-  //       />
-  //     </Col>
-  //     {frontendBackendSelected === 'backend' && (
-  //       <Col md="auto" className="mt-3">
-  //         <TagRadio
-  //           options={internetFacingOptions}
-  //           selectedOption={internetFacingSelected}
-  //           setSelectedOption={setInternetFacingSelected}
-  //         />
-  //       </Col>
-  //     )}
-  //     <Col md="auto" className="mt-3">
-  //       <TagRadio options={piiOptions} selectedOption={piiSelected} setSelectedOption={setPiiSelected} />
-  //     </Col>
-  //     {isNotRoot && (
-  //       <>
-  //         <Col md="auto" className="mt-3">
-  //           <TagRadio options={testsOptions} selectedOption={testsSelected} setSelectedOption={setTestsSelected} />
-  //         </Col>
-  //         <Col md="auto" className="mt-3">
-  //           <TagRadio options={ignoreOptions} selectedOption={ignoreOption} setSelectedOption={setIgnoreOption} />
-  //         </Col>
-  //       </>
-  //     )}
-  //   </Row>
-  // );
 };

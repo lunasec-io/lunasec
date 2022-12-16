@@ -56,6 +56,21 @@ const appApi = generatedApi.enhanceEndpoints({
     UpdateSettings: {
       invalidatesTags: ['ProjectDetails'],
     },
+    InsertProjectFolderSetting: {
+      invalidatesTags: ['ProjectDetails'],
+    },
+    InsertFolderEnvironmentalAdjustment: {
+      invalidatesTags: ['ProjectDetails'],
+    },
+    DeleteFolderAdjustment: {
+      invalidatesTags: ['ProjectDetails'],
+    },
+    DeleteProjectFolderSetting: {
+      invalidatesTags: ['ProjectDetails'],
+    },
+    SetProjectFolderSettingsIgnore: {
+      invalidatesTags: ['ProjectDetails'],
+    },
   },
 });
 
