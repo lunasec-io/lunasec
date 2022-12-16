@@ -66,8 +66,13 @@ jobs:
 
       - name: Hasura Metadata Check
         run: |-
-          timeout 120 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "404" ]]; do sleep 1; done' || false
-          
+          timeout 120 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "404" ]]; do sleep 1; done' || (
+            echo "# Hasura start error" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cd lunatrace/bsl && docker-compose logs --no-log-prefix --no-color | grep -E '(skipping applying migrations on database)'| jq -R '. | fromjson?' | tee -a $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            exit 1
+          )
           cd lunatrace/bsl/hasura
           
           function hasura() {
