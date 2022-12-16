@@ -25,9 +25,6 @@ query GetTreeFromBuild($build_id: uuid!, $analysis_results_where: analysis_manif
             path
             manifest_dependency_node {
                 id
-                child_edges {
-                    ...ManifestDependencyEdge
-                }
             }
             child_edges_recursive {
                 ...ManifestDependencyEdge
