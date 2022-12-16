@@ -16,6 +16,9 @@ import { Manifest } from '../../../models/vulnerability-dependency-tree/types';
 export const fakeDependencyTreeHasuraOutputFixture: Array<Manifest> = [
   {
     path: 'package-lock.json',
+    manifest_dependency_node: {
+      id: '00000000-0000-0000-0000-000000000000',
+    },
     child_edges_recursive: [
       {
         id: 'e1',

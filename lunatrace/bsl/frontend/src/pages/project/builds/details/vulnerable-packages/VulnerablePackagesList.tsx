@@ -17,7 +17,7 @@ import { Button, Col, Dropdown, Form, OverlayTrigger, Row } from 'react-bootstra
 import { FcPlus } from 'react-icons/fc';
 
 import { isDirectDep } from '../../../../../utils/package';
-import { QuickViewProps } from '../../types';
+import { BuildDetailInfo, QuickViewProps } from '../../types';
 
 import { AutoUpdatePopOverHOC } from './AutoUpdatePopOverHOC';
 import { VulnerablePackage } from './types';
@@ -31,6 +31,7 @@ interface FindingListProps {
   severity: SeverityNamesOsv;
   setSeverity: (s: SeverityNamesOsv) => void;
   shouldIgnore: boolean;
+  build: BuildDetailInfo;
 }
 
 export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> = ({
@@ -41,6 +42,7 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
   severity,
   setSeverity,
   shouldIgnore,
+  build,
 }) => {
   // Todo: not sure if this should include below minimum severity packages or not, might be confusing. For now we are, though
   const pkgsToUpdate = vulnerablePackages.filter((pkg) => {
@@ -63,6 +65,7 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
         quickView={quickView}
         severity={severity}
         shouldIgnore={shouldIgnore}
+        build={build}
       />
     );
   });

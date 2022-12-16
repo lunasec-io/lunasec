@@ -13,6 +13,7 @@ package staticanalysis
 import (
 	"context"
 	"errors"
+	"gocloud.dev/blob"
 	"io"
 	"net/http"
 	"net/url"
@@ -22,7 +23,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"gocloud.dev/blob"
+	_ "gocloud.dev/blob/s3blob"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
@@ -111,7 +112,7 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 
 	err = validateGetManifestDependencyEdgeResponse(logger, resp)
 	if err != nil {
-		log.Warn().
+		logger.Warn().
 			Err(err).
 			Msg("failed to validate manifest dependency edge")
 		return nil
@@ -133,7 +134,9 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 		Str("child package", childPackageName).
 		Logger()
 
-	findingType, results := s.runSemgrepRuleOnParentPackage(ctx, logger, upstreamBlobUrl, manifestDependencyEdgeUUID, parentPackageName, childPackageName)
+	findingType, results := s.runSemgrepRuleOnParentPackage(
+		ctx, logger, upstreamBlobUrl, manifestDependencyEdgeUUID, parentPackageName, childPackageName,
+	)
 
 	if queueRecord.SaveResults {
 		logger.Info().Msg("saving results")
@@ -148,11 +151,18 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 	return nil
 }
 
-func (s *staticAnalysisQueueHandler) saveResults(ctx context.Context, results *rules.SemgrepRuleOutput, findingType gql.Analysis_finding_type_enum, manifestDependencyEdgeUUID uuid.UUID, vulnerabilityUUID uuid.UUID) error {
+func (s *staticAnalysisQueueHandler) saveResults(
+	ctx context.Context,
+	results *rules.SemgrepRuleOutput,
+	findingType gql.Analysis_finding_type_enum,
+	manifestDependencyEdgeUUID uuid.UUID,
+	vulnerabilityUUID uuid.UUID,
+) error {
 	logger := log.With().
-		Str("mde", manifestDependencyEdgeUUID.String()).
-		Str("vuln", vulnerabilityUUID.String()).
+		Str("manifest dependency edge", manifestDependencyEdgeUUID.String()).
+		Str("vulnerability", vulnerabilityUUID.String()).
 		Logger()
+
 	var locations *gql.Analysis_manifest_dependency_edge_result_location_arr_rel_insert_input
 	if results != nil {
 		locations = getManifestDependencyEdgeLocations(results)
@@ -255,7 +265,52 @@ func (s *staticAnalysisQueueHandler) getUpstreamUrlForPackage(ctx context.Contex
 	*/
 }
 
-func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(ctx context.Context, logger zerolog.Logger, upstreamBlobUrl *string, manifestDependencyEdgeUUID uuid.UUID, parentPackageName, childPackageName string) (gql.Analysis_finding_type_enum, *rules.SemgrepRuleOutput) {
+func getCodeBlobStream(ctx context.Context, logger zerolog.Logger, resolvedBlobUrl string, parsedResolvedBlobUrl *url.URL) (io.ReadCloser, bool, error) {
+	var (
+		codeBlobStream io.ReadCloser
+		compressed     bool
+	)
+
+	if strings.Contains(parsedResolvedBlobUrl.Host, ".s3.") {
+		compressed = false
+
+		b, err := blob.OpenBucket(ctx, "s3://"+strings.Split(parsedResolvedBlobUrl.Host, ".")[0])
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("failed to open bucket from s3")
+			return nil, false, err
+		}
+
+		codeBlobStream, err = b.NewReader(ctx, parsedResolvedBlobUrl.Path, nil)
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("failed to open package blob from s3")
+			return nil, false, err
+		}
+	} else {
+		compressed = true
+
+		upstreamUrlResp, err := http.Get(resolvedBlobUrl)
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("failed to download resolved blob url")
+			return nil, false, err
+		}
+		codeBlobStream = upstreamUrlResp.Body
+	}
+	return codeBlobStream, compressed, nil
+}
+
+func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
+	ctx context.Context,
+	logger zerolog.Logger,
+	upstreamBlobUrl *string,
+	manifestDependencyEdgeUUID uuid.UUID,
+	parentPackageName, childPackageName string,
+) (gql.Analysis_finding_type_enum, *rules.SemgrepRuleOutput) {
 	var err error
 
 	var resolvedBlobUrl string
@@ -284,32 +339,12 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(ctx context.C
 		return gql.Analysis_finding_type_enumError, nil
 	}
 
-	var codeBlobStream io.ReadCloser
-
-	if strings.Contains(parsedResolvedBlobUrl.Host, ".s3.") {
-		b, err := blob.OpenBucket(ctx, "s3://"+strings.Split(parsedResolvedBlobUrl.Host, ".")[0])
-		if err != nil {
-			logger.Error().
-				Err(err).
-				Msg("failed to open package bucket from s3")
-			return gql.Analysis_finding_type_enumError, nil
-		}
-		codeBlobStream, err = b.NewReader(ctx, parsedResolvedBlobUrl.Path, nil)
-		if err != nil {
-			logger.Error().
-				Err(err).
-				Msg("failed to open package blob from s3")
-			return gql.Analysis_finding_type_enumError, nil
-		}
-	} else {
-		upstreamUrlResp, err := http.Get(resolvedBlobUrl)
-		if err != nil {
-			logger.Error().
-				Err(err).
-				Msg("failed to download package blob")
-			return gql.Analysis_finding_type_enumError, nil
-		}
-		codeBlobStream = upstreamUrlResp.Body
+	codeBlobStream, compressed, err := getCodeBlobStream(ctx, logger, resolvedBlobUrl, parsedResolvedBlobUrl)
+	if err != nil {
+		logger.Error().
+			Err(err).
+			Msg("failed to open package code")
+		return gql.Analysis_finding_type_enumError, nil
 	}
 	defer codeBlobStream.Close()
 
@@ -326,7 +361,7 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(ctx context.C
 		Str("tmp dir", tmpDir).
 		Msg("extracting package code")
 
-	err = util.ExtractTarGz(codeBlobStream, tmpDir)
+	err = util.ExtractTar(codeBlobStream, tmpDir, compressed)
 	if err != nil {
 		logger.Error().
 			Err(err).
@@ -343,6 +378,12 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(ctx context.C
 			Err(err).
 			Msg("failed to determine if child is imported and called by parent")
 		return gql.Analysis_finding_type_enumError, nil
+	}
+
+	// remove temporary path from results path
+	for i, result := range results.Results {
+		result.Path = strings.ReplaceAll(result.Path, tmpDir, "")
+		results.Results[i] = result
 	}
 
 	// we can only say that we definitely know that a vulnerability is not reachable, otherwise we can't

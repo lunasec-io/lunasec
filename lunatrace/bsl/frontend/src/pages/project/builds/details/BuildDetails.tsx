@@ -13,7 +13,7 @@
  */
 import { filterFindingsNotIgnored } from '@lunatrace/lunatrace-common/build/main';
 import classNames from 'classnames';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
@@ -106,6 +106,7 @@ export const BuildDetails: React.FunctionComponent = () => {
       }}
       shouldIgnore={ignoreFindings}
       toggleIgnoreFindings={() => setIgnoreFindings(!ignoreFindings)}
+      build={build}
     />
   );
 

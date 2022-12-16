@@ -19,7 +19,6 @@ import validate from 'validator';
 import { InsertedScan, performSnapshotScanAndCollectReport } from '../../../analysis/scan';
 import { queueManifestDependencyEdgeForStaticAnalysis } from '../../../analysis/static-analysis';
 import { interactWithPR } from '../../../github/actions/pr-comment-generator';
-import { hasura } from '../../../hasura-api';
 import { updateBuildStatus } from '../../../hasura-api/actions/update-build-status';
 import { updateManifestStatus } from '../../../hasura-api/actions/update-manifest-status';
 import { Build_State_Enum } from '../../../hasura-api/generated';
@@ -85,28 +84,10 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
     buildId,
   });
 
-  const treeResp = await catchError(hasura.GetTreeFromBuild({ build_id: buildId }));
-  if (threwError(treeResp)) {
-    log.error('failed to get dependency tree', {
-      error: treeResp,
-    });
-    return newError('failed to get dependency tree');
-  }
-
-  const rawBuildData = treeResp.builds_by_pk;
-  if (!rawBuildData) {
-    log.error('dependency tree is empty');
-    return newError('dependency tree is empty');
-  }
-
-  const rawManifests = rawBuildData.resolved_manifests;
-
   const logger = log.child('static-analysis', { buildId });
   const depTree = await vulnerabilityTreeFromHasura(logger, buildId);
   if (depTree.error) {
-    log.error('unable to build dependency tree', {
-      rawManifests,
-    });
+    log.error('unable to build dependency tree');
     return newError('unable to build dependency tree');
   }
 

@@ -15,13 +15,11 @@ import fs from 'fs';
 import * as os from 'os';
 import path from 'path';
 import util from 'util';
-import zlib from 'zlib';
 
 import tar, { FileStat } from 'tar';
 
 import { getWorkerBucketConfig } from '../../../config';
 import { getRepoCloneUrlWithAuth } from '../../../github/actions/get-repo-clone-url-with-auth';
-import { hasura } from '../../../hasura-api';
 import { updateBuildStatus } from '../../../hasura-api/actions/update-build-status';
 import { Build_State_Enum } from '../../../hasura-api/generated';
 import { generateSbomFromAsset } from '../../../snapshot/call-cli';
@@ -88,7 +86,7 @@ async function performSnapshotOnRepository(
       s3Url: s3UploadRes,
     });
 
-    logger.info('Attempting to upload worktree snapshot for repository.');
+    logger.info('Attempting to upload worktree for repository.');
     let codeURL = '';
     try {
       codeURL = await uploadWorktreeSnapshot(buildId, repoDir);
@@ -106,7 +104,9 @@ async function performSnapshotOnRepository(
       };
     }
 
-    logger.info('Successfully created snapshots for repository.');
+    logger.info('Successfully uploaded worktree for repository.', {
+      codeURL,
+    });
 
     // create releases with uploaded tar url.
     logger.info('Attempting to snapshot pinned dependencies for repository.');
@@ -220,12 +220,13 @@ async function uploadWorktreeSnapshot(buildId: string, repoDir: string): Promise
   const tarStream = tar.c(
     {
       cwd: repoDir,
+      prefix: '',
       gzip: true,
       filter(path: string, stat: FileStat): boolean {
         return !path.includes('/.git/');
       },
     },
-    [repoDir]
+    ['.']
   );
 
   return await aws.uploadGzipFileToS3(fileKey, bucketConfig.codeBucket, tarStream);
