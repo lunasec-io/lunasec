@@ -32,6 +32,9 @@
       <console name="LunaTrace" type="STANDARD" schema="" session="Main" />
     </connection>
   </component>
+  <component name="DBNavigator.Project.DatabaseEditorStateManager">
+    <last-used-providers />
+  </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files />
   </component>
@@ -45,6 +48,7 @@
     <retain-sticky-names value="false" />
   </component>
   <component name="DBNavigator.Project.FileConnectionMappingManager">
+    <mapping file-url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1671051319901_add_epss_score/up.sql" connection-id="2288c982-597b-4cb4-a0b1-d6f80f52304a" session-id="MAIN" current-schema="vulnerability" />
     <mapping file-url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1650321911749_add_webhook_cache/up.sql" connection-id="2288c982-597b-4cb4-a0b1-d6f80f52304a" session-id="MAIN" current-schema="public" />
     <mapping file-url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1661812840365_manifest_dependency_node_child_edges_recursive/up.sql" connection-id="2288c982-597b-4cb4-a0b1-d6f80f52304a" session-id="MAIN" current-schema="hdb_catalog" />
     <mapping file-url="file://$APPLICATION_CONFIG_DIR$/consoles/db/60703370-4771-453b-81a1-e251ed9b8f3f/console.sql" connection-id="2288c982-597b-4cb4-a0b1-d6f80f52304a" session-id="MAIN" current-schema="hdb_catalog" />
@@ -117,7 +121,7 @@
           <connect-automatically value="true" />
           <restore-workspace value="true" />
           <restore-workspace-deep value="false" />
-          <environment-type value="default" />
+          <environment-type value="development" />
           <connectivity-timeout value="5" />
           <idle-time-to-disconnect value="30" />
           <idle-time-to-disconnect-pool value="5" />
@@ -345,21 +349,21 @@
             <filter-element type="OBJECT" id="dblink" selected="true" />
           </user-schema>
           <public-schema>
-            <filter-element type="OBJECT" id="table" selected="false" />
-            <filter-element type="OBJECT" id="view" selected="false" />
-            <filter-element type="OBJECT" id="materialized view" selected="false" />
-            <filter-element type="OBJECT" id="index" selected="false" />
-            <filter-element type="OBJECT" id="constraint" selected="false" />
-            <filter-element type="OBJECT" id="trigger" selected="false" />
-            <filter-element type="OBJECT" id="synonym" selected="false" />
-            <filter-element type="OBJECT" id="sequence" selected="false" />
-            <filter-element type="OBJECT" id="procedure" selected="false" />
-            <filter-element type="OBJECT" id="function" selected="false" />
-            <filter-element type="OBJECT" id="package" selected="false" />
-            <filter-element type="OBJECT" id="type" selected="false" />
-            <filter-element type="OBJECT" id="dimension" selected="false" />
-            <filter-element type="OBJECT" id="cluster" selected="false" />
-            <filter-element type="OBJECT" id="dblink" selected="false" />
+            <filter-element type="OBJECT" id="table" selected="true" />
+            <filter-element type="OBJECT" id="view" selected="true" />
+            <filter-element type="OBJECT" id="materialized view" selected="true" />
+            <filter-element type="OBJECT" id="index" selected="true" />
+            <filter-element type="OBJECT" id="constraint" selected="true" />
+            <filter-element type="OBJECT" id="trigger" selected="true" />
+            <filter-element type="OBJECT" id="synonym" selected="true" />
+            <filter-element type="OBJECT" id="sequence" selected="true" />
+            <filter-element type="OBJECT" id="procedure" selected="true" />
+            <filter-element type="OBJECT" id="function" selected="true" />
+            <filter-element type="OBJECT" id="package" selected="true" />
+            <filter-element type="OBJECT" id="type" selected="true" />
+            <filter-element type="OBJECT" id="dimension" selected="true" />
+            <filter-element type="OBJECT" id="cluster" selected="true" />
+            <filter-element type="OBJECT" id="dblink" selected="true" />
           </public-schema>
           <any-schema>
             <filter-element type="OBJECT" id="table" selected="true" />

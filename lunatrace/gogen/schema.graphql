@@ -5486,6 +5486,8 @@ type vulnerability {
     cwes(distinct_on: [vulnerability_vulnerability_cwe_select_column!], limit: Int, offset: Int, order_by: [vulnerability_vulnerability_cwe_order_by!], where: vulnerability_vulnerability_cwe_bool_exp): [vulnerability_vulnerability_cwe!]!
     database_specific(path: String): jsonb
     details: String
+    epss_percentile: Float
+    epss_score: Float
     equivalents(distinct_on: [vulnerability_equivalent_select_column!], limit: Int, offset: Int, order_by: [vulnerability_equivalent_order_by!], where: vulnerability_equivalent_bool_exp): [vulnerability_equivalent!]!
     findings(distinct_on: [findings_select_column!], limit: Int, offset: Int, order_by: [findings_order_by!], where: findings_bool_exp): [findings!]!
     guide_vulnerabilities(distinct_on: [guide_vulnerabilities_select_column!], limit: Int, offset: Int, order_by: [guide_vulnerabilities_order_by!], where: guide_vulnerabilities_bool_exp): [guide_vulnerabilities!]!
@@ -5929,6 +5931,8 @@ input vulnerability_bool_exp {
     cwes: vulnerability_vulnerability_cwe_bool_exp
     database_specific: jsonb_comparison_exp
     details: String_comparison_exp
+    epss_percentile: Float_comparison_exp
+    epss_score: Float_comparison_exp
     equivalents: vulnerability_equivalent_bool_exp
     findings: findings_bool_exp
     guide_vulnerabilities: guide_vulnerabilities_bool_exp
@@ -6238,6 +6242,8 @@ enum vulnerability_equivalent_update_column {
 
 input vulnerability_inc_input {
     cvss_score: Float
+    epss_percentile: Float
+    epss_score: Float
 }
 
 input vulnerability_insert_input {
@@ -6248,6 +6254,8 @@ input vulnerability_insert_input {
     cwes: vulnerability_vulnerability_cwe_arr_rel_insert_input
     database_specific: jsonb
     details: String
+    epss_percentile: Float
+    epss_score: Float
     equivalents: vulnerability_equivalent_arr_rel_insert_input
     findings: findings_arr_rel_insert_input
     guide_vulnerabilities: guide_vulnerabilities_arr_rel_insert_input
@@ -6290,6 +6298,8 @@ input vulnerability_order_by {
     cwes_aggregate: vulnerability_vulnerability_cwe_aggregate_order_by
     database_specific: order_by
     details: order_by
+    epss_percentile: order_by
+    epss_score: order_by
     equivalents_aggregate: vulnerability_equivalent_aggregate_order_by
     findings_aggregate: findings_aggregate_order_by
     guide_vulnerabilities_aggregate: guide_vulnerabilities_aggregate_order_by
@@ -6525,6 +6535,8 @@ enum vulnerability_select_column {
     cvss_score
     database_specific
     details
+    epss_percentile
+    epss_score
     id
     last_fetched
     modified
@@ -6543,6 +6555,8 @@ input vulnerability_set_input {
     cvss_score: Float
     database_specific: jsonb
     details: String
+    epss_percentile: Float
+    epss_score: Float
     id: uuid
     last_fetched: timestamptz
     modified: timestamptz
@@ -6671,6 +6685,8 @@ enum vulnerability_update_column {
     cvss_score
     database_specific
     details
+    epss_percentile
+    epss_score
     id
     last_fetched
     modified
