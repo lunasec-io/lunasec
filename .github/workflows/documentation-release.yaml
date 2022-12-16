@@ -43,16 +43,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
           node-version: '16'
+          cache: 'yarn'
 
       - name: Lerna Bootstrap and Build Deploy Tool
         env:
           IS_LUNASEC_CI: true
           CI: true
         run: |
-          yarn install --immutable --immutable-cache --inline-builds
+          yarn install --inline-builds
           yarn compile:dev:infrastructure
 
       - name: Build Repo

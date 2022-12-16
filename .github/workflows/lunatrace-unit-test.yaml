@@ -31,11 +31,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: '16'
+          cache: 'yarn'
 
-      - run: yarn install
+      - name: Yarn Install
+        run: yarn install
 
       - run: yarn run compile:bsl
 

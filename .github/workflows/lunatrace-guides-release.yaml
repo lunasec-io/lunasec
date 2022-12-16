@@ -28,15 +28,15 @@ jobs:
         with:
           fetch-depth: 1
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
           node-version: '16'
+          cache: 'yarn'
 
       - name: Yarn Install
         env:
           IS_LUNASEC_CI: true
-          CI: true
-        run: yarn install --immutable --immutable-cache --inline-builds
+        run: yarn install --inline-builds
 
       - name: Build Common
         run: cd lunatrace/bsl/common && yarn run compile
