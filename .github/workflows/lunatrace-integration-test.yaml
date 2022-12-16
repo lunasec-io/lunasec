@@ -28,12 +28,7 @@ jobs:
         with:
           go-version: '>=1.18.0'
           cache: true
-      - name: Install tools
-        uses: yokawasa/action-setup-kube-tools@v0.8.0
-        with:
-          setup-tools: |
-            yq
-          yq: "4.16.2"
+
       - name: Yarn Install
         env:
           IS_LUNASEC_CI: true
