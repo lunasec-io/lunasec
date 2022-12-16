@@ -12080,10 +12080,10 @@ export type Vulnerability_Vulnerability_Cwe_Bool_Exp = {
 
 /** unique or primary key constraints on table "vulnerability.vulnerability_cwe" */
 export enum Vulnerability_Vulnerability_Cwe_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  VulnerabilityCwePkey = 'vulnerability_cwe_pkey',
   /** unique or primary key constraint on columns "cwe_id", "vulnerability_id" */
-  VulnerabilityCweVulnerabilityIdCweIdKey = 'vulnerability_cwe_vulnerability_id_cwe_id_key'
+  UniqueVulnerabilityCweVulnerabilityIdCweIdKey = 'unique_vulnerability_cwe_vulnerability_id_cwe_id_key',
+  /** unique or primary key constraint on columns "id" */
+  VulnerabilityCwePkey = 'vulnerability_cwe_pkey'
 }
 
 /** input type for incrementing numeric columns in table "vulnerability.vulnerability_cwe" */

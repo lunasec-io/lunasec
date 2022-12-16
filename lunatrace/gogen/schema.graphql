@@ -6727,8 +6727,8 @@ input vulnerability_vulnerability_cwe_bool_exp {
 }
 
 enum vulnerability_vulnerability_cwe_constraint {
+    unique_vulnerability_cwe_vulnerability_id_cwe_id_key
     vulnerability_cwe_pkey
-    vulnerability_cwe_vulnerability_id_cwe_id_key
 }
 
 input vulnerability_vulnerability_cwe_inc_input {
