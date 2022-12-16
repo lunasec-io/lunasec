@@ -8,7 +8,6 @@
 //
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package util
 
 import (
@@ -21,13 +20,17 @@ import (
 	"path"
 )
 
-func ExtractTarGz(gzipStream io.Reader, dir string) error {
-	uncompressedStream, err := gzip.NewReader(gzipStream)
-	if err != nil {
-		return fmt.Errorf("NewReader failed: %v", err)
+func ExtractTar(gzipStream io.Reader, dir string, compressed bool) error {
+	var err error
+
+	if compressed {
+		gzipStream, err = gzip.NewReader(gzipStream)
+		if err != nil {
+			return fmt.Errorf("NewReader failed: %v", err)
+		}
 	}
 
-	tarReader := tar.NewReader(uncompressedStream)
+	tarReader := tar.NewReader(gzipStream)
 
 	for true {
 		header, err := tarReader.Next()
@@ -44,7 +47,7 @@ func ExtractTarGz(gzipStream io.Reader, dir string) error {
 
 		switch header.Typeflag {
 		case tar.TypeDir:
-			if err := os.Mkdir(outFilePath, 0755); err != nil {
+			if err := os.MkdirAll(outFilePath, 0755); err != nil {
 				log.Error().
 					Err(err).
 					Str("out file path", outFilePath).

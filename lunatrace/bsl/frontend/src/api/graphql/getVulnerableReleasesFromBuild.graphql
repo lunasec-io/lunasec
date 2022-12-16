@@ -25,6 +25,7 @@ query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!,
             reachable
             locations {
                 id
+                path
                 start_row
                 end_row
             }

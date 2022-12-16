@@ -42,6 +42,7 @@ type BuildData_Cwe {
 
 type BuildData_DependencyNode {
     id: String!
+    locations: [BuildData_Location!]!
     range: String!
     reachable: String!
     release: BuildData_Release!
@@ -61,6 +62,15 @@ type BuildData_Guide_Vulnerability {
 type BuildData_IgnoredVulnerability {
     locations: [String!]!
     note: String!
+}
+
+type BuildData_Location {
+    end_column: Int!
+    end_row: Int!
+    id: String!
+    path: String!
+    start_column: Int!
+    start_row: Int!
 }
 
 type BuildData_Package {
@@ -411,7 +421,7 @@ input analysis_manifest_dependency_edge_result_location_bool_exp {
 }
 
 enum analysis_manifest_dependency_edge_result_location_constraint {
-    manifest_dependency_edge_result_location_pkey
+    manifest_dependency_edge_result_callsite_pkey
 }
 
 input analysis_manifest_dependency_edge_result_location_inc_input {

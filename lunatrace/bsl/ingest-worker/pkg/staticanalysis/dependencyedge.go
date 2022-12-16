@@ -134,7 +134,9 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 		Str("child package", childPackageName).
 		Logger()
 
-	findingType, results := s.runSemgrepRuleOnParentPackage(ctx, logger, upstreamBlobUrl, manifestDependencyEdgeUUID, parentPackageName, childPackageName)
+	findingType, results := s.runSemgrepRuleOnParentPackage(
+		ctx, logger, upstreamBlobUrl, manifestDependencyEdgeUUID, parentPackageName, childPackageName,
+	)
 
 	if queueRecord.SaveResults {
 		logger.Info().Msg("saving results")
@@ -149,11 +151,18 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 	return nil
 }
 
-func (s *staticAnalysisQueueHandler) saveResults(ctx context.Context, results *rules.SemgrepRuleOutput, findingType gql.Analysis_finding_type_enum, manifestDependencyEdgeUUID uuid.UUID, vulnerabilityUUID uuid.UUID) error {
+func (s *staticAnalysisQueueHandler) saveResults(
+	ctx context.Context,
+	results *rules.SemgrepRuleOutput,
+	findingType gql.Analysis_finding_type_enum,
+	manifestDependencyEdgeUUID uuid.UUID,
+	vulnerabilityUUID uuid.UUID,
+) error {
 	logger := log.With().
-		Str("mde", manifestDependencyEdgeUUID.String()).
-		Str("vuln", vulnerabilityUUID.String()).
+		Str("manifest dependency edge", manifestDependencyEdgeUUID.String()).
+		Str("vulnerability", vulnerabilityUUID.String()).
 		Logger()
+
 	var locations *gql.Analysis_manifest_dependency_edge_result_location_arr_rel_insert_input
 	if results != nil {
 		locations = getManifestDependencyEdgeLocations(results)
@@ -256,16 +265,21 @@ func (s *staticAnalysisQueueHandler) getUpstreamUrlForPackage(ctx context.Contex
 	*/
 }
 
-func getCodeBlobStream(ctx context.Context, logger zerolog.Logger, resolvedBlobUrl string, parsedResolvedBlobUrl *url.URL) (io.ReadCloser, error) {
-	var codeBlobStream io.ReadCloser
+func getCodeBlobStream(ctx context.Context, logger zerolog.Logger, resolvedBlobUrl string, parsedResolvedBlobUrl *url.URL) (io.ReadCloser, bool, error) {
+	var (
+		codeBlobStream io.ReadCloser
+		compressed     bool
+	)
 
 	if strings.Contains(parsedResolvedBlobUrl.Host, ".s3.") {
+		compressed = false
+
 		b, err := blob.OpenBucket(ctx, "s3://"+strings.Split(parsedResolvedBlobUrl.Host, ".")[0])
 		if err != nil {
 			logger.Error().
 				Err(err).
 				Msg("failed to open bucket from s3")
-			return nil, err
+			return nil, false, err
 		}
 
 		codeBlobStream, err = b.NewReader(ctx, parsedResolvedBlobUrl.Path, nil)
@@ -273,19 +287,21 @@ func getCodeBlobStream(ctx context.Context, logger zerolog.Logger, resolvedBlobU
 			logger.Error().
 				Err(err).
 				Msg("failed to open package blob from s3")
-			return nil, err
+			return nil, false, err
 		}
 	} else {
+		compressed = true
+
 		upstreamUrlResp, err := http.Get(resolvedBlobUrl)
 		if err != nil {
 			logger.Error().
 				Err(err).
 				Msg("failed to download resolved blob url")
-			return nil, err
+			return nil, false, err
 		}
 		codeBlobStream = upstreamUrlResp.Body
 	}
-	return codeBlobStream, nil
+	return codeBlobStream, compressed, nil
 }
 
 func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
@@ -323,7 +339,7 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 		return gql.Analysis_finding_type_enumError, nil
 	}
 
-	codeBlobStream, err := getCodeBlobStream(ctx, logger, resolvedBlobUrl, parsedResolvedBlobUrl)
+	codeBlobStream, compressed, err := getCodeBlobStream(ctx, logger, resolvedBlobUrl, parsedResolvedBlobUrl)
 	if err != nil {
 		logger.Error().
 			Err(err).
@@ -345,7 +361,7 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 		Str("tmp dir", tmpDir).
 		Msg("extracting package code")
 
-	err = util.ExtractTarGz(codeBlobStream, tmpDir)
+	err = util.ExtractTar(codeBlobStream, tmpDir, compressed)
 	if err != nil {
 		logger.Error().
 			Err(err).
@@ -362,6 +378,12 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 			Err(err).
 			Msg("failed to determine if child is imported and called by parent")
 		return gql.Analysis_finding_type_enumError, nil
+	}
+
+	// remove temporary path from results path
+	for i, result := range results.Results {
+		result.Path = strings.ReplaceAll(result.Path, tmpDir, "")
+		results.Results[i] = result
 	}
 
 	// we can only say that we definitely know that a vulnerability is not reachable, otherwise we can't
