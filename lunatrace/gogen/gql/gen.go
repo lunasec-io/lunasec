@@ -6867,6 +6867,8 @@ type Vulnerability_bool_exp struct {
 	Cwes                    *Vulnerability_vulnerability_cwe_bool_exp `json:"cwes,omitempty"`
 	Database_specific       *Jsonb_comparison_exp                     `json:"database_specific,omitempty"`
 	Details                 *String_comparison_exp                    `json:"details,omitempty"`
+	Epss_percentile         *Float_comparison_exp                     `json:"epss_percentile,omitempty"`
+	Epss_score              *Float_comparison_exp                     `json:"epss_score,omitempty"`
 	Equivalents             *Vulnerability_equivalent_bool_exp        `json:"equivalents,omitempty"`
 	Findings                *Findings_bool_exp                        `json:"findings,omitempty"`
 	Guide_vulnerabilities   *Guide_vulnerabilities_bool_exp           `json:"guide_vulnerabilities,omitempty"`
@@ -6917,6 +6919,12 @@ func (v *Vulnerability_bool_exp) GetDatabase_specific() *Jsonb_comparison_exp {
 
 // GetDetails returns Vulnerability_bool_exp.Details, and is useful for accessing the field via an interface.
 func (v *Vulnerability_bool_exp) GetDetails() *String_comparison_exp { return v.Details }
+
+// GetEpss_percentile returns Vulnerability_bool_exp.Epss_percentile, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetEpss_percentile() *Float_comparison_exp { return v.Epss_percentile }
+
+// GetEpss_score returns Vulnerability_bool_exp.Epss_score, and is useful for accessing the field via an interface.
+func (v *Vulnerability_bool_exp) GetEpss_score() *Float_comparison_exp { return v.Epss_score }
 
 // GetEquivalents returns Vulnerability_bool_exp.Equivalents, and is useful for accessing the field via an interface.
 func (v *Vulnerability_bool_exp) GetEquivalents() *Vulnerability_equivalent_bool_exp {
@@ -7335,6 +7343,8 @@ type Vulnerability_insert_input struct {
 	Cwes                  *Vulnerability_vulnerability_cwe_arr_rel_insert_input `json:"cwes,omitempty"`
 	Database_specific     *json.RawMessage                                      `json:"database_specific,omitempty"`
 	Details               *string                                               `json:"details,omitempty"`
+	Epss_percentile       *float64                                              `json:"epss_percentile,omitempty"`
+	Epss_score            *float64                                              `json:"epss_score,omitempty"`
 	Equivalents           *Vulnerability_equivalent_arr_rel_insert_input        `json:"equivalents,omitempty"`
 	Findings              *Findings_arr_rel_insert_input                        `json:"findings,omitempty"`
 	Guide_vulnerabilities *Guide_vulnerabilities_arr_rel_insert_input           `json:"guide_vulnerabilities,omitempty"`
@@ -7381,6 +7391,12 @@ func (v *Vulnerability_insert_input) GetDatabase_specific() *json.RawMessage {
 
 // GetDetails returns Vulnerability_insert_input.Details, and is useful for accessing the field via an interface.
 func (v *Vulnerability_insert_input) GetDetails() *string { return v.Details }
+
+// GetEpss_percentile returns Vulnerability_insert_input.Epss_percentile, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetEpss_percentile() *float64 { return v.Epss_percentile }
+
+// GetEpss_score returns Vulnerability_insert_input.Epss_score, and is useful for accessing the field via an interface.
+func (v *Vulnerability_insert_input) GetEpss_score() *float64 { return v.Epss_score }
 
 // GetEquivalents returns Vulnerability_insert_input.Equivalents, and is useful for accessing the field via an interface.
 func (v *Vulnerability_insert_input) GetEquivalents() *Vulnerability_equivalent_arr_rel_insert_input {
@@ -7832,6 +7848,8 @@ const (
 	Vulnerability_update_columnCvssScore        Vulnerability_update_column = "cvss_score"
 	Vulnerability_update_columnDatabaseSpecific Vulnerability_update_column = "database_specific"
 	Vulnerability_update_columnDetails          Vulnerability_update_column = "details"
+	Vulnerability_update_columnEpssPercentile   Vulnerability_update_column = "epss_percentile"
+	Vulnerability_update_columnEpssScore        Vulnerability_update_column = "epss_score"
 	Vulnerability_update_columnId               Vulnerability_update_column = "id"
 	Vulnerability_update_columnLastFetched      Vulnerability_update_column = "last_fetched"
 	Vulnerability_update_columnModified         Vulnerability_update_column = "modified"

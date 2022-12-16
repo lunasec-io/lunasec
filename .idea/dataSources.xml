@@ -4,6 +4,7 @@
     <data-source source="LOCAL" name="PostgreSQL - postgres@localhost" uuid="f58754ba-e8ea-4b68-b0ea-dd7be81a5d45">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
+      <schema-control>AUTOMATIC</schema-control>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:5431/lunatrace</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
