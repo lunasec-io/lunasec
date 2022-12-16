@@ -53,7 +53,7 @@ jobs:
           IS_LUNASEC_CI: true
           CI: true
         run: |
-          yarn install --inline-builds
+          yarn install --immutable --inline-builds
           yarn compile:dev:infrastructure
 
       - name: Build Repo

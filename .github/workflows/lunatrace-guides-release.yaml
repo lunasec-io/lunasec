@@ -36,7 +36,7 @@ jobs:
       - name: Yarn Install
         env:
           IS_LUNASEC_CI: true
-        run: yarn install --inline-builds
+        run: yarn install --immutable --inline-builds
 
       - name: Build Common
         run: cd lunatrace/bsl/common && yarn run compile
