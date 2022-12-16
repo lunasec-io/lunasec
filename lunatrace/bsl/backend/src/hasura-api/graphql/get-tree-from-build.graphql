@@ -1,25 +1,36 @@
+fragment ManifestDependencyEdge on manifest_dependency_edge {
+    id
+    parent_id
+    child_id
+    analysis_results(where: $analysis_results_where, order_by: {finding_source_version: desc}) {
+        id
+        finding_source_version
+        finding_source
+        finding_type
+        locations(limit: 5) {
+            id
+            path
+            start_row
+            start_column
+            end_row
+            end_column
+        }
+    }
+}
+
 query GetTreeFromBuild($build_id: uuid!, $analysis_results_where: analysis_manifest_dependency_edge_result_bool_exp = {}) {
     builds_by_pk(id: $build_id) {
         resolved_manifests {
             id
             path
-            child_edges_recursive {
+            manifest_dependency_node {
                 id
-                parent_id
-                child_id
-                analysis_results(where: $analysis_results_where, order_by: {finding_source_version: desc}) {
-                  finding_source_version
-                  finding_source
-                  finding_type
-                  locations {
-                      id
-                      path
-                      start_row
-                      start_column
-                      end_row
-                      end_column
-                  }
+                child_edges {
+                    ...ManifestDependencyEdge
                 }
+            }
+            child_edges_recursive {
+                ...ManifestDependencyEdge
             }
         }
         project {
