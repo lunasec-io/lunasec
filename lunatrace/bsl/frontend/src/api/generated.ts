@@ -69,6 +69,7 @@ export type BuildData_Cwe = {
 export type BuildData_DependencyNode = {
   __typename?: 'BuildData_DependencyNode';
   id: Scalars['String'];
+  locations: Array<BuildData_Location>;
   range: Scalars['String'];
   reachable: Scalars['String'];
   release: BuildData_Release;
@@ -91,6 +92,16 @@ export type BuildData_IgnoredVulnerability = {
   __typename?: 'BuildData_IgnoredVulnerability';
   locations: Array<Scalars['String']>;
   note: Scalars['String'];
+};
+
+export type BuildData_Location = {
+  __typename?: 'BuildData_Location';
+  end_column: Scalars['Int'];
+  end_row: Scalars['Int'];
+  id: Scalars['String'];
+  path: Scalars['String'];
+  start_column: Scalars['Int'];
+  start_row: Scalars['Int'];
 };
 
 export type BuildData_Package = {
@@ -8017,7 +8028,7 @@ export type GetVulnerableReleasesFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, beneath_minimum_severity: boolean, cvss?: number | null, severity: string, paths: Array<string>, fix_versions: Array<string>, dev_only: boolean, guides: Array<{ __typename?: 'BuildData_Guide', id: string, title: string, summary: string }>, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, reachable: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } } }>>, release: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string, package_manager: string } }, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable_to?: string | null, beneath_minimum_severity: boolean, fix_versions: Array<string>, path: string, ignored: boolean, ignored_vulnerability?: { __typename?: 'BuildData_IgnoredVulnerability', locations: Array<string>, note: string } | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, summary?: string | null, id: string, source_id: string, guide_vulnerabilities: Array<{ __typename?: 'BuildData_Guide_Vulnerability', guide?: { __typename?: 'BuildData_Guide', id: string, summary: string, title: string } | null }>, cwes: Array<{ __typename?: 'BuildData_VulnerabilityCwe', id: string, cwe: { __typename?: 'BuildData_Cwe', id: number, name: string, description: string, common_name?: string | null } }> } }> }> | null };
+export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, beneath_minimum_severity: boolean, cvss?: number | null, severity: string, paths: Array<string>, fix_versions: Array<string>, dev_only: boolean, guides: Array<{ __typename?: 'BuildData_Guide', id: string, title: string, summary: string }>, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, reachable: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } }, locations: Array<{ __typename?: 'BuildData_Location', id: string, path: string, start_row: number, end_row: number }> }>>, release: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string, package_manager: string } }, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable_to?: string | null, beneath_minimum_severity: boolean, fix_versions: Array<string>, path: string, ignored: boolean, ignored_vulnerability?: { __typename?: 'BuildData_IgnoredVulnerability', locations: Array<string>, note: string } | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, summary?: string | null, id: string, source_id: string, guide_vulnerabilities: Array<{ __typename?: 'BuildData_Guide_Vulnerability', guide?: { __typename?: 'BuildData_Guide', id: string, summary: string, title: string } | null }>, cwes: Array<{ __typename?: 'BuildData_VulnerabilityCwe', id: string, cwe: { __typename?: 'BuildData_Cwe', id: number, name: string, description: string, common_name?: string | null } }> } }> }> | null };
 
 export type InsertNewOrgUserMutationVariables = Exact<{
   organization_id: Scalars['uuid'];
@@ -8806,6 +8817,12 @@ export const GetVulnerableReleasesFromBuildDocument = `
         version
       }
       reachable
+      locations {
+        id
+        path
+        start_row
+        end_row
+      }
     }
     release {
       version

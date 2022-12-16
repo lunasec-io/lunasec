@@ -19,7 +19,7 @@ import { useParams } from 'react-router-dom';
 
 import api from '../../../../../../api';
 import { ConfirmationDailog } from '../../../../../../components/ConfirmationDialog';
-import { QuickViewProps } from '../../../types';
+import {BuildDetailInfo, QuickViewProps} from '../../../types';
 import { VulnerablePackage } from '../types';
 
 import { PackageCardBody } from './PackageCardBody';
@@ -30,6 +30,7 @@ interface VulnerablePackageMainProps {
   quickView: QuickViewProps;
   severity: SeverityNamesOsv;
   shouldIgnore: boolean;
+  build: BuildDetailInfo;
 }
 
 export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMainProps> = ({
@@ -37,6 +38,7 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
   quickView,
   severity,
   shouldIgnore,
+  build,
 }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [insertVulnIgnore, insertVulnIgnoreState] = api.useInsertIgnoredVulnerabilitiesMutation();
@@ -124,6 +126,7 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
           findings={findings}
           shouldFilterFindingsBySeverity={shouldFilterFindingsBySeverity}
           setShouldFilterFindingsBySeverity={setShouldFilterFindingsBySeverity}
+          build={build}
         />
       </Card>
       <ConfirmationDailog

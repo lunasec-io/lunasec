@@ -13,34 +13,97 @@
  */
 import React from 'react';
 import { Col, Row } from 'react-bootstrap';
+import { ExternalLink } from 'react-feather';
 import { AiOutlineCode } from 'react-icons/ai';
 import semver from 'semver';
 
+import { Builds } from '../../../../../../api/generated';
 import { PackageManagerLink } from '../../../../../../components/PackageManagerLink';
+import { linkToPathAtCommit } from '../../../../../../utils/build-display-helpers';
 import { pluralizeIfMultiple } from '../../../../../../utils/string-utils';
+import { BuildDetailInfo } from '../../../types';
 import { VulnerablePackage } from '../types';
 
 import { DepChains } from './DepChains';
-interface PackageDetailsProps {
-  pkg: VulnerablePackage;
+
+interface CodeLocation {
+  path: string;
+  line: number;
 }
 
-export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ pkg }) => {
+interface LocationListProps {
+  build: BuildDetailInfo;
+  locations: CodeLocation[];
+}
+
+const LocationList: React.FC<LocationListProps> = ({ build, locations }) => {
+  if (locations.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      <span className="darker">Locations:</span>
+      <ul>
+        {locations.map((loc, idx) => (
+          <li key={idx}>
+            <span className="lighter mx-1">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                href={linkToPathAtCommit(build, loc.path, loc.line) || '#'}
+              >
+                {loc.path}
+              </a>{' '}
+              <ExternalLink size="1em" className="mb-1 me-1" />
+            </span>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};
+
+interface PackageDetailsProps {
+  pkg: VulnerablePackage;
+  build: BuildDetailInfo;
+}
+
+export const PackageDetails: React.FunctionComponent<PackageDetailsProps> = ({ pkg, build }) => {
+  const locations: CodeLocation[] = [];
+  pkg.chains.forEach((c) => {
+    c.forEach((dep, idx) => {
+      // Only show the first party code locations. Anything > 1 is deeper in the chain.
+      if (idx > 1) {
+        return;
+      }
+
+      dep.locations.forEach((l) => {
+        if (!locations.some((loc) => loc.path === l.path)) {
+          locations.push({ path: l.path, line: l.start_row });
+        }
+      });
+    });
+  });
+
   return (
     <div className="mb-3">
       <Row className={'d-flex flex-row'}>
         <Col xl={6} lg={12} className={'flex-grow-1'}>
-          <h5>
+          <div>
             <span className="darker">{pluralizeIfMultiple(pkg.paths.length, 'Path') + ': '}</span>
-            {pkg.paths.map((path, index) => {
-              return (
-                <div key={index}>
-                  {index > 0 && <br />}
-                  <span className="lighter mx-1">{path}</span>
-                </div>
-              );
-            })}
-          </h5>
+            <ul>
+              {pkg.paths.map((path, index) => {
+                return (
+                  <li key={index}>
+                    <span className="lighter mx-1">{path}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <LocationList build={build} locations={locations} />
           {pkg.dev_only && (
             <h5>
               <AiOutlineCode className="mb-1 me-1 darker" />

@@ -113,12 +113,22 @@ type BuildData_AffectedByVulnerability {
     path: String!
 }
 
+type BuildData_Location {
+    id: String!
+    path: String!
+    start_row: Int!
+    start_column: Int!
+    end_row: Int!
+    end_column: Int!
+}
+
 type BuildData_DependencyNode {
     id: String!
     range: String!
     release_id: String!
     release: BuildData_Release!
     reachable: String!
+    locations: [BuildData_Location!]!
 }
 
 type BuildData_Range {

@@ -16,8 +16,9 @@ import React, { useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 
 import api from '../../../../api';
+import { Builds } from '../../../../api/generated';
 import { SpinIfLoading } from '../../../../components/SpinIfLoading';
-import { QuickViewProps } from '../types';
+import { BuildDetailInfo, QuickViewProps } from '../types';
 
 import { LegacyGrypeVulnerablePackageList } from './vulnerable-packages-legacy-grype/LegacyGrypeVulnerablePackageList';
 import { Finding } from './vulnerable-packages-legacy-grype/types';
@@ -30,6 +31,7 @@ export interface VulnerablePackageListWrapperProps {
   buildId: string;
   toggleIgnoreFindings: () => void;
   shouldIgnore: boolean;
+  build: BuildDetailInfo;
 }
 
 // This component will switch between legacy views or the newer tree-based view if data is available
@@ -40,6 +42,7 @@ export const VulnerablePackageListWrapper: React.FC<VulnerablePackageListWrapper
   toggleIgnoreFindings,
   buildId,
   shouldIgnore,
+  build,
 }) => {
   // severity state for modern tree data, legacy has its own state and doesnt use this
   const [severity, setSeverity] = useState<SeverityNamesOsv>('Critical');
@@ -74,6 +77,7 @@ export const VulnerablePackageListWrapper: React.FC<VulnerablePackageListWrapper
           severity={severity}
           setSeverity={setSeverity}
           shouldIgnore={shouldIgnore}
+          build={build}
         />
       </>
     );

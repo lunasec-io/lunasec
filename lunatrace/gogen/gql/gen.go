@@ -7926,8 +7926,9 @@ func (v *Vulnerability_vulnerability_cwe_bool_exp) GetVulnerability_id() *Uuid_c
 type Vulnerability_vulnerability_cwe_constraint string
 
 const (
-	Vulnerability_vulnerability_cwe_constraintVulnerabilityCwePkey                    Vulnerability_vulnerability_cwe_constraint = "vulnerability_cwe_pkey"
-	Vulnerability_vulnerability_cwe_constraintVulnerabilityCweVulnerabilityIdCweIdKey Vulnerability_vulnerability_cwe_constraint = "vulnerability_cwe_vulnerability_id_cwe_id_key"
+	Vulnerability_vulnerability_cwe_constraintUniqueVulnerabilityCweVulnerabilityIdCweIdKey Vulnerability_vulnerability_cwe_constraint = "unique_vulnerability_cwe_vulnerability_id_cwe_id_key"
+	Vulnerability_vulnerability_cwe_constraintVulnerabilityCwePkey                          Vulnerability_vulnerability_cwe_constraint = "vulnerability_cwe_pkey"
+	Vulnerability_vulnerability_cwe_constraintVulnerabilityCweVulnerabilityIdCweIdKey       Vulnerability_vulnerability_cwe_constraint = "vulnerability_cwe_vulnerability_id_cwe_id_key"
 )
 
 type Vulnerability_vulnerability_cwe_insert_input struct {

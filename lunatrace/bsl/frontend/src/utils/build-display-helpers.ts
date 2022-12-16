@@ -54,3 +54,12 @@ export function commitLink(build: BuildInfoSubset): string | false {
   }
   return `${gitUrl}/commit/${build.git_hash}`;
 }
+
+export function linkToPathAtCommit(build: BuildInfoSubset, path: string, line?: number): string | false {
+  const gitUrl = gitUrlToLink(build);
+  if (!gitUrl || !build.git_hash) {
+    return false;
+  }
+  const lineLink = line ? `#L${line}` : '';
+  return `${gitUrl}/blob/${build.git_hash}${path}${lineLink}`;
+}
