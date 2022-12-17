@@ -16,6 +16,7 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 
 import { ConditionallyRender } from '../../components/utils/ConditionallyRender';
+import { LunaTraceIntroVideo } from '../../components/LunaTraceIntroVideo';
 import { WizardOpenContext } from '../../contexts/WizardContext';
 
 import { RecentGuidesCard } from './cards/RecentGuides';
@@ -40,6 +41,7 @@ export const AuthenticatedHome: React.FunctionComponent = (_props) => {
           ) : (
             <p>View your existing projects in the sidebar.</p>
           )}
+          <LunaTraceIntroVideo />
         </div>
         <Row>
           {' '}
