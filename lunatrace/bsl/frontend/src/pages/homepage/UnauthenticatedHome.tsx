@@ -14,7 +14,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
+import { LunaTraceIntroVideo } from '../../components/LunaTraceIntroVideo';
 import { Login } from '../../components/auth/Login';
+
 export const UnauthenticatedHome: React.FunctionComponent = (_props) => {
   return (
     <>
@@ -22,6 +24,7 @@ export const UnauthenticatedHome: React.FunctionComponent = (_props) => {
       <div className="d-flex flex-column align-items-center">
         <h1>LunaTrace</h1>
         <h4 className="darker">Vulnerability Tracking Control Center</h4>
+        <LunaTraceIntroVideo />
         <br />
         <Login />
       </div>
