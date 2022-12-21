@@ -57,9 +57,10 @@ export function commitLink(build: BuildInfoSubset): string | false {
 
 export function linkToPathAtCommit(build: BuildInfoSubset, path: string, line?: number): string | false {
   const gitUrl = gitUrlToLink(build);
-  if (!gitUrl || !build.git_hash) {
+  const contentId = build.git_branch || build.git_branch;
+  if (!gitUrl || !contentId) {
     return false;
   }
   const lineLink = line ? `#L${line}` : '';
-  return `${gitUrl}/blob/${build.git_hash}${path}${lineLink}`;
+  return `${gitUrl}/blob/${contentId}${path}${lineLink}`;
 }
