@@ -54,7 +54,7 @@ const LocationList: React.FC<LocationListProps> = ({ build, locations }) => {
                 onClick={(e) => e.stopPropagation()}
                 href={linkToPathAtCommit(build, loc.path, loc.line) || '#'}
               >
-                {loc.path}
+                {`${loc.path}:${loc.line}`}
               </a>{' '}
               <ExternalLink size="1em" className="mb-1 me-1" />
             </span>
