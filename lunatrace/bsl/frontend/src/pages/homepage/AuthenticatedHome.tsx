@@ -15,7 +15,6 @@ import React, { useContext } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 
-import { LunaTraceIntroVideo } from '../../components/LunaTraceIntroVideo';
 import { ConditionallyRender } from '../../components/utils/ConditionallyRender';
 import { LunaTraceIntroVideo } from '../../components/LunaTraceIntroVideo';
 import { WizardOpenContext } from '../../contexts/WizardContext';
