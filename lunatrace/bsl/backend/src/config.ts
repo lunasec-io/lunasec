@@ -16,6 +16,7 @@ import dotenv from 'dotenv';
 
 import {
   AwsConfig,
+  BackendBucketConfig,
   GithubAppConfig,
   HasuraConfig,
   JwksConfig,
@@ -136,6 +137,16 @@ export function getHasuraConfig(): HasuraConfig {
   return {
     hasuraEndpoint,
     staticAccessToken,
+  };
+}
+
+export function getBackendBucketConfig(): BackendBucketConfig {
+  const sbomBucket = checkEnvVar('S3_SBOM_BUCKET');
+  const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET');
+
+  return {
+    sbomBucket,
+    manifestBucket,
   };
 }
 
