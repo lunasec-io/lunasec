@@ -38,6 +38,7 @@ const commonEnvVarKeys = {
   },
   LogFilePath: {
     varKey: 'LOG_FILE_PATH',
+    defaultValue: 'logs/backend.log',
   },
   WorkerType: {
     varKey: 'WORKER_TYPE',
