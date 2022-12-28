@@ -12,8 +12,10 @@
  *
  */
 
+import { checkEnvVar } from '../config';
 import {
   AwsConfig,
+  BackendBucketConfig,
   GithubAppConfig,
   HasuraConfig,
   JwksConfig,
@@ -89,6 +91,13 @@ export function getHasuraConfig(): HasuraConfig {
   return {
     hasuraEndpoint: envVars.HasuraEndpoint,
     staticAccessToken: envVars.StaticAccessToken,
+  };
+}
+
+export function getBackendBucketConfig(): BackendBucketConfig {
+  return {
+    sbomBucket: envVars.S3SbomBucket,
+    manifestBucket: envVars.S3ManifestBucket,
   };
 }
 
