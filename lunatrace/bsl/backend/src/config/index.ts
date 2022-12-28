@@ -96,6 +96,7 @@ export function getWorkerBucketConfig(): WorkerBucketConfig {
   return {
     sbomBucket: envVars.S3SbomBucket,
     manifestBucket: envVars.S3ManifestBucket,
+    codeBucket: envVars.S3CodeBucket,
   };
 }
 

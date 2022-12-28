@@ -119,6 +119,9 @@ const commonEnvVarKeys = {
     varKey: 'GITHUB_APP_WEBHOOK_SECRET',
     defaultValue: 'mysecret',
   },
+  S3CodeBucket: {
+    varKey: 'S3_CODE_BUCKET',
+  },
 };
 
 // TODO: I can't figure out where these are referenced in the existing codebase, maybe chatgpt made them up
