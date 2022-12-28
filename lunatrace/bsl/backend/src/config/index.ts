@@ -12,7 +12,6 @@
  *
  */
 
-import { checkEnvVar } from '../config';
 import {
   AwsConfig,
   BackendBucketConfig,
