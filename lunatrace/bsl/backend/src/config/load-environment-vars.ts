@@ -21,7 +21,7 @@ const checkEnvVar = (envVarKey: string, backupEnvVarKey?: string, defaultValue?:
   // If the environment variable is not set, and the value must come from the environment,
   // AND we are in production and the default value is not defined.
   // then throw an error
-  if (!envVar && !backupVar && defaultValue === undefined) {
+  if (!envVar && !backupVar && defaultValue === undefined && process.env.NODE_ENV !== 'test') {
     throw new Error(`Missing ${envVarKey} env var ${backupEnvVarKey ? `and backup var ${backupEnvVarKey}` : ''}`);
   }
   return envVar || backupVar || (defaultValue as string);
