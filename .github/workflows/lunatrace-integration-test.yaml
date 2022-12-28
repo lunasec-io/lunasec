@@ -56,6 +56,7 @@ jobs:
           export QUEUE_NAME=fake
           export GOLANG_QUEUE_NAME=fake
           export GITHUB_APP_ID=fake
+          export GITHUB_APP_PRIVATE_KEY=fake
           
           yarn run start:prod &
           timeout 120 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:3002)" != "200" ]]; do sleep 1; done' || false
