@@ -15,6 +15,8 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: process.env.NODE_ENV === 'production' ? '.env' : '.env.dev' });
 
+const missingEnvVars: string[] = [];
+
 const checkEnvVar = (envVarKey: string, backupEnvVarKey?: string, defaultValue?: string) => {
   const envVar = process.env[envVarKey];
   const backupVar = backupEnvVarKey ? process.env[backupEnvVarKey] : null;
@@ -22,7 +24,8 @@ const checkEnvVar = (envVarKey: string, backupEnvVarKey?: string, defaultValue?:
   // AND we are in production and the default value is not defined.
   // then throw an error
   if (!envVar && !backupVar && defaultValue === undefined && process.env.NODE_ENV !== 'test') {
-    throw new Error(`Missing ${envVarKey} env var ${backupEnvVarKey ? `and backup var ${backupEnvVarKey}` : ''}`);
+    missingEnvVars.push(`${envVarKey}${backupEnvVarKey ? ` and backup var ${backupEnvVarKey}` : ''}`);
+    // throw new Error(`Missing ${envVarKey} env var ${backupEnvVarKey ? `and backup var ${backupEnvVarKey}` : ''}`);
   }
   return envVar || backupVar || (defaultValue as string);
 };
@@ -162,4 +165,7 @@ Object.keys(commonEnvVarKeys).forEach((keyName) => {
   partialEnvironmentVars[varName] = checkEnvVar(varConf.varKey, varConf.backupVarKey, varConf.defaultValue);
 });
 
+if (missingEnvVars.length > 0) {
+  throw new Error(`Missing the following environment vars: ${missingEnvVars.toString()}`);
+}
 export const envVars = partialEnvironmentVars as EnvVars;
