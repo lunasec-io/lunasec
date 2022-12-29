@@ -11,18 +11,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package gqlstorefx
 
 import (
 	"fmt"
+	v5 "github.com/anchore/grype/grype/db/v5"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 	"net/url"
 	"sort"
 	"strings"
 
-	v3 "github.com/anchore/grype/grype/db/v3"
 	"github.com/blang/semver/v4"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/advisory"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
@@ -117,17 +116,17 @@ func mapVersionConstraint(
 	return strings.Join(constraints, " || ")
 }
 
-func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v3.Vulnerability, error) {
-	out := make([]v3.Vulnerability, 0)
+func mapVulns(ovs []*gql.GetVulnerabilityVulnerability) ([]v5.Vulnerability, error) {
+	out := make([]v5.Vulnerability, 0)
 	for _, ov := range ovs {
 		for _, ova := range ov.Affected {
-			out = append(out, v3.Vulnerability{
+			out = append(out, v5.Vulnerability{
 				ID:          ov.Id.String(),
 				PackageName: ova.Package.Name,
 				Namespace:   mapPackageManager(ova.Package.Package_manager),
 				// CVE-2019-17542,ffmpeg,nvd,"< 2.8.16 || >= 3.2, < 3.2.15 || >= 3.4, < 3.4.7 || >= 4.0, < 4.0.5 || >= 4.1, < 4.1.5"
 				VersionConstraint: mapVersionConstraint(ova.Affected_versions, ova.Affected_range_events),
-				VersionFormat:     "semver",
+				VersionFormat:     "fuzzy",
 				// todo do we need to provide cpes no unless we WANT bad matching
 				CPEs: nil,
 				// todo is this required?

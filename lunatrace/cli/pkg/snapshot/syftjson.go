@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package snapshot
 
 import (
@@ -107,7 +106,7 @@ func toFile(s sbom.SBOM) []model.File {
 	results := make([]model.File, 0)
 	artifacts := s.Artifacts
 
-	for _, coordinates := range sbom.AllCoordinates(s) {
+	for _, coordinates := range s.AllCoordinates() {
 		var metadata *source.FileMetadata
 		if metadataForLocation, exists := artifacts.FileMetadata[coordinates]; exists {
 			metadata = &metadataForLocation
@@ -118,23 +117,17 @@ func toFile(s sbom.SBOM) []model.File {
 			digests = digestsForLocation
 		}
 
-		var classifications []file.Classification
-		if classificationsForLocation, exists := artifacts.FileClassifications[coordinates]; exists {
-			classifications = classificationsForLocation
-		}
-
 		var contents string
 		if contentsForLocation, exists := artifacts.FileContents[coordinates]; exists {
 			contents = contentsForLocation
 		}
 
 		results = append(results, model.File{
-			ID:              string(coordinates.ID()),
-			Location:        coordinates,
-			Metadata:        toFileMetadataEntry(coordinates, metadata),
-			Digests:         digests,
-			Classifications: classifications,
-			Contents:        contents,
+			ID:       string(coordinates.ID()),
+			Location: coordinates,
+			Metadata: toFileMetadataEntry(coordinates, metadata),
+			Digests:  digests,
+			Contents: contents,
 		})
 	}
 

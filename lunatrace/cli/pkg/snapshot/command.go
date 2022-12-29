@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package snapshot
 
 import (
@@ -373,7 +372,7 @@ func ScanCommand(c *cli.Context, appConfig types.LunaTraceConfig) (err error) {
 		return
 	}
 
-	vulnerabilityProvider := db.NewVulnerabilityProvider(multiStore)
+	vulnerabilityProvider, _ := db.NewVulnerabilityProvider(multiStore)
 	vulnerabilityMetadataProvider := db.NewVulnerabilityMetadataProvider(multiStore)
 
 	findingsDocument, err = scan.GrypeSbomScanFromFile(
