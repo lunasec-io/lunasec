@@ -85,7 +85,7 @@ export class DatadogIntegration extends cdk.Construct {
     super(parent, name);
 
     taskDefinition.addFirelensLogRouter('LogRouter', {
-      image: ecs.ContainerImage.fromRegistry('amazon/aws-for-fluent-bit'),
+      image: ecs.ContainerImage.fromRegistry('amazon/aws-for-fluent-bit:2.28.2'),
       essential: false,
       firelensConfig: {
         type: FirelensLogRouterType.FLUENTBIT,
