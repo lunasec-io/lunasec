@@ -94,7 +94,8 @@
     "tsconfig-paths": "~4.1.0",
     "tslog": "^3.3.3",
     "uuid": "^8.3.2",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "zod": "~3.20.2"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "2.3.1",

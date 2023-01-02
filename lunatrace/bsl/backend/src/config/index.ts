@@ -27,35 +27,25 @@ import {
   WebhookConfig,
   WorkerBucketConfig,
 } from '../types/config';
-import { tryParseInt, validateBooleanString } from '../utils/parse';
 
 import { envVars } from './load-environment-vars';
 
-export { envVars } from './load-environment-vars';
 export const isProduction = envVars.NodeEnv === 'production';
 
-// The below loaders build configs for various parts of the app.
-// TODO: There is no reason in node to load configs like this in NodeJS, its just extra code and not real DI.
-// TODO: We should move to code loading the parsed envVars directly, and if we are doing a lot of type casting, build that
-// TODO: into the env var loader in load-environment-vars in a generic way. These loaders are left here pending a future refactor.
-export function getLogConfig(): LogConfig {
-  const enableLogIOLogging = validateBooleanString(envVars.EnableLogIOLogging);
-  if (enableLogIOLogging.error) {
-    throw new Error(enableLogIOLogging.msg);
-  }
+// Note: it is debatable if we need to wrap these calls to envVars or we can call them directly from code.
+// This structure might be more useful if we change to a DI pattern someday, which is undecided
 
+export function getLogConfig(): LogConfig {
   return {
-    enableLogIOLogging: enableLogIOLogging.res,
+    enableLogIOLogging: envVars.EnableLogIOLogging,
     logFilePath: envVars.LogFilePath,
     loggerName: envVars.WorkerType,
   };
 }
 
 export function getServerConfig(): ServerConfig {
-  const serverPort = parseInt(envVars.Port, 10);
-
   return {
-    serverPort,
+    serverPort: envVars.Port,
     sitePublicUrl: envVars.SitePublicUrl,
     isProduction: envVars.NodeEnv === 'production',
   };
@@ -68,13 +58,8 @@ export function getAwsConfig(): AwsConfig {
 }
 
 export function getWebhookConfig(): WebhookConfig {
-  const disableWebhookQueue = validateBooleanString(envVars.DisableWebhookQueue);
-  if (disableWebhookQueue.error) {
-    throw new Error(disableWebhookQueue.msg);
-  }
-
   return {
-    disableWebhookQueue: disableWebhookQueue.res,
+    disableWebhookQueue: envVars.DisableWebhookQueue,
     queueName: envVars.ProcessWebhookQueue,
     secret: envVars.GithubAppWebhookSecret,
   };
@@ -115,23 +100,9 @@ export function getStaticAnalysisConfig(): StaticAnalysisConfig {
 }
 
 export function getQueueHandlerConfig(): SqsQueueConfig {
-  const queueMaxMessagesEnv = envVars.QueueMaxMessages;
-  const queueVisibilityEnv = envVars.queueVisibility;
-
-  const maxMessages = tryParseInt(queueMaxMessagesEnv, 10);
-  const visibility = tryParseInt(queueVisibilityEnv, 10);
-
-  if (!maxMessages.success) {
-    throw new Error(`Queue max messages is not a valid integer: ${queueMaxMessagesEnv}`);
-  }
-
-  if (!visibility.success) {
-    throw new Error(`Queue visibility is not a valid integer: ${queueVisibilityEnv}`);
-  }
-
   const handlerConfig: QueueHandlerConfig = {
-    maxMessages: maxMessages.value,
-    visibility: visibility.value,
+    maxMessages: envVars.QueueMaxMessages,
+    visibility: envVars.queueVisibility,
   };
 
   const queueName = envVars.QueueName;
@@ -146,11 +117,8 @@ export function getGithubAppConfig(): GithubAppConfig {
   const githubPrivateKeyRaw = envVars.GithubAppPrivateKey;
   const githubPrivateKey = Buffer.from(githubPrivateKeyRaw, 'base64').toString('utf-8');
 
-  const githubAppIdRaw = envVars.GithubAppId;
-  const githubAppId = parseInt(githubAppIdRaw, 10);
-
   return {
-    githubAppId,
+    githubAppId: envVars.GithubAppId,
     githubPrivateKey,
     githubEndpoint: envVars.GithubEndpoint,
   };
