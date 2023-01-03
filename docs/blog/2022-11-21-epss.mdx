@@ -1,6 +1,6 @@
 ---
-title: "What is EPSS? A new rating system for vulnerabilities to replace CVSS."
-description: "LunaSec Security Researchers give a quick look at the EPSS scoring system, a new rating system for vulnerabilities that aims to replace CVSS"
+title: "What is EPSS? A new rating system for exploitability of vulnerabilities."
+description: "LunaSec Security Researchers give a quick look at the EPSS scoring system, a new rating system for vulnerabilities focused on likelihood of exploitability."
 slug: what-is-epss
 date: 2022-11-21T12:00:00.000Z
 keywords: [cybersecurity, epss, cvss, scoring, first]
@@ -20,6 +20,8 @@ authors: [forrest, alex, free]
   ~ limitations under the License.
   ~
 -->
+
+<iframe width="100%" height="400" src="https://www.youtube-nocookie.com/embed/agiHb4peGCI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Vulnerability Severity Scoring
 
@@ -63,7 +65,7 @@ Security Information and Event Management (SIEM) tools.**)
 * Count of how many references are listed in the CVE
 * Published Exploit code in any of: Metasploit, ExploitDB and/or Github
 * Security Scanners: Jaeles, Intrigue, Nuclei, sn1per
-* CVSS v3 vectors in the base score (not the score or any subscores) as published in the National Vulnerability Database (NVD)
+* CVSS v3 vectors as published in the National Vulnerability Database (NVD)
 * CPE (vendor) information as published in NVD
 * Ground Truth: Daily observations of exploitation-in-the-wild activity from AlienVault and Fortinet.
 :::
@@ -82,14 +84,13 @@ vulnerability, [Log4Shell](https://www.lunasec.io/docs/blog/log4j-zero-day/).
 
 :::note API Response for Log4Shell
 
-```json title="curl https://api.first.org/data/v1/epss\?cve\=CVE-2021-36942 "
+```json title="curl https://api.first.org/data/v1/epss\?cve\=CVE-2021-44228 "
 {
-  "cve": "CVE-2021-36942",
-  "epss": "0.263270000",
-  "percentile": "0.969920000",
-  "date": "2022-11-20"
+  "cve": "CVE-2021-44228",
+  "epss": "0.954660000",
+  "percentile": "0.999720000",
+  "date": "2022-11-30"
 }
-
 ```
 :::
 
@@ -123,7 +124,7 @@ But, while it's an exciting system that will eventually help solve the problem o
 
 We've been adding EPSS support to our security tool, LunaTrace, available on GitHub[^5][^6] that automatically scans your packages for known CVEs and gives you a dashboard to filter by risk scores like CVSS and EPSS. (In addition to helping you quickly patch them.)
 
-If you'd like to see a scan of your project's dependencies, you can do so for free in a few clicks by [signing up for LunaTrace](https://lunatrace.lunasec.io/?ref=epss-blog) and pointing it at your repo. If you'd like participate in testing out our EPSS support, we ask that you sign up and then [message us on Slack](https://join.slack.com/t/lunaseccommunity/shared_invite/zt-178lvngk1-SHS6bMkQS71YWtCne2XWhA) to request access.
+If you'd like to see a scan of your project's dependencies, you can do so for free in a few clicks by [signing up for LunaTrace](https://lunatrace.lunasec.io/?ref=epss-blog) and pointing it at your repo. If you'd like participate in testing out our EPSS support, we ask that you sign up and then [message us on Discord](https://discord.gg/2EbHdAR5w7) to request access.
 
 Thanks for reading and we hope that you found this information about EPSS helpful!
 

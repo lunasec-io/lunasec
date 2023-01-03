@@ -18,15 +18,14 @@ import { ExternalLink } from 'react-feather';
 import { NavLink } from 'react-router-dom';
 
 import { Markdown } from '../../../components/Markdown';
-import {
-  formatPackageManagerUrlForPackage,
-  getAffectedVersionConstraint,
-  getFixedVersions,
-} from '../../../utils/advisory';
+import { PackageManagerLink } from '../../../components/PackageManagerLink';
+import { getAffectedVersionConstraint, getFixedVersions } from '../../../utils/advisory';
+import { formatPackageName } from '../../../utils/package';
 import { prettyDate } from '../../../utils/pretty-date';
 import { SourceLink } from '../SourceLink';
 import { VulnInfoDetails } from '../types';
 
+import { CweBadge } from './CweBadge';
 import { EquivalentVulnerabilitiesList } from './EquivalentVulnerabilitiesList';
 
 interface VulnerabilityDetailBodyProps {
@@ -103,7 +102,26 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
             </h5>
           </Col>
           <hr />
-          <Col md={sideBySideView ? '12' : { span: 4, order: 'last' }} xs="12">
+          <Col md={sideBySideView ? '12' : '8'} xs="12">
+            <Card>
+              <Card.Header>
+                <Modal.Title className="darker d-inline">Summary: </Modal.Title>
+                <span className="lighter">{vuln.summary}</span>
+              </Card.Header>
+              <Modal.Body>
+                <Markdown markdown={vuln.details || ''}></Markdown>
+              </Modal.Body>
+              <Card.Footer>
+                <h5 className={'darker'}>Vulnerability Categories</h5>
+                <div>
+                  {vuln.cwes.map((c) => (
+                    <CweBadge key={c.id} id={c.cwe.id} name={c.cwe.name} />
+                  ))}
+                </div>
+              </Card.Footer>
+            </Card>
+          </Col>
+          <Col md={sideBySideView ? '12' : { span: 4 }} xs="12">
             <Card style={{ height: '90%' }}>
               <Modal.Header>
                 <Modal.Title>
@@ -117,7 +135,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                         {severity.cvss3OverallSeverityText}
                       </h4>
                     ) : (
-                      <h4 style={{ display: 'inline' }}>unknown</h4>
+                      <h4 style={{ display: 'inline' }}>{vuln.severity_name}</h4>
                     )}
                   </div>
                 </Modal.Title>
@@ -148,17 +166,6 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
               </Modal.Body>
             </Card>
           </Col>
-          <Col md={sideBySideView ? '12' : '8'} xs="12">
-            <Card>
-              <Card.Header>
-                <Modal.Title className="darker d-inline">Summary: </Modal.Title>
-                <span className="lighter">{vuln.summary}</span>
-              </Card.Header>
-              <Modal.Body>
-                <Markdown markdown={vuln.details || ''}></Markdown>
-              </Modal.Body>
-            </Card>
-          </Col>
         </Row>
 
         <Row>
@@ -179,29 +186,14 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                     {vuln.affected.map((affected) => {
                       const getPackageColumn = () => {
                         const packageName = affected.package?.name;
-                        const nameOverflow = packageName && packageName.length > 41 ? '...' : '';
-                        const formattedPackageName = packageName?.substring(0, 40) || '';
-                        const formattedName = formattedPackageName + nameOverflow;
-
                         const packageManager = affected.package?.package_manager;
+                        const formattedName = formatPackageName(packageName);
+
                         if (packageName && packageManager) {
-                          const packageManagerLink = formatPackageManagerUrlForPackage(packageManager, packageName);
-                          if (packageManagerLink === null) {
-                            return <>{formattedName}</>;
-                          }
                           return (
                             <>
-                              {formattedName} -
-                              <a
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()}
-                                href={packageManagerLink}
-                                className="m-1"
-                              >
-                                <ExternalLink size="1em" className="mb-1 me-1" />
-                                {packageManager}
-                              </a>
+                              <>{formattedName}</>
+                              <PackageManagerLink packageName={packageName} packageManager={packageManager} />
                             </>
                           );
                         }

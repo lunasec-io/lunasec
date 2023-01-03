@@ -136,7 +136,7 @@ export const AdminDashboardStaticAnalysis = () => {
           const childPackageUrl = formatPackageManagerUrlForPackage('npm', childPackage);
 
           // TODO (cthompson) as there are more analyses, we will need to change this command to support those
-          const analysisCmd = `mkdir -p /tmp/lunasec-package-test && cd /tmp/lunasec-package-test && echo '{ "name": "package-test", "dependencies": {"${parentPackage}": "${parentPackageVersion}"} }' > package.json && npm i && analysiscli code-calls-dependency --debug --dependency ${childPackage} .`;
+          const analysisCmd = `mkdir -p /tmp/lunasec-package-test && cd /tmp/lunasec-package-test && touch .semgrepignore && echo '{ "name": "package-test", "dependencies": {"${parentPackage}": "${parentPackageVersion}"} }' > package.json && npm i && analysiscli code-calls-dependency --debug --dependency ${childPackage} .`;
 
           return (
             <Col key={r.id} md={6}>

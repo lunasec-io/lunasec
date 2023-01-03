@@ -20,9 +20,10 @@ import { DepTreeDep } from 'snyk-nodejs-lockfile-parser-lunatrace-fork/dist/pars
 export interface DependencyGraphNode {
   treeHashId: string;
   packageData: DepTreeDep;
+  mirroredBlobUrl?: string;
   packageEcosystem: string;
   customRegistry: string;
-  parentRange?: string;
+  parentRange: string;
   parent?: DependencyGraphNode;
   children: DependencyGraphNode[];
 }
@@ -104,7 +105,7 @@ export function dfsGenerateMerkleTreeFromDepTree(
     // TODO: Add support for other ecosystem types
     packageEcosystem: 'npm',
     packageData: currentDep,
-    parentRange: currentDep.range !== null ? currentDep.range : undefined,
+    parentRange: currentDep.range ? currentDep.range : currentDep.version || '',
     children,
   };
 

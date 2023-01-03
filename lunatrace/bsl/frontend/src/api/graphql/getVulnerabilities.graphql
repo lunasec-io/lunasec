@@ -2,7 +2,6 @@ query SearchVulnerabilities($search: String!, $source: String_comparison_exp = {
   vulnerability(
     where: {
       _and: [
-        {severities: {id: {_is_null: false}}},
         {affected: {id: {_is_null: false}}},
         {source: $source},
         {
@@ -47,6 +46,7 @@ query SearchVulnerabilities($search: String!, $source: String_comparison_exp = {
     withdrawn
     published
     modified
+    severity_name
     id
   }
 }

@@ -18,7 +18,7 @@ import { ChevronDown, ChevronUp } from 'react-feather';
 import { QuickViewProps } from '../../../../types';
 import { VulnMeta } from '../../types';
 
-import { VulnInfo } from './VulnInfo';
+import { VulnInfoTableRow } from './VulnInfoTableRow';
 
 interface FindingsTableProps {
   shouldFilterFindings: boolean;
@@ -40,8 +40,8 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
       <Table hover size="sm" responsive>
         <thead>
           <tr>
-            <th>Source</th>
             <th>Vulnerability ID</th>
+            <th>Vulnerability Categories</th>
             <th>Severity</th>
             <th>CVSS</th>
             <th>Fix</th>
@@ -50,14 +50,7 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
         </thead>
         <tbody>
           {filteredFindings.map((vulnMeta) => {
-            return (
-              <VulnInfo
-                key={vulnMeta.vulnerability.id}
-                vulnMeta={vulnMeta}
-                setVulnQuickViewId={quickView.setVulnQuickViewId}
-                vulnQuickViewId={quickView.vulnQuickViewId}
-              />
-            );
+            return <VulnInfoTableRow key={vulnMeta.vulnerability.id} vulnMeta={vulnMeta} quickView={quickView} />;
           })}
         </tbody>
       </Table>

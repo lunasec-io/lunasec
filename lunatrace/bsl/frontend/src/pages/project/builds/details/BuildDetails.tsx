@@ -13,7 +13,7 @@
  */
 import { filterFindingsNotIgnored } from '@lunatrace/lunatrace-common/build/main';
 import classNames from 'classnames';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
@@ -24,7 +24,8 @@ import useAppDispatch from '../../../../hooks/useAppDispatch';
 import useBreakpoint from '../../../../hooks/useBreakpoint';
 import { add } from '../../../../store/slices/alerts';
 import { BuildStateViewer } from '../BuildStateViewer';
-import { VulnQuickView } from '../VulnQuickView';
+import { QuickView } from '../QuickView';
+import { QuickViewState } from '../types';
 
 import { BuildDetailsHeader } from './BuildDetailsHeader';
 import { VulnerablePackageListWrapper } from './VulnerablePackageListWrapper';
@@ -50,15 +51,16 @@ export const BuildDetails: React.FunctionComponent = () => {
   }, []);
 
   const [ignoreFindings, setIgnoreFindings] = useState<boolean>(true);
+
   // We show a temporary view of any vulnerabilities that get clicked, instead of redirecting.  This is much faster when doing an audit
   // because it prevents the loss of the app state/context and any open dropdowns and filters.
   // We prop drill these pretty deep, so consider using a context provider instead
-  const [vulnQuickViewId, setVulnQuickViewId] = useState<string | null>(null);
+  const [vulnQuickViewState, setVulnQuickViewState] = useState<QuickViewState | null>(null);
 
   // note that we only use this breakpoint when necessary for JS stuff, otherwise we just use classname bootstrap media queries as normal
   const isExtraLarge = useBreakpoint('xxl');
 
-  const quickViewOpen = !!vulnQuickViewId;
+  const quickViewOpen = !!vulnQuickViewState;
   const isSideBySideView = isExtraLarge && quickViewOpen;
 
   function renderContainer(children: React.ReactNode) {
@@ -99,11 +101,12 @@ export const BuildDetails: React.FunctionComponent = () => {
       projectId={build.project_id}
       buildId={build_id}
       quickViewConfig={{
-        vulnQuickViewId,
-        setVulnQuickViewId,
+        quickViewState: vulnQuickViewState,
+        setVulnQuickViewState,
       }}
       shouldIgnore={ignoreFindings}
       toggleIgnoreFindings={() => setIgnoreFindings(!ignoreFindings)}
+      build={build}
     />
   );
 
@@ -122,9 +125,15 @@ export const BuildDetails: React.FunctionComponent = () => {
           {renderedPackageList}
         </Col>
 
-        {vulnQuickViewId ? (
+        {vulnQuickViewState ? (
           <Col xxl={quickViewOpen ? 6 : 12}>
-            <VulnQuickView vulnId={vulnQuickViewId} setVulnId={setVulnQuickViewId} sideBySideView={isSideBySideView} />{' '}
+            <QuickView
+              quickView={{
+                quickViewState: vulnQuickViewState,
+                setVulnQuickViewState,
+              }}
+              sideBySideView={isSideBySideView}
+            />{' '}
           </Col>
         ) : null}
       </Row>

@@ -14,6 +14,7 @@
 import { SnapshotBuildInfo } from '../../types/sqs';
 import { MaybeError } from '../../types/util';
 import { newError, newResult } from '../../utils/errors';
+import { removeAuthFromGitUrl } from '../../utils/git';
 import { log } from '../../utils/log';
 import { catchError, ErrorOrResult, threwError } from '../../utils/try';
 import { InsertBuildMutation } from '../generated';
@@ -59,7 +60,7 @@ export async function createNewBuild(repoGithubId: number, buildInfo: SnapshotBu
           source_type: buildInfo.sourceType,
           git_hash: buildInfo.gitCommit,
           git_branch: buildInfo.gitBranch,
-          git_remote: buildInfo.cloneUrl,
+          git_remote: removeAuthFromGitUrl(buildInfo.cloneUrl),
         },
       })
   );

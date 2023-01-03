@@ -1,0 +1,25 @@
+name: "CLA Assistant"
+on:
+  issue_comment:
+    types: [created]
+  pull_request_target:
+    types: [opened,closed,synchronize]
+
+jobs:
+  CLAssistant:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "CLA Assistant"
+        if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
+        uses: contributor-assistant/github-action@v2.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # the below token should have repo scope and must be manually added by you in the repository's secret
+          PERSONAL_ACCESS_TOKEN : ${{ secrets.CLA_PERSONAL_ACCESS_TOKEN }}
+        with:
+          path-to-signatures: 'signatures/3e859f6040.json'
+          path-to-document: 'https://gist.github.com/freeqaz/539184d206e06868653e02d36530b20b/3e859f604061d0cc14c9067ec56ac95141d0db34' # e.g. a CLA or a DCO document
+          remote-organization-name: lunasec-io
+          remote-repository-name: cla-sigs
+          allowlist: 'github-actions[bot]'
+          lock-pullrequest-aftermerge: false

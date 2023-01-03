@@ -1,0 +1,9 @@
+query GetCweDetails($id: Int!) {
+  vulnerability_cwe_by_pk(id: $id) {
+    description
+    extended_description
+    id
+    name
+    common_name
+  }
+}

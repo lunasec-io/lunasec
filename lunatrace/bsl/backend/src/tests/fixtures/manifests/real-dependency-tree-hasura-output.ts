@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -38,6 +38,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "affected_by_vulnerability": [
                       {
                         "vulnerability": {
+                          cwes: [],
                           "id": "7c97b2e2-b2c9-46bf-a449-ab9538ce1dc8",
                           "source_id": "GHSA-w2pf-g6r8-pg22",
                           "source": "ghsa",
@@ -54,7 +55,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "7dd5fb04-d85a-42d3-b795-5d04c3856400",
                           "source_id": "GHSA-6gg3-pmm7-97xc",
                           "source": "ghsa",
@@ -71,7 +72,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "c81c4985-7c31-4e40-8ea3-48399f37b40d",
                           "source_id": "GHSA-jr3j-whm4-9wwm",
                           "source": "ghsa",
@@ -88,7 +89,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "781b2234-74d4-4139-b6cf-78692d2a53c6",
                           "source_id": "GHSA-7ww6-75fj-jcj7",
                           "source": "ghsa",
@@ -129,7 +130,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "3263985d-f762-461a-844e-6fc25c3f545b",
                           "source_id": "GHSA-fmr4-7g9q-7hc7",
                           "source": "ghsa",
@@ -146,7 +147,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "d8bde5ca-9686-4cd0-8ac8-d1cefa720fa0",
                           "source_id": "GHSA-9prh-257w-9277",
                           "source": "ghsa",
@@ -163,7 +164,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "2c154d63-4498-46c7-91db-2e6039e7db65",
                           "source_id": "GHSA-q42p-pg8m-cqh6",
                           "source": "ghsa",
@@ -188,7 +189,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "ea36420a-e638-42ad-aee3-0ea14e75ba7d",
                           "source_id": "GHSA-6r5x-hmgg-7h53",
                           "source": "ghsa",
@@ -205,7 +206,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "b9d2d796-bccd-4d84-bd3f-79ce6e26fc78",
                           "source_id": "GHSA-w457-6q6x-cgp9",
                           "source": "ghsa",
@@ -222,7 +223,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "7825b69d-522c-4028-8a88-f91f2a65484c",
                           "source_id": "GHSA-2cf5-4w76-r9qv",
                           "source": "ghsa",
@@ -243,7 +244,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "8918f8d0-2e7b-4cb2-857b-ce6a893279a3",
                           "source_id": "GHSA-f52g-6jhx-586p",
                           "source": "ghsa",
@@ -260,7 +261,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "cee7a439-4074-4bd5-8cc4-b6b2ebe14c02",
                           "source_id": "GHSA-g9r4-xpmj-mj65",
                           "source": "ghsa",
@@ -281,7 +282,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "30954bb0-6717-4130-8991-af796b49cb82",
                           "source_id": "GHSA-q2c6-c6pm-g3gh",
                           "source": "ghsa",
@@ -302,7 +303,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "e42e422a-9f5a-4d6f-a23d-552d85770870",
                           "source_id": "GHSA-f2jv-r9rf-7988",
                           "source": "ghsa",
@@ -319,7 +320,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "f0c7a174-7c32-49d3-af3b-51bf7805f656",
                           "source_id": "GHSA-3cqr-58rm-57f8",
                           "source": "ghsa",
@@ -340,7 +341,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "1c9d1442-f307-4c13-998f-79a472a1141d",
                           "source_id": "GHSA-62gr-4qp9-h98f",
                           "source": "ghsa",
@@ -357,7 +358,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "996bb934-c2b1-4bdb-8d29-8ac8cb7b7ed8",
                           "source_id": "GHSA-765h-qjxv-5f44",
                           "source": "ghsa",
@@ -398,7 +399,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "c45ddb47-3642-44e4-bc61-6a23399cff95",
                           "source_id": "GHSA-3mpp-xfvh-qh37",
                           "source": "ghsa",
@@ -415,7 +416,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "6cc66295-9d17-47ff-a476-e36995c16ed2",
                           "source_id": "GHSA-8gr3-2gjw-jj7g",
                           "source": "ghsa",
@@ -427,7 +428,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         "ranges": []
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "f28b4074-b559-493a-aad4-4890b30ae768",
                           "source_id": "GHSA-97m3-w2cp-4xx6",
                           "source": "ghsa",
@@ -468,7 +469,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "7923db78-7e3d-4cda-aa26-eaafb909907a",
                           "source_id": "GHSA-rjf2-j2r6-q8gr",
                           "source": "ghsa",
@@ -485,7 +486,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "c937b741-e3af-45ce-87db-9d9f696b1e2e",
                           "source_id": "GHSA-6pw2-5hjv-9pf7",
                           "source": "ghsa",
@@ -502,7 +503,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "d9ba1fa1-888c-4870-9f3c-fceeb2f9b548",
                           "source_id": "GHSA-wf5x-cr3r-xr77",
                           "source": "ghsa",
@@ -519,7 +520,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "c27df7ad-1ac7-40be-886a-d34dd075e019",
                           "source_id": "GHSA-mrgp-mrhc-5jrq",
                           "source": "ghsa",
@@ -561,7 +562,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "c4d8ef1d-ad3c-4133-ae32-e3ac264c8734",
                           "source_id": "GHSA-g53w-52xc-2j85",
                           "source": "ghsa",
@@ -582,7 +583,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "22a7c4d2-39ae-452e-a2ed-0b86cfb411d8",
                           "source_id": "GHSA-hg79-j56m-fxgv",
                           "source": "ghsa",
@@ -715,7 +716,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "b8636a2e-0d5d-42dd-a56f-7714a50cacc7",
                           "source_id": "GHSA-3rpr-mg43-xhq4",
                           "source": "ghsa",
@@ -732,7 +733,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "23fd58f6-3c95-40df-aac5-72a56de8f13e",
                           "source_id": "GHSA-wpq7-q8j4-72jg",
                           "source": "ghsa",
@@ -749,7 +750,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "a6bbbc7b-4182-4613-8a56-730a1afb5a61",
                           "source_id": "GHSA-wv26-rj8c-4r33",
                           "source": "ghsa",
@@ -766,7 +767,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "788b114e-6f98-42f5-9326-cd574cc4dcac",
                           "source_id": "GHSA-prfq-f66g-43mp",
                           "source": "ghsa",
@@ -808,7 +809,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "ed6b4c20-5420-4a53-bf37-ca9f198ce0c6",
                           "source_id": "GHSA-mvjj-gqq2-p4hw",
                           "source": "ghsa",
@@ -888,7 +889,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "51ccde0b-ef4c-4b02-8971-25e042b25cc5",
                           "source_id": "GHSA-jjv7-qpx3-h62q",
                           "source": "ghsa",
@@ -905,7 +906,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "610e6553-c064-46ab-bcfe-1409520fbe0a",
                           "source_id": "GHSA-crvj-3gj9-gm2p",
                           "source": "ghsa",
@@ -922,7 +923,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "4e97446d-a2c1-4372-b71f-490d305233fc",
                           "source_id": "GHSA-f9cm-p3w6-xvr3",
                           "source": "ghsa",
@@ -939,7 +940,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "88981548-9eec-4992-bfd0-4a83e9c65769",
                           "source_id": "GHSA-gqgv-6jq5-jjj9",
                           "source": "ghsa",
@@ -1039,7 +1040,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "b8a85f1a-07cb-412b-9104-0b4d935b1a18",
                           "source_id": "GHSA-w5p7-h5w8-2hfq",
                           "source": "ghsa",
@@ -1264,7 +1265,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "c4cb68e5-8100-49ad-874b-a3ba4bc141b7",
                           "source_id": "GHSA-34r7-q49f-h37c",
                           "source": "ghsa",
@@ -1281,7 +1282,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "e2e70527-edf8-4589-83cd-2ebe206d2882",
                           "source_id": "GHSA-c9f4-xj24-8jqx",
                           "source": "ghsa",
@@ -1298,7 +1299,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "6c00bf16-8073-4bac-a0f5-d4554b1d4ab1",
                           "source_id": "GHSA-g6f4-j6c2-w3p3",
                           "source": "ghsa",
@@ -1339,7 +1340,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "cf72bf32-cdec-41e9-85d1-8f8ba713cc85",
                           "source_id": "GHSA-7fhm-mqm4-2wp7",
                           "source": "ghsa",
@@ -1356,7 +1357,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "768db95c-6cd9-4013-a9f9-209b8105d37f",
                           "source_id": "GHSA-vh95-rmgr-6w4m",
                           "source": "ghsa",
@@ -1377,7 +1378,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "bc073c23-e65a-43f9-8e04-e298dccb925c",
                           "source_id": "GHSA-xvch-5gv4-984h",
                           "source": "ghsa",
@@ -1833,7 +1834,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "51ccde0b-ef4c-4b02-8971-25e042b25cc5",
                           "source_id": "GHSA-jjv7-qpx3-h62q",
                           "source": "ghsa",
@@ -1850,7 +1851,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "610e6553-c064-46ab-bcfe-1409520fbe0a",
                           "source_id": "GHSA-crvj-3gj9-gm2p",
                           "source": "ghsa",
@@ -1867,7 +1868,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "4e97446d-a2c1-4372-b71f-490d305233fc",
                           "source_id": "GHSA-f9cm-p3w6-xvr3",
                           "source": "ghsa",
@@ -1884,7 +1885,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "88981548-9eec-4992-bfd0-4a83e9c65769",
                           "source_id": "GHSA-gqgv-6jq5-jjj9",
                           "source": "ghsa",
@@ -1937,7 +1938,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "3e117703-b780-4d8b-85e2-c0e592cc185f",
                           "source_id": "GHSA-8225-6cvr-8pqp",
                           "source": "ghsa",
@@ -2163,7 +2164,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "7918b12c-0c1f-4799-8212-544974a4a160",
                           "source_id": "GHSA-gxpj-cx7g-858c",
                           "source": "ghsa",
@@ -2438,7 +2439,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "6d5b7521-5890-4302-a595-2ed5fd3180b9",
                           "source_id": "GHSA-662x-fhqg-9p8v",
                           "source": "ghsa",
@@ -2455,7 +2456,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "6f92ef34-249d-4635-ae0c-56491656c4c1",
                           "source_id": "GHSA-78cj-fxph-m83p",
                           "source": "ghsa",
@@ -2472,7 +2473,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "0643a729-3e9a-4e06-ac41-ece5f7526fc9",
                           "source_id": "GHSA-pjwm-rvh2-c87w",
                           "source": "ghsa",
@@ -2497,7 +2498,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "94a4a46d-9392-4b57-beeb-7a161d83d3a2",
                           "source_id": "GHSA-394c-5j6w-4xmx",
                           "source": "ghsa",
@@ -2677,7 +2678,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "8abfd1aa-d412-45aa-a7f6-271bcc57ad25",
                           "source_id": "GHSA-3fx5-fwvr-xrjg",
                           "source": "ghsa",
@@ -2764,7 +2765,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "bc43c856-c60c-43cc-82a6-a9a1bb9414bd",
                           "source_id": "GHSA-hxm2-r34f-qmc5",
                           "source": "ghsa",
@@ -2781,7 +2782,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "44fe8d62-cb6b-44e4-b4fd-e115c4a63239",
                           "source_id": "GHSA-f8q6-p94x-37v3",
                           "source": "ghsa",
@@ -3052,7 +3053,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "7538bd79-5b3d-40db-9909-71a21f9ffc0b",
                           "source_id": "GHSA-x6fg-f45m-jf5q",
                           "source": "ghsa",
@@ -3093,7 +3094,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "c3846d27-438a-42ac-878f-1c16eccac17b",
                           "source_id": "GHSA-wrvr-8mpx-r7pp",
                           "source": "ghsa",
@@ -3207,7 +3208,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "7918b12c-0c1f-4799-8212-544974a4a160",
                           "source_id": "GHSA-gxpj-cx7g-858c",
                           "source": "ghsa",
@@ -3252,7 +3253,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "51ccde0b-ef4c-4b02-8971-25e042b25cc5",
                           "source_id": "GHSA-jjv7-qpx3-h62q",
                           "source": "ghsa",
@@ -3269,7 +3270,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "610e6553-c064-46ab-bcfe-1409520fbe0a",
                           "source_id": "GHSA-crvj-3gj9-gm2p",
                           "source": "ghsa",
@@ -3286,7 +3287,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "4e97446d-a2c1-4372-b71f-490d305233fc",
                           "source_id": "GHSA-f9cm-p3w6-xvr3",
                           "source": "ghsa",
@@ -3303,7 +3304,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "88981548-9eec-4992-bfd0-4a83e9c65769",
                           "source_id": "GHSA-gqgv-6jq5-jjj9",
                           "source": "ghsa",
@@ -3494,7 +3495,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "0be2947d-c739-4f97-b332-04dce907f72d",
                           "source_id": "GHSA-832h-xg76-4gv6",
                           "source": "ghsa",
@@ -3696,7 +3697,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "bc43c856-c60c-43cc-82a6-a9a1bb9414bd",
                           "source_id": "GHSA-hxm2-r34f-qmc5",
                           "source": "ghsa",
@@ -3713,7 +3714,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "44fe8d62-cb6b-44e4-b4fd-e115c4a63239",
                           "source_id": "GHSA-f8q6-p94x-37v3",
                           "source": "ghsa",
@@ -3892,7 +3893,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "8abfd1aa-d412-45aa-a7f6-271bcc57ad25",
                           "source_id": "GHSA-3fx5-fwvr-xrjg",
                           "source": "ghsa",
@@ -3956,7 +3957,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "4575eb69-939b-4b21-85d2-ecde81aa464a",
                           "source_id": "GHSA-c4w7-xm78-47vh",
                           "source": "ghsa",
@@ -4074,7 +4075,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "71cf0398-d1bc-473b-9073-a26423de4a60",
                           "source_id": "GHSA-p9pc-299p-vxgp",
                           "source": "ghsa",
@@ -4266,7 +4267,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "d5835299-6054-49e5-86ee-ecfe3c32774c",
                           "source_id": "GHSA-w7rc-rwvf-8q5r",
                           "source": "ghsa",
@@ -4287,7 +4288,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "d976427f-5f63-4e59-acb0-59d77b74780a",
                           "source_id": "GHSA-r683-j2x4-v87g",
                           "source": "ghsa",
@@ -4308,7 +4309,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                         ]
                       },
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "75f7f6b2-c6c4-4e65-a152-e4e95a3c1489",
                           "source_id": "GHSA-vp56-6g26-6827",
                           "source": "ghsa",
@@ -5131,7 +5132,7 @@ export const realDependencyTreeHasuraOutputFixture: Array<Manifest> = [
                     "package_manager": "npm",
                     "affected_by_vulnerability": [
                       {
-                        "vulnerability": {
+                        "vulnerability": { cwes: [],
                           "id": "9b0c3bd4-afa8-4846-beb2-c83793e566aa",
                           "source_id": "GHSA-93q8-gq69-wqmw",
                           "source": "ghsa",

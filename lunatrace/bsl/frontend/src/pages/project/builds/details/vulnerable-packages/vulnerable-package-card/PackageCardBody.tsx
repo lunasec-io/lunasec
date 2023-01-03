@@ -13,10 +13,12 @@
  */
 import { SeverityNamesOsv } from '@lunatrace/lunatrace-common/build/main';
 import React, { useState } from 'react';
-import { Accordion, Card, Container, Row } from 'react-bootstrap';
+import { Accordion, Badge, Card, Container, Row } from 'react-bootstrap';
+import { ExternalLink } from 'react-feather';
 
+import { Builds } from '../../../../../../api/generated';
 import { ConditionallyRender } from '../../../../../../components/utils/ConditionallyRender';
-import { QuickViewProps } from '../../../types';
+import { BuildDetailInfo, QuickViewProps } from '../../../types';
 import { VulnerablePackage } from '../types';
 
 import { GuideBlurb } from './GuideBlurb';
@@ -32,6 +34,7 @@ interface VulnerablePackageCardBodyProps {
   setShouldFilterFindingsBySeverity: (should: boolean) => void;
   shouldFilterFindingsBySeverity: boolean;
   findingsHiddenBySeverityCount: number;
+  build: BuildDetailInfo;
 }
 
 export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyProps> = ({
@@ -42,6 +45,7 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
   setShouldFilterFindingsBySeverity,
   findings,
   findingsHiddenBySeverityCount,
+  build,
 }) => {
   return (
     <Card.Body>
@@ -53,8 +57,8 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
         </Container>
       </ConditionallyRender>
 
-      <div className="m-lg-4">
-        <PackageDetails pkg={pkg} />
+      <div className="m-lg-2">
+        <PackageDetails pkg={pkg} build={build} />
         <Row>
           <Accordion defaultActiveKey={findings.length > 2 ? 'nonexistant' : '0'}>
             <Accordion.Item eventKey="0">

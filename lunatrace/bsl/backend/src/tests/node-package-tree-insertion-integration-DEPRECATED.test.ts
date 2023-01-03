@@ -100,7 +100,7 @@ function testAllTreeTypes() {
         backup?.restore();
         await pgPromiseDb.none(`INSERT INTO builds (id, source_type) VALUES ($1, 'pr')`, [buildIdOne]);
 
-        await snapshotPinnedDependencies(buildIdOne, fixturePath);
+        await snapshotPinnedDependencies(buildIdOne, fixturePath, '', '999fe4f2-9f6c-4e11-9b00-56fe2092ad2c');
 
         const initialManifests = await db.many<{ id: string; build_id: string; path: string }>(
           `SELECT id, build_id, path FROM manifest`
@@ -118,7 +118,7 @@ function testAllTreeTypes() {
 
         await pgPromiseDb.none(`INSERT INTO builds (id, source_type) VALUES ($1, 'pr')`, [buildIdTwo]);
 
-        await snapshotPinnedDependencies(buildIdTwo, fixturePath);
+        await snapshotPinnedDependencies(buildIdTwo, fixturePath, '', '999fe4f2-9f6c-4e11-9b00-56fe2092ad2c');
 
         const bothManifests = await db.many<{ id: string; build_id: string; path: string }>(
           `SELECT id, build_id, path FROM manifest`

@@ -68,20 +68,27 @@ That will run a real AWS deployment of the "dev" resources required. Once it fin
 
 ✨  Deployment time: 180.43s
 
+...
+Outputs:
+lunatrace-alex-EtlStorage.CodeBucketName = lunatrace-alex-etlstorage-codebucketff4c7ad6-8c1wq1jf24k1
+lunatrace-alex-EtlStorage.GrypeDatabaseBucketName = lunatrace-alex-etlstorag-grypedatabasebucketddd6c-z6d8vsv2rhah
+lunatrace-alex-EtlStorage.LunaTraceDevelopmentGolangQueueName = lunatrace-alex-EtlStorage-LunaTraceDevelopmentGolangQueue6299EB49-ECpdzqPHhJvy
+lunatrace-alex-EtlStorage.LunaTraceDevelopmentQueueName = lunatrace-alex-EtlStorage-LunaTraceDevelopmentQueue04E796C2-7RDss2Nc8gt0
 lunatrace-alex-EtlStorage.ManifestBucketName = lunatrace-alex-etlstorage-manifestbucket46c412a5-1b0kc5cys81er
 lunatrace-alex-EtlStorage.SbomBucketName = lunatrace-alex-etlstorage-sbombucket8550fee8-1drqtwb7yf2dg
-lunatrace-alex-EtlStorage.LunaTraceDevelopmentQueue = lunatrace-breadchris-EtlStorage-LunaTraceDevelopmentQueue04E796C2-l8A6ZC0YUAb0
 Stack ARN:
 arn:aws:cloudformation:us-west-2:134071937287:stack/lunatrace-alex-EtlStorage/4655a320-cb37-11ec-a2b1-02772921f86f
+
 
 ✨  Total time: 184.84s
 ```
 
-You'll need to format those values into an env file at `$REPO/lunatrace/dev-cli/.env.dev` that looks like:
+You'll need to format those values into an env file at `$REPO/lunatrace/backend/.env.dev` that looks like:
 
 ```env
 S3_SBOM_BUCKET=xxx
 S3_MANIFEST_BUCKET=xxx
+S3_CODE_BUCKET=xxx
 QUEUE_NAME=xxx
 
 
@@ -173,6 +180,6 @@ This is important because otherwise the GraphQL code gen stuff will probably not
 
 Open up `http://localhost:4455/` and you should hit the front-end of the app. If it's busted... go hit us up on Slack
 and we'll help you sort it out. 
-([Invite for the Slack](https://join.slack.com/t/lunaseccommunity/shared_invite/zt-1a8cdfqdg-LbgCYuxzQl7iyZzZ4H4Idw))
+([Invite for the Discord](https://discord.gg/2EbHdAR5w7))
 
 Hopefully this works. Please improve this doc when you use it and something is broken or could be improved. Thanks!

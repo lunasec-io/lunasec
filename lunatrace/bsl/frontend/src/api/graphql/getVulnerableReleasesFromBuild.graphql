@@ -1,5 +1,5 @@
-query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!) {
-    vulnerableReleasesFromBuild(buildId: $buildId, minimumSeverity: $minimumSeverity) {
+query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!, $previewChains: Boolean) {
+    vulnerableReleasesFromBuild(buildId: $buildId, minimumSeverity: $minimumSeverity, previewChains: $previewChains) {
         trivially_updatable
         beneath_minimum_severity
         cvss
@@ -23,6 +23,12 @@ query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!)
                 version
             }
             reachable
+            locations {
+                id
+                path
+                start_row
+                end_row
+            }
         }
         release {
             version
@@ -53,6 +59,15 @@ query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!)
                         id
                         summary
                         title
+                    }
+                }
+                cwes {
+                    id
+                    cwe {
+                        id
+                        name
+                        description
+                        common_name
                     }
                 }
             }

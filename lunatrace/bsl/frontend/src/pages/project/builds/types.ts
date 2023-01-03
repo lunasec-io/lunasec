@@ -11,11 +11,25 @@
  * limitations under the License.
  *
  */
-import { GetBuildDetailsQuery } from '../../../api/generated';
+import { GetBuildDetailsQuery, GetCweDetailsQuery, GetCweDetailsQueryVariables } from '../../../api/generated';
 
 export type BuildDetailInfo = NonNullable<GetBuildDetailsQuery['builds_by_pk']>;
 
-export interface QuickViewProps {
-  setVulnQuickViewId: (vulnId: string) => void;
-  vulnQuickViewId: string | null;
+export interface QuickViewVulnerability {
+  type: 'vulnerability';
+  id: string;
 }
+
+export interface QuickViewCwe {
+  type: 'cwe';
+  id: number;
+}
+
+export type QuickViewState = QuickViewVulnerability | QuickViewCwe;
+
+export interface QuickViewProps {
+  setVulnQuickViewState: (state: QuickViewState | null) => void;
+  quickViewState: QuickViewState | null;
+}
+
+export type CweInfoDetails = NonNullable<GetCweDetailsQuery['vulnerability_cwe_by_pk']>;

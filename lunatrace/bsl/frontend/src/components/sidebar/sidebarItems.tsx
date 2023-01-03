@@ -12,7 +12,7 @@
  *
  */
 import { useContext } from 'react';
-import { AlertOctagon, LogIn, Plus, User } from 'react-feather';
+import { AlertOctagon, Aperture, LogIn, Plus, User } from 'react-feather';
 import { AiFillGithub } from 'react-icons/ai';
 import { BiUnlink } from 'react-icons/bi';
 import { BsChatSquareText } from 'react-icons/bs';
@@ -100,6 +100,11 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
       href: '/vulnerabilities',
       icon: AlertOctagon,
       title: 'Vulnerabilities Reference Database',
+    },
+    {
+      href: '/cwes',
+      icon: Aperture,
+      title: 'Common Weakness Enumerations Database',
     },
   ];
 

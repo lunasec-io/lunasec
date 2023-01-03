@@ -55,6 +55,7 @@ export interface ProcessGithubWebhookRequest {
 export interface ProcessStaticAnalysisRequest {
   vulnerability_id: string;
   manifest_dependency_edge_id: string;
+  save_results: boolean;
 }
 
 export interface SnapshotBuildInfo {

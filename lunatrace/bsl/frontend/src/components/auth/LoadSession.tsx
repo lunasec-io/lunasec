@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+import { datadogRum } from '@datadog/browser-rum';
 import { AxiosError } from 'axios';
 import React, { useEffect } from 'react';
 
@@ -28,6 +29,11 @@ export const LoadSession: React.FC = (props) => {
         dispatch(setSession(data));
         window.Atlas.identify({
           userId: data.identity.id,
+          name: data.identity.traits.name,
+          email: data.identity.traits.email,
+        });
+        datadogRum.setUser({
+          id: data.identity.id,
           name: data.identity.traits.name,
           email: data.identity.traits.email,
         });

@@ -13,14 +13,21 @@ package staticanalysis
 import (
 	"context"
 	"errors"
+	"gocloud.dev/blob"
+	"io"
+	"net/http"
+	"net/url"
+	"os"
+	"strings"
+
 	"github.com/google/uuid"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	_ "gocloud.dev/blob/s3blob"
+
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
-	"net/http"
-	"os"
 )
 
 func validateGetManifestDependencyEdgeResponse(logger zerolog.Logger, resp *gql.GetManifestDependencyEdgeResponse) error {
@@ -51,6 +58,27 @@ func validateGetManifestDependencyEdgeResponse(logger zerolog.Logger, resp *gql.
 		return errors.New("parent dependency release is nil")
 	}
 	return nil
+}
+
+func getManifestDependencyEdgeLocations(output *rules.SemgrepRuleOutput) *gql.Analysis_manifest_dependency_edge_result_location_arr_rel_insert_input {
+	if len(output.Results) == 0 {
+		return nil
+	}
+
+	var locations []*gql.Analysis_manifest_dependency_edge_result_location_insert_input
+	for _, result := range output.Results {
+		locations = append(locations, &gql.Analysis_manifest_dependency_edge_result_location_insert_input{
+			End_column:   util.Ptr(int(result.End.Col)),
+			End_row:      util.Ptr(int(result.End.Line)),
+			Path:         util.Ptr(result.Path),
+			Start_column: util.Ptr(int(result.Start.Col)),
+			Start_row:    util.Ptr(int(result.Start.Line)),
+		})
+	}
+
+	return &gql.Analysis_manifest_dependency_edge_result_location_arr_rel_insert_input{
+		Data: locations,
+	}
 }
 
 func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx context.Context, queueRecord QueueRecord) error {
@@ -84,7 +112,7 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 
 	err = validateGetManifestDependencyEdgeResponse(logger, resp)
 	if err != nil {
-		log.Warn().
+		logger.Warn().
 			Err(err).
 			Msg("failed to validate manifest dependency edge")
 		return nil
@@ -95,17 +123,54 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 	parentPackageName := resp.Manifest_dependency_edge_by_pk.Parent.Release.Package.Name
 	upstreamBlobUrl := resp.Manifest_dependency_edge_by_pk.Parent.Release.Upstream_blob_url
 
+	// use the mirroredBlobUrl if we have it
+	mirroredBlobUrl := resp.Manifest_dependency_edge_by_pk.Parent.Release.Mirrored_blob_url
+	if mirroredBlobUrl != nil {
+		upstreamBlobUrl = mirroredBlobUrl
+	}
+
 	logger = logger.With().
 		Str("parent package", parentPackageName).
 		Str("child package", childPackageName).
 		Logger()
 
-	findingType, _ := s.runSemgrepRuleOnParentPackage(
+	findingType, results := s.runSemgrepRuleOnParentPackage(
 		ctx, logger, upstreamBlobUrl, manifestDependencyEdgeUUID, parentPackageName, childPackageName,
 	)
 
-	logger.Info().
+	if queueRecord.SaveResults {
+		logger.Info().Msg("saving results")
+		err = s.saveResults(ctx, results, findingType, manifestDependencyEdgeUUID, vulnerabilityUUID)
+		if err != nil {
+			return err
+		}
+	} else {
+		logger.Info().Msg("skipped saving results")
+	}
+
+	return nil
+}
+
+func (s *staticAnalysisQueueHandler) saveResults(
+	ctx context.Context,
+	results *rules.SemgrepRuleOutput,
+	findingType gql.Analysis_finding_type_enum,
+	manifestDependencyEdgeUUID uuid.UUID,
+	vulnerabilityUUID uuid.UUID,
+) error {
+	logger := log.With().
+		Str("manifest dependency edge", manifestDependencyEdgeUUID.String()).
+		Str("vulnerability", vulnerabilityUUID.String()).
+		Logger()
+
+	var locations *gql.Analysis_manifest_dependency_edge_result_location_arr_rel_insert_input
+	if results != nil {
+		locations = getManifestDependencyEdgeLocations(results)
+	}
+
+	log.Info().
 		Str("finding type", string(findingType)).
+		Interface("locations", locations).
 		Msg("saving results of analysis")
 
 	result := &gql.Analysis_manifest_dependency_edge_result_insert_input{
@@ -114,52 +179,37 @@ func (s *staticAnalysisQueueHandler) handleManifestDependencyEdgeAnalysis(ctx co
 		Finding_source_version:      util.Ptr(rules.ImportedAndCalledRuleVersion),
 		Manifest_dependency_edge_id: util.Ptr(manifestDependencyEdgeUUID),
 		Vulnerability_id:            util.Ptr(vulnerabilityUUID),
+		Locations:                   locations,
 	}
 
 	analysisResp, err := gql.InsertManifestDependencyEdgeAnalysis(ctx, s.GQLClient, result)
 	if err != nil {
-		util.LogGraphqlError(
-			logger,
-			"failed to insert edge analysis",
-			err,
-		)
+		util.LogGraphqlError(logger, "failed to insert edge analysis", err)
 		return err
 	}
 
 	insertedAnalysisID := analysisResp.GetInsert_analysis_manifest_dependency_edge_result_one().GetId().String()
 
-	log.Info().
+	logger.Info().
 		Str("results id", insertedAnalysisID).
 		Msg("inserted edge analysis results")
 	return nil
 }
 
-func (s *staticAnalysisQueueHandler) getManifestDependencyEdge(
-	ctx context.Context,
-	manifestDependencyEdgeUUID uuid.UUID,
-) (*gql.GetManifestDependencyEdgeResponse, error) {
+func (s *staticAnalysisQueueHandler) getManifestDependencyEdge(ctx context.Context, manifestDependencyEdgeUUID uuid.UUID) (*gql.GetManifestDependencyEdgeResponse, error) {
 	logger := log.With().
 		Str("manifest dependency edge", manifestDependencyEdgeUUID.String()).
 		Logger()
 
 	resp, err := gql.GetManifestDependencyEdge(ctx, s.GQLClient, manifestDependencyEdgeUUID)
 	if err != nil {
-		util.LogGraphqlError(
-			logger,
-			"failed to get manifest dependency edge",
-			err,
-		)
+		util.LogGraphqlError(logger, "failed to get manifest dependency edge", err)
 		return nil, err
 	}
 	return resp, nil
 }
 
-func (s *staticAnalysisQueueHandler) getUpstreamUrlForPackage(
-	ctx context.Context,
-	logger zerolog.Logger,
-	manifestDependencyEdgeUUID uuid.UUID,
-	packageName string,
-) (string, error) {
+func (s *staticAnalysisQueueHandler) getUpstreamUrlForPackage(ctx context.Context, logger zerolog.Logger, manifestDependencyEdgeUUID uuid.UUID, packageName string) (string, error) {
 	logger = logger.With().Str("package name", packageName).Logger()
 
 	logger.Info().
@@ -215,13 +265,51 @@ func (s *staticAnalysisQueueHandler) getUpstreamUrlForPackage(
 	*/
 }
 
+func getCodeBlobStream(ctx context.Context, logger zerolog.Logger, resolvedBlobUrl string, parsedResolvedBlobUrl *url.URL) (io.ReadCloser, bool, error) {
+	var (
+		codeBlobStream io.ReadCloser
+		compressed     bool
+	)
+
+	if strings.Contains(parsedResolvedBlobUrl.Host, ".s3.") {
+		compressed = false
+
+		b, err := blob.OpenBucket(ctx, "s3://"+strings.Split(parsedResolvedBlobUrl.Host, ".")[0])
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("failed to open bucket from s3")
+			return nil, false, err
+		}
+
+		codeBlobStream, err = b.NewReader(ctx, parsedResolvedBlobUrl.Path, nil)
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("failed to open package blob from s3")
+			return nil, false, err
+		}
+	} else {
+		compressed = true
+
+		upstreamUrlResp, err := http.Get(resolvedBlobUrl)
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("failed to download resolved blob url")
+			return nil, false, err
+		}
+		codeBlobStream = upstreamUrlResp.Body
+	}
+	return codeBlobStream, compressed, nil
+}
+
 func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 	ctx context.Context,
 	logger zerolog.Logger,
 	upstreamBlobUrl *string,
 	manifestDependencyEdgeUUID uuid.UUID,
-	parentPackageName,
-	childPackageName string,
+	parentPackageName, childPackageName string,
 ) (gql.Analysis_finding_type_enum, *rules.SemgrepRuleOutput) {
 	var err error
 
@@ -241,13 +329,24 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 	logger.Info().
 		Msg("statically analyzing parent child relationship")
 
-	upstreamUrlResp, err := http.Get(resolvedBlobUrl)
+	// todo s3 creds?
+
+	parsedResolvedBlobUrl, err := url.Parse(resolvedBlobUrl)
 	if err != nil {
 		logger.Error().
 			Err(err).
-			Msg("failed to download package blob")
+			Msg("failed to parse upstream blob url")
 		return gql.Analysis_finding_type_enumError, nil
 	}
+
+	codeBlobStream, compressed, err := getCodeBlobStream(ctx, logger, resolvedBlobUrl, parsedResolvedBlobUrl)
+	if err != nil {
+		logger.Error().
+			Err(err).
+			Msg("failed to open package code")
+		return gql.Analysis_finding_type_enumError, nil
+	}
+	defer codeBlobStream.Close()
 
 	tmpDir, err := os.MkdirTemp("", "")
 	if err != nil {
@@ -262,7 +361,7 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 		Str("tmp dir", tmpDir).
 		Msg("extracting package code")
 
-	err = util.ExtractTarGz(upstreamUrlResp.Body, tmpDir)
+	err = util.ExtractTar(codeBlobStream, tmpDir, compressed)
 	if err != nil {
 		logger.Error().
 			Err(err).
@@ -279,6 +378,12 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 			Err(err).
 			Msg("failed to determine if child is imported and called by parent")
 		return gql.Analysis_finding_type_enumError, nil
+	}
+
+	// remove temporary path from results path
+	for i, result := range results.Results {
+		result.Path = strings.ReplaceAll(result.Path, tmpDir, "")
+		results.Results[i] = result
 	}
 
 	// we can only say that we definitely know that a vulnerability is not reachable, otherwise we can't

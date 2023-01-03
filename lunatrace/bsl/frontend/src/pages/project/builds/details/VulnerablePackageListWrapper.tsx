@@ -16,8 +16,9 @@ import React, { useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 
 import api from '../../../../api';
+import { Builds } from '../../../../api/generated';
 import { SpinIfLoading } from '../../../../components/SpinIfLoading';
-import { QuickViewProps } from '../types';
+import { BuildDetailInfo, QuickViewProps } from '../types';
 
 import { LegacyGrypeVulnerablePackageList } from './vulnerable-packages-legacy-grype/LegacyGrypeVulnerablePackageList';
 import { Finding } from './vulnerable-packages-legacy-grype/types';
@@ -30,16 +31,22 @@ export interface VulnerablePackageListWrapperProps {
   buildId: string;
   toggleIgnoreFindings: () => void;
   shouldIgnore: boolean;
+  build: BuildDetailInfo;
 }
 
 // This component will switch between legacy views or the newer tree-based view if data is available
-export const VulnerablePackageListWrapper: React.FunctionComponent<VulnerablePackageListWrapperProps> = (
-  props: VulnerablePackageListWrapperProps
-) => {
-  const { findings, quickViewConfig, projectId, toggleIgnoreFindings, buildId, shouldIgnore } = props;
-
+export const VulnerablePackageListWrapper: React.FC<VulnerablePackageListWrapperProps> = ({
+  findings,
+  quickViewConfig,
+  projectId,
+  toggleIgnoreFindings,
+  buildId,
+  shouldIgnore,
+  build,
+}) => {
   // severity state for modern tree data, legacy has its own state and doesnt use this
   const [severity, setSeverity] = useState<SeverityNamesOsv>('Critical');
+  const [showCompleteAnalysis, setShowCompleteAnalysis] = useState<boolean>(false);
 
   // data for modern tree, legacy doesnt use this
   const {
@@ -49,6 +56,7 @@ export const VulnerablePackageListWrapper: React.FunctionComponent<VulnerablePac
   } = api.useGetVulnerableReleasesFromBuildQuery({
     buildId,
     minimumSeverity: severity,
+    previewChains: !showCompleteAnalysis,
   });
 
   const unfilteredVulnerableReleasesFromTree = vulnerableReleasesData?.vulnerableReleasesFromBuild;
@@ -65,9 +73,11 @@ export const VulnerablePackageListWrapper: React.FunctionComponent<VulnerablePac
           vulnerablePackages={unfilteredVulnerableReleasesFromTree}
           quickView={quickViewConfig}
           setIgnoreFindings={toggleIgnoreFindings}
+          setShowCompleteAnalysis={setShowCompleteAnalysis}
           severity={severity}
           setSeverity={setSeverity}
           shouldIgnore={shouldIgnore}
+          build={build}
         />
       </>
     );

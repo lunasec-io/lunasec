@@ -19,7 +19,7 @@ import { CheckCircle, Maximize2, Minimize2 } from 'react-feather';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import { Analysis_Finding_Type_Enum } from '../../../../../../api/generated';
 import { LinkInNewTab } from '../../../../../../components/utils/LinkInNewTab';
-import { VulnerablePackage } from '../types';
+import { Chain, VulnerablePackage } from '../types';
 
 import { ChainDep } from './ChainDep';
 interface TreeInfoProps {
@@ -39,6 +39,13 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
   // when chains are collapsed they can end up as dupes, so we use this to hide the dupes
   const chainDedupeSlugs: string[] = [];
 
+  const getVisibleChain = (chain: Chain) => {
+    if (isExpanded || chain.length === 0) {
+      return chain;
+    }
+    return [chain[0], chain[chain.length - 1]];
+  };
+
   // Todo: most of the data processing logic for the chains happens IN the render. It's pretty terse, so it could happen before in a separate step
   // Also too many inline styles. Overall this needs a rewrite someday, in the mean time contact Forrest if it breaks
   return (
@@ -49,9 +56,9 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
             Direct Dependency: <span className="lighter">{chains[0][0].range}</span>
           </>
         ) : (
-          'Transitive Dependency'
+          'Transitive Dependency Analysis'
         )}
-        {!isDirectDep && (
+        {!isDirectDep && chains.length > 0 && (
           <NavLink onClick={() => setIsExpanded(!isExpanded)} style={{ display: 'inline' }}>
             {isExpanded ? <Minimize2 size="1rem" /> : <Maximize2 size="1rem" />}
           </NavLink>
@@ -59,7 +66,7 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
       </h5>
       {!isDirectDep &&
         chains.map((chain) => {
-          const visibleChain = isExpanded ? chain : [chain[0], chain[chain.length - 1]];
+          const visibleChain = getVisibleChain(chain);
           const dedupeSlug = visibleChain.reduce((slug, chain) => slug + chain.release.package.name, '');
           if (chainDedupeSlugs.includes(dedupeSlug)) {
             return null;

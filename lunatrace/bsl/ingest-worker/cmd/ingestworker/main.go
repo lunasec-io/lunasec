@@ -8,21 +8,20 @@
 //
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package main
 
 import (
-	"context"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/cwe"
 	packageCommand "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/package"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/vulnerability"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/ingestworker"
+	cwe2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/cwe"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/dbfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/registry"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"net/http"
@@ -48,11 +47,9 @@ func main() {
 		dbfx.Module,
 		registry.NPMModule,
 
-		fx.Invoke(func() {
-			util.RunOnProcessExit(func() {
-				util.RemoveCleanupDirs()
-			})
-		}),
+		fx.Provide(
+			cwe2.NewCWEIngester,
+		),
 
 		// todo make a module
 		fx.Supply(&clifx2.AppConfig{
@@ -76,16 +73,10 @@ func main() {
 		),
 		fx.Provide(
 			vulnerability.NewCommand,
+			cwe.NewCommand,
 		),
 		fx.Provide(
 			packageCommand.NewCommand,
 		),
-
-		fx.Invoke(func(lc fx.Lifecycle) {
-			lc.Append(fx.Hook{OnStop: func(_ context.Context) error {
-				util.RemoveCleanupDirs()
-				return nil
-			}})
-		}),
 	)
 }

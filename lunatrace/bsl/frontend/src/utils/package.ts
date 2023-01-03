@@ -16,3 +16,9 @@ import { VulnerablePackage } from '../pages/project/builds/details/vulnerable-pa
 export function isDirectDep(pkg: VulnerablePackage): boolean {
   return pkg.chains.length === 1 && pkg.chains[0].length === 1;
 }
+
+export function formatPackageName(packageName: string): string {
+  const nameOverflow = packageName && packageName.length > 41 ? '...' : '';
+  const formattedPackageName = packageName?.substring(0, 40) || '';
+  return formattedPackageName + nameOverflow;
+}

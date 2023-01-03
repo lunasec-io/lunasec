@@ -69,6 +69,8 @@ export async function queueManifestDependencyEdgeForStaticAnalysis(
   const req: ProcessStaticAnalysisRequest = {
     vulnerability_id: vulnerabilityId,
     manifest_dependency_edge_id: manifestDependencyEdgeId,
+    // todo should we not save some results? this should be ok because we only analyze edges with known vulns.
+    save_results: true,
   };
 
   const sqsEvent: LunaTraceStaticAnalysisSqsMessage = {

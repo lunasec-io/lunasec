@@ -1,0 +1,62 @@
+table:
+  name: manifest_dependency_edge_result_location
+  schema: analysis
+insert_permissions:
+  - role: service
+    permission:
+      check: {}
+      columns:
+        - id
+        - path
+        - start_row
+        - start_column
+        - end_row
+        - end_column
+        - manifest_dependency_edge_result_id
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - end_column
+        - end_row
+        - start_column
+        - start_row
+        - path
+        - id
+        - manifest_dependency_edge_result_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - end_column
+        - end_row
+        - start_column
+        - start_row
+        - path
+        - id
+        - manifest_dependency_edge_result_id
+      filter:
+        _exists:
+          _table:
+            name: users
+            schema: public
+          _where:
+            _and:
+              - id:
+                  _eq: X-Hasura-Real-User-Id
+              - role:
+                  _eq: lunatrace_admin
+      allow_aggregations: true
+update_permissions:
+  - role: service
+    permission:
+      columns:
+        - end_column
+        - end_row
+        - start_column
+        - start_row
+        - path
+        - id
+        - manifest_dependency_edge_result_id
+      filter: {}
+      check: null

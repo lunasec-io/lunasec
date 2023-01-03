@@ -113,6 +113,7 @@ export class WorkerStack extends cdk.Stack {
       PROCESS_REPOSITORY_QUEUE: repositoryQueue.queueName,
       S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
       S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
+      S3_CODE_BUCKET: storageStack.codeBucket.bucketName,
       GITHUB_APP_ID: gitHubAppId,
       HASURA_URL: publicHasuraServiceUrl,
       LUNATRACE_GRAPHQL_SERVER_URL: 'http://backend.services:8080/v1/graphql',
@@ -238,6 +239,7 @@ export class WorkerStack extends cdk.Stack {
 
       storageStack.sbomBucket.grantReadWrite(queueFargateService.taskDefinition.taskRole);
       storageStack.manifestBucket.grantReadWrite(queueFargateService.taskDefinition.taskRole);
+      storageStack.codeBucket.grantReadWrite(queueFargateService.taskDefinition.taskRole);
       webhookQueue.grantSendMessages(queueFargateService.taskDefinition.taskRole);
       webhookQueue.grantConsumeMessages(queueFargateService.taskDefinition.taskRole);
       repositoryQueue.grantConsumeMessages(queueFargateService.taskDefinition.taskRole);

@@ -18483,6 +18483,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/tar@npm:~6.1.3":
+  version: 6.1.3
+  resolution: "@types/tar@npm:6.1.3"
+  dependencies:
+    "@types/node": "*"
+    minipass: ^3.3.5
+  checksum: 3a221f74adfcef8555b9c4cc951907dfd567630744ffe5211da1b44caf2a4c3b02297b73c9fb02d171e93a7a7c74fb15c1826e3f0438f0e5e8f4c790db59ddcf
+  languageName: node
+  linkType: hard
+
 "@types/testing-library__dom@npm:*":
   version: 7.0.2
   resolution: "@types/testing-library__dom@npm:7.0.2"
@@ -39908,6 +39918,7 @@ __metadata:
     "@types/markdown-table": 2.0.0
     "@types/node": ^14.0.0
     "@types/semver": ^7.3.9
+    "@types/tar": ~6.1.3
     "@types/uuid": ^8.3.4
     "@types/validator": ^13.7.1
     aws-lambda: ^1.0.7
@@ -39959,6 +39970,7 @@ __metadata:
     source-map-support: ^0.5.16
     sqlite: ^4.0.23
     sqlite3: ^5.0.2
+    tar: ~6.1.12
     ts-jest: ^27.1.3
     ts-node: ~10.9.1
     ts-node-dev: ^2.0.0
@@ -41451,6 +41463,15 @@ __metadata:
   dependencies:
     yallist: ^4.0.0
   checksum: 57a04041413a3531a65062452cb5175f93383ef245d6f4a2961d34386eb9aa8ac11ac7f16f791f5e8bbaf1dfb1ef01596870c88e8822215db57aa591a5bb0a77
+  languageName: node
+  linkType: hard
+
+"minipass@npm:^3.3.5":
+  version: 3.3.5
+  resolution: "minipass@npm:3.3.5"
+  dependencies:
+    yallist: ^4.0.0
+  checksum: f89f02bcaa0e0e4bb4c44ec796008e69fbca62db0aba6ead1bc57d25bdaefdf42102130f4f9ecb7d9c6b6cd35ff7b0c7b97d001d3435da8e629fb68af3aea57e
   languageName: node
   linkType: hard
 
@@ -52952,6 +52973,20 @@ __metadata:
     mkdirp: ^1.0.3
     yallist: ^4.0.0
   checksum: a04c07bb9e2d8f46776517d4618f2406fb977a74d914ad98b264fc3db0fe8224da5bec11e5f8902c5b9bcb8ace22d95fbe3c7b36b8593b7dfc8391a25898f32f
+  languageName: node
+  linkType: hard
+
+"tar@npm:~6.1.12":
+  version: 6.1.12
+  resolution: "tar@npm:6.1.12"
+  dependencies:
+    chownr: ^2.0.0
+    fs-minipass: ^2.0.0
+    minipass: ^3.0.0
+    minizlib: ^2.1.1
+    mkdirp: ^1.0.3
+    yallist: ^4.0.0
+  checksum: 49d72e4420944e7ede2782d6b0826a6ede6cdab23c7de63470917e7a78166bc4d5b1a96279d3d79a85f1ba5a17cd37c0acbb3cbff19a07447691445b8b051c55
   languageName: node
   linkType: hard
 

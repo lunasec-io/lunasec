@@ -13,11 +13,11 @@
  */
 import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common/build/main';
 import React, { ChangeEvent } from 'react';
-import { Button, Col, Dropdown, OverlayTrigger, Row } from 'react-bootstrap';
+import { Button, Col, Dropdown, Form, OverlayTrigger, Row } from 'react-bootstrap';
 import { FcPlus } from 'react-icons/fc';
 
 import { isDirectDep } from '../../../../../utils/package';
-import { QuickViewProps } from '../../types';
+import { BuildDetailInfo, QuickViewProps } from '../../types';
 
 import { AutoUpdatePopOverHOC } from './AutoUpdatePopOverHOC';
 import { VulnerablePackage } from './types';
@@ -26,19 +26,23 @@ import { VulnerablePackageMain } from './vulnerable-package-card/VulnerablePacka
 interface FindingListProps {
   quickView: QuickViewProps;
   setIgnoreFindings: (ignored: boolean) => void;
+  setShowCompleteAnalysis: (complete: boolean) => void;
   vulnerablePackages: VulnerablePackage[];
   severity: SeverityNamesOsv;
   setSeverity: (s: SeverityNamesOsv) => void;
   shouldIgnore: boolean;
+  build: BuildDetailInfo;
 }
 
 export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> = ({
   quickView,
   setIgnoreFindings,
+  setShowCompleteAnalysis,
   vulnerablePackages,
   severity,
   setSeverity,
   shouldIgnore,
+  build,
 }) => {
   // Todo: not sure if this should include below minimum severity packages or not, might be confusing. For now we are, though
   const pkgsToUpdate = vulnerablePackages.filter((pkg) => {
@@ -51,6 +55,7 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
   const packagesFilteredBySeverity = vulnerablePackages.filter((p) => !p.beneath_minimum_severity);
 
   const handleShowIgnoredFindings = (e: ChangeEvent<HTMLInputElement>) => setIgnoreFindings(!e.target.checked);
+  const handleShowCompleteAnalysis = (e: ChangeEvent<HTMLInputElement>) => setShowCompleteAnalysis(e.target.checked);
 
   const pkgCards = packagesFilteredBySeverity.map((p) => {
     return (
@@ -60,6 +65,7 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
         quickView={quickView}
         severity={severity}
         shouldIgnore={shouldIgnore}
+        build={build}
       />
     );
   });
@@ -77,8 +83,6 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
                 <FcPlus className="mb-1 me-1" />
                 Showing Enhanced Tree Data
               </p>
-            </Col>
-            <Col xl="3">
               {areUpdatesAvailable && (
                 <OverlayTrigger
                   placement="bottom"
@@ -86,40 +90,40 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
                   rootClose
                   overlay={AutoUpdatePopOverHOC(pkgsToUpdate)}
                 >
-                  <Button className="mb-2 d-inline-block w-100">Update</Button>
+                  <Button className="mb-2 d-inline-block">Update Packages</Button>
                 </OverlayTrigger>
               )}
             </Col>
           </Row>
         </Col>
         <Col lg="6" style={{ display: 'flex', justifyContent: 'right' }}>
-          <label className="form-check mx-2 p-1 cursor-pointer user-select-none">
-            <input className="form-check-input" type="checkbox" value="" onChange={handleShowIgnoredFindings} />
-            Show Ignored
-          </label>
-          <Dropdown align={{ md: 'end' }} className="d-inline me-2">
-            <Dropdown.Toggle variant="secondary" className="text-capitalize">
-              Minimum Severity: {severity === 'Unknown' ? 'None' : severity}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Header>
-                Lowest severity to show <hr className="m-1" />
-              </Dropdown.Header>
-              {severityOrderOsv
-                .map((severityName) => {
-                  return (
-                    <Dropdown.Item
-                      active={severityName === severity}
-                      onClick={() => setSeverity(severityName as SeverityNamesOsv)}
-                      key={severityName}
-                    >
-                      {severityName === 'Unknown' ? 'None' : severityName}
-                    </Dropdown.Item>
-                  );
-                })
-                .reverse()}
-            </Dropdown.Menu>
-          </Dropdown>
+          <Form>
+            <Form.Check type={'checkbox'} label={'Show Ignored'} onChange={handleShowIgnoredFindings} />
+            <Form.Check type={'checkbox'} label={'Show Complete Analysis'} onChange={handleShowCompleteAnalysis} />
+            <Dropdown align={{ md: 'end' }} className="d-inline me-2">
+              <Dropdown.Toggle variant="secondary" className="text-capitalize">
+                Minimum Severity: {severity === 'Unknown' ? 'None' : severity}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Header>
+                  Lowest severity to show <hr className="m-1" />
+                </Dropdown.Header>
+                {severityOrderOsv
+                  .map((severityName) => {
+                    return (
+                      <Dropdown.Item
+                        active={severityName === severity}
+                        onClick={() => setSeverity(severityName as SeverityNamesOsv)}
+                        key={severityName}
+                      >
+                        {severityName === 'Unknown' ? 'None' : severityName}
+                      </Dropdown.Item>
+                    );
+                  })
+                  .reverse()}
+              </Dropdown.Menu>
+            </Dropdown>
+          </Form>
         </Col>
       </Row>
       <br />

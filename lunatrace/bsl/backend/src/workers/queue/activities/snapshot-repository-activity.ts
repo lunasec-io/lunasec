@@ -16,6 +16,9 @@ import * as os from 'os';
 import path from 'path';
 import util from 'util';
 
+import tar, { FileStat } from 'tar';
+
+import { getWorkerBucketConfig } from '../../../config';
 import { getRepoCloneUrlWithAuth } from '../../../github/actions/get-repo-clone-url-with-auth';
 import { updateBuildStatus } from '../../../hasura-api/actions/update-build-status';
 import { Build_State_Enum } from '../../../hasura-api/generated';
@@ -24,6 +27,7 @@ import { uploadSbomToS3 } from '../../../snapshot/generate-snapshot';
 import { snapshotPinnedDependencies } from '../../../snapshot/node-package-tree';
 import { SnapshotForRepositoryRequest } from '../../../types/sqs';
 import { MaybeError, MaybeErrorVoid } from '../../../types/util';
+import { aws } from '../../../utils/aws-utils';
 import { newError } from '../../../utils/errors';
 import { log } from '../../../utils/log';
 import { catchError, threwError } from '../../../utils/try';
@@ -37,33 +41,36 @@ async function performSnapshotOnRepository(
   buildId: string,
   cloneUrl: string,
   gitBranch: string,
-  gitCommit?: string
+  gitCommit?: string,
+  projectId?: string
 ): Promise<MaybeErrorVoid> {
-  log.info('Starting to snapshot repository.');
+  let logger = log.child('snapshot-repository-activity');
+  logger.info('Starting to snapshot repository.');
   updateBuildStatus(buildId, Build_State_Enum.SnapshotStarted);
 
   let repoDir = '';
+  const failedToUploadWorktreeSnapshotForRepository = 'Failed to upload worktree snapshot for repository.';
   try {
     repoDir = await mkdTemp(path.join(os.tmpdir(), appPrefix));
-
+    logger = logger.child('snapshot-repository-activity', { repoDir });
     // the rest of your app goes here
     const sbom = generateSbomFromAsset('repository', cloneUrl, gitBranch, gitCommit, {
       workspace: repoDir,
     });
 
     if (sbom === null) {
-      log.error('Failed to generated SBOM for repository.');
+      logger.error('Failed to generated SBOM for repository.');
       updateBuildStatus(buildId, Build_State_Enum.SnapshotFailed, 'Failed to generated SBOM for repository.');
       return {
         error: true,
         msg: 'unable to generate sbom for asset',
       };
     }
-    log.info('Successfully generated SBOM for repository.');
+    logger.info('Successfully generated SBOM for repository.');
 
     const s3UploadRes = await catchError(uploadSbomToS3(installationId, buildId, sbom));
     if (threwError(s3UploadRes)) {
-      log.error('Failed to save SBOM for repository.', {
+      logger.error('Failed to save SBOM for repository.', {
         error: s3UploadRes,
         message: s3UploadRes.message,
       });
@@ -75,20 +82,40 @@ async function performSnapshotOnRepository(
       };
     }
 
-    log.info('Successfully saved SBOM for repository.', {
+    logger.info('Successfully saved SBOM for repository.', {
       s3Url: s3UploadRes,
     });
 
-    log.info('Attempting to snapshot pinned dependencies for repository.', {
-      repoDir,
+    logger.info('Attempting to upload worktree for repository.');
+    let codeURL = '';
+    try {
+      codeURL = await uploadWorktreeSnapshot(buildId, repoDir);
+    } catch (err) {
+      logger.error(failedToUploadWorktreeSnapshotForRepository, {
+        error: err,
+      });
+
+      updateBuildStatus(buildId, Build_State_Enum.SnapshotFailed, failedToUploadWorktreeSnapshotForRepository);
+
+      return {
+        error: true,
+        msg: failedToUploadWorktreeSnapshotForRepository,
+        rawError: err instanceof Error ? err : undefined,
+      };
+    }
+
+    logger.info('Successfully uploaded worktree for repository.', {
+      codeURL,
     });
 
+    // create releases with uploaded tar url.
+    logger.info('Attempting to snapshot pinned dependencies for repository.');
+
     try {
-      await snapshotPinnedDependencies(buildId, repoDir);
+      await snapshotPinnedDependencies(buildId, repoDir, codeURL, projectId);
     } catch (err) {
-      log.error('Failed to snapshot pinned dependencies for repository.', {
+      logger.error('Failed to snapshot pinned dependencies for repository.', {
         error: err,
-        repoDir,
       });
       updateBuildStatus(
         buildId,
@@ -103,9 +130,8 @@ async function performSnapshotOnRepository(
       };
     }
 
-    log.info('Successfully created snapshot for pinned dependencies for repository.', {
-      repoDir,
-    });
+    logger.info('Successfully created snapshot for pinned dependencies for repository.');
+
     updateBuildStatus(buildId, Build_State_Enum.SnapshotCompleted);
 
     updateBuildStatus(buildId, Build_State_Enum.SnapshotScanQueued);
@@ -114,7 +140,7 @@ async function performSnapshotOnRepository(
       error: false,
     };
   } catch (e) {
-    log.error('Experienced internal error while creating snapshot for repository.', {
+    logger.error('Experienced internal error while creating snapshot for repository.', {
       tmpDir: repoDir,
       error: e,
     });
@@ -136,14 +162,13 @@ async function performSnapshotOnRepository(
       }
     } catch (e) {
       // Do not update build status, this is not a fatal error.
-      log.error('error occurred while removing temp folder', {
-        tmpDir: repoDir,
+      logger.error('error occurred while removing temp folder', {
         error: e,
       });
     }
   }
 
-  log.error('Experienced internal error while creating snapshot for repository.');
+  logger.error('Experienced internal error while creating snapshot for repository.');
   updateBuildStatus(
     buildId,
     Build_State_Enum.SnapshotFailed,
@@ -176,6 +201,33 @@ export async function snapshotRepositoryActivity(req: SnapshotForRepositoryReque
   const installationId = req.installationId.toString();
 
   return await log.provideFields({ buildId: req.buildId, record: req, installationId }, async () => {
-    return performSnapshotOnRepository(installationId, req.buildId, repoClone.cloneUrl, req.gitBranch, req.gitCommit);
+    return performSnapshotOnRepository(
+      installationId,
+      req.buildId,
+      repoClone.cloneUrl,
+      req.gitBranch,
+      req.gitCommit,
+      req.projectId
+    );
   });
+}
+
+async function uploadWorktreeSnapshot(buildId: string, repoDir: string): Promise<string> {
+  const bucketConfig = getWorkerBucketConfig();
+  // upload the sbom to s3, streaming
+  const fileKey = aws.generateCodeS3Key(buildId);
+
+  const tarStream = tar.c(
+    {
+      cwd: repoDir,
+      prefix: '',
+      gzip: true,
+      filter(path: string, stat: FileStat): boolean {
+        return !path.includes('/.git/');
+      },
+    },
+    ['.']
+  );
+
+  return await aws.uploadGzipFileToS3(fileKey, bucketConfig.codeBucket, tarStream);
 }

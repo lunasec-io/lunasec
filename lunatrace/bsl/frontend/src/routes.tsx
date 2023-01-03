@@ -19,6 +19,8 @@ import { RouteGuard } from './components/auth/RouteGuard';
 import MainLayout from './layouts/Main';
 import { AdminDashboard, BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } from './pages';
 import { AuthError } from './pages/auth/Error';
+import { CwesMain } from './pages/cwes/Main';
+import { CweDetailMain } from './pages/cwes/detail/CweDetailMain';
 import { GuideMain } from './pages/guide/Guide';
 import { GuideList } from './pages/guide/List';
 import { HomePage } from './pages/homepage/Home';
@@ -45,6 +47,19 @@ export const routes: RouteObject[] = [
           {
             path: ':vulnerability_id',
             element: <VulnerabilityDetailMain />,
+          },
+        ],
+      },
+      {
+        path: 'cwes',
+        children: [
+          {
+            path: '',
+            element: <CwesMain />,
+          },
+          {
+            path: ':cwe_id',
+            element: <CweDetailMain />,
           },
         ],
       },

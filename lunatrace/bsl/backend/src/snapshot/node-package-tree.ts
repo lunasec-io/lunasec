@@ -14,7 +14,7 @@
 import path from 'path';
 
 import { ITask } from 'pg-promise';
-import { buildDepTreeFromFiles } from 'snyk-nodejs-lockfile-parser-lunatrace-fork';
+import { buildDepTreeFromFiles, PkgTree } from 'snyk-nodejs-lockfile-parser-lunatrace-fork';
 
 import { db, pgp } from '../database/db';
 import {
@@ -23,9 +23,10 @@ import {
 } from '../database/dependency-relationship-dag-calculator';
 import { findFilesMatchingFilter } from '../utils/filesystem-utils';
 import { log } from '../utils/log';
+import { notEmpty } from '../utils/predicates';
 
 interface PackageDependenciesWithGraphAndMetadata {
-  rootNode: DependencyGraphNode;
+  node: DependencyGraphNode;
   labels?: {
     [key: string]: string | undefined;
     scope?: 'dev' | 'prod';
@@ -33,7 +34,7 @@ interface PackageDependenciesWithGraphAndMetadata {
     missingLockFileEntry?: 'true';
   };
   name?: string;
-  range?: string | null;
+  range?: string;
   version?: string;
 }
 
@@ -43,6 +44,7 @@ interface CollectedPackageTree {
   dependencies: PackageDependenciesWithGraphAndMetadata[];
   packageManager?: string;
   lockfileVersion?: number;
+  rootTreeHashID?: string;
 }
 
 interface ManifestDependencyEdge {
@@ -70,7 +72,10 @@ function sortEdges(a: ManifestDependencyEdge, b: ManifestDependencyEdge): number
   return 0;
 }
 
-export async function collectPackageGraphsFromDirectory(repoDir: string): Promise<CollectedPackageTree[]> {
+export async function collectPackageGraphsFromDirectory(
+  repoDir: string,
+  rootUniqueId?: string
+): Promise<CollectedPackageTree[]> {
   const lockFilePaths = await findFilesMatchingFilter(repoDir, (_directory, entryName) => {
     return /package-lock\.json|yarn\.lock$/.test(entryName);
   });
@@ -107,14 +112,20 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
       // This value is set to false by the library when there are zero dev dependencies
       const prodOrDevLabel = pkgTree.hasDevDependencies ? 'dev' : 'prod';
 
-      const pkgDependenciesWithGraphAndMetadata = Object.values(pkgTree.dependencies).map((pkg) => {
+      // Add the unique id to the version of the root node if requested so it has a unique key in the db.
+      if (rootUniqueId) {
+        pkgTree.version = `${pkgTree.version}-${rootUniqueId}`;
+      }
+
+      const flatDeps = [pkgTree, ...Object.values(pkgTree.dependencies)];
+      const pkgDependenciesWithGraphAndMetadata = flatDeps.map((pkg) => {
         return {
-          rootNode: dfsGenerateMerkleTreeFromDepTree(pkg),
+          node: dfsGenerateMerkleTreeFromDepTree(pkg),
           // If there is nothing in the labels, then we know that it is a prod dependency
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           labels: pkg.labels ?? ({ scope: prodOrDevLabel } as any),
           name: pkg.name,
-          range: pkg.range,
+          range: pkg.range || pkg.version,
           version: pkg.version,
         };
       });
@@ -124,6 +135,7 @@ export async function collectPackageGraphsFromDirectory(repoDir: string): Promis
         dependencies: pkgDependenciesWithGraphAndMetadata,
         packageManager: pkgTree?.meta?.packageManager,
         lockfileVersion: pkgTree?.meta?.lockfileVersion,
+        rootTreeHashID: dfsGenerateMerkleTreeFromDepTree(pkgTree).treeHashId,
       };
     })
   );
@@ -143,7 +155,13 @@ function packageGraphToUniqueDependencyNodes(rootNode: DependencyGraphNode): Map
   return uniqueDependencyMap;
 }
 
-async function upsertAndGetPackageId<Ext>(t: ITask<Ext>, name: string, packageManager: string, customRegistry: string) {
+async function upsertAndGetPackageId<Ext>(
+  t: ITask<Ext>,
+  name: string,
+  packageManager: string,
+  customRegistry: string,
+  internal?: boolean
+) {
   const selectPackageIdQuery = `SELECT id FROM package.package WHERE name = $1 AND package_manager = $2 AND custom_registry = $3`;
 
   const packageId = await t.oneOrNone<{ id: string }>(selectPackageIdQuery, [name, packageManager, customRegistry]);
@@ -153,11 +171,11 @@ async function upsertAndGetPackageId<Ext>(t: ITask<Ext>, name: string, packageMa
   }
 
   const newPackageId = await t.oneOrNone<{ id: string }>(
-    `INSERT INTO package.package (name, package_manager, custom_registry)
-           VALUES ($1, $2, $3)
+    `INSERT INTO package.package (name, package_manager, custom_registry, internal)
+           VALUES ($1, $2, $3, $4)
            ON CONFLICT DO NOTHING
            RETURNING id`,
-    [name, packageManager, customRegistry]
+    [name, packageManager, customRegistry, internal]
   );
 
   if (newPackageId && newPackageId.id) {
@@ -167,7 +185,7 @@ async function upsertAndGetPackageId<Ext>(t: ITask<Ext>, name: string, packageMa
   return (await t.one<{ id: string }>(selectPackageIdQuery, [name, packageManager, customRegistry])).id;
 }
 
-async function getPackageReleaseId<Ext>(t: ITask<Ext>, packageId: string, version: string) {
+async function getPackageReleaseId<Ext>(t: ITask<Ext>, packageId: string, version: string, mirrored_blob_url?: string) {
   const selectPackageReleaseIdQuery = `SELECT id FROM package.release WHERE package_id = $1 AND version = $2`;
 
   const packageReleaseId = await t.oneOrNone<{ id: string }>(selectPackageReleaseIdQuery, [packageId, version]);
@@ -177,11 +195,11 @@ async function getPackageReleaseId<Ext>(t: ITask<Ext>, packageId: string, versio
   }
 
   const newPackageReleaseId = await t.oneOrNone<{ id: string }>(
-    `INSERT INTO package.release (package_id, version)
-             VALUES ($1, $2)
+    `INSERT INTO package.release (package_id, version, mirrored_blob_url)
+             VALUES ($1, $2, $3)
              ON CONFLICT DO NOTHING
              RETURNING id`,
-    [packageId, version]
+    [packageId, version, mirrored_blob_url]
   );
 
   if (newPackageReleaseId && newPackageReleaseId.id) {
@@ -191,7 +209,11 @@ async function getPackageReleaseId<Ext>(t: ITask<Ext>, packageId: string, versio
   return (await t.one<{ id: string }>(selectPackageReleaseIdQuery, [packageId, version])).id;
 }
 
-async function insertNodesToDatabase<Ext>(t: ITask<Ext>, queryData: DependencyGraphNode[]): Promise<void> {
+async function insertNodesToDatabase<Ext>(
+  t: ITask<Ext>,
+  queryData: DependencyGraphNode[],
+  projectId: string
+): Promise<void> {
   if (queryData.length === 0) {
     return;
   }
@@ -210,14 +232,19 @@ async function insertNodesToDatabase<Ext>(t: ITask<Ext>, queryData: DependencyGr
         customRegistry: node.customRegistry,
       };
 
+      const isTopLevel = !!node.parent;
+
       const packageId = await upsertAndGetPackageId(
         t,
         packageData.name || '',
         packageData.packageManager,
-        packageData.customRegistry
+        // top nodes should use a custom namespace per org.
+        isTopLevel ? `lunatrace-internal-project-${projectId}` : packageData.customRegistry,
+        // top nodes don't have a parent and are internal.
+        !isTopLevel
       );
 
-      const packageReleaseId = await getPackageReleaseId(t, packageId, packageData.version || '');
+      const packageReleaseId = await getPackageReleaseId(t, packageId, packageData.version || '', node.mirroredBlobUrl);
 
       return {
         id: node.treeHashId,
@@ -282,7 +309,7 @@ async function findCurrentlyKnownDependencies(query: string, manifestIds: string
   return currentlyKnownIds;
 }
 
-async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: CollectedPackageTree[]) {
+async function insertPackageGraphsIntoDatabase(projectId: string, pkgGraphs: CollectedPackageTree[], codeUrl: string) {
   log.info(`Inserting package graphs into database`, { length: pkgGraphs.length });
 
   if (pkgGraphs.length === 0) {
@@ -293,7 +320,7 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
   // Is it safe for us to display the raw error from the Snyk library, or is that a security risk?
 
   const uniqueRootDependencyHashes = pkgGraphs.flatMap((pkgGraph) =>
-    pkgGraph.dependencies.map((pkg) => pkg.rootNode.treeHashId)
+    pkgGraph.dependencies.map((pkg) => pkg.node.treeHashId)
   );
 
   // Remove duplicates
@@ -321,11 +348,16 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
 
   pkgGraphs.forEach((pkgGraph) => {
     pkgGraph.dependencies.forEach((pkg) => {
-      if (currentlyKnownRootIds.has(pkg.rootNode.treeHashId)) {
+      // assign the code url to root nodes
+      if (!pkg.node.parent) {
+        pkg.node.mirroredBlobUrl = codeUrl;
+      }
+
+      if (currentlyKnownRootIds.has(pkg.node.treeHashId)) {
         return;
       }
 
-      const dependencyMap = packageGraphToUniqueDependencyNodes(pkg.rootNode);
+      const dependencyMap = packageGraphToUniqueDependencyNodes(pkg.node);
 
       // Merge down the map to only include the unique nodes
       for (const [key, value] of dependencyMap) {
@@ -388,7 +420,7 @@ async function insertPackageGraphsIntoDatabase(buildId: string, pkgGraphs: Colle
       for (let i = 0; i < dependencyNodeMap.size; i += 999) {
         const dependencySlice = sortedDependencyNodes.slice(i, i + 999);
 
-        await insertNodesToDatabase(t, dependencySlice);
+        await insertNodesToDatabase(t, dependencySlice, projectId);
 
         log.info(`Inserted nodes (${i + dependencySlice.length}/${dependencyNodeMap.size})`, {
           length: dependencySlice.length,
@@ -440,11 +472,11 @@ export async function insertPackageManifestsIntoDatabase(
     await Promise.all(
       pkgGraphs.map(async (pkgGraph) => {
         const manifestId = await trsx.one<{ id: string }>(
-          `INSERT INTO resolved_manifest (build_id, path, package_manager, lockfile_version)
-           VALUES ($1, $2, $3, $4)
+          `INSERT INTO resolved_manifest (build_id, path, package_manager, lockfile_version, manifest_dependency_node_id)
+           VALUES ($1, $2, $3, $4, $5)
            ON CONFLICT DO NOTHING
            RETURNING id`,
-          [buildId, pkgGraph.lockFilePath, pkgGraph.packageManager, pkgGraph.lockfileVersion]
+          [buildId, pkgGraph.lockFilePath, pkgGraph.packageManager, pkgGraph.lockfileVersion, pkgGraph.rootTreeHashID]
         );
 
         log.info(`Inserted manifest for build`, {
@@ -464,7 +496,7 @@ export async function insertPackageManifestsIntoDatabase(
         const insertQuery = pgp.helpers.insert(
           pkgGraph.dependencies.map((pkg) => ({
             manifest_id: manifestId.id,
-            manifest_dependency_node_id: pkg.rootNode.treeHashId,
+            manifest_dependency_node_id: pkg.node.treeHashId,
           })),
           dependencyColumns,
           'manifest_dependency'
@@ -476,11 +508,16 @@ export async function insertPackageManifestsIntoDatabase(
   });
 }
 
-export async function snapshotPinnedDependencies(buildId: string, repoDir: string): Promise<void> {
-  const pkgTree = await collectPackageGraphsFromDirectory(repoDir);
+export async function snapshotPinnedDependencies(
+  buildId: string,
+  repoDir: string,
+  codeUrl: string,
+  projectId?: string
+): Promise<void> {
+  const pkgTree = await collectPackageGraphsFromDirectory(repoDir, buildId);
 
   // Creates all nodes and edges for the dependency graph into the database
-  await insertPackageGraphsIntoDatabase(buildId, pkgTree);
+  await insertPackageGraphsIntoDatabase(projectId || '', pkgTree, codeUrl);
 
   // Creates all manifests and associated root dependencies into the database
   await insertPackageManifestsIntoDatabase(buildId, pkgTree);
