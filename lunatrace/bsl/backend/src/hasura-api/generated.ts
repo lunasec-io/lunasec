@@ -1469,6 +1469,7 @@ export type Cvss_Environmental_Adjustment = {
   created_at?: Maybe<Scalars['timestamptz']>;
   /** An array relationship */
   folder_environmental_adjustments: Array<Folder_Environmental_Adjustment>;
+  group_name: Scalars['String'];
   id: Scalars['uuid'];
   integrity_impact: Scalars['cvss_none_low_high'];
   integrity_requirement: Scalars['cvss_low_medium_high'];
@@ -1501,6 +1502,7 @@ export type Cvss_Environmental_Adjustment_Bool_Exp = {
   confidentiality_requirement?: InputMaybe<Cvss_Low_Medium_High_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   folder_environmental_adjustments?: InputMaybe<Folder_Environmental_Adjustment_Bool_Exp>;
+  group_name?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   integrity_impact?: InputMaybe<Cvss_None_Low_High_Comparison_Exp>;
   integrity_requirement?: InputMaybe<Cvss_Low_Medium_High_Comparison_Exp>;
@@ -1520,6 +1522,7 @@ export type Cvss_Environmental_Adjustment_Order_By = {
   confidentiality_requirement?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   folder_environmental_adjustments_aggregate?: InputMaybe<Folder_Environmental_Adjustment_Aggregate_Order_By>;
+  group_name?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   integrity_impact?: InputMaybe<Order_By>;
   integrity_requirement?: InputMaybe<Order_By>;
@@ -1545,6 +1548,8 @@ export enum Cvss_Environmental_Adjustment_Select_Column {
   ConfidentialityRequirement = 'confidentiality_requirement',
   /** column name */
   CreatedAt = 'created_at',
+  /** column name */
+  GroupName = 'group_name',
   /** column name */
   Id = 'id',
   /** column name */

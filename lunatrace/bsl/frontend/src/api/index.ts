@@ -16,6 +16,7 @@ import { isRejectedWithValue, Middleware, MiddlewareAPI } from '@reduxjs/toolkit
 import { add } from '../store/slices/alerts';
 
 import { api as generatedApi } from './generated';
+
 // This extends the generated API so we can add any custom logic needed, as per https://www.graphql-code-generator.com/plugins/typescript-rtk-query
 const appApi = generatedApi.enhanceEndpoints({
   addTagTypes: ['User', 'Projects', 'Organizations', 'Builds', 'ProjectDetails'],
@@ -74,6 +75,17 @@ const appApi = generatedApi.enhanceEndpoints({
   },
 });
 
+const appApiWithManualQueries = appApi.injectEndpoints({
+  endpoints: (builder) => ({
+    customProjectUpdateMutation: builder.mutation<unknown, { body: string }>({
+      query: ({ body }) => ({
+        document: body,
+      }),
+      invalidatesTags: ['ProjectDetails'],
+    }),
+  }),
+});
+
 export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) => (action) => {
   // RTK Query uses `createAsyncThunk` from redux-toolkit under the hood, so we're able to utilize these matchers!
   if (isRejectedWithValue(action)) {
@@ -87,4 +99,5 @@ export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) =>
 
   return next(action);
 };
-export default appApi;
+
+export default appApiWithManualQueries;

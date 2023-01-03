@@ -29,7 +29,9 @@ import { startAtlas } from './utils/start-atlas-session-recording';
 
 function App(): JSX.Element {
   const content = useRoutes(routes);
-  startAtlas();
+  if (process.env.ANALYTICS_ENABLED !== 'FALSE') {
+    startAtlas();
+  }
 
   // Canonical URL so that Google doesn't index the ELB URL
   // https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls#rel-canonical-link-method

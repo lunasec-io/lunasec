@@ -13,7 +13,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, InputGroup, Row, Spinner } from 'react-bootstrap';
-import { AiOutlineCheck } from 'react-icons/ai';
+import { RxCaretSort } from 'react-icons/rx';
 import { TiDeleteOutline } from 'react-icons/ti';
 
 import api from '../../../api';
@@ -36,8 +36,9 @@ type AvailableSettings = string[][];
 interface FolderTagProps {
   availableSettings: AvailableSettings;
   savedSettings: SavedFolderSetting | null | undefined;
+  changePrecedence: (oldPrecedence: number, newPrecedence: number) => void;
 }
-export const FolderSettings: React.FC<FolderTagProps> = ({ savedSettings, availableSettings }) => {
+export const FolderSettings: React.FC<FolderTagProps> = ({ savedSettings, availableSettings, changePrecedence }) => {
   if (!savedSettings) {
     return null;
   }
@@ -61,8 +62,11 @@ export const FolderSettings: React.FC<FolderTagProps> = ({ savedSettings, availa
   // Keep track of ignore state locally and also keep it updated with remote state when available
   const [triggerIgnore, ignoreResults] = api.useSetProjectFolderSettingsIgnoreMutation();
   const [ignoreFolder, setIgnoreFolder] = useState(savedSettings.ignore);
+
+  const [precedence, setPrecedence] = useState(savedSettings.precedence);
   useEffect(() => {
     setIgnoreFolder(savedSettings.ignore);
+    setPrecedence(savedSettings.precedence);
   }, [savedSettings]);
 
   const submitIgnore = (setTo: boolean) => {
@@ -79,11 +83,21 @@ export const FolderSettings: React.FC<FolderTagProps> = ({ savedSettings, availa
         <h4 className="mb-2" style={{ color: 'var(--bs-teal)' }}>
           {savedSettings.path_glob}
         </h4>
-        <Col>
-          <InputGroup style={{ maxWidth: '80px' }}>
-            <Form.Control></Form.Control>
-            <Button>
-              <AiOutlineCheck className="mb-1" />
+        <Col style={{ maxWidth: '100px' }}>
+          <InputGroup>
+            <Form.Control
+              type="number"
+              value={precedence}
+              onChange={(e) => {
+                const newVal = Number(e.target.value);
+                if (isNaN(newVal)) {
+                  return;
+                }
+                setPrecedence(Number(newVal));
+              }}
+            ></Form.Control>
+            <Button onClick={() => changePrecedence(savedSettings.precedence, precedence)}>
+              <RxCaretSort className="ms-n2 me-n2" size="25px" />
             </Button>
           </InputGroup>
         </Col>

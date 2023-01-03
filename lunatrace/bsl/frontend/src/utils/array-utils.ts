@@ -12,8 +12,9 @@
  *
  */
 export function reorder<T extends Array<any>>(list: T, from: number, to: number): T {
-  const [removed] = list.splice(from, 1);
-  list.splice(to, 0, removed);
+  const newList = [...list] as T;
+  const [removed] = newList.splice(from, 1);
+  newList.splice(to, 0, removed);
 
-  return list;
+  return newList;
 }

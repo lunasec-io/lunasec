@@ -33,8 +33,6 @@ import { ProjectInfo, TabName } from './types';
 export const ProjectMain: React.FunctionComponent = (_props) => {
   const { project_id } = useParams();
 
-  const [buildLimit, setBuildLimit] = useState(10);
-
   // Load project information
   const { data, isLoading, refetch, isFetching } = api.useGetProjectQuery({
     project_id: project_id as string,
@@ -54,7 +52,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
   const [activeTab, setActiveTab] = useState<TabName>('dashboard');
   const renderProjectNavAndHeader = (p: ProjectInfo) => {
     return (
-      <>
+      <React.Fragment key={project_id}>
         <Helmet title={p.name} />
         <ProjectHeader
           projectName={p.name}
@@ -119,11 +117,11 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
         </Navbar>
 
         <br />
-      </>
+      </React.Fragment>
     );
   };
 
-  const renderProjectSubPage = (p: ProjectInfo, buildLimit: number) => {
+  const renderProjectSubPage = (p: ProjectInfo) => {
     switch (activeTab) {
       case 'dashboard':
         return <ProjectDashboardMain project={p} setActiveTab={setActiveTab} />;
@@ -147,7 +145,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
     return (
       <>
         {renderProjectNavAndHeader(data.projects_by_pk)}
-        {renderProjectSubPage(data.projects_by_pk, buildLimit)}
+        {renderProjectSubPage(data.projects_by_pk)}
       </>
     );
   };

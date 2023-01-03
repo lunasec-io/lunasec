@@ -16,6 +16,7 @@ import dotenv from 'dotenv';
 
 import {
   AwsConfig,
+  BackendBucketConfig,
   GithubAppConfig,
   HasuraConfig,
   JwksConfig,
@@ -139,13 +140,25 @@ export function getHasuraConfig(): HasuraConfig {
   };
 }
 
-export function getWorkerBucketConfig(): WorkerBucketConfig {
+export function getBackendBucketConfig(): BackendBucketConfig {
   const sbomBucket = checkEnvVar('S3_SBOM_BUCKET');
   const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET');
 
   return {
     sbomBucket,
     manifestBucket,
+  };
+}
+
+export function getWorkerBucketConfig(): WorkerBucketConfig {
+  const sbomBucket = checkEnvVar('S3_SBOM_BUCKET');
+  const manifestBucket = checkEnvVar('S3_MANIFEST_BUCKET');
+  const codeBucket = checkEnvVar('S3_CODE_BUCKET');
+
+  return {
+    sbomBucket,
+    manifestBucket,
+    codeBucket,
   };
 }
 

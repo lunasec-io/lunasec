@@ -25,20 +25,19 @@ interface NewFolderFormProps {
 export const NewFolderForm: React.FC<NewFolderFormProps> = ({ project }) => {
   const [pathGlob, setPathGlob] = useState('');
   const [validationError, setValidationError] = useState('');
+  const [insertProjectFolder, insertProjectFolderResults] = api.useInsertProjectFolderSettingMutation();
 
   if (!project.project_folder_settings || project.project_folder_settings.length < 1) {
     return null;
   }
   const existingPaths = project.project_folder_settings.map((folderSetting) => folderSetting.path_glob);
 
-  const highestPrecedence = project.project_folder_settings
-    .map((folderSetting) => folderSetting.precedence)
-    .sort()
-    .pop();
-
-  if (!highestPrecedence) {
-    throw new Error('Failed to find existing precedence of folders');
-  }
+  const highestPrecedence =
+    project.project_folder_settings
+      .filter((folderSetting) => !folderSetting.root)
+      .map((folderSetting) => folderSetting.precedence)
+      .sort()
+      .pop() || 0;
 
   const validatePath = () => {
     if (pathGlob.length < 1) {
@@ -56,8 +55,6 @@ export const NewFolderForm: React.FC<NewFolderFormProps> = ({ project }) => {
     }
     return true;
   };
-
-  const [insertProjectFolder, insertProjectFolderResults] = api.useInsertProjectFolderSettingMutation();
 
   const submit = () => {
     setValidationError('');

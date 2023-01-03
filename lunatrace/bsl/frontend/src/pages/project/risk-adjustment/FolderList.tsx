@@ -11,8 +11,7 @@
  * limitations under the License.
  *
  */
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
-// import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
+import React, { useEffect, useState } from 'react';
 import { Col, Row, Spinner } from 'react-bootstrap';
 import { RiFoldersLine } from 'react-icons/ri';
 
@@ -27,46 +26,44 @@ interface FolderListProps {
 }
 
 export const FolderList: React.FC<FolderListProps> = ({ project }) => {
+  console.log('rendering folderlist');
   const savedFolderSettings = project.project_folder_settings;
-
-  const [insertFolder, insertFolderResult] = api.useInsertProjectFolderSettingMutation();
 
   const savedRootSettings = savedFolderSettings.find((folder) => folder.root === true);
 
-  // make sure the root folder setting exists when we click the tab
-  useEffect(() => {
-    if (!savedRootSettings) {
-      void insertFolder({
-        object: { root: true, precedence: 1, path_glob: '**', project_id: project.id },
-      });
-    }
-  }, []);
-
-  if (!savedRootSettings) {
-    return <Spinner animation="border" />;
-  }
-
   const availableRootSettings = [
     ['frontend', 'backend'],
-    ['internet exposed', 'not internet exposed'],
+    ['internet', 'internal', 'offline'],
     ['PII', 'no PII'],
   ];
 
-  const [nonRootFolders, setNonRootFolders] = useState(
-    savedFolderSettings.filter((folder) => !folder.root).sort((folder) => folder.precedence)
-  );
-  // const onDragEnd = (result: DropResult) => {
-  //   // dropped outside the list
-  //   if (!result.destination) {
-  //     return;
-  //   }
-  //
-  //   const items = reorder(nonRootFolders, result.source.index, result.destination.index);
-  //
-  //   setNonRootFolders(items);
-  // };
-
+  // Folder settings and ordering
   const availableFolderSettings = availableRootSettings.concat([['tests']]);
+
+  const savedNonRootSettings = savedFolderSettings
+    .filter((folder) => !folder.root)
+    .sort((folderA, folderB) => folderA.precedence - folderB.precedence);
+
+  const [nonRootFolders, setNonRootFolders] = useState(savedNonRootSettings);
+
+  useEffect(() => {
+    setNonRootFolders(savedNonRootSettings);
+  }, [project.project_folder_settings]);
+
+  const [triggerCustomMutation, customMutationResult] = api.endpoints.customProjectUpdateMutation.useMutation();
+
+  const changePrecedence = (oldPrecedence: number, newPrecedence: number): void => {
+    const reorderedSettings = reorder(nonRootFolders, oldPrecedence - 1, newPrecedence - 1);
+    const gqlMutationStrings = reorderedSettings.map((setting, index) => {
+      return `update${index}:update_project_folder_settings_by_pk(pk_columns: {id: "${
+        setting.id
+      }"}, _set: {precedence:${index + 1}}){id}`;
+    });
+
+    const queryBody = 'mutation UpdatePrecedence {' + gqlMutationStrings.join('') + '}';
+    void triggerCustomMutation({ body: queryBody });
+    setNonRootFolders(reorderedSettings);
+  };
 
   return (
     <>
@@ -77,7 +74,11 @@ export const FolderList: React.FC<FolderListProps> = ({ project }) => {
         <Col md className="mt-md-1">
           <p>Set filters on the entire project. </p>
         </Col>
-        <FolderSettings savedSettings={savedRootSettings} availableSettings={availableRootSettings} />
+        <FolderSettings
+          savedSettings={savedRootSettings}
+          availableSettings={availableRootSettings}
+          changePrecedence={changePrecedence}
+        />
       </Row>
       <Row className="mt-5">
         <Col md="auto">
@@ -86,14 +87,18 @@ export const FolderList: React.FC<FolderListProps> = ({ project }) => {
           </h3>
         </Col>
         <Col md className="mt-md-1">
-          <p>Add filters to specific folder and sub-folders. Will merge into settings from higher levels.</p>
+          <p>
+            Add filters to specific folder and sub-folders. Will override the above project settings. Folders at the top
+            of the list will override lower folders.
+          </p>
         </Col>
         {nonRootFolders.map((savedSetting) => {
           return (
             <FolderSettings
-              key={savedSetting.path_glob}
+              key={`${savedSetting.path_glob}${savedSetting.precedence}`}
               availableSettings={availableFolderSettings}
               savedSettings={savedSetting}
+              changePrecedence={changePrecedence}
             />
           );
         })}

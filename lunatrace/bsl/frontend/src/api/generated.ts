@@ -8409,6 +8409,14 @@ export type SetProjectFolderSettingsIgnoreMutationVariables = Exact<{
 
 export type SetProjectFolderSettingsIgnoreMutation = { __typename?: 'mutation_root', update_project_folder_settings_by_pk?: { __typename?: 'project_folder_settings', id: any } | null };
 
+export type UpdateProjectFolderSettingsPrecedenceMutationVariables = Exact<{
+  id: Scalars['uuid'];
+  precedence: Scalars['Int'];
+}>;
+
+
+export type UpdateProjectFolderSettingsPrecedenceMutation = { __typename?: 'mutation_root', update_project_folder_settings_by_pk?: { __typename?: 'project_folder_settings', id: any } | null };
+
 
 export const DeleteProjectAccessTokenDocument = `
     mutation DeleteProjectAccessToken($id: uuid!) {
@@ -9271,6 +9279,16 @@ export const SetProjectFolderSettingsIgnoreDocument = `
   }
 }
     `;
+export const UpdateProjectFolderSettingsPrecedenceDocument = `
+    mutation UpdateProjectFolderSettingsPrecedence($id: uuid!, $precedence: Int!) {
+  update_project_folder_settings_by_pk(
+    pk_columns: {id: $id}
+    _set: {precedence: $precedence}
+  ) {
+    id
+  }
+}
+    `;
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -9381,6 +9399,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     SetProjectFolderSettingsIgnore: build.mutation<SetProjectFolderSettingsIgnoreMutation, SetProjectFolderSettingsIgnoreMutationVariables>({
       query: (variables) => ({ document: SetProjectFolderSettingsIgnoreDocument, variables })
+    }),
+    UpdateProjectFolderSettingsPrecedence: build.mutation<UpdateProjectFolderSettingsPrecedenceMutation, UpdateProjectFolderSettingsPrecedenceMutationVariables>({
+      query: (variables) => ({ document: UpdateProjectFolderSettingsPrecedenceDocument, variables })
     }),
   }),
 });

@@ -17,9 +17,15 @@ export interface ServerConfig {
   isProduction: boolean;
 }
 
+export interface BackendBucketConfig {
+  sbomBucket: string;
+  manifestBucket: string;
+}
+
 export interface WorkerBucketConfig {
   sbomBucket: string;
   manifestBucket: string;
+  codeBucket: string;
 }
 
 export interface StaticAnalysisConfig {
