@@ -11,17 +11,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package types
 
 import (
-  "github.com/lunasec-io/lunasec/lunadefend/go/constants/metrics"
+	"github.com/lunasec-io/lunasec/lunadefend/go/constants/metrics"
 )
 
 type CollectedMetrics map[metrics.ApplicationMetric]int64
 
 type ReportedMetrics struct {
-  Version          string           `json:"version"`
-  StackID          string           `json:"stack_id"`
-  CollectedMetrics CollectedMetrics `json:"collected_metrics"`
+	Version          string           `json:"version"`
+	StackID          string           `json:"stack_id"`
+	CollectedMetrics CollectedMetrics `json:"collected_metrics"`
 }

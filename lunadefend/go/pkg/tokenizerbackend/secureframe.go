@@ -11,27 +11,26 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package tokenizerbackend
 
 import (
-  "github.com/lunasec-io/lunasec/lunadefend/go/controller"
-  "go.uber.org/config"
-  "go.uber.org/zap"
-  "net/http"
+	"github.com/lunasec-io/lunasec/lunadefend/go/controller"
+	"go.uber.org/config"
+	"go.uber.org/zap"
+	"net/http"
 )
 
 func getSecureFrameRoutes(
-  logger *zap.Logger,
-  provider config.Provider,
+	logger *zap.Logger,
+	provider config.Provider,
 ) (routes map[string]http.HandlerFunc) {
-  secureFrameController, err := controller.NewSecureFrameController(logger, provider)
-  if err != nil {
-    panic(err)
-  }
+	secureFrameController, err := controller.NewSecureFrameController(logger, provider)
+	if err != nil {
+		panic(err)
+	}
 
-  routes = map[string]http.HandlerFunc{
-    "/frame": secureFrameController.Frame,
-  }
-  return
+	routes = map[string]http.HandlerFunc{
+		"/frame": secureFrameController.Frame,
+	}
+	return
 }

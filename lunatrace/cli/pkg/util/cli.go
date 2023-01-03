@@ -11,26 +11,25 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package util
 
 import (
-  "github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
-  "github.com/urfave/cli/v2"
-  "reflect"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	"github.com/urfave/cli/v2"
+	"reflect"
 )
 
 func SetGlobalBoolFlags(globalFlags *types.LunaTraceGlobalFlags) cli.BeforeFunc {
-  return func(c *cli.Context) error {
-    for _, flag := range globalFlags.Fields() {
-      tagName, ok := reflect.TypeOf(globalFlags).Elem().FieldByName(flag)
-      if !ok {
-        continue
-      }
-      if c.IsSet(tagName.Tag.Get("json")) {
-        globalFlags.Set(flag, true)
-      }
-    }
-    return nil
-  }
+	return func(c *cli.Context) error {
+		for _, flag := range globalFlags.Fields() {
+			tagName, ok := reflect.TypeOf(globalFlags).Elem().FieldByName(flag)
+			if !ok {
+				continue
+			}
+			if c.IsSet(tagName.Tag.Get("json")) {
+				globalFlags.Set(flag, true)
+			}
+		}
+		return nil
+	}
 }

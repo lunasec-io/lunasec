@@ -11,33 +11,32 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package analyticscollector
 
 import (
-  "github.com/lunasec-io/lunasec/lunadefend/go/gateway"
-  "github.com/lunasec-io/lunasec/lunadefend/go/gateway/metrics"
-  "github.com/lunasec-io/lunasec/lunadefend/go/util"
-  "go.uber.org/config"
-  "go.uber.org/zap"
-  "log"
+	"github.com/lunasec-io/lunasec/lunadefend/go/gateway"
+	"github.com/lunasec-io/lunasec/lunadefend/go/gateway/metrics"
+	"github.com/lunasec-io/lunasec/lunadefend/go/util"
+	"go.uber.org/config"
+	"go.uber.org/zap"
+	"log"
 )
 
 func analyticsCollectorDependencies() (*zap.Logger, config.Provider, metrics.AwsCloudwatchGateway) {
-  logger, err := util.GetLogger()
-  if err != nil {
-    log.Println(err)
-    panic(err)
-  }
+	logger, err := util.GetLogger()
+	if err != nil {
+		log.Println(err)
+		panic(err)
+	}
 
-  provider := util.GetConfigProviderFromDir("config/analyticscollector")
+	provider := util.GetConfigProviderFromDir("config/analyticscollector")
 
-  sess, err := gateway.NewAwsSession(logger, provider)
-  if err != nil {
-    panic(err)
-  }
+	sess, err := gateway.NewAwsSession(logger, provider)
+	if err != nil {
+		panic(err)
+	}
 
-  cloudwatch := metrics.NewAwsCloudwatchGateway(logger, provider, sess)
+	cloudwatch := metrics.NewAwsCloudwatchGateway(logger, provider, sess)
 
-  return logger, provider, cloudwatch
+	return logger, provider, cloudwatch
 }

@@ -11,18 +11,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package util
 
 import (
 	"archive/zip"
 	"bytes"
 	"fmt"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
+	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"github.com/rs/zerolog/log"
 	"io"
 	"io/ioutil"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
-	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"os"
 	"path"
 	"path/filepath"

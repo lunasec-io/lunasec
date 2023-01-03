@@ -11,167 +11,166 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package gateway
 
 import (
-  "fmt"
-  "log"
-  "time"
+	"fmt"
+	"log"
+	"time"
 
-  "github.com/aws/aws-sdk-go/aws"
-  "github.com/aws/aws-sdk-go/aws/session"
-  "github.com/aws/aws-sdk-go/service/dynamodb"
-  "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-  "github.com/lunasec-io/lunasec/lunadefend/go/types"
-  "go.uber.org/config"
-  "go.uber.org/zap"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/lunasec-io/lunasec/lunadefend/go/types"
+	"go.uber.org/config"
+	"go.uber.org/zap"
 )
 
 var primaryKey = "Key"
 
 const (
-  MetaStore    = types.KVStore("metadata")
-  KeyStore     = types.KVStore("keys")
-  SessionStore = types.KVStore("sessions")
-  GrantStore   = types.KVStore("grants")
+	MetaStore    = types.KVStore("metadata")
+	KeyStore     = types.KVStore("keys")
+	SessionStore = types.KVStore("sessions")
+	GrantStore   = types.KVStore("grants")
 )
 
 func validateTableConfig(tableConfig map[types.KVStore]string) {
-  tableNames := []types.KVStore{
-    MetaStore,
-    KeyStore,
-    SessionStore,
-    GrantStore,
-  }
+	tableNames := []types.KVStore{
+		MetaStore,
+		KeyStore,
+		SessionStore,
+		GrantStore,
+	}
 
-  var errs []error
-  for _, tableName := range tableNames {
-    if _, ok := tableConfig[tableName]; !ok {
-      err := fmt.Errorf("unable to find ARN for table: %s", tableName)
-      errs = append(errs, err)
-    }
-  }
+	var errs []error
+	for _, tableName := range tableNames {
+		if _, ok := tableConfig[tableName]; !ok {
+			err := fmt.Errorf("unable to find ARN for table: %s", tableName)
+			errs = append(errs, err)
+		}
+	}
 
-  if len(errs) != 0 {
-    errMsg := ""
-    for _, err := range errs {
-      errMsg = errMsg + ", " + err.Error()
-    }
-    panic(errMsg)
-  }
+	if len(errs) != 0 {
+		errMsg := ""
+		for _, err := range errs {
+			errMsg = errMsg + ", " + err.Error()
+		}
+		panic(errMsg)
+	}
 }
 
 type dynamoGateway struct {
-  DynamoKvGatewayConfig
-  logger *zap.Logger
-  db     *dynamodb.DynamoDB
+	DynamoKvGatewayConfig
+	logger *zap.Logger
+	db     *dynamodb.DynamoDB
 }
 
 type DynamoKvGatewayConfig struct {
-  TableNames map[types.KVStore]string `yaml:"table_names"`
+	TableNames map[types.KVStore]string `yaml:"table_names"`
 }
 
 // AwsDynamoGateway ...
 type AwsDynamoGateway interface {
-  Get(store types.KVStore, key string) (string, error)
-  Set(store types.KVStore, key string, value string) error
+	Get(store types.KVStore, key string) (string, error)
+	Set(store types.KVStore, key string, value string) error
 }
 
 // NewDynamoGateway...
 func NewDynamoGateway(logger *zap.Logger, provider config.Provider, sess *session.Session) AwsDynamoGateway {
-  var (
-    gatewayConfig DynamoKvGatewayConfig
-  )
+	var (
+		gatewayConfig DynamoKvGatewayConfig
+	)
 
-  err := provider.Get("aws_gateway").Populate(&gatewayConfig)
-  if err != nil {
-    log.Println(err)
-    panic(err)
-  }
+	err := provider.Get("aws_gateway").Populate(&gatewayConfig)
+	if err != nil {
+		log.Println(err)
+		panic(err)
+	}
 
-  validateTableConfig(gatewayConfig.TableNames)
+	validateTableConfig(gatewayConfig.TableNames)
 
-  logger.Debug("creating new dynamodb session")
-  db := dynamodb.New(sess)
+	logger.Debug("creating new dynamodb session")
+	db := dynamodb.New(sess)
 
-  return &dynamoGateway{
-    DynamoKvGatewayConfig: gatewayConfig,
-    logger:                logger,
-    db:                    db,
-  }
+	return &dynamoGateway{
+		DynamoKvGatewayConfig: gatewayConfig,
+		logger:                logger,
+		db:                    db,
+	}
 }
 
 func (s *dynamoGateway) getTableName(store types.KVStore) (tableName string, err error) {
-  var (
-    ok bool
-  )
-  tableName, ok = s.TableNames[store]
-  if !ok {
-    err = fmt.Errorf("unable to find table name for store: %s", store)
-    return
-  }
-  if tableName == "" {
-    err = fmt.Errorf("table name found, but was assigned to empty string for store: %s", store)
-    return
-  }
-  return
+	var (
+		ok bool
+	)
+	tableName, ok = s.TableNames[store]
+	if !ok {
+		err = fmt.Errorf("unable to find table name for store: %s", store)
+		return
+	}
+	if tableName == "" {
+		err = fmt.Errorf("table name found, but was assigned to empty string for store: %s", store)
+		return
+	}
+	return
 }
 
 func (s *dynamoGateway) Get(store types.KVStore, key string) (string, error) {
-  tableName, err := s.getTableName(store)
-  if err != nil {
-    return "", err
-  }
+	tableName, err := s.getTableName(store)
+	if err != nil {
+		return "", err
+	}
 
-  dbResult, err := s.db.GetItem(&dynamodb.GetItemInput{
-    TableName: aws.String(tableName),
-    Key: map[string]*dynamodb.AttributeValue{
-      primaryKey: {
-        S: aws.String(key),
-      },
-    },
-  })
+	dbResult, err := s.db.GetItem(&dynamodb.GetItemInput{
+		TableName: aws.String(tableName),
+		Key: map[string]*dynamodb.AttributeValue{
+			primaryKey: {
+				S: aws.String(key),
+			},
+		},
+	})
 
-  if err != nil || dbResult.Item == nil {
-    return "", err
-  }
+	if err != nil || dbResult.Item == nil {
+		return "", err
+	}
 
-  metadata := types.Metadata{}
+	metadata := types.Metadata{}
 
-  if err = dynamodbattribute.UnmarshalMap(dbResult.Item, &metadata); err != nil {
-    return "", err
-  }
+	if err = dynamodbattribute.UnmarshalMap(dbResult.Item, &metadata); err != nil {
+		return "", err
+	}
 
-  return metadata.Value, nil
+	return metadata.Value, nil
 }
 
 func (s *dynamoGateway) Set(store types.KVStore, key string, value string) error {
-  tableName, err := s.getTableName(store)
-  if err != nil {
-    return err
-  }
+	tableName, err := s.getTableName(store)
+	if err != nil {
+		return err
+	}
 
-  metadata := types.Metadata{
-    Key:       key,
-    Value:     value,
-    Timestamp: time.Now().Unix(),
-  }
+	metadata := types.Metadata{
+		Key:       key,
+		Value:     value,
+		Timestamp: time.Now().Unix(),
+	}
 
-  av, err := dynamodbattribute.MarshalMap(metadata)
+	av, err := dynamodbattribute.MarshalMap(metadata)
 
-  if err != nil {
-    return err
-  }
+	if err != nil {
+		return err
+	}
 
-  input := &dynamodb.PutItemInput{
-    Item:      av,
-    TableName: aws.String(tableName),
-  }
+	input := &dynamodb.PutItemInput{
+		Item:      av,
+		TableName: aws.String(tableName),
+	}
 
-  if _, err := s.db.PutItem(input); err != nil {
-    return err
-  }
+	if _, err := s.db.PutItem(input); err != nil {
+		return err
+	}
 
-  return nil
+	return nil
 }

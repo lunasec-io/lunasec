@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package main
 
 import (
@@ -23,15 +22,15 @@ import (
 )
 
 func tokenizerBackendDependencies() (*zap.Logger, config.Provider, gateway.Gateways) {
-  logger, err := util.GetLogger()
-  if err != nil {
-    log.Println(err)
-    panic(err)
-  }
+	logger, err := util.GetLogger()
+	if err != nil {
+		log.Println(err)
+		panic(err)
+	}
 
-  provider := util.GetConfigProviderFromDir("config/tokenizerbackend")
+	provider := util.GetConfigProviderFromDir("config/tokenizerbackend")
 
-  gateways := gateway.GetAwsGateways(logger, provider)
+	gateways := gateway.GetAwsGateways(logger, provider)
 
-  return logger, provider, gateways
+	return logger, provider, gateways
 }

@@ -11,45 +11,44 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package request
 
 import (
-  "fmt"
-  "net/http"
+	"fmt"
+	"net/http"
 
-  "github.com/lunasec-io/lunasec/lunadefend/go/constants"
-  "github.com/pkg/errors"
+	"github.com/lunasec-io/lunasec/lunadefend/go/constants"
+	"github.com/pkg/errors"
 )
 
 func GetJwtToken(r *http.Request) (token string, err error) {
-  token = r.Header.Get(constants.JwtAuthHeader)
-  if token != "" {
-    return
-  }
+	token = r.Header.Get(constants.JwtAuthHeader)
+	if token != "" {
+		return
+	}
 
-  token, _ = GetDataAccessToken(r)
-  if token != "" {
-    return
-  }
-  err = errors.New("jwt token not present in request")
-  return
+	token, _ = GetDataAccessToken(r)
+	if token != "" {
+		return
+	}
+	err = errors.New("jwt token not present in request")
+	return
 }
 
 func GetDataAccessToken(r *http.Request) (dataAccessToken string, err error) {
-  dataAccessTokenCookie, err := r.Cookie(constants.DataAccessTokenCookie)
-  if err != nil {
-    err = errors.Wrap(err, fmt.Sprintf("expected cookie header: %s", constants.DataAccessTokenCookie))
-    return
-  }
-  return dataAccessTokenCookie.Value, err
+	dataAccessTokenCookie, err := r.Cookie(constants.DataAccessTokenCookie)
+	if err != nil {
+		err = errors.Wrap(err, fmt.Sprintf("expected cookie header: %s", constants.DataAccessTokenCookie))
+		return
+	}
+	return dataAccessTokenCookie.Value, err
 }
 
 func GetStateCookie(r *http.Request) (stateCookie *http.Cookie, err error) {
-  stateCookie, err = r.Cookie(constants.AuthStateCookie)
-  if err != nil {
-    err = errors.Wrap(err, fmt.Sprintf("expected cookie header: %s", constants.AuthStateCookie))
-    return
-  }
-  return stateCookie, err
+	stateCookie, err = r.Cookie(constants.AuthStateCookie)
+	if err != nil {
+		err = errors.Wrap(err, fmt.Sprintf("expected cookie header: %s", constants.AuthStateCookie))
+		return
+	}
+	return stateCookie, err
 }

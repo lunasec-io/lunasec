@@ -11,16 +11,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package analyze
 
 import (
-	"github.com/rs/zerolog/log"
-	"io"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/scan"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
+	"github.com/rs/zerolog/log"
+	"io"
 	"path"
 	"strings"
 )

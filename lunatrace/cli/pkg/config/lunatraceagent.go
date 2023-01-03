@@ -11,15 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package config
 
 import (
 	"github.com/google/uuid"
-	"github.com/rs/zerolog/log"
-	"go.uber.org/config"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/constants"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
+	"github.com/rs/zerolog/log"
+	"go.uber.org/config"
 	"os"
 )
 

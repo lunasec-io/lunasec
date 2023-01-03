@@ -17,16 +17,16 @@
 package main
 
 import (
-  "log"
+	"log"
 
-  "github.com/lunasec-io/lunasec/lunadefend/go/pkg/tokenizerbackend"
+	"github.com/lunasec-io/lunasec/lunadefend/go/pkg/tokenizerbackend"
 )
 
 func main() {
 
-  logger, provider, gateways := tokenizerBackendDependencies()
+	logger, provider, gateways := tokenizerBackendDependencies()
 
-  log.SetFlags(log.Lshortfile)
-  server := tokenizerbackend.NewDevServer(logger, provider, gateways)
-  log.Fatal(server.ListenAndServe())
+	log.SetFlags(log.Lshortfile)
+	server := tokenizerbackend.NewDevServer(logger, provider, gateways)
+	log.Fatal(server.ListenAndServe())
 }

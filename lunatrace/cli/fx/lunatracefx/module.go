@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package lunatracefx
 
 import (
@@ -39,7 +38,6 @@ func NewGraphQLClient(appConfig types.LunaTraceConfig) graphql.Client {
 var Module = fx.Options(
 	fx.Provide(
 		types.NewLunaTraceGlobalFlags,
-
 	),
 	// todo instrument me
 	fx.Supply(http.DefaultClient),
@@ -51,5 +49,4 @@ var Module = fx.Options(
 			return nil
 		}})
 	}),
-
 )

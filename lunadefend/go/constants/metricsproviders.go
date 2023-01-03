@@ -11,12 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package constants
 
 import (
-  "errors"
-  "fmt"
+	"errors"
+	"fmt"
 )
 
 // MetricsProvider
@@ -26,33 +25,33 @@ type MetricsProvider string
 
 // NOTE: To actually add an enum value, you must also add it to the validProviders list below.
 const (
-  MetricsProviderNone MetricsProvider = "none"
-  MetricsProviderAwsCloudwatch = "aws_cloudwatch"
+	MetricsProviderNone          MetricsProvider = "none"
+	MetricsProviderAwsCloudwatch                 = "aws_cloudwatch"
 )
 
 // Add your new enum value here in order to ensure it is validated at parse time.
 var validProviders = []MetricsProvider{
-  MetricsProviderNone,
-  MetricsProviderAwsCloudwatch,
+	MetricsProviderNone,
+	MetricsProviderAwsCloudwatch,
 }
 
 func parseMetricsProviderEnum(input string) (MetricsProvider, bool) {
-  for _, validProvider := range validProviders {
-    if input == string(validProvider) {
-      return validProvider, true
-    }
-  }
-  return MetricsProviderNone, false
+	for _, validProvider := range validProviders {
+		if input == string(validProvider) {
+			return validProvider, true
+		}
+	}
+	return MetricsProviderNone, false
 }
 
 // UnmarshalText
 // This function is used by Yaml and maps the input string into an enum value
 func (x *MetricsProvider) UnmarshalText(text []byte) error {
-  name := string(text)
-  tmp, valid := parseMetricsProviderEnum(name)
-  if !valid {
-    return errors.New(fmt.Sprintf("invalid provider name specified, must be: %v", validProviders))
-  }
-  *x = tmp
-  return nil
+	name := string(text)
+	tmp, valid := parseMetricsProviderEnum(name)
+	if !valid {
+		return errors.New(fmt.Sprintf("invalid provider name specified, must be: %v", validProviders))
+	}
+	*x = tmp
+	return nil
 }

@@ -17,43 +17,43 @@
 package main
 
 import (
-  "context"
-  "errors"
-  "github.com/aws/aws-lambda-go/events"
-  "github.com/aws/aws-lambda-go/lambda"
-  "github.com/lunasec-io/lunasec/lunadefend/go/pkg/tokenizerbackend"
+	"context"
+	"errors"
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/lunasec-io/lunasec/lunadefend/go/pkg/tokenizerbackend"
 )
 
 var (
-  logger, provider, gateways = tokenizerBackendDependencies()
-  gatewayServer              = tokenizerbackend.NewApiGatewayServer(logger, provider, gateways)
+	logger, provider, gateways = tokenizerBackendDependencies()
+	gatewayServer              = tokenizerbackend.NewApiGatewayServer(logger, provider, gateways)
 )
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-  defer func() {
-    var err error
-    if r := recover(); r != nil {
-      switch x := r.(type) {
-      case string:
-        err = errors.New(x)
-      case error:
-        err = x
-      default:
-        err = errors.New("unknown panic")
-      }
-    }
+	defer func() {
+		var err error
+		if r := recover(); r != nil {
+			switch x := r.(type) {
+			case string:
+				err = errors.New(x)
+			case error:
+				err = x
+			default:
+				err = errors.New("unknown panic")
+			}
+		}
 
-    gateways.CW.PushMetrics()
+		gateways.CW.PushMetrics()
 
-    if err != nil {
-      panic(err)
-    }
-  }()
+		if err != nil {
+			panic(err)
+		}
+	}()
 
-  // If no name is provided in the HTTP request body, throw an error
-  return gatewayServer.ProxyWithContext(ctx, req)
+	// If no name is provided in the HTTP request body, throw an error
+	return gatewayServer.ProxyWithContext(ctx, req)
 }
 
 func main() {
-  lambda.Start(Handler)
+	lambda.Start(Handler)
 }

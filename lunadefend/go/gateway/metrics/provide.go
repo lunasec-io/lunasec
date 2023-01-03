@@ -11,53 +11,52 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package metrics
 
 import (
-  "github.com/aws/aws-sdk-go/aws/client"
-  "github.com/lunasec-io/lunasec/lunadefend/go/constants"
-  "github.com/lunasec-io/lunasec/lunadefend/go/constants/metrics"
-  "go.uber.org/config"
-  "go.uber.org/zap"
-  "log"
+	"github.com/aws/aws-sdk-go/aws/client"
+	"github.com/lunasec-io/lunasec/lunadefend/go/constants"
+	"github.com/lunasec-io/lunasec/lunadefend/go/constants/metrics"
+	"go.uber.org/config"
+	"go.uber.org/zap"
+	"log"
 )
 
 type MetricProviderConfig struct {
-  Disabled                      bool                      `yaml:"disabled"`
-  Provider                      constants.MetricsProvider `yaml:"provider"`
-  DisableUsageStatisticsMetrics bool                      `yaml:"disable_usage_statistics"`
+	Disabled                      bool                      `yaml:"disabled"`
+	Provider                      constants.MetricsProvider `yaml:"provider"`
+	DisableUsageStatisticsMetrics bool                      `yaml:"disable_usage_statistics"`
 }
 
 // LunaSecMetricsGateway ...
 type LunaSecMetricsGateway interface {
-  Metric(name metrics.ApplicationMetric, value int)
+	Metric(name metrics.ApplicationMetric, value int)
 }
 
 func NewMetricsConfig(
-  provider config.Provider,
+	provider config.Provider,
 ) (metricsConfig MetricProviderConfig, err error) {
-  err = provider.Get("metrics").Populate(&metricsConfig)
-  return
+	err = provider.Get("metrics").Populate(&metricsConfig)
+	return
 }
 
 func SetupMetricsGateway(logger *zap.Logger, provider config.Provider, sess client.ConfigProvider) LunaSecMetricsGateway {
-  metricsConfig, err := NewMetricsConfig(provider)
+	metricsConfig, err := NewMetricsConfig(provider)
 
-  if err != nil {
-    log.Println("Metrics config missing but is required")
-    log.Println(err)
-    panic(err)
-  }
+	if err != nil {
+		log.Println("Metrics config missing but is required")
+		log.Println(err)
+		panic(err)
+	}
 
-  if metricsConfig.Disabled == true || metricsConfig.Provider == constants.MetricsProviderNone {
-    return NewNopMetricsGateway()
-  }
+	if metricsConfig.Disabled == true || metricsConfig.Provider == constants.MetricsProviderNone {
+		return NewNopMetricsGateway()
+	}
 
-  if metricsConfig.Provider == constants.MetricsProviderAwsCloudwatch {
-    return NewAwsCloudwatchGateway(logger, provider, sess)
-  }
+	if metricsConfig.Provider == constants.MetricsProviderAwsCloudwatch {
+		return NewAwsCloudwatchGateway(logger, provider, sess)
+	}
 
-  log.Printf("Unsupported metrics provider specified: %s", metricsConfig.Provider)
-  panic("Unsupported metrics provider specified")
+	log.Printf("Unsupported metrics provider specified: %s", metricsConfig.Provider)
+	panic("Unsupported metrics provider specified")
 }

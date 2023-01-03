@@ -11,54 +11,53 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package util
 
 import (
-  "github.com/lunasec-io/lunasec/lunadefend/go/types"
-  "go.uber.org/zap"
-  "net/http"
-  "time"
+	"github.com/lunasec-io/lunasec/lunadefend/go/types"
+	"go.uber.org/zap"
+	"net/http"
+	"time"
 )
 
 func ApplyHealthCheck(sm *http.ServeMux, logger *zap.Logger) {
-  sm.HandleFunc("/health", func(writer http.ResponseWriter, request *http.Request) {
-    Respond(writer, map[string]string{})
-  })
+	sm.HandleFunc("/health", func(writer http.ResponseWriter, request *http.Request) {
+		Respond(writer, map[string]string{})
+	})
 }
 
 func ApplyMiddlewareToHandler(middleware []types.Middleware, handler http.HandlerFunc) http.HandlerFunc {
-  for _, middlewareHandler := range middleware {
-    handler = middlewareHandler(handler)
-  }
-  return handler
+	for _, middlewareHandler := range middleware {
+		handler = middlewareHandler(handler)
+	}
+	return handler
 }
 
 func AddRoutesToServer(sm *http.ServeMux, middleware []types.Middleware, routes map[string]http.HandlerFunc) {
-  for path, handler := range routes {
-    handler = ApplyMiddlewareToHandler(middleware, handler)
-    sm.Handle(path, handler)
-  }
+	for path, handler := range routes {
+		handler = ApplyMiddlewareToHandler(middleware, handler)
+		sm.Handle(path, handler)
+	}
 }
 
 // AddCookie will apply a new cookie to the response of a http request
 // with the key/value specified.
 func AddCookie(w http.ResponseWriter, name, value, path string, ttl time.Duration) {
-  var (
-    expire time.Time
-  )
-  if ttl != -1 {
-    expire = time.Now().Add(ttl)
-  }
+	var (
+		expire time.Time
+	)
+	if ttl != -1 {
+		expire = time.Now().Add(ttl)
+	}
 
-  cookie := http.Cookie{
-    Name:  name,
-    Value: value,
-    //TODO add expire, should be == the expire of the jwt
-    Expires:  expire,
-    Path:     path,
-    SameSite: http.SameSiteNoneMode,
-    Secure:   true,
-  }
-  http.SetCookie(w, &cookie)
+	cookie := http.Cookie{
+		Name:  name,
+		Value: value,
+		//TODO add expire, should be == the expire of the jwt
+		Expires:  expire,
+		Path:     path,
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
+	}
+	http.SetCookie(w, &cookie)
 }

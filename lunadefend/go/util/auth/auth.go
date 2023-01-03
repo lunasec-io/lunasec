@@ -11,21 +11,20 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package auth
 
 import (
-  "github.com/lunasec-io/lunasec/lunadefend/go/controller/request"
-  "github.com/lunasec-io/lunasec/lunadefend/go/service"
-  "github.com/lunasec-io/lunasec/lunadefend/go/types"
-  "net/http"
+	"github.com/lunasec-io/lunasec/lunadefend/go/controller/request"
+	"github.com/lunasec-io/lunasec/lunadefend/go/service"
+	"github.com/lunasec-io/lunasec/lunadefend/go/types"
+	"net/http"
 )
 
 func GetRequestClaims(jwtVerifier service.JwtVerifier, r *http.Request) (claims types.SessionJwtClaims, err error) {
-  accessToken, err := request.GetJwtToken(r)
-  if err != nil {
-    return
-  }
+	accessToken, err := request.GetJwtToken(r)
+	if err != nil {
+		return
+	}
 
-  return jwtVerifier.VerifyWithSessionClaims(accessToken)
+	return jwtVerifier.VerifyWithSessionClaims(accessToken)
 }

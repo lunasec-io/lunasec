@@ -11,15 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package handler
 
 import (
-  "github.com/lunasec-io/lunasec/lunadefend/go/constants"
-  "net/http"
+	"github.com/lunasec-io/lunasec/lunadefend/go/constants"
+	"net/http"
 )
 
 type Config struct {
-  Handler         http.HandlerFunc
-  AllowedSubjects []constants.JwtSubject
+	Handler         http.HandlerFunc
+	AllowedSubjects []constants.JwtSubject
 }

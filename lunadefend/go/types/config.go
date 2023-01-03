@@ -11,24 +11,23 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package types
 
 import (
-  "github.com/lunasec-io/lunasec/lunadefend/go/constants/metrics"
+	"github.com/lunasec-io/lunasec/lunadefend/go/constants/metrics"
 )
 
 type CorsConfig struct {
-  AllowedOrigins []string `yaml:"allowed_origins"`
-  AllowedHeaders []string `yaml:"allowed_headers"`
+	AllowedOrigins []string `yaml:"allowed_origins"`
+	AllowedHeaders []string `yaml:"allowed_headers"`
 }
 
 type AppConfig struct {
-  StackID string     `yaml:"stack_id"`
-  Cors    CorsConfig `yaml:"cors"`
+	StackID string     `yaml:"stack_id"`
+	Cors    CorsConfig `yaml:"cors"`
 }
 
 type AnalyticsCollectorConfig struct {
-  AnalyticsServer string                      `yaml:"analytics_server"`
-  Metrics         []metrics.ApplicationMetric `yaml:"metrics"`
+	AnalyticsServer string                      `yaml:"analytics_server"`
+	Metrics         []metrics.ApplicationMetric `yaml:"metrics"`
 }

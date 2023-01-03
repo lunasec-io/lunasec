@@ -11,20 +11,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package util
 
 import (
-  "github.com/lunasec-io/lunasec/lunadefend/go/constants"
-  "os"
+	"github.com/lunasec-io/lunasec/lunadefend/go/constants"
+	"os"
 )
 
 func IsDevEnv() bool {
-  stage := os.Getenv(constants.StageEnvVar)
-  return constants.AppEnv(stage) == constants.Development
+	stage := os.Getenv(constants.StageEnvVar)
+	return constants.AppEnv(stage) == constants.Development
 }
 
 func IsProdEnv() bool {
-  stage := os.Getenv(constants.StageEnvVar)
-  return constants.AppEnv(stage) == constants.Production
+	stage := os.Getenv(constants.StageEnvVar)
+	return constants.AppEnv(stage) == constants.Production
 }

@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package service
 
 // adapted from: https://raw.githubusercontent.com/srikrsna/security-headers/master/csp.go
@@ -78,7 +77,6 @@ func NewCSPMiddleware(csp CSPPolicy, byteSize int, reportOnly bool) CSPMiddlware
 
 	formattedCSP := formatCSPDirectives(csp)
 	policyTemplate := nonceReplacer.Replace(formattedCSP)
-
 
 	if byteSize <= 0 {
 		byteSize = 16
@@ -164,7 +162,6 @@ func WithNonce(ctx context.Context, n string) context.Context {
 	return context.WithValue(ctx, nonceKey, n)
 }
 
-
 func formatCSPDirectives(directives CSPPolicy) string {
 	const (
 		withQuotes    = "'%s'"
@@ -174,7 +171,6 @@ func formatCSPDirectives(directives CSPPolicy) string {
 		newDirectives []string
 		quoteFormat   string
 	)
-
 
 	for directive, vals := range directives {
 		switch directive {

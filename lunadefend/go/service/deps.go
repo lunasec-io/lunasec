@@ -11,102 +11,101 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package service
 
 import (
-  "github.com/lunasec-io/lunasec/lunadefend/go/types"
-  "go.uber.org/config"
-  "net/url"
-  "strings"
+	"github.com/lunasec-io/lunasec/lunadefend/go/types"
+	"go.uber.org/config"
+	"net/url"
+	"strings"
 )
 
 type authCallbackConfig struct {
-  AuthCallbackHost string `yaml:"auth_callback_host"`
+	AuthCallbackHost string `yaml:"auth_callback_host"`
 }
 
 type AwsGatewayConfig struct {
-  Region           string `yaml:"region"`
-  CiphertextBucket string `yaml:"ciphertext_bucket"`
-  LocalHTTPSProxy  string `yaml:"local_https_proxy"`
-  LocalstackURL    string `yaml:"localstack_url"`
+	Region           string `yaml:"region"`
+	CiphertextBucket string `yaml:"ciphertext_bucket"`
+	LocalHTTPSProxy  string `yaml:"local_https_proxy"`
+	LocalstackURL    string `yaml:"localstack_url"`
 }
 
 func getS3HostURL(gatewayConfig AwsGatewayConfig) string {
-  if gatewayConfig.LocalHTTPSProxy != "" {
-    return gatewayConfig.LocalstackURL
-  }
+	if gatewayConfig.LocalHTTPSProxy != "" {
+		return gatewayConfig.LocalstackURL
+	}
 
-  s3Host := gatewayConfig.CiphertextBucket + ".s3." + gatewayConfig.Region + ".amazonaws.com"
+	s3Host := gatewayConfig.CiphertextBucket + ".s3." + gatewayConfig.Region + ".amazonaws.com"
 
-  s3URL := url.URL{
-    Scheme: "https",
-    Host:   s3Host,
-  }
-  return s3URL.String()
+	s3URL := url.URL{
+		Scheme: "https",
+		Host:   s3Host,
+	}
+	return s3URL.String()
 }
 
 func CreateCSPMiddleware(provider config.Provider) CSPMiddlware {
-  var (
-    authConfig    authCallbackConfig
-    gatewayConfig AwsGatewayConfig
-    appConfig     types.AppConfig
-  )
-  // TODO report this to someplace
-  reportUri := "http://localhost:5004"
+	var (
+		authConfig    authCallbackConfig
+		gatewayConfig AwsGatewayConfig
+		appConfig     types.AppConfig
+	)
+	// TODO report this to someplace
+	reportUri := "http://localhost:5004"
 
-  // TODO (cthompson) these config values are taken from another place in the config
-  // we should figure out how to consolidate them
-  err := provider.Get("session_controller").Populate(&authConfig)
-  if err != nil {
-    panic(err)
-  }
+	// TODO (cthompson) these config values are taken from another place in the config
+	// we should figure out how to consolidate them
+	err := provider.Get("session_controller").Populate(&authConfig)
+	if err != nil {
+		panic(err)
+	}
 
-  err = provider.Get("aws_gateway").Populate(&gatewayConfig)
-  if err != nil {
-    panic(err)
-  }
+	err = provider.Get("aws_gateway").Populate(&gatewayConfig)
+	if err != nil {
+		panic(err)
+	}
 
-  err = provider.Get("app").Populate(&appConfig)
-  if err != nil {
-    panic(err)
-  }
+	err = provider.Get("app").Populate(&appConfig)
+	if err != nil {
+		panic(err)
+	}
 
-  allowedOriginsArr := appConfig.Cors.AllowedOrigins
-  frameAncestors := strings.Join(allowedOriginsArr, " ")
+	allowedOriginsArr := appConfig.Cors.AllowedOrigins
+	frameAncestors := strings.Join(allowedOriginsArr, " ")
 
-  s3HostURL := getS3HostURL(gatewayConfig)
+	s3HostURL := getS3HostURL(gatewayConfig)
 
-  connectSrcUrls := []string{
-    "'self'",
-    authConfig.AuthCallbackHost,
-    s3HostURL,
-  }
+	connectSrcUrls := []string{
+		"'self'",
+		authConfig.AuthCallbackHost,
+		s3HostURL,
+	}
 
-  if gatewayConfig.LocalstackURL != "" {
-    connectSrcUrls = append(connectSrcUrls, gatewayConfig.LocalstackURL)
-  }
+	if gatewayConfig.LocalstackURL != "" {
+		connectSrcUrls = append(connectSrcUrls, gatewayConfig.LocalstackURL)
+	}
 
-  if gatewayConfig.LocalHTTPSProxy != "" {
-    connectSrcUrls = append(connectSrcUrls, gatewayConfig.LocalHTTPSProxy)
-  }
+	if gatewayConfig.LocalHTTPSProxy != "" {
+		connectSrcUrls = append(connectSrcUrls, gatewayConfig.LocalHTTPSProxy)
+	}
 
-  cspPolicy := map[string][]string{
-    "connect-src": connectSrcUrls,
-    "script-src": {
-      "{{nonce}}",
-    },
-    "object-src":                {"none"},
-    "default-src":               {"none"},
-    "frame-ancestors":           {frameAncestors},
-    "base-uri":                  {"none"},
-    "require-trusted-types-for": {"script"},
-    "report-uri":                {reportUri},
-    "style-src": {
-      "unsafe-inline",
-      "{{nonce}}",
-    },
-  }
+	cspPolicy := map[string][]string{
+		"connect-src": connectSrcUrls,
+		"script-src": {
+			"{{nonce}}",
+		},
+		"object-src":                {"none"},
+		"default-src":               {"none"},
+		"frame-ancestors":           {frameAncestors},
+		"base-uri":                  {"none"},
+		"require-trusted-types-for": {"script"},
+		"report-uri":                {reportUri},
+		"style-src": {
+			"unsafe-inline",
+			"{{nonce}}",
+		},
+	}
 
-  return NewCSPMiddleware(cspPolicy, 16, false)
+	return NewCSPMiddleware(cspPolicy, 16, false)
 }
