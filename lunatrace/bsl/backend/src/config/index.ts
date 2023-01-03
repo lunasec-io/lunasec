@@ -30,6 +30,7 @@ import {
 
 import { envVars } from './load-environment-vars';
 
+export { envVars } from './load-environment-vars';
 export const isProduction = envVars.NodeEnv === 'production';
 
 // Note: it is debatable if we need to wrap these calls to envVars or we can call them directly from code.
