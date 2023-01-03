@@ -42,7 +42,12 @@ function checkEnvVar<E extends EnvVar<z.Schema>>(varConf: E): z.infer<E['castTo'
   if (!stringValue) {
     return varConf.defaultValue;
   }
-  return varConf.castTo.parse(stringValue);
+  try {
+    return varConf.castTo.parse(stringValue);
+  } catch (e) {
+    const errMessage = `Error parsing environment variable ${varConf.varKey}, expected something castable to ${varConf.castTo.description} but received value ${stringValue}`;
+    throw new Error(errMessage);
+  }
 }
 
 type VarName = keyof typeof commonEnvVarKeys;
