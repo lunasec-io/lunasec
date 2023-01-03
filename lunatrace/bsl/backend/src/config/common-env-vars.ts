@@ -50,13 +50,11 @@ export const commonEnvVarKeys = {
   AwsDefaultRegion: {
     varKey: 'AWS_DEFAULT_REGION',
     castTo: z.string(),
-
     defaultValue: 'us-west-2',
   },
   DisableWebhookQueue: {
     varKey: 'DISABLE_WEBHOOK_QUEUE',
     castTo: z.boolean(),
-
     defaultValue: false,
   },
   QueueName: {
