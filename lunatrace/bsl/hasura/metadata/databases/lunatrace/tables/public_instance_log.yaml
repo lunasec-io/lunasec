@@ -1,0 +1,30 @@
+table:
+  name: instance_log
+  schema: public
+object_relationships:
+  - name: instance
+    using:
+      foreign_key_constraint_on: instance_id
+insert_permissions:
+  - role: cli
+    permission:
+      check:
+        instance:
+          agent_access_token:
+            _eq: X-Hasura-User-Id
+      columns:
+        - id
+        - instance_id
+        - message
+update_permissions:
+  - role: cli
+    permission:
+      columns:
+        - id
+        - message
+        - instance_id
+      filter:
+        instance:
+          agent_access_token:
+            _eq: X-Hasura-User-Id
+      check: null

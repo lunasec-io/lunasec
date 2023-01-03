@@ -21,7 +21,7 @@ export type ProjectInfo = NonNullable<MaybeProjectInfo>;
 export type BuildInfo = ProjectInfo['builds'][number];
 export type BuildLogs = GetBuildLogsQuery['build_log'];
 
-export type TabName = 'builds' | 'secrets' | 'dashboard' | 'settings';
+export type TabName = 'builds' | 'secrets' | 'dashboard' | 'settings' | 'trace';
 export type SetActiveTab = (tabName: TabName) => void;
 
 export type GithubTraits =

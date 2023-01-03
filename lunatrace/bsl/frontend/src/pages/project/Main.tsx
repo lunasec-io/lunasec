@@ -13,7 +13,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
-import { Box, Home, Menu, Settings } from 'react-feather';
+import { Box, Home, Lock, Menu, Settings } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 
@@ -27,6 +27,7 @@ import { Builds } from './builds';
 import { ProjectDashboardMain } from './dashboard/Main';
 import { SecretsMain } from './secrets/Main';
 import { ProjectSettingsMain } from './settings/Main';
+import { Trace } from './trace/Trace';
 import { ProjectInfo, TabName } from './types';
 
 export const ProjectMain: React.FunctionComponent = (_props) => {
@@ -101,11 +102,21 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
                   <Box size="1em" className="mb-2 me-1" /> Snapshots
                 </Nav.Link>
               </Nav.Item>
-              {/*<Nav.Item className="ms-lg-auto">*/}
-              {/*  <Nav.Link onClick={() => setActiveTab('secrets')} eventKey="secrets">*/}
-              {/*    <Lock size="1em" className="mb-2 me-1" /> Secrets and Keys*/}
-              {/*  </Nav.Link>*/}
-              {/*</Nav.Item>*/}
+              <Nav.Item>
+                <Nav.Link
+                  onClick={() => {
+                    setActiveTab('trace');
+                  }}
+                  eventKey="trace"
+                >
+                  <Box size="1em" className="mb-2 me-1" /> Runtime Trace
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link onClick={() => setActiveTab('secrets')} eventKey="secrets">
+                  <Lock size="1em" className="mb-2 me-1" /> Secrets and Keys
+                </Nav.Link>
+              </Nav.Item>
               <Nav.Item className="ms-lg-auto">
                 <Nav.Link onClick={() => setActiveTab('settings')} eventKey="settings">
                   <Settings size="1em" className="mb-2 me-1" /> Settings
@@ -139,6 +150,8 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
             isFetching={isFetching}
           />
         );
+      case 'trace':
+        return <Trace />;
       case 'secrets':
         return <SecretsMain project={p} />;
       case 'settings':

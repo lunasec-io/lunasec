@@ -1,0 +1,1 @@
+CREATE TABLE "public"."instance_log" ("id" serial NOT NULL, "instance_id" uuid NOT NULL, "message" jsonb NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("instance_id") REFERENCES "public"."instances"("id") ON UPDATE cascade ON DELETE cascade);COMMENT ON TABLE "public"."instance_log" IS E'Instance log messages from runtime tracing.';

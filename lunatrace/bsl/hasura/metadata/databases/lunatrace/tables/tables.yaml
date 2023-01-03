@@ -23,6 +23,7 @@
 - "!include public_identity_credentials.yaml"
 - "!include public_identity_verifiable_addresses.yaml"
 - "!include public_ignored_vulnerabilities.yaml"
+- "!include public_instance_log.yaml"
 - "!include public_instances.yaml"
 - "!include public_latest_builds.yaml"
 - "!include public_latest_default_builds.yaml"
