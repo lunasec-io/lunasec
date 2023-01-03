@@ -25,7 +25,6 @@ interface FiltersProps {
 }
 
 export const RiskAdjustmentMain: React.FC<FiltersProps> = ({ project }) => {
-  console.log('rendering risk adjustment main with project ', project);
   return (
     <Container>
       <Row>

@@ -26,7 +26,6 @@ interface FolderListProps {
 }
 
 export const FolderList: React.FC<FolderListProps> = ({ project }) => {
-  console.log('rendering folderlist');
   const savedFolderSettings = project.project_folder_settings;
 
   const savedRootSettings = savedFolderSettings.find((folder) => folder.root === true);
@@ -42,7 +41,7 @@ export const FolderList: React.FC<FolderListProps> = ({ project }) => {
 
   const savedNonRootSettings = savedFolderSettings
     .filter((folder) => !folder.root)
-    .sort((folderA, folderB) => folderA.precedence - folderB.precedence);
+    .sort((folderA, folderB) => (folderA.precedence || 0) - (folderB.precedence || 0));
 
   const [nonRootFolders, setNonRootFolders] = useState(savedNonRootSettings);
 
@@ -50,7 +49,7 @@ export const FolderList: React.FC<FolderListProps> = ({ project }) => {
     setNonRootFolders(savedNonRootSettings);
   }, [project.project_folder_settings]);
 
-  const [triggerCustomMutation, customMutationResult] = api.endpoints.customProjectUpdateMutation.useMutation();
+  const [triggerCustomMutation, _customMutationResult] = api.endpoints.customProjectUpdateMutation.useMutation();
 
   const changePrecedence = (oldPrecedence: number, newPrecedence: number): void => {
     const reorderedSettings = reorder(nonRootFolders, oldPrecedence - 1, newPrecedence - 1);

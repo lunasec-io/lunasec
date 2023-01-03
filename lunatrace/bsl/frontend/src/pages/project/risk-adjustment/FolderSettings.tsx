@@ -87,7 +87,7 @@ export const FolderSettings: React.FC<FolderTagProps> = ({ savedSettings, availa
           <InputGroup>
             <Form.Control
               type="number"
-              value={precedence}
+              value={precedence || undefined}
               onChange={(e) => {
                 const newVal = Number(e.target.value);
                 if (isNaN(newVal)) {
@@ -96,7 +96,19 @@ export const FolderSettings: React.FC<FolderTagProps> = ({ savedSettings, availa
                 setPrecedence(Number(newVal));
               }}
             ></Form.Control>
-            <Button onClick={() => changePrecedence(savedSettings.precedence, precedence)}>
+            <Button
+              onClick={() => {
+                if (
+                  savedSettings.precedence === null ||
+                  savedSettings.precedence === undefined ||
+                  precedence === null ||
+                  precedence === undefined
+                ) {
+                  return;
+                }
+                changePrecedence(savedSettings.precedence, precedence);
+              }}
+            >
               <RxCaretSort className="ms-n2 me-n2" size="25px" />
             </Button>
           </InputGroup>
