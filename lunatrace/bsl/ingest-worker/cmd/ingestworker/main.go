@@ -39,48 +39,48 @@ import (
 )
 
 func main() {
-  // TODO (cthompson) this should be configured with an fx module
-  log.Logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
+	// TODO (cthompson) this should be configured with an fx module
+	log.Logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
 
-  clifx2.Main(
-    fx.Supply(http.DefaultClient),
+	clifx2.Main(
+		fx.Supply(http.DefaultClient),
 
-    graphqlfx.Module,
-    dbfx.Module,
-    registry.NPMModule,
+		graphqlfx.Module,
+		dbfx.Module,
+		registry.NPMModule,
 
-    fx.Provide(
-      cwe2.NewCWEIngester,
-      epss2.NewEPSSIngester,
-    ),
+		fx.Provide(
+			cwe2.NewCWEIngester,
+			epss2.NewEPSSIngester,
+		),
 
-    // todo make a module
-    fx.Supply(&clifx2.AppConfig{
-      Name:    "ingestworker",
-      Usage:   "LunaTrace Ingest Worker",
-      Version: "0.0.1",
-    }),
-    fx.Provide(
-      ingester.NewPackageSqlIngester,
-      ingester.NewNPMPackageIngester,
-      replicator.NewNPMReplicator,
-    ),
-    fx.Provide(
-      ingestworker.NewConfigProvider,
-    ),
-    fx.Provide(
-      licensecheck.NewScanner,
-      packagejson.NewScanner,
-      license.NewCommand,
-      vulnmanager.NewFileIngester,
-    ),
-    fx.Provide(
-      vulnerability.NewCommand,
-      cwe.NewCommand,
-      epss.NewCommand,
-    ),
-    fx.Provide(
-      packageCommand.NewCommand,
-    ),
-  )
+		// todo make a module
+		fx.Supply(&clifx2.AppConfig{
+			Name:    "ingestworker",
+			Usage:   "LunaTrace Ingest Worker",
+			Version: "0.0.1",
+		}),
+		fx.Provide(
+			ingester.NewPackageSqlIngester,
+			ingester.NewNPMPackageIngester,
+			replicator.NewNPMReplicator,
+		),
+		fx.Provide(
+			ingestworker.NewConfigProvider,
+		),
+		fx.Provide(
+			licensecheck.NewScanner,
+			packagejson.NewScanner,
+			license.NewCommand,
+			vulnmanager.NewFileIngester,
+		),
+		fx.Provide(
+			vulnerability.NewCommand,
+			cwe.NewCommand,
+			epss.NewCommand,
+		),
+		fx.Provide(
+			packageCommand.NewCommand,
+		),
+	)
 }
