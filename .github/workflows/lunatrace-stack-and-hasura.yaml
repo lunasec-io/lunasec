@@ -55,7 +55,7 @@ jobs:
           export DISABLE_WEBHOOK_QUEUE=true
           export QUEUE_NAME=fake
           export GOLANG_QUEUE_NAME=fake
-          export GITHUB_APP_ID=fake
+          export GITHUB_APP_ID=0
           export GITHUB_APP_PRIVATE_KEY=fake
           
           yarn run start:prod &
