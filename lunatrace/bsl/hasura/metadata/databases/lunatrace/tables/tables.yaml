@@ -42,6 +42,7 @@
 - "!include vulnerability_affected.yaml"
 - "!include vulnerability_affected_range_event.yaml"
 - "!include vulnerability_affected_version.yaml"
+- "!include vulnerability_cisa_known_exploited_vulnerabilities.yaml"
 - "!include vulnerability_credit.yaml"
 - "!include vulnerability_cwe.yaml"
 - "!include vulnerability_equivalent.yaml"
