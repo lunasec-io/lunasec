@@ -16,6 +16,7 @@ import (
   "fmt"
   "github.com/rs/zerolog/log"
   "go.uber.org/fx"
+  "regexp"
   "strings"
 )
 
@@ -79,6 +80,13 @@ func (s *epssIngester) Ingest(ctx context.Context) error {
     return err
   }
 
+  // Regex to verify that cvePair.Cve is a valid CVE
+  r, err := regexp.Compile(`^CVE-\d{4}-\d+$`)
+
+  if err != nil {
+    return err
+  }
+
   queries := []string{}
 
   // For every CVE, get the EPSS score and percentile to update the database with
@@ -100,6 +108,11 @@ func (s *epssIngester) Ingest(ctx context.Context) error {
       continue
     }
 
+    // Validates that the CVE is not a SQL injection payload :)
+    if !r.MatchString(cvePair.Cve) {
+      return fmt.Errorf("invalid cve %s", cvePair.Cve)
+    }
+
     // Update the database with the EPSS score and percentile for both the NVD and GHSA rows
     queries = append(queries, fmt.Sprintf(`
       UPDATE vulnerability.vulnerability SET epss_score = '%f', epss_percentile = '%f' WHERE source_id = '%s';
@@ -115,14 +128,14 @@ func (s *epssIngester) Ingest(ctx context.Context) error {
     Msg("updating epss scores")
 
   // Execute in batches of 1000
-  for i := 0; i < len(queries); i += 1000 {
+  for i := 0; i < len(queries); i += 2000 {
     log.Info().
       Int("start", i).
-      Int("end", i+1000).
+      Int("end", i+2000).
       Int("total", len(queries)).
       Msg("executing epss update batch")
 
-    end := i + 1000
+    end := i + 2000
     if end > len(queries) {
       end = len(queries)
     }
