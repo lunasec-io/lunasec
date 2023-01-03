@@ -50,6 +50,10 @@ func (s *cweIngester) Ingest(ctx context.Context) error {
 		return err
 	}
 
+	log.Info().
+		Int("count", len(cwes.Weaknesses)).
+		Msg("fetched CWEs from MITRE successfully")
+
 	for _, weakness := range cwes.Weaknesses {
 		weaknessIdStr := weakness.ID
 
@@ -73,7 +77,22 @@ func (s *cweIngester) Ingest(ctx context.Context) error {
 			gql.Vulnerability_cwe_update_columnExtendedDescription,
 			gql.Vulnerability_cwe_update_columnCommonName,
 		})
+
+		if err != nil {
+			log.Error().
+				Err(err).
+				Msg("error inserting CWE")
+			return err
+		}
+
+		log.Info().
+			Int("id", weaknessId).
+			Msg("inserted CWE")
 	}
+
+	log.Info().
+		Msg("ingested CWEs successfully")
+
 	return nil
 }
 
