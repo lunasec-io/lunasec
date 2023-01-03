@@ -5,40 +5,82 @@ object_relationships:
   - name: build
     using:
       foreign_key_constraint_on: agent_access_token
+array_relationships:
+  - name: logs
+    using:
+      foreign_key_constraint_on:
+        column: instance_id
+        table:
+          name: instance_log
+          schema: public
 insert_permissions:
   - role: cli
     permission:
       check:
-        build:
-          agent_access_token:
-            _eq: X-Hasura-User-Id
+        _exists:
+          _table:
+            name: builds
+            schema: public
+          _where:
+            agent_access_token:
+              _eq: X-Hasura-Access-Token
+      set:
+        agent_access_token: x-hasura-Access-Token
       columns:
-        - created_at
-        - last_heartbeat
         - agent_access_token
+        - created_at
+        - hostname
         - id
+        - last_heartbeat
 select_permissions:
   - role: cli
     permission:
       columns:
-        - created_at
-        - last_heartbeat
         - agent_access_token
+        - created_at
+        - hostname
         - id
+        - last_heartbeat
+      filter:
+        _exists:
+          _table:
+            name: builds
+            schema: public
+          _where:
+            agent_access_token:
+              _eq: X-Hasura-Access-Token
+  - role: user
+    permission:
+      columns:
+        - agent_access_token
+        - created_at
+        - hostname
+        - id
+        - last_heartbeat
       filter:
         build:
-          agent_access_token:
-            _eq: X-Hasura-User-Id
+          project:
+            organization:
+              organization_users:
+                user_id:
+                  _eq: X-Hasura-Real-User-Id
 update_permissions:
   - role: cli
     permission:
       columns:
-        - created_at
-        - last_heartbeat
         - agent_access_token
+        - created_at
+        - hostname
         - id
+        - last_heartbeat
       filter:
-        build:
-          agent_access_token:
-            _eq: X-Hasura-User-Id
+        _exists:
+          _table:
+            name: builds
+            schema: public
+          _where:
+            agent_access_token:
+              _eq: X-Hasura-Access-Token
       check: null
+      set:
+        agent_access_token: x-hasura-Access-Token

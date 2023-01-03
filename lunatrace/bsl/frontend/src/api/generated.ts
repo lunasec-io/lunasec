@@ -2788,6 +2788,285 @@ export enum Ignored_Vulnerabilities_Update_Column {
   VulnerabilityId = 'vulnerability_id'
 }
 
+/** Instance log messages from runtime tracing. */
+export type Instance_Log = {
+  __typename?: 'instance_log';
+  id: Scalars['Int'];
+  /** An object relationship */
+  instance: Instances;
+  instance_id: Scalars['uuid'];
+  message: Scalars['jsonb'];
+};
+
+
+/** Instance log messages from runtime tracing. */
+export type Instance_LogMessageArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "instance_log" */
+export type Instance_Log_Aggregate = {
+  __typename?: 'instance_log_aggregate';
+  aggregate?: Maybe<Instance_Log_Aggregate_Fields>;
+  nodes: Array<Instance_Log>;
+};
+
+/** aggregate fields of "instance_log" */
+export type Instance_Log_Aggregate_Fields = {
+  __typename?: 'instance_log_aggregate_fields';
+  avg?: Maybe<Instance_Log_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Instance_Log_Max_Fields>;
+  min?: Maybe<Instance_Log_Min_Fields>;
+  stddev?: Maybe<Instance_Log_Stddev_Fields>;
+  stddev_pop?: Maybe<Instance_Log_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Instance_Log_Stddev_Samp_Fields>;
+  sum?: Maybe<Instance_Log_Sum_Fields>;
+  var_pop?: Maybe<Instance_Log_Var_Pop_Fields>;
+  var_samp?: Maybe<Instance_Log_Var_Samp_Fields>;
+  variance?: Maybe<Instance_Log_Variance_Fields>;
+};
+
+
+/** aggregate fields of "instance_log" */
+export type Instance_Log_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Instance_Log_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "instance_log" */
+export type Instance_Log_Aggregate_Order_By = {
+  avg?: InputMaybe<Instance_Log_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Instance_Log_Max_Order_By>;
+  min?: InputMaybe<Instance_Log_Min_Order_By>;
+  stddev?: InputMaybe<Instance_Log_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Instance_Log_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Instance_Log_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Instance_Log_Sum_Order_By>;
+  var_pop?: InputMaybe<Instance_Log_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Instance_Log_Var_Samp_Order_By>;
+  variance?: InputMaybe<Instance_Log_Variance_Order_By>;
+};
+
+/** aggregate avg on columns */
+export type Instance_Log_Avg_Fields = {
+  __typename?: 'instance_log_avg_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "instance_log" */
+export type Instance_Log_Avg_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "instance_log". All fields are combined with a logical 'AND'. */
+export type Instance_Log_Bool_Exp = {
+  _and?: InputMaybe<Array<Instance_Log_Bool_Exp>>;
+  _not?: InputMaybe<Instance_Log_Bool_Exp>;
+  _or?: InputMaybe<Array<Instance_Log_Bool_Exp>>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  instance?: InputMaybe<Instances_Bool_Exp>;
+  instance_id?: InputMaybe<Uuid_Comparison_Exp>;
+  message?: InputMaybe<Jsonb_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Instance_Log_Max_Fields = {
+  __typename?: 'instance_log_max_fields';
+  id?: Maybe<Scalars['Int']>;
+  instance_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by max() on columns of table "instance_log" */
+export type Instance_Log_Max_Order_By = {
+  id?: InputMaybe<Order_By>;
+  instance_id?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Instance_Log_Min_Fields = {
+  __typename?: 'instance_log_min_fields';
+  id?: Maybe<Scalars['Int']>;
+  instance_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by min() on columns of table "instance_log" */
+export type Instance_Log_Min_Order_By = {
+  id?: InputMaybe<Order_By>;
+  instance_id?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "instance_log". */
+export type Instance_Log_Order_By = {
+  id?: InputMaybe<Order_By>;
+  instance?: InputMaybe<Instances_Order_By>;
+  instance_id?: InputMaybe<Order_By>;
+  message?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "instance_log" */
+export enum Instance_Log_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  InstanceId = 'instance_id',
+  /** column name */
+  Message = 'message'
+}
+
+/** aggregate stddev on columns */
+export type Instance_Log_Stddev_Fields = {
+  __typename?: 'instance_log_stddev_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "instance_log" */
+export type Instance_Log_Stddev_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Instance_Log_Stddev_Pop_Fields = {
+  __typename?: 'instance_log_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "instance_log" */
+export type Instance_Log_Stddev_Pop_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Instance_Log_Stddev_Samp_Fields = {
+  __typename?: 'instance_log_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "instance_log" */
+export type Instance_Log_Stddev_Samp_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Instance_Log_Sum_Fields = {
+  __typename?: 'instance_log_sum_fields';
+  id?: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "instance_log" */
+export type Instance_Log_Sum_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_pop on columns */
+export type Instance_Log_Var_Pop_Fields = {
+  __typename?: 'instance_log_var_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "instance_log" */
+export type Instance_Log_Var_Pop_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Instance_Log_Var_Samp_Fields = {
+  __typename?: 'instance_log_var_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "instance_log" */
+export type Instance_Log_Var_Samp_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Instance_Log_Variance_Fields = {
+  __typename?: 'instance_log_variance_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "instance_log" */
+export type Instance_Log_Variance_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** columns and relationships of "instances" */
+export type Instances = {
+  __typename?: 'instances';
+  agent_access_token?: Maybe<Scalars['uuid']>;
+  /** An object relationship */
+  build?: Maybe<Builds>;
+  created_at: Scalars['timestamptz'];
+  hostname?: Maybe<Scalars['String']>;
+  id: Scalars['uuid'];
+  last_heartbeat: Scalars['timestamptz'];
+  /** An array relationship */
+  logs: Array<Instance_Log>;
+  /** An aggregate relationship */
+  logs_aggregate: Instance_Log_Aggregate;
+};
+
+
+/** columns and relationships of "instances" */
+export type InstancesLogsArgs = {
+  distinct_on?: InputMaybe<Array<Instance_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Instance_Log_Order_By>>;
+  where?: InputMaybe<Instance_Log_Bool_Exp>;
+};
+
+
+/** columns and relationships of "instances" */
+export type InstancesLogs_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Instance_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Instance_Log_Order_By>>;
+  where?: InputMaybe<Instance_Log_Bool_Exp>;
+};
+
+/** Boolean expression to filter rows from the table "instances". All fields are combined with a logical 'AND'. */
+export type Instances_Bool_Exp = {
+  _and?: InputMaybe<Array<Instances_Bool_Exp>>;
+  _not?: InputMaybe<Instances_Bool_Exp>;
+  _or?: InputMaybe<Array<Instances_Bool_Exp>>;
+  agent_access_token?: InputMaybe<Uuid_Comparison_Exp>;
+  build?: InputMaybe<Builds_Bool_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  hostname?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  last_heartbeat?: InputMaybe<Timestamptz_Comparison_Exp>;
+  logs?: InputMaybe<Instance_Log_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "instances". */
+export type Instances_Order_By = {
+  agent_access_token?: InputMaybe<Order_By>;
+  build?: InputMaybe<Builds_Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  hostname?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_heartbeat?: InputMaybe<Order_By>;
+  logs_aggregate?: InputMaybe<Instance_Log_Aggregate_Order_By>;
+};
+
+/** select columns of table "instances" */
+export enum Instances_Select_Column {
+  /** column name */
+  AgentAccessToken = 'agent_access_token',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Hostname = 'hostname',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastHeartbeat = 'last_heartbeat'
+}
+
 export type Jsonb_Cast_Exp = {
   String?: InputMaybe<String_Comparison_Exp>;
 };
@@ -4768,6 +5047,16 @@ export type Query_Root = {
   ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
   /** fetch data from the table: "ignored_vulnerabilities" using primary key columns */
   ignored_vulnerabilities_by_pk?: Maybe<Ignored_Vulnerabilities>;
+  /** fetch data from the table: "instance_log" */
+  instance_log: Array<Instance_Log>;
+  /** fetch aggregated fields from the table: "instance_log" */
+  instance_log_aggregate: Instance_Log_Aggregate;
+  /** fetch data from the table: "instance_log" using primary key columns */
+  instance_log_by_pk?: Maybe<Instance_Log>;
+  /** fetch data from the table: "instances" */
+  instances: Array<Instances>;
+  /** fetch data from the table: "instances" using primary key columns */
+  instances_by_pk?: Maybe<Instances>;
   /** fetch data from the table: "latest_default_builds" */
   latest_default_builds: Array<Latest_Default_Builds>;
   /** fetch aggregated fields from the table: "latest_default_builds" */
@@ -5102,6 +5391,43 @@ export type Query_RootIgnored_VulnerabilitiesArgs = {
 
 
 export type Query_RootIgnored_Vulnerabilities_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootInstance_LogArgs = {
+  distinct_on?: InputMaybe<Array<Instance_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Instance_Log_Order_By>>;
+  where?: InputMaybe<Instance_Log_Bool_Exp>;
+};
+
+
+export type Query_RootInstance_Log_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Instance_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Instance_Log_Order_By>>;
+  where?: InputMaybe<Instance_Log_Bool_Exp>;
+};
+
+
+export type Query_RootInstance_Log_By_PkArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type Query_RootInstancesArgs = {
+  distinct_on?: InputMaybe<Array<Instances_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Instances_Order_By>>;
+  where?: InputMaybe<Instances_Bool_Exp>;
+};
+
+
+export type Query_RootInstances_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -6041,6 +6367,16 @@ export type Subscription_Root = {
   ignored_vulnerabilities: Array<Ignored_Vulnerabilities>;
   /** fetch data from the table: "ignored_vulnerabilities" using primary key columns */
   ignored_vulnerabilities_by_pk?: Maybe<Ignored_Vulnerabilities>;
+  /** fetch data from the table: "instance_log" */
+  instance_log: Array<Instance_Log>;
+  /** fetch aggregated fields from the table: "instance_log" */
+  instance_log_aggregate: Instance_Log_Aggregate;
+  /** fetch data from the table: "instance_log" using primary key columns */
+  instance_log_by_pk?: Maybe<Instance_Log>;
+  /** fetch data from the table: "instances" */
+  instances: Array<Instances>;
+  /** fetch data from the table: "instances" using primary key columns */
+  instances_by_pk?: Maybe<Instances>;
   /** fetch data from the table: "latest_default_builds" */
   latest_default_builds: Array<Latest_Default_Builds>;
   /** fetch aggregated fields from the table: "latest_default_builds" */
@@ -6366,6 +6702,43 @@ export type Subscription_RootIgnored_VulnerabilitiesArgs = {
 
 
 export type Subscription_RootIgnored_Vulnerabilities_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootInstance_LogArgs = {
+  distinct_on?: InputMaybe<Array<Instance_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Instance_Log_Order_By>>;
+  where?: InputMaybe<Instance_Log_Bool_Exp>;
+};
+
+
+export type Subscription_RootInstance_Log_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Instance_Log_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Instance_Log_Order_By>>;
+  where?: InputMaybe<Instance_Log_Bool_Exp>;
+};
+
+
+export type Subscription_RootInstance_Log_By_PkArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type Subscription_RootInstancesArgs = {
+  distinct_on?: InputMaybe<Array<Instances_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Instances_Order_By>>;
+  where?: InputMaybe<Instances_Bool_Exp>;
+};
+
+
+export type Subscription_RootInstances_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -7985,6 +8358,14 @@ export type GetProjectCloneUrlQueryVariables = Exact<{
 
 export type GetProjectCloneUrlQuery = { __typename?: 'query_root', projects_by_pk?: { __typename?: 'projects', github_repository?: { __typename?: 'github_repositories', authenticated_clone_url?: { __typename?: 'AuthenticatedRepoCloneUrlOutput', url?: string | null } | null } | null } | null };
 
+export type GetProjectInstancesQueryVariables = Exact<{
+  project_id: Scalars['uuid'];
+  limit?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetProjectInstancesQuery = { __typename?: 'query_root', instances: Array<{ __typename?: 'instances', id: any, created_at: any, hostname?: string | null, logs_aggregate: { __typename?: 'instance_log_aggregate', aggregate?: { __typename?: 'instance_log_aggregate_fields', count: number } | null } }> };
+
 export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -8003,6 +8384,13 @@ export type GetSidebarInfoQueryVariables = Exact<{
 
 
 export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }>, github_repository?: { __typename?: 'github_repositories', id: any, github_id?: number | null } | null }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null }> }> };
+
+export type GetTraceDetailsQueryVariables = Exact<{
+  id: Scalars['uuid'];
+}>;
+
+
+export type GetTraceDetailsQuery = { __typename?: 'query_root', instances_by_pk?: { __typename?: 'instances', hostname?: string | null, id: any, last_heartbeat: any, created_at: any, logs: Array<{ __typename?: 'instance_log', id: number, message: any }> } | null };
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
@@ -8618,6 +9006,24 @@ export const GetProjectCloneUrlDocument = `
   }
 }
     `;
+export const GetProjectInstancesDocument = `
+    query GetProjectInstances($project_id: uuid!, $limit: Int = 10) {
+  instances(
+    where: {build: {project_id: {_eq: $project_id}}}
+    limit: $limit
+    order_by: {created_at: desc}
+  ) {
+    id
+    created_at
+    hostname
+    logs_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+    `;
 export const GetProjectsDocument = `
     query GetProjects {
   projects(order_by: {name: asc}) {
@@ -8663,6 +9069,20 @@ export const GetSidebarInfoDocument = `
       github_repository {
         id
       }
+    }
+  }
+}
+    `;
+export const GetTraceDetailsDocument = `
+    query GetTraceDetails($id: uuid!) {
+  instances_by_pk(id: $id) {
+    hostname
+    id
+    last_heartbeat
+    created_at
+    logs {
+      id
+      message
     }
   }
 }
@@ -9014,6 +9434,9 @@ const injectedRtkApi = api.injectEndpoints({
     GetProjectCloneUrl: build.query<GetProjectCloneUrlQuery, GetProjectCloneUrlQueryVariables>({
       query: (variables) => ({ document: GetProjectCloneUrlDocument, variables })
     }),
+    GetProjectInstances: build.query<GetProjectInstancesQuery, GetProjectInstancesQueryVariables>({
+      query: (variables) => ({ document: GetProjectInstancesDocument, variables })
+    }),
     GetProjects: build.query<GetProjectsQuery, GetProjectsQueryVariables | void>({
       query: (variables) => ({ document: GetProjectsDocument, variables })
     }),
@@ -9022,6 +9445,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetSidebarInfo: build.query<GetSidebarInfoQuery, GetSidebarInfoQueryVariables | void>({
       query: (variables) => ({ document: GetSidebarInfoDocument, variables })
+    }),
+    GetTraceDetails: build.query<GetTraceDetailsQuery, GetTraceDetailsQueryVariables>({
+      query: (variables) => ({ document: GetTraceDetailsDocument, variables })
     }),
     SearchVulnerabilities: build.query<SearchVulnerabilitiesQuery, SearchVulnerabilitiesQueryVariables>({
       query: (variables) => ({ document: SearchVulnerabilitiesDocument, variables })

@@ -84,21 +84,18 @@ export async function cliAuthorizer(req: Request, res: Response): Promise<void> 
   }
 
   const hasuraRes = await hasura.GetAuthDataFromProjectToken({ access_token: parsedRequest.res });
-  if (!hasuraRes.project_access_tokens?.[0]) {
+  const projectData = hasuraRes.project_access_tokens?.[0] || hasuraRes.builds?.[0];
+  if (!projectData) {
     return generateErrorResponse(
       res,
       `Invalid Access Token specified in X-LunaTrace-Access-Token header: ${parsedRequest.res}`,
       401
     );
   }
-  const projectData = hasuraRes.project_access_tokens[0];
-  const builds = projectData.project.builds.map((b) => b.id as string);
   res.send({
     error: false,
-    // Put anything else needed into here
     extra: {
       project_uuid: projectData.project.id,
-      builds: builds,
       access_token: parsedRequest.res,
     },
   });

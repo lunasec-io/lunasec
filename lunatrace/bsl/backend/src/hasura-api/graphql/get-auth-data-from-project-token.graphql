@@ -2,9 +2,11 @@ query GetAuthDataFromProjectToken($access_token: uuid!) {
     project_access_tokens(where: {access_token: {_eq: $access_token}}) {
         project {
             id
-            builds {
-                id
-            }
+        }
+    }
+    builds(where: {agent_access_token: {_eq: $access_token}}) {
+        project {
+            id
         }
     }
 }

@@ -1,0 +1,12 @@
+query GetTraceDetails($id: uuid!) {
+  instances_by_pk(id: $id) {
+    hostname
+    id
+    last_heartbeat
+    created_at
+    logs {
+      id
+      message
+    }
+  }
+}

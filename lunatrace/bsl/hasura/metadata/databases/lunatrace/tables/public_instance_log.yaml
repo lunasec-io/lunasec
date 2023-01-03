@@ -11,11 +11,38 @@ insert_permissions:
       check:
         instance:
           agent_access_token:
-            _eq: X-Hasura-User-Id
+            _eq: X-Hasura-Access-Token
       columns:
         - id
         - instance_id
         - message
+select_permissions:
+  - role: cli
+    permission:
+      columns:
+        - id
+        - message
+        - instance_id
+      filter:
+        instance:
+          agent_access_token:
+            _eq: X-Hasura-Access-Token
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+        - id
+        - message
+        - instance_id
+      filter:
+        instance:
+          build:
+            project:
+              organization:
+                organization_users:
+                  user_id:
+                    _eq: X-Hasura-Real-User-Id
+      allow_aggregations: true
 update_permissions:
   - role: cli
     permission:
@@ -26,5 +53,5 @@ update_permissions:
       filter:
         instance:
           agent_access_token:
-            _eq: X-Hasura-User-Id
+            _eq: X-Hasura-Access-Token
       check: null

@@ -1,4 +1,4 @@
 -- Could not auto-generate a down migration.
 -- Please write an appropriate down migration for the SQL below:
--- alter table "public"."builds" add column "container_digest" text
+-- alter table "public"."instances" add column "hostname" text
 --  null;

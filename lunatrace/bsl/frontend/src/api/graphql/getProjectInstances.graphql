@@ -1,0 +1,12 @@
+query GetProjectInstances($project_id: uuid!, $limit: Int = 10) {
+  instances(where: {build: {project_id: {_eq: $project_id}}}, limit: $limit, order_by: {created_at: desc}) {
+    id
+    created_at
+    hostname
+    logs_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}

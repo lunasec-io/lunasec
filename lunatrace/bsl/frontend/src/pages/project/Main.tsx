@@ -27,7 +27,7 @@ import { Builds } from './builds';
 import { ProjectDashboardMain } from './dashboard/Main';
 import { SecretsMain } from './secrets/Main';
 import { ProjectSettingsMain } from './settings/Main';
-import { Trace } from './trace/Trace';
+import { Traces } from './trace/Traces';
 import { ProjectInfo, TabName } from './types';
 
 export const ProjectMain: React.FunctionComponent = (_props) => {
@@ -151,7 +151,14 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
           />
         );
       case 'trace':
-        return <Trace />;
+        return (
+          <Traces
+            project={p}
+            buildLimit={buildLimit}
+            loadMoreBuildsCallback={loadMoreBuildsCallback}
+            isFetching={isFetching}
+          />
+        );
       case 'secrets':
         return <SecretsMain project={p} />;
       case 'settings':
