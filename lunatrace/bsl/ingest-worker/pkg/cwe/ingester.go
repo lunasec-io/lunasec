@@ -43,12 +43,16 @@ func getCommonName(weaknessId int) *string {
 }
 
 func (s *cweIngester) Ingest(ctx context.Context) error {
+	log.Info().Msg("Fetching CWEs from mitre...")
 	cwes, err := FetchCWEsFromMitre()
 	if err != nil {
 		log.Error().
 			Err(err)
 		return err
 	}
+	log.Info().Int("cweCount", len(cwes.Weaknesses)).Msg("Fetched CWEs from mitre")
+
+	var allNewCweObjects []*gql.Vulnerability_cwe_insert_input
 
 	for _, weakness := range cwes.Weaknesses {
 		weaknessIdStr := weakness.ID
@@ -58,22 +62,30 @@ func (s *cweIngester) Ingest(ctx context.Context) error {
 			return err
 		}
 
-		_, err = gql.InsertVulnerabilityCWE(ctx, s.GQLClient, []*gql.Vulnerability_cwe_insert_input{
-			{
-				Description:          util.Ptr(weakness.Description),
-				Extended_description: util.Ptr(weakness.ExtendedDescription),
-				Name:                 util.Ptr(weakness.Name),
-				Id:                   util.Ptr(weaknessId),
-				Common_name:          getCommonName(weaknessId),
-			},
-		}, []gql.Vulnerability_cwe_update_column{
-			gql.Vulnerability_cwe_update_columnId,
-			gql.Vulnerability_cwe_update_columnName,
-			gql.Vulnerability_cwe_update_columnDescription,
-			gql.Vulnerability_cwe_update_columnExtendedDescription,
-			gql.Vulnerability_cwe_update_columnCommonName,
-		})
+		newCweObject := gql.Vulnerability_cwe_insert_input{
+			Description:          util.Ptr(weakness.Description),
+			Extended_description: util.Ptr(weakness.ExtendedDescription),
+			Name:                 util.Ptr(weakness.Name),
+			Id:                   util.Ptr(weaknessId),
+			Common_name:          getCommonName(weaknessId),
+		}
+
+		allNewCweObjects = append(allNewCweObjects, &newCweObject)
+
 	}
+	log.Info().Msg("Inserting all batched weaknesses")
+	_, err = gql.InsertVulnerabilityCWE(ctx, s.GQLClient, allNewCweObjects, []gql.Vulnerability_cwe_update_column{
+		gql.Vulnerability_cwe_update_columnId,
+		gql.Vulnerability_cwe_update_columnName,
+		gql.Vulnerability_cwe_update_columnDescription,
+		gql.Vulnerability_cwe_update_columnExtendedDescription,
+		gql.Vulnerability_cwe_update_columnCommonName,
+	})
+	if err != nil {
+		return err
+	}
+	log.Info().Msg("Finished inserting CWEs")
+
 	return nil
 }
 
