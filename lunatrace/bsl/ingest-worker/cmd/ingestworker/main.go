@@ -11,76 +11,80 @@
 package main
 
 import (
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/cwe"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/epss"
-	packageCommand "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/package"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/vulnerability"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/ingestworker"
-	cwe2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/cwe"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/dbfx"
-	epss2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/epss"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/registry"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
-	"net/http"
-	"os"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/cisa"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/cwe"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/epss"
+  packageCommand "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/package"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/vulnerability"
+  cisa2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/cisa"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/ingestworker"
+  cwe2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/cwe"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/dbfx"
+  epss2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/epss"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/registry"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
+  "github.com/rs/zerolog"
+  "github.com/rs/zerolog/log"
+  "net/http"
+  "os"
 
-	"go.uber.org/fx"
+  "go.uber.org/fx"
 
-	clifx2 "github.com/ajvpot/clifx"
+  clifx2 "github.com/ajvpot/clifx"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/license"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
-	vulnmanager "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/license"
+  "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
+  vulnmanager "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability"
 )
 
 func main() {
-	// TODO (cthompson) this should be configured with an fx module
-	log.Logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
+  // TODO (cthompson) this should be configured with an fx module
+  log.Logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
 
-	clifx2.Main(
-		fx.Supply(http.DefaultClient),
+  clifx2.Main(
+    fx.Supply(http.DefaultClient),
 
-		graphqlfx.Module,
-		dbfx.Module,
-		registry.NPMModule,
+    graphqlfx.Module,
+    dbfx.Module,
+    registry.NPMModule,
 
-		fx.Provide(
-			cwe2.NewCWEIngester,
-			epss2.NewEPSSIngester,
-		),
+    fx.Provide(
+      cwe2.NewCWEIngester,
+      epss2.NewEPSSIngester,
+      cisa2.NewCISAKnownVulnIngester,
+    ),
 
-		// todo make a module
-		fx.Supply(&clifx2.AppConfig{
-			Name:    "ingestworker",
-			Usage:   "LunaTrace Ingest Worker",
-			Version: "0.0.1",
-		}),
-		fx.Provide(
-			ingester.NewPackageSqlIngester,
-			ingester.NewNPMPackageIngester,
-			replicator.NewNPMReplicator,
-		),
-		fx.Provide(
-			ingestworker.NewConfigProvider,
-		),
-		fx.Provide(
-			licensecheck.NewScanner,
-			packagejson.NewScanner,
-			license.NewCommand,
-			vulnmanager.NewFileIngester,
-		),
-		fx.Provide(
-			vulnerability.NewCommand,
-			cwe.NewCommand,
-			epss.NewCommand,
-		),
-		fx.Provide(
-			packageCommand.NewCommand,
-		),
-	)
+    // todo make a module
+    fx.Supply(&clifx2.AppConfig{
+      Name:    "ingestworker",
+      Usage:   "LunaTrace Ingest Worker",
+      Version: "0.0.1",
+    }),
+    fx.Provide(
+      ingester.NewPackageSqlIngester,
+      ingester.NewNPMPackageIngester,
+      replicator.NewNPMReplicator,
+    ),
+    fx.Provide(
+      ingestworker.NewConfigProvider,
+    ),
+    fx.Provide(
+      licensecheck.NewScanner,
+      packagejson.NewScanner,
+      license.NewCommand,
+      vulnmanager.NewFileIngester,
+    ),
+    fx.Provide(
+      vulnerability.NewCommand,
+      cwe.NewCommand,
+      epss.NewCommand,
+      cisa.NewCommand,
+    ),
+    fx.Provide(
+      packageCommand.NewCommand,
+    ),
+  )
 }
