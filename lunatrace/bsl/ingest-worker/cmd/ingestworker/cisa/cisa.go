@@ -11,41 +11,41 @@
 package cisa
 
 import (
-  "github.com/ajvpot/clifx"
-  "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/cisa"
-  "github.com/rs/zerolog/log"
-  "github.com/urfave/cli/v2"
-  "go.uber.org/fx"
+	"github.com/ajvpot/clifx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/cisa"
+	"github.com/rs/zerolog/log"
+	"github.com/urfave/cli/v2"
+	"go.uber.org/fx"
 )
 
 type Params struct {
-  fx.In
+	fx.In
 
-  Ingester cisa.CISAKnownVulnIngester
+	Ingester cisa.CISAKnownVulnIngester
 }
 
 func NewCommand(p Params) clifx.CommandResult {
-  return clifx.CommandResult{
-    Command: &cli.Command{
-      Name: "cisa",
-      Subcommands: []*cli.Command{
-        {
-          Name:        "ingest",
-          Usage:       "[file or directory]",
-          Flags:       []cli.Flag{},
-          Subcommands: []*cli.Command{},
-          Action: func(ctx *cli.Context) error {
-            log.Info().
-              Msg("Updating CISA Known Vulnerabilities")
-            err := p.Ingester.Ingest(ctx.Context)
-            if err == nil {
-              log.Info().
-                Msg("Updated CISA Known Vulnerabilities")
-            }
-            return err
-          },
-        },
-      },
-    },
-  }
+	return clifx.CommandResult{
+		Command: &cli.Command{
+			Name: "cisa",
+			Subcommands: []*cli.Command{
+				{
+					Name:        "ingest",
+					Usage:       "[file or directory]",
+					Flags:       []cli.Flag{},
+					Subcommands: []*cli.Command{},
+					Action: func(ctx *cli.Context) error {
+						log.Info().
+							Msg("Updating CISA Known Vulnerabilities")
+						err := p.Ingester.Ingest(ctx.Context)
+						if err == nil {
+							log.Info().
+								Msg("Updated CISA Known Vulnerabilities")
+						}
+						return err
+					},
+				},
+			},
+		},
+	}
 }
