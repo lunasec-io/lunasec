@@ -69,25 +69,37 @@ export const TraceDetails: React.FunctionComponent = () => {
       <Row>
         <h2>Runtime Trace</h2>
         <p>Host: {instance.hostname}</p>
-        <Table>
-          <thead></thead>
-          <tbody>
-            {instance.logs.map((log) => {
-              return (
-                <tr key={log.id}>
-                  <th>
+        <hr />
+        <Container>
+          {instance.logs.map((log) => {
+            const vulnerability = log.affected_analysis_config?.affected?.vulnerability;
+            const p = log.affected_analysis_config?.affected?.package;
+            return (
+              <Row>
+                <Col>
+                  <p>
+                    <span className="lighter">Method</span>: {log.message.method}
+                  </p>
+                  <p>
+                    <span className="lighter">Arguments</span>: {log.message.arguments}
+                  </p>
+                </Col>
+                {vulnerability && p && (
+                  <Col>
                     <p>
-                      <span className="lighter">Method</span>: {log.message.method}
+                      <span className="lighter">Package</span>: {p.name}
                     </p>
                     <p>
-                      <span className="lighter">Arguments</span>: {log.message.arguments}
+                      <span className="lighter">Vulnerability</span>: {vulnerability.source_id}{' '}
+                      {vulnerability.severity_name}
                     </p>
-                  </th>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
+                  </Col>
+                )}
+                <hr />
+              </Row>
+            );
+          })}
+        </Container>
       </Row>
     </>
   );

@@ -7,6 +7,17 @@ query GetTraceDetails($id: uuid!) {
     logs {
       id
       message
+      affected_analysis_config {
+        affected {
+          vulnerability {
+            source_id
+            severity_name
+          }
+          package {
+            name
+          }
+        }
+      }
     }
   }
 }

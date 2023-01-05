@@ -2791,6 +2791,9 @@ export enum Ignored_Vulnerabilities_Update_Column {
 /** Instance log messages from runtime tracing. */
 export type Instance_Log = {
   __typename?: 'instance_log';
+  /** An object relationship */
+  affected_analysis_config?: Maybe<Vulnerability_Affected_Analysis_Config>;
+  affected_analysis_config_id?: Maybe<Scalars['uuid']>;
   id: Scalars['Int'];
   /** An object relationship */
   instance: Instances;
@@ -2865,6 +2868,8 @@ export type Instance_Log_Bool_Exp = {
   _and?: InputMaybe<Array<Instance_Log_Bool_Exp>>;
   _not?: InputMaybe<Instance_Log_Bool_Exp>;
   _or?: InputMaybe<Array<Instance_Log_Bool_Exp>>;
+  affected_analysis_config?: InputMaybe<Vulnerability_Affected_Analysis_Config_Bool_Exp>;
+  affected_analysis_config_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   instance?: InputMaybe<Instances_Bool_Exp>;
   instance_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -2874,12 +2879,14 @@ export type Instance_Log_Bool_Exp = {
 /** aggregate max on columns */
 export type Instance_Log_Max_Fields = {
   __typename?: 'instance_log_max_fields';
+  affected_analysis_config_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['Int']>;
   instance_id?: Maybe<Scalars['uuid']>;
 };
 
 /** order by max() on columns of table "instance_log" */
 export type Instance_Log_Max_Order_By = {
+  affected_analysis_config_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   instance_id?: InputMaybe<Order_By>;
 };
@@ -2887,18 +2894,22 @@ export type Instance_Log_Max_Order_By = {
 /** aggregate min on columns */
 export type Instance_Log_Min_Fields = {
   __typename?: 'instance_log_min_fields';
+  affected_analysis_config_id?: Maybe<Scalars['uuid']>;
   id?: Maybe<Scalars['Int']>;
   instance_id?: Maybe<Scalars['uuid']>;
 };
 
 /** order by min() on columns of table "instance_log" */
 export type Instance_Log_Min_Order_By = {
+  affected_analysis_config_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   instance_id?: InputMaybe<Order_By>;
 };
 
 /** Ordering options when selecting data from "instance_log". */
 export type Instance_Log_Order_By = {
+  affected_analysis_config?: InputMaybe<Vulnerability_Affected_Analysis_Config_Order_By>;
+  affected_analysis_config_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   instance?: InputMaybe<Instances_Order_By>;
   instance_id?: InputMaybe<Order_By>;
@@ -2907,6 +2918,8 @@ export type Instance_Log_Order_By = {
 
 /** select columns of table "instance_log" */
 export enum Instance_Log_Select_Column {
+  /** column name */
+  AffectedAnalysisConfigId = 'affected_analysis_config_id',
   /** column name */
   Id = 'id',
   /** column name */
@@ -5126,6 +5139,10 @@ export type Query_Root = {
   vulnerability: Array<Vulnerability>;
   /** fetch data from the table: "vulnerability.affected" */
   vulnerability_affected: Array<Vulnerability_Affected>;
+  /** fetch data from the table: "vulnerability.affected_analysis_config" */
+  vulnerability_affected_analysis_config: Array<Vulnerability_Affected_Analysis_Config>;
+  /** fetch data from the table: "vulnerability.affected_analysis_config" using primary key columns */
+  vulnerability_affected_analysis_config_by_pk?: Maybe<Vulnerability_Affected_Analysis_Config>;
   /** fetch data from the table: "vulnerability.affected" using primary key columns */
   vulnerability_affected_by_pk?: Maybe<Vulnerability_Affected>;
   /** fetch data from the table: "vulnerability.affected_range_event" */
@@ -5685,6 +5702,20 @@ export type Query_RootVulnerability_AffectedArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Vulnerability_Affected_Order_By>>;
   where?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
+};
+
+
+export type Query_RootVulnerability_Affected_Analysis_ConfigArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Affected_Analysis_Config_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Affected_Analysis_Config_Order_By>>;
+  where?: InputMaybe<Vulnerability_Affected_Analysis_Config_Bool_Exp>;
+};
+
+
+export type Query_RootVulnerability_Affected_Analysis_Config_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -6443,6 +6474,10 @@ export type Subscription_Root = {
   vulnerability: Array<Vulnerability>;
   /** fetch data from the table: "vulnerability.affected" */
   vulnerability_affected: Array<Vulnerability_Affected>;
+  /** fetch data from the table: "vulnerability.affected_analysis_config" */
+  vulnerability_affected_analysis_config: Array<Vulnerability_Affected_Analysis_Config>;
+  /** fetch data from the table: "vulnerability.affected_analysis_config" using primary key columns */
+  vulnerability_affected_analysis_config_by_pk?: Maybe<Vulnerability_Affected_Analysis_Config>;
   /** fetch data from the table: "vulnerability.affected" using primary key columns */
   vulnerability_affected_by_pk?: Maybe<Vulnerability_Affected>;
   /** fetch data from the table: "vulnerability.affected_range_event" */
@@ -6988,6 +7023,20 @@ export type Subscription_RootVulnerability_AffectedArgs = {
 };
 
 
+export type Subscription_RootVulnerability_Affected_Analysis_ConfigArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Affected_Analysis_Config_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Affected_Analysis_Config_Order_By>>;
+  where?: InputMaybe<Vulnerability_Affected_Analysis_Config_Bool_Exp>;
+};
+
+
+export type Subscription_RootVulnerability_Affected_Analysis_Config_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
 export type Subscription_RootVulnerability_Affected_By_PkArgs = {
   id: Scalars['uuid'];
 };
@@ -7375,6 +7424,8 @@ export type Vulnerability_Affected = {
   affected_range_events: Array<Vulnerability_Affected_Range_Event>;
   /** An array relationship */
   affected_versions: Array<Vulnerability_Affected_Version>;
+  /** An array relationship */
+  analysis_configs: Array<Vulnerability_Affected_Analysis_Config>;
   database_specific?: Maybe<Scalars['jsonb']>;
   ecosystem_specific?: Maybe<Scalars['jsonb']>;
   id: Scalars['uuid'];
@@ -7410,6 +7461,16 @@ export type Vulnerability_AffectedAffected_VersionsArgs = {
 
 
 /** columns and relationships of "vulnerability.affected" */
+export type Vulnerability_AffectedAnalysis_ConfigsArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Affected_Analysis_Config_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Affected_Analysis_Config_Order_By>>;
+  where?: InputMaybe<Vulnerability_Affected_Analysis_Config_Bool_Exp>;
+};
+
+
+/** columns and relationships of "vulnerability.affected" */
 export type Vulnerability_AffectedDatabase_SpecificArgs = {
   path?: InputMaybe<Scalars['String']>;
 };
@@ -7437,6 +7498,70 @@ export type Vulnerability_Affected_Aggregate_Order_By = {
   min?: InputMaybe<Vulnerability_Affected_Min_Order_By>;
 };
 
+/** Analysis configuration for a tracing a vulnerability. */
+export type Vulnerability_Affected_Analysis_Config = {
+  __typename?: 'vulnerability_affected_analysis_config';
+  /** An object relationship */
+  affected?: Maybe<Vulnerability_Affected>;
+  affected_id?: Maybe<Scalars['uuid']>;
+  config: Scalars['jsonb'];
+  id: Scalars['uuid'];
+};
+
+
+/** Analysis configuration for a tracing a vulnerability. */
+export type Vulnerability_Affected_Analysis_ConfigConfigArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** order by aggregate values of table "vulnerability.affected_analysis_config" */
+export type Vulnerability_Affected_Analysis_Config_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Vulnerability_Affected_Analysis_Config_Max_Order_By>;
+  min?: InputMaybe<Vulnerability_Affected_Analysis_Config_Min_Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "vulnerability.affected_analysis_config". All fields are combined with a logical 'AND'. */
+export type Vulnerability_Affected_Analysis_Config_Bool_Exp = {
+  _and?: InputMaybe<Array<Vulnerability_Affected_Analysis_Config_Bool_Exp>>;
+  _not?: InputMaybe<Vulnerability_Affected_Analysis_Config_Bool_Exp>;
+  _or?: InputMaybe<Array<Vulnerability_Affected_Analysis_Config_Bool_Exp>>;
+  affected?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
+  affected_id?: InputMaybe<Uuid_Comparison_Exp>;
+  config?: InputMaybe<Jsonb_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** order by max() on columns of table "vulnerability.affected_analysis_config" */
+export type Vulnerability_Affected_Analysis_Config_Max_Order_By = {
+  affected_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "vulnerability.affected_analysis_config" */
+export type Vulnerability_Affected_Analysis_Config_Min_Order_By = {
+  affected_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "vulnerability.affected_analysis_config". */
+export type Vulnerability_Affected_Analysis_Config_Order_By = {
+  affected?: InputMaybe<Vulnerability_Affected_Order_By>;
+  affected_id?: InputMaybe<Order_By>;
+  config?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "vulnerability.affected_analysis_config" */
+export enum Vulnerability_Affected_Analysis_Config_Select_Column {
+  /** column name */
+  AffectedId = 'affected_id',
+  /** column name */
+  Config = 'config',
+  /** column name */
+  Id = 'id'
+}
+
 /** Boolean expression to filter rows from the table "vulnerability.affected". All fields are combined with a logical 'AND'. */
 export type Vulnerability_Affected_Bool_Exp = {
   _and?: InputMaybe<Array<Vulnerability_Affected_Bool_Exp>>;
@@ -7444,6 +7569,7 @@ export type Vulnerability_Affected_Bool_Exp = {
   _or?: InputMaybe<Array<Vulnerability_Affected_Bool_Exp>>;
   affected_range_events?: InputMaybe<Vulnerability_Affected_Range_Event_Bool_Exp>;
   affected_versions?: InputMaybe<Vulnerability_Affected_Version_Bool_Exp>;
+  analysis_configs?: InputMaybe<Vulnerability_Affected_Analysis_Config_Bool_Exp>;
   database_specific?: InputMaybe<Jsonb_Comparison_Exp>;
   ecosystem_specific?: InputMaybe<Jsonb_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -7472,6 +7598,7 @@ export type Vulnerability_Affected_Min_Order_By = {
 export type Vulnerability_Affected_Order_By = {
   affected_range_events_aggregate?: InputMaybe<Vulnerability_Affected_Range_Event_Aggregate_Order_By>;
   affected_versions_aggregate?: InputMaybe<Vulnerability_Affected_Version_Aggregate_Order_By>;
+  analysis_configs_aggregate?: InputMaybe<Vulnerability_Affected_Analysis_Config_Aggregate_Order_By>;
   database_specific?: InputMaybe<Order_By>;
   ecosystem_specific?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -8390,7 +8517,7 @@ export type GetTraceDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetTraceDetailsQuery = { __typename?: 'query_root', instances_by_pk?: { __typename?: 'instances', hostname?: string | null, id: any, last_heartbeat: any, created_at: any, logs: Array<{ __typename?: 'instance_log', id: number, message: any }> } | null };
+export type GetTraceDetailsQuery = { __typename?: 'query_root', instances_by_pk?: { __typename?: 'instances', hostname?: string | null, id: any, last_heartbeat: any, created_at: any, logs: Array<{ __typename?: 'instance_log', id: number, message: any, affected_analysis_config?: { __typename?: 'vulnerability_affected_analysis_config', affected?: { __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', source_id: string, severity_name?: any | null }, package: { __typename?: 'package', name: string } } | null } | null }> } | null };
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
@@ -9083,6 +9210,17 @@ export const GetTraceDetailsDocument = `
     logs {
       id
       message
+      affected_analysis_config {
+        affected {
+          vulnerability {
+            source_id
+            severity_name
+          }
+          package {
+            name
+          }
+        }
+      }
     }
   }
 }

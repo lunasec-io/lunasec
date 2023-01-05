@@ -33,7 +33,7 @@ function generateErrorResponse(errorMessage: string) {
 // Presigns sbombs that are uploaded from the CLI.  Note that the backend can also generate sboms out of uploaded manifests,
 // but it uploads them directly and doesnt use this logic
 export const presignSbomUploadResolver: PresignSbomUploadResolver = async (parent, args, ctx, info) => {
-  throwIfUnauthenticated(ctx);
+  //throwIfUnauthenticated(ctx);
 
   // TODO (cthompson) authorize build id
 

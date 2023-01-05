@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package snapshot
 
 import (
@@ -59,7 +58,7 @@ func processSbom(
 
 	branchName := getBranchName(options.GitBranch, repoMeta.BranchName)
 
-	agentSecret, err := uploadSbom(appConfig, sbomModel, repoMeta, branchName)
+	agentSecret, url, err := uploadSbom(appConfig, sbomModel, repoMeta, branchName)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -71,8 +70,9 @@ func processSbom(
 		err = writeLunaTraceAgentConfigFile(agentSecret, options.AgentOutput)
 	} else {
 		log.Info().
-			Str("Agent Secret", agentSecret).
-			Msg("Set this agent secret as an environment variable (LUNASEC_AGENT_SECRET) or in the config file (.lunatrace_agent.yaml) in your deployed service to use live monitoring")
+			Str("Snapshot Results", url).
+			Str("Agent Secret", fmt.Sprintf("LUNATRACE_AGENT_SECRET=%s", agentSecret)).
+			Msg("Set this agent secret as an environment variable (LUNATRACE_AGENT_SECRET) or in the config file (.lunatrace_agent.yaml) in your deployed service to use live monitoring")
 	}
 	return
 }
@@ -98,7 +98,7 @@ func outputSbom(sbom syftmodel.Document, printToStdout bool, outputFile string) 
 	return
 }
 
-func uploadSbom(appConfig types.LunaTraceConfig, sbom syftmodel.Document, repoMeta deprecated.RepoMetadata, branchName string) (agentSecret string, err error) {
+func uploadSbom(appConfig types.LunaTraceConfig, sbom syftmodel.Document, repoMeta deprecated.RepoMetadata, branchName string) (agentSecret string, url string, err error) {
 	var (
 		orgId, projectId, buildId, s3Url string
 	)
@@ -112,11 +112,14 @@ func uploadSbom(appConfig types.LunaTraceConfig, sbom syftmodel.Document, repoMe
 		return
 	}
 
-	log.Info().Msg("Creating build in LunaTrace database")
+	log.Info().Msg("Saving snapshot...")
 	agentSecret, buildId, err = insertNewBuild(appConfig, projectId, repoMeta, branchName)
 	if err != nil {
 		return
 	}
+
+	url = fmt.Sprintf("http://localhost:4455/project/%s/build/%s", projectId, buildId)
+
 	log.Info().Msg("Uploading generated SBOM")
 
 	s3Url, err = uploadSbomToS3(appConfig, sbom, buildId, orgId)
