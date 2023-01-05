@@ -18,6 +18,13 @@ object_relationships:
     using:
       foreign_key_constraint_on: settings_id
 array_relationships:
+  - name: analysis_configs
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          name: project_analysis_config
+          schema: public
   - name: builds
     using:
       foreign_key_constraint_on:
@@ -103,9 +110,13 @@ select_permissions:
         - organization_id
         - settings_id
       filter:
-        project_access_tokens:
-          access_token:
-            _eq: X-Hasura-Access-Token
+        _or:
+          - project_access_tokens:
+              access_token:
+                _eq: X-Hasura-Access-Token
+          - builds:
+              agent_access_token:
+                _eq: X-Hasura-Access-Token
   - role: service
     permission:
       columns:

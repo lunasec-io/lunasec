@@ -20,7 +20,6 @@ export interface JWTClaims {
     'x-hasura-default-role'?: string;
     'x-hasura-user-id'?: string;
     'x-hasura-real-user-id'?: string;
-    'x-hasura-builds'?: string;
   };
   [x: string]: unknown;
 }

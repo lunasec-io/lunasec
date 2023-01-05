@@ -54,6 +54,14 @@ insert_permissions:
         - virtual_path
         - vulnerability_id
 select_permissions:
+  - role: cli
+    permission:
+      columns:
+        - vulnerability_id
+      filter:
+        build:
+          agent_access_token:
+            _eq: X-Hasura-Access-Token
   - role: service
     permission:
       columns:

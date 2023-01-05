@@ -26,21 +26,6 @@ const sbomHandlerConfig = getBackendBucketConfig();
 
 export const sbomPresignerRouter = Express.Router();
 
-export function getAuthorizedBuilds(jwt: JWTClaims | undefined): string | false {
-  if (!jwt) {
-    throw new GraphQLYogaError('Missing auth header in request');
-  }
-
-  // messy data coming from oathkeeper, stringifying this value wasn't working so its one big weird golang string, fix later
-  const authorizedBuilds =
-    jwt && jwt['https://hasura.io/jwt/claims'] !== undefined && jwt['https://hasura.io/jwt/claims']['x-hasura-builds'];
-
-  if (typeof authorizedBuilds !== 'string') {
-    return false;
-  }
-  return authorizedBuilds;
-}
-
 function generateErrorResponse(errorMessage: string) {
   return { error: true, message: errorMessage };
 }
@@ -49,16 +34,8 @@ function generateErrorResponse(errorMessage: string) {
 // but it uploads them directly and doesnt use this logic
 export const presignSbomUploadResolver: PresignSbomUploadResolver = async (parent, args, ctx, info) => {
   throwIfUnauthenticated(ctx);
-  const authorizedBuilds = getAuthorizedBuilds(ctx.req.user);
-  if (!authorizedBuilds) {
-    return generateErrorResponse('Missing x-hasura-builds in authorization jwt header');
-  }
 
-  if (!authorizedBuilds.includes(args.buildId)) {
-    return generateErrorResponse(
-      'Attempted to presign a build that wasnt in the list of builds belonging to the project'
-    );
-  }
+  // TODO (cthompson) authorize build id
 
   try {
     const result = await aws.generatePresignedS3Url(

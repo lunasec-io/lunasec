@@ -70,16 +70,19 @@ export const TraceDetails: React.FunctionComponent = () => {
         <h2>Runtime Trace</h2>
         <p>Host: {instance.hostname}</p>
         <Table>
-          <thead>
-            <tr>
-              <th>Message</th>
-            </tr>
-          </thead>
+          <thead></thead>
           <tbody>
             {instance.logs.map((log) => {
               return (
                 <tr key={log.id}>
-                  <th>{JSON.stringify(log.message)}</th>
+                  <th>
+                    <p>
+                      <span className="lighter">Method</span>: {log.message.method}
+                    </p>
+                    <p>
+                      <span className="lighter">Arguments</span>: {log.message.arguments}
+                    </p>
+                  </th>
                 </tr>
               );
             })}

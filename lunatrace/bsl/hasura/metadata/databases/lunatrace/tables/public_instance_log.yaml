@@ -2,6 +2,9 @@ table:
   name: instance_log
   schema: public
 object_relationships:
+  - name: affected_analysis_config
+    using:
+      foreign_key_constraint_on: affected_analysis_config_id
   - name: instance
     using:
       foreign_key_constraint_on: instance_id
@@ -13,6 +16,7 @@ insert_permissions:
           agent_access_token:
             _eq: X-Hasura-Access-Token
       columns:
+        - affected_analysis_config_id
         - id
         - instance_id
         - message

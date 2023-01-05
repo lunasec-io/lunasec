@@ -29,6 +29,14 @@ insert_permissions:
         - distro_version
         - scan_number
 select_permissions:
+  - role: cli
+    permission:
+      columns:
+        - created_at
+      filter:
+        build:
+          agent_access_token:
+            _eq: X-Hasura-Access-Token
   - role: service
     permission:
       columns:

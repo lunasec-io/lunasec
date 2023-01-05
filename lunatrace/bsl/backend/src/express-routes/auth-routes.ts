@@ -76,26 +76,18 @@ function generateErrorResponse(res: Response, errorMessage: string, statusCode =
 
 // Oathkeeper calls this when requests from the CLI come through the gateway.. We append this data here just for the action
 // but currently this fires for all calls..could clean that up with a new oathkeeper rule
-export async function cliAuthorizer(req: Request, res: Response): Promise<void> {
+export function cliAuthorizer(req: Request, res: Response): void {
   const parsedRequest = parseRequestTokenHeader('X-LunaTrace-Access-Token', req);
 
   if (parsedRequest.error) {
     return generateErrorResponse(res, parsedRequest.msg);
   }
 
-  const hasuraRes = await hasura.GetAuthDataFromProjectToken({ access_token: parsedRequest.res });
-  const projectData = hasuraRes.project_access_tokens?.[0] || hasuraRes.builds?.[0];
-  if (!projectData) {
-    return generateErrorResponse(
-      res,
-      `Invalid Access Token specified in X-LunaTrace-Access-Token header: ${parsedRequest.res}`,
-      401
-    );
-  }
+  log.info(parsedRequest.res);
+
   res.send({
     error: false,
     extra: {
-      project_uuid: projectData.project.id,
       access_token: parsedRequest.res,
     },
   });

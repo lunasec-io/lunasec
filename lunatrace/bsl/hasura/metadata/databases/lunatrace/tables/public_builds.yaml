@@ -62,9 +62,12 @@ insert_permissions:
   - role: cli
     permission:
       check:
-        project:
-          project_access_tokens:
-            access_token:
+        _or:
+          - project:
+              project_access_tokens:
+                access_token:
+                  _eq: X-Hasura-Access-Token
+          - agent_access_token:
               _eq: X-Hasura-Access-Token
       set:
         source_type: cli
@@ -108,9 +111,12 @@ select_permissions:
         - s3_url
         - source_type
       filter:
-        project:
-          project_access_tokens:
-            access_token:
+        _or:
+          - project:
+              project_access_tokens:
+                access_token:
+                  _eq: X-Hasura-Access-Token
+          - agent_access_token:
               _eq: X-Hasura-Access-Token
   - role: service
     permission:
@@ -162,9 +168,12 @@ update_permissions:
       columns:
         - s3_url
       filter:
-        project:
-          project_access_tokens:
-            access_token:
+        _or:
+          - project:
+              project_access_tokens:
+                access_token:
+                  _eq: X-Hasura-Access-Token
+          - agent_access_token:
               _eq: X-Hasura-Access-Token
       check: null
   - role: service

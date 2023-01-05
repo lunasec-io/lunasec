@@ -1,0 +1,19 @@
+table:
+  name: project_analysis_config
+  schema: public
+object_relationships:
+  - name: project
+    using:
+      foreign_key_constraint_on: project_id
+select_permissions:
+  - role: cli
+    permission:
+      columns:
+        - id
+        - config
+        - project_id
+      filter:
+        project:
+          builds:
+            agent_access_token:
+              _eq: X-Hasura-Access-Token
