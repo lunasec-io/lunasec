@@ -35,6 +35,8 @@ interface WorkerStackProps extends cdk.StackProps {
   fargateService: ApplicationLoadBalancedFargateService;
   publicHasuraServiceUrl: string;
   gitHubAppId: string;
+  nodeEnvVars: Record<string, string>;
+  nodeSecrets: Record<string, EcsSecret>;
   gitHubAppPrivateKey: ISecret;
   hasuraDatabaseUrlSecret: ISecret;
   hasuraAdminSecret: ISecret;
@@ -73,12 +75,14 @@ export class WorkerStack extends cdk.Stack {
   public static createWorkerStack(context: Construct, props: WorkerStackProps): void {
     const {
       fargateCluster,
-      publicHasuraServiceUrl,
-      gitHubAppId,
-      gitHubAppPrivateKey,
-      hasuraDatabaseUrlSecret,
-      hasuraAdminSecret,
-      backendStaticSecret,
+      // publicHasuraServiceUrl,
+      // gitHubAppId,
+      // gitHubAppPrivateKey,
+      // hasuraDatabaseUrlSecret,
+      // hasuraAdminSecret,
+      // backendStaticSecret,
+      nodeEnvVars,
+      nodeSecrets,
       storageStack,
       datadogApiKeyArn,
       servicesSecurityGroup,
@@ -104,32 +108,6 @@ export class WorkerStack extends cdk.Stack {
       ...commonBuildProps,
       file: 'docker/queuehandler.dockerfile',
     });
-
-    // common environment variables used by queue processors
-    const processQueueCommonEnvVars: Record<string, string> = {
-      NODE_ENV: 'production',
-      WORKER_TYPE: 'queue-handler',
-      PROCESS_WEBHOOK_QUEUE: webhookQueue.queueName,
-      PROCESS_REPOSITORY_QUEUE: repositoryQueue.queueName,
-      S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
-      S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
-      S3_CODE_BUCKET: storageStack.codeBucket.bucketName,
-      GITHUB_APP_ID: gitHubAppId,
-      HASURA_URL: publicHasuraServiceUrl,
-      LUNATRACE_GRAPHQL_SERVER_URL: 'http://backend.services:8080/v1/graphql',
-      LUNATRACE_NPM_REGISTRY: 'http://backend.services:8081',
-      STATIC_ANALYSIS_QUEUE: staticAnalysisQueue.queueName,
-    };
-
-    const processQueueCommonSecrets: Record<string, EcsSecret> = {
-      DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-      LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-      HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-      HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
-      LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
-      STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
-      GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
-    };
 
     const gb = 1024;
 
@@ -212,12 +190,12 @@ export class WorkerStack extends cdk.Stack {
         enableLogging: true,
         logDriver: datadogLogDriverForService('lunatrace', name),
         environment: {
-          ...processQueueCommonEnvVars,
+          ...nodeEnvVars,
           ...(visibility ? { QUEUE_VISIBILITY: visibility.toString() } : {}),
           REDEPLOY: '1',
         },
         securityGroups: [vpcDbSecurityGroup, servicesSecurityGroup],
-        secrets: processQueueCommonSecrets,
+        secrets: nodeSecrets,
         containerName: name + 'Container',
         circuitBreaker: {
           rollback: true,

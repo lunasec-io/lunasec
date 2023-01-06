@@ -43,6 +43,8 @@ import { WorkerStorageStack } from './worker-storage-stack';
 
 type LunaTraceStackProps = cdk.StackProps & StackInputs;
 
+// Handles far more than just the backend, in reality this is the "root stack" that launches all other sub-stacks
+// TODO: rename this to "RootStack"
 export class LunatraceBackendStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: LunaTraceStackProps) {
     super(scope, id, props);
@@ -127,6 +129,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       !storageStackStage.processRepositorySqsQueue ||
       !storageStackStage.processWebhookSqsQueue ||
       !storageStackStage.processManifestSqsQueue ||
+      !storageStackStage.staticAnalysisSqsQueue ||
       !storageStackStage.processSbomSqsQueue
     ) {
       throw new Error(`expected non-null storage stack queues: ${inspect(storageStackStage)}`);
@@ -248,6 +251,37 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
+    // These are used by the backend node container below, and also by the worker containers in the worker-stack
+    const nodeEnvVars = {
+      ...baseEnvironmentVars,
+      NODE_ENV: 'production',
+      WORKER_TYPE: 'queue-handler',
+      PROCESS_WEBHOOK_QUEUE: storageStackStage.processWebhookSqsQueue.queueName,
+      PROCESS_REPOSITORY_QUEUE: storageStackStage.processRepositorySqsQueue.queueName,
+      STATIC_ANALYSIS_QUEUE: storageStackStage.staticAnalysisSqsQueue.queueName,
+      S3_SBOM_BUCKET: storageStackStage.sbomBucket.bucketName,
+      S3_MANIFEST_BUCKET: storageStackStage.manifestBucket.bucketName,
+      S3_CODE_BUCKET: storageStackStage.codeBucket.bucketName,
+      GITHUB_APP_ID: props.gitHubAppId,
+      HASURA_URL: publicHasuraServiceUrl,
+      LUNATRACE_GRAPHQL_SERVER_URL: 'http://backend.services:8080/v1/graphql',
+      LUNATRACE_NPM_REGISTRY: 'http://backend.services:8081',
+      QUEUE_VISIBILITY: '0', // overwritten by worker defs
+      SITE_PUBLIC_URL: publicBaseUrl,
+      PORT: '3002',
+    };
+
+    const nodeSecrets = {
+      DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+      LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+      STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
+      GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
+      GITHUB_APP_WEBHOOK_SECRET: EcsSecret.fromSecretsManager(gitHubAppWebHookSecret),
+    };
+
     const backendContainerImage = ContainerImage.fromAsset('../backend', {
       ...commonBuildProps,
       target: 'backend-express-server',
@@ -258,23 +292,8 @@ export class LunatraceBackendStack extends cdk.Stack {
       containerName: 'LunaTraceBackendContainer',
       portMappings: [{ containerPort: 3002 }],
       logging: datadogLogDriverForService('lunatrace', 'backend'),
-      environment: {
-        ...baseEnvironmentVars,
-        GITHUB_APP_ID: props.gitHubAppId,
-        S3_SBOM_BUCKET: storageStackStage.sbomBucket.bucketName,
-        S3_MANIFEST_BUCKET: storageStackStage.manifestBucket.bucketName,
-        PROCESS_WEBHOOK_QUEUE: storageStackStage.processWebhookSqsQueue.queueName,
-        PROCESS_REPOSITORY_QUEUE: storageStackStage.processRepositorySqsQueue.queueName,
-        SITE_PUBLIC_URL: publicBaseUrl,
-        PORT: '3002',
-        NODE_ENV: 'production',
-      },
-      secrets: {
-        DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-        STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
-        GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
-        GITHUB_APP_WEBHOOK_SECRET: EcsSecret.fromSecretsManager(gitHubAppWebHookSecret),
-      },
+      environment: nodeEnvVars,
+      secrets: nodeSecrets,
       healthCheck: {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:3002/health || exit 1'],
       },
@@ -469,6 +488,8 @@ export class LunatraceBackendStack extends cdk.Stack {
       env: props.env,
       storageStack: storageStackStage,
       fargateCluster,
+      nodeEnvVars,
+      nodeSecrets,
       fargateService: loadBalancedFargateService,
       gitHubAppId: props.gitHubAppId,
       gitHubAppPrivateKey,
