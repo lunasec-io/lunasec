@@ -19,7 +19,7 @@
     "test": "jest",
     "guides:update": "yarn run ts-node --files src/guide-ingester/cmd.ts ../../../guides",
     "test:deleted": "yarn run ts-node --files ./src/tests/deleted-vulns-scan.ts",
-    "start:prod": "pm2-runtime start --node-args=\"--enable-source-maps\" ./build/server.js --name demo-back-end",
+    "start:prod": "node ./build/server.js",
     "generate:hasura-calls": "graphql-codegen --config codegen.hasura.yml",
     "generate:custom-calls": "graphql-codegen --config codegen.lunatrace-custom.yml",
     "generate:github-calls": "graphql-codegen --config codegen.github.yml",

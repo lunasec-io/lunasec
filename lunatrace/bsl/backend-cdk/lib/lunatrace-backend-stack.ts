@@ -23,6 +23,7 @@ import {
   DeploymentControllerType,
   Secret as EcsSecret,
   FargateTaskDefinition,
+  LogDriver,
 } from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { ApplicationProtocol, ListenerCondition, SslPolicy } from '@aws-cdk/aws-elasticloadbalancingv2';
@@ -291,7 +292,9 @@ export class LunatraceBackendStack extends cdk.Stack {
       image: backendContainerImage,
       containerName: 'LunaTraceBackendContainer',
       portMappings: [{ containerPort: 3002 }],
-      logging: datadogLogDriverForService('lunatrace', 'backend'),
+      logging: LogDriver.awsLogs({
+        streamPrefix: 'lunatrace-backend-tmp',
+      }),
       environment: nodeEnvVars,
       secrets: nodeSecrets,
       healthCheck: {
