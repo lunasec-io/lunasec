@@ -17413,6 +17413,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/cvss@npm:~1.0.0":
+  version: 1.0.0
+  resolution: "@types/cvss@npm:1.0.0"
+  checksum: e0b606eeab1e04f67f718f60baaf1083cdb0aca4d58ae4d61a2590447406600702d76ba1ed573fc2585d6cd22ea5a0b0d6fe6e6d46a2a58ab3acda8d6dac02c0
+  languageName: node
+  linkType: hard
+
 "@types/cypress@npm:^1.1.3":
   version: 1.1.3
   resolution: "@types/cypress@npm:1.1.3"
@@ -26659,6 +26666,13 @@ __metadata:
   dependencies:
     array-find-index: ^1.0.1
   checksum: 1f59fe10b5339b54b1a1eee110022f663f3495cf7cf2f480686e89edc7fa8bfe42dbab4b54f85034bc8b092a76cc7becbc2dad4f9adad332ab5831bec39ad540
+  languageName: node
+  linkType: hard
+
+"cvss@npm:~1.0.5":
+  version: 1.0.5
+  resolution: "cvss@npm:1.0.5"
+  checksum: 36241717391521eebce6fc303422330983405793fd1f3a92647fb7389aa46d4d008aab12abed550c61ab7bd7e0274ef4f7cae0c291afe8738369f3d96963c2af
   languageName: node
   linkType: hard
 
@@ -39907,6 +39921,7 @@ __metadata:
     "@types/bl": ~5.0.2
     "@types/config": ^0.0.41
     "@types/cors": ^2.8.12
+    "@types/cvss": ~1.0.0
     "@types/deepmerge": ^2.2.0
     "@types/eventsource": ^1.1.8
     "@types/express": ^4.17.13
@@ -39929,6 +39944,7 @@ __metadata:
     concurrently: ^7.0.0
     config: ^3.3.6
     cors: ^2.8.5
+    cvss: ~1.0.5
     deepmerge: ^4.2.2
     dotenv: ^10.0.0
     eslint: ^7.25.0

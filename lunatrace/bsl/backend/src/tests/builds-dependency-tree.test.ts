@@ -15,8 +15,8 @@
 import fs from 'fs';
 import path from 'path';
 
-import VulnerabilityDependencyTree from '../models/vulnerability-dependency-tree';
 import { DependencyChain, Manifest } from '../models/vulnerability-dependency-tree/types';
+import VulnerabilityDependencyTree from '../models/vulnerability-dependency-tree/vulnerability-dependency-tree';
 
 import { fakeDependencyTreeHasuraOutputFixture } from './fixtures/manifests/fake-dependency-tree-hasura-output-fixture';
 import { realDependencyTreeHasuraOutputFixture } from './fixtures/manifests/real-dependency-tree-hasura-output';

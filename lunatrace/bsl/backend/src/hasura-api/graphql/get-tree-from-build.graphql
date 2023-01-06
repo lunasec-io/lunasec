@@ -7,7 +7,8 @@ fragment ManifestDependencyEdge on manifest_dependency_edge {
         finding_source_version
         finding_source
         finding_type
-        locations(limit: 5) {
+#   todo: limit this count before it gets to the frontend
+        locations {
             id
             path
             start_row
@@ -18,6 +19,7 @@ fragment ManifestDependencyEdge on manifest_dependency_edge {
     }
 }
 
+# TODO: Why do we have this where clause here, it doesnt seem like we use it
 query GetTreeFromBuild($build_id: uuid!, $analysis_results_where: analysis_manifest_dependency_edge_result_bool_exp = {}) {
     builds_by_pk(id: $build_id) {
         resolved_manifests {
@@ -39,6 +41,28 @@ query GetTreeFromBuild($build_id: uuid!, $analysis_results_where: analysis_manif
                 note
                 project_id
                 vulnerability_id
+            }
+            project_folder_settings {
+                precedence
+                ignore
+                path_glob
+                root
+                folder_environmental_adjustments {
+                    cvss_environmental_adjustment {
+                        attack_complexity
+                        attack_vector
+                        availability_impact
+                        availability_requirement
+                        confidentiality_impact
+                        confidentiality_requirement
+                        group_name
+                        integrity_impact
+                        integrity_requirement
+                        privileges_required
+                        user_interaction
+                        scope
+                    }
+                }
             }
         }
     }

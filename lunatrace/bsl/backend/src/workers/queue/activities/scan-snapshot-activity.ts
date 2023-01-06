@@ -22,7 +22,7 @@ import { interactWithPR } from '../../../github/actions/pr-comment-generator';
 import { updateBuildStatus } from '../../../hasura-api/actions/update-build-status';
 import { updateManifestStatus } from '../../../hasura-api/actions/update-manifest-status';
 import { Build_State_Enum } from '../../../hasura-api/generated';
-import { vulnerabilityTreeFromHasura } from '../../../models/vulnerability-dependency-tree/vulnerability-tree-from-hasura';
+import { loadTree } from '../../../models/vulnerability-dependency-tree/load-tree';
 import { S3ObjectMetadata } from '../../../types/s3';
 import { SbomBucketInfo } from '../../../types/scan';
 import { MaybeError, MaybeErrorVoid } from '../../../types/util';
@@ -85,7 +85,7 @@ async function staticallyAnalyzeDependencyTree(buildId: string): Promise<MaybeEr
   });
 
   const logger = log.child('static-analysis', { buildId });
-  const depTree = await vulnerabilityTreeFromHasura(logger, buildId);
+  const depTree = await loadTree(logger, buildId);
   if (depTree.error) {
     log.error('unable to build dependency tree');
     return newError('unable to build dependency tree');

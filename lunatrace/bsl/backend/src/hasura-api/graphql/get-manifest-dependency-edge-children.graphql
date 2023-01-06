@@ -20,6 +20,11 @@ query GetManifestDependencyEdgeChildren($ids: [uuid!]!) {
             severity_name
             cvss_score
             summary
+            severities {
+              source
+              type
+              score
+            }
             guide_vulnerabilities {
               guide_id
               guide {
