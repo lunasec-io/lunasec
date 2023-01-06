@@ -11,9 +11,9 @@
  * limitations under the License.
  *
  */
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
-import { Box, Home, Menu, Settings } from 'react-feather';
+import { Box, Home, Menu, Settings, Shuffle } from 'react-feather';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 
@@ -25,6 +25,7 @@ import { useRecentProjects } from '../../hooks/useRecentProjects';
 import { ProjectHeader } from './Header';
 import { Builds } from './builds';
 import { ProjectDashboardMain } from './dashboard/Main';
+import { RiskAdjustmentMain } from './risk-adjustment/RiskAdjustmentMain';
 import { SecretsMain } from './secrets/Main';
 import { ProjectSettingsMain } from './settings/Main';
 import { ProjectInfo, TabName } from './types';
@@ -32,25 +33,10 @@ import { ProjectInfo, TabName } from './types';
 export const ProjectMain: React.FunctionComponent = (_props) => {
   const { project_id } = useParams();
 
-  const [buildLimit, setBuildLimit] = useState(10);
-
   // Load project information
   const { data, isLoading, refetch, isFetching } = api.useGetProjectQuery({
     project_id: project_id as string,
-    build_limit: buildLimit,
   });
-
-  // pass this down to the build view so we can lazy load more builds..not true pagination but probably good enough
-  // will get slower as the user gets lower since it will be reloading more and more builds
-  const loadMoreBuildsCallback = () => {
-    if (data && data.projects_by_pk) {
-      const buildCount = data.projects_by_pk.builds.length;
-      if (buildCount !== data.projects_by_pk.builds_aggregate.aggregate?.count) {
-        setBuildLimit(buildLimit + 50);
-        refetch();
-      }
-    }
-  };
 
   const isLarge = useBreakpoint('lg');
 
@@ -66,7 +52,7 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
   const [activeTab, setActiveTab] = useState<TabName>('dashboard');
   const renderProjectNavAndHeader = (p: ProjectInfo) => {
     return (
-      <>
+      <React.Fragment key={project_id}>
         <Helmet title={p.name} />
         <ProjectHeader
           projectName={p.name}
@@ -101,6 +87,16 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
                   <Box size="1em" className="mb-2 me-1" /> Snapshots
                 </Nav.Link>
               </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  onClick={() => {
+                    setActiveTab('filters');
+                  }}
+                  eventKey="filters"
+                >
+                  <Shuffle size="1em" className="mb-2 me-1" /> Risk Adjustment
+                </Nav.Link>
+              </Nav.Item>
               {/*<Nav.Item className="ms-lg-auto">*/}
               {/*  <Nav.Link onClick={() => setActiveTab('secrets')} eventKey="secrets">*/}
               {/*    <Lock size="1em" className="mb-2 me-1" /> Secrets and Keys*/}
@@ -121,38 +117,42 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
         </Navbar>
 
         <br />
-        {renderProjectSubPage(p, buildLimit)}
-      </>
+      </React.Fragment>
     );
   };
 
-  const renderProjectSubPage = (p: ProjectInfo, buildLimit: number) => {
+  const renderProjectSubPage = (p: ProjectInfo) => {
     switch (activeTab) {
       case 'dashboard':
         return <ProjectDashboardMain project={p} setActiveTab={setActiveTab} />;
       case 'builds':
-        return (
-          <Builds
-            project={p}
-            buildLimit={buildLimit}
-            loadMoreBuildsCallback={loadMoreBuildsCallback}
-            isFetching={isFetching}
-          />
-        );
+        return <Builds project={p} />;
       case 'secrets':
         return <SecretsMain project={p} />;
       case 'settings':
         return <ProjectSettingsMain project={p} />;
+      case 'filters':
+        return <RiskAdjustmentMain project={p} />;
       default:
         return <ProjectMain />;
     }
   };
 
+  const renderBody = () => {
+    if (!data || !data.projects_by_pk) {
+      return null;
+    }
+    return (
+      <>
+        {renderProjectNavAndHeader(data.projects_by_pk)}
+        {renderProjectSubPage(data.projects_by_pk)}
+      </>
+    );
+  };
+
   return (
     <SpinIfLoading isLoading={isLoading}>
-      <Container className="project-page">
-        {data && data.projects_by_pk ? renderProjectNavAndHeader(data.projects_by_pk) : null}
-      </Container>
+      <Container className="project-page">{renderBody()}</Container>
     </SpinIfLoading>
   );
 };

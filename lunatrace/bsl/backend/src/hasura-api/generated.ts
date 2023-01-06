@@ -17,6 +17,12 @@ export type Scalars = {
   affected_range_type: any;
   bigint: number;
   builds_source_type: 'cli'|'gui'|'pr'|'default_branch';
+  cvss_complexity: any;
+  cvss_interaction: any;
+  cvss_low_medium_high: any;
+  cvss_none_low_high: any;
+  cvss_scope: any;
+  cvss_vector: any;
   date: Date;
   fix_state_enum: 'fixed'|'not-fixed'|'unknown';
   jsonb: Record<any, any> | any[];
@@ -1717,6 +1723,193 @@ export type Builds_Variance_Order_By = {
   existing_github_check_id?: InputMaybe<Order_By>;
 };
 
+/** Boolean expression to compare columns of type "cvss_complexity". All fields are combined with logical 'AND'. */
+export type Cvss_Complexity_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['cvss_complexity']>;
+  _gt?: InputMaybe<Scalars['cvss_complexity']>;
+  _gte?: InputMaybe<Scalars['cvss_complexity']>;
+  _in?: InputMaybe<Array<Scalars['cvss_complexity']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['cvss_complexity']>;
+  _lte?: InputMaybe<Scalars['cvss_complexity']>;
+  _neq?: InputMaybe<Scalars['cvss_complexity']>;
+  _nin?: InputMaybe<Array<Scalars['cvss_complexity']>>;
+};
+
+/** columns and relationships of "cvss_environmental_adjustment" */
+export type Cvss_Environmental_Adjustment = {
+  __typename?: 'cvss_environmental_adjustment';
+  attack_complexity: Scalars['cvss_complexity'];
+  attack_vector: Scalars['cvss_vector'];
+  availability_impact: Scalars['cvss_none_low_high'];
+  availability_requirement: Scalars['cvss_low_medium_high'];
+  confidentiality_impact: Scalars['cvss_none_low_high'];
+  confidentiality_requirement: Scalars['cvss_low_medium_high'];
+  created_at?: Maybe<Scalars['timestamptz']>;
+  /** An array relationship */
+  folder_environmental_adjustments: Array<Folder_Environmental_Adjustment>;
+  group_name: Scalars['String'];
+  id: Scalars['uuid'];
+  integrity_impact: Scalars['cvss_none_low_high'];
+  integrity_requirement: Scalars['cvss_low_medium_high'];
+  name: Scalars['String'];
+  privileges_required: Scalars['cvss_none_low_high'];
+  scope: Scalars['cvss_scope'];
+  user_interaction: Scalars['cvss_interaction'];
+};
+
+
+/** columns and relationships of "cvss_environmental_adjustment" */
+export type Cvss_Environmental_AdjustmentFolder_Environmental_AdjustmentsArgs = {
+  distinct_on?: InputMaybe<Array<Folder_Environmental_Adjustment_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Folder_Environmental_Adjustment_Order_By>>;
+  where?: InputMaybe<Folder_Environmental_Adjustment_Bool_Exp>;
+};
+
+/** Boolean expression to filter rows from the table "cvss_environmental_adjustment". All fields are combined with a logical 'AND'. */
+export type Cvss_Environmental_Adjustment_Bool_Exp = {
+  _and?: InputMaybe<Array<Cvss_Environmental_Adjustment_Bool_Exp>>;
+  _not?: InputMaybe<Cvss_Environmental_Adjustment_Bool_Exp>;
+  _or?: InputMaybe<Array<Cvss_Environmental_Adjustment_Bool_Exp>>;
+  attack_complexity?: InputMaybe<Cvss_Complexity_Comparison_Exp>;
+  attack_vector?: InputMaybe<Cvss_Vector_Comparison_Exp>;
+  availability_impact?: InputMaybe<Cvss_None_Low_High_Comparison_Exp>;
+  availability_requirement?: InputMaybe<Cvss_Low_Medium_High_Comparison_Exp>;
+  confidentiality_impact?: InputMaybe<Cvss_None_Low_High_Comparison_Exp>;
+  confidentiality_requirement?: InputMaybe<Cvss_Low_Medium_High_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  folder_environmental_adjustments?: InputMaybe<Folder_Environmental_Adjustment_Bool_Exp>;
+  group_name?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  integrity_impact?: InputMaybe<Cvss_None_Low_High_Comparison_Exp>;
+  integrity_requirement?: InputMaybe<Cvss_Low_Medium_High_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  privileges_required?: InputMaybe<Cvss_None_Low_High_Comparison_Exp>;
+  scope?: InputMaybe<Cvss_Scope_Comparison_Exp>;
+  user_interaction?: InputMaybe<Cvss_Interaction_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "cvss_environmental_adjustment". */
+export type Cvss_Environmental_Adjustment_Order_By = {
+  attack_complexity?: InputMaybe<Order_By>;
+  attack_vector?: InputMaybe<Order_By>;
+  availability_impact?: InputMaybe<Order_By>;
+  availability_requirement?: InputMaybe<Order_By>;
+  confidentiality_impact?: InputMaybe<Order_By>;
+  confidentiality_requirement?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  folder_environmental_adjustments_aggregate?: InputMaybe<Folder_Environmental_Adjustment_Aggregate_Order_By>;
+  group_name?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  integrity_impact?: InputMaybe<Order_By>;
+  integrity_requirement?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  privileges_required?: InputMaybe<Order_By>;
+  scope?: InputMaybe<Order_By>;
+  user_interaction?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "cvss_environmental_adjustment" */
+export enum Cvss_Environmental_Adjustment_Select_Column {
+  /** column name */
+  AttackComplexity = 'attack_complexity',
+  /** column name */
+  AttackVector = 'attack_vector',
+  /** column name */
+  AvailabilityImpact = 'availability_impact',
+  /** column name */
+  AvailabilityRequirement = 'availability_requirement',
+  /** column name */
+  ConfidentialityImpact = 'confidentiality_impact',
+  /** column name */
+  ConfidentialityRequirement = 'confidentiality_requirement',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  GroupName = 'group_name',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IntegrityImpact = 'integrity_impact',
+  /** column name */
+  IntegrityRequirement = 'integrity_requirement',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  PrivilegesRequired = 'privileges_required',
+  /** column name */
+  Scope = 'scope',
+  /** column name */
+  UserInteraction = 'user_interaction'
+}
+
+/** Boolean expression to compare columns of type "cvss_interaction". All fields are combined with logical 'AND'. */
+export type Cvss_Interaction_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['cvss_interaction']>;
+  _gt?: InputMaybe<Scalars['cvss_interaction']>;
+  _gte?: InputMaybe<Scalars['cvss_interaction']>;
+  _in?: InputMaybe<Array<Scalars['cvss_interaction']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['cvss_interaction']>;
+  _lte?: InputMaybe<Scalars['cvss_interaction']>;
+  _neq?: InputMaybe<Scalars['cvss_interaction']>;
+  _nin?: InputMaybe<Array<Scalars['cvss_interaction']>>;
+};
+
+/** Boolean expression to compare columns of type "cvss_low_medium_high". All fields are combined with logical 'AND'. */
+export type Cvss_Low_Medium_High_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['cvss_low_medium_high']>;
+  _gt?: InputMaybe<Scalars['cvss_low_medium_high']>;
+  _gte?: InputMaybe<Scalars['cvss_low_medium_high']>;
+  _in?: InputMaybe<Array<Scalars['cvss_low_medium_high']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['cvss_low_medium_high']>;
+  _lte?: InputMaybe<Scalars['cvss_low_medium_high']>;
+  _neq?: InputMaybe<Scalars['cvss_low_medium_high']>;
+  _nin?: InputMaybe<Array<Scalars['cvss_low_medium_high']>>;
+};
+
+/** Boolean expression to compare columns of type "cvss_none_low_high". All fields are combined with logical 'AND'. */
+export type Cvss_None_Low_High_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['cvss_none_low_high']>;
+  _gt?: InputMaybe<Scalars['cvss_none_low_high']>;
+  _gte?: InputMaybe<Scalars['cvss_none_low_high']>;
+  _in?: InputMaybe<Array<Scalars['cvss_none_low_high']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['cvss_none_low_high']>;
+  _lte?: InputMaybe<Scalars['cvss_none_low_high']>;
+  _neq?: InputMaybe<Scalars['cvss_none_low_high']>;
+  _nin?: InputMaybe<Array<Scalars['cvss_none_low_high']>>;
+};
+
+/** Boolean expression to compare columns of type "cvss_scope". All fields are combined with logical 'AND'. */
+export type Cvss_Scope_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['cvss_scope']>;
+  _gt?: InputMaybe<Scalars['cvss_scope']>;
+  _gte?: InputMaybe<Scalars['cvss_scope']>;
+  _in?: InputMaybe<Array<Scalars['cvss_scope']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['cvss_scope']>;
+  _lte?: InputMaybe<Scalars['cvss_scope']>;
+  _neq?: InputMaybe<Scalars['cvss_scope']>;
+  _nin?: InputMaybe<Array<Scalars['cvss_scope']>>;
+};
+
+/** Boolean expression to compare columns of type "cvss_vector". All fields are combined with logical 'AND'. */
+export type Cvss_Vector_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['cvss_vector']>;
+  _gt?: InputMaybe<Scalars['cvss_vector']>;
+  _gte?: InputMaybe<Scalars['cvss_vector']>;
+  _in?: InputMaybe<Array<Scalars['cvss_vector']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['cvss_vector']>;
+  _lte?: InputMaybe<Scalars['cvss_vector']>;
+  _neq?: InputMaybe<Scalars['cvss_vector']>;
+  _nin?: InputMaybe<Array<Scalars['cvss_vector']>>;
+};
+
 /** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
 export type Date_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['date']>;
@@ -2269,6 +2462,70 @@ export type Fix_State_Enum_Comparison_Exp = {
   _neq?: InputMaybe<Scalars['fix_state_enum']>;
   _nin?: InputMaybe<Array<Scalars['fix_state_enum']>>;
 };
+
+/** columns and relationships of "folder_environmental_adjustment" */
+export type Folder_Environmental_Adjustment = {
+  __typename?: 'folder_environmental_adjustment';
+  /** An object relationship */
+  cvss_environmental_adjustment: Cvss_Environmental_Adjustment;
+  cvss_environmental_adjustment_id: Scalars['uuid'];
+  id: Scalars['uuid'];
+  /** An object relationship */
+  project_folder_setting: Project_Folder_Settings;
+  project_folder_settings_id: Scalars['uuid'];
+};
+
+/** order by aggregate values of table "folder_environmental_adjustment" */
+export type Folder_Environmental_Adjustment_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Folder_Environmental_Adjustment_Max_Order_By>;
+  min?: InputMaybe<Folder_Environmental_Adjustment_Min_Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "folder_environmental_adjustment". All fields are combined with a logical 'AND'. */
+export type Folder_Environmental_Adjustment_Bool_Exp = {
+  _and?: InputMaybe<Array<Folder_Environmental_Adjustment_Bool_Exp>>;
+  _not?: InputMaybe<Folder_Environmental_Adjustment_Bool_Exp>;
+  _or?: InputMaybe<Array<Folder_Environmental_Adjustment_Bool_Exp>>;
+  cvss_environmental_adjustment?: InputMaybe<Cvss_Environmental_Adjustment_Bool_Exp>;
+  cvss_environmental_adjustment_id?: InputMaybe<Uuid_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  project_folder_setting?: InputMaybe<Project_Folder_Settings_Bool_Exp>;
+  project_folder_settings_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** order by max() on columns of table "folder_environmental_adjustment" */
+export type Folder_Environmental_Adjustment_Max_Order_By = {
+  cvss_environmental_adjustment_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project_folder_settings_id?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "folder_environmental_adjustment" */
+export type Folder_Environmental_Adjustment_Min_Order_By = {
+  cvss_environmental_adjustment_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project_folder_settings_id?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "folder_environmental_adjustment". */
+export type Folder_Environmental_Adjustment_Order_By = {
+  cvss_environmental_adjustment?: InputMaybe<Cvss_Environmental_Adjustment_Order_By>;
+  cvss_environmental_adjustment_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  project_folder_setting?: InputMaybe<Project_Folder_Settings_Order_By>;
+  project_folder_settings_id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "folder_environmental_adjustment" */
+export enum Folder_Environmental_Adjustment_Select_Column {
+  /** column name */
+  CvssEnvironmentalAdjustmentId = 'cvss_environmental_adjustment_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ProjectFolderSettingsId = 'project_folder_settings_id'
+}
 
 /** Metadata about a github repository and where to find it. */
 export type Github_Repositories = {
@@ -7577,6 +7834,156 @@ export enum Project_Access_Tokens_Select_Column {
   ProjectUuid = 'project_uuid'
 }
 
+/** columns and relationships of "project_folder_settings" */
+export type Project_Folder_Settings = {
+  __typename?: 'project_folder_settings';
+  /** An array relationship */
+  folder_environmental_adjustments: Array<Folder_Environmental_Adjustment>;
+  id: Scalars['uuid'];
+  ignore?: Maybe<Scalars['Boolean']>;
+  path_glob: Scalars['String'];
+  /** Lower values have a higher precedence, one being the highest */
+  precedence?: Maybe<Scalars['Int']>;
+  /** An object relationship */
+  project: Projects;
+  project_id: Scalars['uuid'];
+  root: Scalars['Boolean'];
+};
+
+
+/** columns and relationships of "project_folder_settings" */
+export type Project_Folder_SettingsFolder_Environmental_AdjustmentsArgs = {
+  distinct_on?: InputMaybe<Array<Folder_Environmental_Adjustment_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Folder_Environmental_Adjustment_Order_By>>;
+  where?: InputMaybe<Folder_Environmental_Adjustment_Bool_Exp>;
+};
+
+/** order by aggregate values of table "project_folder_settings" */
+export type Project_Folder_Settings_Aggregate_Order_By = {
+  avg?: InputMaybe<Project_Folder_Settings_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Project_Folder_Settings_Max_Order_By>;
+  min?: InputMaybe<Project_Folder_Settings_Min_Order_By>;
+  stddev?: InputMaybe<Project_Folder_Settings_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Project_Folder_Settings_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Project_Folder_Settings_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Project_Folder_Settings_Sum_Order_By>;
+  var_pop?: InputMaybe<Project_Folder_Settings_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Project_Folder_Settings_Var_Samp_Order_By>;
+  variance?: InputMaybe<Project_Folder_Settings_Variance_Order_By>;
+};
+
+/** order by avg() on columns of table "project_folder_settings" */
+export type Project_Folder_Settings_Avg_Order_By = {
+  /** Lower values have a higher precedence, one being the highest */
+  precedence?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "project_folder_settings". All fields are combined with a logical 'AND'. */
+export type Project_Folder_Settings_Bool_Exp = {
+  _and?: InputMaybe<Array<Project_Folder_Settings_Bool_Exp>>;
+  _not?: InputMaybe<Project_Folder_Settings_Bool_Exp>;
+  _or?: InputMaybe<Array<Project_Folder_Settings_Bool_Exp>>;
+  folder_environmental_adjustments?: InputMaybe<Folder_Environmental_Adjustment_Bool_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  ignore?: InputMaybe<Boolean_Comparison_Exp>;
+  path_glob?: InputMaybe<String_Comparison_Exp>;
+  precedence?: InputMaybe<Int_Comparison_Exp>;
+  project?: InputMaybe<Projects_Bool_Exp>;
+  project_id?: InputMaybe<Uuid_Comparison_Exp>;
+  root?: InputMaybe<Boolean_Comparison_Exp>;
+};
+
+/** order by max() on columns of table "project_folder_settings" */
+export type Project_Folder_Settings_Max_Order_By = {
+  id?: InputMaybe<Order_By>;
+  path_glob?: InputMaybe<Order_By>;
+  /** Lower values have a higher precedence, one being the highest */
+  precedence?: InputMaybe<Order_By>;
+  project_id?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "project_folder_settings" */
+export type Project_Folder_Settings_Min_Order_By = {
+  id?: InputMaybe<Order_By>;
+  path_glob?: InputMaybe<Order_By>;
+  /** Lower values have a higher precedence, one being the highest */
+  precedence?: InputMaybe<Order_By>;
+  project_id?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "project_folder_settings". */
+export type Project_Folder_Settings_Order_By = {
+  folder_environmental_adjustments_aggregate?: InputMaybe<Folder_Environmental_Adjustment_Aggregate_Order_By>;
+  id?: InputMaybe<Order_By>;
+  ignore?: InputMaybe<Order_By>;
+  path_glob?: InputMaybe<Order_By>;
+  precedence?: InputMaybe<Order_By>;
+  project?: InputMaybe<Projects_Order_By>;
+  project_id?: InputMaybe<Order_By>;
+  root?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "project_folder_settings" */
+export enum Project_Folder_Settings_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Ignore = 'ignore',
+  /** column name */
+  PathGlob = 'path_glob',
+  /** column name */
+  Precedence = 'precedence',
+  /** column name */
+  ProjectId = 'project_id',
+  /** column name */
+  Root = 'root'
+}
+
+/** order by stddev() on columns of table "project_folder_settings" */
+export type Project_Folder_Settings_Stddev_Order_By = {
+  /** Lower values have a higher precedence, one being the highest */
+  precedence?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_pop() on columns of table "project_folder_settings" */
+export type Project_Folder_Settings_Stddev_Pop_Order_By = {
+  /** Lower values have a higher precedence, one being the highest */
+  precedence?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_samp() on columns of table "project_folder_settings" */
+export type Project_Folder_Settings_Stddev_Samp_Order_By = {
+  /** Lower values have a higher precedence, one being the highest */
+  precedence?: InputMaybe<Order_By>;
+};
+
+/** order by sum() on columns of table "project_folder_settings" */
+export type Project_Folder_Settings_Sum_Order_By = {
+  /** Lower values have a higher precedence, one being the highest */
+  precedence?: InputMaybe<Order_By>;
+};
+
+/** order by var_pop() on columns of table "project_folder_settings" */
+export type Project_Folder_Settings_Var_Pop_Order_By = {
+  /** Lower values have a higher precedence, one being the highest */
+  precedence?: InputMaybe<Order_By>;
+};
+
+/** order by var_samp() on columns of table "project_folder_settings" */
+export type Project_Folder_Settings_Var_Samp_Order_By = {
+  /** Lower values have a higher precedence, one being the highest */
+  precedence?: InputMaybe<Order_By>;
+};
+
+/** order by variance() on columns of table "project_folder_settings" */
+export type Project_Folder_Settings_Variance_Order_By = {
+  /** Lower values have a higher precedence, one being the highest */
+  precedence?: InputMaybe<Order_By>;
+};
+
 /** columns and relationships of "projects" */
 export type Projects = {
   __typename?: 'projects';
@@ -7602,6 +8009,8 @@ export type Projects = {
   organization_id?: Maybe<Scalars['uuid']>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
+  /** An array relationship */
+  project_folder_settings: Array<Project_Folder_Settings>;
   repo?: Maybe<Scalars['String']>;
   /** An array relationship */
   reports: Array<Project_Access_Tokens>;
@@ -7682,6 +8091,16 @@ export type ProjectsProject_Access_TokensArgs = {
 
 
 /** columns and relationships of "projects" */
+export type ProjectsProject_Folder_SettingsArgs = {
+  distinct_on?: InputMaybe<Array<Project_Folder_Settings_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Project_Folder_Settings_Order_By>>;
+  where?: InputMaybe<Project_Folder_Settings_Bool_Exp>;
+};
+
+
+/** columns and relationships of "projects" */
 export type ProjectsReportsArgs = {
   distinct_on?: InputMaybe<Array<Project_Access_Tokens_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -7743,6 +8162,7 @@ export type Projects_Bool_Exp = {
   organization?: InputMaybe<Organizations_Bool_Exp>;
   organization_id?: InputMaybe<Uuid_Comparison_Exp>;
   project_access_tokens?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
+  project_folder_settings?: InputMaybe<Project_Folder_Settings_Bool_Exp>;
   repo?: InputMaybe<String_Comparison_Exp>;
   reports?: InputMaybe<Project_Access_Tokens_Bool_Exp>;
   settings?: InputMaybe<Settings_Bool_Exp>;
@@ -7852,6 +8272,7 @@ export type Projects_Order_By = {
   organization?: InputMaybe<Organizations_Order_By>;
   organization_id?: InputMaybe<Order_By>;
   project_access_tokens_aggregate?: InputMaybe<Project_Access_Tokens_Aggregate_Order_By>;
+  project_folder_settings_aggregate?: InputMaybe<Project_Folder_Settings_Aggregate_Order_By>;
   repo?: InputMaybe<Order_By>;
   reports_aggregate?: InputMaybe<Project_Access_Tokens_Aggregate_Order_By>;
   settings?: InputMaybe<Settings_Order_By>;
@@ -7931,6 +8352,10 @@ export type Query_Root = {
   builds_aggregate: Builds_Aggregate;
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
+  /** fetch data from the table: "cvss_environmental_adjustment" */
+  cvss_environmental_adjustment: Array<Cvss_Environmental_Adjustment>;
+  /** fetch data from the table: "cvss_environmental_adjustment" using primary key columns */
+  cvss_environmental_adjustment_by_pk?: Maybe<Cvss_Environmental_Adjustment>;
   /** An array relationship */
   default_branch_builds: Array<Default_Branch_Builds>;
   fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
@@ -7938,6 +8363,10 @@ export type Query_Root = {
   findings: Array<Findings>;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
+  /** fetch data from the table: "folder_environmental_adjustment" */
+  folder_environmental_adjustment: Array<Folder_Environmental_Adjustment>;
+  /** fetch data from the table: "folder_environmental_adjustment" using primary key columns */
+  folder_environmental_adjustment_by_pk?: Maybe<Folder_Environmental_Adjustment>;
   /** An array relationship */
   github_repositories: Array<Github_Repositories>;
   /** fetch data from the table: "github_repositories" using primary key columns */
@@ -8026,6 +8455,10 @@ export type Query_Root = {
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
   project_access_tokens_by_pk?: Maybe<Project_Access_Tokens>;
+  /** An array relationship */
+  project_folder_settings: Array<Project_Folder_Settings>;
+  /** fetch data from the table: "project_folder_settings" using primary key columns */
+  project_folder_settings_by_pk?: Maybe<Project_Folder_Settings>;
   /** An array relationship */
   projects: Array<Projects>;
   /** An aggregate relationship */
@@ -8183,6 +8616,20 @@ export type Query_RootBuilds_By_PkArgs = {
 };
 
 
+export type Query_RootCvss_Environmental_AdjustmentArgs = {
+  distinct_on?: InputMaybe<Array<Cvss_Environmental_Adjustment_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Cvss_Environmental_Adjustment_Order_By>>;
+  where?: InputMaybe<Cvss_Environmental_Adjustment_Bool_Exp>;
+};
+
+
+export type Query_RootCvss_Environmental_Adjustment_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
 export type Query_RootDefault_Branch_BuildsArgs = {
   distinct_on?: InputMaybe<Array<Default_Branch_Builds_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -8202,6 +8649,20 @@ export type Query_RootFindingsArgs = {
 
 
 export type Query_RootFindings_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootFolder_Environmental_AdjustmentArgs = {
+  distinct_on?: InputMaybe<Array<Folder_Environmental_Adjustment_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Folder_Environmental_Adjustment_Order_By>>;
+  where?: InputMaybe<Folder_Environmental_Adjustment_Bool_Exp>;
+};
+
+
+export type Query_RootFolder_Environmental_Adjustment_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -8519,6 +8980,20 @@ export type Query_RootProject_Access_TokensArgs = {
 
 
 export type Query_RootProject_Access_Tokens_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootProject_Folder_SettingsArgs = {
+  distinct_on?: InputMaybe<Array<Project_Folder_Settings_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Project_Folder_Settings_Order_By>>;
+  where?: InputMaybe<Project_Folder_Settings_Bool_Exp>;
+};
+
+
+export type Query_RootProject_Folder_Settings_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -9314,12 +9789,20 @@ export type Subscription_Root = {
   builds_aggregate: Builds_Aggregate;
   /** fetch data from the table: "builds" using primary key columns */
   builds_by_pk?: Maybe<Builds>;
+  /** fetch data from the table: "cvss_environmental_adjustment" */
+  cvss_environmental_adjustment: Array<Cvss_Environmental_Adjustment>;
+  /** fetch data from the table: "cvss_environmental_adjustment" using primary key columns */
+  cvss_environmental_adjustment_by_pk?: Maybe<Cvss_Environmental_Adjustment>;
   /** An array relationship */
   default_branch_builds: Array<Default_Branch_Builds>;
   /** An array relationship */
   findings: Array<Findings>;
   /** fetch data from the table: "findings" using primary key columns */
   findings_by_pk?: Maybe<Findings>;
+  /** fetch data from the table: "folder_environmental_adjustment" */
+  folder_environmental_adjustment: Array<Folder_Environmental_Adjustment>;
+  /** fetch data from the table: "folder_environmental_adjustment" using primary key columns */
+  folder_environmental_adjustment_by_pk?: Maybe<Folder_Environmental_Adjustment>;
   /** An array relationship */
   github_repositories: Array<Github_Repositories>;
   /** fetch data from the table: "github_repositories" using primary key columns */
@@ -9406,6 +9889,10 @@ export type Subscription_Root = {
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
   project_access_tokens_by_pk?: Maybe<Project_Access_Tokens>;
+  /** An array relationship */
+  project_folder_settings: Array<Project_Folder_Settings>;
+  /** fetch data from the table: "project_folder_settings" using primary key columns */
+  project_folder_settings_by_pk?: Maybe<Project_Folder_Settings>;
   /** An array relationship */
   projects: Array<Projects>;
   /** An aggregate relationship */
@@ -9556,6 +10043,20 @@ export type Subscription_RootBuilds_By_PkArgs = {
 };
 
 
+export type Subscription_RootCvss_Environmental_AdjustmentArgs = {
+  distinct_on?: InputMaybe<Array<Cvss_Environmental_Adjustment_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Cvss_Environmental_Adjustment_Order_By>>;
+  where?: InputMaybe<Cvss_Environmental_Adjustment_Bool_Exp>;
+};
+
+
+export type Subscription_RootCvss_Environmental_Adjustment_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
 export type Subscription_RootDefault_Branch_BuildsArgs = {
   distinct_on?: InputMaybe<Array<Default_Branch_Builds_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9575,6 +10076,20 @@ export type Subscription_RootFindingsArgs = {
 
 
 export type Subscription_RootFindings_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootFolder_Environmental_AdjustmentArgs = {
+  distinct_on?: InputMaybe<Array<Folder_Environmental_Adjustment_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Folder_Environmental_Adjustment_Order_By>>;
+  where?: InputMaybe<Folder_Environmental_Adjustment_Bool_Exp>;
+};
+
+
+export type Subscription_RootFolder_Environmental_Adjustment_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -9886,6 +10401,20 @@ export type Subscription_RootProject_Access_TokensArgs = {
 
 
 export type Subscription_RootProject_Access_Tokens_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootProject_Folder_SettingsArgs = {
+  distinct_on?: InputMaybe<Array<Project_Folder_Settings_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Project_Folder_Settings_Order_By>>;
+  where?: InputMaybe<Project_Folder_Settings_Bool_Exp>;
+};
+
+
+export type Subscription_RootProject_Folder_Settings_By_PkArgs = {
   id: Scalars['uuid'];
 };
 

@@ -31,5 +31,5 @@ export const client = new GraphQLClient(process.env.REACT_APP_GRAPHQL_URL || 'ht
 // highlight-start
 export const api = createApi({
   baseQuery: graphqlRequestBaseQuery({ client }),
-  endpoints: () => ({}),
+  endpoints: (builder) => ({}),
 });

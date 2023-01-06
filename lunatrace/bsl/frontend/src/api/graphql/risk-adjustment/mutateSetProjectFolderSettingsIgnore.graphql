@@ -1,0 +1,5 @@
+mutation SetProjectFolderSettingsIgnore($id: uuid!, $ignore: Boolean!) {
+    update_project_folder_settings_by_pk(pk_columns: {id: $id}, _set: {ignore: $ignore}) {
+        id
+    }
+}

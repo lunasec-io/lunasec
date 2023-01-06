@@ -1,0 +1,5 @@
+mutation DeleteProjectFolderSetting($id: uuid!) {
+    delete_project_folder_settings_by_pk(id:$id){
+        id
+    }
+}

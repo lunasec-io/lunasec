@@ -1,0 +1,6 @@
+query GetAllCvssAdjustments {
+  cvss_environmental_adjustment {
+    id
+    name
+  }
+}

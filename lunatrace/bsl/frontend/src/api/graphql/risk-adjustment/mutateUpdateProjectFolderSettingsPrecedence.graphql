@@ -1,0 +1,7 @@
+mutation UpdateProjectFolderSettingsPrecedence($id: uuid!, $precedence: Int!) {
+    update_project_folder_settings_by_pk(pk_columns: {id: $id}, _set: {precedence: $precedence}){
+        id
+    }
+}
+
+

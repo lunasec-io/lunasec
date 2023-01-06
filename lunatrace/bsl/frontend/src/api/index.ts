@@ -16,6 +16,7 @@ import { isRejectedWithValue, Middleware, MiddlewareAPI } from '@reduxjs/toolkit
 import { add } from '../store/slices/alerts';
 
 import { api as generatedApi } from './generated';
+
 // This extends the generated API so we can add any custom logic needed, as per https://www.graphql-code-generator.com/plugins/typescript-rtk-query
 const appApi = generatedApi.enhanceEndpoints({
   addTagTypes: ['User', 'Projects', 'Organizations', 'Builds', 'ProjectDetails'],
@@ -56,7 +57,33 @@ const appApi = generatedApi.enhanceEndpoints({
     UpdateSettings: {
       invalidatesTags: ['ProjectDetails'],
     },
+    InsertProjectFolderSetting: {
+      invalidatesTags: ['ProjectDetails'],
+    },
+    InsertFolderEnvironmentalAdjustment: {
+      invalidatesTags: ['ProjectDetails'],
+    },
+    DeleteFolderAdjustment: {
+      invalidatesTags: ['ProjectDetails'],
+    },
+    DeleteProjectFolderSetting: {
+      invalidatesTags: ['ProjectDetails'],
+    },
+    SetProjectFolderSettingsIgnore: {
+      invalidatesTags: ['ProjectDetails'],
+    },
   },
+});
+
+const appApiWithManualQueries = appApi.injectEndpoints({
+  endpoints: (builder) => ({
+    customProjectUpdateMutation: builder.mutation<unknown, { body: string }>({
+      query: ({ body }) => ({
+        document: body,
+      }),
+      invalidatesTags: ['ProjectDetails'],
+    }),
+  }),
 });
 
 export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) => (action) => {
@@ -72,4 +99,5 @@ export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) =>
 
   return next(action);
 };
-export default appApi;
+
+export default appApiWithManualQueries;

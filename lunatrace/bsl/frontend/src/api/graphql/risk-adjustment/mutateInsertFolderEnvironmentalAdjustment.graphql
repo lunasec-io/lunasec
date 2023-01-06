@@ -1,0 +1,6 @@
+mutation InsertFolderEnvironmentalAdjustment($object: folder_environmental_adjustment_insert_input = {}) {
+    insert_folder_environmental_adjustment_one(object: $object) {
+        id
+    }
+}
+

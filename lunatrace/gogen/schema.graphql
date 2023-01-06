@@ -1324,6 +1324,168 @@ input builds_variance_order_by {
     existing_github_check_id: order_by
 }
 
+scalar cvss_complexity
+
+input cvss_complexity_comparison_exp {
+    _eq: cvss_complexity
+    _gt: cvss_complexity
+    _gte: cvss_complexity
+    _in: [cvss_complexity!]
+    _is_null: Boolean
+    _lt: cvss_complexity
+    _lte: cvss_complexity
+    _neq: cvss_complexity
+    _nin: [cvss_complexity!]
+}
+
+type cvss_environmental_adjustment {
+    attack_complexity: cvss_complexity!
+    attack_vector: cvss_vector!
+    availability_impact: cvss_none_low_high!
+    availability_requirement: cvss_low_medium_high!
+    confidentiality_impact: cvss_none_low_high!
+    confidentiality_requirement: cvss_low_medium_high!
+    created_at: timestamptz
+    folder_environmental_adjustments(distinct_on: [folder_environmental_adjustment_select_column!], limit: Int, offset: Int, order_by: [folder_environmental_adjustment_order_by!], where: folder_environmental_adjustment_bool_exp): [folder_environmental_adjustment!]!
+    group_name: String!
+    id: uuid!
+    integrity_impact: cvss_none_low_high!
+    integrity_requirement: cvss_low_medium_high!
+    name: String!
+    privileges_required: cvss_none_low_high!
+    scope: cvss_scope!
+    user_interaction: cvss_interaction!
+}
+
+input cvss_environmental_adjustment_bool_exp {
+    _and: [cvss_environmental_adjustment_bool_exp!]
+    _not: cvss_environmental_adjustment_bool_exp
+    _or: [cvss_environmental_adjustment_bool_exp!]
+    attack_complexity: cvss_complexity_comparison_exp
+    attack_vector: cvss_vector_comparison_exp
+    availability_impact: cvss_none_low_high_comparison_exp
+    availability_requirement: cvss_low_medium_high_comparison_exp
+    confidentiality_impact: cvss_none_low_high_comparison_exp
+    confidentiality_requirement: cvss_low_medium_high_comparison_exp
+    created_at: timestamptz_comparison_exp
+    folder_environmental_adjustments: folder_environmental_adjustment_bool_exp
+    group_name: String_comparison_exp
+    id: uuid_comparison_exp
+    integrity_impact: cvss_none_low_high_comparison_exp
+    integrity_requirement: cvss_low_medium_high_comparison_exp
+    name: String_comparison_exp
+    privileges_required: cvss_none_low_high_comparison_exp
+    scope: cvss_scope_comparison_exp
+    user_interaction: cvss_interaction_comparison_exp
+}
+
+input cvss_environmental_adjustment_order_by {
+    attack_complexity: order_by
+    attack_vector: order_by
+    availability_impact: order_by
+    availability_requirement: order_by
+    confidentiality_impact: order_by
+    confidentiality_requirement: order_by
+    created_at: order_by
+    folder_environmental_adjustments_aggregate: folder_environmental_adjustment_aggregate_order_by
+    group_name: order_by
+    id: order_by
+    integrity_impact: order_by
+    integrity_requirement: order_by
+    name: order_by
+    privileges_required: order_by
+    scope: order_by
+    user_interaction: order_by
+}
+
+enum cvss_environmental_adjustment_select_column {
+    attack_complexity
+    attack_vector
+    availability_impact
+    availability_requirement
+    confidentiality_impact
+    confidentiality_requirement
+    created_at
+    group_name
+    id
+    integrity_impact
+    integrity_requirement
+    name
+    privileges_required
+    scope
+    user_interaction
+}
+
+scalar cvss_interaction
+
+input cvss_interaction_comparison_exp {
+    _eq: cvss_interaction
+    _gt: cvss_interaction
+    _gte: cvss_interaction
+    _in: [cvss_interaction!]
+    _is_null: Boolean
+    _lt: cvss_interaction
+    _lte: cvss_interaction
+    _neq: cvss_interaction
+    _nin: [cvss_interaction!]
+}
+
+scalar cvss_low_medium_high
+
+input cvss_low_medium_high_comparison_exp {
+    _eq: cvss_low_medium_high
+    _gt: cvss_low_medium_high
+    _gte: cvss_low_medium_high
+    _in: [cvss_low_medium_high!]
+    _is_null: Boolean
+    _lt: cvss_low_medium_high
+    _lte: cvss_low_medium_high
+    _neq: cvss_low_medium_high
+    _nin: [cvss_low_medium_high!]
+}
+
+scalar cvss_none_low_high
+
+input cvss_none_low_high_comparison_exp {
+    _eq: cvss_none_low_high
+    _gt: cvss_none_low_high
+    _gte: cvss_none_low_high
+    _in: [cvss_none_low_high!]
+    _is_null: Boolean
+    _lt: cvss_none_low_high
+    _lte: cvss_none_low_high
+    _neq: cvss_none_low_high
+    _nin: [cvss_none_low_high!]
+}
+
+scalar cvss_scope
+
+input cvss_scope_comparison_exp {
+    _eq: cvss_scope
+    _gt: cvss_scope
+    _gte: cvss_scope
+    _in: [cvss_scope!]
+    _is_null: Boolean
+    _lt: cvss_scope
+    _lte: cvss_scope
+    _neq: cvss_scope
+    _nin: [cvss_scope!]
+}
+
+scalar cvss_vector
+
+input cvss_vector_comparison_exp {
+    _eq: cvss_vector
+    _gt: cvss_vector
+    _gte: cvss_vector
+    _in: [cvss_vector!]
+    _is_null: Boolean
+    _lt: cvss_vector
+    _lte: cvss_vector
+    _neq: cvss_vector
+    _nin: [cvss_vector!]
+}
+
 scalar date
 
 input date_comparison_exp {
@@ -1760,6 +1922,57 @@ input fix_state_enum_comparison_exp {
     _lte: fix_state_enum
     _neq: fix_state_enum
     _nin: [fix_state_enum!]
+}
+
+type folder_environmental_adjustment {
+    cvss_environmental_adjustment: cvss_environmental_adjustment!
+    cvss_environmental_adjustment_id: uuid!
+    id: uuid!
+    project_folder_setting: project_folder_settings!
+    project_folder_settings_id: uuid!
+}
+
+input folder_environmental_adjustment_aggregate_order_by {
+    count: order_by
+    max: folder_environmental_adjustment_max_order_by
+    min: folder_environmental_adjustment_min_order_by
+}
+
+input folder_environmental_adjustment_bool_exp {
+    _and: [folder_environmental_adjustment_bool_exp!]
+    _not: folder_environmental_adjustment_bool_exp
+    _or: [folder_environmental_adjustment_bool_exp!]
+    cvss_environmental_adjustment: cvss_environmental_adjustment_bool_exp
+    cvss_environmental_adjustment_id: uuid_comparison_exp
+    id: uuid_comparison_exp
+    project_folder_setting: project_folder_settings_bool_exp
+    project_folder_settings_id: uuid_comparison_exp
+}
+
+input folder_environmental_adjustment_max_order_by {
+    cvss_environmental_adjustment_id: order_by
+    id: order_by
+    project_folder_settings_id: order_by
+}
+
+input folder_environmental_adjustment_min_order_by {
+    cvss_environmental_adjustment_id: order_by
+    id: order_by
+    project_folder_settings_id: order_by
+}
+
+input folder_environmental_adjustment_order_by {
+    cvss_environmental_adjustment: cvss_environmental_adjustment_order_by
+    cvss_environmental_adjustment_id: order_by
+    id: order_by
+    project_folder_setting: project_folder_settings_order_by
+    project_folder_settings_id: order_by
+}
+
+enum folder_environmental_adjustment_select_column {
+    cvss_environmental_adjustment_id
+    id
+    project_folder_settings_id
 }
 
 type github_repositories {
@@ -4575,6 +4788,111 @@ enum project_access_tokens_select_column {
     project_uuid
 }
 
+type project_folder_settings {
+    folder_environmental_adjustments(distinct_on: [folder_environmental_adjustment_select_column!], limit: Int, offset: Int, order_by: [folder_environmental_adjustment_order_by!], where: folder_environmental_adjustment_bool_exp): [folder_environmental_adjustment!]!
+    id: uuid!
+    ignore: Boolean
+    path_glob: String!
+    precedence: Int
+    project: projects!
+    project_id: uuid!
+    root: Boolean!
+}
+
+input project_folder_settings_aggregate_order_by {
+    avg: project_folder_settings_avg_order_by
+    count: order_by
+    max: project_folder_settings_max_order_by
+    min: project_folder_settings_min_order_by
+    stddev: project_folder_settings_stddev_order_by
+    stddev_pop: project_folder_settings_stddev_pop_order_by
+    stddev_samp: project_folder_settings_stddev_samp_order_by
+    sum: project_folder_settings_sum_order_by
+    var_pop: project_folder_settings_var_pop_order_by
+    var_samp: project_folder_settings_var_samp_order_by
+    variance: project_folder_settings_variance_order_by
+}
+
+input project_folder_settings_avg_order_by {
+    precedence: order_by
+}
+
+input project_folder_settings_bool_exp {
+    _and: [project_folder_settings_bool_exp!]
+    _not: project_folder_settings_bool_exp
+    _or: [project_folder_settings_bool_exp!]
+    folder_environmental_adjustments: folder_environmental_adjustment_bool_exp
+    id: uuid_comparison_exp
+    ignore: Boolean_comparison_exp
+    path_glob: String_comparison_exp
+    precedence: Int_comparison_exp
+    project: projects_bool_exp
+    project_id: uuid_comparison_exp
+    root: Boolean_comparison_exp
+}
+
+input project_folder_settings_max_order_by {
+    id: order_by
+    path_glob: order_by
+    precedence: order_by
+    project_id: order_by
+}
+
+input project_folder_settings_min_order_by {
+    id: order_by
+    path_glob: order_by
+    precedence: order_by
+    project_id: order_by
+}
+
+input project_folder_settings_order_by {
+    folder_environmental_adjustments_aggregate: folder_environmental_adjustment_aggregate_order_by
+    id: order_by
+    ignore: order_by
+    path_glob: order_by
+    precedence: order_by
+    project: projects_order_by
+    project_id: order_by
+    root: order_by
+}
+
+enum project_folder_settings_select_column {
+    id
+    ignore
+    path_glob
+    precedence
+    project_id
+    root
+}
+
+input project_folder_settings_stddev_order_by {
+    precedence: order_by
+}
+
+input project_folder_settings_stddev_pop_order_by {
+    precedence: order_by
+}
+
+input project_folder_settings_stddev_samp_order_by {
+    precedence: order_by
+}
+
+input project_folder_settings_sum_order_by {
+    precedence: order_by
+}
+
+input project_folder_settings_var_pop_order_by {
+    precedence: order_by
+}
+
+input project_folder_settings_var_samp_order_by {
+    precedence: order_by
+}
+
+input project_folder_settings_variance_order_by {
+    precedence: order_by
+}
+
 type projects {
     builds(distinct_on: [builds_select_column!], limit: Int, offset: Int, order_by: [builds_order_by!], where: builds_bool_exp): [builds!]!
     builds_aggregate(distinct_on: [builds_select_column!], limit: Int, offset: Int, order_by: [builds_order_by!], where: builds_bool_exp): builds_aggregate!
@@ -4589,6 +4907,7 @@ type projects {
     organization: organizations
     organization_id: uuid
     project_access_tokens(distinct_on: [project_access_tokens_select_column!], limit: Int, offset: Int, order_by: [project_access_tokens_order_by!], where: project_access_tokens_bool_exp): [project_access_tokens!]!
+    project_folder_settings(distinct_on: [project_folder_settings_select_column!], limit: Int, offset: Int, order_by: [project_folder_settings_order_by!], where: project_folder_settings_bool_exp): [project_folder_settings!]!
     repo: String
     reports(distinct_on: [project_access_tokens_select_column!], limit: Int, offset: Int, order_by: [project_access_tokens_order_by!], where: project_access_tokens_bool_exp): [project_access_tokens!]!
     settings: settings!
@@ -4633,6 +4952,7 @@ input projects_bool_exp {
     organization: organizations_bool_exp
     organization_id: uuid_comparison_exp
     project_access_tokens: project_access_tokens_bool_exp
+    project_folder_settings: project_folder_settings_bool_exp
     repo: String_comparison_exp
     reports: project_access_tokens_bool_exp
     settings: settings_bool_exp
@@ -4724,6 +5044,7 @@ input projects_order_by {
     organization: organizations_order_by
     organization_id: order_by
     project_access_tokens_aggregate: project_access_tokens_aggregate_order_by
+    project_folder_settings_aggregate: project_folder_settings_aggregate_order_by
     repo: order_by
     reports_aggregate: project_access_tokens_aggregate_order_by
     settings: settings_order_by
@@ -4775,10 +5096,14 @@ type query_root {
     builds(distinct_on: [builds_select_column!], limit: Int, offset: Int, order_by: [builds_order_by!], where: builds_bool_exp): [builds!]!
     builds_aggregate(distinct_on: [builds_select_column!], limit: Int, offset: Int, order_by: [builds_order_by!], where: builds_bool_exp): builds_aggregate!
     builds_by_pk(id: uuid!): builds
+    cvss_environmental_adjustment(distinct_on: [cvss_environmental_adjustment_select_column!], limit: Int, offset: Int, order_by: [cvss_environmental_adjustment_order_by!], where: cvss_environmental_adjustment_bool_exp): [cvss_environmental_adjustment!]!
+    cvss_environmental_adjustment_by_pk(id: uuid!): cvss_environmental_adjustment
     default_branch_builds(distinct_on: [default_branch_builds_select_column!], limit: Int, offset: Int, order_by: [default_branch_builds_order_by!], where: default_branch_builds_bool_exp): [default_branch_builds!]!
     fakeQueryToHackHasuraBeingABuggyMess: String
     findings(distinct_on: [findings_select_column!], limit: Int, offset: Int, order_by: [findings_order_by!], where: findings_bool_exp): [findings!]!
     findings_by_pk(id: uuid!): findings
+    folder_environmental_adjustment(distinct_on: [folder_environmental_adjustment_select_column!], limit: Int, offset: Int, order_by: [folder_environmental_adjustment_order_by!], where: folder_environmental_adjustment_bool_exp): [folder_environmental_adjustment!]!
+    folder_environmental_adjustment_by_pk(id: uuid!): folder_environmental_adjustment
     github_repositories(distinct_on: [github_repositories_select_column!], limit: Int, offset: Int, order_by: [github_repositories_order_by!], where: github_repositories_bool_exp): [github_repositories!]!
     github_repositories_by_pk(id: uuid!): github_repositories
     guide_related_guides(distinct_on: [guide_related_guides_select_column!], limit: Int, offset: Int, order_by: [guide_related_guides_order_by!], where: guide_related_guides_bool_exp): [guide_related_guides!]!
@@ -4823,6 +5148,8 @@ type query_root {
     presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
     project_access_tokens(distinct_on: [project_access_tokens_select_column!], limit: Int, offset: Int, order_by: [project_access_tokens_order_by!], where: project_access_tokens_bool_exp): [project_access_tokens!]!
     project_access_tokens_by_pk(id: uuid!): project_access_tokens
+    project_folder_settings(distinct_on: [project_folder_settings_select_column!], limit: Int, offset: Int, order_by: [project_folder_settings_order_by!], where: project_folder_settings_bool_exp): [project_folder_settings!]!
+    project_folder_settings_by_pk(id: uuid!): project_folder_settings
     projects(distinct_on: [projects_select_column!], limit: Int, offset: Int, order_by: [projects_order_by!], where: projects_bool_exp): [projects!]!
     projects_aggregate(distinct_on: [projects_select_column!], limit: Int, offset: Int, order_by: [projects_order_by!], where: projects_bool_exp): projects_aggregate!
     projects_by_pk(id: uuid!): projects
@@ -5254,9 +5581,13 @@ type subscription_root {
     builds(distinct_on: [builds_select_column!], limit: Int, offset: Int, order_by: [builds_order_by!], where: builds_bool_exp): [builds!]!
     builds_aggregate(distinct_on: [builds_select_column!], limit: Int, offset: Int, order_by: [builds_order_by!], where: builds_bool_exp): builds_aggregate!
     builds_by_pk(id: uuid!): builds
+    cvss_environmental_adjustment(distinct_on: [cvss_environmental_adjustment_select_column!], limit: Int, offset: Int, order_by: [cvss_environmental_adjustment_order_by!], where: cvss_environmental_adjustment_bool_exp): [cvss_environmental_adjustment!]!
+    cvss_environmental_adjustment_by_pk(id: uuid!): cvss_environmental_adjustment
     default_branch_builds(distinct_on: [default_branch_builds_select_column!], limit: Int, offset: Int, order_by: [default_branch_builds_order_by!], where: default_branch_builds_bool_exp): [default_branch_builds!]!
     findings(distinct_on: [findings_select_column!], limit: Int, offset: Int, order_by: [findings_order_by!], where: findings_bool_exp): [findings!]!
     findings_by_pk(id: uuid!): findings
+    folder_environmental_adjustment(distinct_on: [folder_environmental_adjustment_select_column!], limit: Int, offset: Int, order_by: [folder_environmental_adjustment_order_by!], where: folder_environmental_adjustment_bool_exp): [folder_environmental_adjustment!]!
+    folder_environmental_adjustment_by_pk(id: uuid!): folder_environmental_adjustment
     github_repositories(distinct_on: [github_repositories_select_column!], limit: Int, offset: Int, order_by: [github_repositories_order_by!], where: github_repositories_bool_exp): [github_repositories!]!
     github_repositories_by_pk(id: uuid!): github_repositories
     guide_related_guides(distinct_on: [guide_related_guides_select_column!], limit: Int, offset: Int, order_by: [guide_related_guides_order_by!], where: guide_related_guides_bool_exp): [guide_related_guides!]!
@@ -5300,6 +5631,8 @@ type subscription_root {
     package_release_license_by_pk(id: uuid!): package_release_license
     project_access_tokens(distinct_on: [project_access_tokens_select_column!], limit: Int, offset: Int, order_by: [project_access_tokens_order_by!], where: project_access_tokens_bool_exp): [project_access_tokens!]!
     project_access_tokens_by_pk(id: uuid!): project_access_tokens
+    project_folder_settings(distinct_on: [project_folder_settings_select_column!], limit: Int, offset: Int, order_by: [project_folder_settings_order_by!], where: project_folder_settings_bool_exp): [project_folder_settings!]!
+    project_folder_settings_by_pk(id: uuid!): project_folder_settings
     projects(distinct_on: [projects_select_column!], limit: Int, offset: Int, order_by: [projects_order_by!], where: projects_bool_exp): [projects!]!
     projects_aggregate(distinct_on: [projects_select_column!], limit: Int, offset: Int, order_by: [projects_order_by!], where: projects_bool_exp): projects_aggregate!
     projects_by_pk(id: uuid!): projects

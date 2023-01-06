@@ -13,7 +13,7 @@ CREATE TABLE public.cvss_environmental_adjustment
 (
     id                          uuid PRIMARY KEY              DEFAULT (gen_random_uuid()),
     created_at                  timestamptz                   DEFAULT NOW(),
-    name                        TEXT                 NOT NULL,
+    name                       TEXT                 NOT NULL,
     -- exploitability metrics
     attack_vector               cvss_vector          NOT NULL DEFAULT 'X',
     attack_complexity           cvss_complexity      NOT NULL DEFAULT 'X',
@@ -29,6 +29,8 @@ CREATE TABLE public.cvss_environmental_adjustment
     integrity_requirement       cvss_low_medium_high NOT NULL DEFAULT 'X',
     availability_requirement    cvss_low_medium_high NOT NULL DEFAULT 'X'
 );
+
+
 
 
 CREATE TABLE public.project_environmental_adjustment

@@ -1,0 +1,10 @@
+mutation DeleteFolderAdjustment($id: uuid!) {
+    delete_folder_environmental_adjustment_by_pk(id: $id){
+        id
+    }
+}
+
+
+
+
+
