@@ -138,6 +138,26 @@ services:
     ports:
       - '4436:4436'
       - '4437:4437'
+#  repo-bootstrap:
+#    build:
+#      context: ../../.
+#      dockerfile: lunatrace/bsl/repo-bootstrap.dockerfile
+#      target: repo-bootstrap
+#  cli:
+#    build:
+#      context: ../../.
+#      dockerfile: lunatrace/cli/docker/lunatrace.dockerfile
+#      target: 'lunatrace-cli'
+  backend:
+    build:
+      context: ./backend
+#      dockerfile: docker/oathkeeper.dockerfile
+#    image: backend-express-server
+    environment: []
+    restart: 'no'
+    env_file:
+      - .env.dev
+    volumes: []
 volumes:
   db_data:
 

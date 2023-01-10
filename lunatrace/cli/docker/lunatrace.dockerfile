@@ -7,7 +7,7 @@ WORKDIR /build/lunatrace/cli/
 
 RUN make lunatrace
 
-FROM scratch
+FROM scratch as lunatrace-cli
 
 COPY --from=go-build /build/lunatrace/cli/bin/lunatrace /
 
