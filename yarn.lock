@@ -39931,6 +39931,7 @@ __metadata:
     "@types/jsonwebtoken": ~8.5.8
     "@types/jwk-to-pem": ~2.0.1
     "@types/markdown-table": 2.0.0
+    "@types/minimatch": ~5.1.2
     "@types/node": ^14.0.0
     "@types/semver": ^7.3.9
     "@types/tar": ~6.1.3
@@ -39973,6 +39974,7 @@ __metadata:
     jwks-rsa: ^2.0.5
     jwt-decode: ^3.1.2
     markdown-table: 2.0.0
+    minimatch: ~5.1.2
     murmurhash-native: ^3.5.0
     nodemon: ^2.0.15
     octokit: ^1.7.1
@@ -41335,6 +41337,15 @@ __metadata:
   dependencies:
     brace-expansion: ^2.0.1
   checksum: 215edd0978320a3354188f84a537d45841f2449af4df4379f79b9b777e71aa4f5722cc9d1717eabd2a70d38ef76ab7b708d24d83ea6a6c909dfd8833de98b437
+  languageName: node
+  linkType: hard
+
+"minimatch@npm:~5.1.2":
+  version: 5.1.2
+  resolution: "minimatch@npm:5.1.2"
+  dependencies:
+    brace-expansion: ^2.0.1
+  checksum: 32ffda25b9fb8270a1c1beafdb7489dc0e411af553495136509a945691f63c9b6b000eeeaaf8bffe3efa609c1d6d3bc0f5a106f6c3443b5c05da649100ded964
   languageName: node
   linkType: hard
 

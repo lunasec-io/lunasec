@@ -52,7 +52,12 @@ describe('The fake dependency tree', () => {
   });
 
   it('should filter vulnerabilities by severity', () => {
-    const treeWithMiminumSeverity = new VulnerabilityDependencyTree(fakeDependencyTreeHasuraOutputFixture, [], 'High');
+    const treeWithMiminumSeverity = new VulnerabilityDependencyTree(
+      fakeDependencyTreeHasuraOutputFixture,
+      [],
+      [],
+      'High'
+    );
     const vulnerableReleases = treeWithMiminumSeverity.getVulnerableReleases();
     expect(vulnerableReleases.length).toEqual(1);
     const vulnRelease = vulnerableReleases[0];
@@ -62,7 +67,7 @@ describe('The fake dependency tree', () => {
 
   it('should ignore vulnerabilities', () => {
     const ignored = [{ vulnerability_id: 'a', locations: ['package-lock.json'], note: 'this is the note' }];
-    const treeWithIgnored = new VulnerabilityDependencyTree(fakeDependencyTreeHasuraOutputFixture, ignored);
+    const treeWithIgnored = new VulnerabilityDependencyTree(fakeDependencyTreeHasuraOutputFixture, [], ignored);
     expect(treeWithIgnored.getVulnerableReleases()[0].affected_by[0].ignored).toEqual(true);
   });
   it('should show guides', () => {

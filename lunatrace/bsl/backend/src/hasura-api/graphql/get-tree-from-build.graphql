@@ -42,7 +42,7 @@ query GetTreeFromBuild($build_id: uuid!, $analysis_results_where: analysis_manif
                 project_id
                 vulnerability_id
             }
-            project_folder_settings {
+            project_folder_settings (order_by: {precedence: asc_nulls_last}) {
                 precedence
                 ignore
                 path_glob
@@ -56,6 +56,7 @@ query GetTreeFromBuild($build_id: uuid!, $analysis_results_where: analysis_manif
                         confidentiality_impact
                         confidentiality_requirement
                         group_name
+                        name
                         integrity_impact
                         integrity_requirement
                         privileges_required
