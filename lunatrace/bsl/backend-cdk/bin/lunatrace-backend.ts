@@ -37,10 +37,10 @@ function deployStack() {
       throw new Error('unable to deploy development stack, must specify DEV_USER');
     }
 
-    const appName = stackInputsV1.appName;
+    const appName = stackInputsV2.appName;
     const env = {
-      account: stackInputsV1.cdkDefaultAccount,
-      region: stackInputsV1.cdkDefaultRegion,
+      account: stackInputsV2.cdkDefaultAccount,
+      region: stackInputsV2.cdkDefaultRegion,
     };
 
     return new WorkerStorageStack(app, `${appName}-${devUser}-EtlStorage`, {
