@@ -37,10 +37,6 @@ interface WorkerStackProps extends cdk.StackProps {
   gitHubAppId: string;
   nodeEnvVars: Record<string, string>;
   nodeSecrets: Record<string, EcsSecret>;
-  gitHubAppPrivateKey: ISecret;
-  hasuraDatabaseUrlSecret: ISecret;
-  hasuraAdminSecret: ISecret;
-  backendStaticSecret: ISecret;
   datadogApiKeyArn: string;
   storageStack: WorkerStorageStackState;
   servicesSecurityGroup: SecurityGroup;
@@ -75,12 +71,6 @@ export class WorkerStack extends cdk.Stack {
   public static createWorkerStack(context: Construct, props: WorkerStackProps): void {
     const {
       fargateCluster,
-      // publicHasuraServiceUrl,
-      // gitHubAppId,
-      // gitHubAppPrivateKey,
-      // hasuraDatabaseUrlSecret,
-      // hasuraAdminSecret,
-      // backendStaticSecret,
       nodeEnvVars,
       nodeSecrets,
       storageStack,
