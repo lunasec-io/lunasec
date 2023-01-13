@@ -14,6 +14,7 @@
 
 import { EmitterWebhookEvent } from '@octokit/webhooks';
 
+import { isProduction } from '../../../config';
 import { WebhookInterceptor } from '../../../github/webhooks/interceptor';
 import { hasura } from '../../../hasura-api';
 import { GetWebhookCacheByDeliveryIdQuery } from '../../../hasura-api/generated';
@@ -56,9 +57,11 @@ export function processGithubWebhookActivity(webhooks: WebhookInterceptor): Webh
           payload: webhookData.webhook_cache[0].data,
         };
 
-        log.info('processing github webhook event', {
-          event,
-        });
+        if (isProduction) {
+          log.info('processing github webhook event', {
+            event,
+          });
+        }
         await webhooks.receive(event);
 
         return newResult(undefined);

@@ -15,6 +15,7 @@ import path from 'path';
 
 import { ITask } from 'pg-promise';
 import { buildDepTreeFromFiles, PkgTree } from 'snyk-nodejs-lockfile-parser-lunatrace-fork';
+import { DepTreeDep } from 'snyk-nodejs-lockfile-parser-lunatrace-fork/dist/parsers';
 
 import { db, pgp } from '../database/db';
 import {
@@ -74,7 +75,8 @@ function sortEdges(a: ManifestDependencyEdge, b: ManifestDependencyEdge): number
 
 export async function collectPackageGraphsFromDirectory(
   repoDir: string,
-  rootUniqueId?: string
+  rootUniqueId?: string,
+  codeUrl?: string
 ): Promise<CollectedPackageTree[]> {
   const lockFilePaths = await findFilesMatchingFilter(repoDir, (_directory, entryName) => {
     return /package-lock\.json|yarn\.lock$/.test(entryName);
@@ -117,8 +119,7 @@ export async function collectPackageGraphsFromDirectory(
         pkgTree.version = `${pkgTree.version}-${rootUniqueId}`;
       }
 
-      const flatDeps = [pkgTree, ...Object.values(pkgTree.dependencies)];
-      const pkgDependenciesWithGraphAndMetadata = flatDeps.map((pkg) => {
+      const depToGraphAndMetadata = (pkg: PkgTree | DepTreeDep) => {
         return {
           node: dfsGenerateMerkleTreeFromDepTree(pkg),
           // If there is nothing in the labels, then we know that it is a prod dependency
@@ -128,14 +129,19 @@ export async function collectPackageGraphsFromDirectory(
           range: pkg.range || pkg.version,
           version: pkg.version,
         };
-      });
+      };
+
+      const rootDependencyWithGraphAndMetadata = depToGraphAndMetadata(pkgTree);
+      rootDependencyWithGraphAndMetadata.node.mirroredBlobUrl = codeUrl;
+
+      const dependenciesWithGraphAndMetadata = Object.values(pkgTree.dependencies).map(depToGraphAndMetadata);
 
       return {
         lockFilePath: lockFilePathWithLeadingSlash,
-        dependencies: pkgDependenciesWithGraphAndMetadata,
+        dependencies: [rootDependencyWithGraphAndMetadata, ...dependenciesWithGraphAndMetadata],
         packageManager: pkgTree?.meta?.packageManager,
         lockfileVersion: pkgTree?.meta?.lockfileVersion,
-        rootTreeHashID: dfsGenerateMerkleTreeFromDepTree(pkgTree).treeHashId,
+        rootTreeHashID: rootDependencyWithGraphAndMetadata.node.treeHashId,
       };
     })
   );
@@ -197,7 +203,8 @@ async function getPackageReleaseId<Ext>(t: ITask<Ext>, packageId: string, versio
   const newPackageReleaseId = await t.oneOrNone<{ id: string }>(
     `INSERT INTO package.release (package_id, version, mirrored_blob_url)
              VALUES ($1, $2, $3)
-             ON CONFLICT DO NOTHING
+             ON CONFLICT (package_id, version) DO UPDATE
+             SET mirrored_blob_url=excluded.mirrored_blob_url
              RETURNING id`,
     [packageId, version, mirrored_blob_url]
   );
@@ -309,7 +316,7 @@ async function findCurrentlyKnownDependencies(query: string, manifestIds: string
   return currentlyKnownIds;
 }
 
-async function insertPackageGraphsIntoDatabase(projectId: string, pkgGraphs: CollectedPackageTree[], codeUrl: string) {
+async function insertPackageGraphsIntoDatabase(projectId: string, pkgGraphs: CollectedPackageTree[]) {
   log.info(`Inserting package graphs into database`, { length: pkgGraphs.length });
 
   if (pkgGraphs.length === 0) {
@@ -348,11 +355,6 @@ async function insertPackageGraphsIntoDatabase(projectId: string, pkgGraphs: Col
 
   pkgGraphs.forEach((pkgGraph) => {
     pkgGraph.dependencies.forEach((pkg) => {
-      // assign the code url to root nodes
-      if (!pkg.node.parent) {
-        pkg.node.mirroredBlobUrl = codeUrl;
-      }
-
       if (currentlyKnownRootIds.has(pkg.node.treeHashId)) {
         return;
       }
@@ -514,10 +516,10 @@ export async function snapshotPinnedDependencies(
   codeUrl: string,
   projectId?: string
 ): Promise<void> {
-  const pkgTree = await collectPackageGraphsFromDirectory(repoDir, buildId);
+  const pkgTree = await collectPackageGraphsFromDirectory(repoDir, buildId, codeUrl);
 
   // Creates all nodes and edges for the dependency graph into the database
-  await insertPackageGraphsIntoDatabase(projectId || '', pkgTree, codeUrl);
+  await insertPackageGraphsIntoDatabase(projectId || '', pkgTree);
 
   // Creates all manifests and associated root dependencies into the database
   await insertPackageManifestsIntoDatabase(buildId, pkgTree);
