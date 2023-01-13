@@ -299,6 +299,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       secrets: nodeSecrets,
       healthCheck: {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:3002/health || exit 1'],
+        timeout: Duration.minutes(11),
       },
     });
     storageStackStage.processRepositorySqsQueue.grantSendMessages(backend.taskDefinition.taskRole);
