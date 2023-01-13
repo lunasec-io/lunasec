@@ -1,6 +1,10 @@
 table:
   name: manifest_dependency_edge_result_location
   schema: analysis
+object_relationships:
+  - name: manifest_dependency_edge_result
+    using:
+      foreign_key_constraint_on: manifest_dependency_edge_result_id
 insert_permissions:
   - role: service
     permission:

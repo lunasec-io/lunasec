@@ -1,3 +1,4 @@
+
 query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!, $previewChains: Boolean) {
     vulnerableReleasesFromBuild(buildId: $buildId, minimumSeverity: $minimumSeverity, previewChains: $previewChains) {
         trivially_updatable
@@ -37,7 +38,19 @@ query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!,
                 package_manager
             }
         }
+        adjustment {
+            adjusted_from_cvss_score
+            adjusted_from_severity_name
+            adjustments_applied
+            path_matched
+        }
         affected_by {
+            adjustment {
+                adjusted_from_cvss_score
+                adjusted_from_severity_name
+                adjustments_applied
+                path_matched
+            }
             trivially_updatable_to
             beneath_minimum_severity
             fix_versions

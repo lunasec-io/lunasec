@@ -39997,6 +39997,7 @@ __metadata:
     typescript: ~4.7.4
     uuid: ^8.3.2
     validator: ^13.7.0
+    vuln-vects: ~1.1.0
   languageName: unknown
   linkType: soft
 

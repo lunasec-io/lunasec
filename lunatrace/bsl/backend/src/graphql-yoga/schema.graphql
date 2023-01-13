@@ -95,7 +95,21 @@ type BuildData_VulnerableRelease {
     guides: [BuildData_Guide!]!
     fix_versions: [String!]!
     paths: [String!]!
+    adjustment: BuildData_Adjustment #optional
 }
+
+type BuildData_Adjustment {
+    adjusted_from_cvss_score: Float
+    adjusted_from_severity_name: String
+    path_matched: String!
+    adjustments_applied: [String!]!
+}
+#export interface Adjustment {
+#  adjusted_cvss_score: number;
+#  adjusted_severity_name: string;
+#  path_matched: string;
+#  adjustments_applied: string[];
+#}
 
 type BuildData_IgnoredVulnerability {
     note: String!
@@ -111,6 +125,7 @@ type BuildData_AffectedByVulnerability {
     trivially_updatable_to: String
     fix_versions: [String!]!
     path: String!
+    adjustment: BuildData_Adjustment #optional
 }
 
 type BuildData_Location {
