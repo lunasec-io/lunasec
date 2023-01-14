@@ -39958,6 +39958,7 @@ __metadata:
     jwt-decode: ^3.1.2
     markdown-table: 2.0.0
     murmurhash-native: ^3.5.0
+    node-fetch: 2
     nodemon: ^2.0.15
     octokit: ^1.7.1
     pg: ^8.7.1
@@ -42181,6 +42182,20 @@ __metadata:
     fetch-blob: ^3.1.4
     formdata-polyfill: ^4.0.10
   checksum: 2eb19f38c089a8697206210966e8555d7fc452a32da6ee1310552278ce4dda7412bf035d615335c52b0265dff701ac5e0236e9c7a56983b29f30bda15c144c2e
+  languageName: node
+  linkType: hard
+
+"node-fetch@npm:2":
+  version: 2.6.8
+  resolution: "node-fetch@npm:2.6.8"
+  dependencies:
+    whatwg-url: ^5.0.0
+  peerDependencies:
+    encoding: ^0.1.0
+  peerDependenciesMeta:
+    encoding:
+      optional: true
+  checksum: 91f57be68e29f9b1382750693619e199733a6936998e6d618f1aa779853ad8fc4a2facf170db7957bf1d2510bad33449edf74b5802713d81b63de5986fa3be00
   languageName: node
   linkType: hard
 

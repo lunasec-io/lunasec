@@ -12,11 +12,10 @@
  *
  */
 
-import axios from 'axios';
-
 import { newApp } from './app';
 import { getServerConfig } from './config';
 import { log } from './utils/log';
+import { sendErrorToDiscord } from './utils/send-error-to-discord';
 
 const serverConfig = getServerConfig();
 
@@ -37,17 +36,3 @@ void (async () => {
   await sendErrorToDiscord(e);
   throw e;
 });
-
-function sendErrorToDiscord(e: unknown): Promise<unknown> {
-  const discordUrl = process.env.DISCORD_WEBHOOK_URL_SECRET;
-  if (!discordUrl) {
-    log.error('Tried to send a discord message but could not load url, probably not in production');
-    return Promise.resolve();
-  }
-  const errString = String(e);
-  return axios.post(discordUrl, {
-    content: 'Fatal Error in Node Process: ' + errString,
-    embeds: null,
-    attachments: [],
-  });
-}

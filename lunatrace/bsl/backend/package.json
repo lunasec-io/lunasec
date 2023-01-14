@@ -2,6 +2,9 @@
   "name": "lunatrace-backend",
   "license": "BSL-LunaTrace",
   "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "main": "build/server.js",
   "types": "build/server.d.ts",
   "scripts": {
@@ -80,6 +83,7 @@
     "jwt-decode": "^3.1.2",
     "markdown-table": "2.0.0",
     "murmurhash-native": "^3.5.0",
+    "node-fetch": "2",
     "nodemon": "^2.0.15",
     "octokit": "^1.7.1",
     "pg": "^8.7.1",
