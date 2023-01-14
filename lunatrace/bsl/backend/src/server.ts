@@ -12,6 +12,8 @@
  *
  */
 
+import axios from 'axios';
+
 import { newApp } from './app';
 import { getServerConfig } from './config';
 import { log } from './utils/log';
@@ -28,9 +30,24 @@ void (async () => {
     log.error('UNCAUGHT TOP LEVEL ERROR, PROCESS WILL EXIT', { error: e });
     throw e;
   }
-})().catch((e) => {
+})().catch(async (e) => {
   log.error('unable to start server', {
     error: e,
   });
+  await sendErrorToDiscord(e);
   throw e;
 });
+
+function sendErrorToDiscord(e: unknown): Promise<unknown> {
+  const discordUrl = process.env.DISCORD_WEBHOOK_URL_SECRET;
+  if (!discordUrl) {
+    log.error('Tried to send a discord message but could not load url, probably not in production');
+    return Promise.resolve();
+  }
+  const errString = String(e);
+  return axios.post(discordUrl, {
+    content: 'Fatal Error in Node Process: ' + errString,
+    embeds: null,
+    attachments: [],
+  });
+}

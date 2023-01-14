@@ -120,6 +120,11 @@ export class LunatraceBackendStack extends cdk.Stack {
       'GitHubAppWebHookSecret',
       props.gitHubAppWebHookSecret
     );
+    const discordWebhookUrlSecret = Secret.fromSecretCompleteArn(
+      this,
+      'DiscordWebhookUrlSecret',
+      props.discordWebhookUrlArn
+    );
 
     const storageStackStage = WorkerStorageStack.createWorkerStorageStack(this, {
       env: props.env,
@@ -281,6 +286,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
       GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
       GITHUB_APP_WEBHOOK_SECRET: EcsSecret.fromSecretsManager(gitHubAppWebHookSecret),
+      DISCORD_WEBHOOK_URL_SECRET: EcsSecret.fromSecretsManager(discordWebhookUrlSecret),
     };
 
     const backendContainerImage = ContainerImage.fromAsset('../backend', {
