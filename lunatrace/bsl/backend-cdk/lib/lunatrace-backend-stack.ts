@@ -27,6 +27,7 @@ import {
 } from '@aws-cdk/aws-ecs';
 import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
 import { ApplicationProtocol, ListenerCondition, SslPolicy } from '@aws-cdk/aws-elasticloadbalancingv2';
+import * as iam from '@aws-cdk/aws-iam';
 import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 import { HostedZone } from '@aws-cdk/aws-route53';
 import { Bucket } from '@aws-cdk/aws-s3';
@@ -152,6 +153,18 @@ export class LunatraceBackendStack extends cdk.Stack {
       memoryLimitMiB: 8192,
       executionRole: execRole,
     });
+
+    taskDef.addToTaskRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          'ssmmessages:CreateControlChannel',
+          'ssmmessages:CreateDataChannel',
+          'ssmmessages:OpenControlChannel',
+          'ssmmessages:OpenDataChannel',
+        ],
+        resources: ['*'],
+      })
+    );
 
     addDatadogToTaskDefinition(this, taskDef, props.datadogApiKeyArn);
 
@@ -465,6 +478,10 @@ export class LunatraceBackendStack extends cdk.Stack {
       Port.tcp(8080),
       'Allow connections to Hasura from the services security group'
     );
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    loadBalancedFargateService.cluster.resource.enableExecuteCommand = true;
 
     loadBalancedFargateService.listener.addTargets('LunaTraceApiTargets', {
       priority: 10,
