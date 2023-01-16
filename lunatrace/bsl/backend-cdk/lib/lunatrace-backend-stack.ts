@@ -155,18 +155,6 @@ export class LunatraceBackendStack extends cdk.Stack {
       executionRole: execRole,
     });
 
-    taskDef.addToTaskRolePolicy(
-      new iam.PolicyStatement({
-        actions: [
-          'ssmmessages:CreateControlChannel',
-          'ssmmessages:CreateDataChannel',
-          'ssmmessages:OpenControlChannel',
-          'ssmmessages:OpenDataChannel',
-        ],
-        resources: ['*'],
-      })
-    );
-
     addDatadogToTaskDefinition(this, taskDef, props.datadogApiKeyArn);
 
     const frontendContainerImage = ContainerImage.fromAsset('../frontend', {
@@ -453,6 +441,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       certificate,
       domainZone,
       publicLoadBalancer: true,
+      enableExecuteCommand: true,
       assignPublicIp: true,
       redirectHTTP: true,
       sslPolicy: SslPolicy.RECOMMENDED,
@@ -479,10 +468,6 @@ export class LunatraceBackendStack extends cdk.Stack {
       Port.tcp(8080),
       'Allow connections to Hasura from the services security group'
     );
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    loadBalancedFargateService.cluster.resource.enableExecuteCommand = true;
 
     loadBalancedFargateService.listener.addTargets('LunaTraceApiTargets', {
       priority: 10,
