@@ -275,6 +275,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       LUNATRACE_GRAPHQL_SERVER_URL: 'http://backend.services:8080/v1/graphql',
       LUNATRACE_NPM_REGISTRY: 'http://backend.services:8081',
       QUEUE_VISIBILITY: '0', // overwritten by worker defs
+      QUEUE_NAME: 'placeholder',
       SITE_PUBLIC_URL: publicBaseUrl,
       PORT: '3002',
     };
