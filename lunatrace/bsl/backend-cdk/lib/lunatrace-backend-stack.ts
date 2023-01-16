@@ -29,7 +29,6 @@ import {
 } from 'aws-cdk-lib/aws-ecs';
 import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
 import { ApplicationProtocol, ListenerCondition, SslPolicy } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
-import * as iam from 'aws-cdk-lib/aws-iam';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { HostedZone } from 'aws-cdk-lib/aws-route53';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
@@ -356,7 +355,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     });
 
     // Update vulnerabilities job
-    taskDef.addContainer('UpdateVulnerabilitiesJob', {
+    const updateVulnContainer = taskDef.addContainer('UpdateVulnerabilitiesJob', {
       memoryLimitMiB: 8 * 1024,
       cpu: 4 * 1024,
       image: ingestWorkerImage,
@@ -367,6 +366,11 @@ export class LunatraceBackendStack extends cdk.Stack {
         LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
         LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
       },
+    });
+
+    updateVulnContainer.addContainerDependencies({
+      container: hasura,
+      condition: ContainerDependencyCondition.HEALTHY,
     });
 
     const registryProxyImage = ContainerImage.fromAsset('../ingest-worker', {
