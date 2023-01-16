@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+import * as cdk from 'aws-cdk-lib';
 import { SecurityGroup, SubnetType } from 'aws-cdk-lib/aws-ec2';
 import {
   CapacityProviderStrategy,
@@ -24,7 +25,6 @@ import {
   QueueProcessingFargateServiceProps,
 } from 'aws-cdk-lib/aws-ecs-patterns';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
-import * as cdk from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 
 import { QueueProcessingFargateService } from './aws/queue-processing-fargate-service';

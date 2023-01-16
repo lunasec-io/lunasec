@@ -11,9 +11,9 @@
  * limitations under the License.
  *
  */
+import { Stack, StackProps } from 'aws-cdk-lib';
 import { DnsValidatedCertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { PublicHostedZone } from 'aws-cdk-lib/aws-route53';
-import { Stack, StackProps } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 
 export interface CertificatesStackProps extends StackProps {

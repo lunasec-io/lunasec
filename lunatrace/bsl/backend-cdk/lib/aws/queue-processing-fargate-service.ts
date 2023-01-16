@@ -13,10 +13,10 @@
  */
 // Taken from: https://github.com/aws/aws-cdk/pull/18106
 // Forked because ephemeral storage is not allowed to be set by the existing QueueProcessingFargateService in the CDK
+import { FeatureFlags } from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import { FargatePlatformVersion, FargateService, FargateTaskDefinition } from 'aws-cdk-lib/aws-ecs';
 import { QueueProcessingServiceBase, QueueProcessingServiceBaseProps } from 'aws-cdk-lib/aws-ecs-patterns';
-import { FeatureFlags } from 'aws-cdk-lib/core';
 import * as cxapi from 'aws-cdk-lib/cx-api';
 import { Construct } from 'constructs';
 

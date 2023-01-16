@@ -11,8 +11,8 @@
  * limitations under the License.
  *
  */
+import { Stack, StackProps } from 'aws-cdk-lib';
 import { IVpc, SubnetType, Vpc } from 'aws-cdk-lib/aws-ec2';
-import { Stack, StackProps } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 export interface VPCStackProps extends StackProps {
   vpcId?: string;

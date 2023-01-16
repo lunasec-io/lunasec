@@ -11,11 +11,11 @@
  * limitations under the License.
  *
  */
+import * as cdk from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
 import { Bucket, EventType, HttpMethods } from 'aws-cdk-lib/aws-s3';
 import { SqsDestination } from 'aws-cdk-lib/aws-s3-notifications';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
-import * as cdk from 'aws-cdk-lib/core';
-import { Duration } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 
 interface WorkerStorageStackProps extends cdk.StackProps {

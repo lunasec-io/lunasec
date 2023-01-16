@@ -14,6 +14,8 @@
 
 import { inspect } from 'util';
 
+import * as cdk from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import {
@@ -33,8 +35,6 @@ import { HostedZone } from 'aws-cdk-lib/aws-route53';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { DnsRecordType, PrivateDnsNamespace } from 'aws-cdk-lib/aws-servicediscovery';
-import * as cdk from 'aws-cdk-lib/core';
-import { Duration } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 
 import { StackInputs } from '../inputs/types';
