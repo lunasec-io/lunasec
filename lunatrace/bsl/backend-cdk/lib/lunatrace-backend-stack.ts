@@ -15,7 +15,7 @@
 import { inspect } from 'util';
 
 import * as cdk from 'aws-cdk-lib';
-import { Duration } from 'aws-cdk-lib';
+import { aws_ecs_patterns, Duration } from 'aws-cdk-lib';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import {
@@ -343,10 +343,14 @@ export class LunatraceBackendStack extends cdk.Stack {
         HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
         HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
       },
-      // healthCheck: {
-      //   // TODO: Make this verify a 200 status code in the response
-      //   command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:8080/healthz || exit 1'],
-      // },
+      healthCheck: {
+        command: ['CMD-SHELL', 'curl -f http://localhost:8080/healthz || exit 1'],
+        // the properties below are optional
+        // interval: Duration.minutes(30),
+        // retries: 123,
+        // startPeriod: Duration.minutes(30),
+        // timeout: Duration.minutes(30),
+      },
     });
 
     const ingestWorkerImage = ContainerImage.fromAsset('../ingest-worker', {
@@ -355,7 +359,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     });
 
     // Update vulnerabilities job
-    const updateVulnContainer = taskDef.addContainer('UpdateVulnerabilitiesJob', {
+    const updateVulnJob = taskDef.addContainer('UpdateVulnerabilitiesJob', {
       memoryLimitMiB: 8 * 1024,
       cpu: 4 * 1024,
       image: ingestWorkerImage,
@@ -368,7 +372,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
-    updateVulnContainer.addContainerDependencies({
+    updateVulnJob.addContainerDependencies({
       container: hasura,
       condition: ContainerDependencyCondition.HEALTHY,
     });
