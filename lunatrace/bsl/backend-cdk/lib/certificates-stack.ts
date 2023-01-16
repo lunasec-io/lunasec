@@ -11,9 +11,10 @@
  * limitations under the License.
  *
  */
-import { DnsValidatedCertificate } from '@aws-cdk/aws-certificatemanager';
-import { PublicHostedZone } from '@aws-cdk/aws-route53';
-import { Construct, Stack, StackProps } from '@aws-cdk/core';
+import { DnsValidatedCertificate } from 'aws-cdk-lib/aws-certificatemanager';
+import { PublicHostedZone } from 'aws-cdk-lib/aws-route53';
+import { Stack, StackProps } from 'aws-cdk-lib/core';
+import { Construct } from 'constructs';
 
 export interface CertificatesStackProps extends StackProps {
   hostedZoneId: string;

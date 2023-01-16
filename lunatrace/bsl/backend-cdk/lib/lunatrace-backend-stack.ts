@@ -14,8 +14,8 @@
 
 import { inspect } from 'util';
 
-import { Certificate } from '@aws-cdk/aws-certificatemanager';
-import { Port, SecurityGroup, Vpc } from '@aws-cdk/aws-ec2';
+import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
+import { Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import {
   Cluster,
   ContainerDependencyCondition,
@@ -24,17 +24,18 @@ import {
   Secret as EcsSecret,
   FargateTaskDefinition,
   LogDriver,
-} from '@aws-cdk/aws-ecs';
-import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
-import { ApplicationProtocol, ListenerCondition, SslPolicy } from '@aws-cdk/aws-elasticloadbalancingv2';
-import * as iam from '@aws-cdk/aws-iam';
-import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
-import { HostedZone } from '@aws-cdk/aws-route53';
-import { Bucket } from '@aws-cdk/aws-s3';
-import { Secret } from '@aws-cdk/aws-secretsmanager';
-import { DnsRecordType, PrivateDnsNamespace } from '@aws-cdk/aws-servicediscovery';
-import * as cdk from '@aws-cdk/core';
-import { Duration } from '@aws-cdk/core';
+} from 'aws-cdk-lib/aws-ecs';
+import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
+import { ApplicationProtocol, ListenerCondition, SslPolicy } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { HostedZone } from 'aws-cdk-lib/aws-route53';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
+import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
+import { DnsRecordType, PrivateDnsNamespace } from 'aws-cdk-lib/aws-servicediscovery';
+import * as cdk from 'aws-cdk-lib/core';
+import { Duration } from 'aws-cdk-lib/core';
+import { Construct } from 'constructs';
 
 import { StackInputs } from '../inputs/types';
 
@@ -48,7 +49,7 @@ type LunaTraceStackProps = cdk.StackProps & StackInputs;
 // Handles far more than just the backend, in reality this is the "root stack" that launches all other sub-stacks
 // TODO: rename this to "RootStack"
 export class LunatraceBackendStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: LunaTraceStackProps) {
+  constructor(scope: Construct, id: string, props: LunaTraceStackProps) {
     super(scope, id, props);
 
     const publicBaseUrl = `https://${props.domainName}`;

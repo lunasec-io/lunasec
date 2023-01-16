@@ -15,7 +15,7 @@
 
 import 'source-map-support/register';
 
-import * as cdk from '@aws-cdk/core';
+import * as cdk from 'aws-cdk-lib/core';
 
 import { stackInputsV1 } from '../inputs/stack-inputs-v1';
 import { stackInputsV2 } from '../inputs/stack-inputs-v2';
