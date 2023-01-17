@@ -52,6 +52,7 @@
     <mapping file-url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1650321911749_add_webhook_cache/up.sql" connection-id="2288c982-597b-4cb4-a0b1-d6f80f52304a" session-id="MAIN" current-schema="public" />
     <mapping file-url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1661812840365_manifest_dependency_node_child_edges_recursive/up.sql" connection-id="2288c982-597b-4cb4-a0b1-d6f80f52304a" session-id="MAIN" current-schema="hdb_catalog" />
     <mapping file-url="file://$APPLICATION_CONFIG_DIR$/consoles/db/60703370-4771-453b-81a1-e251ed9b8f3f/console.sql" connection-id="2288c982-597b-4cb4-a0b1-d6f80f52304a" session-id="MAIN" current-schema="hdb_catalog" />
+    <mapping file-url="file://$PROJECT_DIR$/lunatrace/bsl/hasura/migrations/lunatrace/1672788403469_add_cisa_known_exploited_vulnerabilities/down.sql" connection-id="2288c982-597b-4cb4-a0b1-d6f80f52304a" session-id="MAIN" current-schema="lunatrace" />
   </component>
   <component name="DBNavigator.Project.MethodExecutionManager">
     <method-browser />
