@@ -300,9 +300,12 @@ export class LunatraceBackendStack extends cdk.Stack {
       image: backendContainerImage,
       containerName: 'LunaTraceBackendContainer',
       portMappings: [{ containerPort: 3002 }],
-      logging: LogDriver.awsLogs({
-        streamPrefix: 'lunatrace-backend-tmp',
-      }),
+      logging: datadogLogDriverForService('lunatrace', 'lunatrace-backend'),
+      // If logs are missing from datadog, particularly failure-to-start logs, use this instead and go find the errors in cloudwatch,
+      // not ecs
+      // logging: LogDriver.awsLogs({
+      //   streamPrefix: 'lunatrace-backend-tmp',
+      // }),
       environment: nodeEnvVars,
       secrets: nodeSecrets,
       healthCheck: {

@@ -1,3 +1,4 @@
+# THIS IS ONLY USED IN PROD, locally we just use the hasura base image directly in the docker compose
 FROM hasura/graphql-engine:v2.9.0.cli-migrations-v3
 
 #RUN apt install wget -y
