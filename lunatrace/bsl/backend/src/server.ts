@@ -15,6 +15,7 @@
 import { newApp } from './app';
 import { getServerConfig } from './config';
 import { log } from './utils/log';
+import { sendErrorToDiscord } from './utils/send-error-to-discord';
 
 const serverConfig = getServerConfig();
 
@@ -28,9 +29,10 @@ void (async () => {
     log.error('UNCAUGHT TOP LEVEL ERROR, PROCESS WILL EXIT', { error: e });
     throw e;
   }
-})().catch((e) => {
+})().catch(async (e) => {
   log.error('unable to start server', {
     error: e,
   });
+  await sendErrorToDiscord(e);
   throw e;
 });

@@ -11,19 +11,21 @@
  * limitations under the License.
  *
  */
-import { SecurityGroup, SubnetType } from '@aws-cdk/aws-ec2';
+import * as cdk from 'aws-cdk-lib';
+import { SecurityGroup, SubnetType } from 'aws-cdk-lib/aws-ec2';
 import {
   CapacityProviderStrategy,
   Cluster,
   ContainerImage,
   DeploymentControllerType,
   Secret as EcsSecret,
-} from '@aws-cdk/aws-ecs';
-import { ApplicationLoadBalancedFargateService, QueueProcessingFargateServiceProps } from '@aws-cdk/aws-ecs-patterns';
-import { ISecret } from '@aws-cdk/aws-secretsmanager';
-import { Queue } from '@aws-cdk/aws-sqs';
-import * as cdk from '@aws-cdk/core';
-import { Construct } from '@aws-cdk/core';
+} from 'aws-cdk-lib/aws-ecs';
+import {
+  ApplicationLoadBalancedFargateService,
+  QueueProcessingFargateServiceProps,
+} from 'aws-cdk-lib/aws-ecs-patterns';
+import { Queue } from 'aws-cdk-lib/aws-sqs';
+import { Construct } from 'constructs';
 
 import { QueueProcessingFargateService } from './aws/queue-processing-fargate-service';
 import { commonBuildProps } from './constants';
@@ -37,10 +39,6 @@ interface WorkerStackProps extends cdk.StackProps {
   gitHubAppId: string;
   nodeEnvVars: Record<string, string>;
   nodeSecrets: Record<string, EcsSecret>;
-  gitHubAppPrivateKey: ISecret;
-  hasuraDatabaseUrlSecret: ISecret;
-  hasuraAdminSecret: ISecret;
-  backendStaticSecret: ISecret;
   datadogApiKeyArn: string;
   storageStack: WorkerStorageStackState;
   servicesSecurityGroup: SecurityGroup;
@@ -58,7 +56,7 @@ interface QueueService extends Partial<QueueProcessingFargateServiceProps> {
 }
 
 export class WorkerStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: WorkerStackProps) {
+  constructor(scope: Construct, id: string, props: WorkerStackProps) {
     super(scope, id, props);
 
     WorkerStack.createWorkerStack(this, props);
@@ -75,12 +73,6 @@ export class WorkerStack extends cdk.Stack {
   public static createWorkerStack(context: Construct, props: WorkerStackProps): void {
     const {
       fargateCluster,
-      // publicHasuraServiceUrl,
-      // gitHubAppId,
-      // gitHubAppPrivateKey,
-      // hasuraDatabaseUrlSecret,
-      // hasuraAdminSecret,
-      // backendStaticSecret,
       nodeEnvVars,
       nodeSecrets,
       storageStack,

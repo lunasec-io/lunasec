@@ -30,6 +30,7 @@ export interface StackInputs {
   kratosCipherSecretArn: string;
   kratosCookieSecretArn: string;
   kratosSlackSecretArn: string;
+  discordWebhookUrlArn: string;
   hasuraAdminSecretArn: string;
   oathkeeperConfigBucketArn: string;
   vpcId: string;

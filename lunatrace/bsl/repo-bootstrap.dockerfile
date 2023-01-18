@@ -1,4 +1,4 @@
-FROM node:16 AS repo-bootstrap
+FROM node:18 AS repo-bootstrap
 
 COPY . /usr/repo
 WORKDIR /usr/repo
