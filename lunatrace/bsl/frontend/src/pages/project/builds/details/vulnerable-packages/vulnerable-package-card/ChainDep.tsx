@@ -30,7 +30,10 @@ interface DepProps {
 }
 
 // Determines if the package is the start, the middle, or the target package and then colors them appropriately
-const getBadgeColor = (depIndex: number, chainLength: number) => {
+const getBadgeColor = (depIndex: number, chainLength: number, reachable: boolean) => {
+  if (!reachable) {
+    return 'light';
+  }
   if (depIndex === chainLength - 1) {
     return 'success';
   }
@@ -95,7 +98,7 @@ export const ChainDep: React.FunctionComponent<DepProps> = ({
           ))}
         {isExpanded && <div style={{ fontSize: '.7rem' }}>{dep.range}</div>}
       </div>
-      <Badge text="dark" bg={getBadgeColor(index, visibleChainLength)}>
+      <Badge text="dark" bg={getBadgeColor(index, visibleChainLength, dep.reachable)}>
         <div>{dep.release.package.name}</div>
         {isExpanded && (
           <div className="mt-1" style={{ fontSize: '.7rem' }}>
