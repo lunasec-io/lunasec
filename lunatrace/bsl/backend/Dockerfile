@@ -11,7 +11,7 @@ WORKDIR /usr/repo/lunatrace/bsl/backend
 RUN yarn run compile
 
 FROM lunatrace-backend-base as backend-express-server
-ENTRYPOINT ["/bin/bash", "-c","yarn start:prod 2>&1 | tee >(head -n 100000 > startup.log); sleep 600"]
+ENTRYPOINT ["yarn", "start:prod"]
 
 FROM lunatrace-backend-base as backend-queue-processor
-ENTRYPOINT ["/bin/bash", "-c","yarn prod:worker 2>&1 | tee >(head -n 100000 > startup.log); sleep 600"]
+ENTRYPOINT ["yarn", "prod:worker"]
