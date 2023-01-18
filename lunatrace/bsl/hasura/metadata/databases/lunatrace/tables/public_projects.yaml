@@ -62,6 +62,13 @@ array_relationships:
         table:
           name: project_access_tokens
           schema: public
+  - name: project_folder_settings
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          name: project_folder_settings
+          schema: public
   - name: reports
     using:
       foreign_key_constraint_on:

@@ -1,0 +1,6 @@
+mutation InsertProjectFolderSetting($object: project_folder_settings_insert_input = {}) {
+    insert_project_folder_settings_one(object: $object) {
+        id
+    }
+}
+

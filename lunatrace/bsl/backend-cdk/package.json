@@ -8,7 +8,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "cdk:deploy:dev": "DEVELOPMENT=true DEV_USER=$USER yarn run cdk deploy --all",
+    "cdk:deploy:dev": "DEVELOPMENT=true DEV_USER=$USER yarn run cdk deploy --all -O outputs.dev.json && ./format-dev-outputs.sh",
     "cdk:deploy:prod:all": "DATADOG_API_KEY=$(aws secretsmanager get-secret-value --secret-id lunatrace-DatadogAPIKey | jq -r .SecretString) yarn run cdk deploy -f --all --require-approval never",
     "cdk:deploy:prod:cleanup": "rm cdk.out/*.tar || true",
     "cdk:deploy:prod:run": "echo 'deploying...' && yarn run cdk:deploy:prod:cleanup && ./build-containers.sh && yarn run cdk:deploy:prod:all",

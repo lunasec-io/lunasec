@@ -1,0 +1,75 @@
+table:
+  name: folder_environmental_adjustment
+  schema: public
+object_relationships:
+  - name: cvss_environmental_adjustment
+    using:
+      foreign_key_constraint_on: cvss_environmental_adjustment_id
+  - name: project_folder_setting
+    using:
+      foreign_key_constraint_on: project_folder_settings_id
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        project_folder_setting:
+          project:
+            organization:
+              organization_users:
+                user:
+                  id:
+                    _eq: X-Hasura-Real-User-Id
+      columns:
+        - cvss_environmental_adjustment_id
+        - id
+        - project_folder_settings_id
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - id
+        - cvss_environmental_adjustment_id
+        - project_folder_settings_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - cvss_environmental_adjustment_id
+        - id
+        - project_folder_settings_id
+      filter:
+        project_folder_setting:
+          project:
+            organization:
+              organization_users:
+                user:
+                  id:
+                    _eq: X-Hasura-Real-User-Id
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - cvss_environmental_adjustment_id
+        - id
+        - project_folder_settings_id
+      filter:
+        project_folder_setting:
+          project:
+            organization:
+              organization_users:
+                user:
+                  id:
+                    _eq: X-Hasura-Real-User-Id
+      check: null
+delete_permissions:
+  - role: user
+    permission:
+      backend_only: false
+      filter:
+        project_folder_setting:
+          project:
+            organization:
+              organization_users:
+                user:
+                  id:
+                    _eq: X-Hasura-Real-User-Id

@@ -1,13 +1,28 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
-    <codeStyleSettings language="TypeScript">
+    <option name="ENABLE_SECOND_REFORMAT" value="true" />
+    <GoCodeStyleSettings>
+      <option name="ADD_PARENTHESES_FOR_SINGLE_IMPORT" value="true" />
+      <option name="MOVE_ALL_IMPORTS_IN_ONE_DECLARATION" value="true" />
+      <option name="MOVE_ALL_STDLIB_IMPORTS_IN_ONE_GROUP" value="true" />
+      <option name="GROUP_STDLIB_IMPORTS" value="true" />
+      <option name="CREATE_LOCAL_GROUP" value="true" />
+      <option name="LOCAL_PACKAGE_PREFIXES" />
+    </GoCodeStyleSettings>
+    <SqlCodeStyleSettings version="6">
+      <option name="KEYWORD_CASE" value="2" />
+      <option name="TYPE_CASE" value="3" />
+      <option name="QUOTE_IDENTIFIER" value="1" />
+    </SqlCodeStyleSettings>
+    <editorconfig>
+      <option name="ENABLED" value="false" />
+    </editorconfig>
+    <codeStyleSettings language="Python">
       <indentOptions>
-        <option name="INDENT_SIZE" value="2" />
-        <option name="CONTINUATION_INDENT_SIZE" value="2" />
-        <option name="TAB_SIZE" value="2" />
+        <option name="USE_TAB_CHARACTER" value="true" />
       </indentOptions>
     </codeStyleSettings>
-    <codeStyleSettings language="go">
+    <codeStyleSettings language="TypeScript">
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />
         <option name="CONTINUATION_INDENT_SIZE" value="2" />

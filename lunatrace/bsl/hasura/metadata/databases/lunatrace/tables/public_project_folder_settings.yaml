@@ -1,0 +1,89 @@
+table:
+  name: project_folder_settings
+  schema: public
+object_relationships:
+  - name: project
+    using:
+      foreign_key_constraint_on: project_id
+array_relationships:
+  - name: folder_environmental_adjustments
+    using:
+      foreign_key_constraint_on:
+        column: project_folder_settings_id
+        table:
+          name: folder_environmental_adjustment
+          schema: public
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        project:
+          organization:
+            organization_users:
+              user:
+                id:
+                  _eq: X-Hasura-Real-User-Id
+      columns:
+        - ignore
+        - root
+        - path_glob
+        - id
+        - project_id
+        - precedence
+select_permissions:
+  - role: service
+    permission:
+      columns:
+        - id
+        - ignore
+        - path_glob
+        - precedence
+        - project_id
+        - root
+      filter: {}
+  - role: user
+    permission:
+      columns:
+        - ignore
+        - root
+        - path_glob
+        - id
+        - project_id
+        - precedence
+      filter:
+        project:
+          organization:
+            organization_users:
+              user:
+                id:
+                  _eq: X-Hasura-Real-User-Id
+      allow_aggregations: true
+update_permissions:
+  - role: user
+    permission:
+      columns:
+        - ignore
+        - root
+        - path_glob
+        - id
+        - project_id
+        - precedence
+      filter:
+        project:
+          organization:
+            organization_users:
+              user:
+                id:
+                  _eq: X-Hasura-Real-User-Id
+      check: null
+delete_permissions:
+  - role: user
+    permission:
+      backend_only: false
+      filter:
+        project:
+          organization:
+            organization_users:
+              user:
+                id:
+                  _eq: X-Hasura-Real-User-Id

@@ -12,12 +12,14 @@ package cwe
 
 import (
 	"context"
+	"strconv"
+
 	"github.com/Khan/genqlient/graphql"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
-	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
-	"strconv"
+
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 )
 
 type CWEIngester interface {
@@ -43,12 +45,14 @@ func getCommonName(weaknessId int) *string {
 }
 
 func (s *cweIngester) Ingest(ctx context.Context) error {
+	log.Info().Msg("Fetching CWEs from mitre...")
 	cwes, err := FetchCWEsFromMitre()
 	if err != nil {
 		log.Error().
 			Err(err)
 		return err
 	}
+	log.Info().Int("cweCount", len(cwes.Weaknesses)).Msg("Fetched CWEs from mitre")
 
 	log.Info().
 		Int("count", len(cwes.Weaknesses)).
