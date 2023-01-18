@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package syftmodel
 
 import (
@@ -20,12 +19,11 @@ import (
 )
 
 type File struct {
-	ID              string                `json:"id"`
-	Location        source.Coordinates    `json:"location"`
-	Metadata        *FileMetadataEntry    `json:"metadata,omitempty"`
-	Contents        string                `json:"contents,omitempty"`
-	Digests         []file.Digest         `json:"digests,omitempty"`
-	Classifications []file.Classification `json:"classifications,omitempty"`
+	ID       string             `json:"id"`
+	Location source.Coordinates `json:"location"`
+	Metadata *FileMetadataEntry `json:"metadata,omitempty"`
+	Contents string             `json:"contents,omitempty"`
+	Digests  []file.Digest      `json:"digests,omitempty"`
 }
 
 type FileMetadataEntry struct {

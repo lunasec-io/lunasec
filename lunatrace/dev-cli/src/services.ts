@@ -41,7 +41,7 @@ export const dockerCompose = tmuxPane([
 
 export const queueWorker = tmuxPane(['cd backend', `${queueWorkerEnv} yarn run start:worker`]);
 
-export const smeeWebhook = tmuxPane([`smee -u ${smeeWebhookUrl} -p 3002 -P /github/webhook/events`]);
+export const smeeWebhook = tmuxPane([`npx smee-client -u ${smeeWebhookUrl} -p 3002 -P /github/webhook/events`]);
 
 export const generateCommon = tmuxPane([`cd common`, `yarn start`]);
 

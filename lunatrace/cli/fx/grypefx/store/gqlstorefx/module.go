@@ -11,19 +11,18 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package gqlstorefx
 
 import (
 	"context"
 	"errors"
+	v5 "github.com/anchore/grype/grype/db/v5"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 	"github.com/rs/zerolog/log"
 	"strings"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
-	"github.com/anchore/grype/grype/db/v3"
 	"github.com/google/uuid"
 	"go.uber.org/fx"
 
@@ -42,32 +41,55 @@ type gqlStore struct {
 	d StoreDeps
 }
 
-func (g *gqlStore) DiffStore(s v3.StoreReader) (*[]v3.Diff, error) {
+func (g *gqlStore) DiffStore(s v5.StoreReader) (*[]v5.Diff, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *gqlStore) GetAllVulnerabilities() (*[]v3.Vulnerability, error) {
+func (g *gqlStore) GetVulnerabilityNamespaces() ([]string, error) {
+	return []string{
+		"github:language:java:java-archive",
+		"github:language:javascript:npm",
+		"github:language:php:composer",
+		"github:language:ruby:gem",
+		"github:language:go",
+		"github:language:dotnet:nuget",
+		"github:language:python:pypi",
+		"github:language:rust",
+	}, nil
+}
+
+func (g *gqlStore) SearchForVulnerabilities(namespace, packageName string) ([]v5.Vulnerability, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *gqlStore) GetAllVulnerabilityMetadata() (*[]v3.VulnerabilityMetadata, error) {
+func (g *gqlStore) GetVulnerabilityMatchExclusion(id string) ([]v5.VulnerabilityMatchExclusion, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (g *gqlStore) GetAllVulnerabilities() (*[]v5.Vulnerability, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (g *gqlStore) GetAllVulnerabilityMetadata() (*[]v5.VulnerabilityMetadata, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
 // GetID returns info about the state of the graphql db. It is considered to be always up to date and has a special
 // schema version number to differentiate it from Grype's native data.
-func (g *gqlStore) GetID() (*v3.ID, error) {
-	return &v3.ID{
+func (g *gqlStore) GetID() (*v5.ID, error) {
+	return &v5.ID{
 		BuildTimestamp: time.Now(),
 		SchemaVersion:  SchemaVersion,
 	}, nil
 }
 
 // GetVulnerability retrieves one or more vulnerabilities given a namespace and package name.
-func (g *gqlStore) GetVulnerability(namespace, name string) ([]v3.Vulnerability, error) {
+func (g *gqlStore) GetVulnerability(namespace, name string) ([]v5.Vulnerability, error) {
 
 	// TODO (cthompson) this will be problematic in the future if want to have different namespaces outside of github
 	// the mapNamespace function should return an error if it can not find the namespace
@@ -102,7 +124,7 @@ func (g *gqlStore) GetVulnerability(namespace, name string) ([]v3.Vulnerability,
 }
 
 // GetVulnerabilityMetadata retrieves metadata for the given vulnerability ID relative to a specific record source.
-func (g *gqlStore) GetVulnerabilityMetadata(id, namespace string) (*v3.VulnerabilityMetadata, error) {
+func (g *gqlStore) GetVulnerabilityMetadata(id, namespace string) (*v5.VulnerabilityMetadata, error) {
 	uid, err := uuid.Parse(id)
 	if err != nil {
 		return nil, err
@@ -115,7 +137,7 @@ func (g *gqlStore) GetVulnerabilityMetadata(id, namespace string) (*v3.Vulnerabi
 		return nil, errors.New("vulnerability not found by ID")
 	}
 
-	return &v3.VulnerabilityMetadata{
+	return &v5.VulnerabilityMetadata{
 		ID:           meta.Vulnerability_by_pk.Id.String(),
 		Namespace:    meta.Vulnerability_by_pk.Source, //todo sourceid?
 		DataSource:   "",
@@ -129,6 +151,6 @@ func (g *gqlStore) GetVulnerabilityMetadata(id, namespace string) (*v3.Vulnerabi
 	}, nil
 }
 
-func NewGraphQLStore(d StoreDeps) (v3.StoreReader, error) {
+func NewGraphQLStore(d StoreDeps) (v5.StoreReader, error) {
 	return &gqlStore{d: d}, nil
 }

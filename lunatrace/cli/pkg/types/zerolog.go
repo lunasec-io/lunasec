@@ -11,15 +11,43 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package types
 
 import (
 	"fmt"
+	"github.com/anchore/go-logger"
 	"github.com/rs/zerolog/log"
 )
 
 type ZerologLogger struct{}
+
+func (l *ZerologLogger) Tracef(format string, args ...interface{}) {
+	log.Debug().Msg(fmt.Sprintf(format, args))
+}
+
+func (l *ZerologLogger) Trace(args ...interface{}) {
+	log.Debug().Msg(fmt.Sprintf("%v", args))
+}
+
+func (l *ZerologLogger) WithFields(fields ...interface{}) logger.MessageLogger {
+	c := log.With()
+	for _, field := range fields {
+		c = c.Interface("key", field)
+	}
+	l2 := c.Logger()
+	l2.Debug().Msg("nested")
+	return l
+}
+
+func (l *ZerologLogger) Nested(fields ...interface{}) logger.Logger {
+	c := log.With()
+	for _, field := range fields {
+		c = c.Interface("key", field)
+	}
+	l2 := c.Logger()
+	l2.Debug().Msg("nested")
+	return l
+}
 
 func (l *ZerologLogger) Errorf(format string, args ...interface{}) {
 	log.Error().Msg(fmt.Sprintf(format, args))

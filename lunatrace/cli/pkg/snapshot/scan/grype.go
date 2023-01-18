@@ -11,12 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package scan
 
 import (
 	"fmt"
 	"github.com/Khan/genqlient/graphql"
+	v5 "github.com/anchore/grype/grype/db/v5"
+	"github.com/anchore/grype/grype/store"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/fx/grypefx/store/gqlstorefx"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/httputil"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/types"
@@ -26,7 +27,6 @@ import (
 	"github.com/adrg/xdg"
 	"github.com/anchore/grype/grype"
 	"github.com/anchore/grype/grype/db"
-	v3 "github.com/anchore/grype/grype/db/v3"
 	"github.com/anchore/grype/grype/match"
 	"github.com/anchore/grype/grype/matcher"
 	"github.com/anchore/grype/grype/pkg"
@@ -140,15 +140,25 @@ func validateDBLoad(loadErr error, status *db.Status) error {
 	return nil
 }
 
+type MockExclusionProvider struct{}
+
+func (pr *MockExclusionProvider) GetRules(vulnerabilityID string) ([]match.IgnoreRule, error) {
+	return []match.IgnoreRule{}, nil
+}
+
 func GrypeSbomScanFromFile(
 	vulnerabilityProvider *db.VulnerabilityProvider,
 	vulnerabilityMetadataProvider *db.VulnerabilityMetadataProvider,
 	filename string,
 ) (document models.Document, err error) {
 	log.Debug().Msg("gathering packages")
-	providerConfig := pkg.ProviderConfig{
-		//RegistryOptions: appConfig.Registry.ToOptions(),
-		Exclusions: appConfig.Exclusions,
+
+	providerConfig := pkg.ProviderConfig{}
+
+	store := store.Store{
+		Provider:          vulnerabilityProvider,
+		MetadataProvider:  vulnerabilityMetadataProvider,
+		ExclusionProvider: &MockExclusionProvider{},
 	}
 	packages, context, err := pkg.Provide("sbom:"+filename, providerConfig)
 	if err != nil {
@@ -159,7 +169,7 @@ func GrypeSbomScanFromFile(
 
 	log.Debug().Msg("finding vulnerabilities")
 	matchers := matcher.NewDefaultMatchers(matcher.Config{})
-	matches := grype.FindVulnerabilitiesForPackage(vulnerabilityProvider, context.Distro, matchers, packages)
+	matches := grype.FindVulnerabilitiesForPackage(store, context.Distro, matchers, packages)
 	log.Debug().Msg("done looking for vulnerabilities")
 
 	document, err = models.NewDocument(packages, context, matches, nil, vulnerabilityMetadataProvider, appConfig, &db.Status{Location: "online"})
@@ -170,7 +180,7 @@ func GrypeSbomScanFromFile(
 	return
 }
 
-func GetVulnerabilityStore(appConfig types.LunaTraceConfig) (v3.StoreReader, error) {
+func GetVulnerabilityStore(appConfig types.LunaTraceConfig) (v5.StoreReader, error) {
 	//log.Debug().Msg("loading grype store")
 	//grypeStore, dbStatus, err := grypestorefx.LoadVulnerabilityDB(appConfig.DB.ToCuratorConfig(), appConfig.DB.AutoUpdate)
 	//if err = validateDBLoad(err, dbStatus); err != nil {
