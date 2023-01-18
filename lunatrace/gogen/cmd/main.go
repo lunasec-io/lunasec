@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package main
 
 import (
@@ -149,6 +148,34 @@ func generateSql() {
 		return
 	}
 
+	t := template.Default(postgres2.Dialect).
+		UseSchema(func(schema metadata.Schema) template.Schema {
+			return template.DefaultSchema(schema).
+				UseModel(template.DefaultModel().
+					UseTable(func(table metadata.Table) template.TableModel {
+						return template.DefaultTableModel(table).
+							UseField(func(column metadata.Column) template.TableModelField {
+								defaultTableModelField := template.DefaultTableModelField(column)
+
+								// TODO (cthompson) this needs more testing, but works for right now
+								// if there are problems with generated code, check this out first
+								if genqlientType, ok := genqlient.Bindings[column.Name]; ok {
+									importPath, importType := path.Split(genqlientType.Type)
+
+									parts := strings.Split(importType, ".")
+									importPackage := parts[0]
+
+									defaultTableModelField.Type = template.Type{
+										ImportPath: path.Join(importPath, importPackage),
+										Name:       importType,
+									}
+								}
+								return defaultTableModelField
+							})
+					}),
+				)
+		})
+
 	err = postgres.GenerateDSN(
 		"postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable",
 		"npm",
@@ -157,35 +184,16 @@ func generateSql() {
 
 	err = postgres.GenerateDSN(
 		"postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable",
+		"vulnerability",
+		"./sqlgen",
+		t,
+	)
+
+	err = postgres.GenerateDSN(
+		"postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable",
 		"package",
 		"./sqlgen",
-		template.Default(postgres2.Dialect).
-			UseSchema(func(schema metadata.Schema) template.Schema {
-				return template.DefaultSchema(schema).
-					UseModel(template.DefaultModel().
-						UseTable(func(table metadata.Table) template.TableModel {
-							return template.DefaultTableModel(table).
-								UseField(func(column metadata.Column) template.TableModelField {
-									defaultTableModelField := template.DefaultTableModelField(column)
-
-									// TODO (cthompson) this needs more testing, but works for right now
-									// if there are problems with generated code, check this out first
-									if genqlientType, ok := genqlient.Bindings[column.Name]; ok {
-										importPath, importType := path.Split(genqlientType.Type)
-
-										parts := strings.Split(importType, ".")
-										importPackage := parts[0]
-
-										defaultTableModelField.Type = template.Type{
-											ImportPath: path.Join(importPath, importPackage),
-											Name:       importType,
-										}
-									}
-									return defaultTableModelField
-								})
-						}),
-					)
-			}),
+		t,
 	)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to generate jet generated sql")
