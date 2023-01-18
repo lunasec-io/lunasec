@@ -448,7 +448,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Bool_Exp = {
   vulnerability_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
-/** Callsite of a child dependency being imported and used inside of a parent manifest dependency. */
+/** Location of a child dependency located inside of a parent manifest dependency. */
 export type Analysis_Manifest_Dependency_Edge_Result_Location = {
   __typename?: 'analysis_manifest_dependency_edge_result_location';
   end_column: Scalars['Int'];
