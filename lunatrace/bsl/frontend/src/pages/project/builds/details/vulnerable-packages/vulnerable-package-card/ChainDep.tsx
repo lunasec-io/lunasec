@@ -100,7 +100,7 @@ export const ChainDep: React.FunctionComponent<DepProps> = ({
       </div>
       <Badge text="dark" bg={getBadgeColor(index, visibleChainLength, dep.reachable)}>
         <div>{dep.release.package.name}</div>
-        {isExpanded && (
+        {isExpanded && index !== 0 && (
           <div className="mt-1" style={{ fontSize: '.7rem' }}>
             {dep.release.version}
           </div>

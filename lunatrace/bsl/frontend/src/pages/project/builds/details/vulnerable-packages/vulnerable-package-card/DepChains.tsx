@@ -89,7 +89,7 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
           const vulnerabilityIsReachable = notReachableIndexes.length === 0;
           const chainTooltipMsg = vulnerabilityIsReachable
             ? 'All dependencies in the vulnerable chain are imported and called. Vulnerability is likely to be relevant.'
-            : 'A continuous "imported and called" chain was not found. Vulnerability may not be relevant.';
+            : 'LunaTrace could not confirm that this vulnerability is reachable.';
 
           const chainHasBeenAnalyzed = !chain.some((d) => d.reachable === Analysis_Finding_Type_Enum.Error);
 
@@ -129,7 +129,7 @@ export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
                         className={classNames([
                           'mb-1',
                           'me-1',
-                          vulnerabilityIsReachable ? 'text-success' : 'text-warning',
+                          vulnerabilityIsReachable ? 'text-warning' : 'text-light',
                         ])}
                         size="1em"
                       />
