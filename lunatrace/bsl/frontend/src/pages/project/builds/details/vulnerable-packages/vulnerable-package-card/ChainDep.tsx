@@ -96,7 +96,7 @@ export const ChainDep: React.FunctionComponent<DepProps> = ({
           ) : (
             dependencyEdgeIcon
           ))}
-        {isExpanded && <div style={{ fontSize: '.7rem' }}>{dep.range}</div>}
+        {isExpanded && index !== 0 && <div style={{ fontSize: '.7rem' }}>{dep.range}</div>}
       </div>
       <Badge text="dark" bg={getBadgeColor(index, visibleChainLength, dep.reachable)}>
         <div>{dep.release.package.name}</div>
