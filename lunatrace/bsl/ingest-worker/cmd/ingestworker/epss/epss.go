@@ -8,43 +8,43 @@
 //
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package license
+package epss
 
 import (
-	"fmt"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner"
-	"io/ioutil"
-
+	"github.com/ajvpot/clifx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/epss"
+	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
-
-	"github.com/ajvpot/clifx"
 )
 
 type Params struct {
 	fx.In
 
-	Scanner []scanner.Scanner `group:"license_scanners"`
+	Ingester epss.EPSSIngester
 }
 
 func NewCommand(p Params) clifx.CommandResult {
 	return clifx.CommandResult{
 		Command: &cli.Command{
-			Name:  "license",
-			Usage: "[file]",
-			Action: func(ctx *cli.Context) error {
-				b, err := ioutil.ReadFile(ctx.Args().First())
-				if err != nil {
-					return err
-				}
-				for _, scan := range p.Scanner {
-					licenses, err := scan.Scan(b)
-					if err != nil {
+			Name: "epss",
+			Subcommands: []*cli.Command{
+				{
+					Name:        "ingest",
+					Usage:       "[file or directory]",
+					Flags:       []cli.Flag{},
+					Subcommands: []*cli.Command{},
+					Action: func(ctx *cli.Context) error {
+						log.Info().
+							Msg("Updating EPSS Scores")
+						err := p.Ingester.Ingest(ctx.Context)
+						if err == nil {
+							log.Info().
+								Msg("Updated EPSS Scores")
+						}
 						return err
-					}
-					fmt.Println(licenses)
-				}
-				return nil
+					},
+				},
 			},
 		},
 	}

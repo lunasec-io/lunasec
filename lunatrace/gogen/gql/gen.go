@@ -1201,6 +1201,353 @@ const (
 	Builds_update_columnS3Url                  Builds_update_column = "s3_url"
 )
 
+type Cvss_complexity_comparison_exp struct {
+	Eq      *string  `json:"_eq,omitempty"`
+	Gt      *string  `json:"_gt,omitempty"`
+	Gte     *string  `json:"_gte,omitempty"`
+	In      []string `json:"_in,omitempty"`
+	Is_null *bool    `json:"_is_null,omitempty"`
+	Lt      *string  `json:"_lt,omitempty"`
+	Lte     *string  `json:"_lte,omitempty"`
+	Neq     *string  `json:"_neq,omitempty"`
+	Nin     []string `json:"_nin,omitempty"`
+}
+
+// GetEq returns Cvss_complexity_comparison_exp.Eq, and is useful for accessing the field via an interface.
+func (v *Cvss_complexity_comparison_exp) GetEq() *string { return v.Eq }
+
+// GetGt returns Cvss_complexity_comparison_exp.Gt, and is useful for accessing the field via an interface.
+func (v *Cvss_complexity_comparison_exp) GetGt() *string { return v.Gt }
+
+// GetGte returns Cvss_complexity_comparison_exp.Gte, and is useful for accessing the field via an interface.
+func (v *Cvss_complexity_comparison_exp) GetGte() *string { return v.Gte }
+
+// GetIn returns Cvss_complexity_comparison_exp.In, and is useful for accessing the field via an interface.
+func (v *Cvss_complexity_comparison_exp) GetIn() []string { return v.In }
+
+// GetIs_null returns Cvss_complexity_comparison_exp.Is_null, and is useful for accessing the field via an interface.
+func (v *Cvss_complexity_comparison_exp) GetIs_null() *bool { return v.Is_null }
+
+// GetLt returns Cvss_complexity_comparison_exp.Lt, and is useful for accessing the field via an interface.
+func (v *Cvss_complexity_comparison_exp) GetLt() *string { return v.Lt }
+
+// GetLte returns Cvss_complexity_comparison_exp.Lte, and is useful for accessing the field via an interface.
+func (v *Cvss_complexity_comparison_exp) GetLte() *string { return v.Lte }
+
+// GetNeq returns Cvss_complexity_comparison_exp.Neq, and is useful for accessing the field via an interface.
+func (v *Cvss_complexity_comparison_exp) GetNeq() *string { return v.Neq }
+
+// GetNin returns Cvss_complexity_comparison_exp.Nin, and is useful for accessing the field via an interface.
+func (v *Cvss_complexity_comparison_exp) GetNin() []string { return v.Nin }
+
+type Cvss_environmental_adjustment_bool_exp struct {
+	And                              []*Cvss_environmental_adjustment_bool_exp `json:"_and,omitempty"`
+	Not                              *Cvss_environmental_adjustment_bool_exp   `json:"_not,omitempty"`
+	Or                               []*Cvss_environmental_adjustment_bool_exp `json:"_or,omitempty"`
+	Attack_complexity                *Cvss_complexity_comparison_exp           `json:"attack_complexity,omitempty"`
+	Attack_vector                    *Cvss_vector_comparison_exp               `json:"attack_vector,omitempty"`
+	Availability_impact              *Cvss_none_low_high_comparison_exp        `json:"availability_impact,omitempty"`
+	Availability_requirement         *Cvss_low_medium_high_comparison_exp      `json:"availability_requirement,omitempty"`
+	Confidentiality_impact           *Cvss_none_low_high_comparison_exp        `json:"confidentiality_impact,omitempty"`
+	Confidentiality_requirement      *Cvss_low_medium_high_comparison_exp      `json:"confidentiality_requirement,omitempty"`
+	Created_at                       *Timestamptz_comparison_exp               `json:"created_at,omitempty"`
+	Folder_environmental_adjustments *Folder_environmental_adjustment_bool_exp `json:"folder_environmental_adjustments,omitempty"`
+	Group_name                       *String_comparison_exp                    `json:"group_name,omitempty"`
+	Id                               *Uuid_comparison_exp                      `json:"id,omitempty"`
+	Integrity_impact                 *Cvss_none_low_high_comparison_exp        `json:"integrity_impact,omitempty"`
+	Integrity_requirement            *Cvss_low_medium_high_comparison_exp      `json:"integrity_requirement,omitempty"`
+	Name                             *String_comparison_exp                    `json:"name,omitempty"`
+	Privileges_required              *Cvss_none_low_high_comparison_exp        `json:"privileges_required,omitempty"`
+	Scope                            *Cvss_scope_comparison_exp                `json:"scope,omitempty"`
+	User_interaction                 *Cvss_interaction_comparison_exp          `json:"user_interaction,omitempty"`
+}
+
+// GetAnd returns Cvss_environmental_adjustment_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetAnd() []*Cvss_environmental_adjustment_bool_exp {
+	return v.And
+}
+
+// GetNot returns Cvss_environmental_adjustment_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetNot() *Cvss_environmental_adjustment_bool_exp {
+	return v.Not
+}
+
+// GetOr returns Cvss_environmental_adjustment_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetOr() []*Cvss_environmental_adjustment_bool_exp {
+	return v.Or
+}
+
+// GetAttack_complexity returns Cvss_environmental_adjustment_bool_exp.Attack_complexity, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetAttack_complexity() *Cvss_complexity_comparison_exp {
+	return v.Attack_complexity
+}
+
+// GetAttack_vector returns Cvss_environmental_adjustment_bool_exp.Attack_vector, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetAttack_vector() *Cvss_vector_comparison_exp {
+	return v.Attack_vector
+}
+
+// GetAvailability_impact returns Cvss_environmental_adjustment_bool_exp.Availability_impact, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetAvailability_impact() *Cvss_none_low_high_comparison_exp {
+	return v.Availability_impact
+}
+
+// GetAvailability_requirement returns Cvss_environmental_adjustment_bool_exp.Availability_requirement, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetAvailability_requirement() *Cvss_low_medium_high_comparison_exp {
+	return v.Availability_requirement
+}
+
+// GetConfidentiality_impact returns Cvss_environmental_adjustment_bool_exp.Confidentiality_impact, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetConfidentiality_impact() *Cvss_none_low_high_comparison_exp {
+	return v.Confidentiality_impact
+}
+
+// GetConfidentiality_requirement returns Cvss_environmental_adjustment_bool_exp.Confidentiality_requirement, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetConfidentiality_requirement() *Cvss_low_medium_high_comparison_exp {
+	return v.Confidentiality_requirement
+}
+
+// GetCreated_at returns Cvss_environmental_adjustment_bool_exp.Created_at, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetCreated_at() *Timestamptz_comparison_exp {
+	return v.Created_at
+}
+
+// GetFolder_environmental_adjustments returns Cvss_environmental_adjustment_bool_exp.Folder_environmental_adjustments, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetFolder_environmental_adjustments() *Folder_environmental_adjustment_bool_exp {
+	return v.Folder_environmental_adjustments
+}
+
+// GetGroup_name returns Cvss_environmental_adjustment_bool_exp.Group_name, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetGroup_name() *String_comparison_exp {
+	return v.Group_name
+}
+
+// GetId returns Cvss_environmental_adjustment_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetIntegrity_impact returns Cvss_environmental_adjustment_bool_exp.Integrity_impact, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetIntegrity_impact() *Cvss_none_low_high_comparison_exp {
+	return v.Integrity_impact
+}
+
+// GetIntegrity_requirement returns Cvss_environmental_adjustment_bool_exp.Integrity_requirement, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetIntegrity_requirement() *Cvss_low_medium_high_comparison_exp {
+	return v.Integrity_requirement
+}
+
+// GetName returns Cvss_environmental_adjustment_bool_exp.Name, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetName() *String_comparison_exp { return v.Name }
+
+// GetPrivileges_required returns Cvss_environmental_adjustment_bool_exp.Privileges_required, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetPrivileges_required() *Cvss_none_low_high_comparison_exp {
+	return v.Privileges_required
+}
+
+// GetScope returns Cvss_environmental_adjustment_bool_exp.Scope, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetScope() *Cvss_scope_comparison_exp {
+	return v.Scope
+}
+
+// GetUser_interaction returns Cvss_environmental_adjustment_bool_exp.User_interaction, and is useful for accessing the field via an interface.
+func (v *Cvss_environmental_adjustment_bool_exp) GetUser_interaction() *Cvss_interaction_comparison_exp {
+	return v.User_interaction
+}
+
+type Cvss_interaction_comparison_exp struct {
+	Eq      *string  `json:"_eq,omitempty"`
+	Gt      *string  `json:"_gt,omitempty"`
+	Gte     *string  `json:"_gte,omitempty"`
+	In      []string `json:"_in,omitempty"`
+	Is_null *bool    `json:"_is_null,omitempty"`
+	Lt      *string  `json:"_lt,omitempty"`
+	Lte     *string  `json:"_lte,omitempty"`
+	Neq     *string  `json:"_neq,omitempty"`
+	Nin     []string `json:"_nin,omitempty"`
+}
+
+// GetEq returns Cvss_interaction_comparison_exp.Eq, and is useful for accessing the field via an interface.
+func (v *Cvss_interaction_comparison_exp) GetEq() *string { return v.Eq }
+
+// GetGt returns Cvss_interaction_comparison_exp.Gt, and is useful for accessing the field via an interface.
+func (v *Cvss_interaction_comparison_exp) GetGt() *string { return v.Gt }
+
+// GetGte returns Cvss_interaction_comparison_exp.Gte, and is useful for accessing the field via an interface.
+func (v *Cvss_interaction_comparison_exp) GetGte() *string { return v.Gte }
+
+// GetIn returns Cvss_interaction_comparison_exp.In, and is useful for accessing the field via an interface.
+func (v *Cvss_interaction_comparison_exp) GetIn() []string { return v.In }
+
+// GetIs_null returns Cvss_interaction_comparison_exp.Is_null, and is useful for accessing the field via an interface.
+func (v *Cvss_interaction_comparison_exp) GetIs_null() *bool { return v.Is_null }
+
+// GetLt returns Cvss_interaction_comparison_exp.Lt, and is useful for accessing the field via an interface.
+func (v *Cvss_interaction_comparison_exp) GetLt() *string { return v.Lt }
+
+// GetLte returns Cvss_interaction_comparison_exp.Lte, and is useful for accessing the field via an interface.
+func (v *Cvss_interaction_comparison_exp) GetLte() *string { return v.Lte }
+
+// GetNeq returns Cvss_interaction_comparison_exp.Neq, and is useful for accessing the field via an interface.
+func (v *Cvss_interaction_comparison_exp) GetNeq() *string { return v.Neq }
+
+// GetNin returns Cvss_interaction_comparison_exp.Nin, and is useful for accessing the field via an interface.
+func (v *Cvss_interaction_comparison_exp) GetNin() []string { return v.Nin }
+
+type Cvss_low_medium_high_comparison_exp struct {
+	Eq      *string  `json:"_eq,omitempty"`
+	Gt      *string  `json:"_gt,omitempty"`
+	Gte     *string  `json:"_gte,omitempty"`
+	In      []string `json:"_in,omitempty"`
+	Is_null *bool    `json:"_is_null,omitempty"`
+	Lt      *string  `json:"_lt,omitempty"`
+	Lte     *string  `json:"_lte,omitempty"`
+	Neq     *string  `json:"_neq,omitempty"`
+	Nin     []string `json:"_nin,omitempty"`
+}
+
+// GetEq returns Cvss_low_medium_high_comparison_exp.Eq, and is useful for accessing the field via an interface.
+func (v *Cvss_low_medium_high_comparison_exp) GetEq() *string { return v.Eq }
+
+// GetGt returns Cvss_low_medium_high_comparison_exp.Gt, and is useful for accessing the field via an interface.
+func (v *Cvss_low_medium_high_comparison_exp) GetGt() *string { return v.Gt }
+
+// GetGte returns Cvss_low_medium_high_comparison_exp.Gte, and is useful for accessing the field via an interface.
+func (v *Cvss_low_medium_high_comparison_exp) GetGte() *string { return v.Gte }
+
+// GetIn returns Cvss_low_medium_high_comparison_exp.In, and is useful for accessing the field via an interface.
+func (v *Cvss_low_medium_high_comparison_exp) GetIn() []string { return v.In }
+
+// GetIs_null returns Cvss_low_medium_high_comparison_exp.Is_null, and is useful for accessing the field via an interface.
+func (v *Cvss_low_medium_high_comparison_exp) GetIs_null() *bool { return v.Is_null }
+
+// GetLt returns Cvss_low_medium_high_comparison_exp.Lt, and is useful for accessing the field via an interface.
+func (v *Cvss_low_medium_high_comparison_exp) GetLt() *string { return v.Lt }
+
+// GetLte returns Cvss_low_medium_high_comparison_exp.Lte, and is useful for accessing the field via an interface.
+func (v *Cvss_low_medium_high_comparison_exp) GetLte() *string { return v.Lte }
+
+// GetNeq returns Cvss_low_medium_high_comparison_exp.Neq, and is useful for accessing the field via an interface.
+func (v *Cvss_low_medium_high_comparison_exp) GetNeq() *string { return v.Neq }
+
+// GetNin returns Cvss_low_medium_high_comparison_exp.Nin, and is useful for accessing the field via an interface.
+func (v *Cvss_low_medium_high_comparison_exp) GetNin() []string { return v.Nin }
+
+type Cvss_none_low_high_comparison_exp struct {
+	Eq      *string  `json:"_eq,omitempty"`
+	Gt      *string  `json:"_gt,omitempty"`
+	Gte     *string  `json:"_gte,omitempty"`
+	In      []string `json:"_in,omitempty"`
+	Is_null *bool    `json:"_is_null,omitempty"`
+	Lt      *string  `json:"_lt,omitempty"`
+	Lte     *string  `json:"_lte,omitempty"`
+	Neq     *string  `json:"_neq,omitempty"`
+	Nin     []string `json:"_nin,omitempty"`
+}
+
+// GetEq returns Cvss_none_low_high_comparison_exp.Eq, and is useful for accessing the field via an interface.
+func (v *Cvss_none_low_high_comparison_exp) GetEq() *string { return v.Eq }
+
+// GetGt returns Cvss_none_low_high_comparison_exp.Gt, and is useful for accessing the field via an interface.
+func (v *Cvss_none_low_high_comparison_exp) GetGt() *string { return v.Gt }
+
+// GetGte returns Cvss_none_low_high_comparison_exp.Gte, and is useful for accessing the field via an interface.
+func (v *Cvss_none_low_high_comparison_exp) GetGte() *string { return v.Gte }
+
+// GetIn returns Cvss_none_low_high_comparison_exp.In, and is useful for accessing the field via an interface.
+func (v *Cvss_none_low_high_comparison_exp) GetIn() []string { return v.In }
+
+// GetIs_null returns Cvss_none_low_high_comparison_exp.Is_null, and is useful for accessing the field via an interface.
+func (v *Cvss_none_low_high_comparison_exp) GetIs_null() *bool { return v.Is_null }
+
+// GetLt returns Cvss_none_low_high_comparison_exp.Lt, and is useful for accessing the field via an interface.
+func (v *Cvss_none_low_high_comparison_exp) GetLt() *string { return v.Lt }
+
+// GetLte returns Cvss_none_low_high_comparison_exp.Lte, and is useful for accessing the field via an interface.
+func (v *Cvss_none_low_high_comparison_exp) GetLte() *string { return v.Lte }
+
+// GetNeq returns Cvss_none_low_high_comparison_exp.Neq, and is useful for accessing the field via an interface.
+func (v *Cvss_none_low_high_comparison_exp) GetNeq() *string { return v.Neq }
+
+// GetNin returns Cvss_none_low_high_comparison_exp.Nin, and is useful for accessing the field via an interface.
+func (v *Cvss_none_low_high_comparison_exp) GetNin() []string { return v.Nin }
+
+type Cvss_scope_comparison_exp struct {
+	Eq      *string  `json:"_eq,omitempty"`
+	Gt      *string  `json:"_gt,omitempty"`
+	Gte     *string  `json:"_gte,omitempty"`
+	In      []string `json:"_in,omitempty"`
+	Is_null *bool    `json:"_is_null,omitempty"`
+	Lt      *string  `json:"_lt,omitempty"`
+	Lte     *string  `json:"_lte,omitempty"`
+	Neq     *string  `json:"_neq,omitempty"`
+	Nin     []string `json:"_nin,omitempty"`
+}
+
+// GetEq returns Cvss_scope_comparison_exp.Eq, and is useful for accessing the field via an interface.
+func (v *Cvss_scope_comparison_exp) GetEq() *string { return v.Eq }
+
+// GetGt returns Cvss_scope_comparison_exp.Gt, and is useful for accessing the field via an interface.
+func (v *Cvss_scope_comparison_exp) GetGt() *string { return v.Gt }
+
+// GetGte returns Cvss_scope_comparison_exp.Gte, and is useful for accessing the field via an interface.
+func (v *Cvss_scope_comparison_exp) GetGte() *string { return v.Gte }
+
+// GetIn returns Cvss_scope_comparison_exp.In, and is useful for accessing the field via an interface.
+func (v *Cvss_scope_comparison_exp) GetIn() []string { return v.In }
+
+// GetIs_null returns Cvss_scope_comparison_exp.Is_null, and is useful for accessing the field via an interface.
+func (v *Cvss_scope_comparison_exp) GetIs_null() *bool { return v.Is_null }
+
+// GetLt returns Cvss_scope_comparison_exp.Lt, and is useful for accessing the field via an interface.
+func (v *Cvss_scope_comparison_exp) GetLt() *string { return v.Lt }
+
+// GetLte returns Cvss_scope_comparison_exp.Lte, and is useful for accessing the field via an interface.
+func (v *Cvss_scope_comparison_exp) GetLte() *string { return v.Lte }
+
+// GetNeq returns Cvss_scope_comparison_exp.Neq, and is useful for accessing the field via an interface.
+func (v *Cvss_scope_comparison_exp) GetNeq() *string { return v.Neq }
+
+// GetNin returns Cvss_scope_comparison_exp.Nin, and is useful for accessing the field via an interface.
+func (v *Cvss_scope_comparison_exp) GetNin() []string { return v.Nin }
+
+type Cvss_vector_comparison_exp struct {
+	Eq      *string  `json:"_eq,omitempty"`
+	Gt      *string  `json:"_gt,omitempty"`
+	Gte     *string  `json:"_gte,omitempty"`
+	In      []string `json:"_in,omitempty"`
+	Is_null *bool    `json:"_is_null,omitempty"`
+	Lt      *string  `json:"_lt,omitempty"`
+	Lte     *string  `json:"_lte,omitempty"`
+	Neq     *string  `json:"_neq,omitempty"`
+	Nin     []string `json:"_nin,omitempty"`
+}
+
+// GetEq returns Cvss_vector_comparison_exp.Eq, and is useful for accessing the field via an interface.
+func (v *Cvss_vector_comparison_exp) GetEq() *string { return v.Eq }
+
+// GetGt returns Cvss_vector_comparison_exp.Gt, and is useful for accessing the field via an interface.
+func (v *Cvss_vector_comparison_exp) GetGt() *string { return v.Gt }
+
+// GetGte returns Cvss_vector_comparison_exp.Gte, and is useful for accessing the field via an interface.
+func (v *Cvss_vector_comparison_exp) GetGte() *string { return v.Gte }
+
+// GetIn returns Cvss_vector_comparison_exp.In, and is useful for accessing the field via an interface.
+func (v *Cvss_vector_comparison_exp) GetIn() []string { return v.In }
+
+// GetIs_null returns Cvss_vector_comparison_exp.Is_null, and is useful for accessing the field via an interface.
+func (v *Cvss_vector_comparison_exp) GetIs_null() *bool { return v.Is_null }
+
+// GetLt returns Cvss_vector_comparison_exp.Lt, and is useful for accessing the field via an interface.
+func (v *Cvss_vector_comparison_exp) GetLt() *string { return v.Lt }
+
+// GetLte returns Cvss_vector_comparison_exp.Lte, and is useful for accessing the field via an interface.
+func (v *Cvss_vector_comparison_exp) GetLte() *string { return v.Lte }
+
+// GetNeq returns Cvss_vector_comparison_exp.Neq, and is useful for accessing the field via an interface.
+func (v *Cvss_vector_comparison_exp) GetNeq() *string { return v.Neq }
+
+// GetNin returns Cvss_vector_comparison_exp.Nin, and is useful for accessing the field via an interface.
+func (v *Cvss_vector_comparison_exp) GetNin() []string { return v.Nin }
+
 type Date_comparison_exp struct {
 	Eq      *time.Time  `json:"_eq,omitempty"`
 	Gt      *time.Time  `json:"_gt,omitempty"`
@@ -1758,6 +2105,55 @@ func (v *Float_comparison_exp) GetNeq() *float64 { return v.Neq }
 
 // GetNin returns Float_comparison_exp.Nin, and is useful for accessing the field via an interface.
 func (v *Float_comparison_exp) GetNin() []float64 { return v.Nin }
+
+type Folder_environmental_adjustment_bool_exp struct {
+	And                              []*Folder_environmental_adjustment_bool_exp `json:"_and,omitempty"`
+	Not                              *Folder_environmental_adjustment_bool_exp   `json:"_not,omitempty"`
+	Or                               []*Folder_environmental_adjustment_bool_exp `json:"_or,omitempty"`
+	Cvss_environmental_adjustment    *Cvss_environmental_adjustment_bool_exp     `json:"cvss_environmental_adjustment,omitempty"`
+	Cvss_environmental_adjustment_id *Uuid_comparison_exp                        `json:"cvss_environmental_adjustment_id,omitempty"`
+	Id                               *Uuid_comparison_exp                        `json:"id,omitempty"`
+	Project_folder_setting           *Project_folder_settings_bool_exp           `json:"project_folder_setting,omitempty"`
+	Project_folder_settings_id       *Uuid_comparison_exp                        `json:"project_folder_settings_id,omitempty"`
+}
+
+// GetAnd returns Folder_environmental_adjustment_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Folder_environmental_adjustment_bool_exp) GetAnd() []*Folder_environmental_adjustment_bool_exp {
+	return v.And
+}
+
+// GetNot returns Folder_environmental_adjustment_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Folder_environmental_adjustment_bool_exp) GetNot() *Folder_environmental_adjustment_bool_exp {
+	return v.Not
+}
+
+// GetOr returns Folder_environmental_adjustment_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Folder_environmental_adjustment_bool_exp) GetOr() []*Folder_environmental_adjustment_bool_exp {
+	return v.Or
+}
+
+// GetCvss_environmental_adjustment returns Folder_environmental_adjustment_bool_exp.Cvss_environmental_adjustment, and is useful for accessing the field via an interface.
+func (v *Folder_environmental_adjustment_bool_exp) GetCvss_environmental_adjustment() *Cvss_environmental_adjustment_bool_exp {
+	return v.Cvss_environmental_adjustment
+}
+
+// GetCvss_environmental_adjustment_id returns Folder_environmental_adjustment_bool_exp.Cvss_environmental_adjustment_id, and is useful for accessing the field via an interface.
+func (v *Folder_environmental_adjustment_bool_exp) GetCvss_environmental_adjustment_id() *Uuid_comparison_exp {
+	return v.Cvss_environmental_adjustment_id
+}
+
+// GetId returns Folder_environmental_adjustment_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Folder_environmental_adjustment_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetProject_folder_setting returns Folder_environmental_adjustment_bool_exp.Project_folder_setting, and is useful for accessing the field via an interface.
+func (v *Folder_environmental_adjustment_bool_exp) GetProject_folder_setting() *Project_folder_settings_bool_exp {
+	return v.Project_folder_setting
+}
+
+// GetProject_folder_settings_id returns Folder_environmental_adjustment_bool_exp.Project_folder_settings_id, and is useful for accessing the field via an interface.
+func (v *Folder_environmental_adjustment_bool_exp) GetProject_folder_settings_id() *Uuid_comparison_exp {
+	return v.Project_folder_settings_id
+}
 
 // GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edge includes the requested fields of the GraphQL type manifest_dependency_edge.
 type GetManifestDependencyEdgeManifest_dependency_edge_by_pkManifest_dependency_edge struct {
@@ -5231,6 +5627,55 @@ func (v *Project_access_tokens_bool_exp) GetProject_uuid() *Uuid_comparison_exp 
 	return v.Project_uuid
 }
 
+type Project_folder_settings_bool_exp struct {
+	And                              []*Project_folder_settings_bool_exp       `json:"_and,omitempty"`
+	Not                              *Project_folder_settings_bool_exp         `json:"_not,omitempty"`
+	Or                               []*Project_folder_settings_bool_exp       `json:"_or,omitempty"`
+	Folder_environmental_adjustments *Folder_environmental_adjustment_bool_exp `json:"folder_environmental_adjustments,omitempty"`
+	Id                               *Uuid_comparison_exp                      `json:"id,omitempty"`
+	Ignore                           *Boolean_comparison_exp                   `json:"ignore,omitempty"`
+	Path_glob                        *String_comparison_exp                    `json:"path_glob,omitempty"`
+	Precedence                       *Int_comparison_exp                       `json:"precedence,omitempty"`
+	Project                          *Projects_bool_exp                        `json:"project,omitempty"`
+	Project_id                       *Uuid_comparison_exp                      `json:"project_id,omitempty"`
+	Root                             *Boolean_comparison_exp                   `json:"root,omitempty"`
+}
+
+// GetAnd returns Project_folder_settings_bool_exp.And, and is useful for accessing the field via an interface.
+func (v *Project_folder_settings_bool_exp) GetAnd() []*Project_folder_settings_bool_exp { return v.And }
+
+// GetNot returns Project_folder_settings_bool_exp.Not, and is useful for accessing the field via an interface.
+func (v *Project_folder_settings_bool_exp) GetNot() *Project_folder_settings_bool_exp { return v.Not }
+
+// GetOr returns Project_folder_settings_bool_exp.Or, and is useful for accessing the field via an interface.
+func (v *Project_folder_settings_bool_exp) GetOr() []*Project_folder_settings_bool_exp { return v.Or }
+
+// GetFolder_environmental_adjustments returns Project_folder_settings_bool_exp.Folder_environmental_adjustments, and is useful for accessing the field via an interface.
+func (v *Project_folder_settings_bool_exp) GetFolder_environmental_adjustments() *Folder_environmental_adjustment_bool_exp {
+	return v.Folder_environmental_adjustments
+}
+
+// GetId returns Project_folder_settings_bool_exp.Id, and is useful for accessing the field via an interface.
+func (v *Project_folder_settings_bool_exp) GetId() *Uuid_comparison_exp { return v.Id }
+
+// GetIgnore returns Project_folder_settings_bool_exp.Ignore, and is useful for accessing the field via an interface.
+func (v *Project_folder_settings_bool_exp) GetIgnore() *Boolean_comparison_exp { return v.Ignore }
+
+// GetPath_glob returns Project_folder_settings_bool_exp.Path_glob, and is useful for accessing the field via an interface.
+func (v *Project_folder_settings_bool_exp) GetPath_glob() *String_comparison_exp { return v.Path_glob }
+
+// GetPrecedence returns Project_folder_settings_bool_exp.Precedence, and is useful for accessing the field via an interface.
+func (v *Project_folder_settings_bool_exp) GetPrecedence() *Int_comparison_exp { return v.Precedence }
+
+// GetProject returns Project_folder_settings_bool_exp.Project, and is useful for accessing the field via an interface.
+func (v *Project_folder_settings_bool_exp) GetProject() *Projects_bool_exp { return v.Project }
+
+// GetProject_id returns Project_folder_settings_bool_exp.Project_id, and is useful for accessing the field via an interface.
+func (v *Project_folder_settings_bool_exp) GetProject_id() *Uuid_comparison_exp { return v.Project_id }
+
+// GetRoot returns Project_folder_settings_bool_exp.Root, and is useful for accessing the field via an interface.
+func (v *Project_folder_settings_bool_exp) GetRoot() *Boolean_comparison_exp { return v.Root }
+
 type Projects_arr_rel_insert_input struct {
 	Data        []*Projects_insert_input `json:"data,omitempty"`
 	On_conflict *Projects_on_conflict    `json:"on_conflict,omitempty"`
@@ -5258,6 +5703,7 @@ type Projects_bool_exp struct {
 	Organization            *Organizations_bool_exp           `json:"organization,omitempty"`
 	Organization_id         *Uuid_comparison_exp              `json:"organization_id,omitempty"`
 	Project_access_tokens   *Project_access_tokens_bool_exp   `json:"project_access_tokens,omitempty"`
+	Project_folder_settings *Project_folder_settings_bool_exp `json:"project_folder_settings,omitempty"`
 	Repo                    *String_comparison_exp            `json:"repo,omitempty"`
 	Reports                 *Project_access_tokens_bool_exp   `json:"reports,omitempty"`
 	Settings                *Settings_bool_exp                `json:"settings,omitempty"`
@@ -5317,6 +5763,11 @@ func (v *Projects_bool_exp) GetOrganization_id() *Uuid_comparison_exp { return v
 // GetProject_access_tokens returns Projects_bool_exp.Project_access_tokens, and is useful for accessing the field via an interface.
 func (v *Projects_bool_exp) GetProject_access_tokens() *Project_access_tokens_bool_exp {
 	return v.Project_access_tokens
+}
+
+// GetProject_folder_settings returns Projects_bool_exp.Project_folder_settings, and is useful for accessing the field via an interface.
+func (v *Projects_bool_exp) GetProject_folder_settings() *Project_folder_settings_bool_exp {
+	return v.Project_folder_settings
 }
 
 // GetRepo returns Projects_bool_exp.Repo, and is useful for accessing the field via an interface.

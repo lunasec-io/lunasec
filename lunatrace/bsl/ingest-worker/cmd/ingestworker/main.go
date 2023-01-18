@@ -12,11 +12,13 @@ package main
 
 import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/cwe"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/epss"
 	packageCommand "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/package"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/vulnerability"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/ingestworker"
 	cwe2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/cwe"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/dbfx"
+	epss2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/epss"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/registry"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator"
@@ -49,6 +51,7 @@ func main() {
 
 		fx.Provide(
 			cwe2.NewCWEIngester,
+			epss2.NewEPSSIngester,
 		),
 
 		// todo make a module
@@ -74,6 +77,7 @@ func main() {
 		fx.Provide(
 			vulnerability.NewCommand,
 			cwe.NewCommand,
+			epss.NewCommand,
 		),
 		fx.Provide(
 			packageCommand.NewCommand,

@@ -12,12 +12,14 @@ package cwe
 
 import (
 	"context"
+	"strconv"
+
 	"github.com/Khan/genqlient/graphql"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
-	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
-	"strconv"
+
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql"
 )
 
 type CWEIngester interface {
@@ -52,7 +54,9 @@ func (s *cweIngester) Ingest(ctx context.Context) error {
 	}
 	log.Info().Int("cweCount", len(cwes.Weaknesses)).Msg("Fetched CWEs from mitre")
 
-	var allNewCweObjects []*gql.Vulnerability_cwe_insert_input
+	log.Info().
+		Int("count", len(cwes.Weaknesses)).
+		Msg("fetched CWEs from MITRE successfully")
 
 	for _, weakness := range cwes.Weaknesses {
 		weaknessIdStr := weakness.ID
@@ -62,29 +66,36 @@ func (s *cweIngester) Ingest(ctx context.Context) error {
 			return err
 		}
 
-		newCweObject := gql.Vulnerability_cwe_insert_input{
-			Description:          util.Ptr(weakness.Description),
-			Extended_description: util.Ptr(weakness.ExtendedDescription),
-			Name:                 util.Ptr(weakness.Name),
-			Id:                   util.Ptr(weaknessId),
-			Common_name:          getCommonName(weaknessId),
+		_, err = gql.InsertVulnerabilityCWE(ctx, s.GQLClient, []*gql.Vulnerability_cwe_insert_input{
+			{
+				Description:          util.Ptr(weakness.Description),
+				Extended_description: util.Ptr(weakness.ExtendedDescription),
+				Name:                 util.Ptr(weakness.Name),
+				Id:                   util.Ptr(weaknessId),
+				Common_name:          getCommonName(weaknessId),
+			},
+		}, []gql.Vulnerability_cwe_update_column{
+			gql.Vulnerability_cwe_update_columnId,
+			gql.Vulnerability_cwe_update_columnName,
+			gql.Vulnerability_cwe_update_columnDescription,
+			gql.Vulnerability_cwe_update_columnExtendedDescription,
+			gql.Vulnerability_cwe_update_columnCommonName,
+		})
+
+		if err != nil {
+			log.Error().
+				Err(err).
+				Msg("error inserting CWE")
+			return err
 		}
 
-		allNewCweObjects = append(allNewCweObjects, &newCweObject)
+		log.Info().
+			Int("id", weaknessId).
+			Msg("inserted CWE")
+	}
 
-	}
-	log.Info().Msg("Inserting all batched weaknesses")
-	_, err = gql.InsertVulnerabilityCWE(ctx, s.GQLClient, allNewCweObjects, []gql.Vulnerability_cwe_update_column{
-		gql.Vulnerability_cwe_update_columnId,
-		gql.Vulnerability_cwe_update_columnName,
-		gql.Vulnerability_cwe_update_columnDescription,
-		gql.Vulnerability_cwe_update_columnExtendedDescription,
-		gql.Vulnerability_cwe_update_columnCommonName,
-	})
-	if err != nil {
-		return err
-	}
-	log.Info().Msg("Finished inserting CWEs")
+	log.Info().
+		Msg("ingested CWEs successfully")
 
 	return nil
 }
