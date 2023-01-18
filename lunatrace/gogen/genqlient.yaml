@@ -51,15 +51,3 @@ bindings:
     type: github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types.AffectedRangeType
   reference_type:
     type: github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types.ReferenceType
-  cvss_complexity:
-    type: string
-  cvss_vector:
-    type: string
-  cvss_low_medium_high:
-    type: string
-  cvss_none_low_high:
-    type: string
-  cvss_interaction:
-    type: string
-  cvss_scope:
-    type: string

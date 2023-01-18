@@ -17,20 +17,22 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"io/ioutil"
+	"net/http"
+	"path"
+	"strings"
+
 	"github.com/go-jet/jet/v2/generator/metadata"
 	"github.com/go-jet/jet/v2/generator/postgres"
 	"github.com/go-jet/jet/v2/generator/template"
 	postgres2 "github.com/go-jet/jet/v2/postgres"
 	_ "github.com/lib/pq"
-	"github.com/lunasec-io/lunasec/lunatrace/gogen/cmd/graphql"
 	"github.com/rs/zerolog/log"
 	"github.com/wundergraph/graphql-go-tools/pkg/astprinter"
 	"github.com/wundergraph/graphql-go-tools/pkg/introspection"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
-	"net/http"
-	"path"
-	"strings"
+
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/cmd/graphql"
 )
 
 func generateGql() {
@@ -180,13 +182,6 @@ func generateSql() {
 		"postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable",
 		"npm",
 		"./sqlgen",
-	)
-
-	err = postgres.GenerateDSN(
-		"postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable",
-		"vulnerability",
-		"./sqlgen",
-		t,
 	)
 
 	err = postgres.GenerateDSN(
