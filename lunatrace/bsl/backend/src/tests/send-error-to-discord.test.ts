@@ -19,6 +19,7 @@ const axiosMock = axios as jest.MockedObject<typeof axios>;
 
 describe('discord error logs', () => {
   it('sends an error to discord', async () => {
+    process.env.DISCORD_WEBHOOK_URL_SECRET = 'http://example.com/';
     await sendErrorToDiscord(new Error('fake error text'));
     expect(axiosMock.post).toBeCalled();
   });
