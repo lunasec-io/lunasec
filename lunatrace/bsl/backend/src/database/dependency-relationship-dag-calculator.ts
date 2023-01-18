@@ -84,9 +84,11 @@ export function dfsGenerateMerkleTreeFromDepTree(
 
   // DependencyGraphEdge
   if (currentDep.dependencies) {
-    for (const childDep of Object.values(currentDep.dependencies)) {
-      children.push(recursionFn(childDep));
-    }
+    Object.values(currentDep.dependencies).forEach((childDep) => {
+      if (recursionFn) {
+        children.push(recursionFn(childDep));
+      }
+    });
   }
 
   const currentEdge: DependencyGraphNode = {
