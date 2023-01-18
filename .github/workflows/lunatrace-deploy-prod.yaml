@@ -8,6 +8,7 @@ concurrency: production
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: master # This is what gives the job access to the secret env vars
     steps:
       - uses: aws-actions/configure-aws-credentials@v1
         with:
