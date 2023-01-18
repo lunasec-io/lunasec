@@ -11,35 +11,28 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package grypestorefx
 
-import (
-	"github.com/anchore/grype/grype/db"
-	v3 "github.com/anchore/grype/grype/db/v3"
-	"github.com/rs/zerolog/log"
-)
-
-func LoadVulnerabilityDB(cfg db.Config, update bool) (v3.StoreReader, *db.Status, error) {
-	dbCurator, err := db.NewCurator(cfg)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	if update {
-		log.Debug().Msg("looking for updates on vulnerability database")
-		_, err := dbCurator.Update()
-		if err != nil {
-			return nil, nil, err
-		}
-	}
-
-	store, err := dbCurator.GetStore()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	status := dbCurator.Status()
-
-	return store, &status, status.Err
-}
+//func LoadVulnerabilityDB(cfg db.Config, update bool) (v3.StoreReader, *db.Status, error) {
+//	dbCurator, err := db.NewCurator(cfg)
+//	if err != nil {
+//		return nil, nil, err
+//	}
+//
+//	if update {
+//		log.Debug().Msg("looking for updates on vulnerability database")
+//		_, err := dbCurator.Update()
+//		if err != nil {
+//			return nil, nil, err
+//		}
+//	}
+//
+//	store, err := dbCurator.GetStore()
+//	if err != nil {
+//		return nil, nil, err
+//	}
+//
+//	status := dbCurator.Status()
+//
+//	return store, &status, status.Err
+//}
