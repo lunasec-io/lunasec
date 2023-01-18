@@ -1,0 +1,26 @@
+name: LunaTrace Deploy Production
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+      - name: Yarn Install
+        env:
+          IS_LUNASEC_CI: true
+        run: yarn install --immutable --inline-builds
+      - name: Deploy
+        run: |-
+          set -euox pipefail
+          
+          cd lunatrace/bsl/backend-cdk
+          STACK_VERSION=V2 yarn run cdk:deploy:prod
