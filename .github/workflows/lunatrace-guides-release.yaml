@@ -30,7 +30,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
           cache: 'yarn'
 
       - name: Yarn Install
@@ -57,6 +57,18 @@ jobs:
         env:
           HASURA_URL: https://lunatrace.lunasec.io/api/service/v1/graphql
           STATIC_SECRET_ACCESS_TOKEN: ${{secrets.LUNATRACE_BACKEND_STATIC_SECRET}}
+          S3_SBOM_BUCKET: fake
+          S3_CODE_BUCKET: fake
+          S3_MANIFEST_BUCKET: fake
+          PROCESS_WEBHOOK_QUEUE: fake
+          PROCESS_REPOSITORY_QUEUE: fake
+          PROCESS_MANIFEST_QUEUE: fake
+          PROCESS_SBOM_QUEUE: fake
+          DISABLE_WEBHOOK_QUEUE: true
+          QUEUE_NAME: fake
+          GOLANG_QUEUE_NAME: fake
+          GITHUB_APP_ID: 0
+          GITHUB_APP_PRIVATE_KEY: fake
         working-directory: lunatrace/bsl/backend
         run: yarn run guides:update
 

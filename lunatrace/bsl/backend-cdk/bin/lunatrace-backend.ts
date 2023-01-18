@@ -15,7 +15,7 @@
 
 import 'source-map-support/register';
 
-import * as cdk from '@aws-cdk/core';
+import { App } from 'aws-cdk-lib';
 
 import { stackInputsV1 } from '../inputs/stack-inputs-v1';
 import { stackInputsV2 } from '../inputs/stack-inputs-v2';
@@ -23,7 +23,7 @@ import { StackInputs } from '../inputs/types';
 import { LunatraceBackendStack } from '../lib/lunatrace-backend-stack';
 import { WorkerStorageStack } from '../lib/worker-storage-stack';
 
-const app = new cdk.App();
+const app = new App();
 
 const stackVersionInputLookup: Record<string, StackInputs> = {
   V1: stackInputsV1,

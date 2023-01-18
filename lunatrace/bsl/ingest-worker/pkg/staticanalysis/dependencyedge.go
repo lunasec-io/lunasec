@@ -13,12 +13,13 @@ package staticanalysis
 import (
 	"context"
 	"errors"
-	"gocloud.dev/blob"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
+
+	"gocloud.dev/blob"
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
@@ -343,6 +344,7 @@ func (s *staticAnalysisQueueHandler) runSemgrepRuleOnParentPackage(
 	if err != nil {
 		logger.Error().
 			Err(err).
+			Str("blobUrl", resolvedBlobUrl).
 			Msg("failed to open package code")
 		return gql.Analysis_finding_type_enumError, nil
 	}

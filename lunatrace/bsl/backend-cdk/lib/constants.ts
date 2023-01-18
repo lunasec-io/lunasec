@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import { AssetImageProps } from '@aws-cdk/aws-ecs';
+import { AssetImageProps } from 'aws-cdk-lib/aws-ecs';
 
 export const commonBuildProps: AssetImageProps = {
   invalidation: {
