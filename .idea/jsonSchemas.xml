@@ -41,6 +41,22 @@
             </SchemaInfo>
           </value>
         </entry>
+        <entry key="Ory Oathkeeper configuration">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="Ory Oathkeeper configuration" />
+              <option name="relativePathToSchema" value="https://raw.githubusercontent.com/ory/oathkeeper/master/.schema/version.schema.json" />
+              <option name="applicationDefined" value="true" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="lunatrace/bsl/ory/oathkeeper/templates/config.template.yaml" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
         <entry key="Semgrep">
           <value>
             <SchemaInfo>

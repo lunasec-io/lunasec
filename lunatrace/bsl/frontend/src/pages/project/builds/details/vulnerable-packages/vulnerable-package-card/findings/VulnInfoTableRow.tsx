@@ -115,7 +115,19 @@ export const VulnInfoTableRow: React.FC<VulnerabilityTableItemProps> = ({ vulnMe
       ))}
     </div>,
     vulnMeta.vulnerability.severity_name,
-    vulnMeta.vulnerability.cvss_score ? vulnMeta.vulnerability.cvss_score : 'Unknown',
+    vulnMeta.vulnerability.cvss_score ? (
+      <>
+        {' '}
+        {vulnMeta.vulnerability.cvss_score}{' '}
+        {vulnMeta.adjustment && (
+          <span className="text-decoration-line-through darker ms-1">
+            {vulnMeta.adjustment.adjusted_from_cvss_score}
+          </span>
+        )}
+      </>
+    ) : (
+      'Unknown'
+    ),
     fixVersions.length > 0 ? fixVersions.join(', ') : 'None',
     getIgnoreButton(),
   ];

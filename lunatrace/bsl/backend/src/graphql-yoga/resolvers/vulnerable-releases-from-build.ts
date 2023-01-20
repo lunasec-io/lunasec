@@ -38,8 +38,6 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
     );
   }
 
-  const previewChains = args.previewChains !== null ? args.previewChains : false;
-
   const depTree = await loadTree(logger, buildId, minimumSeverity);
   if (depTree.error) {
     logger.error('unable to build dependency tree', {
@@ -50,7 +48,7 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
 
   logger.info('building vulnerable releases');
 
-  const vulnerableReleases = depTree.res.getVulnerableReleases(previewChains);
+  const vulnerableReleases = depTree.res.getVulnerableReleases();
 
   logger.info('finished processing tree');
   return vulnerableReleases;

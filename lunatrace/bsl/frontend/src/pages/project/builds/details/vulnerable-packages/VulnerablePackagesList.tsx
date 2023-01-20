@@ -26,7 +26,6 @@ import { VulnerablePackageMain } from './vulnerable-package-card/VulnerablePacka
 interface FindingListProps {
   quickView: QuickViewProps;
   setIgnoreFindings: (ignored: boolean) => void;
-  setShowCompleteAnalysis: (complete: boolean) => void;
   vulnerablePackages: VulnerablePackage[];
   severity: SeverityNamesOsv;
   setSeverity: (s: SeverityNamesOsv) => void;
@@ -37,7 +36,7 @@ interface FindingListProps {
 export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> = ({
   quickView,
   setIgnoreFindings,
-  setShowCompleteAnalysis,
+
   vulnerablePackages,
   severity,
   setSeverity,
@@ -55,7 +54,6 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
   const packagesFilteredBySeverity = vulnerablePackages.filter((p) => !p.beneath_minimum_severity);
 
   const handleShowIgnoredFindings = (e: ChangeEvent<HTMLInputElement>) => setIgnoreFindings(!e.target.checked);
-  const handleShowCompleteAnalysis = (e: ChangeEvent<HTMLInputElement>) => setShowCompleteAnalysis(e.target.checked);
 
   const pkgCards = packagesFilteredBySeverity.map((p) => {
     return (
@@ -99,7 +97,6 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
         <Col lg="6" style={{ display: 'flex', justifyContent: 'right' }}>
           <Form>
             <Form.Check type={'checkbox'} label={'Show Ignored'} onChange={handleShowIgnoredFindings} />
-            <Form.Check type={'checkbox'} label={'Show Complete Analysis'} onChange={handleShowCompleteAnalysis} />
             <Dropdown align={{ md: 'end' }} className="d-inline me-2">
               <Dropdown.Toggle variant="secondary" className="text-capitalize">
                 Minimum Severity: {severity === 'Unknown' ? 'None' : severity}
