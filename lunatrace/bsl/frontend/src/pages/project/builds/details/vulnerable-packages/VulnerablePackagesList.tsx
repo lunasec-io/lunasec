@@ -73,14 +73,16 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
   return (
     <div className="vulnerability-list p-3">
       <Row>
-        <Col lg="6">
+        <Col>
           <Row>
-            <Col>
+            <Col lg="12" xl="8">
               <h2 className="d-inline-block me-3">Vulnerable Packages</h2>
               <p className="mt-n2">
                 <FcPlus className="mb-1 me-1" />
                 Showing Enhanced Tree Data
               </p>
+            </Col>
+            <Col lg="12" xl="4">
               {areUpdatesAvailable && (
                 <OverlayTrigger
                   placement="bottom"
@@ -94,33 +96,43 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
             </Col>
           </Row>
         </Col>
-        <Col lg="6" style={{ display: 'flex', justifyContent: 'right' }}>
-          <Form>
-            <Form.Check type={'checkbox'} label={'Show Ignored'} onChange={handleShowIgnoredFindings} />
-            <Dropdown align={{ md: 'end' }} className="d-inline me-2">
-              <Dropdown.Toggle variant="secondary" className="text-capitalize">
-                Minimum Severity: {severity === 'Unknown' ? 'None' : severity}
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Header>
-                  Lowest severity to show <hr className="m-1" />
-                </Dropdown.Header>
-                {severityOrderOsv
-                  .map((severityName) => {
-                    return (
-                      <Dropdown.Item
-                        active={severityName === severity}
-                        onClick={() => setSeverity(severityName as SeverityNamesOsv)}
-                        key={severityName}
-                      >
-                        {severityName === 'Unknown' ? 'None' : severityName}
-                      </Dropdown.Item>
-                    );
-                  })
-                  .reverse()}
-              </Dropdown.Menu>
-            </Dropdown>
-          </Form>
+        <Col lg="6">
+          <Row className="justify-content-lg-end">
+            <Col md="12" lg="auto">
+              <Form.Check
+                className="pt-1 mb-2"
+                type="checkbox"
+                label="Show Ignored"
+                id="show-ignored"
+                onChange={handleShowIgnoredFindings}
+              />
+            </Col>
+            <Col md="12" lg="auto">
+              <Dropdown align={{ md: 'end' }} className="d-inline me-2">
+                <Dropdown.Toggle variant="secondary" className="text-capitalize">
+                  Minimum Severity: {severity === 'Unknown' ? 'None' : severity}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Header>
+                    Lowest severity to show <hr className="m-1" />
+                  </Dropdown.Header>
+                  {severityOrderOsv
+                    .map((severityName) => {
+                      return (
+                        <Dropdown.Item
+                          active={severityName === severity}
+                          onClick={() => setSeverity(severityName as SeverityNamesOsv)}
+                          key={severityName}
+                        >
+                          {severityName === 'Unknown' ? 'None' : severityName}
+                        </Dropdown.Item>
+                      );
+                    })
+                    .reverse()}
+                </Dropdown.Menu>
+              </Dropdown>
+            </Col>
+          </Row>
         </Col>
       </Row>
       <br />

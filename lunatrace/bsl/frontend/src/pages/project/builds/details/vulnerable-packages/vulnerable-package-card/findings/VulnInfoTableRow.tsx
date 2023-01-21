@@ -42,9 +42,7 @@ export const VulnInfoTableRow: React.FC<VulnerabilityTableItemProps> = ({ vulnMe
     }
 
     const rawNote = vulnMeta.ignored_vulnerability.note;
-    const ignoredNotePretty = rawNote
-      ? `Ignored with note: ${rawNote}`
-      : 'Vulnerability has been ignored without a reason.';
+    const ignoredNotePretty = rawNote ? `Ignored - ${rawNote}` : 'Vulnerability ignored. (No note given)';
     return <span>{ignoredNotePretty}</span>;
   };
   const ignoreVuln = async () => {

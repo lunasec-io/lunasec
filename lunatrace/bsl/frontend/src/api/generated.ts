@@ -8970,11 +8970,10 @@ export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerab
 export type GetVulnerableReleasesFromBuildQueryVariables = Exact<{
   buildId: Scalars['uuid'];
   minimumSeverity: Scalars['String'];
-  previewChains?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 
-export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, beneath_minimum_severity: boolean, cvss?: number | null, severity: string, paths: Array<string>, fix_versions: Array<string>, dev_only: boolean, guides: Array<{ __typename?: 'BuildData_Guide', id: string, title: string, summary: string }>, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, reachable: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } }, locations: Array<{ __typename?: 'BuildData_Location', id: string, path: string, start_row: number, end_row: number }> }>>, release: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string, package_manager: string } }, adjustment?: { __typename?: 'BuildData_Adjustment', adjusted_from_cvss_score?: number | null, adjusted_from_severity_name?: string | null, adjustments_applied: Array<string>, path_matched: string } | null, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable_to?: string | null, beneath_minimum_severity: boolean, fix_versions: Array<string>, path: string, ignored: boolean, adjustment?: { __typename?: 'BuildData_Adjustment', adjusted_from_cvss_score?: number | null, adjusted_from_severity_name?: string | null, adjustments_applied: Array<string>, path_matched: string } | null, ignored_vulnerability?: { __typename?: 'BuildData_IgnoredVulnerability', locations: Array<string>, note: string } | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, summary?: string | null, id: string, source_id: string, guide_vulnerabilities: Array<{ __typename?: 'BuildData_Guide_Vulnerability', guide?: { __typename?: 'BuildData_Guide', id: string, summary: string, title: string } | null }>, cwes: Array<{ __typename?: 'BuildData_VulnerabilityCwe', id: string, cwe: { __typename?: 'BuildData_Cwe', id: number, name: string, description: string, common_name?: string | null } }> } }> }> | null };
+export type GetVulnerableReleasesFromBuildQuery = { __typename?: 'query_root', vulnerableReleasesFromBuild?: Array<{ __typename?: 'BuildData_VulnerableRelease', trivially_updatable: string, beneath_minimum_severity: boolean, cvss?: number | null, severity: string, paths: Array<string>, fix_versions: Array<string>, dev_only: boolean, guides: Array<{ __typename?: 'BuildData_Guide', id: string, title: string, summary: string }>, chains: Array<Array<{ __typename?: 'BuildData_DependencyNode', id: string, range: string, reachable: string, release: { __typename?: 'BuildData_Release', id: string, version: string, package: { __typename?: 'BuildData_Package', name: string } }, locations: Array<{ __typename?: 'BuildData_Location', id: string, path: string, start_row: number, end_row: number }> }>>, release: { __typename?: 'BuildData_Release', version: string, id: string, package: { __typename?: 'BuildData_Package', name: string, package_manager: string } }, adjustment?: { __typename?: 'BuildData_Adjustment', adjusted_from_cvss_score?: number | null, adjusted_from_severity_name?: string | null, adjustments_applied: Array<string>, path_matched: string } | null, affected_by: Array<{ __typename?: 'BuildData_AffectedByVulnerability', trivially_updatable_to?: string | null, beneath_minimum_severity: boolean, fix_versions: Array<string>, path: string, ignored: boolean, adjustment?: { __typename?: 'BuildData_Adjustment', adjusted_from_cvss_score?: number | null, adjusted_from_severity_name?: string | null, adjustments_applied: Array<string>, path_matched: string } | null, ignored_vulnerability?: { __typename?: 'BuildData_IgnoredVulnerability', note: string } | null, vulnerability: { __typename?: 'BuildData_Vulnerability', severity_name?: string | null, cvss_score?: number | null, source: string, summary?: string | null, id: string, source_id: string, guide_vulnerabilities: Array<{ __typename?: 'BuildData_Guide_Vulnerability', guide?: { __typename?: 'BuildData_Guide', id: string, summary: string, title: string } | null }>, cwes: Array<{ __typename?: 'BuildData_VulnerabilityCwe', id: string, cwe: { __typename?: 'BuildData_Cwe', id: number, name: string, description: string, common_name?: string | null } }> } }> }> | null };
 
 export type InsertNewOrgUserMutationVariables = Exact<{
   organization_id: Scalars['uuid'];
@@ -9802,11 +9801,10 @@ export const GetVulnerabilityDetailsDocument = `
 }
     `;
 export const GetVulnerableReleasesFromBuildDocument = `
-    query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!, $previewChains: Boolean) {
+    query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!) {
   vulnerableReleasesFromBuild(
     buildId: $buildId
     minimumSeverity: $minimumSeverity
-    previewChains: $previewChains
   ) {
     trivially_updatable
     beneath_minimum_severity
@@ -9864,7 +9862,6 @@ export const GetVulnerableReleasesFromBuildDocument = `
       path
       ignored
       ignored_vulnerability {
-        locations
         note
       }
       vulnerability {

@@ -75,7 +75,6 @@ export type BuildData_Guide_Vulnerability = {
 
 export type BuildData_IgnoredVulnerability = {
   __typename?: 'BuildData_IgnoredVulnerability';
-  locations: Array<Scalars['String']>;
   note: Scalars['String'];
 };
 
@@ -229,7 +228,6 @@ export type QuerySbomUrlArgs = {
 export type QueryVulnerableReleasesFromBuildArgs = {
   buildId: Scalars['uuid'];
   minimumSeverity?: InputMaybe<Scalars['String']>;
-  previewChains?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type SbomUploadUrlInput = {
@@ -443,7 +441,6 @@ export type BuildData_Guide_VulnerabilityResolvers<ContextType = Context, Parent
 };
 
 export type BuildData_IgnoredVulnerabilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_IgnoredVulnerability'] = ResolversParentTypes['BuildData_IgnoredVulnerability']> = {
-  locations?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   note?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

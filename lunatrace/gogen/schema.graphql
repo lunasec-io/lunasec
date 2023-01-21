@@ -60,7 +60,6 @@ type BuildData_Guide_Vulnerability {
 }
 
 type BuildData_IgnoredVulnerability {
-    locations: [String!]!
     note: String!
 }
 

@@ -57,7 +57,6 @@ query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!)
             path
             ignored
             ignored_vulnerability {
-                locations
                 note
             }
             vulnerability{

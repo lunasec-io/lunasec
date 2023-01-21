@@ -113,7 +113,6 @@ type BuildData_Adjustment {
 
 type BuildData_IgnoredVulnerability {
     note: String!
-    locations: [String!]!
 }
 
 type BuildData_AffectedByVulnerability {

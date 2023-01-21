@@ -37,11 +37,6 @@ export type Scalars = {
   uuid: string;
 };
 
-export type AuthenticatedRepoCloneUrlOutput = {
-  __typename?: 'AuthenticatedRepoCloneUrlOutput';
-  url?: Maybe<Scalars['String']>;
-};
-
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
 export type Boolean_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Boolean']>;
@@ -53,126 +48,6 @@ export type Boolean_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Boolean']>;
   _neq?: InputMaybe<Scalars['Boolean']>;
   _nin?: InputMaybe<Array<Scalars['Boolean']>>;
-};
-
-export type BuildData_Adjustment = {
-  __typename?: 'BuildData_Adjustment';
-  adjusted_from_cvss_score: Scalars['Float'];
-  adjusted_from_severity_name: Scalars['String'];
-  adjustments_applied: Array<Scalars['String']>;
-  path_matched: Scalars['String'];
-};
-
-export type BuildData_AffectedByVulnerability = {
-  __typename?: 'BuildData_AffectedByVulnerability';
-  adjustment?: Maybe<BuildData_Adjustment>;
-  beneath_minimum_severity: Scalars['Boolean'];
-  fix_versions: Array<Scalars['String']>;
-  ignored: Scalars['Boolean'];
-  ignored_vulnerability?: Maybe<BuildData_IgnoredVulnerability>;
-  path: Scalars['String'];
-  ranges: Array<BuildData_Range>;
-  trivially_updatable_to?: Maybe<Scalars['String']>;
-  vulnerability: BuildData_Vulnerability;
-};
-
-export type BuildData_Cwe = {
-  __typename?: 'BuildData_Cwe';
-  common_name?: Maybe<Scalars['String']>;
-  description: Scalars['String'];
-  id: Scalars['Int'];
-  name: Scalars['String'];
-};
-
-export type BuildData_DependencyNode = {
-  __typename?: 'BuildData_DependencyNode';
-  id: Scalars['String'];
-  locations: Array<BuildData_Location>;
-  range: Scalars['String'];
-  reachable: Scalars['String'];
-  release: BuildData_Release;
-  release_id: Scalars['String'];
-};
-
-export type BuildData_Guide = {
-  __typename?: 'BuildData_Guide';
-  id: Scalars['String'];
-  summary: Scalars['String'];
-  title: Scalars['String'];
-};
-
-export type BuildData_Guide_Vulnerability = {
-  __typename?: 'BuildData_Guide_Vulnerability';
-  guide?: Maybe<BuildData_Guide>;
-};
-
-export type BuildData_IgnoredVulnerability = {
-  __typename?: 'BuildData_IgnoredVulnerability';
-  locations: Array<Scalars['String']>;
-  note: Scalars['String'];
-};
-
-export type BuildData_Location = {
-  __typename?: 'BuildData_Location';
-  end_column: Scalars['Int'];
-  end_row: Scalars['Int'];
-  id: Scalars['String'];
-  path: Scalars['String'];
-  start_column: Scalars['Int'];
-  start_row: Scalars['Int'];
-};
-
-export type BuildData_Package = {
-  __typename?: 'BuildData_Package';
-  name: Scalars['String'];
-  package_manager: Scalars['String'];
-};
-
-export type BuildData_Range = {
-  __typename?: 'BuildData_Range';
-  fixed?: Maybe<Scalars['String']>;
-  introduced?: Maybe<Scalars['String']>;
-};
-
-export type BuildData_Release = {
-  __typename?: 'BuildData_Release';
-  id: Scalars['String'];
-  package: BuildData_Package;
-  version: Scalars['String'];
-};
-
-export type BuildData_Vulnerability = {
-  __typename?: 'BuildData_Vulnerability';
-  cvss_score?: Maybe<Scalars['Float']>;
-  cwes: Array<BuildData_VulnerabilityCwe>;
-  guide_vulnerabilities: Array<BuildData_Guide_Vulnerability>;
-  id: Scalars['String'];
-  severity_name?: Maybe<Scalars['String']>;
-  source: Scalars['String'];
-  source_id: Scalars['String'];
-  summary?: Maybe<Scalars['String']>;
-};
-
-export type BuildData_VulnerabilityCwe = {
-  __typename?: 'BuildData_VulnerabilityCwe';
-  cwe: BuildData_Cwe;
-  id: Scalars['String'];
-};
-
-export type BuildData_VulnerableRelease = {
-  __typename?: 'BuildData_VulnerableRelease';
-  adjustment?: Maybe<BuildData_Adjustment>;
-  affected_by: Array<BuildData_AffectedByVulnerability>;
-  beneath_minimum_severity: Scalars['Boolean'];
-  chains: Array<Array<BuildData_DependencyNode>>;
-  cvss?: Maybe<Scalars['Float']>;
-  dev_only: Scalars['Boolean'];
-  fix_versions: Array<Scalars['String']>;
-  guides: Array<BuildData_Guide>;
-  paths: Array<Scalars['String']>;
-  release: BuildData_Release;
-  severity: Scalars['String'];
-  trivially_updatable: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'. */
@@ -188,25 +63,6 @@ export type Float_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Float']>>;
 };
 
-export type GithubRepository = {
-  __typename?: 'GithubRepository';
-  cloneUrl: Scalars['String'];
-  defaultBranch: Scalars['String'];
-  gitUrl: Scalars['String'];
-  orgId: Scalars['Int'];
-  orgName: Scalars['String'];
-  orgNodeId: Scalars['String'];
-  ownerType: Scalars['String'];
-  repoId: Scalars['Int'];
-  repoName: Scalars['String'];
-  repoNodeId: Scalars['String'];
-};
-
-export type InstallSelectedReposResponse = {
-  __typename?: 'InstallSelectedReposResponse';
-  success?: Maybe<Scalars['Boolean']>;
-};
-
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Int']>;
@@ -218,32 +74,6 @@ export type Int_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Int']>;
   _neq?: InputMaybe<Scalars['Int']>;
   _nin?: InputMaybe<Array<Scalars['Int']>>;
-};
-
-export type OrgWithRepos = {
-  __typename?: 'OrgWithRepos';
-  id: Scalars['String'];
-  organizationName: Scalars['String'];
-  repos: Array<GithubRepository>;
-};
-
-export type OrgsWithReposInput = {
-  id: Scalars['String'];
-  repos: Array<Scalars['Int']>;
-};
-
-export type PresignedUrlResponse = {
-  __typename?: 'PresignedUrlResponse';
-  bucket: Scalars['String'];
-  headers: Scalars['jsonb'];
-  key: Scalars['String'];
-  url: Scalars['String'];
-};
-
-export type SbomUploadUrlOutput = {
-  __typename?: 'SbomUploadUrlOutput';
-  error: Scalars['Boolean'];
-  uploadUrl?: Maybe<UploadUrl>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -277,12 +107,6 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
-};
-
-export type UploadUrl = {
-  __typename?: 'UploadUrl';
-  headers: Scalars['jsonb'];
-  url: Scalars['String'];
 };
 
 /** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
@@ -1250,7 +1074,6 @@ export type Builds = {
   /** An array relationship */
   resolved_manifests: Array<Resolved_Manifest>;
   s3_url?: Maybe<Scalars['String']>;
-  s3_url_signed?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
   source_type: Scalars['builds_source_type'];
@@ -2552,7 +2375,6 @@ export enum Folder_Environmental_Adjustment_Select_Column {
 /** Metadata about a github repository and where to find it. */
 export type Github_Repositories = {
   __typename?: 'github_repositories';
-  authenticated_clone_url?: Maybe<AuthenticatedRepoCloneUrlOutput>;
   default_branch?: Maybe<Scalars['String']>;
   git_url: Scalars['String'];
   github_id?: Maybe<Scalars['Int']>;
@@ -4593,9 +4415,6 @@ export type Mutation_Root = {
   insert_webhook_cache?: Maybe<Webhook_Cache_Mutation_Response>;
   /** insert a single row into the table: "webhook_cache" */
   insert_webhook_cache_one?: Maybe<Webhook_Cache>;
-  installSelectedRepos?: Maybe<InstallSelectedReposResponse>;
-  /**  get s3 presigned url for manifest upload, used only by the frontend  */
-  presignManifestUpload?: Maybe<PresignedUrlResponse>;
   /** update data of the table: "analysis.manifest_dependency_edge_result" */
   update_analysis_manifest_dependency_edge_result?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Mutation_Response>;
   /** update single row of the table: "analysis.manifest_dependency_edge_result" */
@@ -5360,18 +5179,6 @@ export type Mutation_RootInsert_Webhook_CacheArgs = {
 export type Mutation_RootInsert_Webhook_Cache_OneArgs = {
   object: Webhook_Cache_Insert_Input;
   on_conflict?: InputMaybe<Webhook_Cache_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInstallSelectedReposArgs = {
-  orgs: Array<OrgsWithReposInput>;
-};
-
-
-/** mutation root */
-export type Mutation_RootPresignManifestUploadArgs = {
-  project_id: Scalars['uuid'];
 };
 
 
@@ -8358,8 +8165,6 @@ export type Query_Root = {
   analysis_manifest_dependency_edge_result_location: Array<Analysis_Manifest_Dependency_Edge_Result_Location>;
   /** fetch data from the table: "analysis.manifest_dependency_edge_result_location" using primary key columns */
   analysis_manifest_dependency_edge_result_location_by_pk?: Maybe<Analysis_Manifest_Dependency_Edge_Result_Location>;
-  authenticatedRepoCloneUrl?: Maybe<AuthenticatedRepoCloneUrlOutput>;
-  availableOrgsWithRepos?: Maybe<Array<OrgWithRepos>>;
   /** fetch data from the table: "build_dependency_relationship" */
   build_dependency_relationship: Array<Build_Dependency_Relationship>;
   /** fetch data from the table: "build_dependency_relationship" using primary key columns */
@@ -8380,7 +8185,6 @@ export type Query_Root = {
   cvss_environmental_adjustment_by_pk?: Maybe<Cvss_Environmental_Adjustment>;
   /** An array relationship */
   default_branch_builds: Array<Default_Branch_Builds>;
-  fakeQueryToHackHasuraBeingABuggyMess?: Maybe<Scalars['String']>;
   /** An array relationship */
   findings: Array<Findings>;
   /** fetch data from the table: "findings" using primary key columns */
@@ -8471,8 +8275,6 @@ export type Query_Root = {
   package_release_license: Array<Package_Release_License>;
   /** fetch data from the table: "package.release_license" using primary key columns */
   package_release_license_by_pk?: Maybe<Package_Release_License>;
-  /**  get s3 presigned url for manifest upload, used by the CLI  */
-  presignSbomUpload?: Maybe<SbomUploadUrlOutput>;
   /** An array relationship */
   project_access_tokens: Array<Project_Access_Tokens>;
   /** fetch data from the table: "project_access_tokens" using primary key columns */
@@ -8491,7 +8293,6 @@ export type Query_Root = {
   resolved_manifest: Array<Resolved_Manifest>;
   /** fetch data from the table: "resolved_manifest" using primary key columns */
   resolved_manifest_by_pk?: Maybe<Resolved_Manifest>;
-  sbomUrl?: Maybe<Scalars['String']>;
   /** An array relationship */
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
@@ -8546,7 +8347,6 @@ export type Query_Root = {
   vulnerability_vulnerability_cwe: Array<Vulnerability_Vulnerability_Cwe>;
   /** fetch data from the table: "vulnerability.vulnerability_cwe" using primary key columns */
   vulnerability_vulnerability_cwe_by_pk?: Maybe<Vulnerability_Vulnerability_Cwe>;
-  vulnerableReleasesFromBuild?: Maybe<Array<BuildData_VulnerableRelease>>;
   /** fetch data from the table: "webhook_cache" */
   webhook_cache: Array<Webhook_Cache>;
   /** fetch data from the table: "webhook_cache" using primary key columns */
@@ -8579,11 +8379,6 @@ export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_LocationArgs = {
 
 export type Query_RootAnalysis_Manifest_Dependency_Edge_Result_Location_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootAuthenticatedRepoCloneUrlArgs = {
-  repoGithubId: Scalars['Int'];
 };
 
 
@@ -8986,12 +8781,6 @@ export type Query_RootPackage_Release_License_By_PkArgs = {
 };
 
 
-export type Query_RootPresignSbomUploadArgs = {
-  buildId: Scalars['uuid'];
-  orgId: Scalars['uuid'];
-};
-
-
 export type Query_RootProject_Access_TokensArgs = {
   distinct_on?: InputMaybe<Array<Project_Access_Tokens_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -9054,11 +8843,6 @@ export type Query_RootResolved_ManifestArgs = {
 
 export type Query_RootResolved_Manifest_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootSbomUrlArgs = {
-  buildId: Scalars['uuid'];
 };
 
 
@@ -9250,13 +9034,6 @@ export type Query_RootVulnerability_Vulnerability_CweArgs = {
 
 export type Query_RootVulnerability_Vulnerability_Cwe_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootVulnerableReleasesFromBuildArgs = {
-  buildId: Scalars['uuid'];
-  minimumSeverity?: InputMaybe<Scalars['String']>;
-  previewChains?: InputMaybe<Scalars['Boolean']>;
 };
 
 
