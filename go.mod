@@ -11,6 +11,7 @@ require (
 	github.com/Khan/genqlient v0.4.0
 	github.com/adrg/xdg v0.4.0
 	github.com/ajvpot/clifx v0.0.0-20220628211936-9cd4c559b7a3
+	github.com/anchore/go-logger v0.0.0-20220728155337-03b66a5207d8
 	github.com/anchore/grype v0.54.0
 	github.com/anchore/stereoscope v0.0.0-20221208011002-c5ff155d72f1
 	github.com/anchore/syft v0.63.0
@@ -22,7 +23,6 @@ require (
 	github.com/breadchris/ldapserver v1.1.0
 	github.com/cenkalti/backoff/v4 v4.1.3
 	github.com/dmarkham/enumer v1.5.5
-	github.com/facebookincubator/nvdtools v0.1.4
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-co-op/gocron v1.17.0
 	github.com/go-git/go-git/v5 v5.4.2
@@ -32,6 +32,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/lib/pq v1.10.7
 	github.com/lor00x/goldap v0.0.0-20180618054307-a546dffdd1a3
+	github.com/pandatix/go-cvss v0.5.1
 	github.com/pkg/errors v0.9.1
 	github.com/prashantv/gostub v1.1.0
 	github.com/prometheus/procfs v0.8.0
@@ -80,7 +81,6 @@ require (
 	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/alexflint/go-arg v1.4.2 // indirect
 	github.com/alexflint/go-scalar v1.0.0 // indirect
-	github.com/anchore/go-logger v0.0.0-20220728155337-03b66a5207d8 // indirect
 	github.com/anchore/go-macholibre v0.0.0-20220308212642-53e6d0aaf6fb // indirect
 	github.com/anchore/go-version v1.2.2-0.20210903204242-51efa5b487c4 // indirect
 	github.com/anchore/packageurl-go v0.1.1-0.20220428202044-a072fa3cb6d7 // indirect
@@ -139,6 +139,7 @@ require (
 	github.com/emirpasic/gods v1.12.0 // indirect
 	github.com/envoyproxy/go-control-plane v0.10.3 // indirect
 	github.com/envoyproxy/protoc-gen-validate v0.6.7 // indirect
+	github.com/facebookincubator/nvdtools v0.1.4 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/fullstorydev/grpcurl v1.8.7 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.0 // indirect
