@@ -11,11 +11,12 @@
  * limitations under the License.
  *
  */
-import { Bucket, EventType, HttpMethods } from '@aws-cdk/aws-s3';
-import { SqsDestination } from '@aws-cdk/aws-s3-notifications';
-import { Queue } from '@aws-cdk/aws-sqs';
-import * as cdk from '@aws-cdk/core';
-import { Construct, Duration } from '@aws-cdk/core';
+import * as cdk from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
+import { Bucket, EventType, HttpMethods } from 'aws-cdk-lib/aws-s3';
+import { SqsDestination } from 'aws-cdk-lib/aws-s3-notifications';
+import { Queue } from 'aws-cdk-lib/aws-sqs';
+import { Construct } from 'constructs';
 
 interface WorkerStorageStackProps extends cdk.StackProps {
   publicBaseUrl: string;
@@ -50,7 +51,7 @@ export class WorkerStorageStack extends cdk.Stack implements WorkerStorageStackS
   public processRepositorySqsQueue: Queue | null;
   public staticAnalysisSqsQueue: Queue | null;
 
-  constructor(scope: cdk.Construct, id: string, props: WorkerStorageStackProps) {
+  constructor(scope: Construct, id: string, props: WorkerStorageStackProps) {
     super(scope, id, props);
 
     const stackState = WorkerStorageStack.createWorkerStorageStack(this, props);

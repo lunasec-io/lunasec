@@ -43,6 +43,7 @@ export const stackInputsV2: StackInputs = {
   kratosCookieSecretArn: 'arn:aws:secretsmanager:us-west-2:916430638549:secret:lunatrace-KratosCookieSecret-0ElF6d',
   kratosCipherSecretArn: 'arn:aws:secretsmanager:us-west-2:916430638549:secret:lunatrace-KratosCipherSecret-zG99xR',
   hasuraAdminSecretArn: 'arn:aws:secretsmanager:us-west-2:916430638549:secret:lunatrace-HasuraAdminSecret-l1hzOI',
+  discordWebhookUrlArn: 'arn:aws:secretsmanager:us-west-2:916430638549:secret:discord-webhook-url-KRnik1',
   datadogApiKeyArn: 'arn:aws:secretsmanager:us-west-2:916430638549:secret:lunatrace-DatadogAPIKey-YC4IwB',
   githubOauthAppLoginClientIdArn:
     'arn:aws:secretsmanager:us-west-2:916430638549:secret:lunatrace-KratosGitHubOAuthAppLoginClientId-kd5ODD',

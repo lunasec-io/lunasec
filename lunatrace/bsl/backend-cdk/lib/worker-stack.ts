@@ -11,19 +11,21 @@
  * limitations under the License.
  *
  */
-import { SecurityGroup, SubnetType } from '@aws-cdk/aws-ec2';
+import * as cdk from 'aws-cdk-lib';
+import { SecurityGroup, SubnetType } from 'aws-cdk-lib/aws-ec2';
 import {
   CapacityProviderStrategy,
   Cluster,
   ContainerImage,
   DeploymentControllerType,
   Secret as EcsSecret,
-} from '@aws-cdk/aws-ecs';
-import { ApplicationLoadBalancedFargateService, QueueProcessingFargateServiceProps } from '@aws-cdk/aws-ecs-patterns';
-import { ISecret } from '@aws-cdk/aws-secretsmanager';
-import { Queue } from '@aws-cdk/aws-sqs';
-import * as cdk from '@aws-cdk/core';
-import { Construct } from '@aws-cdk/core';
+} from 'aws-cdk-lib/aws-ecs';
+import {
+  ApplicationLoadBalancedFargateService,
+  QueueProcessingFargateServiceProps,
+} from 'aws-cdk-lib/aws-ecs-patterns';
+import { Queue } from 'aws-cdk-lib/aws-sqs';
+import { Construct } from 'constructs';
 
 import { QueueProcessingFargateService } from './aws/queue-processing-fargate-service';
 import { commonBuildProps } from './constants';
@@ -35,10 +37,8 @@ interface WorkerStackProps extends cdk.StackProps {
   fargateService: ApplicationLoadBalancedFargateService;
   publicHasuraServiceUrl: string;
   gitHubAppId: string;
-  gitHubAppPrivateKey: ISecret;
-  hasuraDatabaseUrlSecret: ISecret;
-  hasuraAdminSecret: ISecret;
-  backendStaticSecret: ISecret;
+  nodeEnvVars: Record<string, string>;
+  nodeSecrets: Record<string, EcsSecret>;
   datadogApiKeyArn: string;
   storageStack: WorkerStorageStackState;
   servicesSecurityGroup: SecurityGroup;
@@ -56,7 +56,7 @@ interface QueueService extends Partial<QueueProcessingFargateServiceProps> {
 }
 
 export class WorkerStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: WorkerStackProps) {
+  constructor(scope: Construct, id: string, props: WorkerStackProps) {
     super(scope, id, props);
 
     WorkerStack.createWorkerStack(this, props);
@@ -73,12 +73,8 @@ export class WorkerStack extends cdk.Stack {
   public static createWorkerStack(context: Construct, props: WorkerStackProps): void {
     const {
       fargateCluster,
-      publicHasuraServiceUrl,
-      gitHubAppId,
-      gitHubAppPrivateKey,
-      hasuraDatabaseUrlSecret,
-      hasuraAdminSecret,
-      backendStaticSecret,
+      nodeEnvVars,
+      nodeSecrets,
       storageStack,
       datadogApiKeyArn,
       servicesSecurityGroup,
@@ -104,32 +100,6 @@ export class WorkerStack extends cdk.Stack {
       ...commonBuildProps,
       file: 'docker/queuehandler.dockerfile',
     });
-
-    // common environment variables used by queue processors
-    const processQueueCommonEnvVars: Record<string, string> = {
-      NODE_ENV: 'production',
-      WORKER_TYPE: 'queue-handler',
-      PROCESS_WEBHOOK_QUEUE: webhookQueue.queueName,
-      PROCESS_REPOSITORY_QUEUE: repositoryQueue.queueName,
-      S3_SBOM_BUCKET: storageStack.sbomBucket.bucketName,
-      S3_MANIFEST_BUCKET: storageStack.manifestBucket.bucketName,
-      S3_CODE_BUCKET: storageStack.codeBucket.bucketName,
-      GITHUB_APP_ID: gitHubAppId,
-      HASURA_URL: publicHasuraServiceUrl,
-      LUNATRACE_GRAPHQL_SERVER_URL: 'http://backend.services:8080/v1/graphql',
-      LUNATRACE_NPM_REGISTRY: 'http://backend.services:8081',
-      STATIC_ANALYSIS_QUEUE: staticAnalysisQueue.queueName,
-    };
-
-    const processQueueCommonSecrets: Record<string, EcsSecret> = {
-      DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-      LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-      HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-      HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
-      LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
-      STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
-      GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
-    };
 
     const gb = 1024;
 
@@ -212,12 +182,12 @@ export class WorkerStack extends cdk.Stack {
         enableLogging: true,
         logDriver: datadogLogDriverForService('lunatrace', name),
         environment: {
-          ...processQueueCommonEnvVars,
+          ...nodeEnvVars,
           ...(visibility ? { QUEUE_VISIBILITY: visibility.toString() } : {}),
           REDEPLOY: '1',
         },
         securityGroups: [vpcDbSecurityGroup, servicesSecurityGroup],
-        secrets: processQueueCommonSecrets,
+        secrets: nodeSecrets,
         containerName: name + 'Container',
         circuitBreaker: {
           rollback: true,

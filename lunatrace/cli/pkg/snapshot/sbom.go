@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package snapshot
 
 import (
@@ -231,30 +230,6 @@ func generateCatalogFileMetadataTask() (task, error) {
 			return nil, err
 		}
 		results.FileMetadata = result
-		return nil, nil
-	}
-
-	return task, nil
-}
-
-func generateCatalogFileClassificationsTask() (task, error) {
-	// TODO: in the future we could expose out the classifiers via configuration
-	classifierCataloger, err := file.NewClassificationCataloger(file.DefaultClassifiers)
-	if err != nil {
-		return nil, err
-	}
-
-	task := func(results *sbom.Artifacts, src *source.Source) ([]artifact.Relationship, error) {
-		resolver, err := src.FileResolver(source.UnknownScope)
-		if err != nil {
-			return nil, err
-		}
-
-		result, err := classifierCataloger.Catalog(resolver)
-		if err != nil {
-			return nil, err
-		}
-		results.FileClassifications = result
 		return nil, nil
 	}
 

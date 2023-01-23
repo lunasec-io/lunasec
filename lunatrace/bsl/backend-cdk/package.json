@@ -8,7 +8,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "cdk:deploy:dev": "DEVELOPMENT=true DEV_USER=$USER yarn run cdk deploy --all",
+    "cdk:deploy:dev": "DEVELOPMENT=true DEV_USER=$USER yarn run cdk deploy --all -O outputs.dev.json && ./format-dev-outputs.sh",
     "cdk:deploy:prod:all": "DATADOG_API_KEY=$(aws secretsmanager get-secret-value --secret-id lunatrace-DatadogAPIKey | jq -r .SecretString) yarn run cdk deploy -f --all --require-approval never",
     "cdk:deploy:prod:cleanup": "rm cdk.out/*.tar || true",
     "cdk:deploy:prod:run": "echo 'deploying...' && yarn run cdk:deploy:prod:cleanup && ./build-containers.sh && yarn run cdk:deploy:prod:all",
@@ -17,34 +17,13 @@
     "cdk:deploy:prod:v2": "STACK_VERSION=V2 yarn run cdk:deploy:prod:run"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "2.40.0",
-    "@aws-cdk/assets": "1.171.0",
-    "@aws-cdk/aws-apigateway": "1.171.0",
-    "@aws-cdk/aws-certificatemanager": "1.171.0",
-    "@aws-cdk/aws-ec2": "1.171.0",
-    "@aws-cdk/aws-ecr-assets": "1.171.0",
-    "@aws-cdk/aws-ecs": "1.171.0",
-    "@aws-cdk/aws-ecs-patterns": "1.171.0",
-    "@aws-cdk/aws-elasticloadbalancingv2": "1.171.0",
-    "@aws-cdk/aws-events": "1.171.0",
-    "@aws-cdk/aws-iam": "1.171.0",
-    "@aws-cdk/aws-lambda": "1.171.0",
-    "@aws-cdk/aws-lambda-nodejs": "1.171.0",
-    "@aws-cdk/aws-rds": "1.171.0",
-    "@aws-cdk/aws-route53": "1.171.0",
-    "@aws-cdk/aws-route53-targets": "1.171.0",
-    "@aws-cdk/aws-s3": "1.171.0",
-    "@aws-cdk/aws-s3-deployment": "1.171.0",
-    "@aws-cdk/aws-s3-notifications": "1.171.0",
-    "@aws-cdk/aws-secretsmanager": "1.171.0",
-    "@aws-cdk/aws-sqs": "1.171.0",
-    "@aws-cdk/aws-ssm": "1.171.0",
-    "@aws-cdk/core": "1.171.0",
     "@aws-sdk/types": "^3.162.0",
     "@types/jest": "^26.0.10",
     "@types/node": "^14.0.0",
-    "aws-cdk": "2.40.0",
+    "aws-cdk": "2.60.0",
+    "aws-cdk-lib": "2.60.0",
     "aws-sdk": "^2.1209.0",
+    "constructs": "~10.1.221",
     "jest": "^26.4.2",
     "source-map-support": "^0.5.16",
     "ts-jest": "^26.2.0",
@@ -52,7 +31,6 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-servicediscovery": "1.171.0",
-    "@aws-cdk/cx-api": "2.40.0"
+    "@aws-cdk/cx-api": "2.60.0"
   }
 }

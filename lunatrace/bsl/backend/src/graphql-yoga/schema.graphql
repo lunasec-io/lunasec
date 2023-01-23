@@ -104,12 +104,7 @@ type BuildData_Adjustment {
     path_matched: String!
     adjustments_applied: [String!]!
 }
-#export interface Adjustment {
-#  adjusted_cvss_score: number;
-#  adjusted_severity_name: string;
-#  path_matched: string;
-#  adjustments_applied: string[];
-#}
+
 
 type BuildData_IgnoredVulnerability {
     note: String!

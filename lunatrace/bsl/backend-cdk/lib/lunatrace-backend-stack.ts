@@ -14,8 +14,10 @@
 
 import { inspect } from 'util';
 
-import { Certificate } from '@aws-cdk/aws-certificatemanager';
-import { Port, SecurityGroup, Vpc } from '@aws-cdk/aws-ec2';
+import * as cdk from 'aws-cdk-lib';
+import { aws_ecs_patterns, Duration } from 'aws-cdk-lib';
+import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
+import { Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import {
   Cluster,
   ContainerDependencyCondition,
@@ -23,16 +25,16 @@ import {
   DeploymentControllerType,
   Secret as EcsSecret,
   FargateTaskDefinition,
-} from '@aws-cdk/aws-ecs';
-import * as ecsPatterns from '@aws-cdk/aws-ecs-patterns';
-import { ApplicationProtocol, ListenerCondition, SslPolicy } from '@aws-cdk/aws-elasticloadbalancingv2';
-import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
-import { HostedZone } from '@aws-cdk/aws-route53';
-import { Bucket } from '@aws-cdk/aws-s3';
-import { Secret } from '@aws-cdk/aws-secretsmanager';
-import { DnsRecordType, PrivateDnsNamespace } from '@aws-cdk/aws-servicediscovery';
-import * as cdk from '@aws-cdk/core';
-import { Duration } from '@aws-cdk/core';
+  LogDriver,
+} from 'aws-cdk-lib/aws-ecs';
+import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
+import { ApplicationProtocol, ListenerCondition, SslPolicy } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { HostedZone } from 'aws-cdk-lib/aws-route53';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
+import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
+import { DnsRecordType, PrivateDnsNamespace } from 'aws-cdk-lib/aws-servicediscovery';
+import { Construct } from 'constructs';
 
 import { StackInputs } from '../inputs/types';
 
@@ -43,8 +45,10 @@ import { WorkerStorageStack } from './worker-storage-stack';
 
 type LunaTraceStackProps = cdk.StackProps & StackInputs;
 
+// Handles far more than just the backend, in reality this is the "root stack" that launches all other sub-stacks
+// TODO: rename this to "RootStack"
 export class LunatraceBackendStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: LunaTraceStackProps) {
+  constructor(scope: Construct, id: string, props: LunaTraceStackProps) {
     super(scope, id, props);
 
     const publicBaseUrl = `https://${props.domainName}`;
@@ -117,6 +121,11 @@ export class LunatraceBackendStack extends cdk.Stack {
       'GitHubAppWebHookSecret',
       props.gitHubAppWebHookSecret
     );
+    const discordWebhookUrlSecret = Secret.fromSecretCompleteArn(
+      this,
+      'DiscordWebhookUrlSecret',
+      props.discordWebhookUrlArn
+    );
 
     const storageStackStage = WorkerStorageStack.createWorkerStorageStack(this, {
       env: props.env,
@@ -127,6 +136,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       !storageStackStage.processRepositorySqsQueue ||
       !storageStackStage.processWebhookSqsQueue ||
       !storageStackStage.processManifestSqsQueue ||
+      !storageStackStage.staticAnalysisSqsQueue ||
       !storageStackStage.processSbomSqsQueue
     ) {
       throw new Error(`expected non-null storage stack queues: ${inspect(storageStackStage)}`);
@@ -248,6 +258,39 @@ export class LunatraceBackendStack extends cdk.Stack {
       },
     });
 
+    // These are used by the backend node container below, and also by the worker containers in the worker-stack
+    const nodeEnvVars = {
+      ...baseEnvironmentVars,
+      NODE_ENV: 'production',
+      WORKER_TYPE: 'queue-handler',
+      PROCESS_WEBHOOK_QUEUE: storageStackStage.processWebhookSqsQueue.queueName,
+      PROCESS_REPOSITORY_QUEUE: storageStackStage.processRepositorySqsQueue.queueName,
+      STATIC_ANALYSIS_QUEUE: storageStackStage.staticAnalysisSqsQueue.queueName,
+      S3_SBOM_BUCKET: storageStackStage.sbomBucket.bucketName,
+      S3_MANIFEST_BUCKET: storageStackStage.manifestBucket.bucketName,
+      S3_CODE_BUCKET: storageStackStage.codeBucket.bucketName,
+      GITHUB_APP_ID: props.gitHubAppId,
+      HASURA_URL: publicHasuraServiceUrl,
+      LUNATRACE_GRAPHQL_SERVER_URL: 'http://backend.services:8080/v1/graphql',
+      LUNATRACE_NPM_REGISTRY: 'http://backend.services:8081',
+      QUEUE_VISIBILITY: '0', // overwritten by worker defs
+      QUEUE_NAME: 'placeholder',
+      SITE_PUBLIC_URL: publicBaseUrl,
+      PORT: '3002',
+    };
+
+    const nodeSecrets = {
+      DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
+      HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+      LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
+      STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
+      GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
+      GITHUB_APP_WEBHOOK_SECRET: EcsSecret.fromSecretsManager(gitHubAppWebHookSecret),
+      DISCORD_WEBHOOK_URL_SECRET: EcsSecret.fromSecretsManager(discordWebhookUrlSecret),
+    };
+
     const backendContainerImage = ContainerImage.fromAsset('../backend', {
       ...commonBuildProps,
       target: 'backend-express-server',
@@ -257,26 +300,19 @@ export class LunatraceBackendStack extends cdk.Stack {
       image: backendContainerImage,
       containerName: 'LunaTraceBackendContainer',
       portMappings: [{ containerPort: 3002 }],
-      logging: datadogLogDriverForService('lunatrace', 'backend'),
-      environment: {
-        ...baseEnvironmentVars,
-        GITHUB_APP_ID: props.gitHubAppId,
-        S3_SBOM_BUCKET: storageStackStage.sbomBucket.bucketName,
-        S3_MANIFEST_BUCKET: storageStackStage.manifestBucket.bucketName,
-        PROCESS_WEBHOOK_QUEUE: storageStackStage.processWebhookSqsQueue.queueName,
-        PROCESS_REPOSITORY_QUEUE: storageStackStage.processRepositorySqsQueue.queueName,
-        SITE_PUBLIC_URL: publicBaseUrl,
-        PORT: '3002',
-        NODE_ENV: 'production',
-      },
-      secrets: {
-        DATABASE_CONNECTION_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
-        STATIC_SECRET_ACCESS_TOKEN: EcsSecret.fromSecretsManager(backendStaticSecret),
-        GITHUB_APP_PRIVATE_KEY: EcsSecret.fromSecretsManager(gitHubAppPrivateKey),
-        GITHUB_APP_WEBHOOK_SECRET: EcsSecret.fromSecretsManager(gitHubAppWebHookSecret),
-      },
+      logging: datadogLogDriverForService('lunatrace', 'lunatrace-backend'),
+      // If logs are missing from datadog, particularly failure-to-start logs, use this instead and go find the errors in cloudwatch,
+      // not ecs
+      // logging: LogDriver.awsLogs({
+      //   streamPrefix: 'lunatrace-backend-tmp',
+      // }),
+      environment: nodeEnvVars,
+      secrets: nodeSecrets,
       healthCheck: {
         command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:3002/health || exit 1'],
+        timeout: Duration.minutes(1),
+        startPeriod: Duration.seconds(300),
+        retries: 10,
       },
     });
     storageStackStage.processRepositorySqsQueue.grantSendMessages(backend.taskDefinition.taskRole);
@@ -310,10 +346,14 @@ export class LunatraceBackendStack extends cdk.Stack {
         HASURA_GRAPHQL_DATABASE_URL: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
         HASURA_GRAPHQL_ADMIN_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
       },
-      // healthCheck: {
-      //   // TODO: Make this verify a 200 status code in the response
-      //   command: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:8080/healthz || exit 1'],
-      // },
+      healthCheck: {
+        command: ['CMD-SHELL', 'curl -f http://localhost:8080/healthz || exit 1'],
+        // the properties below are optional
+        // interval: Duration.minutes(30),
+        // retries: 123,
+        // startPeriod: Duration.minutes(30),
+        // timeout: Duration.minutes(30),
+      },
     });
 
     const ingestWorkerImage = ContainerImage.fromAsset('../ingest-worker', {
@@ -322,7 +362,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     });
 
     // Update vulnerabilities job
-    taskDef.addContainer('UpdateVulnerabilitiesJob', {
+    const updateVulnJob = taskDef.addContainer('UpdateVulnerabilitiesJob', {
       memoryLimitMiB: 8 * 1024,
       cpu: 4 * 1024,
       image: ingestWorkerImage,
@@ -333,6 +373,11 @@ export class LunatraceBackendStack extends cdk.Stack {
         LUNATRACE_GRAPHQL_SERVER_SECRET: EcsSecret.fromSecretsManager(hasuraAdminSecret),
         LUNATRACE_DB_DSN: EcsSecret.fromSecretsManager(hasuraDatabaseUrlSecret),
       },
+    });
+
+    updateVulnJob.addContainerDependencies({
+      container: hasura,
+      condition: ContainerDependencyCondition.HEALTHY,
     });
 
     const registryProxyImage = ContainerImage.fromAsset('../ingest-worker', {
@@ -408,6 +453,7 @@ export class LunatraceBackendStack extends cdk.Stack {
       certificate,
       domainZone,
       publicLoadBalancer: true,
+      enableExecuteCommand: true,
       assignPublicIp: true,
       redirectHTTP: true,
       sslPolicy: SslPolicy.RECOMMENDED,
@@ -469,13 +515,11 @@ export class LunatraceBackendStack extends cdk.Stack {
       env: props.env,
       storageStack: storageStackStage,
       fargateCluster,
+      nodeEnvVars,
+      nodeSecrets,
       fargateService: loadBalancedFargateService,
       gitHubAppId: props.gitHubAppId,
-      gitHubAppPrivateKey,
       publicHasuraServiceUrl,
-      hasuraDatabaseUrlSecret,
-      hasuraAdminSecret,
-      backendStaticSecret,
       datadogApiKeyArn: props.datadogApiKeyArn,
       servicesSecurityGroup,
       vpcDbSecurityGroup,

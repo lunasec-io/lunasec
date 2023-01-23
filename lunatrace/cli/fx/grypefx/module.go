@@ -11,23 +11,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package grypefx
 
-import (
-	"github.com/anchore/grype/grype/db"
-	v3 "github.com/anchore/grype/grype/db/v3"
-	"github.com/anchore/grype/grype/vulnerability"
-)
-
-func LoadVulnerabilityDB(store v3.StoreReader) (vulnerability.Provider, vulnerability.MetadataProvider, *db.Status, error) {
-	status, err := store.GetID()
-	if err != nil {
-		return nil, nil, nil, err
-	}
-
-	return db.NewVulnerabilityProvider(store), db.NewVulnerabilityMetadataProvider(store), &db.Status{
-		Built:         status.BuildTimestamp,
-		SchemaVersion: status.SchemaVersion,
-	}, nil
-}
+//func LoadVulnerabilityDB(store v5.StoreReader) (vulnerability.Provider, vulnerability.MetadataProvider, *db.Status, error) {
+//	status, err := store.GetID()
+//	if err != nil {
+//		return nil, nil, nil, err
+//	}
+//
+//	return db.NewVulnerabilityProvider(store), db.NewVulnerabilityMetadataProvider(store), &db.Status{
+//		Built:         status.BuildTimestamp,
+//		SchemaVersion: status.SchemaVersion,
+//	}, nil
+//}

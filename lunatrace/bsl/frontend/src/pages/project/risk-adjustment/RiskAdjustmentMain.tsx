@@ -33,9 +33,9 @@ export const RiskAdjustmentMain: React.FC<FiltersProps> = ({ project }) => {
         </Col>
         <Col md className="mt-md-1">
           <p>
-            <Info size="1.2em" className="mb-1 me-2" /> LunaTrace uses these simple settings to adjust vulnerability
-            scores and automatically ignore vulnerabilities in some cases. Configuring these settings properly will
-            de-prioritize vulnerabilities that may be irrelevant. If unsure whether a setting applies, leave it unset.
+            <Info size="1.2em" className="mb-1 me-2" /> LunaTrace uses these simple settings to adjust vulnerabilities
+            scores and automatically ignore vulnerabilities in some cases. If you are unsure about a specific setting,
+            leave it blank.
           </p>
         </Col>
       </Row>

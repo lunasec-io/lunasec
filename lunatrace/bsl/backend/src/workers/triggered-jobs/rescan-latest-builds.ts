@@ -15,7 +15,7 @@
 import { SendMessageCommand } from '@aws-sdk/client-sqs';
 
 import { sqsClient } from '../../aws/sqs-client';
-import { checkEnvVar, getAwsConfig } from '../../config';
+import { envVars, getAwsConfig } from '../../config';
 import { hasura } from '../../hasura-api';
 import { FakeS3SqsRecord, S3SqsMessage } from '../../types/sqs';
 import { log } from '../../utils/log';
@@ -57,7 +57,7 @@ export async function rescanLatestBuilds() {
 }
 
 // TODO: if called from a webhook this needs to be renamed to be distinct on the express server.. or passed as an arg or something
-const queueName = checkEnvVar('QUEUE_NAME');
+const queueName = envVars.QueueName;
 
 // Send pretend S3 events to trigger builds on the same queue as the real s3 events
 // It may someday be necessary to break this into a separate queue/worker if it effects the UX speed of other jobs

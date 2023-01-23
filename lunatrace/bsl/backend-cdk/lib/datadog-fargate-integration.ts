@@ -11,7 +11,7 @@
  * limitations under the License.
  *
  */
-import * as ecs from '@aws-cdk/aws-ecs';
+import * as ecs from 'aws-cdk-lib/aws-ecs';
 import {
   AwsLogDriver,
   Secret as EcsSecret,
@@ -20,10 +20,9 @@ import {
   LogDriver,
   LogDrivers,
   TaskDefinition,
-} from '@aws-cdk/aws-ecs';
-import { Secret } from '@aws-cdk/aws-secretsmanager';
-import * as cdk from '@aws-cdk/core';
-import { Construct } from '@aws-cdk/core';
+} from 'aws-cdk-lib/aws-ecs';
+import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
+import { Construct } from 'constructs';
 
 export function datadogLogDriverForService(source: string, service: string) {
   const datadogApiKey = process.env.DATADOG_API_KEY;
@@ -80,8 +79,8 @@ export function addDatadogToTaskDefinition(
   new DatadogIntegration(parent, 'DatadogService' + taskDef.family, taskDef);
 }
 
-export class DatadogIntegration extends cdk.Construct {
-  constructor(parent: cdk.Construct, name: string, taskDefinition: ecs.TaskDefinition) {
+export class DatadogIntegration extends Construct {
+  constructor(parent: Construct, name: string, taskDefinition: ecs.TaskDefinition) {
     super(parent, name);
 
     taskDefinition.addFirelensLogRouter('LogRouter', {
@@ -101,8 +100,8 @@ export class DatadogIntegration extends cdk.Construct {
 }
 
 /** Include Datadog agent in the specified task definition. */
-export class DatadogFargateIntegration extends cdk.Construct {
-  constructor(parent: cdk.Construct, name: string, taskDefinition: ecs.TaskDefinition, props: DataDogIntegrationProps) {
+export class DatadogFargateIntegration extends Construct {
+  constructor(parent: Construct, name: string, taskDefinition: ecs.TaskDefinition, props: DataDogIntegrationProps) {
     super(parent, name);
 
     if (!taskDefinition.isFargateCompatible) {

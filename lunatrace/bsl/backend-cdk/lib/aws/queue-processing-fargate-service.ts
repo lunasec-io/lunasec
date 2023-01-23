@@ -13,11 +13,12 @@
  */
 // Taken from: https://github.com/aws/aws-cdk/pull/18106
 // Forked because ephemeral storage is not allowed to be set by the existing QueueProcessingFargateService in the CDK
-import * as ec2 from '@aws-cdk/aws-ec2';
-import { FargatePlatformVersion, FargateService, FargateTaskDefinition } from '@aws-cdk/aws-ecs';
-import { QueueProcessingServiceBase, QueueProcessingServiceBaseProps } from '@aws-cdk/aws-ecs-patterns';
-import { Construct } from '@aws-cdk/core';
-import * as cxapi from '@aws-cdk/cx-api';
+import { FeatureFlags } from 'aws-cdk-lib';
+import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import { FargatePlatformVersion, FargateService, FargateTaskDefinition } from 'aws-cdk-lib/aws-ecs';
+import { QueueProcessingServiceBase, QueueProcessingServiceBaseProps } from 'aws-cdk-lib/aws-ecs-patterns';
+import * as cxapi from 'aws-cdk-lib/cx-api';
+import { Construct } from 'constructs';
 
 /**
  * The properties for the QueueProcessingFargateService service.
@@ -142,6 +143,7 @@ export class QueueProcessingFargateService extends QueueProcessingServiceBase {
     this.taskDefinition = new FargateTaskDefinition(this, 'QueueProcessingTaskDef', {
       memoryLimitMiB: props.memoryLimitMiB || 512,
       cpu: props.cpu || 256,
+      // TODO: THIS IS CHANGED
       ephemeralStorageGiB: props.ephemeralStorageGiB,
       family: props.family,
     });
@@ -157,9 +159,9 @@ export class QueueProcessingFargateService extends QueueProcessingServiceBase {
     });
 
     // The desiredCount should be removed from the fargate service when the feature flag is removed.
-    const desiredCount = this.node.tryGetContext(cxapi.ECS_REMOVE_DEFAULT_DESIRED_COUNT)
+    const desiredCount = FeatureFlags.of(this).isEnabled(cxapi.ECS_REMOVE_DEFAULT_DESIRED_COUNT)
       ? undefined
-      : this.desiredCount;
+      : (this as any).desiredCount;
 
     // Create a Fargate service with the previously defined Task Definition and configure
     // autoscaling based on cpu utilization and number of messages visible in the SQS queue.
@@ -179,6 +181,8 @@ export class QueueProcessingFargateService extends QueueProcessingServiceBase {
       assignPublicIp: props.assignPublicIp,
       circuitBreaker: props.circuitBreaker,
       capacityProviderStrategies: props.capacityProviderStrategies,
+      // TODO: THIS IS CHANGED
+      enableExecuteCommand: true,
     });
 
     this.configureAutoscalingForService(this.service);

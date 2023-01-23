@@ -23,6 +23,7 @@ import semver from 'semver';
 import api from '../../../../../../api';
 import { ConfirmationDailog } from '../../../../../../components/ConfirmationDialog';
 import { toTitleCase } from '../../../../../../utils/string-utils';
+import { CweBadge } from '../../../../../vulnerabilities/detail/CweBadge';
 import { vulnerabilityOpenInQuickView, vulnerabilityQuickViewState } from '../../../state';
 import { QuickViewProps } from '../../../types';
 import { Finding } from '../types';
@@ -111,6 +112,18 @@ export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({ finding, qu
   const rowValues = [
     finding.vulnerability.source,
     finding.vulnerability.source_id,
+    <div key={finding.vulnerability.id}>
+      {finding.vulnerability.cwes.map((c) => (
+        <CweBadge
+          key={c.id}
+          id={c.cwe.id}
+          name={c.cwe.name}
+          common_name={c.cwe.common_name || undefined}
+          quickView={quickView}
+          tooltipDescription={true}
+        />
+      ))}
+    </div>,
     severity ? toTitleCase(severity.cvss3OverallSeverityText) : 'unknown',
     severity ? severity.overallScore : 'unknown',
     fixVersions.length > 0 ? fixVersions.join(', ') : 'none',

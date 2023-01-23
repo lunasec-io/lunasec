@@ -12,6 +12,7 @@ node_modules
 docker-compose.*.yaml
 .env.docker
 outputs/
+out/
 .log*
 
 .yarn/*

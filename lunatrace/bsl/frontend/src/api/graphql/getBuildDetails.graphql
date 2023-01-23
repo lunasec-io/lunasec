@@ -75,6 +75,15 @@ query GetBuildDetails($build_id: uuid!, $project_id: uuid!) {
                         version
                     }
                 }
+                cwes {
+                    id
+                    cwe {
+                        id
+                        name
+                        description
+                        common_name
+                    }
+                }
                 guide_vulnerabilities {
                     guide {
                         id
