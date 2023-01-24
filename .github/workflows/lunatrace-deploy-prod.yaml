@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: master # This is what gives the job access to the secret env vars
     steps:
+      - name: Discord Webhook
+        uses: tsickert/discord-webhook@v5.3.0
+        with:
+          webhook-url: ${{ secrets.OBSERVABILITY_WEBHOOK_URL }}
+          content: "Deploy started"
       - uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
