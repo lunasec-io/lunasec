@@ -30,7 +30,10 @@ interface DepProps {
 }
 
 // Determines if the package is the start, the middle, or the target package and then colors them appropriately
-const getBadgeColor = (depIndex: number, chainLength: number) => {
+const getBadgeColor = (depIndex: number, chainLength: number, reachable: string) => {
+  if (!reachable) {
+    return 'light';
+  }
   if (depIndex === chainLength - 1) {
     return 'success';
   }
@@ -54,7 +57,7 @@ export const ChainDep: React.FunctionComponent<DepProps> = ({
   const dependencyEdgeNotReachable = (
     <OverlayTrigger
       placement={'top'}
-      overlay={<Tooltip>No instances found of {dep.release.package.name} being imported and called.</Tooltip>}
+      overlay={<Tooltip>No instances found of {dep.release.package.name} being used.</Tooltip>}
     >
       <X
         size="1em"
@@ -66,8 +69,8 @@ export const ChainDep: React.FunctionComponent<DepProps> = ({
 
   const edgeIsReachableTooltip =
     dep.reachable === Analysis_Finding_Type_Enum.Unknown || dep.reachable === Analysis_Finding_Type_Enum.Vulnerable
-      ? `${dep.release.package.name} was found to be imported and called.`
-      : `${dep.release.package.name} has not been analyzed for reachability`;
+      ? `${dep.release.package.name} was used by the parent package.`
+      : `${dep.release.package.name} has not been analyzed for reachability.`;
 
   const depedencyEdgeIsReachable = (
     <OverlayTrigger placement={'top'} overlay={<Tooltip>{edgeIsReachableTooltip}</Tooltip>}>
@@ -93,11 +96,11 @@ export const ChainDep: React.FunctionComponent<DepProps> = ({
           ) : (
             dependencyEdgeIcon
           ))}
-        {isExpanded && <div style={{ fontSize: '.7rem' }}>{dep.range}</div>}
+        {isExpanded && index !== 0 && <div style={{ fontSize: '.7rem' }}>{dep.range}</div>}
       </div>
-      <Badge text="dark" bg={getBadgeColor(index, visibleChainLength)}>
+      <Badge text="dark" bg={getBadgeColor(index, visibleChainLength, dep.reachable)}>
         <div>{dep.release.package.name}</div>
-        {isExpanded && (
+        {isExpanded && index !== 0 && (
           <div className="mt-1" style={{ fontSize: '.7rem' }}>
             {dep.release.version}
           </div>
