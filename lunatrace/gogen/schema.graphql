@@ -22,7 +22,15 @@ input Boolean_comparison_exp {
     _nin: [Boolean!]
 }
 
+type BuildData_Adjustment {
+    adjusted_from_cvss_score: Float
+    adjusted_from_severity_name: String
+    adjustments_applied: [String!]!
+    path_matched: String!
+}
+
 type BuildData_AffectedByVulnerability {
+    adjustment: BuildData_Adjustment
     beneath_minimum_severity: Boolean!
     fix_versions: [String!]!
     ignored: Boolean!
@@ -60,7 +68,6 @@ type BuildData_Guide_Vulnerability {
 }
 
 type BuildData_IgnoredVulnerability {
-    locations: [String!]!
     note: String!
 }
 
@@ -106,6 +113,7 @@ type BuildData_VulnerabilityCwe {
 }
 
 type BuildData_VulnerableRelease {
+    adjustment: BuildData_Adjustment
     affected_by: [BuildData_AffectedByVulnerability!]!
     beneath_minimum_severity: Boolean!
     chains: [[BuildData_DependencyNode!]!]!
@@ -375,6 +383,7 @@ type analysis_manifest_dependency_edge_result_location {
     end_column: Int!
     end_row: Int!
     id: uuid!
+    manifest_dependency_edge_result: analysis_manifest_dependency_edge_result!
     manifest_dependency_edge_result_id: uuid!
     path: String!
     start_column: Int!
@@ -414,6 +423,7 @@ input analysis_manifest_dependency_edge_result_location_bool_exp {
     end_column: Int_comparison_exp
     end_row: Int_comparison_exp
     id: uuid_comparison_exp
+    manifest_dependency_edge_result: analysis_manifest_dependency_edge_result_bool_exp
     manifest_dependency_edge_result_id: uuid_comparison_exp
     path: String_comparison_exp
     start_column: Int_comparison_exp
@@ -435,6 +445,7 @@ input analysis_manifest_dependency_edge_result_location_insert_input {
     end_column: Int
     end_row: Int
     id: uuid
+    manifest_dependency_edge_result: analysis_manifest_dependency_edge_result_obj_rel_insert_input
     manifest_dependency_edge_result_id: uuid
     path: String
     start_column: Int
@@ -476,6 +487,7 @@ input analysis_manifest_dependency_edge_result_location_order_by {
     end_column: order_by
     end_row: order_by
     id: order_by
+    manifest_dependency_edge_result: analysis_manifest_dependency_edge_result_order_by
     manifest_dependency_edge_result_id: order_by
     path: order_by
     start_column: order_by
@@ -584,6 +596,11 @@ input analysis_manifest_dependency_edge_result_min_order_by {
 type analysis_manifest_dependency_edge_result_mutation_response {
     affected_rows: Int!
     returning: [analysis_manifest_dependency_edge_result!]!
+}
+
+input analysis_manifest_dependency_edge_result_obj_rel_insert_input {
+    data: analysis_manifest_dependency_edge_result_insert_input!
+    on_conflict: analysis_manifest_dependency_edge_result_on_conflict
 }
 
 input analysis_manifest_dependency_edge_result_on_conflict {
@@ -5183,7 +5200,7 @@ type query_root {
     vulnerability_severity_by_pk(id: uuid!): vulnerability_severity
     vulnerability_vulnerability_cwe(distinct_on: [vulnerability_vulnerability_cwe_select_column!], limit: Int, offset: Int, order_by: [vulnerability_vulnerability_cwe_order_by!], where: vulnerability_vulnerability_cwe_bool_exp): [vulnerability_vulnerability_cwe!]!
     vulnerability_vulnerability_cwe_by_pk(id: uuid!): vulnerability_vulnerability_cwe
-    vulnerableReleasesFromBuild(buildId: uuid!, minimumSeverity: String, previewChains: Boolean): [BuildData_VulnerableRelease!]
+    vulnerableReleasesFromBuild(buildId: uuid!, minimumSeverity: String): [BuildData_VulnerableRelease!]
     webhook_cache(distinct_on: [webhook_cache_select_column!], limit: Int, offset: Int, order_by: [webhook_cache_order_by!], where: webhook_cache_bool_exp): [webhook_cache!]!
     webhook_cache_by_pk(delivery_id: uuid!): webhook_cache
 }

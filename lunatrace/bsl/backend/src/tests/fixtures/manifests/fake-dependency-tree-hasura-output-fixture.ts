@@ -96,6 +96,7 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<Manifest> = [
               affected_by_vulnerability: [
                 {
                   vulnerability: {
+                    severities: [],
                     severity_name: 'Medium',
                     cvss_score: 7.2,
                     source: 'github',
@@ -143,6 +144,8 @@ export const fakeDependencyTreeHasuraOutputFixture: Array<Manifest> = [
               affected_by_vulnerability: [
                 {
                   vulnerability: {
+                    severities: [],
+
                     severity_name: 'Medium',
                     cvss_score: 7.2,
                     source: 'github',

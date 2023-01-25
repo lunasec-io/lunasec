@@ -52,7 +52,7 @@ function checkEnvVar<E extends EnvVar<z.Schema>>(varConf: E): z.infer<E['castTo'
 
 type VarName = keyof typeof commonEnvVarKeys;
 type EnvVars = {
-  [name in VarName]: z.infer<typeof commonEnvVarKeys[name]['castTo']>;
+  [name in VarName]: z.infer<(typeof commonEnvVarKeys)[name]['castTo']>;
 };
 
 // Build the env vars and store them in the require cache as an export of this file
@@ -60,7 +60,7 @@ const partialEnvironmentVars: Partial<EnvVars> = {};
 
 Object.keys(commonEnvVarKeys).forEach((keyName) => {
   const varName = keyName as VarName;
-  const varConf: EnvVar<typeof commonEnvVarKeys[typeof varName]['castTo']> = commonEnvVarKeys[varName];
+  const varConf: EnvVar<(typeof commonEnvVarKeys)[typeof varName]['castTo']> = commonEnvVarKeys[varName];
   // I can't figure out why this ignore is needed, but so be it
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore

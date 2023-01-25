@@ -44,3 +44,24 @@
 .all-packages-update-popover {
   max-width: min(98vw, 700px);
 }
+
+.adjustment-fieldset {
+  border: $gray-200 1px solid;
+  border-radius: 4px;
+  width:auto;
+  padding-left: 1.5rem;
+  padding-bottom: .5rem;
+  margin-bottom: .5rem;
+  //padding: 0.75rem 2.5rem 1.5rem;
+}
+
+.adjustment-legend {
+  font-size: .9em;
+  margin-top: -.9em;
+  width: auto;
+  color: $green;
+  padding-right: 4px;
+  padding-left: 4px;
+  margin-left: 20px;
+  background-color: $dark-theme-base;
+}

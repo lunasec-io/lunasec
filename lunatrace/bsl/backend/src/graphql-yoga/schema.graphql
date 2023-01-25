@@ -15,7 +15,7 @@ type Query {
     ): AuthenticatedRepoCloneUrlOutput
     fakeQueryToHackHasuraBeingABuggyMess: String
     availableOrgsWithRepos: [OrgWithRepos!]
-    vulnerableReleasesFromBuild(buildId: uuid!, minimumSeverity: String, previewChains: Boolean): [BuildData_VulnerableRelease!]
+    vulnerableReleasesFromBuild(buildId: uuid!, minimumSeverity: String): [BuildData_VulnerableRelease!]
 }
 
 type Mutation {
@@ -95,11 +95,19 @@ type BuildData_VulnerableRelease {
     guides: [BuildData_Guide!]!
     fix_versions: [String!]!
     paths: [String!]!
+    adjustment: BuildData_Adjustment #optional
 }
+
+type BuildData_Adjustment {
+    adjusted_from_cvss_score: Float
+    adjusted_from_severity_name: String
+    path_matched: String!
+    adjustments_applied: [String!]!
+}
+
 
 type BuildData_IgnoredVulnerability {
     note: String!
-    locations: [String!]!
 }
 
 type BuildData_AffectedByVulnerability {
@@ -111,6 +119,7 @@ type BuildData_AffectedByVulnerability {
     trivially_updatable_to: String
     fix_versions: [String!]!
     path: String!
+    adjustment: BuildData_Adjustment #optional
 }
 
 type BuildData_Location {

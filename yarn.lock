@@ -16049,6 +16049,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/cvss@npm:~1.0.0":
+  version: 1.0.0
+  resolution: "@types/cvss@npm:1.0.0"
+  checksum: e0b606eeab1e04f67f718f60baaf1083cdb0aca4d58ae4d61a2590447406600702d76ba1ed573fc2585d6cd22ea5a0b0d6fe6e6d46a2a58ab3acda8d6dac02c0
+  languageName: node
+  linkType: hard
+
 "@types/cypress@npm:^1.1.3":
   version: 1.1.3
   resolution: "@types/cypress@npm:1.1.3"
@@ -16794,12 +16801,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:16.9.14":
-  version: 16.9.14
-  resolution: "@types/react-dom@npm:16.9.14"
+"@types/react-dom@npm:17.0.2":
+  version: 17.0.2
+  resolution: "@types/react-dom@npm:17.0.2"
   dependencies:
-    "@types/react": ^16
-  checksum: 68a4ee88f7a56cdbfbca24b1936b9aa5dad8b40ffbf1f047ddf990454aec6e0c9da2a01c9ae87045e95236602061646c90d02f01281533e14f1970687873030f
+    "@types/react": "*"
+  checksum: 1725928a1c3a0026044e6401e6b53729e1a88849034fc67138d7784ec44a5132fe2e9056a19b741ccb462ff0ec0d8c2c01ef316bda19be0e31f2ead9346f600b
   languageName: node
   linkType: hard
 
@@ -16875,25 +16882,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:16.14.21":
-  version: 16.14.21
-  resolution: "@types/react@npm:16.14.21"
+"@types/react@npm:17.0.2":
+  version: 17.0.2
+  resolution: "@types/react@npm:17.0.2"
   dependencies:
     "@types/prop-types": "*"
-    "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 9660ea0a2c7ad364295c1e5abd6b98a05fd372a0f06f97850f60fcc254bcec766d19b101c0acc382746a4e0b71848d88097a1db7124e3fd441c0472fb6b3f849
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:^16":
-  version: 16.14.23
-  resolution: "@types/react@npm:16.14.23"
-  dependencies:
-    "@types/prop-types": "*"
-    "@types/scheduler": "*"
-    csstype: ^3.0.2
-  checksum: 2c765e87c25421c23c6a813ec2b27a909bb051a2d84c07a0d5368ef22dca0e1dbb02489a79274316ad900bcbb1bec9a7153908c7012db4e8bb4a1c3f704330f5
+  checksum: a5198857165feddcbfc7d33e3322460ac62b8894d702414496a825b0c82272911ec33a42ef7c9d623a59308070eef4dfee6ff834b0674aa3f87eeb644196ee3b
   languageName: node
   linkType: hard
 
@@ -24019,9 +24014,9 @@ __metadata:
   linkType: hard
 
 "constructs@npm:~10.1.221":
-  version: 10.1.221
-  resolution: "constructs@npm:10.1.221"
-  checksum: 56c6f8e944f8e82cbd0e4bdf8ceeb4905037d50696ce645d8953f9c269ca86665ec0df45c9843ea4d8eb8a0df1b3de813c40499cf53cd3ba48388dbc4bf1532e
+  version: 10.1.228
+  resolution: "constructs@npm:10.1.228"
+  checksum: 332b8e1d29377dca0bc3a042e85a1ce5a5ea83f3c02a141d5ea40aaf653274cd45187d53bced0bcaa25c5aa6e03671ea86aa847a61105f5caaed58cf97b6badb
   languageName: node
   linkType: hard
 
@@ -25317,6 +25312,13 @@ __metadata:
   dependencies:
     array-find-index: ^1.0.1
   checksum: 1f59fe10b5339b54b1a1eee110022f663f3495cf7cf2f480686e89edc7fa8bfe42dbab4b54f85034bc8b092a76cc7becbc2dad4f9adad332ab5831bec39ad540
+  languageName: node
+  linkType: hard
+
+"cvss@npm:~1.0.5":
+  version: 1.0.5
+  resolution: "cvss@npm:1.0.5"
+  checksum: 36241717391521eebce6fc303422330983405793fd1f3a92647fb7389aa46d4d008aab12abed550c61ab7bd7e0274ef4f7cae0c291afe8738369f3d96963c2af
   languageName: node
   linkType: hard
 
@@ -29944,8 +29946,8 @@ __metadata:
     "@types/jsonwebtoken": ^8.5.8
     "@types/minimatch": ~5.1.2
     "@types/node": ^14.0.0
-    "@types/react": 16.14.21
-    "@types/react-dom": 16.9.14
+    "@types/react": 17.0.2
+    "@types/react-dom": 17.0.2
     "@types/react-redux": ^7.1.22
     "@types/react-router": ^5.1.18
     "@types/react-router-bootstrap": ^0.24.5
@@ -29982,11 +29984,11 @@ __metadata:
     react-bootstrap-typeahead: ^6.0.0-alpha.6
     react-bottom-scroll-listener: ^5.0.0
     react-code-blocks: ^0.0.9-0
-    react-dom: ^17.0.2
+    react-dom: 17.0.2
     react-dropzone: ^12.0.4
     react-feather: ^2.0.9
     react-github-login-button: ^1.0.1
-    react-helmet-async: ^1.3.0
+    react-helmet-async: 1.3.0
     react-icons: ^4.7.1
     react-markdown: ^8.0.3
     react-perfect-scrollbar: ^1.5.8
@@ -38543,6 +38545,7 @@ __metadata:
     "@types/bl": ~5.0.2
     "@types/config": ^0.0.41
     "@types/cors": ^2.8.12
+    "@types/cvss": ~1.0.0
     "@types/deepmerge": ^2.2.0
     "@types/eventsource": ^1.1.8
     "@types/express": ^4.17.13
@@ -38552,6 +38555,7 @@ __metadata:
     "@types/jsonwebtoken": ~8.5.8
     "@types/jwk-to-pem": ~2.0.1
     "@types/markdown-table": 2.0.0
+    "@types/minimatch": ~5.1.2
     "@types/node": ^14.0.0
     "@types/semver": ^7.3.9
     "@types/tar": ~6.1.3
@@ -38565,6 +38569,7 @@ __metadata:
     concurrently: ^7.0.0
     config: ^3.3.6
     cors: ^2.8.5
+    cvss: ~1.0.5
     deepmerge: ^4.2.2
     dotenv: ^10.0.0
     eslint: ^7.25.0
@@ -38593,6 +38598,7 @@ __metadata:
     jwks-rsa: ^2.0.5
     jwt-decode: ^3.1.2
     markdown-table: 2.0.0
+    minimatch: ~5.1.2
     murmurhash-native: ^3.5.0
     node-fetch: 2
     nodemon: ^2.0.15
@@ -38616,6 +38622,7 @@ __metadata:
     typescript: ~4.7.4
     uuid: ^8.3.2
     validator: ^13.7.0
+    vuln-vects: ~1.1.0
     zod: ~3.20.2
   languageName: unknown
   linkType: soft
@@ -39957,6 +39964,15 @@ __metadata:
   dependencies:
     brace-expansion: ^2.0.1
   checksum: 215edd0978320a3354188f84a537d45841f2449af4df4379f79b9b777e71aa4f5722cc9d1717eabd2a70d38ef76ab7b708d24d83ea6a6c909dfd8833de98b437
+  languageName: node
+  linkType: hard
+
+"minimatch@npm:~5.1.2":
+  version: 5.1.2
+  resolution: "minimatch@npm:5.1.2"
+  dependencies:
+    brace-expansion: ^2.0.1
+  checksum: 32ffda25b9fb8270a1c1beafdb7489dc0e411af553495136509a945691f63c9b6b000eeeaaf8bffe3efa609c1d6d3bc0f5a106f6c3443b5c05da649100ded964
   languageName: node
   linkType: hard
 
@@ -46464,7 +46480,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^17.0.1, react-dom@npm:^17.0.2":
+"react-dom@npm:17.0.2, react-dom@npm:^17.0.1, react-dom@npm:^17.0.2":
   version: 17.0.2
   resolution: "react-dom@npm:17.0.2"
   dependencies:
@@ -46559,7 +46575,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-helmet-async@npm:^1.3.0":
+"react-helmet-async@npm:1.3.0":
   version: 1.3.0
   resolution: "react-helmet-async@npm:1.3.0"
   dependencies:

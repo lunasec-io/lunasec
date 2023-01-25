@@ -64,7 +64,7 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
                   <Card.Title>
                     <span className="text-right darker"> Severity: </span>
                     <div style={{ display: 'inline-block' }} className="vulnerability-severity-badge">
-                      <h4 className={`p-1 ${pkg.severity} text-capitalize`} style={{ display: 'inline' }}>
+                      <h4 className={`p-1 ${pkg.severity.toLowerCase()} text-capitalize`} style={{ display: 'inline' }}>
                         {pkg.severity}
                       </h4>
                     </div>
@@ -73,6 +73,9 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
                     {' '}
                     <span className="darker">CVSS: </span>
                     {pkg.cvss}
+                    {pkg.adjustment && (
+                      <span className="dot-through darker ms-1">{pkg.adjustment.adjusted_from_cvss_score}</span>
+                    )}
                   </Card.Subtitle>
                 </>
               ) : null}
