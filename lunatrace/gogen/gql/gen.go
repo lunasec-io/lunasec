@@ -320,6 +320,7 @@ type Analysis_manifest_dependency_edge_result_location_bool_exp struct {
 	End_column                         *Int_comparison_exp                                           `json:"end_column,omitempty"`
 	End_row                            *Int_comparison_exp                                           `json:"end_row,omitempty"`
 	Id                                 *Uuid_comparison_exp                                          `json:"id,omitempty"`
+	Manifest_dependency_edge_result    *Analysis_manifest_dependency_edge_result_bool_exp            `json:"manifest_dependency_edge_result,omitempty"`
 	Manifest_dependency_edge_result_id *Uuid_comparison_exp                                          `json:"manifest_dependency_edge_result_id,omitempty"`
 	Path                               *String_comparison_exp                                        `json:"path,omitempty"`
 	Start_column                       *Int_comparison_exp                                           `json:"start_column,omitempty"`
@@ -356,6 +357,11 @@ func (v *Analysis_manifest_dependency_edge_result_location_bool_exp) GetId() *Uu
 	return v.Id
 }
 
+// GetManifest_dependency_edge_result returns Analysis_manifest_dependency_edge_result_location_bool_exp.Manifest_dependency_edge_result, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_location_bool_exp) GetManifest_dependency_edge_result() *Analysis_manifest_dependency_edge_result_bool_exp {
+	return v.Manifest_dependency_edge_result
+}
+
 // GetManifest_dependency_edge_result_id returns Analysis_manifest_dependency_edge_result_location_bool_exp.Manifest_dependency_edge_result_id, and is useful for accessing the field via an interface.
 func (v *Analysis_manifest_dependency_edge_result_location_bool_exp) GetManifest_dependency_edge_result_id() *Uuid_comparison_exp {
 	return v.Manifest_dependency_edge_result_id
@@ -383,13 +389,14 @@ const (
 )
 
 type Analysis_manifest_dependency_edge_result_location_insert_input struct {
-	End_column                         *int       `json:"end_column,omitempty"`
-	End_row                            *int       `json:"end_row,omitempty"`
-	Id                                 *uuid.UUID `json:"id,omitempty"`
-	Manifest_dependency_edge_result_id *uuid.UUID `json:"manifest_dependency_edge_result_id,omitempty"`
-	Path                               *string    `json:"path,omitempty"`
-	Start_column                       *int       `json:"start_column,omitempty"`
-	Start_row                          *int       `json:"start_row,omitempty"`
+	End_column                         *int                                                           `json:"end_column,omitempty"`
+	End_row                            *int                                                           `json:"end_row,omitempty"`
+	Id                                 *uuid.UUID                                                     `json:"id,omitempty"`
+	Manifest_dependency_edge_result    *Analysis_manifest_dependency_edge_result_obj_rel_insert_input `json:"manifest_dependency_edge_result,omitempty"`
+	Manifest_dependency_edge_result_id *uuid.UUID                                                     `json:"manifest_dependency_edge_result_id,omitempty"`
+	Path                               *string                                                        `json:"path,omitempty"`
+	Start_column                       *int                                                           `json:"start_column,omitempty"`
+	Start_row                          *int                                                           `json:"start_row,omitempty"`
 }
 
 // GetEnd_column returns Analysis_manifest_dependency_edge_result_location_insert_input.End_column, and is useful for accessing the field via an interface.
@@ -405,6 +412,11 @@ func (v *Analysis_manifest_dependency_edge_result_location_insert_input) GetEnd_
 // GetId returns Analysis_manifest_dependency_edge_result_location_insert_input.Id, and is useful for accessing the field via an interface.
 func (v *Analysis_manifest_dependency_edge_result_location_insert_input) GetId() *uuid.UUID {
 	return v.Id
+}
+
+// GetManifest_dependency_edge_result returns Analysis_manifest_dependency_edge_result_location_insert_input.Manifest_dependency_edge_result, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_location_insert_input) GetManifest_dependency_edge_result() *Analysis_manifest_dependency_edge_result_obj_rel_insert_input {
+	return v.Manifest_dependency_edge_result
 }
 
 // GetManifest_dependency_edge_result_id returns Analysis_manifest_dependency_edge_result_location_insert_input.Manifest_dependency_edge_result_id, and is useful for accessing the field via an interface.
@@ -459,6 +471,21 @@ const (
 	Analysis_manifest_dependency_edge_result_location_update_columnStartColumn                    Analysis_manifest_dependency_edge_result_location_update_column = "start_column"
 	Analysis_manifest_dependency_edge_result_location_update_columnStartRow                       Analysis_manifest_dependency_edge_result_location_update_column = "start_row"
 )
+
+type Analysis_manifest_dependency_edge_result_obj_rel_insert_input struct {
+	Data        *Analysis_manifest_dependency_edge_result_insert_input `json:"data,omitempty"`
+	On_conflict *Analysis_manifest_dependency_edge_result_on_conflict  `json:"on_conflict,omitempty"`
+}
+
+// GetData returns Analysis_manifest_dependency_edge_result_obj_rel_insert_input.Data, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_obj_rel_insert_input) GetData() *Analysis_manifest_dependency_edge_result_insert_input {
+	return v.Data
+}
+
+// GetOn_conflict returns Analysis_manifest_dependency_edge_result_obj_rel_insert_input.On_conflict, and is useful for accessing the field via an interface.
+func (v *Analysis_manifest_dependency_edge_result_obj_rel_insert_input) GetOn_conflict() *Analysis_manifest_dependency_edge_result_on_conflict {
+	return v.On_conflict
+}
 
 type Analysis_manifest_dependency_edge_result_on_conflict struct {
 	Constraint     Analysis_manifest_dependency_edge_result_constraint      `json:"constraint,omitempty"`
