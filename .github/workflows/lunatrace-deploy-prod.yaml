@@ -2,6 +2,14 @@ name: LunaTrace Deploy Production
 
 on:
   workflow_dispatch:
+    inputs:
+      migrate:
+        type: choice
+        description: Run migrations as part of the job? (keep an eye on it if you do)
+        options:
+          - no
+          - yes
+        default: no
 
 concurrency: production
 
@@ -26,6 +34,10 @@ jobs:
         env:
           IS_LUNASEC_CI: true
         run: yarn install --immutable --inline-builds
+      - name: migrate
+        if: inputs.migrate == 'yes'
+        working-directory: lunatrace/bsl/hasura
+        run: HASURA_GRAPHQL_ENDPOINT=https://lunatrace.lunasec.io/api/hasura HASURA_GRAPHQL_ADMIN_SECRET="$(aws secretsmanager get-secret-value --secret-id lunatrace-HasuraAdminSecret | jq -r .SecretString)" hasura migrate apply
       - name: deploy
         run: |-
           set -euox pipefail
