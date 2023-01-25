@@ -11,10 +11,17 @@
 package main
 
 import (
+	"net/http"
+	"os"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/cisa"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/cwe"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/epss"
 	packageCommand "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/package"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/sync"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/vulnerability"
 	cisa2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/cisa"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/ingestworker"
@@ -26,10 +33,6 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
-	"net/http"
-	"os"
 
 	"go.uber.org/fx"
 
@@ -78,6 +81,7 @@ func main() {
 			vulnmanager.NewFileIngester,
 		),
 		fx.Provide(
+			sync.NewCommand,
 			vulnerability.NewCommand,
 			cwe.NewCommand,
 			epss.NewCommand,
