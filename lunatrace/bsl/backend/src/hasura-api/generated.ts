@@ -55,8 +55,17 @@ export type Boolean_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['Boolean']>>;
 };
 
+export type BuildData_Adjustment = {
+  __typename?: 'BuildData_Adjustment';
+  adjusted_from_cvss_score?: Maybe<Scalars['Float']>;
+  adjusted_from_severity_name?: Maybe<Scalars['String']>;
+  adjustments_applied: Array<Scalars['String']>;
+  path_matched: Scalars['String'];
+};
+
 export type BuildData_AffectedByVulnerability = {
   __typename?: 'BuildData_AffectedByVulnerability';
+  adjustment?: Maybe<BuildData_Adjustment>;
   beneath_minimum_severity: Scalars['Boolean'];
   fix_versions: Array<Scalars['String']>;
   ignored: Scalars['Boolean'];
@@ -99,7 +108,6 @@ export type BuildData_Guide_Vulnerability = {
 
 export type BuildData_IgnoredVulnerability = {
   __typename?: 'BuildData_IgnoredVulnerability';
-  locations: Array<Scalars['String']>;
   note: Scalars['String'];
 };
 
@@ -152,6 +160,7 @@ export type BuildData_VulnerabilityCwe = {
 
 export type BuildData_VulnerableRelease = {
   __typename?: 'BuildData_VulnerableRelease';
+  adjustment?: Maybe<BuildData_Adjustment>;
   affected_by: Array<BuildData_AffectedByVulnerability>;
   beneath_minimum_severity: Scalars['Boolean'];
   chains: Array<Array<BuildData_DependencyNode>>;
@@ -464,6 +473,8 @@ export type Analysis_Manifest_Dependency_Edge_Result_Location = {
   end_column: Scalars['Int'];
   end_row: Scalars['Int'];
   id: Scalars['uuid'];
+  /** An object relationship */
+  manifest_dependency_edge_result: Analysis_Manifest_Dependency_Edge_Result;
   manifest_dependency_edge_result_id: Scalars['uuid'];
   path: Scalars['String'];
   start_column: Scalars['Int'];
@@ -508,6 +519,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp = {
   end_column?: InputMaybe<Int_Comparison_Exp>;
   end_row?: InputMaybe<Int_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  manifest_dependency_edge_result?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Bool_Exp>;
   manifest_dependency_edge_result_id?: InputMaybe<Uuid_Comparison_Exp>;
   path?: InputMaybe<String_Comparison_Exp>;
   start_column?: InputMaybe<Int_Comparison_Exp>;
@@ -533,6 +545,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Location_Insert_Input = {
   end_column?: InputMaybe<Scalars['Int']>;
   end_row?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['uuid']>;
+  manifest_dependency_edge_result?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Obj_Rel_Insert_Input>;
   manifest_dependency_edge_result_id?: InputMaybe<Scalars['uuid']>;
   path?: InputMaybe<Scalars['String']>;
   start_column?: InputMaybe<Scalars['Int']>;
@@ -582,6 +595,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Location_Order_By = {
   end_column?: InputMaybe<Order_By>;
   end_row?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  manifest_dependency_edge_result?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_Order_By>;
   manifest_dependency_edge_result_id?: InputMaybe<Order_By>;
   path?: InputMaybe<Order_By>;
   start_column?: InputMaybe<Order_By>;
@@ -721,6 +735,13 @@ export type Analysis_Manifest_Dependency_Edge_Result_Mutation_Response = {
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
   returning: Array<Analysis_Manifest_Dependency_Edge_Result>;
+};
+
+/** input type for inserting object relation for remote table "analysis.manifest_dependency_edge_result" */
+export type Analysis_Manifest_Dependency_Edge_Result_Obj_Rel_Insert_Input = {
+  data: Analysis_Manifest_Dependency_Edge_Result_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Analysis_Manifest_Dependency_Edge_Result_On_Conflict>;
 };
 
 /** on_conflict condition type for table "analysis.manifest_dependency_edge_result" */
@@ -9234,7 +9255,6 @@ export type Query_RootVulnerability_Vulnerability_Cwe_By_PkArgs = {
 export type Query_RootVulnerableReleasesFromBuildArgs = {
   buildId: Scalars['uuid'];
   minimumSeverity?: InputMaybe<Scalars['String']>;
-  previewChains?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -12935,7 +12955,7 @@ export type GetManifestDependencyEdgeChildrenQueryVariables = Exact<{
 }>;
 
 
-export type GetManifestDependencyEdgeChildrenQuery = { __typename?: 'query_root', manifest_dependency_node: Array<{ __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null, summary?: string | null, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide_id: any, guide: { __typename?: 'guides', summary: string, id: any, title: string } }>, cwes: Array<{ __typename?: 'vulnerability_vulnerability_cwe', id: any, cwe: { __typename?: 'vulnerability_cwe', id: number, name: string, description: string, common_name?: string | null } }> }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } }> };
+export type GetManifestDependencyEdgeChildrenQuery = { __typename?: 'query_root', manifest_dependency_node: Array<{ __typename?: 'manifest_dependency_node', id: any, range: string, labels?: any | null, release_id: any, release: { __typename?: 'package_release', id: any, fetched_time?: any | null, version: string, package: { __typename?: 'package', name: string, last_successful_fetch?: any | null, package_manager: any, affected_by_vulnerability: Array<{ __typename?: 'vulnerability_affected', vulnerability: { __typename?: 'vulnerability', id: any, source_id: string, source: string, severity_name?: any | null, cvss_score?: number | null, summary?: string | null, severities: Array<{ __typename?: 'vulnerability_severity', source: string, type: string, score: string }>, guide_vulnerabilities: Array<{ __typename?: 'guide_vulnerabilities', guide_id: any, guide: { __typename?: 'guides', summary: string, id: any, title: string } }>, cwes: Array<{ __typename?: 'vulnerability_vulnerability_cwe', id: any, cwe: { __typename?: 'vulnerability_cwe', id: number, name: string, description: string, common_name?: string | null } }> }, ranges: Array<{ __typename?: 'vulnerability_range', introduced?: string | null, fixed?: string | null }> }> } } }> };
 
 export type GetOrganizationFromInstallationIdQueryVariables = Exact<{
   installation_id?: InputMaybe<Scalars['Int']>;
@@ -12973,7 +12993,7 @@ export type GetTreeFromBuildQueryVariables = Exact<{
 }>;
 
 
-export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, manifest_dependency_node?: { __typename?: 'manifest_dependency_node', id: any } | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', id: any, parent_id: any, child_id: any, analysis_results: Array<{ __typename?: 'analysis_manifest_dependency_edge_result', id: any, finding_source_version: number, finding_source: Analysis_Finding_Source_Enum, finding_type: Analysis_Finding_Type_Enum, locations: Array<{ __typename?: 'analysis_manifest_dependency_edge_result_location', id: any, path: string, start_row: number, start_column: number, end_row: number, end_column: number }> }> }> | null }>, project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }> } } | null };
+export type GetTreeFromBuildQuery = { __typename?: 'query_root', builds_by_pk?: { __typename?: 'builds', resolved_manifests: Array<{ __typename?: 'resolved_manifest', id: any, path?: string | null, manifest_dependency_node?: { __typename?: 'manifest_dependency_node', id: any } | null, child_edges_recursive?: Array<{ __typename?: 'manifest_dependency_edge', id: any, parent_id: any, child_id: any, analysis_results: Array<{ __typename?: 'analysis_manifest_dependency_edge_result', id: any, finding_source_version: number, finding_source: Analysis_Finding_Source_Enum, finding_type: Analysis_Finding_Type_Enum, locations: Array<{ __typename?: 'analysis_manifest_dependency_edge_result_location', id: any, path: string, start_row: number, start_column: number, end_row: number, end_column: number }> }> }> | null }>, project: { __typename?: 'projects', name: string, ignored_vulnerabilities: Array<{ __typename?: 'ignored_vulnerabilities', id: any, creator_id?: any | null, locations: any, note: string, project_id: any, vulnerability_id: any }>, project_folder_settings: Array<{ __typename?: 'project_folder_settings', precedence?: number | null, ignore?: boolean | null, path_glob: string, root: boolean, folder_environmental_adjustments: Array<{ __typename?: 'folder_environmental_adjustment', cvss_environmental_adjustment: { __typename?: 'cvss_environmental_adjustment', attack_complexity: any, attack_vector: any, availability_impact: any, availability_requirement: any, confidentiality_impact: any, confidentiality_requirement: any, group_name: string, name: string, integrity_impact: any, integrity_requirement: any, privileges_required: any, user_interaction: any, scope: any } }> }> } } | null };
 
 export type GetUserGitHubDataQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
@@ -13199,7 +13219,7 @@ export const ManifestDependencyEdgeFragmentDoc = gql`
     finding_source_version
     finding_source
     finding_type
-    locations(limit: 5) {
+    locations {
       id
       path
       start_row
@@ -13340,6 +13360,11 @@ export const GetManifestDependencyEdgeChildrenDocument = gql`
             severity_name
             cvss_score
             summary
+            severities {
+              source
+              type
+              score
+            }
             guide_vulnerabilities {
               guide_id
               guide {
@@ -13425,6 +13450,29 @@ export const GetTreeFromBuildDocument = gql`
         note
         project_id
         vulnerability_id
+      }
+      project_folder_settings(order_by: {precedence: asc_nulls_last}) {
+        precedence
+        ignore
+        path_glob
+        root
+        folder_environmental_adjustments {
+          cvss_environmental_adjustment {
+            attack_complexity
+            attack_vector
+            availability_impact
+            availability_requirement
+            confidentiality_impact
+            confidentiality_requirement
+            group_name
+            name
+            integrity_impact
+            integrity_requirement
+            privileges_required
+            user_interaction
+            scope
+          }
+        }
       }
     }
   }

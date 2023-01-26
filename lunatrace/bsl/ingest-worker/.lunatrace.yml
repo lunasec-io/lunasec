@@ -1,0 +1,2 @@
+db:
+  dsn: postgres://serviceaccount:mG9OFA8aePrum13Y@localhost/lunatrace

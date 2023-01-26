@@ -46,7 +46,6 @@ export const VulnerablePackageListWrapper: React.FC<VulnerablePackageListWrapper
 }) => {
   // severity state for modern tree data, legacy has its own state and doesnt use this
   const [severity, setSeverity] = useState<SeverityNamesOsv>('Critical');
-  const [showCompleteAnalysis, setShowCompleteAnalysis] = useState<boolean>(false);
 
   // data for modern tree, legacy doesnt use this
   const {
@@ -56,7 +55,6 @@ export const VulnerablePackageListWrapper: React.FC<VulnerablePackageListWrapper
   } = api.useGetVulnerableReleasesFromBuildQuery({
     buildId,
     minimumSeverity: severity,
-    previewChains: !showCompleteAnalysis,
   });
 
   const unfilteredVulnerableReleasesFromTree = vulnerableReleasesData?.vulnerableReleasesFromBuild;
@@ -73,7 +71,6 @@ export const VulnerablePackageListWrapper: React.FC<VulnerablePackageListWrapper
           vulnerablePackages={unfilteredVulnerableReleasesFromTree}
           quickView={quickViewConfig}
           setIgnoreFindings={toggleIgnoreFindings}
-          setShowCompleteAnalysis={setShowCompleteAnalysis}
           severity={severity}
           setSeverity={setSeverity}
           shouldIgnore={shouldIgnore}

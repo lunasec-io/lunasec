@@ -14,7 +14,7 @@
 import { GraphQLYogaError } from '@graphql-yoga/node';
 import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common';
 
-import { vulnerabilityTreeFromHasura } from '../../models/vulnerability-dependency-tree/vulnerability-tree-from-hasura';
+import { loadTree } from '../../models/vulnerability-dependency-tree/load-tree';
 import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';
 import { checkBuildsAreAuthorized, throwIfUnauthenticated } from '../helpers/auth-helpers';
@@ -38,9 +38,7 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
     );
   }
 
-  const previewChains = args.previewChains !== null ? args.previewChains : false;
-
-  const depTree = await vulnerabilityTreeFromHasura(logger, buildId, minimumSeverity);
+  const depTree = await loadTree(logger, buildId, minimumSeverity);
   if (depTree.error) {
     logger.error('unable to build dependency tree', {
       error: depTree.msg,
@@ -50,7 +48,7 @@ export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver =
 
   logger.info('building vulnerable releases');
 
-  const vulnerableReleases = depTree.res.getVulnerableReleases(previewChains);
+  const vulnerableReleases = depTree.res.getVulnerableReleases();
 
   logger.info('finished processing tree');
   return vulnerableReleases;

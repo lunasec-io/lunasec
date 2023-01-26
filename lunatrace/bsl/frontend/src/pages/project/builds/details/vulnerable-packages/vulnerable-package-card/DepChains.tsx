@@ -27,8 +27,10 @@ interface TreeInfoProps {
 }
 
 export const DepChains: React.FunctionComponent<TreeInfoProps> = ({ pkg }) => {
+  // Pull the root node off now since that represents the project itself, not dependencies
+  const dependencyChains = pkg.chains.map((chain) => chain.slice(1));
   // Show the longest chains first, a hack to make expandable double chevrons show on deduped collapsed chains. Also it looks nice
-  const chains = [...pkg.chains].sort((a, b) => {
+  const chains = [...dependencyChains].sort((a, b) => {
     return b.length - a.length;
   });
   const isDirectDep = chains.length === 1 && chains[0].length === 1;

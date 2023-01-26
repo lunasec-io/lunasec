@@ -167,7 +167,7 @@ yarn run sass:build
 
 ```shell
 cd bsl/ingest-worker
-go run cmd/ingestworker/main.go vulnerability ingest --source ghsa 
+LUNATRACE_GRAPHQL_SERVER_SECRET=myadminsecretkey LUNATRACE_GRAPHQL_SERVER_URL=http://localhost:8080/v1/graphql go run cmd/ingestworker/main.go vulnerability ingest --source ghsa --source-relative-path advisories/github-reviewed
 ```
 
 ### Re-run everything

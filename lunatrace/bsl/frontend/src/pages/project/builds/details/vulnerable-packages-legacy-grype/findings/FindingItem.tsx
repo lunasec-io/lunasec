@@ -49,9 +49,7 @@ export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({ finding, qu
     }
 
     const rawNote = finding.vulnerability.ignored_vulnerabilities[0].note;
-    const ignoredNotePretty = rawNote
-      ? `Ignored with note: ${rawNote}`
-      : 'Vulnerability has been ignored without a reason.';
+    const ignoredNotePretty = rawNote ? `Ignored - ${rawNote}` : 'Vulnerability ignored. (no reason specified)';
     return <span>{ignoredNotePretty}</span>;
   };
   const ignoreVuln = async () => {
