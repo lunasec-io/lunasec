@@ -1,1 +1,1 @@
-ALTER TABLE vulnerability.vulnerability ADD COLUMN cve_id text NULL;
+ALTER TABLE vulnerability.vulnerability ADD COLUMN cve_id text NULL DEFAULT NULL;

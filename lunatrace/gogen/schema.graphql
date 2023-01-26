@@ -5187,6 +5187,8 @@ type query_root {
     vulnerability_affected_version(distinct_on: [vulnerability_affected_version_select_column!], limit: Int, offset: Int, order_by: [vulnerability_affected_version_order_by!], where: vulnerability_affected_version_bool_exp): [vulnerability_affected_version!]!
     vulnerability_affected_version_by_pk(id: uuid!): vulnerability_affected_version
     vulnerability_by_pk(id: uuid!): vulnerability
+    vulnerability_cisa_known_exploited(distinct_on: [vulnerability_cisa_known_exploited_select_column!], limit: Int, offset: Int, order_by: [vulnerability_cisa_known_exploited_order_by!], where: vulnerability_cisa_known_exploited_bool_exp): [vulnerability_cisa_known_exploited!]!
+    vulnerability_cisa_known_exploited_by_pk(id: uuid!): vulnerability_cisa_known_exploited
     vulnerability_credit(distinct_on: [vulnerability_credit_select_column!], limit: Int, offset: Int, order_by: [vulnerability_credit_order_by!], where: vulnerability_credit_bool_exp): [vulnerability_credit!]!
     vulnerability_credit_by_pk(id: uuid!): vulnerability_credit
     vulnerability_cwe(distinct_on: [vulnerability_cwe_select_column!], limit: Int, offset: Int, order_by: [vulnerability_cwe_order_by!], where: vulnerability_cwe_bool_exp): [vulnerability_cwe!]!
@@ -5669,6 +5671,8 @@ type subscription_root {
     vulnerability_affected_version(distinct_on: [vulnerability_affected_version_select_column!], limit: Int, offset: Int, order_by: [vulnerability_affected_version_order_by!], where: vulnerability_affected_version_bool_exp): [vulnerability_affected_version!]!
     vulnerability_affected_version_by_pk(id: uuid!): vulnerability_affected_version
     vulnerability_by_pk(id: uuid!): vulnerability
+    vulnerability_cisa_known_exploited(distinct_on: [vulnerability_cisa_known_exploited_select_column!], limit: Int, offset: Int, order_by: [vulnerability_cisa_known_exploited_order_by!], where: vulnerability_cisa_known_exploited_bool_exp): [vulnerability_cisa_known_exploited!]!
+    vulnerability_cisa_known_exploited_by_pk(id: uuid!): vulnerability_cisa_known_exploited
     vulnerability_credit(distinct_on: [vulnerability_credit_select_column!], limit: Int, offset: Int, order_by: [vulnerability_credit_order_by!], where: vulnerability_credit_bool_exp): [vulnerability_credit!]!
     vulnerability_credit_by_pk(id: uuid!): vulnerability_credit
     vulnerability_cwe(distinct_on: [vulnerability_cwe_select_column!], limit: Int, offset: Int, order_by: [vulnerability_cwe_order_by!], where: vulnerability_cwe_bool_exp): [vulnerability_cwe!]!
@@ -5830,8 +5834,10 @@ input uuid_comparison_exp {
 
 type vulnerability {
     affected(distinct_on: [vulnerability_affected_select_column!], limit: Int, offset: Int, order_by: [vulnerability_affected_order_by!], where: vulnerability_affected_bool_exp): [vulnerability_affected!]!
+    cisa_known_vuln: vulnerability_cisa_known_exploited
     created_at: timestamptz!
     credits(distinct_on: [vulnerability_credit_select_column!], limit: Int, offset: Int, order_by: [vulnerability_credit_order_by!], where: vulnerability_credit_bool_exp): [vulnerability_credit!]!
+    cve_id: String
     cvss_score: Float
     cwes(distinct_on: [vulnerability_vulnerability_cwe_select_column!], limit: Int, offset: Int, order_by: [vulnerability_vulnerability_cwe_order_by!], where: vulnerability_vulnerability_cwe_bool_exp): [vulnerability_vulnerability_cwe!]!
     database_specific(path: String): jsonb
@@ -6275,8 +6281,10 @@ input vulnerability_bool_exp {
     _not: vulnerability_bool_exp
     _or: [vulnerability_bool_exp!]
     affected: vulnerability_affected_bool_exp
+    cisa_known_vuln: vulnerability_cisa_known_exploited_bool_exp
     created_at: timestamptz_comparison_exp
     credits: vulnerability_credit_bool_exp
+    cve_id: String_comparison_exp
     cvss_score: Float_comparison_exp
     cwes: vulnerability_vulnerability_cwe_bool_exp
     database_specific: jsonb_comparison_exp
@@ -6300,6 +6308,61 @@ input vulnerability_bool_exp {
     summary: String_comparison_exp
     upstream_data: jsonb_comparison_exp
     withdrawn: timestamptz_comparison_exp
+}
+
+type vulnerability_cisa_known_exploited {
+    cve: String
+    date_added: date!
+    due_date: date!
+    id: uuid!
+    notes: String!
+    product: String!
+    required_action: String!
+    short_description: String!
+    vendor_project: String!
+    vulnerability_name: String!
+}
+
+input vulnerability_cisa_known_exploited_bool_exp {
+    _and: [vulnerability_cisa_known_exploited_bool_exp!]
+    _not: vulnerability_cisa_known_exploited_bool_exp
+    _or: [vulnerability_cisa_known_exploited_bool_exp!]
+    cve: String_comparison_exp
+    date_added: date_comparison_exp
+    due_date: date_comparison_exp
+    id: uuid_comparison_exp
+    notes: String_comparison_exp
+    product: String_comparison_exp
+    required_action: String_comparison_exp
+    short_description: String_comparison_exp
+    vendor_project: String_comparison_exp
+    vulnerability_name: String_comparison_exp
+}
+
+input vulnerability_cisa_known_exploited_order_by {
+    cve: order_by
+    date_added: order_by
+    due_date: order_by
+    id: order_by
+    notes: order_by
+    product: order_by
+    required_action: order_by
+    short_description: order_by
+    vendor_project: order_by
+    vulnerability_name: order_by
+}
+
+enum vulnerability_cisa_known_exploited_select_column {
+    cve
+    date_added
+    due_date
+    id
+    notes
+    product
+    required_action
+    short_description
+    vendor_project
+    vulnerability_name
 }
 
 enum vulnerability_constraint {
@@ -6600,6 +6663,7 @@ input vulnerability_insert_input {
     affected: vulnerability_affected_arr_rel_insert_input
     created_at: timestamptz
     credits: vulnerability_credit_arr_rel_insert_input
+    cve_id: String
     cvss_score: Float
     cwes: vulnerability_vulnerability_cwe_arr_rel_insert_input
     database_specific: jsonb
@@ -6642,8 +6706,10 @@ input vulnerability_on_conflict {
 
 input vulnerability_order_by {
     affected_aggregate: vulnerability_affected_aggregate_order_by
+    cisa_known_vuln: vulnerability_cisa_known_exploited_order_by
     created_at: order_by
     credits_aggregate: vulnerability_credit_aggregate_order_by
+    cve_id: order_by
     cvss_score: order_by
     cwes_aggregate: vulnerability_vulnerability_cwe_aggregate_order_by
     database_specific: order_by
@@ -6882,6 +6948,7 @@ enum vulnerability_reference_update_column {
 
 enum vulnerability_select_column {
     created_at
+    cve_id
     cvss_score
     database_specific
     details
@@ -6902,6 +6969,7 @@ enum vulnerability_select_column {
 
 input vulnerability_set_input {
     created_at: timestamptz
+    cve_id: String
     cvss_score: Float
     database_specific: jsonb
     details: String
@@ -7032,6 +7100,7 @@ enum vulnerability_severity_update_column {
 
 enum vulnerability_update_column {
     created_at
+    cve_id
     cvss_score
     database_specific
     details
