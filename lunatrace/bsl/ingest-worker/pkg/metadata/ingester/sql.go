@@ -129,6 +129,7 @@ func (s *packageSqlIngester) mapReleaseDependencies(
 			DependencyPackageID: util.Ptr(dependencyPackageId),
 			PackageName:         dep.Name,
 			PackageVersionQuery: dep.Version,
+			IsDev:               dep.IsDev,
 		})
 		if err != nil {
 			log.Error().Err(err).Msg("failed to upsert release dependency")

@@ -14,16 +14,18 @@ import (
 	"bufio"
 	"context"
 	"database/sql"
+	"os"
+	"time"
+
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/go-jet/jet/v2/qrm"
-	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
-	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/model"
-	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/table"
 	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
 	"github.com/schollz/progressbar/v3"
-	"os"
-	"time"
+
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/model"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/table"
 
 	"go.uber.org/fx"
 
