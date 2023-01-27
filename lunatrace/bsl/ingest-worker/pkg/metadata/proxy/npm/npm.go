@@ -12,7 +12,11 @@ package npm
 
 import (
 	"database/sql"
+	"encoding/json"
 	"net/http"
+	"os"
+	"sync"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-jet/jet/v2/postgres"
@@ -42,6 +46,7 @@ type npmProxy struct {
 func JSONMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Content-Type", "application/json")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Next()
 	}
 }
@@ -49,13 +54,58 @@ func JSONMiddleware() gin.HandlerFunc {
 var (
 	releasesForPackageCache = map[string][]string{}
 	depsForPackageCache     = map[string][]visualizer.Dep{}
+	cacheMutex              sync.Mutex
 )
+
+type Cache struct {
+	Releases map[string][]string
+	Deps     map[string][]visualizer.Dep
+}
+
+func save() {
+	cacheMutex.Lock()
+	defer cacheMutex.Unlock()
+
+	out, err := json.Marshal(Cache{
+		Releases: releasesForPackageCache,
+		Deps:     depsForPackageCache,
+	})
+	if err != nil {
+		panic(err)
+	}
+	err = os.WriteFile("cache.json", out, 0755)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func init() {
+	var cache Cache
+	contents, err := os.ReadFile("cache.json")
+	if err != nil {
+		log.Warn().Err(err).Msg("failed to load cache")
+		return
+	}
+
+	err = json.Unmarshal(contents, &cache)
+	if err != nil {
+		log.Warn().Err(err).Msg("failed to load cache")
+		return
+	}
+	releasesForPackageCache = cache.Releases
+	depsForPackageCache = cache.Deps
+}
 
 func (s *npmProxy) handleGetReleasesForPackage(c *gin.Context) {
 	packageName := c.Query("package")
 
-	if releases, ok := releasesForPackageCache[packageName]; ok {
+	cacheMutex.Lock()
+	releases, ok := releasesForPackageCache[packageName]
+	cacheMutex.Unlock()
+
+	if ok {
 		c.JSON(http.StatusOK, visualizer.GetReleasesForPackageResponse{Releases: releases})
+		return
 	}
 
 	stmt := Package.LEFT_JOIN(
@@ -100,9 +150,14 @@ func (s *npmProxy) handleGetDepsForPackage(c *gin.Context) {
 	packageVersion := c.Query("version")
 
 	cacheKey := packageName + packageVersion
-	if deps, ok := depsForPackageCache[cacheKey]; ok {
+
+	cacheMutex.Lock()
+	cachedDeps, ok := depsForPackageCache[cacheKey]
+	cacheMutex.Unlock()
+
+	if ok {
 		c.JSON(http.StatusOK, visualizer.GetDepsForPackageResponse{
-			Deps: deps,
+			Deps: cachedDeps,
 		})
 		return
 	}
@@ -159,20 +214,13 @@ func (s *npmProxy) handleGetDepsForPackage(c *gin.Context) {
 
 func (s *npmProxy) handleGetPackage(c *gin.Context) {
 	packageName := c.Param("package")
-	packageScoped := c.Param("package_scoped")
-
-	formattedPackage := packageName
-	if packageScoped != "" {
-		// packageName is actually the organization scope now, packageScoped is the name of the package in the scope
-		formattedPackage = packageName + "/" + packageScoped
-	}
 
 	var (
 		doc     []byte
 		deleted bool
 	)
 
-	row := s.deps.DB.QueryRow(`SELECT doc, deleted FROM npm.revision WHERE id = $1 ORDER BY seq DESC LIMIT 1`, formattedPackage)
+	row := s.deps.DB.QueryRow(`SELECT doc, deleted FROM npm.revision WHERE id = $1 ORDER BY seq DESC LIMIT 1`, packageName)
 
 	err := row.Scan(&doc, &deleted)
 	if err != nil {
@@ -194,13 +242,23 @@ func (s *npmProxy) handleGetPackage(c *gin.Context) {
 }
 
 func (s *npmProxy) Serve() error {
+	ticker := time.NewTicker(time.Minute * 1)
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				save()
+			}
+		}
+	}()
+
 	gin.SetMode(s.deps.Config.Stage)
 
 	r := gin.Default()
 	r.Use(JSONMiddleware())
 
 	r.GET("/:package", s.handleGetPackage)
-	r.GET("/:package/:package_scoped", s.handleGetPackage)
+	r.GET("/:package/:version", s.handleGetPackage)
 	r.GET("/package/dependencies", s.handleGetDepsForPackage)
 	r.GET("/package/releases", s.handleGetReleasesForPackage)
 	return r.Run(":" + s.deps.Config.Port)

@@ -11,6 +11,7 @@ import (
 
 	"github.com/Masterminds/semver/v3"
 	_ "github.com/lib/pq"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
 )
@@ -84,8 +85,9 @@ func getDepsForPackage(packageName, packageVersion string) (deps []Dep, err erro
 }
 
 type PackageNode struct {
-	Name  string `json:"name"`
-	Group int    `json:"group"`
+	Name    string `json:"name"`
+	Version string `json:""`
+	Group   int    `json:"group"`
 }
 
 type PackageEdge struct {
@@ -102,16 +104,22 @@ type GraphDep struct {
 
 type Graph struct {
 	Nodes []PackageNode `json:"nodes"`
-	Edges []PackageEdge `json:"edges"`
+	Edges []PackageEdge `json:"links"`
+}
+
+type PackageResolution struct {
+	Version string
+	ID      int
 }
 
 func VisualizePackage(packageName, packageVersion string) {
 	var (
-		depsToCollect         []GraphDep
-		packageNodes          []PackageNode
-		packageEdges          []PackageEdge
-		depNodeIdLookup       = map[string]int{}
-		packageReleasesLookup = map[string][]string{}
+		depsToCollect              []GraphDep
+		packageNodes               []PackageNode
+		packageEdges               []PackageEdge
+		depNodeIdLookup            = map[string]int{}
+		packageReleasesLookup      = map[string][]string{}
+		existingPackageResolutions = map[string][]PackageResolution{}
 	)
 
 	depNodeIdLookupKey := func(dep Dep) string {
@@ -130,10 +138,39 @@ func VisualizePackage(packageName, packageVersion string) {
 		"@babel", "@jest", "webpack", "lint",
 	}
 
+	max := 10000
+	count := 0
+
+	versionsForPackage := func(logger zerolog.Logger, packageName string) []string {
+		var (
+			ok       bool
+			err      error
+			versions []string
+		)
+
+		if versions, ok = packageReleasesLookup[packageName]; !ok {
+			versions, err = getReleaseVersionsForPackage(packageName)
+			if err != nil {
+				logger.Error().
+					Err(err).
+					Str("dep", packageName).
+					Msg("failed to get versions for package")
+				return []string{}
+			}
+			packageReleasesLookup[packageName] = versions
+		}
+		return versions
+	}
+
 	for {
 		if len(depsToCollect) == 0 {
 			break
 		}
+
+		if count > max {
+			break
+		}
+		count += 1
 
 		dep := depsToCollect[0]
 		depsToCollect = depsToCollect[1:]
@@ -162,8 +199,7 @@ func VisualizePackage(packageName, packageVersion string) {
 
 		for _, discoveredDep := range discoveredDeps {
 			var (
-				versions []string
-				ok       bool
+				ok bool
 			)
 
 			if lo.ContainsBy(ignoredPackages, func(p string) bool {
@@ -182,30 +218,17 @@ func VisualizePackage(packageName, packageVersion string) {
 			}
 
 			depPackageName := discoveredDep.PackageName
-
-			if versions, ok = packageReleasesLookup[depPackageName]; !ok {
-				versions, err = getReleaseVersionsForPackage(depPackageName)
-				if err != nil {
-					logger.Error().
-						Err(err).
-						Str("dep", depPackageName).
-						Msg("failed to get versions for package")
-					continue
-				}
-				packageReleasesLookup[depPackageName] = versions
-			}
-
 			versionQuery := discoveredDep.PackageVersionQuery
-
 			versionRange, err := semver.NewConstraint(versionQuery)
 			if err != nil {
-				logger.Warn().
-					Err(err).
-					Str("version range", versionQuery).
-					Msg("failed to parse semver range")
-
+				versions := versionsForPackage(logger, depPackageName)
 				if versionQuery == "latest" && len(versions) > 0 {
 					versionQuery = versions[0]
+				} else {
+					logger.Warn().
+						Err(err).
+						Str("version range", versionQuery).
+						Msg("failed to parse semver range")
 				}
 
 				packageNodes = append(packageNodes, PackageNode{
@@ -223,19 +246,48 @@ func VisualizePackage(packageName, packageVersion string) {
 
 			var matchingVersion string
 
-			for _, version := range versions {
-				versionSemver, err := semver.NewVersion(version)
-				if err != nil {
-					logger.Error().
-						Err(err).
-						Str("dep", depPackageName).
-						Str("version", version).
-						Msg("failed to parse semver")
+			existingResolutions, ok := existingPackageResolutions[depPackageName]
+			if ok {
+				var found bool
+				for _, resolution := range existingResolutions {
+					versionSemver, err := semver.NewVersion(resolution.Version)
+					if err != nil {
+						logger.Error().
+							Err(err).
+							Str("dep", depPackageName).
+							Str("version", resolution.Version).
+							Msg("failed to parse semver")
+						continue
+					}
+					if ok, _ := versionRange.Validate(versionSemver); ok {
+						packageEdges = append(packageEdges, PackageEdge{
+							Source:       depID,
+							Target:       resolution.ID,
+							VersionQuery: versionQuery,
+						})
+						found = true
+						break
+					}
+				}
+				if found {
 					continue
 				}
-				if ok, _ := versionRange.Validate(versionSemver); ok {
-					matchingVersion = version
-					break
+			} else {
+				versions := versionsForPackage(logger, depPackageName)
+				for _, version := range versions {
+					versionSemver, err := semver.NewVersion(version)
+					if err != nil {
+						logger.Error().
+							Err(err).
+							Str("dep", depPackageName).
+							Str("version", version).
+							Msg("failed to parse semver")
+						continue
+					}
+					if ok, _ := versionRange.Validate(versionSemver); ok {
+						matchingVersion = version
+						break
+					}
 				}
 			}
 
@@ -250,7 +302,7 @@ func VisualizePackage(packageName, packageVersion string) {
 			packageEdges = append(packageEdges, PackageEdge{
 				Source:       depID,
 				Target:       targetNodeId,
-				VersionQuery: discoveredDep.PackageVersionQuery,
+				VersionQuery: versionQuery,
 			})
 
 			depsToCollect = append(depsToCollect, GraphDep{
