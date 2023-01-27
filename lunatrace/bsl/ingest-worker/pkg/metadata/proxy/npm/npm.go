@@ -12,11 +12,20 @@ package npm
 
 import (
 	"database/sql"
-	"github.com/gin-gonic/gin"
-	_ "github.com/lib/pq"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/proxy"
-	"go.uber.org/fx"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/go-jet/jet/v2/postgres"
+	_ "github.com/lib/pq"
+	"github.com/rs/zerolog/log"
+
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/proxy"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/visualizer"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/model"
+
+	"go.uber.org/fx"
+
+	. "github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/table"
 )
 
 type ProxyDeps struct {
@@ -35,6 +44,117 @@ func JSONMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Content-Type", "application/json")
 		c.Next()
 	}
+}
+
+var (
+	releasesForPackageCache = map[string][]string{}
+	depsForPackageCache     = map[string][]visualizer.Dep{}
+)
+
+func (s *npmProxy) handleGetReleasesForPackage(c *gin.Context) {
+	packageName := c.Query("package")
+
+	if releases, ok := releasesForPackageCache[packageName]; ok {
+		c.JSON(http.StatusOK, visualizer.GetReleasesForPackageResponse{Releases: releases})
+	}
+
+	stmt := Package.LEFT_JOIN(
+		Release,
+		Release.PackageID.EQ(Package.ID),
+	).SELECT(
+		Release.Version,
+	).WHERE(
+		Package.Name.EQ(postgres.String(packageName)).
+			AND(
+				Package.PackageManager.EQ(postgres.NewEnumValue("npm")),
+			),
+	)
+
+	var out []struct {
+		model.Release
+	}
+
+	err := stmt.Query(s.deps.DB, &out)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("package", packageName).
+			Msg("failed to query for package releases")
+		c.Writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	var versions []string
+	for _, o := range out {
+		versions = append(versions, o.Version)
+	}
+	releasesForPackageCache[packageName] = versions
+
+	c.JSON(http.StatusOK, visualizer.GetReleasesForPackageResponse{
+		Releases: versions,
+	})
+}
+
+func (s *npmProxy) handleGetDepsForPackage(c *gin.Context) {
+	packageName := c.Query("package")
+	packageVersion := c.Query("version")
+
+	cacheKey := packageName + packageVersion
+	if deps, ok := depsForPackageCache[cacheKey]; ok {
+		c.JSON(http.StatusOK, visualizer.GetDepsForPackageResponse{
+			Deps: deps,
+		})
+		return
+	}
+
+	stmt := Package.LEFT_JOIN(
+		Release,
+		Release.PackageID.EQ(Package.ID),
+	).LEFT_JOIN(
+		ReleaseDependency,
+		ReleaseDependency.ReleaseID.EQ(Release.ID),
+	).SELECT(
+		ReleaseDependency.PackageName,
+		ReleaseDependency.PackageVersionQuery,
+	).WHERE(
+		Package.Name.EQ(postgres.String(packageName)).AND(
+			Release.Version.EQ(postgres.String(packageVersion)),
+		),
+	)
+
+	var out []struct {
+		model.ReleaseDependency
+	}
+
+	err := stmt.Query(s.deps.DB, &out)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("package", packageName).
+			Str("version", packageVersion).
+			Msg("failed to query for package dependencies")
+		c.Writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	log.Debug().
+		Int("count", len(out)).
+		Str("package", packageName).
+		Str("version", packageVersion).
+		Msg("collected package dependencies")
+
+	var deps []visualizer.Dep
+	for _, o := range out {
+		deps = append(deps, visualizer.Dep{
+			PackageName:         o.PackageName,
+			PackageVersionQuery: o.PackageVersionQuery,
+		})
+	}
+	depsForPackageCache[cacheKey] = deps
+
+	c.JSON(http.StatusOK, visualizer.GetDepsForPackageResponse{
+		Deps: deps,
+	})
 }
 
 func (s *npmProxy) handleGetPackage(c *gin.Context) {
@@ -81,6 +201,8 @@ func (s *npmProxy) Serve() error {
 
 	r.GET("/:package", s.handleGetPackage)
 	r.GET("/:package/:package_scoped", s.handleGetPackage)
+	r.GET("/package/dependencies", s.handleGetDepsForPackage)
+	r.GET("/package/releases", s.handleGetReleasesForPackage)
 	return r.Run(":" + s.deps.Config.Port)
 }
 

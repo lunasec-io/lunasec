@@ -15,6 +15,7 @@ package multistorefx
 
 import (
 	"errors"
+
 	v5 "github.com/anchore/grype/grype/db/v5"
 	"github.com/rs/zerolog/log"
 )
@@ -37,7 +38,7 @@ func (m *multiStore) GetVulnerabilityNamespaces() ([]string, error) {
 }
 
 func (m *multiStore) SearchForVulnerabilities(namespace, packageName string) ([]v5.Vulnerability, error) {
-	log.Info().Str("namespace", namespace).Str("packageName", packageName).Msg("search for vulnerabilities")
+	log.Debug().Str("namespace", namespace).Str("packageName", packageName).Msg("search for vulnerabilities")
 	return m.GetVulnerability(namespace, packageName)
 }
 

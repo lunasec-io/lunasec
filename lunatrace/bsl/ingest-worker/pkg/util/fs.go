@@ -14,10 +14,11 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"io"
 	"os"
 	"path"
+
+	"github.com/rs/zerolog/log"
 )
 
 func ExtractTar(gzipStream io.Reader, dir string, compressed bool) error {
@@ -54,6 +55,7 @@ func ExtractTar(gzipStream io.Reader, dir string, compressed bool) error {
 					Msg("unable to make directory for tar dir")
 				return err
 			}
+		case tar.TypeSymlink:
 		case tar.TypeReg:
 			outFileDir, _ := path.Split(outFilePath)
 			err = os.MkdirAll(outFileDir, 0755)

@@ -11,11 +11,15 @@
 package main
 
 import (
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules"
+	"errors"
+	"os"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
-	"os"
+
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/visualizer"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis/rules"
 )
 
 func main() {
@@ -69,6 +73,20 @@ func main() {
 						log.Info().Msg("dependency was not imported and called")
 					}
 					return err
+				},
+			},
+			{
+				Name:  "visualize-package",
+				Usage: "Generate a visualize of a package.",
+				Action: func(c *cli.Context) error {
+					args := c.Args().Slice()
+
+					if len(args) != 2 {
+						return errors.New("<package name> <package version>")
+					}
+
+					visualizer.VisualizePackage(args[0], args[1])
+					return nil
 				},
 			},
 		},

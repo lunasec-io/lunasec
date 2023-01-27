@@ -1,6 +1,6 @@
 proxy:
   port: 8081
   stage: debug
-db:
-  dsn: postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable
+#db:
+#  dsn: postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable
 
