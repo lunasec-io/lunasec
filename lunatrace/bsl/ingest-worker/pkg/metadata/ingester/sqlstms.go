@@ -13,13 +13,15 @@ package ingester
 import (
 	"context"
 	"database/sql"
+
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
+
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/model"
 	. "github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/table"
 )
 
-func upsertPackage(ctx context.Context, tx *sql.Tx, p model.Package) (id uuid.UUID, err error) {
+func upsertPackage(ctx context.Context, db *sql.DB, p model.Package) (id uuid.UUID, err error) {
 	packageInsert := Package.INSERT(
 		Package.Name,
 		Package.PackageManager,
@@ -38,14 +40,14 @@ func upsertPackage(ctx context.Context, tx *sql.Tx, p model.Package) (id uuid.UU
 		RETURNING(Package.ID)
 
 	var insertedPackage model.Package
-	err = packageInsert.QueryContext(ctx, tx, &insertedPackage)
+	err = packageInsert.QueryContext(ctx, db, &insertedPackage)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
 	return insertedPackage.ID, nil
 }
 
-func upsertRelease(ctx context.Context, tx *sql.Tx, r model.Release) (id uuid.UUID, err error) {
+func upsertRelease(ctx context.Context, db *sql.DB, r model.Release) (id uuid.UUID, err error) {
 	releaseInsert := Release.INSERT(
 		Release.PackageID,
 		Release.PublishingMaintainerID,
@@ -72,14 +74,14 @@ func upsertRelease(ctx context.Context, tx *sql.Tx, r model.Release) (id uuid.UU
 		RETURNING(Release.ID)
 
 	var insertedRelease model.Release
-	err = releaseInsert.QueryContext(ctx, tx, &insertedRelease)
+	err = releaseInsert.QueryContext(ctx, db, &insertedRelease)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
 	return insertedRelease.ID, nil
 }
 
-func upsertReleaseDependencyPackage(ctx context.Context, tx *sql.Tx, p model.Package) (id uuid.UUID, err error) {
+func upsertReleaseDependencyPackage(ctx context.Context, db *sql.DB, p model.Package) (id uuid.UUID, err error) {
 	insertPackage := Package.INSERT(
 		Package.Name,
 		Package.PackageManager,
@@ -95,38 +97,40 @@ func upsertReleaseDependencyPackage(ctx context.Context, tx *sql.Tx, p model.Pac
 		RETURNING(Package.ID)
 
 	var insertedPackage model.Package
-	err = insertPackage.QueryContext(ctx, tx, &insertedPackage)
+	err = insertPackage.QueryContext(ctx, db, &insertedPackage)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
 	return insertedPackage.ID, nil
 }
 
-func upsertReleaseDependency(ctx context.Context, tx *sql.Tx, r model.ReleaseDependency) (id uuid.UUID, err error) {
+func upsertReleaseDependency(ctx context.Context, db *sql.DB, r model.ReleaseDependency) (id uuid.UUID, err error) {
 	insertReleaseDependency := ReleaseDependency.INSERT(
 		ReleaseDependency.ReleaseID,
 		ReleaseDependency.DependencyPackageID,
 		ReleaseDependency.PackageName,
 		ReleaseDependency.PackageVersionQuery,
+		ReleaseDependency.IsDev,
 	).MODEL(r).
 		ON_CONFLICT().
 		ON_CONSTRAINT("release_dependency_release_id_package_name_package_version__idx").
 		DO_UPDATE(
 			postgres.SET(
 				ReleaseDependency.ReleaseID.SET(ReleaseDependency.EXCLUDED.ReleaseID),
+				ReleaseDependency.IsDev.SET(ReleaseDependency.EXCLUDED.IsDev),
 			),
 		).
 		RETURNING(ReleaseDependency.ID)
 
 	var insertedReleaseDependency model.ReleaseDependency
-	err = insertReleaseDependency.QueryContext(ctx, tx, &insertedReleaseDependency)
+	err = insertReleaseDependency.QueryContext(ctx, db, &insertedReleaseDependency)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
 	return insertedReleaseDependency.ID, nil
 }
 
-func upsertPackageMaintainer(ctx context.Context, tx *sql.Tx, p model.PackageMaintainer) error {
+func upsertPackageMaintainer(ctx context.Context, db *sql.DB, p model.PackageMaintainer) error {
 	insertPackageMaintainer := PackageMaintainer.INSERT(
 		PackageMaintainer.PackageID,
 		PackageMaintainer.MaintainerID,
@@ -134,11 +138,11 @@ func upsertPackageMaintainer(ctx context.Context, tx *sql.Tx, p model.PackageMai
 		ON_CONFLICT().
 		ON_CONSTRAINT("package_maintainer_package_id_maintainer_id_idx").
 		DO_NOTHING()
-	_, err := insertPackageMaintainer.ExecContext(ctx, tx)
+	_, err := insertPackageMaintainer.ExecContext(ctx, db)
 	return err
 }
 
-func upsertMaintainer(ctx context.Context, tx *sql.Tx, m model.Maintainer) (id uuid.UUID, err error) {
+func upsertMaintainer(ctx context.Context, db *sql.DB, m model.Maintainer) (id uuid.UUID, err error) {
 	insertMaintainer := Maintainer.INSERT(
 		Maintainer.Email,
 		Maintainer.Name,
@@ -154,7 +158,7 @@ func upsertMaintainer(ctx context.Context, tx *sql.Tx, m model.Maintainer) (id u
 		RETURNING(Maintainer.ID)
 
 	var insertedMaintainer model.Maintainer
-	err = insertMaintainer.QueryContext(ctx, tx, &insertedMaintainer)
+	err = insertMaintainer.QueryContext(ctx, db, &insertedMaintainer)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
