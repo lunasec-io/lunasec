@@ -6271,9 +6271,29 @@ enum vulnerability_affected_version_update_column {
     version
 }
 
+input vulnerability_aggregate_order_by {
+    avg: vulnerability_avg_order_by
+    count: order_by
+    max: vulnerability_max_order_by
+    min: vulnerability_min_order_by
+    stddev: vulnerability_stddev_order_by
+    stddev_pop: vulnerability_stddev_pop_order_by
+    stddev_samp: vulnerability_stddev_samp_order_by
+    sum: vulnerability_sum_order_by
+    var_pop: vulnerability_var_pop_order_by
+    var_samp: vulnerability_var_samp_order_by
+    variance: vulnerability_variance_order_by
+}
+
 input vulnerability_append_input {
     database_specific: jsonb
     upstream_data: jsonb
+}
+
+input vulnerability_avg_order_by {
+    cvss_score: order_by
+    epss_percentile: order_by
+    epss_score: order_by
 }
 
 input vulnerability_bool_exp {
@@ -6320,6 +6340,7 @@ type vulnerability_cisa_known_exploited {
     required_action: String!
     short_description: String!
     vendor_project: String!
+    vulnerabilities(distinct_on: [vulnerability_select_column!], limit: Int, offset: Int, order_by: [vulnerability_order_by!], where: vulnerability_bool_exp): [vulnerability!]!
     vulnerability_name: String!
 }
 
@@ -6336,6 +6357,7 @@ input vulnerability_cisa_known_exploited_bool_exp {
     required_action: String_comparison_exp
     short_description: String_comparison_exp
     vendor_project: String_comparison_exp
+    vulnerabilities: vulnerability_bool_exp
     vulnerability_name: String_comparison_exp
 }
 
@@ -6349,6 +6371,7 @@ input vulnerability_cisa_known_exploited_order_by {
     required_action: order_by
     short_description: order_by
     vendor_project: order_by
+    vulnerabilities_aggregate: vulnerability_aggregate_order_by
     vulnerability_name: order_by
 }
 
@@ -6686,6 +6709,42 @@ input vulnerability_insert_input {
     summary: String
     upstream_data: jsonb
     withdrawn: timestamptz
+}
+
+input vulnerability_max_order_by {
+    created_at: order_by
+    cve_id: order_by
+    cvss_score: order_by
+    details: order_by
+    epss_percentile: order_by
+    epss_score: order_by
+    id: order_by
+    last_fetched: order_by
+    modified: order_by
+    published: order_by
+    severity_name: order_by
+    source: order_by
+    source_id: order_by
+    summary: order_by
+    withdrawn: order_by
+}
+
+input vulnerability_min_order_by {
+    created_at: order_by
+    cve_id: order_by
+    cvss_score: order_by
+    details: order_by
+    epss_percentile: order_by
+    epss_score: order_by
+    id: order_by
+    last_fetched: order_by
+    modified: order_by
+    published: order_by
+    severity_name: order_by
+    source: order_by
+    source_id: order_by
+    summary: order_by
+    withdrawn: order_by
 }
 
 type vulnerability_mutation_response {
@@ -7098,6 +7157,30 @@ enum vulnerability_severity_update_column {
     vulnerability_id
 }
 
+input vulnerability_stddev_order_by {
+    cvss_score: order_by
+    epss_percentile: order_by
+    epss_score: order_by
+}
+
+input vulnerability_stddev_pop_order_by {
+    cvss_score: order_by
+    epss_percentile: order_by
+    epss_score: order_by
+}
+
+input vulnerability_stddev_samp_order_by {
+    cvss_score: order_by
+    epss_percentile: order_by
+    epss_score: order_by
+}
+
+input vulnerability_sum_order_by {
+    cvss_score: order_by
+    epss_percentile: order_by
+    epss_score: order_by
+}
+
 enum vulnerability_update_column {
     created_at
     cve_id
@@ -7117,6 +7200,24 @@ enum vulnerability_update_column {
     summary
     upstream_data
     withdrawn
+}
+
+input vulnerability_var_pop_order_by {
+    cvss_score: order_by
+    epss_percentile: order_by
+    epss_score: order_by
+}
+
+input vulnerability_var_samp_order_by {
+    cvss_score: order_by
+    epss_percentile: order_by
+    epss_score: order_by
+}
+
+input vulnerability_variance_order_by {
+    cvss_score: order_by
+    epss_percentile: order_by
+    epss_score: order_by
 }
 
 type vulnerability_vulnerability_cwe {

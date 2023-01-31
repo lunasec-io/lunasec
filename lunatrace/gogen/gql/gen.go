@@ -7492,6 +7492,7 @@ type Vulnerability_cisa_known_exploited_bool_exp struct {
 	Required_action    *String_comparison_exp                         `json:"required_action,omitempty"`
 	Short_description  *String_comparison_exp                         `json:"short_description,omitempty"`
 	Vendor_project     *String_comparison_exp                         `json:"vendor_project,omitempty"`
+	Vulnerabilities    *Vulnerability_bool_exp                        `json:"vulnerabilities,omitempty"`
 	Vulnerability_name *String_comparison_exp                         `json:"vulnerability_name,omitempty"`
 }
 
@@ -7549,6 +7550,11 @@ func (v *Vulnerability_cisa_known_exploited_bool_exp) GetShort_description() *St
 // GetVendor_project returns Vulnerability_cisa_known_exploited_bool_exp.Vendor_project, and is useful for accessing the field via an interface.
 func (v *Vulnerability_cisa_known_exploited_bool_exp) GetVendor_project() *String_comparison_exp {
 	return v.Vendor_project
+}
+
+// GetVulnerabilities returns Vulnerability_cisa_known_exploited_bool_exp.Vulnerabilities, and is useful for accessing the field via an interface.
+func (v *Vulnerability_cisa_known_exploited_bool_exp) GetVulnerabilities() *Vulnerability_bool_exp {
+	return v.Vulnerabilities
 }
 
 // GetVulnerability_name returns Vulnerability_cisa_known_exploited_bool_exp.Vulnerability_name, and is useful for accessing the field via an interface.
