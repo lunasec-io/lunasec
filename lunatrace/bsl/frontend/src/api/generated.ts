@@ -5674,6 +5674,10 @@ export type Query_Root = {
   vulnerability_affected_version_by_pk?: Maybe<Vulnerability_Affected_Version>;
   /** fetch data from the table: "vulnerability.vulnerability" using primary key columns */
   vulnerability_by_pk?: Maybe<Vulnerability>;
+  /** fetch data from the table: "vulnerability.cisa_known_exploited" */
+  vulnerability_cisa_known_exploited: Array<Vulnerability_Cisa_Known_Exploited>;
+  /** fetch data from the table: "vulnerability.cisa_known_exploited" using primary key columns */
+  vulnerability_cisa_known_exploited_by_pk?: Maybe<Vulnerability_Cisa_Known_Exploited>;
   /** fetch data from the table: "vulnerability.credit" */
   vulnerability_credit: Array<Vulnerability_Credit>;
   /** fetch data from the table: "vulnerability.credit" using primary key columns */
@@ -6272,6 +6276,20 @@ export type Query_RootVulnerability_Affected_Version_By_PkArgs = {
 
 
 export type Query_RootVulnerability_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootVulnerability_Cisa_Known_ExploitedArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Cisa_Known_Exploited_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Cisa_Known_Exploited_Order_By>>;
+  where?: InputMaybe<Vulnerability_Cisa_Known_Exploited_Bool_Exp>;
+};
+
+
+export type Query_RootVulnerability_Cisa_Known_Exploited_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -7008,6 +7026,10 @@ export type Subscription_Root = {
   vulnerability_affected_version_by_pk?: Maybe<Vulnerability_Affected_Version>;
   /** fetch data from the table: "vulnerability.vulnerability" using primary key columns */
   vulnerability_by_pk?: Maybe<Vulnerability>;
+  /** fetch data from the table: "vulnerability.cisa_known_exploited" */
+  vulnerability_cisa_known_exploited: Array<Vulnerability_Cisa_Known_Exploited>;
+  /** fetch data from the table: "vulnerability.cisa_known_exploited" using primary key columns */
+  vulnerability_cisa_known_exploited_by_pk?: Maybe<Vulnerability_Cisa_Known_Exploited>;
   /** fetch data from the table: "vulnerability.credit" */
   vulnerability_credit: Array<Vulnerability_Credit>;
   /** fetch data from the table: "vulnerability.credit" using primary key columns */
@@ -7593,6 +7615,20 @@ export type Subscription_RootVulnerability_By_PkArgs = {
 };
 
 
+export type Subscription_RootVulnerability_Cisa_Known_ExploitedArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Cisa_Known_Exploited_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Cisa_Known_Exploited_Order_By>>;
+  where?: InputMaybe<Vulnerability_Cisa_Known_Exploited_Bool_Exp>;
+};
+
+
+export type Subscription_RootVulnerability_Cisa_Known_Exploited_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
 export type Subscription_RootVulnerability_CreditArgs = {
   distinct_on?: InputMaybe<Array<Vulnerability_Credit_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -7786,9 +7822,12 @@ export type Vulnerability = {
   __typename?: 'vulnerability';
   /** An array relationship */
   affected: Array<Vulnerability_Affected>;
+  /** An object relationship */
+  cisa_known_vuln?: Maybe<Vulnerability_Cisa_Known_Exploited>;
   created_at: Scalars['timestamptz'];
   /** An array relationship */
   credits: Array<Vulnerability_Credit>;
+  cve_id?: Maybe<Scalars['String']>;
   cvss_score?: Maybe<Scalars['Float']>;
   /** An array relationship */
   cwes: Array<Vulnerability_Vulnerability_Cwe>;
@@ -8219,14 +8258,38 @@ export enum Vulnerability_Affected_Version_Select_Column {
   Version = 'version'
 }
 
+/** order by aggregate values of table "vulnerability.vulnerability" */
+export type Vulnerability_Aggregate_Order_By = {
+  avg?: InputMaybe<Vulnerability_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Vulnerability_Max_Order_By>;
+  min?: InputMaybe<Vulnerability_Min_Order_By>;
+  stddev?: InputMaybe<Vulnerability_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Vulnerability_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Vulnerability_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Vulnerability_Sum_Order_By>;
+  var_pop?: InputMaybe<Vulnerability_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Vulnerability_Var_Samp_Order_By>;
+  variance?: InputMaybe<Vulnerability_Variance_Order_By>;
+};
+
+/** order by avg() on columns of table "vulnerability.vulnerability" */
+export type Vulnerability_Avg_Order_By = {
+  cvss_score?: InputMaybe<Order_By>;
+  epss_percentile?: InputMaybe<Order_By>;
+  epss_score?: InputMaybe<Order_By>;
+};
+
 /** Boolean expression to filter rows from the table "vulnerability.vulnerability". All fields are combined with a logical 'AND'. */
 export type Vulnerability_Bool_Exp = {
   _and?: InputMaybe<Array<Vulnerability_Bool_Exp>>;
   _not?: InputMaybe<Vulnerability_Bool_Exp>;
   _or?: InputMaybe<Array<Vulnerability_Bool_Exp>>;
   affected?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
+  cisa_known_vuln?: InputMaybe<Vulnerability_Cisa_Known_Exploited_Bool_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   credits?: InputMaybe<Vulnerability_Credit_Bool_Exp>;
+  cve_id?: InputMaybe<String_Comparison_Exp>;
   cvss_score?: InputMaybe<Float_Comparison_Exp>;
   cwes?: InputMaybe<Vulnerability_Vulnerability_Cwe_Bool_Exp>;
   database_specific?: InputMaybe<Jsonb_Comparison_Exp>;
@@ -8251,6 +8314,90 @@ export type Vulnerability_Bool_Exp = {
   upstream_data?: InputMaybe<Jsonb_Comparison_Exp>;
   withdrawn?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
+
+/** columns and relationships of "vulnerability.cisa_known_exploited" */
+export type Vulnerability_Cisa_Known_Exploited = {
+  __typename?: 'vulnerability_cisa_known_exploited';
+  cve?: Maybe<Scalars['String']>;
+  date_added: Scalars['date'];
+  due_date: Scalars['date'];
+  id: Scalars['uuid'];
+  notes: Scalars['String'];
+  product: Scalars['String'];
+  required_action: Scalars['String'];
+  short_description: Scalars['String'];
+  vendor_project: Scalars['String'];
+  /** An array relationship */
+  vulnerabilities: Array<Vulnerability>;
+  vulnerability_name: Scalars['String'];
+};
+
+
+/** columns and relationships of "vulnerability.cisa_known_exploited" */
+export type Vulnerability_Cisa_Known_ExploitedVulnerabilitiesArgs = {
+  distinct_on?: InputMaybe<Array<Vulnerability_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Order_By>>;
+  where?: InputMaybe<Vulnerability_Bool_Exp>;
+};
+
+/** Boolean expression to filter rows from the table "vulnerability.cisa_known_exploited". All fields are combined with a logical 'AND'. */
+export type Vulnerability_Cisa_Known_Exploited_Bool_Exp = {
+  _and?: InputMaybe<Array<Vulnerability_Cisa_Known_Exploited_Bool_Exp>>;
+  _not?: InputMaybe<Vulnerability_Cisa_Known_Exploited_Bool_Exp>;
+  _or?: InputMaybe<Array<Vulnerability_Cisa_Known_Exploited_Bool_Exp>>;
+  cve?: InputMaybe<String_Comparison_Exp>;
+  date_added?: InputMaybe<Date_Comparison_Exp>;
+  due_date?: InputMaybe<Date_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  notes?: InputMaybe<String_Comparison_Exp>;
+  product?: InputMaybe<String_Comparison_Exp>;
+  required_action?: InputMaybe<String_Comparison_Exp>;
+  short_description?: InputMaybe<String_Comparison_Exp>;
+  vendor_project?: InputMaybe<String_Comparison_Exp>;
+  vulnerabilities?: InputMaybe<Vulnerability_Bool_Exp>;
+  vulnerability_name?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "vulnerability.cisa_known_exploited". */
+export type Vulnerability_Cisa_Known_Exploited_Order_By = {
+  cve?: InputMaybe<Order_By>;
+  date_added?: InputMaybe<Order_By>;
+  due_date?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  notes?: InputMaybe<Order_By>;
+  product?: InputMaybe<Order_By>;
+  required_action?: InputMaybe<Order_By>;
+  short_description?: InputMaybe<Order_By>;
+  vendor_project?: InputMaybe<Order_By>;
+  vulnerabilities_aggregate?: InputMaybe<Vulnerability_Aggregate_Order_By>;
+  vulnerability_name?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "vulnerability.cisa_known_exploited" */
+export enum Vulnerability_Cisa_Known_Exploited_Select_Column {
+  /** column name */
+  Cve = 'cve',
+  /** column name */
+  DateAdded = 'date_added',
+  /** column name */
+  DueDate = 'due_date',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Notes = 'notes',
+  /** column name */
+  Product = 'product',
+  /** column name */
+  RequiredAction = 'required_action',
+  /** column name */
+  ShortDescription = 'short_description',
+  /** column name */
+  VendorProject = 'vendor_project',
+  /** column name */
+  VulnerabilityName = 'vulnerability_name'
+}
 
 /** columns and relationships of "vulnerability.credit" */
 export type Vulnerability_Credit = {
@@ -8419,11 +8566,51 @@ export enum Vulnerability_Equivalent_Select_Column {
   B = 'b'
 }
 
+/** order by max() on columns of table "vulnerability.vulnerability" */
+export type Vulnerability_Max_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  cve_id?: InputMaybe<Order_By>;
+  cvss_score?: InputMaybe<Order_By>;
+  details?: InputMaybe<Order_By>;
+  epss_percentile?: InputMaybe<Order_By>;
+  epss_score?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_fetched?: InputMaybe<Order_By>;
+  modified?: InputMaybe<Order_By>;
+  published?: InputMaybe<Order_By>;
+  severity_name?: InputMaybe<Order_By>;
+  source?: InputMaybe<Order_By>;
+  source_id?: InputMaybe<Order_By>;
+  summary?: InputMaybe<Order_By>;
+  withdrawn?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "vulnerability.vulnerability" */
+export type Vulnerability_Min_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  cve_id?: InputMaybe<Order_By>;
+  cvss_score?: InputMaybe<Order_By>;
+  details?: InputMaybe<Order_By>;
+  epss_percentile?: InputMaybe<Order_By>;
+  epss_score?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_fetched?: InputMaybe<Order_By>;
+  modified?: InputMaybe<Order_By>;
+  published?: InputMaybe<Order_By>;
+  severity_name?: InputMaybe<Order_By>;
+  source?: InputMaybe<Order_By>;
+  source_id?: InputMaybe<Order_By>;
+  summary?: InputMaybe<Order_By>;
+  withdrawn?: InputMaybe<Order_By>;
+};
+
 /** Ordering options when selecting data from "vulnerability.vulnerability". */
 export type Vulnerability_Order_By = {
   affected_aggregate?: InputMaybe<Vulnerability_Affected_Aggregate_Order_By>;
+  cisa_known_vuln?: InputMaybe<Vulnerability_Cisa_Known_Exploited_Order_By>;
   created_at?: InputMaybe<Order_By>;
   credits_aggregate?: InputMaybe<Vulnerability_Credit_Aggregate_Order_By>;
+  cve_id?: InputMaybe<Order_By>;
   cvss_score?: InputMaybe<Order_By>;
   cwes_aggregate?: InputMaybe<Vulnerability_Vulnerability_Cwe_Aggregate_Order_By>;
   database_specific?: InputMaybe<Order_By>;
@@ -8588,6 +8775,8 @@ export enum Vulnerability_Select_Column {
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
+  CveId = 'cve_id',
+  /** column name */
   CvssScore = 'cvss_score',
   /** column name */
   DatabaseSpecific = 'database_specific',
@@ -8694,6 +8883,55 @@ export enum Vulnerability_Severity_Select_Column {
   /** column name */
   VulnerabilityId = 'vulnerability_id'
 }
+
+/** order by stddev() on columns of table "vulnerability.vulnerability" */
+export type Vulnerability_Stddev_Order_By = {
+  cvss_score?: InputMaybe<Order_By>;
+  epss_percentile?: InputMaybe<Order_By>;
+  epss_score?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_pop() on columns of table "vulnerability.vulnerability" */
+export type Vulnerability_Stddev_Pop_Order_By = {
+  cvss_score?: InputMaybe<Order_By>;
+  epss_percentile?: InputMaybe<Order_By>;
+  epss_score?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_samp() on columns of table "vulnerability.vulnerability" */
+export type Vulnerability_Stddev_Samp_Order_By = {
+  cvss_score?: InputMaybe<Order_By>;
+  epss_percentile?: InputMaybe<Order_By>;
+  epss_score?: InputMaybe<Order_By>;
+};
+
+/** order by sum() on columns of table "vulnerability.vulnerability" */
+export type Vulnerability_Sum_Order_By = {
+  cvss_score?: InputMaybe<Order_By>;
+  epss_percentile?: InputMaybe<Order_By>;
+  epss_score?: InputMaybe<Order_By>;
+};
+
+/** order by var_pop() on columns of table "vulnerability.vulnerability" */
+export type Vulnerability_Var_Pop_Order_By = {
+  cvss_score?: InputMaybe<Order_By>;
+  epss_percentile?: InputMaybe<Order_By>;
+  epss_score?: InputMaybe<Order_By>;
+};
+
+/** order by var_samp() on columns of table "vulnerability.vulnerability" */
+export type Vulnerability_Var_Samp_Order_By = {
+  cvss_score?: InputMaybe<Order_By>;
+  epss_percentile?: InputMaybe<Order_By>;
+  epss_score?: InputMaybe<Order_By>;
+};
+
+/** order by variance() on columns of table "vulnerability.vulnerability" */
+export type Vulnerability_Variance_Order_By = {
+  cvss_score?: InputMaybe<Order_By>;
+  epss_percentile?: InputMaybe<Order_By>;
+  epss_score?: InputMaybe<Order_By>;
+};
 
 /** CWEs that are defined for a vulnerability */
 export type Vulnerability_Vulnerability_Cwe = {
@@ -8963,7 +9201,7 @@ export type GetVulnerabilityDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerability_by_pk?: { __typename?: 'vulnerability', database_specific?: any | null, details?: string | null, source: string, source_id: string, summary?: string | null, withdrawn?: any | null, last_fetched?: any | null, published?: any | null, modified: any, id: any, severity_name?: any | null, affected: Array<{ __typename?: 'vulnerability_affected', database_specific?: any | null, ecosystem_specific?: any | null, id: any, package: { __typename?: 'package', name: string, package_manager: any, id: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', database_specific?: any | null, event: string, id: any, type: any, version: string }>, affected_versions: Array<{ __typename?: 'vulnerability_affected_version', database_specific?: any | null, id: any, version: string }> }>, equivalents: Array<{ __typename?: 'vulnerability_equivalent', equivalent_vulnerability: { __typename?: 'vulnerability', id: any, source: string, source_id: string, summary?: string | null, last_fetched?: any | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, type: string, score: string, source: string }> } }>, findings: Array<{ __typename?: 'findings', id: any, build_id: any, latest_default_build?: { __typename?: 'latest_default_builds', id?: any | null, build_number?: number | null, created_at?: any | null, project_id?: any | null, project?: { __typename?: 'projects', name: string, id: any } | null } | null }>, references: Array<{ __typename?: 'vulnerability_reference', id: any, type: any, url: string }>, severities: Array<{ __typename?: 'vulnerability_severity', id: any, score: string, source: string, type: string }>, cwes: Array<{ __typename?: 'vulnerability_vulnerability_cwe', id: any, cwe: { __typename?: 'vulnerability_cwe', id: number, name: string, description: string } }> } | null };
+export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerability_by_pk?: { __typename?: 'vulnerability', epss_percentile?: number | null, epss_score?: number | null, database_specific?: any | null, details?: string | null, source: string, source_id: string, summary?: string | null, withdrawn?: any | null, last_fetched?: any | null, published?: any | null, modified: any, id: any, severity_name?: any | null, cisa_known_vuln?: { __typename?: 'vulnerability_cisa_known_exploited', id: any } | null, affected: Array<{ __typename?: 'vulnerability_affected', database_specific?: any | null, ecosystem_specific?: any | null, id: any, package: { __typename?: 'package', name: string, package_manager: any, id: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', database_specific?: any | null, event: string, id: any, type: any, version: string }>, affected_versions: Array<{ __typename?: 'vulnerability_affected_version', database_specific?: any | null, id: any, version: string }> }>, equivalents: Array<{ __typename?: 'vulnerability_equivalent', equivalent_vulnerability: { __typename?: 'vulnerability', id: any, source: string, source_id: string, summary?: string | null, last_fetched?: any | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, type: string, score: string, source: string }> } }>, findings: Array<{ __typename?: 'findings', id: any, build_id: any, latest_default_build?: { __typename?: 'latest_default_builds', id?: any | null, build_number?: number | null, created_at?: any | null, project_id?: any | null, project?: { __typename?: 'projects', name: string, id: any } | null } | null }>, references: Array<{ __typename?: 'vulnerability_reference', id: any, type: any, url: string }>, severities: Array<{ __typename?: 'vulnerability_severity', id: any, score: string, source: string, type: string }>, cwes: Array<{ __typename?: 'vulnerability_vulnerability_cwe', id: any, cwe: { __typename?: 'vulnerability_cwe', id: number, name: string, description: string } }> } | null };
 
 export type GetVulnerableReleasesFromBuildQueryVariables = Exact<{
   buildId: Scalars['uuid'];
@@ -9723,6 +9961,11 @@ export const SearchVulnerabilitiesDocument = `
 export const GetVulnerabilityDetailsDocument = `
     query GetVulnerabilityDetails($vulnerability_id: uuid!) {
   vulnerability_by_pk(id: $vulnerability_id) {
+    cisa_known_vuln {
+      id
+    }
+    epss_percentile
+    epss_score
     affected {
       database_specific
       ecosystem_specific

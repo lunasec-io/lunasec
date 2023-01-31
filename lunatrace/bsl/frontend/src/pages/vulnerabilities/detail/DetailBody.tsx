@@ -15,10 +15,13 @@ import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/m
 import React from 'react';
 import { Card, Col, Container, Modal, Row, Table } from 'react-bootstrap';
 import { ExternalLink } from 'react-feather';
+import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import { NavLink } from 'react-router-dom';
 
+import CisaLogo from '../../../assets/cisa_logo.png';
 import { Markdown } from '../../../components/Markdown';
 import { PackageManagerLink } from '../../../components/PackageManagerLink';
+import { LinkInNewTab } from '../../../components/utils/LinkInNewTab';
 import { getAffectedVersionConstraint, getFixedVersions } from '../../../utils/advisory';
 import { formatPackageName } from '../../../utils/package';
 import { prettyDate } from '../../../utils/pretty-date';
@@ -38,6 +41,7 @@ interface VulnerableProjectsList {
   vuln: VulnInfoDetails;
 }
 
+// TODO: Move this to its own file, having multiple components jammed into the same file is bad
 const VulnerableProjectsList: React.FunctionComponent<VulnerableProjectsList> = ({ vuln }) => {
   const projects = vuln.findings.map((f) => {
     const projectName = f.latest_default_build?.project?.name;
@@ -84,6 +88,14 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
 }) => {
   const severity = getCvssVectorFromSeverities(vuln.severities);
 
+  function buildUrlIfPossible(urlString: string): URL | null {
+    try {
+      return new URL(urlString);
+    } catch {
+      return null;
+    }
+  }
+
   return (
     <>
       <Container className="vulnerability-detail-page">
@@ -109,6 +121,15 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                 <span className="lighter">{vuln.summary}</span>
               </Card.Header>
               <Modal.Body>
+                {vuln.cisa_known_vuln?.id && (
+                  <h2 className="mb-4">
+                    <img src={CisaLogo} alt="cisa-logo"></img> Cisa Known Exploited Vulnerability{' '}
+                    <LinkInNewTab href="https://www.mainstream-tech.com/cisa/">
+                      {' '}
+                      <AiOutlineQuestionCircle className="mb-1" />
+                    </LinkInNewTab>
+                  </h2>
+                )}
                 <Markdown markdown={vuln.details || ''}></Markdown>
               </Modal.Body>
               <Card.Footer>
@@ -148,7 +169,6 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                       <h2 className="d-inline-block"> {severity.overallScore} </h2>{' '}
                       <h6 className="d-inline-block darker">/ 10 overall CVSS</h6>
                     </div>
-
                     <div>
                       <h5 className="d-inline-block">{severity.impactSubscore.toFixed(1)}</h5>
                       <span className="darker"> impact score</span>
@@ -157,6 +177,16 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                       <h5 className="d-inline-block">{severity.exploitabilitySubscore.toFixed(1)}</h5>
                       <span className="darker"> exploitability score</span>
                     </div>
+                    {vuln.epss_percentile && (
+                      <div>
+                        <h5 className="d-inline-block">{Math.round(vuln.epss_percentile * 100)}%</h5>
+                        <span className="darker"> EPSS Score</span>
+                        <LinkInNewTab href="https://www.lunasec.io/docs/blog/what-is-epss/">
+                          {' '}
+                          <AiOutlineQuestionCircle className="mb-1" />
+                        </LinkInNewTab>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <span>No CVSS score</span>
@@ -223,13 +253,16 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
             <Card>
               <Card.Body>
                 <Card.Title>Links</Card.Title>
-                {vuln.references.map((r) => {
-                  const url = new URL(r.url);
+                {vuln.references.map((reference) => {
+                  const url = buildUrlIfPossible(reference.url);
+                  if (!url) {
+                    return;
+                  }
                   return (
-                    <p key={r.id}>
-                      {/*TODO: make this type an icon, the types are "'advisory'|'article'|'fix'|'git'|'package'|'report'|'web'"*/}
-                      <span className="text-capitalize">{r.type}</span>:{' '}
-                      <a className="text-clear darker" href={r.url}>
+                    <p key={reference.id}>
+                      {/*TODO: make this into an icon, the types are "'advisory'|'article'|'fix'|'git'|'package'|'report'|'web'"*/}
+                      <span className="text-capitalize">{reference.type}</span>:{' '}
+                      <a className="text-clear darker" href={reference.url}>
                         <ExternalLink size="1em" className="mb-1 me-1" /> {url.protocol}
                         {'//'}
                         <span className="lighter font-weight-bold">{url.host}</span>
