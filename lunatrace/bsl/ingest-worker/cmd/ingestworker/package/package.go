@@ -12,17 +12,20 @@ package ingest
 
 import (
 	"errors"
+
 	"github.com/ajvpot/clifx"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
+
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
 )
 
 type Params struct {
 	fx.In
 
-	Ingester   metadata.PackageIngester
-	Replicator metadata.Replicator
+	Ingester      metadata.PackageIngester
+	Replicator    metadata.Replicator
+	APIReplicator metadata.APIReplicator
 }
 
 func NewCommand(p Params) clifx.CommandResult {
@@ -81,45 +84,65 @@ func NewCommand(p Params) clifx.CommandResult {
 				},
 				{
 					Name: "replicate",
-					Flags: []cli.Flag{
-						&cli.IntFlag{
-							Name:     "since",
-							Required: false,
-							Usage:    "Offset of where to start replicating from.",
+					Subcommands: []*cli.Command{
+						{
+							Name: "registry",
+							Flags: []cli.Flag{
+								&cli.IntFlag{
+									Name:     "since",
+									Required: false,
+									Usage:    "Offset of where to start replicating from.",
+								},
+								&cli.BoolFlag{
+									Name:     "init",
+									Required: false,
+									Usage:    "Initial replication to quickly catchup.",
+								},
+								&cli.BoolFlag{
+									Name:     "resume",
+									Required: false,
+									Usage:    "Resume replication from last replicated item.",
+								},
+							},
+							Action: func(ctx *cli.Context) error {
+								var err error
+
+								since := ctx.Int("since")
+								init := ctx.Bool("init")
+								resume := ctx.Bool("resume")
+
+								if init {
+									err = p.Replicator.InitialReplication(ctx.Context)
+									if err != nil {
+										return err
+									}
+								}
+
+								if resume {
+									since, err = p.Replicator.GetLastReplicatedOffset()
+									if err != nil {
+										return err
+									}
+								}
+
+								return p.Replicator.ReplicateSince(ctx.Context, since)
+							},
 						},
-						&cli.BoolFlag{
-							Name:     "init",
-							Required: false,
-							Usage:    "Initial replication to quickly catchup.",
+						{
+							Name: "downloads",
+							Flags: []cli.Flag{
+								&cli.BoolFlag{
+									Name:     "ignore-errors",
+									Required: false,
+									Usage:    "If a package replication fails, continue without fatally failing.",
+								},
+							},
+							Action: func(ctx *cli.Context) error {
+								ignoreErrors := ctx.Bool("ignore-errors")
+
+								return p.APIReplicator.ReplicateAllPackageDownloadCountsFromRegistry(ignoreErrors)
+							},
 						},
-						&cli.BoolFlag{
-							Name:     "resume",
-							Required: false,
-							Usage:    "Resume replication from last replicated item.",
-						},
-					},
-					Action: func(ctx *cli.Context) error {
-						var err error
-
-						since := ctx.Int("since")
-						init := ctx.Bool("init")
-						resume := ctx.Bool("resume")
-
-						if init {
-							err = p.Replicator.InitialReplication(ctx.Context)
-							if err != nil {
-								return err
-							}
-						}
-
-						if resume {
-							since, err = p.Replicator.GetLastReplicatedOffset()
-							if err != nil {
-								return err
-							}
-						}
-
-						return p.Replicator.ReplicateSince(ctx.Context, since)
 					},
 				},
 			},

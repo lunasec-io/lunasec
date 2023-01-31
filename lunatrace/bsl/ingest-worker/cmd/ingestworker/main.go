@@ -31,6 +31,7 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/registry"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator/npm"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
 
@@ -70,6 +71,7 @@ func main() {
 			ingester.NewPackageSqlIngester,
 			ingester.NewNPMPackageIngester,
 			replicator.NewNPMReplicator,
+			npm.NewNpmAPIReplicator,
 		),
 		fx.Provide(
 			ingestworker.NewConfigProvider,

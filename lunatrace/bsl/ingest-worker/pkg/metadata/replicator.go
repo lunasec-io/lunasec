@@ -17,3 +17,8 @@ type Replicator interface {
 	ReplicateSince(ctx context.Context, since int) error
 	InitialReplication(ctx context.Context) error
 }
+
+type APIReplicator interface {
+	ReplicateDownloadCountsForPackages(packages []string) error
+	ReplicateAllPackageDownloadCountsFromRegistry(ignoreErrors bool) error
+}
