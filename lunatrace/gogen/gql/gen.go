@@ -385,7 +385,7 @@ func (v *Analysis_manifest_dependency_edge_result_location_bool_exp) GetStart_ro
 type Analysis_manifest_dependency_edge_result_location_constraint string
 
 const (
-	Analysis_manifest_dependency_edge_result_location_constraintManifestDependencyEdgeResultCallsitePkey Analysis_manifest_dependency_edge_result_location_constraint = "manifest_dependency_edge_result_callsite_pkey"
+	Analysis_manifest_dependency_edge_result_location_constraintManifestDependencyEdgeResultLocationPkey Analysis_manifest_dependency_edge_result_location_constraint = "manifest_dependency_edge_result_location_pkey"
 )
 
 type Analysis_manifest_dependency_edge_result_location_insert_input struct {
@@ -8406,6 +8406,7 @@ type Vulnerability_vulnerability_cwe_constraint string
 const (
 	Vulnerability_vulnerability_cwe_constraintUniqueVulnerabilityCweVulnerabilityIdCweIdKey Vulnerability_vulnerability_cwe_constraint = "unique_vulnerability_cwe_vulnerability_id_cwe_id_key"
 	Vulnerability_vulnerability_cwe_constraintVulnerabilityCwePkey                          Vulnerability_vulnerability_cwe_constraint = "vulnerability_cwe_pkey"
+	Vulnerability_vulnerability_cwe_constraintVulnerabilityCweVulnerabilityIdCweIdKey       Vulnerability_vulnerability_cwe_constraint = "vulnerability_cwe_vulnerability_id_cwe_id_key"
 )
 
 type Vulnerability_vulnerability_cwe_insert_input struct {
