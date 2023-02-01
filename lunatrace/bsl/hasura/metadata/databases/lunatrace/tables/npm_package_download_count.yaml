@@ -1,0 +1,3 @@
+table:
+  name: package_download_count
+  schema: npm

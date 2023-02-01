@@ -17,3 +17,8 @@ type Replicator interface {
 	ReplicateSince(ctx context.Context, since int) error
 	InitialReplication(ctx context.Context) error
 }
+
+type APIReplicator interface {
+	ReplicatePackages(packages []string) error
+	ReplicateFromStreamWithBackoff(packages <-chan string, versionCounts, ignoreErrors bool) error
+}
