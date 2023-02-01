@@ -194,8 +194,7 @@ func NewCommand(p Params) clifx.CommandResult {
 
 									return nil
 								}
-
-								return p.APIReplicator.ReplicatePackages([]string{"axios"})
+								return nil
 							},
 						},
 					},
