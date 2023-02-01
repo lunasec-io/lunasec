@@ -19,6 +19,6 @@ type Replicator interface {
 }
 
 type APIReplicator interface {
-	ReplicateDownloadCountsForPackages(packages []string) error
-	ReplicateAllPackageDownloadCountsFromRegistry(ignoreErrors bool) error
+	ReplicatePackages(packages []string) error
+	ReplicateFromStreamWithBackoff(packages <-chan string, versionCounts, ignoreErrors bool) error
 }

@@ -6,10 +6,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
 	"github.com/cenkalti/backoff/v4"
+	"github.com/go-jet/jet/v2/postgres"
+	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
 	"go.uber.org/fx"
@@ -17,6 +20,8 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/npm/model"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/npm/table"
+	packageModel "github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/model"
+	packageSchema "github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/table"
 )
 
 /*
@@ -35,14 +40,17 @@ import (
 const (
 	maxBulkPackageRequest       = 128
 	maxBulkRangePeriodMonths    = 12
-	bulkRangePeriodFormat       = "2022-10-28"
+	bulkRangePeriodFormat       = "2006-01-02"
 	bulkPackageDownloadCountURL = "https://api.npmjs.org/downloads/range/%s/%s"
+
+	packageVersionDownloadCountURL = "https://api.npmjs.org/versions/%s/last-week"
 )
 
 type npmPopularityReplicatorDeps struct {
 	fx.In
 	DB          *sql.DB
 	NPMRegistry metadata.NpmRegistry
+	HTTPClient  *http.Client
 }
 
 type npmAPIReplicator struct {
@@ -52,25 +60,38 @@ type npmAPIReplicator struct {
 //func (s *npmAPIReplicator) ReplicatePackageVersionDownloadCount() error {
 //}
 
-func (s *npmAPIReplicator) ReplicateDownloadCountsForPackages(packages []string) error {
+func (s *npmAPIReplicator) ReplicatePackages(packages []string) error {
 	if len(packages) > maxBulkPackageRequest {
 		return fmt.Errorf("too many packages to replicate download count: %d", len(packages))
 	}
 
 	// TODO (cthompson) bulk downloader does not support namespaced packages, will need to think of fallback
 	filteredPackages := lo.Filter(packages, func(p string, idx int) bool {
-		return strings.HasPrefix(p, "@")
+		return !strings.HasPrefix(p, "@")
 	})
+
+	if len(filteredPackages) == 0 {
+		return nil
+	}
+
+	// if there is only one package, the API will give back a different schema. always make sure there is at least two packages for simplicity.
+	if len(filteredPackages) == 1 {
+		filteredPackages = append(filteredPackages, "lodash")
+	}
 
 	joinedPackages := strings.Join(filteredPackages, ",")
 
-	rangeStart := time.Now()
-	rangeEnd := rangeStart.AddDate(0, -maxBulkRangePeriodMonths, 0)
+	rangeEnd := time.Now()
+	rangeStart := rangeEnd.AddDate(-1, 0, 0)
 	formattedRange := rangeStart.Format(bulkRangePeriodFormat) + ":" + rangeEnd.Format(bulkRangePeriodFormat)
 
 	requestUrl := fmt.Sprintf(bulkPackageDownloadCountURL, formattedRange, joinedPackages)
 
-	resp, err := http.Get(requestUrl)
+	log.Info().
+		Str("requestUrl", requestUrl).
+		Msg("getting bulk package download counts")
+
+	resp, err := s.deps.HTTPClient.Get(requestUrl)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -93,13 +114,36 @@ func (s *npmAPIReplicator) ReplicateDownloadCountsForPackages(packages []string)
 	if err != nil {
 		log.Error().
 			Err(err).
-			Strs("packages", filteredPackages).
+			Str("body", string(body)).
 			Msg("failed to unmarshal package download counts")
 		return err
 	}
 
 	// insert collected packages into database
 	for packageName, packageInfo := range bulkDownloadResponse {
+		selectPackageId := packageSchema.Package.SELECT(
+			packageSchema.Package.ID,
+		).WHERE(
+			postgres.AND(
+				packageSchema.Package.Name.EQ(postgres.String(packageName)),
+				packageSchema.Package.PackageManager.EQ(postgres.NewEnumValue("npm")),
+			),
+		)
+
+		var (
+			selectedPackage packageModel.Package
+			packageId       *uuid.UUID
+		)
+		err = selectPackageId.Query(s.deps.DB, &selectedPackage)
+		if err != nil {
+			log.Warn().
+				Str("package name", packageName).
+				Err(err).
+				Msg("unable to find associated package in database")
+		} else {
+			packageId = &selectedPackage.ID
+		}
+
 		var packageDownloadCounts []model.PackageDownloadCount
 		for _, downloadInfo := range packageInfo.Downloads {
 			downloadDay, err := time.Parse(bulkRangePeriodFormat, downloadInfo.Day)
@@ -111,17 +155,32 @@ func (s *npmAPIReplicator) ReplicateDownloadCountsForPackages(packages []string)
 					Msg("failed to parse package download count date")
 				continue
 			}
+
 			packageDownloadCounts = append(packageDownloadCounts, model.PackageDownloadCount{
 				Name:      packageName,
 				Day:       downloadDay,
 				Downloads: int32(downloadInfo.Downloads),
+				PackageID: packageId,
 			})
 		}
+
 		downloadCountInsert := table.PackageDownloadCount.INSERT(
 			table.PackageDownloadCount.Name,
 			table.PackageDownloadCount.Day,
 			table.PackageDownloadCount.Downloads,
-		).VALUES(packageDownloadCounts)
+			table.PackageDownloadCount.PackageID,
+		).MODELS(packageDownloadCounts).
+			ON_CONFLICT(table.PackageDownloadCount.Name, table.PackageDownloadCount.Day).
+			DO_UPDATE(
+				postgres.SET(
+					table.PackageDownloadCount.Downloads.SET(
+						table.PackageDownloadCount.EXCLUDED.Downloads,
+					),
+					table.PackageDownloadCount.PackageID.SET(
+						table.PackageDownloadCount.EXCLUDED.PackageID,
+					),
+				),
+			)
 
 		_, err = downloadCountInsert.Exec(s.deps.DB)
 		if err != nil {
@@ -135,26 +194,118 @@ func (s *npmAPIReplicator) ReplicateDownloadCountsForPackages(packages []string)
 	return nil
 }
 
-func (s *npmAPIReplicator) ReplicateAllPackageDownloadCountsFromRegistry(ignoreErrors bool) error {
-	log.Info().
-		Msg("collecting packages from npm registry")
+func (s *npmAPIReplicator) ReplicateVersionDownloadCounts(packageName string) error {
+	requestUrl := fmt.Sprintf(packageVersionDownloadCountURL, url.QueryEscape(packageName))
 
-	packageStream, err := s.deps.NPMRegistry.PackageStream()
+	log.Info().
+		Str("requestUrl", requestUrl).
+		Msg("getting package version download counts")
+
+	resp, err := s.deps.HTTPClient.Get(requestUrl)
 	if err != nil {
 		log.Error().
 			Err(err).
-			Msg("failed to get package stream from registry")
+			Str("package", packageName).
+			Msg("failed to collect package version download counts")
 		return err
 	}
 
-	replicatedPackages := 0
-	var batch []string
-	for packageName := range packageStream {
-		batch = append(batch, packageName)
-		if len(batch) < maxBulkPackageRequest {
-			continue
-		}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("package", packageName).
+			Msg("failed to read body for package version download counts")
+		return err
+	}
 
+	var packageVersionResponse PackageVersionDownloadResponse
+	err = json.Unmarshal(body, &packageVersionResponse)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("body", string(body)).
+			Msg("failed to unmarshal package download counts")
+		return err
+	}
+
+	// truncate the day so that it matches up with the day inserted from the bulk insert of download counts
+	dateFetched := time.Now()
+	day := dateFetched.Format(bulkRangePeriodFormat)
+	truncatedDay, err := time.Parse(bulkRangePeriodFormat, day)
+	if err != nil {
+		return err
+	}
+
+	var models []model.PackageVersionDownloadCount
+	for version, count := range packageVersionResponse.Downloads {
+		selectReleaseId := packageSchema.Release.
+			LEFT_JOIN(packageSchema.Package, packageSchema.Package.ID.EQ(packageSchema.Release.PackageID)).
+			SELECT(
+				packageSchema.Release.ID,
+			).WHERE(
+			postgres.AND(
+				packageSchema.Package.Name.EQ(postgres.String(packageName)),
+				packageSchema.Release.Version.EQ(postgres.String("version")),
+			),
+		)
+
+		var (
+			selectedRelease packageModel.Release
+			releaseId       *uuid.UUID
+		)
+		err = selectReleaseId.Query(s.deps.DB, &selectedRelease)
+		if err == nil {
+			releaseId = &selectedRelease.ID
+		}
+		models = append(models, model.PackageVersionDownloadCount{
+			Name:      packageName,
+			ReleaseID: releaseId,
+			Version:   version,
+			Downloads: int32(count),
+			Day:       truncatedDay,
+		})
+	}
+
+	upsertPackageVersionDownloadCount := table.PackageVersionDownloadCount.INSERT(
+		table.PackageVersionDownloadCount.Name,
+		table.PackageVersionDownloadCount.Version,
+		table.PackageVersionDownloadCount.Downloads,
+		table.PackageVersionDownloadCount.Day,
+	).MODELS(models).
+		ON_CONFLICT(
+			table.PackageVersionDownloadCount.Name,
+			table.PackageVersionDownloadCount.Version,
+			table.PackageVersionDownloadCount.Day,
+		).
+		DO_UPDATE(
+			postgres.SET(
+				table.PackageVersionDownloadCount.Downloads.SET(
+					table.PackageVersionDownloadCount.EXCLUDED.Downloads,
+				),
+				table.PackageVersionDownloadCount.ReleaseID.SET(
+					table.PackageVersionDownloadCount.EXCLUDED.ReleaseID,
+				),
+			),
+		)
+	_, err = upsertPackageVersionDownloadCount.Exec(s.deps.DB)
+	if err != nil {
+		log.Error().
+			Str("package name", packageName).
+			Err(err).
+			Msg("failed to upsert package version download counts")
+		return err
+	}
+
+	return nil
+}
+
+// TODO (cthompson) these should really be options...
+func (s *npmAPIReplicator) ReplicateFromStreamWithBackoff(packages <-chan string, versionCounts, ignoreErrors bool) error {
+	replicatedPackages := 0
+	var packageBatch []string
+
+	replicatePackages := func(batch []string) error {
 		log.Info().
 			Strs("batch", batch).
 			Msg("replicating package download counts")
@@ -162,10 +313,11 @@ func (s *npmAPIReplicator) ReplicateAllPackageDownloadCountsFromRegistry(ignoreE
 		expBackoff := backoff.NewExponentialBackOff()
 
 		// This process takes a long time, make sure we have enough time in between errors
-		expBackoff.MaxElapsedTime = time.Hour * 24
+		expBackoff.MaxElapsedTime = time.Hour * 2
 
 		replicate := func() error {
-			err = s.ReplicateDownloadCountsForPackages(batch)
+			// TODO (cthompson) for scoped packages, we will have to make individual request. They are not supported by the bulk query request.
+			err := s.ReplicatePackages(batch)
 			if err != nil {
 				log.Error().
 					Err(err).
@@ -175,20 +327,59 @@ func (s *npmAPIReplicator) ReplicateAllPackageDownloadCountsFromRegistry(ignoreE
 					return err
 				}
 			}
+
+			if versionCounts {
+				// TODO (cthompson) ew, nesting
+				for _, packageName := range batch {
+					err = s.ReplicateVersionDownloadCounts(packageName)
+					if err != nil {
+						log.Error().
+							Err(err).
+							Msg("failed to replicate package version download count")
+
+						if !ignoreErrors {
+							return err
+						}
+					}
+				}
+			}
 			return nil
 		}
 
 		// TODO (cthompson) tweak this value so we don't hit rate limiting
 		time.Sleep(time.Second)
 
-		err = backoff.Retry(replicate, expBackoff)
+		err := backoff.Retry(replicate, expBackoff)
 		if err != nil {
 			log.Error().
 				Err(err).
 				Msg("failed to replicate batch, with retry")
+			return err
+		}
+		return nil
+	}
+
+	for packageName := range packages {
+		packageBatch = append(packageBatch, packageName)
+		if len(packageBatch) < maxBulkPackageRequest {
 			continue
 		}
-		replicatedPackages += len(batch)
+
+		err := replicatePackages(packageBatch)
+		if err != nil {
+			return err
+		}
+
+		packageBatch = []string{}
+		replicatedPackages += len(packageBatch)
+	}
+
+	if len(packageBatch) != 0 {
+		err := replicatePackages(packageBatch)
+		if err != nil {
+			return err
+		}
+		replicatedPackages += len(packageBatch)
 	}
 
 	log.Info().

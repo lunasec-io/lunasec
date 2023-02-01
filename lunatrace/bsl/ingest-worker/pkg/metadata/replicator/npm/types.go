@@ -13,3 +13,8 @@ type PackageDownloadRange struct {
 }
 
 type BulkDownloadResponse map[string]PackageDownloadRange
+
+type PackageVersionDownloadResponse struct {
+	Package   string         `json:"package"`
+	Downloads map[string]int `json:"downloads"`
+}

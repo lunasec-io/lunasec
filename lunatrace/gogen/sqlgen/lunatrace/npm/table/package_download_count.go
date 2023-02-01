@@ -18,6 +18,7 @@ type packageDownloadCountTable struct {
 
 	//Columns
 	Name      postgres.ColumnString
+	PackageID postgres.ColumnString
 	Day       postgres.ColumnTimestampz
 	Downloads postgres.ColumnInteger
 
@@ -61,10 +62,11 @@ func newPackageDownloadCountTable(schemaName, tableName, alias string) *PackageD
 func newPackageDownloadCountTableImpl(schemaName, tableName, alias string) packageDownloadCountTable {
 	var (
 		NameColumn      = postgres.StringColumn("name")
+		PackageIDColumn = postgres.StringColumn("package_id")
 		DayColumn       = postgres.TimestampzColumn("day")
 		DownloadsColumn = postgres.IntegerColumn("downloads")
-		allColumns      = postgres.ColumnList{NameColumn, DayColumn, DownloadsColumn}
-		mutableColumns  = postgres.ColumnList{NameColumn, DayColumn, DownloadsColumn}
+		allColumns      = postgres.ColumnList{NameColumn, PackageIDColumn, DayColumn, DownloadsColumn}
+		mutableColumns  = postgres.ColumnList{NameColumn, PackageIDColumn, DayColumn, DownloadsColumn}
 	)
 
 	return packageDownloadCountTable{
@@ -72,6 +74,7 @@ func newPackageDownloadCountTableImpl(schemaName, tableName, alias string) packa
 
 		//Columns
 		Name:      NameColumn,
+		PackageID: PackageIDColumn,
 		Day:       DayColumn,
 		Downloads: DownloadsColumn,
 

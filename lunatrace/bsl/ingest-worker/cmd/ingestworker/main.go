@@ -24,6 +24,7 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/sync"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/vulnerability"
 	cisa2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/cisa"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/clifx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/ingestworker"
 	cwe2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/cwe"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/dbfx"
@@ -37,8 +38,6 @@ import (
 
 	"go.uber.org/fx"
 
-	clifx2 "github.com/ajvpot/clifx"
-
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/license"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
 	vulnmanager "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability"
@@ -48,7 +47,8 @@ func main() {
 	// TODO (cthompson) this should be configured with an fx module
 	log.Logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
 
-	clifx2.Main(
+	clifx.Main(
+		// TODO (cthompson) move this into an fx module
 		fx.Supply(http.DefaultClient),
 
 		graphqlfx.Module,
@@ -62,7 +62,7 @@ func main() {
 		),
 
 		// todo make a module
-		fx.Supply(&clifx2.AppConfig{
+		fx.Supply(&clifx.AppConfig{
 			Name:    "ingestworker",
 			Usage:   "LunaTrace Ingest Worker",
 			Version: "0.0.1",

@@ -16,6 +16,13 @@ array_relationships:
         table:
           name: build_dependency_relationship
           schema: public
+  - name: download_counts
+    using:
+      foreign_key_constraint_on:
+        column: release_id
+        table:
+          name: package_version_download_count
+          schema: npm
   - name: release_dependencies
     using:
       foreign_key_constraint_on:

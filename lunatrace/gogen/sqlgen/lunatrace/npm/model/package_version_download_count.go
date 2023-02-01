@@ -12,9 +12,10 @@ import (
 	"time"
 )
 
-type PackageDownloadCount struct {
+type PackageVersionDownloadCount struct {
 	Name      string
-	PackageID *uuid.UUID
-	Day       time.Time
+	ReleaseID *uuid.UUID
+	Version   string
 	Downloads int32
+	Day       time.Time
 }

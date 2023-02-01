@@ -243,6 +243,7 @@ func (h *NPMPackageIngester) IngestPackagesFromFile(
 	if err != nil {
 		return err
 	}
+
 	defer fileHandle.Close()
 	fileScanner := bufio.NewScanner(fileHandle)
 

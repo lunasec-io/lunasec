@@ -11,9 +11,13 @@
 package ingest
 
 import (
+	"bufio"
 	"errors"
+	"os"
+	"sync"
 
 	"github.com/ajvpot/clifx"
+	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
 
@@ -136,11 +140,62 @@ func NewCommand(p Params) clifx.CommandResult {
 									Required: false,
 									Usage:    "If a package replication fails, continue without fatally failing.",
 								},
+								&cli.BoolFlag{
+									Name:     "version-counts",
+									Required: false,
+									Usage:    "Replicate package version counts. This will greatly increase the number of requests made since it will make a request for every package.",
+								},
+								&cli.StringFlag{
+									Name:     "packages",
+									Required: false,
+									Usage:    "Collect download information from packages in this file.",
+								},
 							},
 							Action: func(ctx *cli.Context) error {
 								ignoreErrors := ctx.Bool("ignore-errors")
+								versionCounts := ctx.Bool("version-counts")
+								packagesFile := ctx.String("packages")
 
-								return p.APIReplicator.ReplicateAllPackageDownloadCountsFromRegistry(ignoreErrors)
+								if packagesFile != "" {
+									fileHandle, err := os.Open(packagesFile)
+									if err != nil {
+										return err
+									}
+
+									defer fileHandle.Close()
+									fileScanner := bufio.NewScanner(fileHandle)
+
+									var packages []string
+									for fileScanner.Scan() {
+										packageName := fileScanner.Text()
+										packages = append(packages, packageName)
+									}
+
+									packageStream := make(chan string)
+									replicateWg := sync.WaitGroup{}
+
+									go func() {
+										defer replicateWg.Done()
+										err = p.APIReplicator.ReplicateFromStreamWithBackoff(packageStream, versionCounts, ignoreErrors)
+										if err != nil {
+											log.Error().
+												Err(err).
+												Msg("failed to replicate packages")
+										}
+									}()
+									replicateWg.Add(1)
+
+									for _, packageName := range packages {
+										packageStream <- packageName
+									}
+									close(packageStream)
+
+									replicateWg.Wait()
+
+									return nil
+								}
+
+								return p.APIReplicator.ReplicatePackages([]string{"axios"})
 							},
 						},
 					},
