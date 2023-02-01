@@ -145,6 +145,11 @@ func NewCommand(p Params) clifx.CommandResult {
 									Required: false,
 									Usage:    "Replicate package version counts. This will greatly increase the number of requests made since it will make a request for every package.",
 								},
+								&cli.BoolFlag{
+									Name:     "resolve-package",
+									Required: false,
+									Usage:    "While it is possible to resolve the package as the data is being collected, this can slow down ingestion.",
+								},
 								&cli.StringFlag{
 									Name:     "packages",
 									Required: false,
@@ -153,6 +158,7 @@ func NewCommand(p Params) clifx.CommandResult {
 							},
 							Action: func(ctx *cli.Context) error {
 								ignoreErrors := ctx.Bool("ignore-errors")
+								resolvePackage := ctx.Bool("resolve-package")
 								versionCounts := ctx.Bool("version-counts")
 								packagesFile := ctx.String("packages")
 
@@ -176,7 +182,7 @@ func NewCommand(p Params) clifx.CommandResult {
 
 									go func() {
 										defer replicateWg.Done()
-										err = p.APIReplicator.ReplicateFromStreamWithBackoff(packageStream, versionCounts, ignoreErrors)
+										err = p.APIReplicator.ReplicateFromStreamWithBackoff(packageStream, versionCounts, ignoreErrors, resolvePackage)
 										if err != nil {
 											log.Error().
 												Err(err).
