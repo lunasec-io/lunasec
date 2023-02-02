@@ -395,7 +395,7 @@ func (n *npmReplicator) ReplicateSince(ctx context.Context, since int) error {
 	defer close(replicatedPackages)
 
 	go n.ingestReplicatedPackages(ctx, replicatedPackages)
-	go n.deps.APIReplicator.ReplicateFromStreamWithBackoff(replicatedPackages, true, true, true)
+	go n.deps.APIReplicator.ReplicateFromStreamWithBackoff(replicatedPackages, true, true, false)
 
 	for {
 		log.Info().
