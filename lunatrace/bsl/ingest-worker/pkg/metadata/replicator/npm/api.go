@@ -60,7 +60,7 @@ type npmAPIReplicator struct {
 //func (s *npmAPIReplicator) ReplicatePackageVersionDownloadCount() error {
 //}
 
-func (s *npmAPIReplicator) ReplicatePackages(packages []string) error {
+func (s *npmAPIReplicator) ReplicatePackages(packages []string, resolvePackage bool) error {
 	if len(packages) > maxBulkPackageRequest {
 		return fmt.Errorf("too many packages to replicate download count: %d", len(packages))
 	}
@@ -121,27 +121,29 @@ func (s *npmAPIReplicator) ReplicatePackages(packages []string) error {
 
 	// insert collected packages into database
 	for packageName, packageInfo := range bulkDownloadResponse {
-		selectPackageId := packageSchema.Package.SELECT(
-			packageSchema.Package.ID,
-		).WHERE(
-			postgres.AND(
-				packageSchema.Package.Name.EQ(postgres.String(packageName)),
-				packageSchema.Package.PackageManager.EQ(postgres.NewEnumValue("npm")),
-			),
-		)
 
-		var (
-			selectedPackage packageModel.Package
-			packageId       *uuid.UUID
-		)
-		err = selectPackageId.Query(s.deps.DB, &selectedPackage)
-		if err != nil {
-			log.Warn().
-				Str("package name", packageName).
-				Err(err).
-				Msg("unable to find associated package in database")
-		} else {
-			packageId = &selectedPackage.ID
+		var packageId *uuid.UUID
+
+		if resolvePackage {
+			selectPackageId := packageSchema.Package.SELECT(
+				packageSchema.Package.ID,
+			).WHERE(
+				postgres.AND(
+					packageSchema.Package.Name.EQ(postgres.String(packageName)),
+					packageSchema.Package.PackageManager.EQ(postgres.NewEnumValue("npm")),
+				),
+			)
+
+			var selectedPackage packageModel.Package
+			err = selectPackageId.Query(s.deps.DB, &selectedPackage)
+			if err != nil {
+				log.Warn().
+					Str("package name", packageName).
+					Err(err).
+					Msg("unable to find associated package in database")
+			} else {
+				packageId = &selectedPackage.ID
+			}
 		}
 
 		var packageDownloadCounts []model.PackageDownloadCount
@@ -194,7 +196,7 @@ func (s *npmAPIReplicator) ReplicatePackages(packages []string) error {
 	return nil
 }
 
-func (s *npmAPIReplicator) ReplicateVersionDownloadCounts(packageName string) error {
+func (s *npmAPIReplicator) ReplicateVersionDownloadCounts(packageName string, resolvePackage bool) error {
 	requestUrl := fmt.Sprintf(packageVersionDownloadCountURL, url.QueryEscape(packageName))
 
 	log.Info().
@@ -239,25 +241,28 @@ func (s *npmAPIReplicator) ReplicateVersionDownloadCounts(packageName string) er
 
 	var models []model.PackageVersionDownloadCount
 	for version, count := range packageVersionResponse.Downloads {
-		selectReleaseId := packageSchema.Release.
-			LEFT_JOIN(packageSchema.Package, packageSchema.Package.ID.EQ(packageSchema.Release.PackageID)).
-			SELECT(
-				packageSchema.Release.ID,
-			).WHERE(
-			postgres.AND(
-				packageSchema.Package.Name.EQ(postgres.String(packageName)),
-				packageSchema.Release.Version.EQ(postgres.String("version")),
-			),
-		)
 
-		var (
-			selectedRelease packageModel.Release
-			releaseId       *uuid.UUID
-		)
-		err = selectReleaseId.Query(s.deps.DB, &selectedRelease)
-		if err == nil {
-			releaseId = &selectedRelease.ID
+		var releaseId *uuid.UUID
+
+		if resolvePackage {
+			selectReleaseId := packageSchema.Release.
+				LEFT_JOIN(packageSchema.Package, packageSchema.Package.ID.EQ(packageSchema.Release.PackageID)).
+				SELECT(
+					packageSchema.Release.ID,
+				).WHERE(
+				postgres.AND(
+					packageSchema.Package.Name.EQ(postgres.String(packageName)),
+					packageSchema.Release.Version.EQ(postgres.String("version")),
+				),
+			)
+
+			var selectedRelease packageModel.Release
+			err = selectReleaseId.Query(s.deps.DB, &selectedRelease)
+			if err == nil {
+				releaseId = &selectedRelease.ID
+			}
 		}
+
 		models = append(models, model.PackageVersionDownloadCount{
 			Name:      packageName,
 			ReleaseID: releaseId,
@@ -301,7 +306,7 @@ func (s *npmAPIReplicator) ReplicateVersionDownloadCounts(packageName string) er
 }
 
 // TODO (cthompson) these should really be options...
-func (s *npmAPIReplicator) ReplicateFromStreamWithBackoff(packages <-chan string, versionCounts, ignoreErrors bool) error {
+func (s *npmAPIReplicator) ReplicateFromStreamWithBackoff(packages <-chan string, versionCounts, ignoreErrors, resolvePackage bool) error {
 	replicatedPackages := 0
 	var packageBatch []string
 
@@ -317,7 +322,7 @@ func (s *npmAPIReplicator) ReplicateFromStreamWithBackoff(packages <-chan string
 
 		replicate := func() error {
 			// TODO (cthompson) for scoped packages, we will have to make individual request. They are not supported by the bulk query request.
-			err := s.ReplicatePackages(batch)
+			err := s.ReplicatePackages(batch, resolvePackage)
 			if err != nil {
 				log.Error().
 					Err(err).
@@ -331,7 +336,7 @@ func (s *npmAPIReplicator) ReplicateFromStreamWithBackoff(packages <-chan string
 			if versionCounts {
 				// TODO (cthompson) ew, nesting
 				for _, packageName := range batch {
-					err = s.ReplicateVersionDownloadCounts(packageName)
+					err = s.ReplicateVersionDownloadCounts(packageName, resolvePackage)
 					if err != nil {
 						log.Error().
 							Err(err).
