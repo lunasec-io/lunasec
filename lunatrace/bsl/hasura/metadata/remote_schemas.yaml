@@ -16,29 +16,29 @@
           scalar JSON
           scalar UUID
           type AuthenticatedRepoCloneUrlOutput {
-            url: String
+          	url: String
           }
           type Mutation {
-            presignManifestUpload(project_id: UUID!): PresignedUrlResponse
+          	presignManifestUpload(project_id: UUID!): PresignedUrlResponse
           }
           type PresignedUrlResponse {
-            bucket: String!
-            headers: JSON!
-            key: String!
-            url: String!
+          	bucket: String!
+          	headers: JSON!
+          	key: String!
+          	url: String!
           }
           type Query {
-            authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
-            fakeQueryToHackHasuraBeingABuggyMess: String
-            sbomUrl(buildId: UUID!): String
+          	authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
+          	fakeQueryToHackHasuraBeingABuggyMess: String
+          	sbomUrl(buildId: UUID!): String
           }
           type SbomUploadUrlOutput {
-            error: Boolean!
-            uploadUrl: UploadUrl
+          	error: Boolean!
+          	uploadUrl: UploadUrl
           }
           type UploadUrl {
-            headers: JSON!
-            url: String!
+          	headers: JSON!
+          	url: String!
           }
     - role: service
       definition:
@@ -46,30 +46,30 @@
           scalar JSON
           scalar UUID
           type AuthenticatedRepoCloneUrlOutput {
-            url: String
+          	url: String
           }
           type Mutation {
-            presignManifestUpload(project_id: UUID!): PresignedUrlResponse
+          	presignManifestUpload(project_id: UUID!): PresignedUrlResponse
           }
           type PresignedUrlResponse {
-            bucket: String!
-            headers: JSON!
-            key: String!
-            url: String!
+          	bucket: String!
+          	headers: JSON!
+          	key: String!
+          	url: String!
           }
           type Query {
-            authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
-            fakeQueryToHackHasuraBeingABuggyMess: String
-            presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
-            sbomUrl(buildId: UUID!): String
+          	authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
+          	fakeQueryToHackHasuraBeingABuggyMess: String
+          	presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
+          	sbomUrl(buildId: UUID!): String
           }
           type SbomUploadUrlOutput {
-            error: Boolean!
-            uploadUrl: UploadUrl
+          	error: Boolean!
+          	uploadUrl: UploadUrl
           }
           type UploadUrl {
-            headers: JSON!
-            url: String!
+          	headers: JSON!
+          	url: String!
           }
           input SbomUploadUrlInput {
             orgId: UUID!
@@ -81,13 +81,13 @@
           scalar JSON
           scalar UUID
           type Query {
-            presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
+          	presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
           }
           type SbomUploadUrlOutput {
-            error: Boolean!
-            uploadUrl: UploadUrl
+          	error: Boolean!
+          	uploadUrl: UploadUrl
           }
           type UploadUrl {
-            headers: JSON!
-            url: String!
+          	headers: JSON!
+          	url: String!
           }

@@ -196,7 +196,7 @@ func (s *npmAPIReplicator) ReplicatePackages(packages []string, resolvePackage b
 	return nil
 }
 
-func (s *npmAPIReplicator) ReplicateVersionDownloadCounts(packageName string, resolvePackage bool) error {
+func (s *npmAPIReplicator) ReplicateVersionDownloadCounts(packageName string) error {
 	requestUrl := fmt.Sprintf(packageVersionDownloadCountURL, url.QueryEscape(packageName))
 
 	log.Info().
@@ -306,7 +306,7 @@ func (s *npmAPIReplicator) ReplicateVersionDownloadCounts(packageName string, re
 }
 
 // TODO (cthompson) these should really be options...
-func (s *npmAPIReplicator) ReplicateFromStreamWithBackoff(packages <-chan string, versionCounts, ignoreErrors, resolvePackage bool) error {
+func (s *npmAPIReplicator) ReplicateFromStreamWithBackoff(packages <-chan string, versionCounts, ignoreErrors bool) error {
 	replicatedPackages := 0
 	var packageBatch []string
 
