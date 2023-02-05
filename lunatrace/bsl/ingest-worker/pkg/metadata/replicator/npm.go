@@ -36,7 +36,7 @@ const (
 	batchSize      = 100
 	revisionUpsert = `
 INSERT INTO npm.revision (seq, id, rev, doc, deleted)
-VALUES %S
+VALUES %s
 ON CONFLICT (seq)
 DO UPDATE SET id = EXCLUDED.id, rev = EXCLUDED.rev, doc = EXCLUDED.doc, deleted = EXCLUDED.deleted
 `
