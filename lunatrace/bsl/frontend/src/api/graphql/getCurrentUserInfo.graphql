@@ -2,5 +2,6 @@ query GetCurrentUserInfo($kratos_id: uuid!) {
   users(where: {kratos_id: {_eq: $kratos_id}}) {
     role
     survey
+    id
   }
 }

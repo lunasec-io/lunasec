@@ -9186,7 +9186,7 @@ export type GetCurrentUserInfoQueryVariables = Exact<{
 }>;
 
 
-export type GetCurrentUserInfoQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', role: any, survey?: any | null }> };
+export type GetCurrentUserInfoQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', role: any, survey?: any | null, id: any }> };
 
 export type GetCweDetailsQueryVariables = Exact<{
   id: Scalars['Int'];
@@ -9361,6 +9361,14 @@ export type UpdateSettingsMutationVariables = Exact<{
 
 
 export type UpdateSettingsMutation = { __typename?: 'mutation_root', update_settings_by_pk?: { __typename?: 'settings', id: any } | null };
+
+export type UpdateUserSurveyMutationVariables = Exact<{
+  id: Scalars['uuid'];
+  survey: Scalars['jsonb'];
+}>;
+
+
+export type UpdateUserSurveyMutation = { __typename?: 'mutation_root', update_users_by_pk?: { __typename?: 'users', id: any } | null };
 
 export type DeleteFolderAdjustmentMutationVariables = Exact<{
   id: Scalars['uuid'];
@@ -9633,6 +9641,7 @@ export const GetCurrentUserInfoDocument = `
   users(where: {kratos_id: {_eq: $kratos_id}}) {
     role
     survey
+    id
   }
 }
     `;
@@ -10308,6 +10317,13 @@ export const UpdateSettingsDocument = `
   }
 }
     `;
+export const UpdateUserSurveyDocument = `
+    mutation UpdateUserSurvey($id: uuid!, $survey: jsonb!) {
+  update_users_by_pk(pk_columns: {id: $id}, _set: {survey: $survey}) {
+    id
+  }
+}
+    `;
 export const DeleteFolderAdjustmentDocument = `
     mutation DeleteFolderAdjustment($id: uuid!) {
   delete_folder_environmental_adjustment_by_pk(id: $id) {
@@ -10457,6 +10473,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     UpdateSettings: build.mutation<UpdateSettingsMutation, UpdateSettingsMutationVariables>({
       query: (variables) => ({ document: UpdateSettingsDocument, variables })
+    }),
+    UpdateUserSurvey: build.mutation<UpdateUserSurveyMutation, UpdateUserSurveyMutationVariables>({
+      query: (variables) => ({ document: UpdateUserSurveyDocument, variables })
     }),
     DeleteFolderAdjustment: build.mutation<DeleteFolderAdjustmentMutation, DeleteFolderAdjustmentMutationVariables>({
       query: (variables) => ({ document: DeleteFolderAdjustmentDocument, variables })

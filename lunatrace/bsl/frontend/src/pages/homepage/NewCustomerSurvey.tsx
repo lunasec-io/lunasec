@@ -12,22 +12,32 @@
  *
  */
 import React, { FormEvent, useState } from 'react';
-import { Button, Card, Col, FloatingLabel, Form, Row, Spinner } from 'react-bootstrap';
+import { Button, Col, FloatingLabel, Form, Row } from 'react-bootstrap';
+import { AiOutlineSearch } from 'react-icons/ai';
+import { FiBriefcase } from 'react-icons/fi';
+import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 
+import api from '../../api';
+import { SpinIfLoading } from '../../components/SpinIfLoading';
 import { User } from '../../types/user';
 
 export const NewCustomerSurvey: React.FunctionComponent<{ user: User }> = ({ user }) => {
   const [survey, setSurvey] = useState({ organization: '', role: '', hear_about_us: '' });
 
-  function submitForm(e: FormEvent<HTMLFormElement>) {
+  const [updateSurvey, updateSurveyResult] = api.useUpdateUserSurveyMutation();
+
+  async function submitForm(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log(e);
+    if (updateSurveyResult.isLoading) {
+      return;
+    }
+    await updateSurvey({ id: user.id, survey });
   }
   return (
     <>
       <div className="text-center mb-4">
         <h1>Welcome to LunaTrace</h1>
-        <p>Answer a few quick questions first.</p>
+        <p>Please just answer a few quick questions first.</p>
       </div>
       <Row>
         <Col sm={{ offset: 1, span: 10 }}>
@@ -35,7 +45,15 @@ export const NewCustomerSurvey: React.FunctionComponent<{ user: User }> = ({ use
             <Row className="justify-content-center">
               <Col md={6}>
                 <Form.Group className="mb-3" controlId="organization">
-                  <FloatingLabel controlId="floatingInput" label="Your Company" className="mb-3">
+                  <FloatingLabel
+                    controlId="floatingInput"
+                    label={(
+                      <span>
+                        <HiOutlineBuildingOffice2 size="20px" className="mb-1 me-1 lighter" /> Your Company
+                      </span>
+                    )}
+                    className="mb-3"
+                  >
                     <Form.Control
                       value={survey.organization}
                       onChange={(e) => setSurvey({ ...survey, organization: e.target.value })}
@@ -49,10 +67,18 @@ export const NewCustomerSurvey: React.FunctionComponent<{ user: User }> = ({ use
             <Row className="justify-content-center">
               <Col md={6}>
                 <Form.Group className="mb-3" controlId="organization">
-                  <FloatingLabel controlId="floatingInput" label="Your Role" className="mb-3">
+                  <FloatingLabel
+                    controlId="floatingInput"
+                    label={(
+                      <span>
+                        <FiBriefcase size="20px" className="mb-1 me-1 lighter" /> Your Role
+                      </span>
+                    )}
+                    className="mb-3"
+                  >
                     <Form.Control
-                      value={survey.organization}
-                      onChange={(e) => setSurvey({ ...survey, organization: e.target.value })}
+                      value={survey.role}
+                      onChange={(e) => setSurvey({ ...survey, role: e.target.value })}
                       required={true}
                       placeholder="enter project name"
                     />
@@ -63,21 +89,29 @@ export const NewCustomerSurvey: React.FunctionComponent<{ user: User }> = ({ use
             <Row className="justify-content-center">
               <Col md={6}>
                 <Form.Group className="mb-3" controlId="organization">
-                  <Form.Label controlId="floatingInput" label="How did you hear about us?" className="mb-3">
+                  <FloatingLabel
+                    controlId="floatingInput"
+                    label={(
+                      <span>
+                        <AiOutlineSearch size="20px" className="mb-1 me-1 lighter" /> How you heard about us
+                      </span>
+                    )}
+                    className="mb-3"
+                  >
                     <Form.Control
-                      value={survey.organization}
-                      onChange={(e) => setSurvey({ ...survey, organization: e.target.value })}
+                      value={survey.hear_about_us}
+                      onChange={(e) => setSurvey({ ...survey, hear_about_us: e.target.value })}
                       required={true}
                       placeholder="enter project name"
                     />
-                  </Form.Label>
+                  </FloatingLabel>
                 </Form.Group>
               </Col>
             </Row>
             <Row className="justify-content-center text-center">
               <Col md={6} className="d-grid gap-2">
-                <Button size="lg" variant="primary" type="submit">
-                  Try Lunatrace
+                <Button size="lg" variant="primary" disabled={updateSurveyResult.isLoading} type="submit">
+                  <SpinIfLoading isLoading={updateSurveyResult.isLoading}>Submit</SpinIfLoading>
                 </Button>
               </Col>
             </Row>
