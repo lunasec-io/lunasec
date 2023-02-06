@@ -3847,6 +3847,10 @@ export type Mutation_Root = {
   update_settings?: Maybe<Settings_Mutation_Response>;
   /** update single row of the table: "settings" */
   update_settings_by_pk?: Maybe<Settings>;
+  /** update data of the table: "users" */
+  update_users?: Maybe<Users_Mutation_Response>;
+  /** update single row of the table: "users" */
+  update_users_by_pk?: Maybe<Users>;
 };
 
 
@@ -4153,6 +4157,30 @@ export type Mutation_RootUpdate_SettingsArgs = {
 export type Mutation_RootUpdate_Settings_By_PkArgs = {
   _set?: InputMaybe<Settings_Set_Input>;
   pk_columns: Settings_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_UsersArgs = {
+  _append?: InputMaybe<Users_Append_Input>;
+  _delete_at_path?: InputMaybe<Users_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Users_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Users_Delete_Key_Input>;
+  _prepend?: InputMaybe<Users_Prepend_Input>;
+  _set?: InputMaybe<Users_Set_Input>;
+  where: Users_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Users_By_PkArgs = {
+  _append?: InputMaybe<Users_Append_Input>;
+  _delete_at_path?: InputMaybe<Users_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Users_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Users_Delete_Key_Input>;
+  _prepend?: InputMaybe<Users_Prepend_Input>;
+  _set?: InputMaybe<Users_Set_Input>;
+  pk_columns: Users_Pk_Columns_Input;
 };
 
 /** column ordering options */
@@ -7769,6 +7797,18 @@ export type Users = {
   /** An object relationship */
   kratos_identity?: Maybe<Identities>;
   role: Scalars['user_role'];
+  survey?: Maybe<Scalars['jsonb']>;
+};
+
+
+/** LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.) */
+export type UsersSurveyArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Users_Append_Input = {
+  survey?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'. */
@@ -7781,6 +7821,31 @@ export type Users_Bool_Exp = {
   kratos_id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_identity?: InputMaybe<Identities_Bool_Exp>;
   role?: InputMaybe<User_Role_Comparison_Exp>;
+  survey?: InputMaybe<Jsonb_Comparison_Exp>;
+};
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Users_Delete_At_Path_Input = {
+  survey?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Users_Delete_Elem_Input = {
+  survey?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Users_Delete_Key_Input = {
+  survey?: InputMaybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "users" */
+export type Users_Mutation_Response = {
+  __typename?: 'users_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Users>;
 };
 
 /** Ordering options when selecting data from "users". */
@@ -7790,6 +7855,17 @@ export type Users_Order_By = {
   kratos_id?: InputMaybe<Order_By>;
   kratos_identity?: InputMaybe<Identities_Order_By>;
   role?: InputMaybe<Order_By>;
+  survey?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: users */
+export type Users_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Users_Prepend_Input = {
+  survey?: InputMaybe<Scalars['jsonb']>;
 };
 
 /** select columns of table "users" */
@@ -7801,8 +7877,15 @@ export enum Users_Select_Column {
   /** column name */
   KratosId = 'kratos_id',
   /** column name */
-  Role = 'role'
+  Role = 'role',
+  /** column name */
+  Survey = 'survey'
 }
+
+/** input type for updating data in table "users" */
+export type Users_Set_Input = {
+  survey?: InputMaybe<Scalars['jsonb']>;
+};
 
 /** Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'. */
 export type Uuid_Comparison_Exp = {
@@ -9103,7 +9186,7 @@ export type GetCurrentUserInfoQueryVariables = Exact<{
 }>;
 
 
-export type GetCurrentUserInfoQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', role: any }> };
+export type GetCurrentUserInfoQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', role: any, survey?: any | null }> };
 
 export type GetCweDetailsQueryVariables = Exact<{
   id: Scalars['Int'];
@@ -9549,6 +9632,7 @@ export const GetCurrentUserInfoDocument = `
     query GetCurrentUserInfo($kratos_id: uuid!) {
   users(where: {kratos_id: {_eq: $kratos_id}}) {
     role
+    survey
   }
 }
     `;
