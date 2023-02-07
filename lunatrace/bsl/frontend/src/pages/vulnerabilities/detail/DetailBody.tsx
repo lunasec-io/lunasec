@@ -12,21 +12,24 @@
  *
  */
 import { getCvssVectorFromSeverities } from '@lunatrace/lunatrace-common/build/main/cvss';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import React from 'react';
 import { Card, Col, Container, Modal, Row, Table } from 'react-bootstrap';
 import { ExternalLink } from 'react-feather';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import { NavLink } from 'react-router-dom';
 
+import api from '../../../api';
 import CisaLogo from '../../../assets/cisa_logo.png';
 import { Markdown } from '../../../components/Markdown';
 import { PackageManagerLink } from '../../../components/PackageManagerLink';
 import { LinkInNewTab } from '../../../components/utils/LinkInNewTab';
+import { useUser } from '../../../hooks/useUser';
 import { getAffectedVersionConstraint, getFixedVersions } from '../../../utils/advisory';
 import { formatPackageName } from '../../../utils/package';
 import { prettyDate } from '../../../utils/pretty-date';
 import { SourceLink } from '../SourceLink';
-import { VulnInfoDetails } from '../types';
+import { Findings, VulnInfoDetails } from '../types';
 
 import { CweBadge } from './CweBadge';
 import { EquivalentVulnerabilitiesList } from './EquivalentVulnerabilitiesList';
@@ -38,12 +41,15 @@ interface VulnerabilityDetailBodyProps {
 }
 
 interface VulnerableProjectsList {
-  vuln: VulnInfoDetails;
+  findings: Findings | undefined | null;
 }
 
 // TODO: Move this to its own file, having multiple components jammed into the same file is bad
-const VulnerableProjectsList: React.FunctionComponent<VulnerableProjectsList> = ({ vuln }) => {
-  const projects = vuln.findings.map((f) => {
+const VulnerableProjectsList: React.FunctionComponent<VulnerableProjectsList> = ({ findings }) => {
+  if (!findings) {
+    return null;
+  }
+  const projects = findings.map((f) => {
     const projectName = f.latest_default_build?.project?.name;
     const projectId = f.latest_default_build?.project_id;
     const buildId = f.latest_default_build?.id;
@@ -73,7 +79,7 @@ const VulnerableProjectsList: React.FunctionComponent<VulnerableProjectsList> = 
   return (
     <div className="mb-3">
       <h4>
-        Your Projects Vulnerable: <span className="lighter">{vuln.findings.length}</span>{' '}
+        Your Projects Vulnerable: <span className="lighter">{findings.length}</span>{' '}
       </h4>
 
       <div className="overflow-auto">{projects}</div>
@@ -86,6 +92,13 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
   sideBySideView = false,
   vuln,
 }) => {
+  //get findings if logged in
+  const { user } = useUser();
+  const { data: findingDetails } = api.useGetVulnerabilityFindingsQuery(
+    user ? { vulnerability_id: vuln.id } : skipToken
+  );
+  const findings = findingDetails ? findingDetails.vulnerability_by_pk?.findings : null;
+
   const severity = getCvssVectorFromSeverities(vuln.severities);
 
   function buildUrlIfPossible(urlString: string): URL | null {
@@ -192,7 +205,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                   <span>No CVSS score</span>
                 )}
                 <hr />
-                <VulnerableProjectsList vuln={vuln} />
+                <VulnerableProjectsList findings={findings} />
               </Modal.Body>
             </Card>
           </Col>
