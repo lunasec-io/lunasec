@@ -23,6 +23,7 @@ type PackageMetadata struct {
 
 	Maintainers []Maintainer `json:"maintainers"`
 	Releases    []Release    `json:"versions"`
+	Repository  json.RawMessage
 
 	UpstreamData json.RawMessage
 }

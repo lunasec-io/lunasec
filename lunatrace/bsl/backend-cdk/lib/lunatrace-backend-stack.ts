@@ -406,7 +406,7 @@ export class LunatraceBackendStack extends cdk.Stack {
     taskDef.addContainer('NPMReplicator', {
       image: ingestWorkerImage,
       logging: datadogLogDriverForService('lunatrace', 'NPMReplicator'),
-      command: ['package', 'replicate', '--resume'],
+      command: ['package', 'replicate', 'registry', '--resume'],
       environment: {
         ...baseEnvironmentVars,
         LUNATRACE_GRAPHQL_SERVER_URL: 'http://localhost:8080/v1/graphql',

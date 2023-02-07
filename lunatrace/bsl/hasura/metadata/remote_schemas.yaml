@@ -13,10 +13,11 @@
     - role: user
       definition:
         schema: |
+          scalar JSON
+          scalar UUID
           type AuthenticatedRepoCloneUrlOutput {
           	url: String
           }
-          scalar JSON
           type Mutation {
           	presignManifestUpload(project_id: UUID!): PresignedUrlResponse
           }
@@ -35,7 +36,6 @@
           	error: Boolean!
           	uploadUrl: UploadUrl
           }
-          scalar UUID
           type UploadUrl {
           	headers: JSON!
           	url: String!
@@ -43,10 +43,11 @@
     - role: service
       definition:
         schema: |
+          scalar JSON
+          scalar UUID
           type AuthenticatedRepoCloneUrlOutput {
           	url: String
           }
-          scalar JSON
           type Mutation {
           	presignManifestUpload(project_id: UUID!): PresignedUrlResponse
           }
@@ -62,23 +63,23 @@
           	presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
           	sbomUrl(buildId: UUID!): String
           }
-          input SbomUploadUrlInput {
-          	orgId: UUID!
-          	projectId: UUID!
-          }
           type SbomUploadUrlOutput {
           	error: Boolean!
           	uploadUrl: UploadUrl
           }
-          scalar UUID
           type UploadUrl {
           	headers: JSON!
           	url: String!
+          }
+          input SbomUploadUrlInput {
+            orgId: UUID!
+            projectId: UUID!
           }
     - role: cli
       definition:
         schema: |
           scalar JSON
+          scalar UUID
           type Query {
           	presignSbomUpload(orgId: UUID!, buildId: UUID!): SbomUploadUrlOutput
           }
@@ -86,7 +87,6 @@
           	error: Boolean!
           	uploadUrl: UploadUrl
           }
-          scalar UUID
           type UploadUrl {
           	headers: JSON!
           	url: String!

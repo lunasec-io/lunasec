@@ -17,17 +17,19 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/cenkalti/backoff/v4"
-	"github.com/lib/pq"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
-	"github.com/rs/zerolog/log"
-	"github.com/samber/lo"
-	"go.uber.org/fx"
 	"net/http"
 	url2 "net/url"
 	"strings"
 	"time"
+
+	"github.com/cenkalti/backoff/v4"
+	"github.com/lib/pq"
+	"github.com/rs/zerolog/log"
+	"github.com/samber/lo"
+	"go.uber.org/fx"
+
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
 )
 
 const (
@@ -45,6 +47,7 @@ type npmReplicatorDeps struct {
 	Client          *http.Client
 	DB              *sql.DB
 	PackageIngester metadata.PackageIngester
+	APIReplicator   metadata.APIReplicator
 }
 
 type npmReplicator struct {
@@ -392,6 +395,7 @@ func (n *npmReplicator) ReplicateSince(ctx context.Context, since int) error {
 	defer close(replicatedPackages)
 
 	go n.ingestReplicatedPackages(ctx, replicatedPackages)
+	go n.deps.APIReplicator.ReplicateFromStreamWithBackoff(replicatedPackages, true, true, false)
 
 	for {
 		log.Info().

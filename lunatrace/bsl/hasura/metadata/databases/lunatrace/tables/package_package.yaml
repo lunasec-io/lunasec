@@ -16,6 +16,13 @@ array_relationships:
         remote_table:
           name: affected
           schema: vulnerability
+  - name: download_counts
+    using:
+      foreign_key_constraint_on:
+        column: package_id
+        table:
+          name: package_download_count
+          schema: npm
   - name: package_maintainers
     using:
       foreign_key_constraint_on:
