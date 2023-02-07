@@ -1,0 +1,5 @@
+mutation UpdateUserSurvey($id: uuid!, $survey: jsonb!) {
+    update_users_by_pk(pk_columns: {id: $id}, _set: {survey: $survey}) {
+        id
+    }
+}

@@ -11,7 +11,11 @@
  * limitations under the License.
  *
  */
+import { GetCurrentUserInfoQuery } from '../api/generated';
+
 export interface ImpersonateUser {
   id: string;
   name: string;
 }
+
+export type User = NonNullable<GetCurrentUserInfoQuery>['users'][number];

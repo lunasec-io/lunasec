@@ -11,25 +11,29 @@
  * limitations under the License.
  *
  */
+import { skipToken } from '@reduxjs/toolkit/query/react';
 import React, { useEffect } from 'react';
 
 import { api, GetCurrentUserInfoQuery } from '../api/generated';
 import useAppSelector from '../hooks/useAppSelector';
 import { selectKratosId } from '../store/slices/authentication';
+import { User } from '../types/user';
 
 interface UserProviderState {
   isAdmin: boolean;
+  user: User | null;
 }
 
 const initialState = {
   isAdmin: false,
+  user: null,
 };
 
 const UserContext = React.createContext<UserProviderState>(initialState);
 
-function userIsAdmin(data: GetCurrentUserInfoQuery | undefined): boolean {
+function getUserInfo(data: GetCurrentUserInfoQuery | undefined): UserProviderState {
   if (!data || data.users.length === 0) {
-    return false;
+    return initialState;
   }
 
   const users = data.users;
@@ -41,35 +45,20 @@ function userIsAdmin(data: GetCurrentUserInfoQuery | undefined): boolean {
   const user = users[0];
   const userRole = user.role;
 
-  return userRole === 'lunatrace_admin';
+  return {
+    user,
+    isAdmin: userRole === 'lunatrace_admin',
+  };
 }
 
 function UserProvider({ children }: { children: React.ReactNode }) {
   const userId = useAppSelector(selectKratosId);
 
-  const [trigger, result] = api.useLazyGetCurrentUserInfoQuery();
+  const { data } = api.useGetCurrentUserInfoQuery(userId ? { kratos_id: userId } : skipToken);
 
-  useEffect(() => {
-    if (userId) {
-      void trigger({
-        kratos_id: userId,
-      });
-    }
-  }, [userId]);
+  const userInfo = getUserInfo(data);
 
-  const { data } = result;
-
-  const isAdmin = userIsAdmin(data);
-
-  return (
-    <UserContext.Provider
-      value={{
-        isAdmin,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={userInfo}>{children}</UserContext.Provider>;
 }
 
 export { UserProvider, UserContext };
