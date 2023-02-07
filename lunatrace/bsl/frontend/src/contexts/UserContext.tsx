@@ -29,7 +29,7 @@ const initialState = {
   user: null,
 };
 
-const UserContext = React.createContext<UserProviderState>(initialState);
+export const UserContext = React.createContext<UserProviderState>(initialState);
 
 function getUserInfo(data: GetCurrentUserInfoQuery | undefined): UserProviderState {
   if (!data || data.users.length === 0) {
@@ -51,7 +51,7 @@ function getUserInfo(data: GetCurrentUserInfoQuery | undefined): UserProviderSta
   };
 }
 
-function UserProvider({ children }: { children: React.ReactNode }) {
+export function UserProvider({ children }: { children: React.ReactNode }) {
   const userId = useAppSelector(selectKratosId);
 
   const { data } = api.useGetCurrentUserInfoQuery(userId ? { kratos_id: userId } : skipToken);
@@ -60,5 +60,3 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
   return <UserContext.Provider value={userInfo}>{children}</UserContext.Provider>;
 }
-
-export { UserProvider, UserContext };

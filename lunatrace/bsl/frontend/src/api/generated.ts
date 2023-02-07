@@ -9284,7 +9284,14 @@ export type GetVulnerabilityDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerability_by_pk?: { __typename?: 'vulnerability', epss_percentile?: number | null, epss_score?: number | null, database_specific?: any | null, details?: string | null, source: string, source_id: string, summary?: string | null, withdrawn?: any | null, last_fetched?: any | null, published?: any | null, modified: any, id: any, severity_name?: any | null, cisa_known_vuln?: { __typename?: 'vulnerability_cisa_known_exploited', id: any } | null, affected: Array<{ __typename?: 'vulnerability_affected', database_specific?: any | null, ecosystem_specific?: any | null, id: any, package: { __typename?: 'package', name: string, package_manager: any, id: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', database_specific?: any | null, event: string, id: any, type: any, version: string }>, affected_versions: Array<{ __typename?: 'vulnerability_affected_version', database_specific?: any | null, id: any, version: string }> }>, equivalents: Array<{ __typename?: 'vulnerability_equivalent', equivalent_vulnerability: { __typename?: 'vulnerability', id: any, source: string, source_id: string, summary?: string | null, last_fetched?: any | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, type: string, score: string, source: string }> } }>, findings: Array<{ __typename?: 'findings', id: any, build_id: any, latest_default_build?: { __typename?: 'latest_default_builds', id?: any | null, build_number?: number | null, created_at?: any | null, project_id?: any | null, project?: { __typename?: 'projects', name: string, id: any } | null } | null }>, references: Array<{ __typename?: 'vulnerability_reference', id: any, type: any, url: string }>, severities: Array<{ __typename?: 'vulnerability_severity', id: any, score: string, source: string, type: string }>, cwes: Array<{ __typename?: 'vulnerability_vulnerability_cwe', id: any, cwe: { __typename?: 'vulnerability_cwe', id: number, name: string, description: string } }> } | null };
+export type GetVulnerabilityDetailsQuery = { __typename?: 'query_root', vulnerability_by_pk?: { __typename?: 'vulnerability', epss_percentile?: number | null, epss_score?: number | null, database_specific?: any | null, details?: string | null, source: string, source_id: string, summary?: string | null, withdrawn?: any | null, last_fetched?: any | null, published?: any | null, modified: any, id: any, severity_name?: any | null, cisa_known_vuln?: { __typename?: 'vulnerability_cisa_known_exploited', id: any } | null, affected: Array<{ __typename?: 'vulnerability_affected', database_specific?: any | null, ecosystem_specific?: any | null, id: any, package: { __typename?: 'package', name: string, package_manager: any, id: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', database_specific?: any | null, event: string, id: any, type: any, version: string }>, affected_versions: Array<{ __typename?: 'vulnerability_affected_version', database_specific?: any | null, id: any, version: string }> }>, equivalents: Array<{ __typename?: 'vulnerability_equivalent', equivalent_vulnerability: { __typename?: 'vulnerability', id: any, source: string, source_id: string, summary?: string | null, last_fetched?: any | null, severities: Array<{ __typename?: 'vulnerability_severity', id: any, type: string, score: string, source: string }> } }>, references: Array<{ __typename?: 'vulnerability_reference', id: any, type: any, url: string }>, severities: Array<{ __typename?: 'vulnerability_severity', id: any, score: string, source: string, type: string }>, cwes: Array<{ __typename?: 'vulnerability_vulnerability_cwe', id: any, cwe: { __typename?: 'vulnerability_cwe', id: number, name: string, description: string } }> } | null };
+
+export type GetVulnerabilityFindingsQueryVariables = Exact<{
+  vulnerability_id: Scalars['uuid'];
+}>;
+
+
+export type GetVulnerabilityFindingsQuery = { __typename?: 'query_root', vulnerability_by_pk?: { __typename?: 'vulnerability', findings: Array<{ __typename?: 'findings', id: any, build_id: any, latest_default_build?: { __typename?: 'latest_default_builds', id?: any | null, build_number?: number | null, created_at?: any | null, project_id?: any | null, project?: { __typename?: 'projects', name: string, id: any } | null } | null }> } | null };
 
 export type GetVulnerableReleasesFromBuildQueryVariables = Exact<{
   buildId: Scalars['uuid'];
@@ -10098,20 +10105,6 @@ export const GetVulnerabilityDetailsDocument = `
         }
       }
     }
-    findings(where: {latest_default_build: {}}) {
-      id
-      build_id
-      latest_default_build {
-        id
-        project {
-          name
-          id
-        }
-        build_number
-        created_at
-        project_id
-      }
-    }
     references {
       id
       type
@@ -10140,6 +10133,26 @@ export const GetVulnerabilityDetailsDocument = `
       }
     }
     severity_name
+  }
+}
+    `;
+export const GetVulnerabilityFindingsDocument = `
+    query GetVulnerabilityFindings($vulnerability_id: uuid!) {
+  vulnerability_by_pk(id: $vulnerability_id) {
+    findings(where: {latest_default_build: {}}) {
+      id
+      build_id
+      latest_default_build {
+        id
+        project {
+          name
+          id
+        }
+        build_number
+        created_at
+        project_id
+      }
+    }
   }
 }
     `;
@@ -10443,6 +10456,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     GetVulnerabilityDetails: build.query<GetVulnerabilityDetailsQuery, GetVulnerabilityDetailsQueryVariables>({
       query: (variables) => ({ document: GetVulnerabilityDetailsDocument, variables })
+    }),
+    GetVulnerabilityFindings: build.query<GetVulnerabilityFindingsQuery, GetVulnerabilityFindingsQueryVariables>({
+      query: (variables) => ({ document: GetVulnerabilityFindingsDocument, variables })
     }),
     GetVulnerableReleasesFromBuild: build.query<GetVulnerableReleasesFromBuildQuery, GetVulnerableReleasesFromBuildQueryVariables>({
       query: (variables) => ({ document: GetVulnerableReleasesFromBuildDocument, variables })

@@ -26,12 +26,12 @@ export const VulnerabilityDetailMain: React.FC = () => {
   if (!vulnerability_id) {
     return <p>Missing vulnerability ID in url.</p>;
   }
-  const { data } = api.useGetVulnerabilityDetailsQuery({ vulnerability_id });
+  const { data: vulnDetails } = api.useGetVulnerabilityDetailsQuery({ vulnerability_id });
 
-  if (!data) {
+  if (!vulnDetails) {
     return <Spinner animation="border" />;
   }
-  const vuln = data.vulnerability_by_pk;
+  const vuln = vulnDetails.vulnerability_by_pk;
   if (!vuln) {
     return <p>Vulnerability with that ID not found.</p>;
   }
