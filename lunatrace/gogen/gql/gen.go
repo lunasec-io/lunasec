@@ -6725,6 +6725,7 @@ type Users_bool_exp struct {
 	Kratos_id       *Uuid_comparison_exp      `json:"kratos_id,omitempty"`
 	Kratos_identity *Identities_bool_exp      `json:"kratos_identity,omitempty"`
 	Role            *User_role_comparison_exp `json:"role,omitempty"`
+	Survey          *Jsonb_comparison_exp     `json:"survey,omitempty"`
 }
 
 // GetAnd returns Users_bool_exp.And, and is useful for accessing the field via an interface.
@@ -6753,6 +6754,9 @@ func (v *Users_bool_exp) GetKratos_identity() *Identities_bool_exp { return v.Kr
 
 // GetRole returns Users_bool_exp.Role, and is useful for accessing the field via an interface.
 func (v *Users_bool_exp) GetRole() *User_role_comparison_exp { return v.Role }
+
+// GetSurvey returns Users_bool_exp.Survey, and is useful for accessing the field via an interface.
+func (v *Users_bool_exp) GetSurvey() *Jsonb_comparison_exp { return v.Survey }
 
 type Users_constraint string
 

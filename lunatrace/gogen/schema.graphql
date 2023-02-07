@@ -5739,6 +5739,7 @@ type users {
     kratos_id: uuid
     kratos_identity: identities
     role: user_role!
+    survey(path: String): jsonb
 }
 
 input users_bool_exp {
@@ -5751,6 +5752,7 @@ input users_bool_exp {
     kratos_id: uuid_comparison_exp
     kratos_identity: identities_bool_exp
     role: user_role_comparison_exp
+    survey: jsonb_comparison_exp
 }
 
 enum users_constraint {
@@ -5790,6 +5792,7 @@ input users_order_by {
     kratos_id: order_by
     kratos_identity: identities_order_by
     role: order_by
+    survey: order_by
 }
 
 input users_pk_columns_input {
@@ -5802,6 +5805,7 @@ enum users_select_column {
     id
     kratos_id
     role
+    survey
 }
 
 input users_set_input {

@@ -10765,6 +10765,13 @@ export type Users = {
   /** An object relationship */
   kratos_identity?: Maybe<Identities>;
   role: Scalars['user_role'];
+  survey?: Maybe<Scalars['jsonb']>;
+};
+
+
+/** LunaTrace users, identified by their various auth identifiers (ex. github, kratos, etc.) */
+export type UsersSurveyArgs = {
+  path?: InputMaybe<Scalars['String']>;
 };
 
 /** Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'. */
@@ -10778,6 +10785,7 @@ export type Users_Bool_Exp = {
   kratos_id?: InputMaybe<Uuid_Comparison_Exp>;
   kratos_identity?: InputMaybe<Identities_Bool_Exp>;
   role?: InputMaybe<User_Role_Comparison_Exp>;
+  survey?: InputMaybe<Jsonb_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "users" */
@@ -10831,6 +10839,7 @@ export type Users_Order_By = {
   kratos_id?: InputMaybe<Order_By>;
   kratos_identity?: InputMaybe<Identities_Order_By>;
   role?: InputMaybe<Order_By>;
+  survey?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: users */
@@ -10849,7 +10858,9 @@ export enum Users_Select_Column {
   /** column name */
   KratosId = 'kratos_id',
   /** column name */
-  Role = 'role'
+  Role = 'role',
+  /** column name */
+  Survey = 'survey'
 }
 
 /** input type for updating data in table "users" */
