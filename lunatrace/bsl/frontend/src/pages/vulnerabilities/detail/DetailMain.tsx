@@ -11,17 +11,19 @@
  * limitations under the License.
  *
  */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 
 import api from '../../../api';
+import { useUser } from '../../../hooks/useUser';
 
 import { VulnerabilityDetailBody } from './DetailBody';
 
 export const VulnerabilityDetailMain: React.FC = () => {
   const { vulnerability_id } = useParams();
+  const { user } = useUser();
 
   if (!vulnerability_id) {
     return <p>Missing vulnerability ID in url.</p>;
