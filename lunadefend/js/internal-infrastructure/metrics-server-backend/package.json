@@ -11,12 +11,12 @@
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.147.0",
-    "@types/jest": "^26.0.10",
+    "@types/jest": "^29.4.0",
     "@types/node": "^14.0.0",
     "aws-cdk": "1.147.0",
-    "jest": "^26.4.2",
-    "ts-jest": "^26.2.0",
-    "ts-node": "^9.0.0",
+    "jest": "^29.4.1",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.0.0",
     "typescript": "~3.9.7"
   },
   "dependencies": {

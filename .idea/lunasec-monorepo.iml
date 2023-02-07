@@ -71,6 +71,7 @@
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/frontend/build" />
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/common/build" />
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/backend/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/lunatrace/npm-package-cli/dist" />
     </content>
     <content url="file://$MODULE_DIR$/lunatrace/bsl/backend/api/node_modules" />
     <orderEntry type="inheritedJdk" />

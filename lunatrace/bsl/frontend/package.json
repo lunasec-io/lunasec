@@ -81,7 +81,7 @@
     "@testing-library/user-event": "^7.2.1",
     "@types/debounce": "~1.2.1",
     "@types/highlight.js": "~10.1.0",
-    "@types/jest": "^24.9.1",
+    "@types/jest": "^29.4.0",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/minimatch": "~5.1.2",
     "@types/node": "^14.0.0",
