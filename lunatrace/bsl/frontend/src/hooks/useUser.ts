@@ -11,11 +11,8 @@
  * limitations under the License.
  *
  */
-import { GetCurrentUserInfoQuery } from '../api/generated';
+import { useContext } from 'react';
 
-export interface ImpersonateUser {
-  id: string;
-  name: string;
-}
+import { UserContext } from '../contexts/UserContext';
 
-export type User = NonNullable<GetCurrentUserInfoQuery>['users'][number];
+export const useUser = () => useContext(UserContext);

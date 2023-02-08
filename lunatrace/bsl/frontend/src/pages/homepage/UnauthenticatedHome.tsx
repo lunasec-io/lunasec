@@ -14,8 +14,8 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
-import { Login } from '../../components/auth/Login';
 import { LunaTraceIntroVideo } from '../../components/LunaTraceIntroVideo';
+import { Login } from '../../components/auth/Login';
 
 export const UnauthenticatedHome: React.FunctionComponent = (_props) => {
   return (
