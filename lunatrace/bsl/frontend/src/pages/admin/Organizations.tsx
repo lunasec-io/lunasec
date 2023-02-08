@@ -31,7 +31,7 @@ export const AdminDashboardOrgs = () => {
   }
 
   if (error) {
-    return <p>Error loading data: {error}</p>;
+    return <p><>Error loading data: {error}</></p>;
   }
 
   if (!data) {

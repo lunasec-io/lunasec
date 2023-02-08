@@ -14,11 +14,13 @@
 import React from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
+import { FCWithChildren } from '../../types/common-prop-types';
+
 interface StickyScrollableElementProps {
   enabled?: boolean;
 }
 
-export const StickyScrollableElement: React.FC<StickyScrollableElementProps> = ({ enabled = true, children }) => {
+export const StickyScrollableElement: FCWithChildren<StickyScrollableElementProps> = ({ enabled = true, children }) => {
   if (!enabled) {
     return <>{children}</>;
   }
