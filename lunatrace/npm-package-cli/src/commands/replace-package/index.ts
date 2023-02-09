@@ -14,15 +14,17 @@
  * limitations under the License.
  *
  */
-import { join } from 'path';
-
 import Arborist from '@npmcli/arborist';
-import { Args, Command } from '@oclif/core';
+// @ts-ignore
+import { add, rm } from '@npmcli/arborist/lib/add-rm-pkg-deps';
+import { Args, Command, Flags } from '@oclif/core';
+import npa from 'npm-package-arg';
+import { manifest } from 'pacote';
 
 import { setupPackageTree } from '../../package/package-tree';
 import { getScriptPath } from '../../package/utils/get-script-path';
 
-export default class ShowTree extends Command {
+export default class ReplacePackage extends Command {
   static description = 'Prints an NPM package tree';
 
   static examples = [
@@ -30,24 +32,54 @@ export default class ShowTree extends Command {
 `,
   ];
 
+  static flags = {
+    old: Flags.string({ description: 'Target Package with Semver range to remove from Package.json', required: true }),
+    new: Flags.string({
+      description: 'New Package with Semver range to use as replacement in Package.json',
+      required: true,
+    }),
+  };
+
   static args = {
     root: Args.string({ description: 'Root folder to read package.json from', required: false }),
   };
 
   async run(): Promise<void> {
-    const { args } = await this.parse(ShowTree);
+    const { args, flags } = await this.parse(ReplacePackage);
 
     const root = getScriptPath(args.root);
 
-    this.log(`loading ${root}`);
+    this.log(`loading ${root} version ${flags.old}`);
 
     const tree = setupPackageTree({
       root: root,
     });
 
-    const virtualTree = await tree.loadVirtualTreeFromRoot();
+    const node = await tree.loadVirtualTreeFromRoot();
 
-    this.log('Package tree:\n');
+    const oldPackage = npa(flags.old);
+
+    const nodes = await node.querySelectorAll(`[name=${oldPackage.escapedName}]:semver(${oldPackage.rawSpec})`);
+
+    const resolvedManifest = await manifest(flags.new);
+
+    this.log('resolved new:', resolvedManifest);
+
+    nodes.map((n) => {
+      if (!n.parent) {
+        throw new Error('Unable to remove package for node without a parent');
+      }
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      n.package = resolvedManifest;
+    });
+
+    this.log('nodes:', nodes);
+
+    node.meta?.commit();
+
+    tree.arborist.reify({});
 
     const printTreeRecursive = (node: Arborist.Node, depth: number) => {
       const indent = ' '.repeat(depth * 2);
@@ -59,6 +91,6 @@ export default class ShowTree extends Command {
       });
     };
 
-    printTreeRecursive(virtualTree, 0);
+    printTreeRecursive(node, 0);
   }
 }
