@@ -20,6 +20,7 @@ import { BsTerminal } from 'react-icons/bs';
 
 import 'graphiql/graphiql.css';
 import '@graphiql/plugin-explorer/dist/style.css';
+import { useUser } from '../../hooks/useUser';
 
 const fetcher = createGraphiQLFetcher({
   url: '/v1/graphql',
@@ -39,6 +40,7 @@ const sampleQuery = `query GetCisaVulnsAboveEpss90Percent {
   }
 }`;
 export function ApiExplorerMain() {
+  const { user } = useUser();
   const [query, setQuery] = useState(sampleQuery);
   // this plugin gives the nice sidebar where you can click fields. Surprisingly not part of the stock graphiql
   const explorerPlugin = useExplorerPlugin({
@@ -66,13 +68,21 @@ export function ApiExplorerMain() {
         LunaTrace aims to offer industry leading, comprehensive API access. This includes access to our extensive
         vulnerability and package database. Use this API to integrate LunaTrace into your own tooling.
       </p>
-      <GraphiQL
-        fetcher={fetcher}
-        query={query}
-        onEditQuery={setQuery}
-        plugins={[explorerPlugin]}
-        // visiblePlugin={explorerPlugin}
-      />
+
+      {!user ? (
+        <>
+          <hr />
+          <h1 className="text-center">Please log in to explore our API</h1>
+        </>
+      ) : (
+        <GraphiQL
+          fetcher={fetcher}
+          query={query}
+          onEditQuery={setQuery}
+          plugins={[explorerPlugin]}
+          // visiblePlugin={explorerPlugin}
+        />
+      )}
     </>
   );
 }
