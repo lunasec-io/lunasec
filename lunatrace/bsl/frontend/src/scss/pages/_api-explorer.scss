@@ -1,0 +1,11 @@
+[aria-label='Show GraphiQL Explorer'] {
+  color: white !important;
+  //border-style: solid !important;
+  //border-width: 1px !important;
+  //border-color: $danger;
+  background-color: hsl(var(--color-primary)) !important;
+}
+
+.graphiql-container {
+  border-radius: 7px;
+}
