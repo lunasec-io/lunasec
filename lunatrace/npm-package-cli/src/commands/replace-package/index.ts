@@ -15,8 +15,6 @@
  *
  */
 import Arborist from '@npmcli/arborist';
-// @ts-ignore
-import { add, rm } from '@npmcli/arborist/lib/add-rm-pkg-deps';
 import { Args, Command, Flags } from '@oclif/core';
 import npa from 'npm-package-arg';
 import { manifest } from 'pacote';
@@ -49,21 +47,21 @@ export default class ReplacePackage extends Command {
 
     const root = getScriptPath(args.root);
 
-    this.log(`loading ${root} version ${flags.old}`);
+    this.log(`changing lockfile at ${root} from ${flags.old} to ${flags.new}`);
 
     const tree = setupPackageTree({
       root: root,
     });
 
+    // TODO: Figure out why Arborist marks everything as "extraneous" in the generated lockfile.
     const node = await tree.loadVirtualTreeFromRoot();
 
     const oldPackage = npa(flags.old);
 
+    // TODO: Figure out if this works for `git` packages as well. (It probably doesn't and will require a separate code path)
     const nodes = await node.querySelectorAll(`[name=${oldPackage.escapedName}]:semver(${oldPackage.rawSpec})`);
 
     const resolvedManifest = await manifest(flags.new);
-
-    this.log('resolved new:', resolvedManifest);
 
     nodes.map((n) => {
       if (!n.parent) {
@@ -72,25 +70,31 @@ export default class ReplacePackage extends Command {
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      n.package = resolvedManifest;
+      n.package = {
+        ...resolvedManifest,
+        resolved: resolvedManifest._resolved,
+        integrity: resolvedManifest._integrity,
+      };
+
+      // These fields are required by Arborist to properly update the lockfile.
+      n.resolved = resolvedManifest._resolved;
+      n.integrity = resolvedManifest._integrity;
     });
 
-    this.log('nodes:', nodes);
+    this.log(`Updated ${nodes.length} packages`);
 
-    node.meta?.commit();
+    // This updates the package-lock.json file on disk.
+    // Note: We may actually need to call `tree.reify()` in order to get the transitive dependencies to update.
+    // It's unclear and untested currently.
+    // @ts-ignore
+    await node.meta.save();
 
-    tree.arborist.reify({});
+    this.log(`Updated package-lock.json with changes`);
 
-    const printTreeRecursive = (node: Arborist.Node, depth: number) => {
-      const indent = ' '.repeat(depth * 2);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      this.log(`${indent}${node.name}@${node.version || 'nil'}`);
-      node.children.forEach((child) => {
-        printTreeRecursive(child, depth + 1);
-      });
-    };
-
-    printTreeRecursive(node, 0);
+    // For more context on what "updating sub-dependencies" means, see:
+    // A@^1.0.0 -> B@^1.0.0 -> C@^1.0.0
+    // If we update B from ^1.0.0 to ^1.1.0, and B adds a new dependency on D@^1.0.0, we need to include D.
+    // This is what `reify()` does for us, but it also writes all of the `node_modules` to the disk.
+    // It's unclear if it's possible to do this with the `virtual` tree and if the code path for that exists in Arborist.
   }
 }

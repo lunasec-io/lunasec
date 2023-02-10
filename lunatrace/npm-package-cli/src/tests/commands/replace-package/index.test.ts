@@ -14,16 +14,35 @@
  * limitations under the License.
  *
  */
+import fs from 'fs';
+
 import { expect, test } from '@oclif/test';
 
-const basePath = process.cwd() + '/src/tests/fixtures/npm-project/';
+const basePath = process.cwd() + '/src/tests/fixtures/npm-project';
 
 describe('replace package in tree', () => {
+  // Copy the `package.json` and `package-lock.json` files to a temporary directory
+  function copyPackageFiles(): string {
+    const path = `/tmp/npm-project-test-${Math.random()}`;
+    fs.mkdirSync(path);
+    fs.copyFileSync(`${basePath}/package.json`, `${path}/package.json`);
+    fs.copyFileSync(`${basePath}/package-lock.json`, `${path}/package-lock.json`);
+    return path;
+  }
+
+  const testPath = copyPackageFiles();
+
   test
     .stdout()
-    .command(['replace-package', basePath, '--old', 'write-stream@0.4.3', '--new', 'foo@0.0.0'])
+    .command(['replace-package', testPath, '--old', 'got-scraping@3.2.8', '--new', 'got-scraping@3.2.12'])
     .it('replace simple package', (ctx) => {
-      expect(ctx.stdout).to.not.contain('write-stream@0.4.3');
-      expect(ctx.stdout).to.contain('foo@0.0.0');
+      const newPackageLock = fs.readFileSync(`${testPath}/package-lock.json`, 'utf8');
+      expect(newPackageLock).to.not.contain('got-scraping-3.2.8.tgz');
+      expect(newPackageLock).to.contain('got-scraping-3.2.12.tgz');
+
+      expect(ctx.stdout).to.contain('Updated 1 package');
+
+      // Delete the temporary directory
+      fs.rmSync(testPath, { recursive: true, force: true });
     });
 });
