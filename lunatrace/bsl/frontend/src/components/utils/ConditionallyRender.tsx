@@ -12,7 +12,9 @@
  *
  */
 import React from 'react';
-export const ConditionallyRender: React.FC<{ if: unknown }> = (props) => {
+
+import { FCWithChildren } from '../../types/common-prop-types';
+export const ConditionallyRender: FCWithChildren<{ if: unknown }> = (props) => {
   const shouldRender = !!props.if;
   if (!shouldRender) {
     return null;

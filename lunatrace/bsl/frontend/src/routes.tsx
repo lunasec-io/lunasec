@@ -18,6 +18,7 @@ import { Navigate } from 'react-router-dom';
 import { RouteGuard } from './components/auth/RouteGuard';
 import MainLayout from './layouts/Main';
 import { AdminDashboard, BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } from './pages';
+import { ApiExplorerMain } from './pages/api-explorer/Main';
 import { AuthError } from './pages/auth/Error';
 import { CwesMain } from './pages/cwes/Main';
 import { CweDetailMain } from './pages/cwes/detail/CweDetailMain';
@@ -60,6 +61,15 @@ export const routes: RouteObject[] = [
           {
             path: ':cwe_id',
             element: <CweDetailMain />,
+          },
+        ],
+      },
+      {
+        path: 'api-explorer',
+        children: [
+          {
+            path: '',
+            element: <ApiExplorerMain />,
           },
         ],
       },

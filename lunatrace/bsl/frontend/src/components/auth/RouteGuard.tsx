@@ -16,8 +16,9 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { selectConfirmedUnauthenticated } from '../../store/slices/authentication';
+import { FCWithChildren } from '../../types/common-prop-types';
 
-export const RouteGuard: React.FC = (props) => {
+export const RouteGuard: FCWithChildren = (props) => {
   const confirmedNotAuthenticed = useAppSelector(selectConfirmedUnauthenticated);
   const navigate = useNavigate();
   useEffect(() => {

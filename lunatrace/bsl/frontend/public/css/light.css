@@ -17810,6 +17810,15 @@ code.code-highlight {
     max-width: 60%;
   }
 }
+[aria-label="Show GraphiQL Explorer"] {
+  color: white !important;
+  background-color: hsl(var(--color-primary)) !important;
+}
+
+.graphiql-container {
+  border-radius: 7px;
+}
+
 .breadcrumb-item + .breadcrumb-item::before {
   content: var(--bs-breadcrumb-divider, ">") !important;
 }

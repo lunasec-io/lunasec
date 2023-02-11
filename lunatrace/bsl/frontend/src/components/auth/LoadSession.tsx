@@ -17,9 +17,10 @@ import React, { useEffect } from 'react';
 
 import useAppDispatch from '../../hooks/useAppDispatch';
 import { setConfirmedUnauthenticated, setSession } from '../../store/slices/authentication';
+import { FCWithChildren } from '../../types/common-prop-types';
 import oryClient from '../../utils/ory-client';
 
-export const LoadSession: React.FC = (props) => {
+export const LoadSession: FCWithChildren = (props) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {

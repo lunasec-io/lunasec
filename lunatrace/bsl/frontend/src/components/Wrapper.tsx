@@ -13,6 +13,8 @@
  */
 import React from 'react';
 
-const Wrapper: React.FunctionComponent = ({ children }) => <div className="wrapper">{children}</div>;
+import { FCWithChildren } from '../types/common-prop-types';
+
+const Wrapper: FCWithChildren = ({ children }) => <div className="wrapper">{children}</div>;
 
 export default Wrapper;
