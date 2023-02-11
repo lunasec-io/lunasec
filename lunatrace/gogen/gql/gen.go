@@ -385,7 +385,7 @@ func (v *Analysis_manifest_dependency_edge_result_location_bool_exp) GetStart_ro
 type Analysis_manifest_dependency_edge_result_location_constraint string
 
 const (
-	Analysis_manifest_dependency_edge_result_location_constraintManifestDependencyEdgeResultLocationPkey Analysis_manifest_dependency_edge_result_location_constraint = "manifest_dependency_edge_result_location_pkey"
+	Analysis_manifest_dependency_edge_result_location_constraintManifestDependencyEdgeResultCallsitePkey Analysis_manifest_dependency_edge_result_location_constraint = "manifest_dependency_edge_result_callsite_pkey"
 )
 
 type Analysis_manifest_dependency_edge_result_location_insert_input struct {
@@ -2380,12 +2380,24 @@ func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnera
 
 // GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage includes the requested fields of the GraphQL type package.
 type GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage struct {
-	Id uuid.UUID `json:"id"`
+	Id              uuid.UUID            `json:"id"`
+	Name            string               `json:"name"`
+	Package_manager types.PackageManager `json:"package_manager"`
 }
 
 // GetId returns GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage.Id, and is useful for accessing the field via an interface.
 func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage) GetId() uuid.UUID {
 	return v.Id
+}
+
+// GetName returns GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage.Name, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage) GetName() string {
+	return v.Name
+}
+
+// GetPackage_manager returns GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage.Package_manager, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage) GetPackage_manager() types.PackageManager {
+	return v.Package_manager
 }
 
 // GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference includes the requested fields of the GraphQL type vulnerability_reference.
@@ -8508,7 +8520,6 @@ type Vulnerability_vulnerability_cwe_constraint string
 const (
 	Vulnerability_vulnerability_cwe_constraintUniqueVulnerabilityCweVulnerabilityIdCweIdKey Vulnerability_vulnerability_cwe_constraint = "unique_vulnerability_cwe_vulnerability_id_cwe_id_key"
 	Vulnerability_vulnerability_cwe_constraintVulnerabilityCwePkey                          Vulnerability_vulnerability_cwe_constraint = "vulnerability_cwe_pkey"
-	Vulnerability_vulnerability_cwe_constraintVulnerabilityCweVulnerabilityIdCweIdKey       Vulnerability_vulnerability_cwe_constraint = "vulnerability_cwe_vulnerability_id_cwe_id_key"
 )
 
 type Vulnerability_vulnerability_cwe_insert_input struct {
@@ -8905,6 +8916,8 @@ query GetVulnerabilityMetadata ($id: uuid!) {
 		affected {
 			package {
 				id
+				name
+				package_manager
 			}
 		}
 	}

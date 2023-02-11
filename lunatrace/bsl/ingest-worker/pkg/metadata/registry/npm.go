@@ -8,7 +8,7 @@
 //
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package npm
+package registry
 
 import (
 	"context"
@@ -34,6 +34,7 @@ type npmRegistryDeps struct {
 
 	Fetcher metadata.Fetcher
 	DB      *sql.DB
+	Config  Config
 }
 
 type npmRegistry struct {
@@ -75,6 +76,11 @@ func (s *npmRegistry) PackageStream() (<-chan string, error) {
 }
 
 func (s *npmRegistry) GetPackageMetadata(packageName string) (*metadata.PackageMetadata, error) {
+	// Instead of using the database, we can use NPM to get the latest package metadata.
+	if s.deps.Config.NPM.UseNPM {
+		return s.getPackageMetadataFromNPM(packageName)
+	}
+
 	queryPackageMetadata := table.Revision.SELECT(
 		table.Revision.Doc,
 		table.Revision.Deleted,
@@ -105,7 +111,7 @@ func (s *npmRegistry) GetPackageMetadata(packageName string) (*metadata.PackageM
 	return npm.ParseRawPackageMetadata([]byte(revision.Doc))
 }
 
-func (s *npmRegistry) GetPackageMetadataFromNPM(packageName string) (*metadata.PackageMetadata, error) {
+func (s *npmRegistry) getPackageMetadataFromNPM(packageName string) (*metadata.PackageMetadata, error) {
 	return s.deps.Fetcher.Fetch(context.Background(), packageName)
 }
 

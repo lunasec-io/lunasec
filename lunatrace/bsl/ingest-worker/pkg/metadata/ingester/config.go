@@ -8,18 +8,25 @@
 //
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package registry
+package ingester
 
 import (
-	"go.uber.org/fx"
-
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher"
+	"github.com/rs/zerolog/log"
+	"go.uber.org/config"
 )
 
-var NPMModule = fx.Options(
-	fetcher.NPMModule,
-	fx.Provide(
-		NewConfig,
-		NewNPMRegistry,
-	),
-)
+type Config struct {
+}
+
+func NewConfig(provider config.Provider) (config Config) {
+	value := provider.Get("ingester")
+
+	err := value.Populate(&config)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable populate ingester config")
+		return
+	}
+	return
+}
