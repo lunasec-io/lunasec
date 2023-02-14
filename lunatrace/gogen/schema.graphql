@@ -4,10 +4,6 @@ schema {
     subscription: subscription_root
 }
 
-type AuthenticatedRepoCloneUrlOutput {
-    url: String
-}
-
 scalar Boolean
 
 input Boolean_comparison_exp {
@@ -20,111 +16,6 @@ input Boolean_comparison_exp {
     _lte: Boolean
     _neq: Boolean
     _nin: [Boolean!]
-}
-
-type BuildData_Adjustment {
-    adjusted_from_cvss_score: Float
-    adjusted_from_severity_name: String
-    adjustments_applied: [String!]!
-    path_matched: String!
-}
-
-type BuildData_AffectedByVulnerability {
-    adjustment: BuildData_Adjustment
-    beneath_minimum_severity: Boolean!
-    fix_versions: [String!]!
-    ignored: Boolean!
-    ignored_vulnerability: BuildData_IgnoredVulnerability
-    path: String!
-    ranges: [BuildData_Range!]!
-    trivially_updatable_to: String
-    vulnerability: BuildData_Vulnerability!
-}
-
-type BuildData_Cwe {
-    common_name: String
-    description: String!
-    id: Int!
-    name: String!
-}
-
-type BuildData_DependencyNode {
-    id: String!
-    locations: [BuildData_Location!]!
-    range: String!
-    reachable: String!
-    release: BuildData_Release!
-    release_id: String!
-}
-
-type BuildData_Guide {
-    id: String!
-    summary: String!
-    title: String!
-}
-
-type BuildData_Guide_Vulnerability {
-    guide: BuildData_Guide
-}
-
-type BuildData_IgnoredVulnerability {
-    note: String!
-}
-
-type BuildData_Location {
-    end_column: Int!
-    end_row: Int!
-    id: String!
-    path: String!
-    start_column: Int!
-    start_row: Int!
-}
-
-type BuildData_Package {
-    name: String!
-    package_manager: String!
-}
-
-type BuildData_Range {
-    fixed: String
-    introduced: String
-}
-
-type BuildData_Release {
-    id: String!
-    package: BuildData_Package!
-    version: String!
-}
-
-type BuildData_Vulnerability {
-    cvss_score: Float
-    cwes: [BuildData_VulnerabilityCwe!]!
-    guide_vulnerabilities: [BuildData_Guide_Vulnerability!]!
-    id: String!
-    severity_name: String
-    source: String!
-    source_id: String!
-    summary: String
-}
-
-type BuildData_VulnerabilityCwe {
-    cwe: BuildData_Cwe!
-    id: String!
-}
-
-type BuildData_VulnerableRelease {
-    adjustment: BuildData_Adjustment
-    affected_by: [BuildData_AffectedByVulnerability!]!
-    beneath_minimum_severity: Boolean!
-    chains: [[BuildData_DependencyNode!]!]!
-    cvss: Float
-    dev_only: Boolean!
-    fix_versions: [String!]!
-    guides: [BuildData_Guide!]!
-    paths: [String!]!
-    release: BuildData_Release!
-    severity: String!
-    trivially_updatable: String!
 }
 
 scalar Float
@@ -141,23 +32,6 @@ input Float_comparison_exp {
     _nin: [Float!]
 }
 
-type GithubRepository {
-    cloneUrl: String!
-    defaultBranch: String!
-    gitUrl: String!
-    orgId: Int!
-    orgName: String!
-    orgNodeId: String!
-    ownerType: String!
-    repoId: Int!
-    repoName: String!
-    repoNodeId: String!
-}
-
-type InstallSelectedReposResponse {
-    success: Boolean
-}
-
 scalar Int
 
 input Int_comparison_exp {
@@ -170,29 +44,6 @@ input Int_comparison_exp {
     _lte: Int
     _neq: Int
     _nin: [Int!]
-}
-
-type OrgWithRepos {
-    id: String!
-    organizationName: String!
-    repos: [GithubRepository!]!
-}
-
-input OrgsWithReposInput {
-    id: String!
-    repos: [Int!]!
-}
-
-type PresignedUrlResponse {
-    bucket: String!
-    headers: jsonb!
-    key: String!
-    url: String!
-}
-
-type SbomUploadUrlOutput {
-    error: Boolean!
-    uploadUrl: UploadUrl
 }
 
 scalar String
@@ -217,11 +68,6 @@ input String_comparison_exp {
     _nsimilar: String
     _regex: String
     _similar: String
-}
-
-type UploadUrl {
-    headers: jsonb!
-    url: String!
 }
 
 
@@ -431,7 +277,7 @@ input analysis_manifest_dependency_edge_result_location_bool_exp {
 }
 
 enum analysis_manifest_dependency_edge_result_location_constraint {
-    manifest_dependency_edge_result_location_pkey
+    manifest_dependency_edge_result_callsite_pkey
 }
 
 input analysis_manifest_dependency_edge_result_location_inc_input {
@@ -993,7 +839,6 @@ type builds {
     pull_request_id: String
     resolved_manifests(distinct_on: [resolved_manifest_select_column!], limit: Int, offset: Int, order_by: [resolved_manifest_order_by!], where: resolved_manifest_bool_exp): [resolved_manifest!]!
     s3_url: String
-    s3_url_signed: String
     scans(distinct_on: [scans_select_column!], limit: Int, offset: Int, order_by: [scans_order_by!], where: scans_bool_exp): [scans!]!
     source_type: builds_source_type!
 }
@@ -1993,7 +1838,6 @@ enum folder_environmental_adjustment_select_column {
 }
 
 type github_repositories {
-    authenticated_clone_url: AuthenticatedRepoCloneUrlOutput
     default_branch: String
     git_url: String!
     github_id: Int
@@ -3434,8 +3278,6 @@ type mutation_root {
     insert_vulnerability_vulnerability_cwe_one(object: vulnerability_vulnerability_cwe_insert_input!, on_conflict: vulnerability_vulnerability_cwe_on_conflict): vulnerability_vulnerability_cwe
     insert_webhook_cache(objects: [webhook_cache_insert_input!]!, on_conflict: webhook_cache_on_conflict): webhook_cache_mutation_response
     insert_webhook_cache_one(object: webhook_cache_insert_input!, on_conflict: webhook_cache_on_conflict): webhook_cache
-    installSelectedRepos(orgs: [OrgsWithReposInput!]!): InstallSelectedReposResponse
-    presignManifestUpload(project_id: uuid!): PresignedUrlResponse
     update_analysis_manifest_dependency_edge_result(_append: analysis_manifest_dependency_edge_result_append_input, _delete_at_path: analysis_manifest_dependency_edge_result_delete_at_path_input, _delete_elem: analysis_manifest_dependency_edge_result_delete_elem_input, _delete_key: analysis_manifest_dependency_edge_result_delete_key_input, _inc: analysis_manifest_dependency_edge_result_inc_input, _prepend: analysis_manifest_dependency_edge_result_prepend_input, _set: analysis_manifest_dependency_edge_result_set_input, where: analysis_manifest_dependency_edge_result_bool_exp!): analysis_manifest_dependency_edge_result_mutation_response
     update_analysis_manifest_dependency_edge_result_by_pk(_append: analysis_manifest_dependency_edge_result_append_input, _delete_at_path: analysis_manifest_dependency_edge_result_delete_at_path_input, _delete_elem: analysis_manifest_dependency_edge_result_delete_elem_input, _delete_key: analysis_manifest_dependency_edge_result_delete_key_input, _inc: analysis_manifest_dependency_edge_result_inc_input, _prepend: analysis_manifest_dependency_edge_result_prepend_input, _set: analysis_manifest_dependency_edge_result_set_input, pk_columns: analysis_manifest_dependency_edge_result_pk_columns_input!): analysis_manifest_dependency_edge_result
     update_analysis_manifest_dependency_edge_result_location(_inc: analysis_manifest_dependency_edge_result_location_inc_input, _set: analysis_manifest_dependency_edge_result_location_set_input, where: analysis_manifest_dependency_edge_result_location_bool_exp!): analysis_manifest_dependency_edge_result_location_mutation_response
@@ -5104,8 +4946,6 @@ type query_root {
     analysis_manifest_dependency_edge_result_by_pk(id: uuid!): analysis_manifest_dependency_edge_result
     analysis_manifest_dependency_edge_result_location(distinct_on: [analysis_manifest_dependency_edge_result_location_select_column!], limit: Int, offset: Int, order_by: [analysis_manifest_dependency_edge_result_location_order_by!], where: analysis_manifest_dependency_edge_result_location_bool_exp): [analysis_manifest_dependency_edge_result_location!]!
     analysis_manifest_dependency_edge_result_location_by_pk(id: uuid!): analysis_manifest_dependency_edge_result_location
-    authenticatedRepoCloneUrl(repoGithubId: Int!): AuthenticatedRepoCloneUrlOutput
-    availableOrgsWithRepos: [OrgWithRepos!]
     build_dependency_relationship(distinct_on: [build_dependency_relationship_select_column!], limit: Int, offset: Int, order_by: [build_dependency_relationship_order_by!], where: build_dependency_relationship_bool_exp): [build_dependency_relationship!]!
     build_dependency_relationship_by_pk(id: uuid!): build_dependency_relationship
     build_log(distinct_on: [build_log_select_column!], limit: Int, offset: Int, order_by: [build_log_order_by!], where: build_log_bool_exp): [build_log!]!
@@ -5116,7 +4956,6 @@ type query_root {
     cvss_environmental_adjustment(distinct_on: [cvss_environmental_adjustment_select_column!], limit: Int, offset: Int, order_by: [cvss_environmental_adjustment_order_by!], where: cvss_environmental_adjustment_bool_exp): [cvss_environmental_adjustment!]!
     cvss_environmental_adjustment_by_pk(id: uuid!): cvss_environmental_adjustment
     default_branch_builds(distinct_on: [default_branch_builds_select_column!], limit: Int, offset: Int, order_by: [default_branch_builds_order_by!], where: default_branch_builds_bool_exp): [default_branch_builds!]!
-    fakeQueryToHackHasuraBeingABuggyMess: String
     findings(distinct_on: [findings_select_column!], limit: Int, offset: Int, order_by: [findings_order_by!], where: findings_bool_exp): [findings!]!
     findings_by_pk(id: uuid!): findings
     folder_environmental_adjustment(distinct_on: [folder_environmental_adjustment_select_column!], limit: Int, offset: Int, order_by: [folder_environmental_adjustment_order_by!], where: folder_environmental_adjustment_bool_exp): [folder_environmental_adjustment!]!
@@ -5162,7 +5001,6 @@ type query_root {
     package_release_dependency_by_pk(id: uuid!): package_release_dependency
     package_release_license(distinct_on: [package_release_license_select_column!], limit: Int, offset: Int, order_by: [package_release_license_order_by!], where: package_release_license_bool_exp): [package_release_license!]!
     package_release_license_by_pk(id: uuid!): package_release_license
-    presignSbomUpload(buildId: uuid!, orgId: uuid!): SbomUploadUrlOutput
     project_access_tokens(distinct_on: [project_access_tokens_select_column!], limit: Int, offset: Int, order_by: [project_access_tokens_order_by!], where: project_access_tokens_bool_exp): [project_access_tokens!]!
     project_access_tokens_by_pk(id: uuid!): project_access_tokens
     project_folder_settings(distinct_on: [project_folder_settings_select_column!], limit: Int, offset: Int, order_by: [project_folder_settings_order_by!], where: project_folder_settings_bool_exp): [project_folder_settings!]!
@@ -5172,7 +5010,6 @@ type query_root {
     projects_by_pk(id: uuid!): projects
     resolved_manifest(distinct_on: [resolved_manifest_select_column!], limit: Int, offset: Int, order_by: [resolved_manifest_order_by!], where: resolved_manifest_bool_exp): [resolved_manifest!]!
     resolved_manifest_by_pk(id: uuid!): resolved_manifest
-    sbomUrl(buildId: uuid!): String
     scans(distinct_on: [scans_select_column!], limit: Int, offset: Int, order_by: [scans_order_by!], where: scans_bool_exp): [scans!]!
     scans_by_pk(id: uuid!): scans
     settings(distinct_on: [settings_select_column!], limit: Int, offset: Int, order_by: [settings_order_by!], where: settings_bool_exp): [settings!]!
@@ -5202,7 +5039,6 @@ type query_root {
     vulnerability_severity_by_pk(id: uuid!): vulnerability_severity
     vulnerability_vulnerability_cwe(distinct_on: [vulnerability_vulnerability_cwe_select_column!], limit: Int, offset: Int, order_by: [vulnerability_vulnerability_cwe_order_by!], where: vulnerability_vulnerability_cwe_bool_exp): [vulnerability_vulnerability_cwe!]!
     vulnerability_vulnerability_cwe_by_pk(id: uuid!): vulnerability_vulnerability_cwe
-    vulnerableReleasesFromBuild(buildId: uuid!, minimumSeverity: String): [BuildData_VulnerableRelease!]
     webhook_cache(distinct_on: [webhook_cache_select_column!], limit: Int, offset: Int, order_by: [webhook_cache_order_by!], where: webhook_cache_bool_exp): [webhook_cache!]!
     webhook_cache_by_pk(delivery_id: uuid!): webhook_cache
 }
@@ -7269,7 +7105,6 @@ input vulnerability_vulnerability_cwe_bool_exp {
 enum vulnerability_vulnerability_cwe_constraint {
     unique_vulnerability_cwe_vulnerability_id_cwe_id_key
     vulnerability_cwe_pkey
-    vulnerability_cwe_vulnerability_id_cwe_id_key
 }
 
 input vulnerability_vulnerability_cwe_inc_input {

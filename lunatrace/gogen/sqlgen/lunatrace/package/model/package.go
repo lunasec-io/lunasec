@@ -8,6 +8,7 @@
 package model
 
 import (
+	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 	"time"
@@ -19,7 +20,7 @@ type Package struct {
 	CustomRegistry      string
 	Name                string
 	Description         *string
-	UpstreamData        *string
+	UpstreamData        json.RawMessage
 	LastFailedFetch     *time.Time
 	LastSuccessfulFetch *time.Time
 	Internal            bool
