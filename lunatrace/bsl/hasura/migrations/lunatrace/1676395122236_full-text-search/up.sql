@@ -1,5 +1,4 @@
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
-CREATE EXTENSION IF NOT EXISTS btree_gin;
 
 -- -- function used for combining multiple text fields together into the full text search index
 -- This function is immutable, and that means it can be used for the index, where as naked concat_ws cannot
