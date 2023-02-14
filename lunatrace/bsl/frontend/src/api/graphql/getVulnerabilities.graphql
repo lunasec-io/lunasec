@@ -1,16 +1,10 @@
-query SearchVulnerabilities($search: String!, $source: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerability_order_by!] = {}, $limit: Int!) {
-  vulnerability(
+query SearchVulnerabilities($search: String!, $order_by: [vulnerability_order_by!] = {}, $limit: Int!) {
+  vulnerability:search_vulnerabilities(
+    args: {search:$search},
     where: {
       _and: [
         {affected: {id: {_is_null: false}}},
-        {source: $source},
-        {
-          _or: [
-            {source_id: {_ilike: $search}},
-            {summary: {_ilike: $search}},
-            {affected: {package: {name: {_ilike: $search}}}}
-          ]
-        }
+        {source: {_eq:"ghsa"}},
       ]
     },
     limit: $limit,
