@@ -5175,6 +5175,7 @@ type query_root {
     sbomUrl(buildId: uuid!): String
     scans(distinct_on: [scans_select_column!], limit: Int, offset: Int, order_by: [scans_order_by!], where: scans_bool_exp): [scans!]!
     scans_by_pk(id: uuid!): scans
+    search_vulnerabilities(args: search_vulnerabilities_args!, distinct_on: [vulnerability_select_column!], limit: Int, offset: Int, order_by: [vulnerability_order_by!], where: vulnerability_bool_exp): [vulnerability!]!
     settings(distinct_on: [settings_select_column!], limit: Int, offset: Int, order_by: [settings_order_by!], where: settings_bool_exp): [settings!]!
     settings_by_pk(id: uuid!): settings
     users(distinct_on: [users_select_column!], limit: Int, offset: Int, order_by: [users_order_by!], where: users_bool_exp): [users!]!
@@ -5537,6 +5538,10 @@ input scans_variance_order_by {
     scan_number: order_by
 }
 
+input search_vulnerabilities_args {
+    search: String
+}
+
 type settings {
     created_at: timestamptz!
     id: uuid!
@@ -5659,6 +5664,7 @@ type subscription_root {
     resolved_manifest_by_pk(id: uuid!): resolved_manifest
     scans(distinct_on: [scans_select_column!], limit: Int, offset: Int, order_by: [scans_order_by!], where: scans_bool_exp): [scans!]!
     scans_by_pk(id: uuid!): scans
+    search_vulnerabilities(args: search_vulnerabilities_args!, distinct_on: [vulnerability_select_column!], limit: Int, offset: Int, order_by: [vulnerability_order_by!], where: vulnerability_bool_exp): [vulnerability!]!
     settings(distinct_on: [settings_select_column!], limit: Int, offset: Int, order_by: [settings_order_by!], where: settings_bool_exp): [settings!]!
     settings_by_pk(id: uuid!): settings
     users(distinct_on: [users_select_column!], limit: Int, offset: Int, order_by: [users_order_by!], where: users_bool_exp): [users!]!

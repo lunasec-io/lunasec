@@ -5678,6 +5678,8 @@ export type Query_Root = {
   scans_aggregate: Scans_Aggregate;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
+  /** execute function "search_vulnerabilities" which returns "vulnerability.vulnerability" */
+  search_vulnerabilities: Array<Vulnerability>;
   /** fetch data from the table: "settings" */
   settings: Array<Settings>;
   /** fetch data from the table: "settings" using primary key columns */
@@ -6221,6 +6223,16 @@ export type Query_RootScans_AggregateArgs = {
 
 export type Query_RootScans_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootSearch_VulnerabilitiesArgs = {
+  args: Search_Vulnerabilities_Args;
+  distinct_on?: InputMaybe<Array<Vulnerability_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Order_By>>;
+  where?: InputMaybe<Vulnerability_Bool_Exp>;
 };
 
 
@@ -6819,6 +6831,10 @@ export type Scans_Variance_Order_By = {
   scan_number?: InputMaybe<Order_By>;
 };
 
+export type Search_Vulnerabilities_Args = {
+  search?: InputMaybe<Scalars['String']>;
+};
+
 /** columns and relationships of "settings" */
 export type Settings = {
   __typename?: 'settings';
@@ -7030,6 +7046,8 @@ export type Subscription_Root = {
   scans_aggregate: Scans_Aggregate;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
+  /** execute function "search_vulnerabilities" which returns "vulnerability.vulnerability" */
+  search_vulnerabilities: Array<Vulnerability>;
   /** fetch data from the table: "settings" */
   settings: Array<Settings>;
   /** fetch data from the table: "settings" using primary key columns */
@@ -7556,6 +7574,16 @@ export type Subscription_RootScans_AggregateArgs = {
 
 export type Subscription_RootScans_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootSearch_VulnerabilitiesArgs = {
+  args: Search_Vulnerabilities_Args;
+  distinct_on?: InputMaybe<Array<Vulnerability_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Order_By>>;
+  where?: InputMaybe<Vulnerability_Bool_Exp>;
 };
 
 
@@ -9271,7 +9299,6 @@ export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
   search: Scalars['String'];
-  source?: InputMaybe<String_Comparison_Exp>;
   order_by?: InputMaybe<Array<Vulnerability_Order_By> | Vulnerability_Order_By>;
   limit: Scalars['Int'];
 }>;
@@ -10017,9 +10044,10 @@ export const GetSidebarInfoDocument = `
 }
     `;
 export const SearchVulnerabilitiesDocument = `
-    query SearchVulnerabilities($search: String!, $source: String_comparison_exp = {_ilike: ""}, $order_by: [vulnerability_order_by!] = {}, $limit: Int!) {
-  vulnerability(
-    where: {_and: [{affected: {id: {_is_null: false}}}, {source: $source}, {_or: [{source_id: {_ilike: $search}}, {summary: {_ilike: $search}}, {affected: {package: {name: {_ilike: $search}}}}]}]}
+    query SearchVulnerabilities($search: String!, $order_by: [vulnerability_order_by!] = {}, $limit: Int!) {
+  vulnerability: search_vulnerabilities(
+    args: {search: $search}
+    where: {_and: [{affected: {id: {_is_null: false}}}, {source: {_eq: "ghsa"}}]}
     limit: $limit
     order_by: $order_by
   ) {
