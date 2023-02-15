@@ -20,6 +20,7 @@ import Arborist from '@npmcli/arborist';
 import { Args, Command } from '@oclif/core';
 
 import { setupPackageTree } from '../../package/package-tree';
+import { getScriptPath } from '../../package/utils/get-script-path';
 
 export default class ShowTree extends Command {
   static description = 'Prints an NPM package tree';
@@ -33,24 +34,10 @@ export default class ShowTree extends Command {
     root: Args.string({ description: 'Root folder to read package.json from', required: false }),
   };
 
-  getScriptPath(root?: string) {
-    if (root && root.startsWith('/')) {
-      return root;
-    }
-
-    const scriptInitRoot = process.env.INIT_CWD;
-
-    if (!scriptInitRoot || scriptInitRoot === '') {
-      throw new Error('Could not find root path for script');
-    }
-
-    return join(scriptInitRoot, root || '');
-  }
-
   async run(): Promise<void> {
     const { args } = await this.parse(ShowTree);
 
-    const root = this.getScriptPath(args.root);
+    const root = getScriptPath(args.root);
 
     this.log(`loading ${root}`);
 
