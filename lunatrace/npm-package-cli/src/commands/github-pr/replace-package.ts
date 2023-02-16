@@ -24,9 +24,11 @@ import { getScriptPath } from '../../package/utils/get-script-path';
 import { ReplacePackageFlags } from '../replace-package';
 
 export default class GitHubReplacePackage extends Command {
-  static description = 'Prints an NPM package tree';
+  static description = 'Replaces a package in an NPM project on GitHub and then files a Pull Request';
 
-  static examples = [`$ lunatrace-npm-cli show-tree /path/to/node/project`];
+  static examples = [
+    `$ lunatrace-npm-cli github-pr replace-package owner/repo --githubToken <SECRET> --old js-yaml@^3.13.1 --new js-yaml@^3.14.0`,
+  ];
 
   static flags = {
     ...ReplacePackageFlags,

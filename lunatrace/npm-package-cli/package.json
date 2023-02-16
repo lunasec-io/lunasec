@@ -30,8 +30,7 @@
     "@octokit/rest": "^19.0.7",
     "npm-package-arg": "^10.1.0",
     "octokit-plugin-create-pull-request": "^4.1.1",
-    "pacote": "^15.0.8",
-    "js-yaml": "3.14."
+    "pacote": "^15.0.8"
   },
   "devDependencies": {
     "@oclif/test": "^2.3.3",
