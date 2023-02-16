@@ -14,29 +14,28 @@
  * limitations under the License.
  *
  */
-import Arborist from '@npmcli/arborist';
 import { Args, Command, Flags } from '@oclif/core';
-import npa from 'npm-package-arg';
-import { manifest } from 'pacote';
 
-import { setupPackageTree } from '../../package/package-tree';
+import { replacePackagesForNode } from '../../package/replace-package';
+import { setupPackageTree } from '../../package/replace-package/package-tree';
 import { getScriptPath } from '../../package/utils/get-script-path';
 
+export const ReplacePackageFlags = {
+  old: Flags.string({ description: 'Target Package with Semver range to remove from Package.json', required: true }),
+  new: Flags.string({
+    description: 'New Package with Semver range to use as replacement in Package.json',
+    required: true,
+  }),
+};
+
 export default class ReplacePackage extends Command {
-  static description = 'Prints an NPM package tree';
+  static description = 'Replaces an NPM package in the package tree';
 
   static examples = [
-    `$ lunatrace-npm-cli show-tree /path/to/node/project
-`,
+    `$ lunatrace-npm-cli replace-package /path/to/node/project --old react@^16.0.0 --new react@^16.2.0`,
   ];
 
-  static flags = {
-    old: Flags.string({ description: 'Target Package with Semver range to remove from Package.json', required: true }),
-    new: Flags.string({
-      description: 'New Package with Semver range to use as replacement in Package.json',
-      required: true,
-    }),
-  };
+  static flags = ReplacePackageFlags;
 
   static args = {
     root: Args.string({ description: 'Root folder to read package.json from', required: false }),
@@ -56,36 +55,14 @@ export default class ReplacePackage extends Command {
     // TODO: Figure out why Arborist marks everything as "extraneous" in the generated lockfile.
     const node = await tree.loadVirtualTreeFromRoot();
 
-    const oldPackage = npa(flags.old);
+    const { updatedNodes } = await replacePackagesForNode(node, flags.old, flags.new);
 
-    // TODO: Figure out if this works for `git` packages as well. (It probably doesn't and will require a separate code path)
-    const nodes = await node.querySelectorAll(`[name=${oldPackage.escapedName}]:semver(${oldPackage.rawSpec})`);
-
-    const resolvedManifest = await manifest(flags.new);
-
-    nodes.map((n) => {
-      if (!n.parent) {
-        throw new Error('Unable to remove package for node without a parent');
-      }
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      n.package = {
-        ...resolvedManifest,
-        resolved: resolvedManifest._resolved,
-        integrity: resolvedManifest._integrity,
-      };
-
-      // These fields are required by Arborist to properly update the lockfile.
-      n.resolved = resolvedManifest._resolved;
-      n.integrity = resolvedManifest._integrity;
-    });
-
-    this.log(`Updated ${nodes.length} packages`);
+    this.log(`Updated ${updatedNodes.length} packages`);
 
     // This updates the package-lock.json file on disk.
     // Note: We may actually need to call `tree.reify()` in order to get the transitive dependencies to update.
     // It's unclear and untested currently.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     await node.meta.save();
 

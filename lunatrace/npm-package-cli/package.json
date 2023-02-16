@@ -25,11 +25,18 @@
     "@oclif/core": "^2",
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-plugins": "^2.2.4",
+    "@octokit/core": "^4.2.0",
+    "@octokit/plugin-paginate-rest": "^6.0.0",
+    "@octokit/rest": "^19.0.7",
     "npm-package-arg": "^10.1.0",
-    "pacote": "^15.0.8"
+    "octokit-plugin-create-pull-request": "^4.1.1",
+    "pacote": "^15.0.8",
+    "js-yaml": "3.14."
   },
   "devDependencies": {
     "@oclif/test": "^2.3.3",
+    "@octokit/plugin-rest-endpoint-methods": "^7.0.1",
+    "@octokit/types": "^9.0.0",
     "@types/chai": "^4",
     "@types/jest": "^29.4.0",
     "@types/node": "^16.18.11",
