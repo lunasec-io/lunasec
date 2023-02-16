@@ -141,6 +141,12 @@ export type BuildData_VulnerableRelease = {
   trivially_updatable: Scalars['String'];
 };
 
+export type CreatePullRequestForVulnerabilityResponse = {
+  __typename?: 'CreatePullRequestForVulnerabilityResponse';
+  pullRequestUrl: Scalars['String'];
+  success?: Maybe<Scalars['Boolean']>;
+};
+
 export type GithubRepository = {
   __typename?: 'GithubRepository';
   cloneUrl: Scalars['String'];
@@ -162,9 +168,19 @@ export type InstallSelectedReposResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createPullRequestForVulnerability?: Maybe<CreatePullRequestForVulnerabilityResponse>;
   installSelectedRepos?: Maybe<InstallSelectedReposResponse>;
   /**  get s3 presigned url for manifest upload, used only by the frontend  */
   presignManifestUpload?: Maybe<PresignedUrlResponse>;
+};
+
+
+export type MutationCreatePullRequestForVulnerabilityArgs = {
+  new_package_slug: Scalars['String'];
+  old_package_slug: Scalars['String'];
+  package_manifest_path: Scalars['String'];
+  project_id: Scalars['uuid'];
+  vulnerability_id: Scalars['uuid'];
 };
 
 
@@ -332,6 +348,7 @@ export type ResolversTypes = {
   BuildData_Vulnerability: ResolverTypeWrapper<BuildData_Vulnerability>;
   BuildData_VulnerabilityCwe: ResolverTypeWrapper<BuildData_VulnerabilityCwe>;
   BuildData_VulnerableRelease: ResolverTypeWrapper<BuildData_VulnerableRelease>;
+  CreatePullRequestForVulnerabilityResponse: ResolverTypeWrapper<CreatePullRequestForVulnerabilityResponse>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   GithubRepository: ResolverTypeWrapper<GithubRepository>;
   InstallSelectedReposResponse: ResolverTypeWrapper<InstallSelectedReposResponse>;
@@ -367,6 +384,7 @@ export type ResolversParentTypes = {
   BuildData_Vulnerability: BuildData_Vulnerability;
   BuildData_VulnerabilityCwe: BuildData_VulnerabilityCwe;
   BuildData_VulnerableRelease: BuildData_VulnerableRelease;
+  CreatePullRequestForVulnerabilityResponse: CreatePullRequestForVulnerabilityResponse;
   Float: Scalars['Float'];
   GithubRepository: GithubRepository;
   InstallSelectedReposResponse: InstallSelectedReposResponse;
@@ -508,6 +526,12 @@ export type BuildData_VulnerableReleaseResolvers<ContextType = Context, ParentTy
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CreatePullRequestForVulnerabilityResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CreatePullRequestForVulnerabilityResponse'] = ResolversParentTypes['CreatePullRequestForVulnerabilityResponse']> = {
+  pullRequestUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GithubRepositoryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GithubRepository'] = ResolversParentTypes['GithubRepository']> = {
   cloneUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   defaultBranch?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -528,6 +552,7 @@ export type InstallSelectedReposResponseResolvers<ContextType = Context, ParentT
 };
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createPullRequestForVulnerability?: Resolver<Maybe<ResolversTypes['CreatePullRequestForVulnerabilityResponse']>, ParentType, ContextType, RequireFields<MutationCreatePullRequestForVulnerabilityArgs, 'new_package_slug' | 'old_package_slug' | 'package_manifest_path' | 'project_id' | 'vulnerability_id'>>;
   installSelectedRepos?: Resolver<Maybe<ResolversTypes['InstallSelectedReposResponse']>, ParentType, ContextType, RequireFields<MutationInstallSelectedReposArgs, 'orgs'>>;
   presignManifestUpload?: Resolver<Maybe<ResolversTypes['PresignedUrlResponse']>, ParentType, ContextType, RequireFields<MutationPresignManifestUploadArgs, 'project_id'>>;
 };
@@ -592,6 +617,7 @@ export type Resolvers<ContextType = Context> = {
   BuildData_Vulnerability?: BuildData_VulnerabilityResolvers<ContextType>;
   BuildData_VulnerabilityCwe?: BuildData_VulnerabilityCweResolvers<ContextType>;
   BuildData_VulnerableRelease?: BuildData_VulnerableReleaseResolvers<ContextType>;
+  CreatePullRequestForVulnerabilityResponse?: CreatePullRequestForVulnerabilityResponseResolvers<ContextType>;
   GithubRepository?: GithubRepositoryResolvers<ContextType>;
   InstallSelectedReposResponse?: InstallSelectedReposResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;

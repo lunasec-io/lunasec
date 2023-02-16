@@ -26,6 +26,14 @@ type Mutation {
     installSelectedRepos(
         orgs: [OrgsWithReposInput!]!
     ): InstallSelectedReposResponse
+    createPullRequestForVulnerability(
+        project_id: uuid!
+        vulnerability_id: uuid!
+        """ We could pull this data from the database, probably, but it's easier to pass it in from the Frontend """
+        old_package_slug: String!
+        new_package_slug: String!
+        package_manifest_path: String!
+    ): CreatePullRequestForVulnerabilityResponse
 }
 
 input OrgsWithReposInput {
@@ -35,6 +43,11 @@ input OrgsWithReposInput {
 
 type InstallSelectedReposResponse {
     success: Boolean
+}
+
+type CreatePullRequestForVulnerabilityResponse {
+    success: Boolean
+    pullRequestUrl: String!
 }
 
 input SbomUploadUrlInput {

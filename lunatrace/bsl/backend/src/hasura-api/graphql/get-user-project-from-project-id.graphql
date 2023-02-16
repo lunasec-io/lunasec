@@ -1,0 +1,5 @@
+query GetUserProjectFromProjectId($project_id: uuid!, $user_id: uuid!) {
+    projects(where: {organization: {organization_users: {user_id: {_eq: $user_id}}}, id: {_eq: $project_id}}, limit: 1) {
+       id
+    }
+}

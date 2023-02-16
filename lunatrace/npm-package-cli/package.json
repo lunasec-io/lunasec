@@ -1,6 +1,6 @@
 {
-  "name": "@lunasec/simple-npm-example",
-  "version": "0.0.0",
+  "name": "@lunatrace/npm-package-cli",
+  "version": "1.0.0",
   "description": "LunaTrace CLI for managing NPM package versions",
   "author": "@lunasec-io",
   "bin": {

@@ -8521,10 +8521,6 @@ export type Query_Root = {
   vulnerability_affected_version_by_pk?: Maybe<Vulnerability_Affected_Version>;
   /** fetch data from the table: "vulnerability.vulnerability" using primary key columns */
   vulnerability_by_pk?: Maybe<Vulnerability>;
-  /** fetch data from the table: "vulnerability.cisa_known_exploited" */
-  vulnerability_cisa_known_exploited: Array<Vulnerability_Cisa_Known_Exploited>;
-  /** fetch data from the table: "vulnerability.cisa_known_exploited" using primary key columns */
-  vulnerability_cisa_known_exploited_by_pk?: Maybe<Vulnerability_Cisa_Known_Exploited>;
   /** fetch data from the table: "vulnerability.credit" */
   vulnerability_credit: Array<Vulnerability_Credit>;
   /** fetch data from the table: "vulnerability.credit" using primary key columns */
@@ -9171,20 +9167,6 @@ export type Query_RootVulnerability_Affected_Version_By_PkArgs = {
 
 
 export type Query_RootVulnerability_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootVulnerability_Cisa_Known_ExploitedArgs = {
-  distinct_on?: InputMaybe<Array<Vulnerability_Cisa_Known_Exploited_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Vulnerability_Cisa_Known_Exploited_Order_By>>;
-  where?: InputMaybe<Vulnerability_Cisa_Known_Exploited_Bool_Exp>;
-};
-
-
-export type Query_RootVulnerability_Cisa_Known_Exploited_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -9987,10 +9969,6 @@ export type Subscription_Root = {
   vulnerability_affected_version_by_pk?: Maybe<Vulnerability_Affected_Version>;
   /** fetch data from the table: "vulnerability.vulnerability" using primary key columns */
   vulnerability_by_pk?: Maybe<Vulnerability>;
-  /** fetch data from the table: "vulnerability.cisa_known_exploited" */
-  vulnerability_cisa_known_exploited: Array<Vulnerability_Cisa_Known_Exploited>;
-  /** fetch data from the table: "vulnerability.cisa_known_exploited" using primary key columns */
-  vulnerability_cisa_known_exploited_by_pk?: Maybe<Vulnerability_Cisa_Known_Exploited>;
   /** fetch data from the table: "vulnerability.credit" */
   vulnerability_credit: Array<Vulnerability_Credit>;
   /** fetch data from the table: "vulnerability.credit" using primary key columns */
@@ -10624,20 +10602,6 @@ export type Subscription_RootVulnerability_By_PkArgs = {
 };
 
 
-export type Subscription_RootVulnerability_Cisa_Known_ExploitedArgs = {
-  distinct_on?: InputMaybe<Array<Vulnerability_Cisa_Known_Exploited_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Vulnerability_Cisa_Known_Exploited_Order_By>>;
-  where?: InputMaybe<Vulnerability_Cisa_Known_Exploited_Bool_Exp>;
-};
-
-
-export type Subscription_RootVulnerability_Cisa_Known_Exploited_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
 export type Subscription_RootVulnerability_CreditArgs = {
   distinct_on?: InputMaybe<Array<Vulnerability_Credit_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -10929,8 +10893,6 @@ export type Vulnerability = {
   __typename?: 'vulnerability';
   /** An array relationship */
   affected: Array<Vulnerability_Affected>;
-  /** An object relationship */
-  cisa_known_vuln?: Maybe<Vulnerability_Cisa_Known_Exploited>;
   created_at: Scalars['timestamptz'];
   /** An array relationship */
   credits: Array<Vulnerability_Credit>;
@@ -11651,32 +11613,10 @@ export enum Vulnerability_Affected_Version_Update_Column {
   Version = 'version'
 }
 
-/** order by aggregate values of table "vulnerability.vulnerability" */
-export type Vulnerability_Aggregate_Order_By = {
-  avg?: InputMaybe<Vulnerability_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Vulnerability_Max_Order_By>;
-  min?: InputMaybe<Vulnerability_Min_Order_By>;
-  stddev?: InputMaybe<Vulnerability_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<Vulnerability_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<Vulnerability_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<Vulnerability_Sum_Order_By>;
-  var_pop?: InputMaybe<Vulnerability_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<Vulnerability_Var_Samp_Order_By>;
-  variance?: InputMaybe<Vulnerability_Variance_Order_By>;
-};
-
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type Vulnerability_Append_Input = {
   database_specific?: InputMaybe<Scalars['jsonb']>;
   upstream_data?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** order by avg() on columns of table "vulnerability.vulnerability" */
-export type Vulnerability_Avg_Order_By = {
-  cvss_score?: InputMaybe<Order_By>;
-  epss_percentile?: InputMaybe<Order_By>;
-  epss_score?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "vulnerability.vulnerability". All fields are combined with a logical 'AND'. */
@@ -11685,7 +11625,6 @@ export type Vulnerability_Bool_Exp = {
   _not?: InputMaybe<Vulnerability_Bool_Exp>;
   _or?: InputMaybe<Array<Vulnerability_Bool_Exp>>;
   affected?: InputMaybe<Vulnerability_Affected_Bool_Exp>;
-  cisa_known_vuln?: InputMaybe<Vulnerability_Cisa_Known_Exploited_Bool_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   credits?: InputMaybe<Vulnerability_Credit_Bool_Exp>;
   cve_id?: InputMaybe<String_Comparison_Exp>;
@@ -11713,90 +11652,6 @@ export type Vulnerability_Bool_Exp = {
   upstream_data?: InputMaybe<Jsonb_Comparison_Exp>;
   withdrawn?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
-
-/** columns and relationships of "vulnerability.cisa_known_exploited" */
-export type Vulnerability_Cisa_Known_Exploited = {
-  __typename?: 'vulnerability_cisa_known_exploited';
-  cve?: Maybe<Scalars['String']>;
-  date_added: Scalars['date'];
-  due_date: Scalars['date'];
-  id: Scalars['uuid'];
-  notes: Scalars['String'];
-  product: Scalars['String'];
-  required_action: Scalars['String'];
-  short_description: Scalars['String'];
-  vendor_project: Scalars['String'];
-  /** An array relationship */
-  vulnerabilities: Array<Vulnerability>;
-  vulnerability_name: Scalars['String'];
-};
-
-
-/** columns and relationships of "vulnerability.cisa_known_exploited" */
-export type Vulnerability_Cisa_Known_ExploitedVulnerabilitiesArgs = {
-  distinct_on?: InputMaybe<Array<Vulnerability_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Vulnerability_Order_By>>;
-  where?: InputMaybe<Vulnerability_Bool_Exp>;
-};
-
-/** Boolean expression to filter rows from the table "vulnerability.cisa_known_exploited". All fields are combined with a logical 'AND'. */
-export type Vulnerability_Cisa_Known_Exploited_Bool_Exp = {
-  _and?: InputMaybe<Array<Vulnerability_Cisa_Known_Exploited_Bool_Exp>>;
-  _not?: InputMaybe<Vulnerability_Cisa_Known_Exploited_Bool_Exp>;
-  _or?: InputMaybe<Array<Vulnerability_Cisa_Known_Exploited_Bool_Exp>>;
-  cve?: InputMaybe<String_Comparison_Exp>;
-  date_added?: InputMaybe<Date_Comparison_Exp>;
-  due_date?: InputMaybe<Date_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  notes?: InputMaybe<String_Comparison_Exp>;
-  product?: InputMaybe<String_Comparison_Exp>;
-  required_action?: InputMaybe<String_Comparison_Exp>;
-  short_description?: InputMaybe<String_Comparison_Exp>;
-  vendor_project?: InputMaybe<String_Comparison_Exp>;
-  vulnerabilities?: InputMaybe<Vulnerability_Bool_Exp>;
-  vulnerability_name?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** Ordering options when selecting data from "vulnerability.cisa_known_exploited". */
-export type Vulnerability_Cisa_Known_Exploited_Order_By = {
-  cve?: InputMaybe<Order_By>;
-  date_added?: InputMaybe<Order_By>;
-  due_date?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  notes?: InputMaybe<Order_By>;
-  product?: InputMaybe<Order_By>;
-  required_action?: InputMaybe<Order_By>;
-  short_description?: InputMaybe<Order_By>;
-  vendor_project?: InputMaybe<Order_By>;
-  vulnerabilities_aggregate?: InputMaybe<Vulnerability_Aggregate_Order_By>;
-  vulnerability_name?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "vulnerability.cisa_known_exploited" */
-export enum Vulnerability_Cisa_Known_Exploited_Select_Column {
-  /** column name */
-  Cve = 'cve',
-  /** column name */
-  DateAdded = 'date_added',
-  /** column name */
-  DueDate = 'due_date',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Notes = 'notes',
-  /** column name */
-  Product = 'product',
-  /** column name */
-  RequiredAction = 'required_action',
-  /** column name */
-  ShortDescription = 'short_description',
-  /** column name */
-  VendorProject = 'vendor_project',
-  /** column name */
-  VulnerabilityName = 'vulnerability_name'
-}
 
 /** unique or primary key constraints on table "vulnerability.vulnerability" */
 export enum Vulnerability_Constraint {
@@ -12215,44 +12070,6 @@ export type Vulnerability_Insert_Input = {
   withdrawn?: InputMaybe<Scalars['timestamptz']>;
 };
 
-/** order by max() on columns of table "vulnerability.vulnerability" */
-export type Vulnerability_Max_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  cve_id?: InputMaybe<Order_By>;
-  cvss_score?: InputMaybe<Order_By>;
-  details?: InputMaybe<Order_By>;
-  epss_percentile?: InputMaybe<Order_By>;
-  epss_score?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  last_fetched?: InputMaybe<Order_By>;
-  modified?: InputMaybe<Order_By>;
-  published?: InputMaybe<Order_By>;
-  severity_name?: InputMaybe<Order_By>;
-  source?: InputMaybe<Order_By>;
-  source_id?: InputMaybe<Order_By>;
-  summary?: InputMaybe<Order_By>;
-  withdrawn?: InputMaybe<Order_By>;
-};
-
-/** order by min() on columns of table "vulnerability.vulnerability" */
-export type Vulnerability_Min_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  cve_id?: InputMaybe<Order_By>;
-  cvss_score?: InputMaybe<Order_By>;
-  details?: InputMaybe<Order_By>;
-  epss_percentile?: InputMaybe<Order_By>;
-  epss_score?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  last_fetched?: InputMaybe<Order_By>;
-  modified?: InputMaybe<Order_By>;
-  published?: InputMaybe<Order_By>;
-  severity_name?: InputMaybe<Order_By>;
-  source?: InputMaybe<Order_By>;
-  source_id?: InputMaybe<Order_By>;
-  summary?: InputMaybe<Order_By>;
-  withdrawn?: InputMaybe<Order_By>;
-};
-
 /** response of any mutation on the table "vulnerability.vulnerability" */
 export type Vulnerability_Mutation_Response = {
   __typename?: 'vulnerability_mutation_response';
@@ -12279,7 +12096,6 @@ export type Vulnerability_On_Conflict = {
 /** Ordering options when selecting data from "vulnerability.vulnerability". */
 export type Vulnerability_Order_By = {
   affected_aggregate?: InputMaybe<Vulnerability_Affected_Aggregate_Order_By>;
-  cisa_known_vuln?: InputMaybe<Vulnerability_Cisa_Known_Exploited_Order_By>;
   created_at?: InputMaybe<Order_By>;
   credits_aggregate?: InputMaybe<Vulnerability_Credit_Aggregate_Order_By>;
   cve_id?: InputMaybe<Order_By>;
@@ -12788,34 +12604,6 @@ export enum Vulnerability_Severity_Update_Column {
   VulnerabilityId = 'vulnerability_id'
 }
 
-/** order by stddev() on columns of table "vulnerability.vulnerability" */
-export type Vulnerability_Stddev_Order_By = {
-  cvss_score?: InputMaybe<Order_By>;
-  epss_percentile?: InputMaybe<Order_By>;
-  epss_score?: InputMaybe<Order_By>;
-};
-
-/** order by stddev_pop() on columns of table "vulnerability.vulnerability" */
-export type Vulnerability_Stddev_Pop_Order_By = {
-  cvss_score?: InputMaybe<Order_By>;
-  epss_percentile?: InputMaybe<Order_By>;
-  epss_score?: InputMaybe<Order_By>;
-};
-
-/** order by stddev_samp() on columns of table "vulnerability.vulnerability" */
-export type Vulnerability_Stddev_Samp_Order_By = {
-  cvss_score?: InputMaybe<Order_By>;
-  epss_percentile?: InputMaybe<Order_By>;
-  epss_score?: InputMaybe<Order_By>;
-};
-
-/** order by sum() on columns of table "vulnerability.vulnerability" */
-export type Vulnerability_Sum_Order_By = {
-  cvss_score?: InputMaybe<Order_By>;
-  epss_percentile?: InputMaybe<Order_By>;
-  epss_score?: InputMaybe<Order_By>;
-};
-
 /** update columns of table "vulnerability.vulnerability" */
 export enum Vulnerability_Update_Column {
   /** column name */
@@ -12855,27 +12643,6 @@ export enum Vulnerability_Update_Column {
   /** column name */
   Withdrawn = 'withdrawn'
 }
-
-/** order by var_pop() on columns of table "vulnerability.vulnerability" */
-export type Vulnerability_Var_Pop_Order_By = {
-  cvss_score?: InputMaybe<Order_By>;
-  epss_percentile?: InputMaybe<Order_By>;
-  epss_score?: InputMaybe<Order_By>;
-};
-
-/** order by var_samp() on columns of table "vulnerability.vulnerability" */
-export type Vulnerability_Var_Samp_Order_By = {
-  cvss_score?: InputMaybe<Order_By>;
-  epss_percentile?: InputMaybe<Order_By>;
-  epss_score?: InputMaybe<Order_By>;
-};
-
-/** order by variance() on columns of table "vulnerability.vulnerability" */
-export type Vulnerability_Variance_Order_By = {
-  cvss_score?: InputMaybe<Order_By>;
-  epss_percentile?: InputMaybe<Order_By>;
-  epss_score?: InputMaybe<Order_By>;
-};
 
 /** CWEs that are defined for a vulnerability */
 export type Vulnerability_Vulnerability_Cwe = {
@@ -13210,6 +12977,13 @@ export type GetCountOfPersonalOrgQueryVariables = Exact<{
 
 export type GetCountOfPersonalOrgQuery = { __typename?: 'query_root', organizations_aggregate: { __typename?: 'organizations_aggregate', aggregate?: { __typename?: 'organizations_aggregate_fields', count: number } | null } };
 
+export type GetGitHubInstallationIdFromProjectIdQueryVariables = Exact<{
+  project_id: Scalars['uuid'];
+}>;
+
+
+export type GetGitHubInstallationIdFromProjectIdQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', github_repository?: { __typename?: 'github_repositories', git_url: string, github_id?: number | null, github_node_id?: string | null } | null, organization?: { __typename?: 'organizations', installation_id?: number | null } | null }> };
+
 export type GetGithubRepositoriesByIdsQueryVariables = Exact<{
   ids: Array<Scalars['Int']> | Scalars['Int'];
 }>;
@@ -13283,6 +13057,14 @@ export type GetUserGitHubDataQueryVariables = Exact<{
 
 export type GetUserGitHubDataQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', github_id?: string | null, github_node_id?: string | null, kratos_id?: any | null, id: any }> };
 
+export type GetUserProjectFromProjectIdQueryVariables = Exact<{
+  project_id: Scalars['uuid'];
+  user_id: Scalars['uuid'];
+}>;
+
+
+export type GetUserProjectFromProjectIdQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', id: any }> };
+
 export type GetUserRoleQueryVariables = Exact<{
   kratos_id?: InputMaybe<Scalars['uuid']>;
 }>;
@@ -13297,13 +13079,6 @@ export type GetUsersBuildsQueryVariables = Exact<{
 
 
 export type GetUsersBuildsQuery = { __typename?: 'query_root', builds: Array<{ __typename?: 'builds', id: any }> };
-
-export type GetUsersProjectsQueryVariables = Exact<{
-  user_id: Scalars['uuid'];
-}>;
-
-
-export type GetUsersProjectsQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', id: any }> };
 
 export type GetVulnerabilitiesByCveQueryVariables = Exact<{
   cves?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
@@ -13591,6 +13366,20 @@ export const GetCountOfPersonalOrgDocument = gql`
   }
 }
     `;
+export const GetGitHubInstallationIdFromProjectIdDocument = gql`
+    query GetGitHubInstallationIdFromProjectId($project_id: uuid!) {
+  projects(where: {id: {_eq: $project_id}}, limit: 1) {
+    github_repository {
+      git_url
+      github_id
+      github_node_id
+    }
+    organization {
+      installation_id
+    }
+  }
+}
+    `;
 export const GetGithubRepositoriesByIdsDocument = gql`
     query GetGithubRepositoriesByIds($ids: [Int!]!) {
   github_repositories(where: {github_id: {_in: $ids}}) {
@@ -13769,6 +13558,16 @@ export const GetUserGitHubDataDocument = gql`
   }
 }
     `;
+export const GetUserProjectFromProjectIdDocument = gql`
+    query GetUserProjectFromProjectId($project_id: uuid!, $user_id: uuid!) {
+  projects(
+    where: {organization: {organization_users: {user_id: {_eq: $user_id}}}, id: {_eq: $project_id}}
+    limit: 1
+  ) {
+    id
+  }
+}
+    `;
 export const GetUserRoleDocument = gql`
     query GetUserRole($kratos_id: uuid) {
   users(where: {kratos_id: {_eq: $kratos_id}}) {
@@ -13781,15 +13580,6 @@ export const GetUsersBuildsDocument = gql`
     query GetUsersBuilds($build_ids: [uuid!]!, $user_id: uuid!) {
   builds(
     where: {_and: {id: {_in: $build_ids}, project: {organization: {organization_users: {user_id: {_eq: $user_id}}}}}}
-  ) {
-    id
-  }
-}
-    `;
-export const GetUsersProjectsDocument = gql`
-    query GetUsersProjects($user_id: uuid!) {
-  projects(
-    where: {organization: {organization_users: {user: {kratos_id: {_eq: $user_id}}}}}
   ) {
     id
   }
@@ -14082,6 +13872,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetCountOfPersonalOrg(variables: GetCountOfPersonalOrgQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetCountOfPersonalOrgQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetCountOfPersonalOrgQuery>(GetCountOfPersonalOrgDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetCountOfPersonalOrg', 'query');
     },
+    GetGitHubInstallationIdFromProjectId(variables: GetGitHubInstallationIdFromProjectIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetGitHubInstallationIdFromProjectIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetGitHubInstallationIdFromProjectIdQuery>(GetGitHubInstallationIdFromProjectIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetGitHubInstallationIdFromProjectId', 'query');
+    },
     GetGithubRepositoriesByIds(variables: GetGithubRepositoriesByIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetGithubRepositoriesByIdsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetGithubRepositoriesByIdsQuery>(GetGithubRepositoriesByIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetGithubRepositoriesByIds', 'query');
     },
@@ -14112,14 +13905,14 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     GetUserGitHubData(variables?: GetUserGitHubDataQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserGitHubDataQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserGitHubDataQuery>(GetUserGitHubDataDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserGitHubData', 'query');
     },
+    GetUserProjectFromProjectId(variables: GetUserProjectFromProjectIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserProjectFromProjectIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetUserProjectFromProjectIdQuery>(GetUserProjectFromProjectIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserProjectFromProjectId', 'query');
+    },
     GetUserRole(variables?: GetUserRoleQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserRoleQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserRoleQuery>(GetUserRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUserRole', 'query');
     },
     GetUsersBuilds(variables: GetUsersBuildsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUsersBuildsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUsersBuildsQuery>(GetUsersBuildsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUsersBuilds', 'query');
-    },
-    GetUsersProjects(variables: GetUsersProjectsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUsersProjectsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetUsersProjectsQuery>(GetUsersProjectsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetUsersProjects', 'query');
     },
     GetVulnerabilitiesByCve(variables?: GetVulnerabilitiesByCveQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetVulnerabilitiesByCveQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetVulnerabilitiesByCveQuery>(GetVulnerabilitiesByCveDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetVulnerabilitiesByCve', 'query');

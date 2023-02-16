@@ -52,12 +52,9 @@ export function getUserId(ctx: Context, kratos_id_instead = false): string {
 }
 
 export async function checkProjectIsAuthorized(projectId: string, ctx: Context): Promise<void> {
-  const identityId = getUserId(ctx, true);
-  const usersAuthorizedProjects = await hasura.GetUsersProjects({ user_id: identityId });
-  const userIsAuthorized = usersAuthorizedProjects.projects.some((p) => {
-    return p.id === projectId;
-  });
-  if (!userIsAuthorized) {
+  const identityId = getUserId(ctx);
+  const project = await hasura.GetUserProjectFromProjectId({ project_id: projectId, user_id: identityId });
+  if (project.projects.length === 0) {
     throw new GraphQLYogaError('Not authorized for this project');
   }
   return;
