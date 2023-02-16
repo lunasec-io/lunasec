@@ -45,7 +45,7 @@ export default class ShowTree extends Command {
       root: root,
     });
 
-    const virtualTree = await tree.loadVirtualTreeFromRoot();
+    const virtualTree = await tree.arborist.loadVirtual();
 
     this.log('Package tree:\n');
 

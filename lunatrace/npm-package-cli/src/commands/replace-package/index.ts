@@ -53,7 +53,7 @@ export default class ReplacePackage extends Command {
     });
 
     // TODO: Figure out why Arborist marks everything as "extraneous" in the generated lockfile.
-    const node = await tree.loadVirtualTreeFromRoot();
+    const node = await tree.arborist.loadVirtual();
 
     const { updatedNodes } = await replacePackagesForNode(node, flags.old, flags.new);
 

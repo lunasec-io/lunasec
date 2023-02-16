@@ -78,18 +78,4 @@ export class PackageTree {
       packageLockOnly: true,
     });
   }
-
-  /**
-   * Loads the entire package tree from the root node.
-   */
-  loadVirtualTreeFromRoot(): Promise<Arborist.Node> {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const root = new Node({
-      path: this.root,
-      pkg: this.fullPackageJsonPath,
-    });
-
-    return this.arborist.loadVirtual({ root: root });
-  }
 }

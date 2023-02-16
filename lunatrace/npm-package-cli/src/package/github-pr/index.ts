@@ -166,7 +166,7 @@ export async function replacePackageAndFileGitHubPullRequest(
   });
 
   // TODO: Figure out why Arborist marks everything as "extraneous" in the generated lockfile.
-  const node = await tree.loadVirtualTreeFromRoot();
+  const node = await tree.arborist.loadVirtual();
 
   const { updatedNodes } = await replacePackagesForNode(node, oldPackage, newPackage);
 
@@ -201,6 +201,7 @@ export async function replacePackageAndFileGitHubPullRequest(
     base: ref,
     createWhenEmpty: false,
     body: message,
+    update: true,
     changes: {
       files: {
         [manifestFileData.manifest.path]: newManifestData,
