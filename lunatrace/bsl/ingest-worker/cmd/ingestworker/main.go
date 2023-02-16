@@ -61,6 +61,7 @@ func main() {
 			cwe2.NewCWEIngester,
 			epss2.NewEPSSIngester,
 			cisa2.NewCISAKnownVulnIngester,
+			vulnmanager.NewProcessor,
 		),
 
 		// todo make a module
