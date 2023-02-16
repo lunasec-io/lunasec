@@ -17,5 +17,4 @@ type Registry interface {
 type NpmRegistry interface {
 	Registry
 	GetPackageMetadata(name string) (*PackageMetadata, error)
-	GetPackageMetadataFromNPM(name string) (*PackageMetadata, error)
 }

@@ -2380,12 +2380,24 @@ func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnera
 
 // GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage includes the requested fields of the GraphQL type package.
 type GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage struct {
-	Id uuid.UUID `json:"id"`
+	Id              uuid.UUID            `json:"id"`
+	Name            string               `json:"name"`
+	Package_manager types.PackageManager `json:"package_manager"`
 }
 
 // GetId returns GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage.Id, and is useful for accessing the field via an interface.
 func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage) GetId() uuid.UUID {
 	return v.Id
+}
+
+// GetName returns GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage.Name, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage) GetName() string {
+	return v.Name
+}
+
+// GetPackage_manager returns GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage.Package_manager, and is useful for accessing the field via an interface.
+func (v *GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityAffectedVulnerability_affectedPackage) GetPackage_manager() types.PackageManager {
+	return v.Package_manager
 }
 
 // GetVulnerabilityMetadataVulnerability_by_pkVulnerabilityReferencesVulnerability_reference includes the requested fields of the GraphQL type vulnerability_reference.
@@ -8905,6 +8917,8 @@ query GetVulnerabilityMetadata ($id: uuid!) {
 		affected {
 			package {
 				id
+				name
+				package_manager
 			}
 		}
 	}
