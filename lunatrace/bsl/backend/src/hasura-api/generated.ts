@@ -467,7 +467,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Insert_Input = {
   vulnerability_id?: InputMaybe<Scalars['uuid']>;
 };
 
-/** Callsite of a child dependency being imported and used inside of a parent manifest dependency. */
+/** Location of a child dependency located inside of a parent manifest dependency. */
 export type Analysis_Manifest_Dependency_Edge_Result_Location = {
   __typename?: 'analysis_manifest_dependency_edge_result_location';
   end_column: Scalars['Int'];
@@ -529,7 +529,7 @@ export type Analysis_Manifest_Dependency_Edge_Result_Location_Bool_Exp = {
 /** unique or primary key constraints on table "analysis.manifest_dependency_edge_result_location" */
 export enum Analysis_Manifest_Dependency_Edge_Result_Location_Constraint {
   /** unique or primary key constraint on columns "id" */
-  ManifestDependencyEdgeResultCallsitePkey = 'manifest_dependency_edge_result_callsite_pkey'
+  ManifestDependencyEdgeResultLocationPkey = 'manifest_dependency_edge_result_location_pkey'
 }
 
 /** input type for incrementing numeric columns in table "analysis.manifest_dependency_edge_result_location" */
@@ -12905,7 +12905,9 @@ export enum Vulnerability_Vulnerability_Cwe_Constraint {
   /** unique or primary key constraint on columns "cwe_id", "vulnerability_id" */
   UniqueVulnerabilityCweVulnerabilityIdCweIdKey = 'unique_vulnerability_cwe_vulnerability_id_cwe_id_key',
   /** unique or primary key constraint on columns "id" */
-  VulnerabilityCwePkey = 'vulnerability_cwe_pkey'
+  VulnerabilityCwePkey = 'vulnerability_cwe_pkey',
+  /** unique or primary key constraint on columns "cwe_id", "vulnerability_id" */
+  VulnerabilityCweVulnerabilityIdCweIdKey = 'vulnerability_cwe_vulnerability_id_cwe_id_key'
 }
 
 /** input type for incrementing numeric columns in table "vulnerability.vulnerability_cwe" */
