@@ -11,15 +11,27 @@
 package registry
 
 import (
-	"go.uber.org/fx"
-
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher"
+	"github.com/rs/zerolog/log"
+	"go.uber.org/config"
 )
 
-var NPMModule = fx.Options(
-	fetcher.NPMModule,
-	fx.Provide(
-		NewConfig,
-		NewNPMRegistry,
-	),
-)
+type NPMConfig struct {
+	UseNPM bool `yaml:"use_npm"`
+}
+
+type Config struct {
+	NPM NPMConfig `yaml:"npm"`
+}
+
+func NewConfig(provider config.Provider) (config Config) {
+	value := provider.Get("registry")
+
+	err := value.Populate(&config)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable populate registry config")
+		return
+	}
+	return
+}

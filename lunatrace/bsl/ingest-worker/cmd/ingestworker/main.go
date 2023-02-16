@@ -17,6 +17,8 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
+	"go.uber.org/fx"
+
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/cisa"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/cwe"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/epss"
@@ -35,8 +37,7 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator/npm"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
-
-	"go.uber.org/fx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/affected"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/license"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
@@ -54,6 +55,7 @@ func main() {
 		graphqlfx.Module,
 		dbfx.Module,
 		registry.NPMModule,
+		ingester.Module,
 
 		fx.Provide(
 			cwe2.NewCWEIngester,
@@ -70,9 +72,9 @@ func main() {
 		}),
 		fx.Provide(
 			ingester.NewPackageSqlIngester,
-			ingester.NewNPMPackageIngester,
 			replicator.NewNPMReplicator,
 			npm.NewNpmAPIReplicator,
+			affected.NewIngester,
 		),
 		fx.Provide(
 			ingestworker.NewConfigProvider,

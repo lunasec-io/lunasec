@@ -8495,6 +8495,8 @@ export type Query_Root = {
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
+  /** execute function "search_vulnerabilities" which returns "vulnerability.vulnerability" */
+  search_vulnerabilities: Array<Vulnerability>;
   /** fetch data from the table: "settings" */
   settings: Array<Settings>;
   /** fetch data from the table: "settings" using primary key columns */
@@ -9076,6 +9078,16 @@ export type Query_RootScansArgs = {
 
 export type Query_RootScans_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootSearch_VulnerabilitiesArgs = {
+  args: Search_Vulnerabilities_Args;
+  distinct_on?: InputMaybe<Array<Vulnerability_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Order_By>>;
+  where?: InputMaybe<Vulnerability_Bool_Exp>;
 };
 
 
@@ -9742,6 +9754,10 @@ export type Scans_Variance_Order_By = {
   scan_number?: InputMaybe<Order_By>;
 };
 
+export type Search_Vulnerabilities_Args = {
+  search?: InputMaybe<Scalars['String']>;
+};
+
 /** columns and relationships of "settings" */
 export type Settings = {
   __typename?: 'settings';
@@ -9945,6 +9961,8 @@ export type Subscription_Root = {
   scans: Array<Scans>;
   /** fetch data from the table: "scans" using primary key columns */
   scans_by_pk?: Maybe<Scans>;
+  /** execute function "search_vulnerabilities" which returns "vulnerability.vulnerability" */
+  search_vulnerabilities: Array<Vulnerability>;
   /** fetch data from the table: "settings" */
   settings: Array<Settings>;
   /** fetch data from the table: "settings" using primary key columns */
@@ -10509,6 +10527,16 @@ export type Subscription_RootScansArgs = {
 
 export type Subscription_RootScans_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootSearch_VulnerabilitiesArgs = {
+  args: Search_Vulnerabilities_Args;
+  distinct_on?: InputMaybe<Array<Vulnerability_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Vulnerability_Order_By>>;
+  where?: InputMaybe<Vulnerability_Bool_Exp>;
 };
 
 

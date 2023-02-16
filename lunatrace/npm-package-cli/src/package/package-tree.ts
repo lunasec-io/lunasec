@@ -71,7 +71,10 @@ export class PackageTree {
     this.fullPackageJsonPath = config.fullPackageJsonPath;
     this.fullPackageLockPath = config.fullPackageLockPath;
     this.root = config.root;
-    this.arborist = this.createArborist();
+    // @ts-ignore
+    this.arborist = this.createArborist({
+      packageLockOnly: true,
+    });
   }
 
   createArborist() {
@@ -92,5 +95,11 @@ export class PackageTree {
     });
 
     return this.arborist.loadVirtual({ root: root });
+  }
+
+  async loadPackageNode(packageSlug: string): Promise<Arborist.Node[]> {
+    const tree = await this.loadVirtualTreeFromRoot();
+
+    return tree.querySelectorAll(packageSlug);
   }
 }
