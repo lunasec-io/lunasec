@@ -16,7 +16,6 @@
  */
 import fs from 'fs';
 
-import type { Constructor } from '@octokit/core/dist-types/types';
 import type { PaginateInterface } from '@octokit/plugin-paginate-rest';
 import type { RestEndpointMethods } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/method-types';
 import type { Api } from '@octokit/plugin-rest-endpoint-methods/dist-types/types';
@@ -34,10 +33,12 @@ export type ManifestFileData = {
   packageManagerType: PackageManagerType;
 };
 
-// type PullRequestOctokitType = typeof Octokit & Constructor<{ createPullRequest: (args_0: Options) => ReturnType<typeof createPullRequest> }>;
 export const PullRequestOctokit = Octokit.plugin(createPullRequest);
+
+// This type is annoying but without it, we don't seem to get proper type checking for the PR plugin call.
 export type PullRequestOctokitType = Octokit & { paginate: PaginateInterface } & RestEndpointMethods &
-  Api & { createPullRequest: (args_0: Options) => Promise<any> };
+  Api &
+  ReturnType<typeof createPullRequest>;
 
 function getManifestLockFilename(packageManager: PackageManagerType): string {
   if (packageManager === 'yarn') {
@@ -46,6 +47,10 @@ function getManifestLockFilename(packageManager: PackageManagerType): string {
   return 'package-lock.json';
 }
 
+/**
+ * Makes a request to GitHub to download a file from a repo with the specific ref (commit hash).
+ * The path is merged with the filename to create the absolute path to the file.
+ */
 async function downloadFileFromGitHub(
   octokit: PullRequestOctokitType,
   owner: string,
@@ -126,10 +131,16 @@ export async function getRepoAuthState(
   // TODO: Make this actually have a real type.
   repository: any;
 }> {
-  const { data: repository, headers } = await octokit.request('GET /repos/{owner}/{repo}', {
+  const response = await octokit.request('GET /repos/{owner}/{repo}', {
     owner,
     repo,
   });
+
+  if (response.status !== 200) {
+    throw new Error(`GitHub Error: Unable to get repo ${owner}/${repo} (Status: ${response.status})`);
+  }
+
+  const { data: repository, headers } = response;
 
   const isUser = !!headers['x-oauth-scopes'];
 
@@ -217,6 +228,16 @@ export async function replacePackageAndFileGitHubPullRequest(
       // TODO: Figure out signed commits.
     },
   });
+
+  if (!pullRequest) {
+    throw new Error(`GitHub Error: Unable to create pull request for ${owner}/${repo}@${checkoutRef} in path: ${path}`);
+  }
+
+  if (pullRequest.status !== 200) {
+    throw new Error(
+      `GitHub Error: Unable to create pull request for ${owner}/${repo}@${checkoutRef} in path: ${path} (Status: ${pullRequest.status})`
+    );
+  }
 
   console.log('PR Created:', pullRequest.data.html_url);
   console.log('PR Title:', pullRequest.data.title);

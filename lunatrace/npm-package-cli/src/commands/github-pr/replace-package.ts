@@ -16,11 +16,12 @@
  */
 import { Args, Command, Flags } from '@oclif/core';
 
-import { PullRequestOctokit, replacePackageAndFileGitHubPullRequest } from '../../package/github-pr';
-import { replacePackagesForNode } from '../../package/replace-package';
-import { setupPackageTree } from '../../package/replace-package/package-tree';
+import {
+  PullRequestOctokit,
+  PullRequestOctokitType,
+  replacePackageAndFileGitHubPullRequest,
+} from '../../package/github-pr';
 import { PackageManagerType } from '../../package/types';
-import { getScriptPath } from '../../package/utils/get-script-path';
 import { ReplacePackageFlags } from '../replace-package';
 
 export default class GitHubReplacePackage extends Command {
