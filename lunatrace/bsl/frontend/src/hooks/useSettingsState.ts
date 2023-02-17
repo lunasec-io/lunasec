@@ -19,7 +19,7 @@ import useLocalStorage from './useLocalStorage';
 
 export type ThemeChoice = typeof THEME[keyof typeof THEME];
 
-function useSettingsState(key: string, initialValue: ThemeChoice): [string, (themeChoice: ThemeChoice) => void] {
+function useSettingsState(key: string, initialValue: string): [string, (setTo: string) => void] {
   const [value, setValue] = useLocalStorage<ThemeChoice>(key, initialValue);
 
   useEffect(() => {
@@ -28,13 +28,19 @@ function useSettingsState(key: string, initialValue: ThemeChoice): [string, (the
 
     // Replace style sheet if dark theme gets toggled
     if (key === 'theme') {
-      const theme = value === 'dark' ? 'dark' : 'light';
-      const stylesheet = document.querySelector('.js-stylesheet');
-      if (!stylesheet) {
-        throw new Error('missing theme stylesheet');
+      if (value === THEME.DARK) {
+        require('../scss/main/dark.scss');
+      } else {
+        require('../scss/main/light.scss');
       }
-      stylesheet.setAttribute('href', `/css/${theme}.css`);
     }
+    //   const theme = value === 'dark' ? 'dark' : 'light';
+    //   const stylesheet = document.querySelector('.js-stylesheet');
+    //   if (!stylesheet) {
+    //     throw new Error('missing theme stylesheet');
+    //   }
+    //   stylesheet.setAttribute('href', `/css/${theme}.css`);
+    // }
   }, [value, key]);
 
   return [value, setValue];

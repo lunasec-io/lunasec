@@ -23,6 +23,7 @@ import { NavbarBreadcrumbs } from '../components/navbar/NavbarBreadcrumbs';
 import Sidebar from '../components/sidebar/Sidebar';
 import { generateSidebarItems } from '../components/sidebar/sidebarItems';
 import { SidebarContext } from '../contexts/SidebarContext';
+import { ThemeProvider } from '../contexts/ThemeContext';
 import useAppDispatch from '../hooks/useAppDispatch';
 import useAppSelector from '../hooks/useAppSelector';
 import { selectIsAuthenticated, setConfirmedUnauthenticated, setSession } from '../store/slices/authentication';
@@ -64,18 +65,20 @@ const MainLayout: React.FunctionComponent = (props) => {
   return (
     <React.Fragment>
       <Wrapper>
-        <Sidebar sections={generateSidebarItems(sidebarData, isAuthenticated)} />
-        <div className="main">
-          <Navbar />
+        <ThemeProvider>
+          <Sidebar sections={generateSidebarItems(sidebarData, isAuthenticated)} />
+          <div className="main">
+            <Navbar />
 
-          {<NavbarBreadcrumbs />}
+            {<NavbarBreadcrumbs />}
 
-          <AlertsHeader />
+            <AlertsHeader />
 
-          <div className="content">
-            <Outlet />
+            <div className="content">
+              <Outlet />
+            </div>
           </div>
-        </div>
+        </ThemeProvider>
       </Wrapper>
       {/*<Settings />*/}
     </React.Fragment>

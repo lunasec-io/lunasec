@@ -29,7 +29,6 @@ export const LAYOUT = {
 
 export const THEME = {
   DEFAULT: 'dark',
-  COLORED: 'colored',
   DARK: 'dark',
   LIGHT: 'light',
 };

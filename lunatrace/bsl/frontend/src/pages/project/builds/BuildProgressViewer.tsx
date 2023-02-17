@@ -19,12 +19,12 @@ import { Build_State_Enum } from '../../../api/generated';
 import { toTitleCase } from '../../../utils/string-utils';
 import { BuildLogs } from '../types';
 
-interface BuildStateViewerProps {
+interface BuildProgressViewerProps {
   buildId: string;
   scanCompletedCallback: () => void;
 }
 
-export const BuildStateViewer: React.FC<BuildStateViewerProps> = (props) => {
+export const BuildProgressViewer: React.FC<BuildProgressViewerProps> = (props) => {
   const { buildId, scanCompletedCallback } = props;
 
   const [pollingInterval, setPollingInterval] = useState<number>(3000);

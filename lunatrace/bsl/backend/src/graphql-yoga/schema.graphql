@@ -158,6 +158,7 @@ type BuildData_Package {
 
 type BuildData_Vulnerability {
     id: String!
+    cve_id: String
     severity_name: String
     cvss_score: Float
     summary: String

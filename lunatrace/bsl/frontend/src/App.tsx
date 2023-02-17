@@ -12,7 +12,6 @@
  *
  */
 import React from 'react';
-import './App.css';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Provider as StoreProvider } from 'react-redux';
 import { useRoutes } from 'react-router-dom';

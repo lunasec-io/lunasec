@@ -22,15 +22,16 @@ import api from '../../../../api';
 import { SpinIfLoading } from '../../../../components/SpinIfLoading';
 import useAppDispatch from '../../../../hooks/useAppDispatch';
 import useBreakpoint from '../../../../hooks/useBreakpoint';
+import { useQuickView } from '../../../../hooks/useQuickView';
 import { add } from '../../../../store/slices/alerts';
-import { BuildStateViewer } from '../BuildStateViewer';
-import { QuickView } from '../QuickView';
-import { QuickViewState } from '../types';
+import { BuildDetailsQuickView } from '../BuildDetailsQuickView';
+import { BuildProgressViewer } from '../BuildProgressViewer';
 
 import { BuildDetailsHeader } from './BuildDetailsHeader';
 import { VulnerablePackageListWrapper } from './VulnerablePackageListWrapper';
 
 export const BuildDetails: React.FunctionComponent = () => {
+  console.log('rendering build details');
   const dispatch = useAppDispatch();
   const listStartRef = useRef<HTMLDivElement>(null);
 
@@ -52,16 +53,11 @@ export const BuildDetails: React.FunctionComponent = () => {
 
   const [ignoreFindings, setIgnoreFindings] = useState<boolean>(true);
 
-  // We show a temporary view of any vulnerabilities that get clicked, instead of redirecting.  This is much faster when doing an audit
-  // because it prevents the loss of the app state/context and any open dropdowns and filters.
-  // We prop drill these pretty deep, so consider using a context provider instead
-  const [vulnQuickViewState, setVulnQuickViewState] = useState<QuickViewState | null>(null);
-
+  const quickView = useQuickView();
   // note that we only use this breakpoint when necessary for JS stuff, otherwise we just use classname bootstrap media queries as normal
   const isExtraLarge = useBreakpoint('xxl');
 
-  const quickViewOpen = !!vulnQuickViewState;
-  const isSideBySideView = isExtraLarge && quickViewOpen;
+  const isSideBySideView = isExtraLarge && quickView.isOpen;
 
   function renderContainer(children: React.ReactNode) {
     return (
@@ -88,7 +84,7 @@ export const BuildDetails: React.FunctionComponent = () => {
   if (build.scans.length === 0) {
     return renderContainer(
       <span>
-        <BuildStateViewer buildId={build_id} scanCompletedCallback={scanCompletedCallback} />
+        <BuildProgressViewer buildId={build_id} scanCompletedCallback={scanCompletedCallback} />
       </span>
     );
   }
@@ -100,10 +96,6 @@ export const BuildDetails: React.FunctionComponent = () => {
       findings={filteredFindings}
       projectId={build.project_id}
       buildId={build_id}
-      quickViewConfig={{
-        quickViewState: vulnQuickViewState,
-        setVulnQuickViewState,
-      }}
       shouldIgnore={ignoreFindings}
       toggleIgnoreFindings={() => setIgnoreFindings(!ignoreFindings)}
       build={build}
@@ -112,7 +104,7 @@ export const BuildDetails: React.FunctionComponent = () => {
 
   // Responsible for showing or hiding the findings list when quick view is open.  D-none only applies on screens smaller than xxl(1400)
   // meaning that the findings list will be hidden on smaller screens when quick view is open.
-  const packageListColClasses = classNames('d-xxl-block', { 'd-none': quickViewOpen });
+  const packageListColClasses = classNames('d-xxl-block', { 'd-none': quickView.isOpen });
 
   return renderContainer(
     <>
@@ -121,19 +113,13 @@ export const BuildDetails: React.FunctionComponent = () => {
       <hr />
       <div ref={listStartRef} />
       <Row>
-        <Col xxl={quickViewOpen ? 6 : 12} className={packageListColClasses}>
+        <Col xxl={isSideBySideView ? 6 : 12} className={packageListColClasses}>
           {renderedPackageList}
         </Col>
 
-        {vulnQuickViewState ? (
-          <Col xxl={quickViewOpen ? 6 : 12}>
-            <QuickView
-              quickView={{
-                quickViewState: vulnQuickViewState,
-                setVulnQuickViewState,
-              }}
-              sideBySideView={isSideBySideView}
-            />{' '}
+        {quickView.isOpen ? (
+          <Col xxl={isSideBySideView ? 6 : 12}>
+            <BuildDetailsQuickView sideBySideView={isSideBySideView} />{' '}
           </Col>
         ) : null}
       </Row>

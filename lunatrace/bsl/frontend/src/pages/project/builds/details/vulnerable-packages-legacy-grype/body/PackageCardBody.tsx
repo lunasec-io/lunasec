@@ -27,14 +27,9 @@ import { PackageDetails } from './PackageDetails';
 interface VulnerablePackageCardBodyProps {
   pkg: VulnerablePackageLegacy<Finding>;
   severityFilter: number;
-  quickView: QuickViewProps;
 }
 
-export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyProps> = ({
-  pkg,
-  severityFilter,
-  quickView,
-}) => {
+export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyProps> = ({ pkg, severityFilter }) => {
   const depTree = null;
   const [shouldFilterFindings, setShouldFilterFindings] = useState(true);
 
@@ -65,7 +60,6 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
               <FindingsTable
                 shouldFilterFindings={shouldFilterFindings}
                 filteredFindings={filteredFindings}
-                quickView={quickView}
                 setShouldFilterFindings={setShouldFilterFindings}
                 findingsCount={pkg.findings.length}
               />

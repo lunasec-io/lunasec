@@ -18,7 +18,6 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 
 import api from '../../../../../api';
 import { ConfirmationDailog } from '../../../../../components/ConfirmationDialog';
-import { QuickViewProps } from '../../types';
 
 import { VulnerablePackageCardHeader } from './VulnerablePackageCardHeader';
 import { PackageCardBody } from './body/PackageCardBody';
@@ -27,14 +26,9 @@ import { Finding } from './types';
 interface VulnerablePackageMainProps {
   pkg: VulnerablePackageLegacy<Finding>;
   severityFilter: number;
-  quickView: QuickViewProps;
 }
 
-export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMainProps> = ({
-  pkg,
-  severityFilter,
-  quickView,
-}) => {
+export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMainProps> = ({ pkg, severityFilter }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [insertVulnIgnore, insertVulnIgnoreState] = api.useInsertIgnoredVulnerabilitiesMutation();
   const [ignoreNote, setIgnoreNote] = useState('');
@@ -53,7 +47,7 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
   // eslint-disable-next-line react/display-name
   const customMenuToggle = React.forwardRef<
     HTMLAnchorElement,
-    { onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void, children: React.ReactNode }
+    { onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void; children: React.ReactNode }
   >(({ children, onClick }, ref) => (
     <a
       className="text-end position-absolute top-0 end-0 m-3 btn-white"
@@ -89,7 +83,7 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
       <Card className="vulnpkg-card">
         {renderIgnoreUi()}
         <VulnerablePackageCardHeader pkg={pkg} />
-        <PackageCardBody pkg={pkg} severityFilter={severityFilter} quickView={quickView} />
+        <PackageCardBody pkg={pkg} severityFilter={severityFilter} />
       </Card>
       <ConfirmationDailog
         title={`Ignore All Findings For This Package`}

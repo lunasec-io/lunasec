@@ -33,10 +33,10 @@ export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesCon
   const { theme } = useTheme();
   return (
     <Row className="mb-2 mb-xl-3">
-      <Col sm="3" className="d-none d-md-block">
-        <h3>Vulnerabilities</h3>
+      <Col xs="12" className="d-none d-md-block">
+        <h3>Vulnerability Database</h3>
       </Col>
-      <Col sm="6" md="4">
+      <Col sm="12" md="12">
         <form
           onSubmit={(e) => {
             e.preventDefault();

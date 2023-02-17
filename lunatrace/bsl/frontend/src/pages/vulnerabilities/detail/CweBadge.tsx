@@ -1,7 +1,7 @@
 /*
  * Copyright by LunaSec (owned by Refinery Labs, Inc)
  *
- * Licensed under the Business Source License v1.1 
+ * Licensed under the Business Source License v1.1
  * (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
  *
@@ -15,25 +15,34 @@ import React from 'react';
 import { Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { ExternalLink } from 'react-feather';
 
-import { cweQuickViewState } from '../../project/builds/state';
-import { QuickViewProps } from '../../project/builds/types';
+import { useQuickView } from '../../../hooks/useQuickView';
 
 interface CweBadgeProps {
   id: number;
   name: string;
   common_name?: string;
-  quickView?: QuickViewProps;
   tooltipDescription?: boolean;
+  shouldOpenInQuickView: boolean;
 }
 
-export const CweBadge: React.FC<CweBadgeProps> = ({ id, name, common_name, quickView, tooltipDescription }) => {
+export const CweBadge: React.FC<CweBadgeProps> = ({
+  id,
+  name,
+  common_name,
+  tooltipDescription,
+  shouldOpenInQuickView,
+}) => {
+  const quickView = useQuickView();
   const cweBadge = (
     <div style={{ display: 'inline-flex' }}>
-      {quickView ? (
+      {shouldOpenInQuickView ? (
         <Badge
           style={{ cursor: 'pointer' }}
           bg={'light'}
-          onClick={() => quickView?.setVulnQuickViewState(cweQuickViewState(id))}
+          onClick={(e) => {
+            e.stopPropagation();
+            quickView.setState({ mode: 'cwe', id: String(id) });
+          }}
           className={'mx-1'}
         >
           {common_name ? common_name : `CWE-${id}`}
@@ -57,7 +66,7 @@ export const CweBadge: React.FC<CweBadgeProps> = ({ id, name, common_name, quick
   if (tooltipDescription) {
     return (
       <OverlayTrigger
-        placement="bottom"
+        placement="top"
         overlay={<Tooltip className="wide-tooltip">{name}</Tooltip>}
         delay={{ show: 250, hide: 400 }}
       >

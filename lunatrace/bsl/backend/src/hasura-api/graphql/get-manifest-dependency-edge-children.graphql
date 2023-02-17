@@ -14,6 +14,7 @@ query GetManifestDependencyEdgeChildren($ids: [uuid!]!) {
         package_manager
         affected_by_vulnerability {
           vulnerability {
+            cve_id
             id
             source_id
             source

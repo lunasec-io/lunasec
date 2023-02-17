@@ -2,6 +2,7 @@
 // Base styles
 //
 
+
 .btn {
   display: inline-block;
   font-family: $btn-font-family;
@@ -50,6 +51,11 @@
   }
 }
 
+.form-group {
+  .btn {
+    border: unset;
+  }
+}
 
 //
 // Alternate buttons

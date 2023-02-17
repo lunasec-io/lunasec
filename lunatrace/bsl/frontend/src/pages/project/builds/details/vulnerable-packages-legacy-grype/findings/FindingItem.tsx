@@ -22,19 +22,18 @@ import semver from 'semver';
 
 import api from '../../../../../../api';
 import { ConfirmationDailog } from '../../../../../../components/ConfirmationDialog';
+import { useQuickView } from '../../../../../../hooks/useQuickView';
 import { toTitleCase } from '../../../../../../utils/string-utils';
 import { CweBadge } from '../../../../../vulnerabilities/detail/CweBadge';
-import { vulnerabilityOpenInQuickView, vulnerabilityQuickViewState } from '../../../state';
-import { QuickViewProps } from '../../../types';
 import { Finding } from '../types';
 
 interface VulnerabilityTableItemProps {
   finding: Finding;
-  quickView: QuickViewProps;
   patchable: string | undefined;
 }
 
-export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({ finding, quickView, patchable }) => {
+export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({ finding, patchable }) => {
+  const quickView = useQuickView();
   const [insertVulnIgnore, insertVulnIgnoreState] = api.useInsertIgnoredVulnerabilitiesMutation();
   const { project_id } = useParams();
 
@@ -87,7 +86,7 @@ export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({ finding, qu
   const severity = getCvssVectorFromSeverities(finding.vulnerability.severities);
 
   const rowClassNames = classNames('vuln-table-item', {
-    open: vulnerabilityOpenInQuickView(quickView.quickViewState, finding.vulnerability_id),
+    open: quickView.checkVulnOpen(finding.vulnerability_id),
     ignored: findingIsIgnored,
   });
 
@@ -119,8 +118,8 @@ export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({ finding, qu
           id={c.cwe.id}
           name={c.cwe.name}
           common_name={c.cwe.common_name || undefined}
-          quickView={quickView}
           tooltipDescription={true}
+          shouldOpenInQuickView={true}
         />
       ))}
     </div>,
@@ -140,7 +139,7 @@ export const FindingItem: React.FC<VulnerabilityTableItemProps> = ({ finding, qu
         <tr
           style={{ cursor: 'pointer' }}
           onClick={(e) => {
-            quickView.setVulnQuickViewState(vulnerabilityQuickViewState(finding.vulnerability_id as string));
+            quickView.setState({ mode: 'vuln', id: finding.vulnerability.id });
           }}
           className={rowClassNames}
           key={finding.id}

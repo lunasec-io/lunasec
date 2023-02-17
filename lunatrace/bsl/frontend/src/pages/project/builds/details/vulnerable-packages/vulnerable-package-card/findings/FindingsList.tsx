@@ -23,7 +23,6 @@ import { VulnInfoTableRow } from './VulnInfoTableRow';
 interface FindingsTableProps {
   shouldFilterFindings: boolean;
   filteredFindings: VulnMeta[];
-  quickView: QuickViewProps;
   setShouldFilterFindings: (shouldFilter: boolean) => void;
   findingsHiddenBySeverityCount: number;
 }
@@ -31,7 +30,6 @@ interface FindingsTableProps {
 export const FindingsTable: React.FC<FindingsTableProps> = ({
   shouldFilterFindings,
   filteredFindings,
-  quickView,
   setShouldFilterFindings,
   findingsHiddenBySeverityCount,
 }) => {
@@ -40,8 +38,8 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
       <Table hover size="sm" responsive>
         <thead>
           <tr>
-            <th>Vulnerability ID</th>
-            <th>Vulnerability Categories</th>
+            <th>Description</th>
+            <th>Type</th>
             <th>Severity</th>
             <th>CVSS</th>
             <th>Fix</th>
@@ -50,7 +48,7 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
         </thead>
         <tbody>
           {filteredFindings.map((vulnMeta) => {
-            return <VulnInfoTableRow key={vulnMeta.vulnerability.id} vulnMeta={vulnMeta} quickView={quickView} />;
+            return <VulnInfoTableRow key={vulnMeta.vulnerability.id} vulnMeta={vulnMeta} />;
           })}
         </tbody>
       </Table>

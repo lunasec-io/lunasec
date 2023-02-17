@@ -28,7 +28,7 @@ export interface QuickViewCwe {
 export type QuickViewState = QuickViewVulnerability | QuickViewCwe;
 
 export interface QuickViewProps {
-  setVulnQuickViewState: (state: QuickViewState | null) => void;
+  setQuickViewState: (state: QuickViewState | null) => void;
   quickViewState: QuickViewState | null;
 }
 
