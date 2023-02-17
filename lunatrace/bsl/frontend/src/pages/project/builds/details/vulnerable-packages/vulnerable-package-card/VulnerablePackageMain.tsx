@@ -118,9 +118,7 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
     );
   };
 
-  async function onClickUpdate(pkg) {
-    console.log('opening PR', pkg);
-
+  async function onClickUpdate(pkg: VulnerablePackage) {
     const response = await createGitHubPullRequestForVuln({
       project_id: build.project_id,
       vulnerability_id: pkg.affected_by[0].vulnerability.id,
@@ -130,6 +128,7 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
       package_manifest_path: pkg.paths[0],
     });
 
+    // TODO: Make this actually put some HTML on the page.
     console.log('pr response:', response);
   }
 
