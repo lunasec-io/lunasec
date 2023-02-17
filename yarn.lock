@@ -13488,7 +13488,6 @@ __metadata:
     "@types/chai": ^4
     "@types/jest": ^29.4.0
     "@types/node": ^16.18.11
-    "@types/node-fetch": ^2.6.2
     "@types/npm-package-arg": ^6.1.1
     "@types/npm-registry-fetch": ^8.0.4
     "@types/npmcli__arborist": ^5.6.1
@@ -17606,16 +17605,6 @@ __metadata:
     "@types/node": "*"
     form-data: ^3.0.0
   checksum: a3e5d7f413d1638d795dff03f7b142b1b0e0c109ed210479000ce7b3ea11f9a6d89d9a024c96578d9249570c5fe5287a5f0f4aaba98199222230196ff2d6b283
-  languageName: node
-  linkType: hard
-
-"@types/node-fetch@npm:^2.6.2":
-  version: 2.6.2
-  resolution: "@types/node-fetch@npm:2.6.2"
-  dependencies:
-    "@types/node": "*"
-    form-data: ^3.0.0
-  checksum: 6f73b1470000d303d25a6fb92875ea837a216656cb7474f66cdd67bb014aa81a5a11e7ac9c21fe19bee9ecb2ef87c1962bceeaec31386119d1ac86e4c30ad7a6
   languageName: node
   linkType: hard
 

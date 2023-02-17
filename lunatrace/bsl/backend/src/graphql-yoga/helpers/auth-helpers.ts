@@ -51,7 +51,7 @@ export function getUserId(ctx: Context, kratos_id_instead = false): string {
   return userId;
 }
 
-export async function checkProjectIsAuthorized(projectId: string, ctx: Context): Promise<void> {
+export async function checkProjectIsAuthorizedOrThrow(projectId: string, ctx: Context): Promise<void> {
   const identityId = getUserId(ctx);
   const project = await hasura.GetUserProjectFromProjectId({ project_id: projectId, user_id: identityId });
   if (project.projects.length === 0) {
@@ -60,7 +60,7 @@ export async function checkProjectIsAuthorized(projectId: string, ctx: Context):
   return;
 }
 
-export async function checkBuildsAreAuthorized(buildIds: string[], ctx: Context): Promise<void> {
+export async function checkBuildsAreAuthorizedOrThrow(buildIds: string[], ctx: Context): Promise<void> {
   const userId = getUserId(ctx);
   const existingBuildsRes = await hasura.GetUsersBuilds({ build_ids: buildIds, user_id: userId });
   if (!existingBuildsRes.builds) {

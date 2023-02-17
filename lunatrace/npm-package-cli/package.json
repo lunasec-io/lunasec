@@ -39,7 +39,6 @@
     "@types/chai": "^4",
     "@types/jest": "^29.4.0",
     "@types/node": "^16.18.11",
-    "@types/node-fetch": "^2.6.2",
     "@types/npm-package-arg": "^6.1.1",
     "@types/npm-registry-fetch": "^8.0.4",
     "@types/npmcli__arborist": "^5.6.1",

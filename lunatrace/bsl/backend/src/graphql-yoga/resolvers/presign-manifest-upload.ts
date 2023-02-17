@@ -17,7 +17,7 @@ import { v4 as uuid } from 'uuid';
 import { getBackendBucketConfig } from '../../config';
 import { aws } from '../../utils/aws-utils';
 import { MutationResolvers } from '../generated-resolver-types';
-import { checkProjectIsAuthorized, throwIfUnauthenticated } from '../helpers/auth-helpers';
+import { checkProjectIsAuthorizedOrThrow, throwIfUnauthenticated } from '../helpers/auth-helpers';
 
 type PresignManifestUploadResolver = NonNullable<MutationResolvers['presignManifestUpload']>;
 
@@ -26,7 +26,7 @@ const sbomHandlerConfig = getBackendBucketConfig();
 export const presignManifestUploadResolver: PresignManifestUploadResolver = async (parent, args, ctx, info) => {
   throwIfUnauthenticated(ctx);
   const projectId = args.project_id;
-  await checkProjectIsAuthorized(projectId, ctx);
+  await checkProjectIsAuthorizedOrThrow(projectId, ctx);
   const today = new Date();
   const uniqueId = uuid();
 

@@ -17,14 +17,14 @@ import { SeverityNamesOsv, severityOrderOsv } from '@lunatrace/lunatrace-common'
 import { loadTree } from '../../models/vulnerability-dependency-tree/load-tree';
 import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';
-import { checkBuildsAreAuthorized, throwIfUnauthenticated } from '../helpers/auth-helpers';
+import { checkBuildsAreAuthorizedOrThrow, throwIfUnauthenticated } from '../helpers/auth-helpers';
 
 type BuildVulnerabilitiesResolver = NonNullable<QueryResolvers['vulnerableReleasesFromBuild']>;
 
 export const vulnerableReleasesFromBuildResolver: BuildVulnerabilitiesResolver = async (parent, args, ctx, info) => {
   throwIfUnauthenticated(ctx);
   const buildId = args.buildId;
-  await checkBuildsAreAuthorized([buildId], ctx);
+  await checkBuildsAreAuthorizedOrThrow([buildId], ctx);
 
   const logger = log.child('vulnerable-releases-resolver', { buildId });
 
