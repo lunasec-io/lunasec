@@ -86,7 +86,6 @@
     "markdown-table": "2.0.0",
     "minimatch": "~5.1.2",
     "murmurhash-native": "^3.5.0",
-    "node-fetch": "2",
     "nodemon": "^2.0.15",
     "octokit": "^1.7.1",
     "pg": "^8.7.1",

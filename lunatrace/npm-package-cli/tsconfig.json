@@ -8,8 +8,7 @@
     "strict": true,
     "target": "es2019",
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "types": ["node", "jest", "@types/jest", "@types/node-fetch"]
+    "skipLibCheck": false
   },
   "include": [
     "src/**/*"
