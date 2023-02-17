@@ -14,6 +14,9 @@
 import React from 'react';
 import { Spinner } from 'react-bootstrap';
 
-export const SpinIfLoading: React.FunctionComponent<{ isLoading: boolean }> = ({ isLoading, children }) => {
+export const SpinIfLoading: React.FC<{ isLoading: boolean; children?: React.ReactNode }> = ({
+  isLoading,
+  children,
+}) => {
   return <>{isLoading ? <Spinner animation="border" variant="primary" /> : children}</>;
 };

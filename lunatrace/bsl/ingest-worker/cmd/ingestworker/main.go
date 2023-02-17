@@ -17,6 +17,8 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
+	"go.uber.org/fx"
+
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/cisa"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/cwe"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/epss"
@@ -24,6 +26,7 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/sync"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/vulnerability"
 	cisa2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/cisa"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/clifx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/ingestworker"
 	cwe2 "github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/cwe"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/dbfx"
@@ -31,12 +34,10 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/registry"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator/npm"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
-
-	"go.uber.org/fx"
-
-	clifx2 "github.com/ajvpot/clifx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/affected"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/license"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
@@ -47,29 +48,33 @@ func main() {
 	// TODO (cthompson) this should be configured with an fx module
 	log.Logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
 
-	clifx2.Main(
+	clifx.Main(
+		// TODO (cthompson) move this into an fx module
 		fx.Supply(http.DefaultClient),
 
 		graphqlfx.Module,
 		dbfx.Module,
 		registry.NPMModule,
+		ingester.Module,
 
 		fx.Provide(
 			cwe2.NewCWEIngester,
 			epss2.NewEPSSIngester,
 			cisa2.NewCISAKnownVulnIngester,
+			vulnmanager.NewProcessor,
 		),
 
 		// todo make a module
-		fx.Supply(&clifx2.AppConfig{
+		fx.Supply(&clifx.AppConfig{
 			Name:    "ingestworker",
 			Usage:   "LunaTrace Ingest Worker",
 			Version: "0.0.1",
 		}),
 		fx.Provide(
 			ingester.NewPackageSqlIngester,
-			ingester.NewNPMPackageIngester,
 			replicator.NewNPMReplicator,
+			npm.NewNpmAPIReplicator,
+			affected.NewIngester,
 		),
 		fx.Provide(
 			ingestworker.NewConfigProvider,

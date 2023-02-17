@@ -15,7 +15,7 @@ import { useContext } from 'react';
 import { AlertOctagon, Aperture, LogIn, Plus, User } from 'react-feather';
 import { AiFillGithub } from 'react-icons/ai';
 import { BiUnlink } from 'react-icons/bi';
-import { BsChatSquareText } from 'react-icons/bs';
+import { BsChatSquareText, BsTerminal } from 'react-icons/bs';
 import { RiParkingFill } from 'react-icons/ri';
 
 import { GetSidebarInfoQuery } from '../../api/generated';
@@ -105,6 +105,11 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
       href: '/cwes',
       icon: Aperture,
       title: 'Common Weakness Enumerations Database',
+    },
+    {
+      href: '/api-explorer',
+      icon: BsTerminal,
+      title: 'API Explorer',
     },
   ];
 

@@ -8,18 +8,21 @@
 //
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package npm
+package registry
 
 import (
+	"context"
 	"database/sql"
 	"errors"
+
 	"github.com/go-jet/jet/v2/postgres"
+	"github.com/rs/zerolog/log"
+	"go.uber.org/fx"
+
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/fetcher/npm"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/npm/model"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/npm/table"
-	"github.com/rs/zerolog/log"
-	"go.uber.org/fx"
 )
 
 const (
@@ -31,6 +34,7 @@ type npmRegistryDeps struct {
 
 	Fetcher metadata.Fetcher
 	DB      *sql.DB
+	Config  Config
 }
 
 type npmRegistry struct {
@@ -72,6 +76,11 @@ func (s *npmRegistry) PackageStream() (<-chan string, error) {
 }
 
 func (s *npmRegistry) GetPackageMetadata(packageName string) (*metadata.PackageMetadata, error) {
+	// Instead of using the database, we can use NPM to get the latest package metadata.
+	if s.deps.Config.NPM.UseNPM {
+		return s.getPackageMetadataFromNPM(packageName)
+	}
+
 	queryPackageMetadata := table.Revision.SELECT(
 		table.Revision.Doc,
 		table.Revision.Deleted,
@@ -100,6 +109,10 @@ func (s *npmRegistry) GetPackageMetadata(packageName string) (*metadata.PackageM
 	}
 
 	return npm.ParseRawPackageMetadata([]byte(revision.Doc))
+}
+
+func (s *npmRegistry) getPackageMetadataFromNPM(packageName string) (*metadata.PackageMetadata, error) {
+	return s.deps.Fetcher.Fetch(context.Background(), packageName)
 }
 
 func NewNPMRegistry(d npmRegistryDeps) metadata.NpmRegistry {

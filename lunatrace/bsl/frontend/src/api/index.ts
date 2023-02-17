@@ -72,6 +72,12 @@ const appApi = generatedApi.enhanceEndpoints({
     SetProjectFolderSettingsIgnore: {
       invalidatesTags: ['ProjectDetails', 'Builds'],
     },
+    UpdateUserSurvey: {
+      invalidatesTags: ['User'],
+    },
+    GetCurrentUserInfo: {
+      providesTags: ['User'],
+    },
   },
 });
 

@@ -98,7 +98,11 @@ export const AdminDashboardStaticAnalysis = () => {
   }
 
   if (error) {
-    return <p>Error loading data: {JSON.stringify(error)}</p>;
+    return (
+      <p>
+        <>Error loading data: {JSON.stringify(error)}</>
+      </p>
+    );
   }
 
   if (

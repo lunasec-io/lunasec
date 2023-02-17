@@ -23,6 +23,7 @@ select_permissions:
         - id
         - kratos_id
         - role
+        - survey
       filter: {}
   - role: user
     permission:
@@ -31,6 +32,7 @@ select_permissions:
         - id
         - kratos_id
         - role
+        - survey
       filter:
         _or:
           - id:
@@ -54,4 +56,23 @@ update_permissions:
         - id
         - kratos_id
       filter: {}
+      check: null
+  - role: user
+    permission:
+      columns:
+        - survey
+      filter:
+        _or:
+          - id:
+              _eq: X-Hasura-Real-User-Id
+          - _exists:
+              _table:
+                name: users
+                schema: public
+              _where:
+                _and:
+                  - id:
+                      _eq: X-Hasura-Real-User-Id
+                  - role:
+                      _eq: lunatrace_admin
       check: null

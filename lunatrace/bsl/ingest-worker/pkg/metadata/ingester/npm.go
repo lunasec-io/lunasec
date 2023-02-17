@@ -14,16 +14,18 @@ import (
 	"bufio"
 	"context"
 	"database/sql"
+	"os"
+	"time"
+
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/go-jet/jet/v2/qrm"
-	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
-	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/model"
-	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/table"
 	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
 	"github.com/schollz/progressbar/v3"
-	"os"
-	"time"
+
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/model"
+	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/table"
 
 	"go.uber.org/fx"
 
@@ -39,6 +41,7 @@ type Params struct {
 	DB                 *sql.DB
 	PackageSQLIngester PackageSqlIngester
 	NPMRegistry        metadata.NpmRegistry
+	Config             Config
 }
 
 type NPMPackageIngester struct {
@@ -241,6 +244,7 @@ func (h *NPMPackageIngester) IngestPackagesFromFile(
 	if err != nil {
 		return err
 	}
+
 	defer fileHandle.Close()
 	fileScanner := bufio.NewScanner(fileHandle)
 

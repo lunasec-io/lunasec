@@ -13,14 +13,16 @@ package ingester
 import (
 	"context"
 	"database/sql"
+	"time"
+
 	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
+	"go.uber.org/fx"
+
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/mapper"
 	"github.com/lunasec-io/lunasec/lunatrace/cli/pkg/util"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/model"
-	"github.com/rs/zerolog/log"
-	"go.uber.org/fx"
-	"time"
 )
 
 type PackageSqlIngesterParams struct {
@@ -37,8 +39,8 @@ type PackageSqlIngester interface {
 	Ingest(ctx context.Context, p *metadata.PackageMetadata) (string, error)
 }
 
-func (s *packageSqlIngester) upsertPackage(ctx context.Context, tx *sql.Tx, p *metadata.PackageMetadata) (string, error) {
-	packageId, err := upsertPackage(ctx, tx, model.Package{
+func (s *packageSqlIngester) upsertPackage(ctx context.Context, p *metadata.PackageMetadata) (string, error) {
+	packageId, err := upsertPackage(ctx, s.deps.DB, model.Package{
 		PackageManager:      mapper.NpmV,
 		CustomRegistry:      p.Registry,
 		Name:                p.Name,
@@ -50,12 +52,12 @@ func (s *packageSqlIngester) upsertPackage(ctx context.Context, tx *sql.Tx, p *m
 		return "", err
 	}
 
-	_, err = s.mapMaintainers(ctx, tx, packageId, p.Maintainers)
+	_, err = s.mapMaintainers(ctx, packageId, p.Maintainers)
 	if err != nil {
 		return "", err
 	}
 
-	_, err = s.mapReleases(ctx, tx, packageId, p.Releases)
+	_, err = s.mapReleases(ctx, packageId, p.Releases)
 	if err != nil {
 		return "", err
 	}
@@ -63,25 +65,29 @@ func (s *packageSqlIngester) upsertPackage(ctx context.Context, tx *sql.Tx, p *m
 	return packageId.String(), nil
 }
 
-func (s *packageSqlIngester) mapReleases(ctx context.Context, tx *sql.Tx, packageId uuid.UUID, r []metadata.Release) ([]uuid.UUID, error) {
+func (s *packageSqlIngester) mapReleases(ctx context.Context, packageId uuid.UUID, r []metadata.Release) ([]uuid.UUID, error) {
 	var (
 		releaseIds []uuid.UUID
 	)
 
+	log.Debug().
+		Int("count", len(r)).
+		Str("package id", packageId.String()).
+		Msg("inserting releases")
 	for _, rl := range r {
-		maintainerId, err := s.mapMaintainer(ctx, tx, rl.PublishingMaintainer)
+		maintainerId, err := s.mapMaintainer(ctx, rl.PublishingMaintainer)
 		if err != nil {
 			return []uuid.UUID{}, err
 		}
 
-		releaseId, err := upsertRelease(ctx, tx, model.Release{
+		releaseId, err := upsertRelease(ctx, s.deps.DB, model.Release{
 			PackageID:              packageId,
 			Version:                rl.Version,
-			PublishingMaintainerID: util.Ptr(maintainerId),
+			PublishingMaintainerID: maintainerId,
 			ReleaseTime:            util.Ptr(rl.ReleaseTime),
 			BlobHash:               util.Ptr(rl.BlobHash),
 			UpstreamBlobURL:        util.Ptr(rl.UpstreamBlobUrl),
-			UpstreamData:           util.Ptr(string(rl.UpstreamData)),
+			UpstreamData:           rl.UpstreamData,
 			FetchedTime:            util.Ptr(time.Now()),
 		})
 		if err != nil {
@@ -89,7 +95,7 @@ func (s *packageSqlIngester) mapReleases(ctx context.Context, tx *sql.Tx, packag
 			return []uuid.UUID{}, err
 		}
 
-		_, err = s.mapReleaseDependencies(ctx, tx, releaseId, rl.Dependencies)
+		_, err = s.mapReleaseDependencies(ctx, releaseId, rl.Dependencies)
 		if err != nil {
 			return []uuid.UUID{}, err
 		}
@@ -100,13 +106,12 @@ func (s *packageSqlIngester) mapReleases(ctx context.Context, tx *sql.Tx, packag
 
 func (s *packageSqlIngester) mapReleaseDependencies(
 	ctx context.Context,
-	tx *sql.Tx,
 	releaseId uuid.UUID,
 	ds []metadata.Dependency,
 ) ([]uuid.UUID, error) {
 	var releaseDependencyIds []uuid.UUID
 	for _, dep := range ds {
-		dependencyPackageId, err := upsertReleaseDependencyPackage(ctx, tx, model.Package{
+		dependencyPackageId, err := upsertReleaseDependencyPackage(ctx, s.deps.DB, model.Package{
 			Name:           dep.Name,
 			PackageManager: mapper.NpmV,
 			CustomRegistry: "",
@@ -119,11 +124,12 @@ func (s *packageSqlIngester) mapReleaseDependencies(
 			return []uuid.UUID{}, err
 		}
 
-		releaseDependencyId, err := upsertReleaseDependency(ctx, tx, model.ReleaseDependency{
+		releaseDependencyId, err := upsertReleaseDependency(ctx, s.deps.DB, model.ReleaseDependency{
 			ReleaseID:           releaseId,
-			DependencyPackageID: util.Ptr(dependencyPackageId),
+			DependencyPackageID: dependencyPackageId,
 			PackageName:         dep.Name,
 			PackageVersionQuery: dep.Version,
+			IsDev:               dep.IsDev,
 		})
 		if err != nil {
 			log.Error().Err(err).Msg("failed to upsert release dependency")
@@ -134,17 +140,17 @@ func (s *packageSqlIngester) mapReleaseDependencies(
 	return releaseDependencyIds, nil
 }
 
-func (s *packageSqlIngester) mapMaintainers(ctx context.Context, tx *sql.Tx, packageId uuid.UUID, p []metadata.Maintainer) ([]uuid.UUID, error) {
+func (s *packageSqlIngester) mapMaintainers(ctx context.Context, packageId uuid.UUID, p []metadata.Maintainer) ([]uuid.UUID, error) {
 	var maintainerIds []uuid.UUID
 	for _, pm := range p {
-		insertedId, err := s.mapMaintainer(ctx, tx, pm)
+		insertedId, err := s.mapMaintainer(ctx, pm)
 		if err != nil {
 			return maintainerIds, err
 		}
 
-		err = upsertPackageMaintainer(ctx, tx, model.PackageMaintainer{
-			PackageID:    util.Ptr(packageId),
-			MaintainerID: util.Ptr(insertedId),
+		err = upsertPackageMaintainer(ctx, s.deps.DB, model.PackageMaintainer{
+			PackageID:    packageId,
+			MaintainerID: insertedId,
 		})
 		if err != nil {
 			log.Error().Err(err).Msg("failed to upsert package maintainer")
@@ -156,8 +162,8 @@ func (s *packageSqlIngester) mapMaintainers(ctx context.Context, tx *sql.Tx, pac
 	return maintainerIds, nil
 }
 
-func (s *packageSqlIngester) mapMaintainer(ctx context.Context, tx *sql.Tx, pm metadata.Maintainer) (uuid.UUID, error) {
-	return upsertMaintainer(ctx, tx, model.Maintainer{
+func (s *packageSqlIngester) mapMaintainer(ctx context.Context, pm metadata.Maintainer) (uuid.UUID, error) {
+	return upsertMaintainer(ctx, s.deps.DB, model.Maintainer{
 		PackageManager: mapper.NpmV,
 		Email:          pm.Email,
 		Name:           util.Ptr(pm.Name),
@@ -165,23 +171,11 @@ func (s *packageSqlIngester) mapMaintainer(ctx context.Context, tx *sql.Tx, pm m
 }
 
 func (s *packageSqlIngester) Ingest(ctx context.Context, pkg *metadata.PackageMetadata) (string, error) {
-	tx, err := s.deps.DB.BeginTx(ctx, &sql.TxOptions{
-		Isolation: sql.LevelReadUncommitted,
-	})
-	if err != nil {
-		return "", err
-	}
-	defer tx.Rollback()
-
-	packageId, err := s.upsertPackage(ctx, tx, pkg)
+	packageId, err := s.upsertPackage(ctx, pkg)
 	if err != nil {
 		log.Error().
 			Err(err).
 			Msg("failed to upsert package")
-		return "", err
-	}
-
-	if err = tx.Commit(); err != nil {
 		return "", err
 	}
 	return packageId, nil

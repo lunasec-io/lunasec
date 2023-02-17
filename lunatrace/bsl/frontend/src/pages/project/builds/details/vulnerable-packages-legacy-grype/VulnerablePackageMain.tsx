@@ -53,7 +53,7 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
   // eslint-disable-next-line react/display-name
   const customMenuToggle = React.forwardRef<
     HTMLAnchorElement,
-    { onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void }
+    { onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void, children: React.ReactNode }
   >(({ children, onClick }, ref) => (
     <a
       className="text-end position-absolute top-0 end-0 m-3 btn-white"

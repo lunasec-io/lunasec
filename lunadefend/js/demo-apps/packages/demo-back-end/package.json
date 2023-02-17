@@ -70,7 +70,7 @@
     "eslint-plugin-react": "^7.23.2",
     "nodemon": "^2.0.7",
     "pm2": "^4.0.1",
-    "prettier": "^2.2.1",
+    "prettier": "^2.5.0",
     "ts-node": "^10.2.1",
     "ts-node-dev": "^1.1.8",
     "tslint-config-prettier": "^1.18.0",

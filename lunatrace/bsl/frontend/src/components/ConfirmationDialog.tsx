@@ -20,7 +20,7 @@ interface ConfirmationDialogProps {
   onClose: (success: boolean) => void;
   show: boolean;
   title?: string;
-  body?: React.ReactFragment;
+  body?: React.ReactNode;
 }
 
 export const ConfirmationDailog: React.FC<ConfirmationDialogProps> = ({ onClose, show, title, body }) => {

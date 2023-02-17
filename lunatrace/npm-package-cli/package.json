@@ -1,0 +1,85 @@
+{
+  "name": "@lunasec/simple-npm-example",
+  "version": "0.0.0",
+  "description": "LunaTrace CLI for managing NPM package versions",
+  "author": "@lunasec-io",
+  "bin": {
+    "lunatrace-npm-cli": "bin/run"
+  },
+  "homepage": "https://github.com/lunasec-io/lunasec",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "typings": "build/main/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lunasec-io/lunasec.git"
+  },
+  "files": [
+    "/bin",
+    "/dist",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "dependencies": {
+    "@npmcli/arborist": "^6.2.0",
+    "@oclif/core": "^2",
+    "@oclif/plugin-help": "^5",
+    "@oclif/plugin-plugins": "^2.2.4",
+    "npm-package-arg": "^10.1.0",
+    "pacote": "^15.0.8"
+  },
+  "devDependencies": {
+    "@oclif/test": "^2.3.3",
+    "@types/chai": "^4",
+    "@types/jest": "^29.4.0",
+    "@types/node": "^16.18.11",
+    "@types/node-fetch": "^2.6.2",
+    "@types/npm-package-arg": "^6.1.1",
+    "@types/npm-registry-fetch": "^8.0.4",
+    "@types/npmcli__arborist": "^5.6.1",
+    "@types/pacote": "^11.1.5",
+    "chai": "^4",
+    "jest": "^29.4.1",
+    "oclif": "^3.6.1",
+    "shx": "^0.3.4",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.4.0",
+    "tslib": "^2.5.0",
+    "typescript": "~4.7.0"
+  },
+  "oclif": {
+    "bin": "lunatrace-npm-cli",
+    "dirname": "lunatrace-npm-cli",
+    "commands": "./dist/commands",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-plugins"
+    ],
+    "topicSeparator": " ",
+    "topics": {
+      "show-tree": {
+        "description": "Prints an NPM package tree"
+      }
+    }
+  },
+  "scripts": {
+    "build": "shx rm -rf dist && tsc -b",
+    "dev": "node ./bin/dev",
+    "dev-debug": "node --inspect-brk ./bin/dev",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "posttest": "yarn lint",
+    "prepack": "yarn build && oclif manifest && oclif readme",
+    "test": "jest --runInBand",
+    "version": "oclif readme && git add README.md"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/lunasec-io/lunasec/issues"
+  },
+  "keywords": [
+    "oclif"
+  ],
+  "types": "dist/index.d.ts"
+}

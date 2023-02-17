@@ -11,18 +11,25 @@
 package ingest
 
 import (
+	"bufio"
 	"errors"
+	"os"
+	"sync"
+
 	"github.com/ajvpot/clifx"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
+	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
+
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
 )
 
 type Params struct {
 	fx.In
 
-	Ingester   metadata.PackageIngester
-	Replicator metadata.Replicator
+	Ingester      metadata.PackageIngester
+	Replicator    metadata.Replicator
+	APIReplicator metadata.APIReplicator
 }
 
 func NewCommand(p Params) clifx.CommandResult {
@@ -81,45 +88,121 @@ func NewCommand(p Params) clifx.CommandResult {
 				},
 				{
 					Name: "replicate",
-					Flags: []cli.Flag{
-						&cli.IntFlag{
-							Name:     "since",
-							Required: false,
-							Usage:    "Offset of where to start replicating from.",
+					Subcommands: []*cli.Command{
+						{
+							Name: "registry",
+							Flags: []cli.Flag{
+								&cli.IntFlag{
+									Name:     "since",
+									Required: false,
+									Usage:    "Offset of where to start replicating from.",
+								},
+								&cli.BoolFlag{
+									Name:     "init",
+									Required: false,
+									Usage:    "Initial replication to quickly catchup.",
+								},
+								&cli.BoolFlag{
+									Name:     "resume",
+									Required: false,
+									Usage:    "Resume replication from last replicated item.",
+								},
+							},
+							Action: func(ctx *cli.Context) error {
+								var err error
+
+								since := ctx.Int("since")
+								init := ctx.Bool("init")
+								resume := ctx.Bool("resume")
+
+								if init {
+									err = p.Replicator.InitialReplication(ctx.Context)
+									if err != nil {
+										return err
+									}
+								}
+
+								if resume {
+									since, err = p.Replicator.GetLastReplicatedOffset()
+									if err != nil {
+										return err
+									}
+								}
+
+								return p.Replicator.ReplicateSince(ctx.Context, since)
+							},
 						},
-						&cli.BoolFlag{
-							Name:     "init",
-							Required: false,
-							Usage:    "Initial replication to quickly catchup.",
+						{
+							Name: "downloads",
+							Flags: []cli.Flag{
+								&cli.BoolFlag{
+									Name:     "ignore-errors",
+									Required: false,
+									Usage:    "If a package replication fails, continue without fatally failing.",
+								},
+								&cli.BoolFlag{
+									Name:     "version-counts",
+									Required: false,
+									Usage:    "Replicate package version counts. This will greatly increase the number of requests made since it will make a request for every package.",
+								},
+								&cli.BoolFlag{
+									Name:     "resolve-package",
+									Required: false,
+									Usage:    "While it is possible to resolve the package as the data is being collected, this can slow down ingestion.",
+								},
+								&cli.StringFlag{
+									Name:     "packages",
+									Required: false,
+									Usage:    "Collect download information from packages in this file.",
+								},
+							},
+							Action: func(ctx *cli.Context) error {
+								ignoreErrors := ctx.Bool("ignore-errors")
+								resolvePackage := ctx.Bool("resolve-package")
+								versionCounts := ctx.Bool("version-counts")
+								packagesFile := ctx.String("packages")
+
+								if packagesFile != "" {
+									fileHandle, err := os.Open(packagesFile)
+									if err != nil {
+										return err
+									}
+
+									defer fileHandle.Close()
+									fileScanner := bufio.NewScanner(fileHandle)
+
+									var packages []string
+									for fileScanner.Scan() {
+										packageName := fileScanner.Text()
+										packages = append(packages, packageName)
+									}
+
+									packageStream := make(chan string)
+									replicateWg := sync.WaitGroup{}
+
+									go func() {
+										defer replicateWg.Done()
+										err = p.APIReplicator.ReplicateFromStreamWithBackoff(packageStream, versionCounts, ignoreErrors, resolvePackage)
+										if err != nil {
+											log.Error().
+												Err(err).
+												Msg("failed to replicate packages")
+										}
+									}()
+									replicateWg.Add(1)
+
+									for _, packageName := range packages {
+										packageStream <- packageName
+									}
+									close(packageStream)
+
+									replicateWg.Wait()
+
+									return nil
+								}
+								return nil
+							},
 						},
-						&cli.BoolFlag{
-							Name:     "resume",
-							Required: false,
-							Usage:    "Resume replication from last replicated item.",
-						},
-					},
-					Action: func(ctx *cli.Context) error {
-						var err error
-
-						since := ctx.Int("since")
-						init := ctx.Bool("init")
-						resume := ctx.Bool("resume")
-
-						if init {
-							err = p.Replicator.InitialReplication(ctx.Context)
-							if err != nil {
-								return err
-							}
-						}
-
-						if resume {
-							since, err = p.Replicator.GetLastReplicatedOffset()
-							if err != nil {
-								return err
-							}
-						}
-
-						return p.Replicator.ReplicateSince(ctx.Context, since)
 					},
 				},
 			},

@@ -1,1 +1,1 @@
-- "!include public_manifest_dependency_node_child_edges_recursive.yaml"
+- "!include public_search_vulnerabilities.yaml"

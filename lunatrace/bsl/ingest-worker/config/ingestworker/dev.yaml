@@ -3,3 +3,6 @@ graphql:
   secret: myadminsecretkey
 db:
   dsn: postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable
+registry:
+  npm:
+    use_npm: true
