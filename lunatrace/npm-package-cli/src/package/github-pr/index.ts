@@ -233,7 +233,7 @@ export async function replacePackageAndFileGitHubPullRequest(
     throw new Error(`GitHub Error: Unable to create pull request for ${owner}/${repo}@${checkoutRef} in path: ${path}`);
   }
 
-  if (pullRequest.status !== 200) {
+  if (pullRequest.status !== 201 && pullRequest.status !== 200) {
     throw new Error(
       `GitHub Error: Unable to create pull request for ${owner}/${repo}@${checkoutRef} in path: ${path} (Status: ${pullRequest.status})`
     );

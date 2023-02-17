@@ -1,0 +1,18 @@
+mutation CreateGitHubPullRequestForVuln(
+    $project_id: uuid!,
+    $vulnerability_id: uuid!,
+    $old_package_slug: String!,
+    $new_package_slug: String!,
+    $package_manifest_path: String!
+) {
+    createPullRequestForVulnerability(
+        project_id: $project_id,
+        vulnerability_id: $vulnerability_id,
+        old_package_slug: $old_package_slug,
+        new_package_slug: $new_package_slug,
+        package_manifest_path: $package_manifest_path
+    ) {
+        success
+        pullRequestUrl
+    }
+}

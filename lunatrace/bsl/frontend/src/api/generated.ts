@@ -171,6 +171,12 @@ export type BuildData_VulnerableRelease = {
   trivially_updatable: Scalars['String'];
 };
 
+export type CreatePullRequestForVulnerabilityResponse = {
+  __typename?: 'CreatePullRequestForVulnerabilityResponse';
+  pullRequestUrl: Scalars['String'];
+  success?: Maybe<Scalars['Boolean']>;
+};
+
 /** Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'. */
 export type Float_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Float']>;
@@ -3760,6 +3766,7 @@ export enum Manifests_Update_Column {
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
+  createPullRequestForVulnerability?: Maybe<CreatePullRequestForVulnerabilityResponse>;
   /** delete data from the table: "builds" */
   delete_builds?: Maybe<Builds_Mutation_Response>;
   /** delete single row from the table: "builds" */
@@ -3851,6 +3858,16 @@ export type Mutation_Root = {
   update_users?: Maybe<Users_Mutation_Response>;
   /** update single row of the table: "users" */
   update_users_by_pk?: Maybe<Users>;
+};
+
+
+/** mutation root */
+export type Mutation_RootCreatePullRequestForVulnerabilityArgs = {
+  new_package_slug: Scalars['String'];
+  old_package_slug: Scalars['String'];
+  package_manifest_path: Scalars['String'];
+  project_id: Scalars['uuid'];
+  vulnerability_id: Scalars['uuid'];
 };
 
 
@@ -6330,7 +6347,7 @@ export type Query_RootVulnerability_Cisa_Known_ExploitedArgs = {
 
 
 export type Query_RootVulnerability_Cisa_Known_Exploited_By_PkArgs = {
-  id: Scalars['uuid'];
+  cve: Scalars['String'];
 };
 
 
@@ -7681,7 +7698,7 @@ export type Subscription_RootVulnerability_Cisa_Known_ExploitedArgs = {
 
 
 export type Subscription_RootVulnerability_Cisa_Known_Exploited_By_PkArgs = {
-  id: Scalars['uuid'];
+  cve: Scalars['String'];
 };
 
 
@@ -8429,7 +8446,7 @@ export type Vulnerability_Bool_Exp = {
 /** columns and relationships of "vulnerability.cisa_known_exploited" */
 export type Vulnerability_Cisa_Known_Exploited = {
   __typename?: 'vulnerability_cisa_known_exploited';
-  cve?: Maybe<Scalars['String']>;
+  cve: Scalars['String'];
   date_added: Scalars['date'];
   due_date: Scalars['date'];
   id: Scalars['uuid'];
@@ -9348,6 +9365,17 @@ export type InsertProjectAccessTokenMutationVariables = Exact<{
 
 
 export type InsertProjectAccessTokenMutation = { __typename?: 'mutation_root', insert_project_access_tokens_one?: { __typename?: 'project_access_tokens', id: any } | null };
+
+export type CreateGitHubPullRequestForVulnMutationVariables = Exact<{
+  project_id: Scalars['uuid'];
+  vulnerability_id: Scalars['uuid'];
+  old_package_slug: Scalars['String'];
+  new_package_slug: Scalars['String'];
+  package_manifest_path: Scalars['String'];
+}>;
+
+
+export type CreateGitHubPullRequestForVulnMutation = { __typename?: 'mutation_root', createPullRequestForVulnerability?: { __typename?: 'CreatePullRequestForVulnerabilityResponse', success?: boolean | null, pullRequestUrl: string } | null };
 
 export type InsertIgnoredVulnerabilitiesMutationVariables = Exact<{
   objects: Array<Ignored_Vulnerabilities_Insert_Input> | Ignored_Vulnerabilities_Insert_Input;
@@ -10308,6 +10336,20 @@ export const InsertProjectAccessTokenDocument = `
   }
 }
     `;
+export const CreateGitHubPullRequestForVulnDocument = `
+    mutation CreateGitHubPullRequestForVuln($project_id: uuid!, $vulnerability_id: uuid!, $old_package_slug: String!, $new_package_slug: String!, $package_manifest_path: String!) {
+  createPullRequestForVulnerability(
+    project_id: $project_id
+    vulnerability_id: $vulnerability_id
+    old_package_slug: $old_package_slug
+    new_package_slug: $new_package_slug
+    package_manifest_path: $package_manifest_path
+  ) {
+    success
+    pullRequestUrl
+  }
+}
+    `;
 export const InsertIgnoredVulnerabilitiesDocument = `
     mutation InsertIgnoredVulnerabilities($objects: [ignored_vulnerabilities_insert_input!]!) {
   insert_ignored_vulnerabilities(
@@ -10499,6 +10541,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     InsertProjectAccessToken: build.mutation<InsertProjectAccessTokenMutation, InsertProjectAccessTokenMutationVariables>({
       query: (variables) => ({ document: InsertProjectAccessTokenDocument, variables })
+    }),
+    CreateGitHubPullRequestForVuln: build.mutation<CreateGitHubPullRequestForVulnMutation, CreateGitHubPullRequestForVulnMutationVariables>({
+      query: (variables) => ({ document: CreateGitHubPullRequestForVulnDocument, variables })
     }),
     InsertIgnoredVulnerabilities: build.mutation<InsertIgnoredVulnerabilitiesMutation, InsertIgnoredVulnerabilitiesMutationVariables>({
       query: (variables) => ({ document: InsertIgnoredVulnerabilitiesDocument, variables })

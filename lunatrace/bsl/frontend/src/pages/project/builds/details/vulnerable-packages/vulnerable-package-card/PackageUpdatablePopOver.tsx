@@ -12,14 +12,19 @@
  *
  */
 import React from 'react';
-import { NavLink, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
+import { Button, NavLink, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
 import { CopyBlock, tomorrowNight } from 'react-code-blocks';
+import { BsGithub } from 'react-icons/bs';
 import { FcUpload } from 'react-icons/fc';
 
 import useBreakpoint from '../../../../../../hooks/useBreakpoint';
 import { isDirectDep } from '../../../../../../utils/package';
 import { VulnerablePackage } from '../types';
-export const PackageUpdatablePopOver: React.FC<{ pkg: VulnerablePackage }> = ({ pkg }) => {
+
+export const PackageUpdatablePopOver: React.FC<{
+  pkg: VulnerablePackage;
+  onClickUpdate: (pkg: VulnerablePackage) => void;
+}> = ({ pkg, onClickUpdate }) => {
   const trivialUpdateStatus = pkg.trivially_updatable;
 
   if (!trivialUpdateStatus || trivialUpdateStatus === 'no') {
@@ -30,13 +35,21 @@ export const PackageUpdatablePopOver: React.FC<{ pkg: VulnerablePackage }> = ({ 
     return (
       <Popover className="vulnerablePackage-update-popover" {...props}>
         <Popover.Header>Trivially Updatable </Popover.Header>
-        <Popover.Body>
-          A fix is available within the semver range this package was requested with, meaning that the{' '}
-          <strong>project lockfile</strong> is probably the only thing constraining the package to the vulnerable
-          version.
-          <hr className="m-1" />
+        <Popover.Body style={{ maxWidth: '500px' }}>
+          <div className="mb-1 ">
+            <Button variant="primary" size="lg" className="mb-1" onClick={() => onClickUpdate(pkg)}>
+              <BsGithub className="mb-1 me-1" /> {'Click to Patch Vulnerability'}
+            </Button>
+          </div>
+          Clicking this button will open a Pull Request to update the project&apos;s lockfile.
+          <hr className="mt-1 mb-1" />
+          <>
+            A fix is available within the semver range this package was requested with, meaning that the{' '}
+            <strong>project lockfile</strong> is likely constraining the package to the vulnerable version.
+          </>
+          <hr className="mt-1 mb-1" />
           {isDirectDep(pkg) ? (
-            <>
+            <div>
               This command will update the package:
               <CopyBlock
                 text={`npm update ${pkg.release.package.name}`}
@@ -55,14 +68,20 @@ export const PackageUpdatablePopOver: React.FC<{ pkg: VulnerablePackage }> = ({ 
                 theme={tomorrowNight}
                 codeBlock
               />
-            </>
+            </div>
           ) : (
-            <>
+            <div>
               This package is a <strong>transitive</strong> (deep) dependency. Due to constraints of NPM and Yarn,
-              updating it is only possible by manually deleting it from your project&apos;s lockfile (or deleting your
-              entire lockfile) and then re-running your package install command (npm install) to fetch the latest
-              version. Automated lockfile patching is currently in development by LunaTrace.
-            </>
+              updating it is only possible using a special tool like{' '}
+              <a
+                href="https://github.com/lunasec-io/lunasec/tree/master/lunatrace/npm-package-cli"
+                target="_blank"
+                rel="noreferrer"
+              >
+                @lunatrace/npm-package-cli
+              </a>{' '}
+              (which powers the automated patcher above).
+            </div>
           )}
         </Popover.Body>
       </Popover>
