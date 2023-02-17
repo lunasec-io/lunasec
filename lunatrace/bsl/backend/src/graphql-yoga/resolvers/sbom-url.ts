@@ -18,14 +18,14 @@ import { hasura } from '../../hasura-api';
 import { aws } from '../../utils/aws-utils';
 import { log } from '../../utils/log';
 import { QueryResolvers } from '../generated-resolver-types';
-import { checkProjectIsAuthorized, throwIfUnauthenticated } from '../helpers/auth-helpers';
+import { checkProjectIsAuthorizedOrThrow, throwIfUnauthenticated } from '../helpers/auth-helpers';
 
 type sbomUrlResolverT = NonNullable<QueryResolvers['sbomUrl']>;
 
 export const sbomUrlResolver: sbomUrlResolverT = async (parent, args, ctx, info) => {
   throwIfUnauthenticated(ctx);
   const build = await hasura.GetBuild({ build_id: args.buildId });
-  await checkProjectIsAuthorized(build.builds_by_pk?.project?.id, ctx);
+  await checkProjectIsAuthorizedOrThrow(build.builds_by_pk?.project?.id, ctx);
 
   try {
     return formatUrl(await aws.signArbitraryS3URL(build.builds_by_pk?.s3_url || '', 'GET'));

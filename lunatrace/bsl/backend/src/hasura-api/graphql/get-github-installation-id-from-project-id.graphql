@@ -1,0 +1,12 @@
+query GetGitHubInstallationIdFromProjectId($project_id: uuid!) {
+    projects(where: {id: {_eq: $project_id}}, limit: 1) {
+        github_repository {
+            git_url
+            github_id
+            github_node_id
+        }
+        organization {
+            installation_id
+        }
+    }
+}

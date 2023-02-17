@@ -16,11 +16,7 @@
  */
 import { Args, Command, Flags } from '@oclif/core';
 
-import {
-  PullRequestOctokit,
-  PullRequestOctokitType,
-  replacePackageAndFileGitHubPullRequest,
-} from '../../package/github-pr';
+import { PullRequestOctokit, replacePackageAndFileGitHubPullRequest } from '../../package/github-pr';
 import { PackageManagerType } from '../../package/types';
 import { ReplacePackageFlags } from '../replace-package';
 

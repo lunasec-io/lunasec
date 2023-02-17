@@ -13396,44 +13396,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@lunasec/simple-npm-example@workspace:lunatrace/npm-package-cli":
-  version: 0.0.0-use.local
-  resolution: "@lunasec/simple-npm-example@workspace:lunatrace/npm-package-cli"
-  dependencies:
-    "@npmcli/arborist": ^6.2.0
-    "@oclif/core": ^2
-    "@oclif/plugin-help": ^5
-    "@oclif/plugin-plugins": ^2.2.4
-    "@oclif/test": ^2.3.3
-    "@octokit/core": ^4.2.0
-    "@octokit/plugin-paginate-rest": ^6.0.0
-    "@octokit/plugin-rest-endpoint-methods": ^7.0.1
-    "@octokit/rest": ^19.0.7
-    "@octokit/types": ^9.0.0
-    "@types/chai": ^4
-    "@types/jest": ^29.4.0
-    "@types/node": ^16.18.11
-    "@types/node-fetch": ^2.6.2
-    "@types/npm-package-arg": ^6.1.1
-    "@types/npm-registry-fetch": ^8.0.4
-    "@types/npmcli__arborist": ^5.6.1
-    "@types/pacote": ^11.1.5
-    chai: ^4
-    jest: ^29.4.1
-    npm-package-arg: ^10.1.0
-    oclif: ^3.6.1
-    octokit-plugin-create-pull-request: ^4.1.1
-    pacote: ^15.0.8
-    shx: ^0.3.4
-    ts-jest: ^29.0.5
-    ts-node: ^10.4.0
-    tslib: ^2.5.0
-    typescript: ~4.7.0
-  bin:
-    lunatrace-npm-cli: bin/run
-  languageName: unknown
-  linkType: soft
-
 "@lunasec/tokenizer-sdk@^1.0.7, @lunasec/tokenizer-sdk@workspace:lunadefend/js/sdks/packages/tokenizer-sdk":
   version: 0.0.0-use.local
   resolution: "@lunasec/tokenizer-sdk@workspace:lunadefend/js/sdks/packages/tokenizer-sdk"
@@ -13506,6 +13468,43 @@ __metadata:
     ts-node-dev: ^1.1.8
     typescript: ~4.5.5
     vuln-vects: ~1.1.0
+  languageName: unknown
+  linkType: soft
+
+"@lunatrace/npm-package-cli@workspace:lunatrace/npm-package-cli, @lunatrace/npm-package-cli@workspace:~":
+  version: 0.0.0-use.local
+  resolution: "@lunatrace/npm-package-cli@workspace:lunatrace/npm-package-cli"
+  dependencies:
+    "@npmcli/arborist": ^6.2.0
+    "@oclif/core": ^2
+    "@oclif/plugin-help": ^5
+    "@oclif/plugin-plugins": ^2.2.4
+    "@oclif/test": ^2.3.3
+    "@octokit/core": ^4.2.0
+    "@octokit/plugin-paginate-rest": ^6.0.0
+    "@octokit/plugin-rest-endpoint-methods": ^7.0.1
+    "@octokit/rest": ^19.0.7
+    "@octokit/types": ^9.0.0
+    "@types/chai": ^4
+    "@types/jest": ^29.4.0
+    "@types/node": ^16.18.11
+    "@types/npm-package-arg": ^6.1.1
+    "@types/npm-registry-fetch": ^8.0.4
+    "@types/npmcli__arborist": ^5.6.1
+    "@types/pacote": ^11.1.5
+    chai: ^4
+    jest: ^29.4.1
+    npm-package-arg: ^10.1.0
+    oclif: ^3.6.1
+    octokit-plugin-create-pull-request: ^4.1.1
+    pacote: ^15.0.8
+    shx: ^0.3.4
+    ts-jest: ^29.0.5
+    ts-node: ^10.4.0
+    tslib: ^2.5.0
+    typescript: ~4.7.0
+  bin:
+    lunatrace-npm-cli: bin/run
   languageName: unknown
   linkType: soft
 
@@ -17606,16 +17605,6 @@ __metadata:
     "@types/node": "*"
     form-data: ^3.0.0
   checksum: a3e5d7f413d1638d795dff03f7b142b1b0e0c109ed210479000ce7b3ea11f9a6d89d9a024c96578d9249570c5fe5287a5f0f4aaba98199222230196ff2d6b283
-  languageName: node
-  linkType: hard
-
-"@types/node-fetch@npm:^2.6.2":
-  version: 2.6.2
-  resolution: "@types/node-fetch@npm:2.6.2"
-  dependencies:
-    "@types/node": "*"
-    form-data: ^3.0.0
-  checksum: 6f73b1470000d303d25a6fb92875ea837a216656cb7474f66cdd67bb014aa81a5a11e7ac9c21fe19bee9ecb2ef87c1962bceeaec31386119d1ac86e4c30ad7a6
   languageName: node
   linkType: hard
 
@@ -40363,6 +40352,7 @@ __metadata:
     "@jest/globals": ~28.1.3
     "@lunatrace/logger": "workspace:~"
     "@lunatrace/lunatrace-common": "workspace:~"
+    "@lunatrace/npm-package-cli": "workspace:~"
     "@octokit/auth-app": ^3.6.1
     "@octokit/graphql": ^4.8.0
     "@octokit/openapi-types": ^11.2.0
@@ -40430,7 +40420,6 @@ __metadata:
     markdown-table: 2.0.0
     minimatch: ~5.1.2
     murmurhash-native: ^3.5.0
-    node-fetch: 2
     nodemon: ^2.0.15
     octokit: ^1.7.1
     pg: ^8.7.1
@@ -42834,20 +42823,6 @@ __metadata:
     fetch-blob: ^3.1.4
     formdata-polyfill: ^4.0.10
   checksum: 2eb19f38c089a8697206210966e8555d7fc452a32da6ee1310552278ce4dda7412bf035d615335c52b0265dff701ac5e0236e9c7a56983b29f30bda15c144c2e
-  languageName: node
-  linkType: hard
-
-"node-fetch@npm:2":
-  version: 2.6.8
-  resolution: "node-fetch@npm:2.6.8"
-  dependencies:
-    whatwg-url: ^5.0.0
-  peerDependencies:
-    encoding: ^0.1.0
-  peerDependenciesMeta:
-    encoding:
-      optional: true
-  checksum: 91f57be68e29f9b1382750693619e199733a6936998e6d618f1aa779853ad8fc4a2facf170db7957bf1d2510bad33449edf74b5802713d81b63de5986fa3be00
   languageName: node
   linkType: hard
 

@@ -17,6 +17,7 @@ import { Resolvers } from '../generated-resolver-types';
 
 import { authenticatedRepoCloneUrlResolver } from './authenticated-repo-clone-url';
 import { availableOrgsWithReposResolver } from './available-repos';
+import { createPullRequestForVulnerabilityResolver } from './create-pull-request-for-vulnerability';
 import { installSelectedReposResolver } from './install-selected-repos';
 import { presignManifestUploadResolver } from './presign-manifest-upload';
 import { presignSbomUploadResolver } from './presign-sbom-upload';
@@ -34,6 +35,7 @@ export const resolvers: Resolvers = {
   Mutation: {
     presignManifestUpload: presignManifestUploadResolver,
     installSelectedRepos: installSelectedReposResolver,
+    createPullRequestForVulnerability: createPullRequestForVulnerabilityResolver,
   },
   uuid: GraphQLUUID,
   jsonb: GraphQLJSON,

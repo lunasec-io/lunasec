@@ -160,7 +160,7 @@ export async function replacePackageAndFileGitHubPullRequest(
   oldPackage: string,
   newPackage: string,
   ref?: string
-): Promise<void> {
+): Promise<{ pullRequestUrl: string; pullRequestTitle: string }> {
   const repoAuthState = await getRepoAuthState(octokit, owner, repo);
 
   const checkoutRef = ref || repoAuthState.baseBranch;
@@ -244,4 +244,9 @@ export async function replacePackageAndFileGitHubPullRequest(
 
   // Delete temporary directory
   await fs.promises.rm(tmpDirPath, { recursive: true, force: true });
+
+  return {
+    pullRequestUrl: pullRequest.data.html_url,
+    pullRequestTitle: pullRequest.data.title,
+  };
 }
