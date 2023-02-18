@@ -43,7 +43,7 @@ func (n *npmFetcher) Fetch(ctx context.Context, pkgName string) (*metadata.Packa
 	}
 
 	pkgMetaRaw, err := ioutil.ReadAll(&io.LimitedReader{
-		N: 1024 * 1024 * 5,
+		N: 1024 * 1024 * 1024,
 		R: res.Body,
 	})
 	if err != nil {

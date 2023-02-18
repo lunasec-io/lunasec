@@ -22,6 +22,7 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/visualizer"
 )
 
 type Params struct {
@@ -30,6 +31,7 @@ type Params struct {
 	Ingester      metadata.PackageIngester
 	Replicator    metadata.Replicator
 	APIReplicator metadata.APIReplicator
+	Registry      metadata.NpmRegistry
 }
 
 func NewCommand(p Params) clifx.CommandResult {
@@ -38,6 +40,27 @@ func NewCommand(p Params) clifx.CommandResult {
 			Name:  "package",
 			Usage: "[packages...]",
 			Subcommands: []*cli.Command{
+				{
+					Name:  "visualize",
+					Usage: "[package] [version]",
+					Flags: []cli.Flag{
+						&cli.StringFlag{
+							Name:     "out",
+							Required: true,
+						},
+					},
+					Action: func(c *cli.Context) error {
+						args := c.Args().Slice()
+						if len(args) != 2 {
+							return errors.New("[package] [version] required")
+						}
+
+						outDir := c.String("out")
+
+						visualizer.VisualizePackage(p.Registry, outDir, args[0], args[1])
+						return nil
+					},
+				},
 				{
 					Name: "ingest",
 					Flags: []cli.Flag{

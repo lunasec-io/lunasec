@@ -3,30 +3,17 @@ package visualizer
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
-	"net/url"
 	"os"
+	"path"
+	"strconv"
 	"strings"
 
 	"github.com/Masterminds/semver/v3"
 	_ "github.com/lib/pq"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/samber/lo"
+
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata"
 )
-
-var releaseVersionsForPackage = `
-SELECT r.version FROM package.release r
-JOIN package.package p ON r.package_id=p.id
-WHERE p.name=$1
-`
-
-var releaseDependenciesForRelease = `
-SELECT rd.dependency_package_id, rd.package_version_query FROM package.release r
-JOIN package.release_dependency rd ON r.id=rd.release_id
-WHERE r.id=$1
-`
 
 type Dep struct {
 	PackageName         string
@@ -34,65 +21,27 @@ type Dep struct {
 	PackageVersionQuery string
 }
 
-type GetDepsForPackageResponse struct {
-	Deps []Dep `json:"deps"`
+type Position struct {
+	X int `json:"x"`
+	Y int `json:"y"`
 }
 
-type GetReleasesForPackageResponse struct {
-	Releases []string `json:"releases"`
-}
-
-func getReleaseVersionsForPackage(packageName string) (versions []string, err error) {
-	req, err := http.Get(fmt.Sprintf("http://localhost:8081/package/releases?package=%s", url.QueryEscape(packageName)))
-	if err != nil {
-		return
-	}
-
-	body, err := io.ReadAll(req.Body)
-	if err != nil {
-		return
-	}
-
-	var resp GetReleasesForPackageResponse
-	err = json.Unmarshal(body, &resp)
-	if err != nil {
-		return
-	}
-
-	versions = resp.Releases
-	return
-}
-
-func getDepsForPackage(packageName, packageVersion string) (deps []Dep, err error) {
-	req, err := http.Get(fmt.Sprintf("http://localhost:8081/package/dependencies?package=%s&version=%s", url.QueryEscape(packageName), url.QueryEscape(packageVersion)))
-	if err != nil {
-		return
-	}
-
-	body, err := io.ReadAll(req.Body)
-	if err != nil {
-		return
-	}
-
-	var resp GetDepsForPackageResponse
-	err = json.Unmarshal(body, &resp)
-	if err != nil {
-		return
-	}
-
-	deps = resp.Deps
-	return
+type NodeData struct {
+	Label   string `json:"label"`
+	Version string `json:"version"`
 }
 
 type PackageNode struct {
-	Name    string `json:"name"`
-	Version string `json:""`
-	Group   int    `json:"group"`
+	ID       string   `json:"id"`
+	Data     NodeData `json:"data"`
+	Group    int      `json:"group"`
+	Position Position `json:"position"`
 }
 
 type PackageEdge struct {
-	Source       int    `json:"source"`
-	Target       int    `json:"target"`
+	ID           string `json:"id"`
+	Source       string `json:"source"`
+	Target       string `json:"target"`
 	VersionQuery string `json:"value"`
 }
 
@@ -104,211 +53,192 @@ type GraphDep struct {
 
 type Graph struct {
 	Nodes []PackageNode `json:"nodes"`
-	Edges []PackageEdge `json:"links"`
+	Edges []PackageEdge `json:"edges"`
 }
 
 type PackageResolution struct {
-	Version string
-	ID      int
+	Version *semver.Version
+	ID      string
 }
 
-func VisualizePackage(packageName, packageVersion string) {
+func VisualizePackage(registry metadata.NpmRegistry, outDir, packageName, packageVersion string) {
 	var (
-		depsToCollect              []GraphDep
-		packageNodes               []PackageNode
-		packageEdges               []PackageEdge
-		depNodeIdLookup            = map[string]int{}
-		packageReleasesLookup      = map[string][]string{}
-		existingPackageResolutions = map[string][]PackageResolution{}
+		depsToCollect    []*GraphDep
+		packageNodes     []PackageNode
+		packageEdges     []PackageEdge
+		resolvedPackages = make(map[string][]PackageResolution)
+		metaLookup       = make(map[string]*metadata.PackageMetadata)
 	)
 
-	depNodeIdLookupKey := func(dep Dep) string {
-		return dep.PackageName + dep.PackageVersionQuery
-	}
-
-	depsToCollect = append(depsToCollect, GraphDep{
+	depsToCollect = append(depsToCollect, &GraphDep{
 		Source: 0,
 		Target: Dep{
-			PackageName:    packageName,
-			PackageVersion: packageVersion,
+			PackageName:         packageName,
+			PackageVersionQuery: packageVersion,
 		},
 	})
-
-	ignoredPackages := []string{
-		"@babel", "@jest", "webpack", "lint",
-	}
-
-	max := 10000
-	count := 0
-
-	versionsForPackage := func(logger zerolog.Logger, packageName string) []string {
-		var (
-			ok       bool
-			err      error
-			versions []string
-		)
-
-		if versions, ok = packageReleasesLookup[packageName]; !ok {
-			versions, err = getReleaseVersionsForPackage(packageName)
-			if err != nil {
-				logger.Error().
-					Err(err).
-					Str("dep", packageName).
-					Msg("failed to get versions for package")
-				return []string{}
-			}
-			packageReleasesLookup[packageName] = versions
-		}
-		return versions
-	}
 
 	for {
 		if len(depsToCollect) == 0 {
 			break
 		}
 
-		if count > max {
-			break
-		}
-		count += 1
-
 		dep := depsToCollect[0]
 		depsToCollect = depsToCollect[1:]
 
-		fmt.Printf("%s%s - %s\n", strings.Repeat("\t", dep.Depth), dep.Target.PackageName, dep.Target.PackageVersion)
-
-		depID := dep.Source
-		if _, ok := depNodeIdLookup[depNodeIdLookupKey(dep.Target)]; ok {
-			continue
-		}
-		depNodeIdLookup[depNodeIdLookupKey(dep.Target)] = depID
+		fmt.Printf("%s%s - %s\n", strings.Repeat("\t", dep.Depth), dep.Target.PackageName, dep.Target.PackageVersionQuery)
 
 		logger := log.With().
 			Str("package", dep.Target.PackageName).
 			Logger()
 
-		discoveredDeps, err := getDepsForPackage(dep.Target.PackageName, dep.Target.PackageVersion)
+		var (
+			meta *metadata.PackageMetadata
+			ok   bool
+			err  error
+		)
+		if meta, ok = metaLookup[dep.Target.PackageName]; !ok {
+			// Get the package metadata, which contains the list of releases
+			meta, err = registry.GetPackageMetadata(dep.Target.PackageName)
+			if err != nil {
+				logger.Error().
+					Err(err).
+					Msg("failed to get package metadata")
+				continue
+			}
+			metaLookup[dep.Target.PackageName] = meta
+		}
+
+		versionQuery := dep.Target.PackageVersionQuery
+
+		// Check if the version query is a semver range
+		versionRange, err := semver.NewConstraint(versionQuery)
 		if err != nil {
-			logger.Error().
-				Err(err).
-				Msg("failed to get deps for package")
+			// If the version query is "latest", we can just use the latest version
+			if versionQuery == "latest" && len(meta.Releases) > 0 {
+				versionQuery = meta.Releases[len(meta.Releases)-1].Version
+			} else {
+				logger.Warn().
+					Err(err).
+					Str("version range", versionQuery).
+					Msg("failed to parse semver range")
+			}
+
+			nodeId := len(packageNodes)
+			packageNodes = append(packageNodes, PackageNode{
+				ID: strconv.Itoa(nodeId),
+				Data: NodeData{
+					Label:   dep.Target.PackageName + "@" + versionQuery,
+					Version: versionQuery,
+				},
+				Group: 0,
+			})
+
+			edgeId := len(packageEdges)
+			packageEdges = append(packageEdges, PackageEdge{
+				ID:           strconv.Itoa(edgeId),
+				Source:       strconv.Itoa(dep.Source),
+				Target:       strconv.Itoa(len(packageNodes) - 1),
+				VersionQuery: dep.Target.PackageVersionQuery,
+			})
 			continue
 		}
 
-		println(len(discoveredDeps))
-
-		for _, discoveredDep := range discoveredDeps {
-			var (
-				ok bool
-			)
-
-			if lo.ContainsBy(ignoredPackages, func(p string) bool {
-				return strings.HasPrefix(discoveredDep.PackageName, p)
-			}) {
-				continue
-			}
-
-			if existingNodeId, ok := depNodeIdLookup[depNodeIdLookupKey(discoveredDep)]; ok {
-				packageEdges = append(packageEdges, PackageEdge{
-					Source:       depID,
-					Target:       existingNodeId,
-					VersionQuery: discoveredDep.PackageVersionQuery,
-				})
-				continue
-			}
-
-			depPackageName := discoveredDep.PackageName
-			versionQuery := discoveredDep.PackageVersionQuery
-			versionRange, err := semver.NewConstraint(versionQuery)
-			if err != nil {
-				versions := versionsForPackage(logger, depPackageName)
-				if versionQuery == "latest" && len(versions) > 0 {
-					versionQuery = versions[0]
-				} else {
-					logger.Warn().
-						Err(err).
-						Str("version range", versionQuery).
-						Msg("failed to parse semver range")
-				}
-
-				packageNodes = append(packageNodes, PackageNode{
-					Name:  versionQuery,
-					Group: 0,
-				})
-
-				packageEdges = append(packageEdges, PackageEdge{
-					Source:       depID,
-					Target:       len(packageNodes) - 1,
-					VersionQuery: discoveredDep.PackageVersionQuery,
-				})
-				continue
-			}
-
-			var matchingVersion string
-
-			existingResolutions, ok := existingPackageResolutions[depPackageName]
-			if ok {
-				var found bool
-				for _, resolution := range existingResolutions {
-					versionSemver, err := semver.NewVersion(resolution.Version)
-					if err != nil {
-						logger.Error().
-							Err(err).
-							Str("dep", depPackageName).
-							Str("version", resolution.Version).
-							Msg("failed to parse semver")
-						continue
-					}
-					if ok, _ := versionRange.Validate(versionSemver); ok {
-						packageEdges = append(packageEdges, PackageEdge{
-							Source:       depID,
-							Target:       resolution.ID,
-							VersionQuery: versionQuery,
-						})
-						found = true
-						break
-					}
-				}
-				if found {
+		// Check if we've already resolved this package
+		var resolved bool
+		if resolutions, ok := resolvedPackages[dep.Target.PackageName]; ok {
+			for _, resolution := range resolutions {
+				if ok, _ := versionRange.Validate(resolution.Version); !ok {
 					continue
 				}
-			} else {
-				versions := versionsForPackage(logger, depPackageName)
-				for _, version := range versions {
-					versionSemver, err := semver.NewVersion(version)
-					if err != nil {
-						logger.Error().
-							Err(err).
-							Str("dep", depPackageName).
-							Str("version", version).
-							Msg("failed to parse semver")
-						continue
-					}
-					if ok, _ := versionRange.Validate(versionSemver); ok {
-						matchingVersion = version
-						break
-					}
-				}
+
+				edgeId := len(packageEdges)
+				packageEdges = append(packageEdges, PackageEdge{
+					ID:           strconv.Itoa(edgeId),
+					Source:       strconv.Itoa(dep.Source),
+					Target:       resolution.ID,
+					VersionQuery: dep.Target.PackageVersionQuery,
+				})
+				resolved = true
+				break
+			}
+		}
+
+		if resolved {
+			continue
+		}
+
+		var (
+			matchedRelease  *metadata.Release
+			packageReleases []string
+		)
+
+		for _, release := range meta.Releases {
+			packageReleases = append(packageReleases, release.Version)
+
+			versionSemver, err := semver.NewVersion(release.Version)
+			if err != nil {
+				logger.Error().
+					Err(err).
+					Str("dep", dep.Target.PackageName).
+					Str("version", release.Version).
+					Msg("failed to parse semver")
+				continue
 			}
 
-			discoveredDep.PackageVersion = matchingVersion
+			if ok, _ := versionRange.Validate(versionSemver); !ok {
+				continue
+			}
 
+			dep.Target.PackageVersion = release.Version
+
+			matchedRelease = &release
+
+			// Add the resolved package to the list of resolved packages, so we don't have to resolve it again
+			resolvedPackages[dep.Target.PackageName] = append(resolvedPackages[dep.Target.PackageName], PackageResolution{
+				ID:      strconv.Itoa(dep.Source),
+				Version: versionSemver,
+			})
+			break
+		}
+
+		if matchedRelease == nil {
+			logger.Warn().
+				Strs("package releases", packageReleases).
+				Msg("no matching release found")
+			continue
+		}
+
+		for _, discoveredDep := range matchedRelease.Dependencies {
+			if discoveredDep.IsDev {
+				continue
+			}
+
+			targetNodeId := len(packageNodes)
 			packageNodes = append(packageNodes, PackageNode{
-				Name:  depPackageName,
+				ID: strconv.Itoa(targetNodeId),
+				Data: NodeData{
+					Label:   discoveredDep.Name + "@" + discoveredDep.Version,
+					Version: discoveredDep.Version,
+				},
 				Group: 0,
 			})
-			targetNodeId := len(packageNodes) - 1
 
+			edgeId := len(packageEdges)
 			packageEdges = append(packageEdges, PackageEdge{
-				Source:       depID,
-				Target:       targetNodeId,
-				VersionQuery: versionQuery,
+				ID:           strconv.Itoa(edgeId),
+				Source:       strconv.Itoa(dep.Source),
+				Target:       strconv.Itoa(targetNodeId),
+				VersionQuery: discoveredDep.Version,
 			})
 
-			depsToCollect = append(depsToCollect, GraphDep{
+			depsToCollect = append(depsToCollect, &GraphDep{
 				Depth:  dep.Depth + 1,
 				Source: targetNodeId,
-				Target: discoveredDep,
+				Target: Dep{
+					PackageName:         discoveredDep.Name,
+					PackageVersionQuery: discoveredDep.Version,
+				},
 			})
 		}
 	}
@@ -326,7 +256,8 @@ func VisualizePackage(packageName, packageVersion string) {
 		return
 	}
 
-	err = os.WriteFile(fmt.Sprintf("%s-%s.json", packageName, packageVersion), graphData, 0755)
+	filename := fmt.Sprintf("%s-%s.json", packageName, packageVersion)
+	err = os.WriteFile(path.Join(outDir, filename), graphData, 0755)
 	if err != nil {
 		log.Error().
 			Err(err).

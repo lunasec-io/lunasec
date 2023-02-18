@@ -25,6 +25,7 @@ import { CweDetailMain } from './pages/cwes/detail/CweDetailMain';
 import { GuideMain } from './pages/guide/Guide';
 import { GuideList } from './pages/guide/List';
 import { HomePage } from './pages/homepage/Home';
+import { Packages } from './pages/packages/Packages';
 import { ProjectCreate } from './pages/project/Create';
 import { ImportProjectsMain } from './pages/project/import/Main';
 import { VulnerabilityDetailMain } from './pages/vulnerabilities/detail/DetailMain';
@@ -155,6 +156,10 @@ export const routes: RouteObject[] = [
       {
         path: 'login',
         element: <Navigate to={'/'} />,
+      },
+      {
+        path: 'packages',
+        element: <Packages />,
       },
       {
         element: <p>404</p>, //doesnt work
