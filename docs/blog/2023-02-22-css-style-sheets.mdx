@@ -1,3 +1,13 @@
+---
+title: "Use the CSSStyleSheets API in a React App"
+description: "How to use the new CSSStyleSheet JS API in your create-react-app application, for dynamic loading and unloading of CSS in JS"
+slug: css-style-sheets
+date: 2023-02-22T07:00:00.000Z
+keywords: [react, cssstylesheets,css]
+tags: [web]
+authors: [forrest]
+---
+
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
   ~
@@ -11,16 +21,6 @@
   ~ limitations under the License.
   ~
 -->
----
-title: "Use the CSSStyleSheets API in a React App"
-description: "How to use the new CSSStyleSheet JS API in your create-react-app application, for dynamic loading and unloading of CSS in JS"
-slug: css-style-sheets
-date: 2023-02-22T07:00:00.000Z
-keywords: [react, cssstylesheets,css]
-tags: [web]
-authors: [forrest]
----
-
 There's a shiny new web feature in browser town, and it's called [CSSStyleSheets](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet).
  It allows us to manipulate page styling without having to load
 css anywhere into the HTML of the page. With it you can do things like
@@ -33,19 +33,25 @@ sheet.disabled = true;
 ```
 Neat. Support just became widespread, with adoption by Chrome, Safari, Firefox, etc [added in the last](https://caniuse.com/mdn-api_cssstylesheet) year as of early 2023.
 
+<!--truncate-->
+
 #### The old way
 Whether you noticed it or not, your current css framework is almost certainly creating a
 `<link href="example.css" rel="stylesheet">` in the HTML of the page, or setting style attributes directly on page elements. Up until recently, that was the only way to do it.
 
-This works fine but it has a few disadvantages in certain cases. It doesn't play very nicely with dynamic usage, whether that's developer experience as you change files,
+This works fine but it has a few disadvantages in certain cases. It doesn't play as nicely with dynamic usage, whether that's developer experience as you change files,
 or maybe switching sheets on and off on the fly. Traditional CSS loading isn't going away any time soon, but the new CSSStyleSheet is great to have in your toolbelt.
 
-### Why we wanted CSSStyleSheets
+### Why we wanted to use CSSStyleSheets
 Our app, [LunaTrace](https://lunatrace.lunasec.io), has both a dark mode and a light mode. We compile two different stylesheets,
-a dark.css and a light.css. Previously, we simply had a `<link href="dark.css"...` as above, and when we wanted to change to a light theme,
+a `dark.css` and a `light.css`. Previously, we simply had a `<link href="dark.css"...` as above, and when we wanted to change to a light theme,
 we reached into the DOM and modified the element to link to `light.css`. This worked ok but it was just a little bit slow (the page flashed, not the end of the world)
 and it was a painfully slow developer experience. We had a separate watcher script from our main react-scripts that watched our scss files and recompiled them, and then the page would reload after
-10 or 15 seconds. That was just a little too slow for making fast changes to the CSS.
+10 or 15 seconds. That was just a little too slow for making fast changes to the CSS, and the full page reload was very painful for a developer spoiled by Hot Module Reloading.
+
+:::note
+There are probably other ways to switch out styles for a page between a light and a dark mode rather than using the CssStyleSheet API, like a traditional class based selector. This is just one option and a good way for us to learn about the new API.
+:::
 
 #### Switch to CSS in JS
 Css in JS is when you put JS in charge of loading styles into the DOM. It does have pros and cons that I won't go into, but the developer experience is great. Much faster.
@@ -54,6 +60,7 @@ We could do `require 'dark.scss'` at the top of one of our TSX files, and Create
 
 Only problem is, there is no way to _unload_ a global style you've loaded. For LunaTrace, we need to switch between dark and light themes, so that's a problem.
 CSS in JS was incapable of doing something the DOM has been able to do for decades: unload something.
+
 
 #### Manipulating a stylesheet with document.styleSheets
 If we want to say, turn a stylesheet off, one way to get a reference to it is by the `document.styleSheets` property. This function can find a sheet
@@ -100,6 +107,10 @@ If you're already using Craco or have your own webpack config, you can skip ahea
 :::
 
 `npm i --save-dev @craco/craco`
+
+or
+
+`yarn add -D @craco/craco`
 
 Create a craco config file in your project root
  ```typescript title="craco.config.js"
