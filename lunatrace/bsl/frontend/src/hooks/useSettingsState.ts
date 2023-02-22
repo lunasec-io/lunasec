@@ -15,6 +15,9 @@ import { useEffect } from 'react';
 
 import { THEME } from '../constants';
 
+import darkStyles from '../scss/main/dark.css-style-sheet.scss';
+import lightStyles from '../scss/main/light.css-style-sheet.scss';
+
 import useLocalStorage from './useLocalStorage';
 
 export type ThemeChoice = typeof THEME[keyof typeof THEME];
@@ -29,18 +32,13 @@ function useSettingsState(key: string, initialValue: string): [string, (setTo: s
     // Replace style sheet if dark theme gets toggled
     if (key === 'theme') {
       if (value === THEME.DARK) {
-        require('../scss/main/dark.scss');
+        // @ts-ignore
+        document.adoptedStyleSheets = [darkStyles]
       } else {
-        require('../scss/main/light.scss');
+        // @ts-ignore
+        document.adoptedStyleSheets = [lightStyles]
       }
     }
-    //   const theme = value === 'dark' ? 'dark' : 'light';
-    //   const stylesheet = document.querySelector('.js-stylesheet');
-    //   if (!stylesheet) {
-    //     throw new Error('missing theme stylesheet');
-    //   }
-    //   stylesheet.setAttribute('href', `/css/${theme}.css`);
-    // }
   }, [value, key]);
 
   return [value, setValue];

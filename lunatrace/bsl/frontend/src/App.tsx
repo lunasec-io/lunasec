@@ -15,6 +15,8 @@ import React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Provider as StoreProvider } from 'react-redux';
 import { useRoutes } from 'react-router-dom';
+import { QueryParamProvider } from 'use-query-params';
+import { ReactRouter6Adapter } from 'use-query-params/adapters/react-router-6';
 
 import { LoadSession } from './components/auth/LoadSession';
 import { LayoutProvider } from './contexts/LayoutContext';
@@ -51,7 +53,9 @@ function App(): JSX.Element {
             <UserProvider>
               <SidebarProvider>
                 <LayoutProvider>
-                  <WizardOpenProvider>{content}</WizardOpenProvider>
+                  <WizardOpenProvider>
+                    <QueryParamProvider adapter={ReactRouter6Adapter}>{content}</QueryParamProvider>
+                  </WizardOpenProvider>
                 </LayoutProvider>
               </SidebarProvider>
             </UserProvider>

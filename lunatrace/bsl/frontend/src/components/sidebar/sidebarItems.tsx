@@ -92,15 +92,16 @@ export function generateSidebarItems(data: GetSidebarInfoQuery | undefined, isAu
 
   const databaseSection: SidebarItem[] = [
     {
-      href: '/guides',
-      icon: BsChatSquareText,
-      title: 'Guides Database',
-    },
-    {
       href: '/vulnerabilities',
       icon: AlertOctagon,
       title: 'Vulnerabilities Reference Database',
     },
+    {
+      href: '/guides',
+      icon: BsChatSquareText,
+      title: 'Guides Database',
+    },
+
     {
       href: '/cwes',
       icon: Aperture,
