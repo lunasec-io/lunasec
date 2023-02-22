@@ -37,8 +37,8 @@ Neat. Support just became widespread, with adoption by Chrome, Safari, Firefox, 
 Whether you noticed it or not, your current css framework is almost certainly creating a
 `<link href="example.css" rel="stylesheet">` in the HTML of the page, or setting style attributes directly on page elements. Up until recently, that was the only way to do it.
 
-This works fine but it has a few disadvantages in certain cases. It doesn't play very nicely with dynamic usage, whether we are talking about developer experience,
-or maybe switching sheets on and off on the fly. Traditional CSS loading isn't going away any time soon, but the new CSSStyleSheet is great to have in your toolbelt, if you need it.
+This works fine but it has a few disadvantages in certain cases. It doesn't play very nicely with dynamic usage, whether that's developer experience as you change files,
+or maybe switching sheets on and off on the fly. Traditional CSS loading isn't going away any time soon, but the new CSSStyleSheet is great to have in your toolbelt.
 
 ### Why we wanted CSSStyleSheets
 Our app, [LunaTrace](https://lunatrace.lunasec.io), has both a dark mode and a light mode. We compile two different stylesheets,
@@ -55,8 +55,25 @@ We could do `require 'dark.scss'` at the top of one of our TSX files, and Create
 Only problem is, there is no way to _unload_ a global style you've loaded. For LunaTrace, we need to switch between dark and light themes, so that's a problem.
 CSS in JS was incapable of doing something the DOM has been able to do for decades: unload something.
 
-#### Hot swapping style sheets in JS
-CSSStyleSheets was created to allow exactly this kind of direct control. `css-loader` does support this new option. It will compile your css import
+#### Manipulating a stylesheet with document.styleSheets
+If we want to say, turn a stylesheet off, one way to get a reference to it is by the `document.styleSheets` property. This function can find a sheet
+and return a CssStyleSheet object which we can manipulate directly.
+```ts
+function getStyleSheet(unique_title :string): CssStyleSheet {
+  for (const sheet of document.styleSheets) {
+    if (sheet.title === unique_title) {
+      return sheet;
+    }
+  }
+}
+```
+I couldn't figure out how to set the title of a stylesheet I was inserting with webpack (from `style-loader`) or find another way to tell which sheet was which, so this wasn't enough for me.
+In hindsight, it might be possible to use the CSSStyleSheet API to look for some special rule you know will be there, or make a dummy rule for that purpose. I didn't try that.
+
+Anyway, maybe this is enough to accomplish your goal. If not, and you'd like to import a CssStyleSheet object directly via webpack, read on.
+
+#### Injecting a CSSStyleSheet directly into JS
+ The webpack plugin `css-loader` thankfully does support this new API. It will compile your css import
 into javascript which wraps your css file with `new CssStyleSheet`, so that you can directly import and use it, ready to go.
 
 A simple example looks like:
@@ -69,6 +86,9 @@ import lightStyles from '../scss/main/light.css-style-sheet.scss';
 document.adoptedStyleSheets = [darkStyles]
 ```
 
+Note that we add the sheet to the adoptedStyleSheets array on the document object which is what gets it into the DOM. This is like `document.styleSheets` except that it
+isn't immutable and can be modified directly by javascript, exactly what we need.
+
 If you have your own webpack config, just add a rule using `css-loader` and set `exportType: 'css-style-sheet'`, as per the [css-loader docs](https://webpack.js.org/loaders/css-loader/#exporttype).
 
 Unfortunately, that won't work out of the box with Create React App(CRA). There are no loaders set up to compile to that format. That's
@@ -76,11 +96,8 @@ understandable, it's pretty new. Let's use Craco, a hookable wrapper around CRA,
 
 ### Taking back control of our webpack config using Craco
 :::info
-If you're already using craco or have your own webpack config, you can skip to the next section.
+If you're already using Craco or have your own webpack config, you can skip ahead.
 :::
-
-
-
 
 `npm i --save-dev @craco/craco`
 
@@ -160,10 +177,10 @@ I [opened a discussion](https://github.com/facebook/create-react-app/discussions
 #### Create react app can and should be way more expandable
 By the way, having to use Craco at all (or worse, eject) is a huge downside to CRA. Vue-cli takes a _far_ more
 [extendable approach](https://cli.vuejs.org/guide/webpack.html) to build configuration, including an excellent plugin system. Maybe someday
-CRA will do something similar but I stopped holding my breath a while ago, so let's install Craco.
+CRA will do something similar but I stopped holding my breath a while ago.
 
 #### This feature is _really_ poorly named
 Nothing in the name "CssStyleSheet" is at all unique to this feature. It's a good name for the `class` in javascript, however it makes it almost
 impossible to search for since the name is so completely ambiguous with other, previous CSS loading methods. That's no good. I'd much rather
-have this called `ControlledCSS` or `DynamicCSS` or something similar.  Naming, after all, is most of programming. If I can't find something, I won't know to use it.
+this be called `ControlledCSS` or `DynamicCSS` or something similar.  Naming, after all, is most of programming. If I can't find something, I won't know to use it.
 
