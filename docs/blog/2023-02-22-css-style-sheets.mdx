@@ -1,0 +1,169 @@
+<!--
+  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
+  ~
+  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+  ~ (the "License"); you may not use this file except in compliance with the
+  ~ License. You may obtain a copy of the License at
+  ~
+  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
+  ~
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
+---
+title: "Use the CSSStyleSheets API in a React App"
+description: "How to use the new CSSStyleSheet JS API in your create-react-app application, for dynamic loading and unloading of CSS in JS"
+slug: css-style-sheets
+date: 2023-02-22T07:00:00.000Z
+keywords: [react, cssstylesheets,css]
+tags: [web]
+authors: [forrest]
+---
+
+There's a shiny new web feature in browser town, and it's called [CSSStyleSheets](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet).
+ It allows us to manipulate page styling without having to load
+css anywhere into the HTML of the page. With it you can do things like
+```js
+const sheet = new CSSStyleSheet();
+// Apply a rule to the sheet
+sheet.replaceSync("a { color: red; }");
+// disable the sheet to remove it from the DOM
+sheet.disabled = true;
+```
+Neat. Support just became widespread, with adoption by Chrome, Safari, Firefox, etc [added in the last](https://caniuse.com/mdn-api_cssstylesheet) year as of early 2023.
+
+#### The old way
+Whether you noticed it or not, your current css framework is almost certainly creating a
+`<link href="example.css" rel="stylesheet">` in the HTML of the page, or setting style attributes directly on page elements. Up until recently, that was the only way to do it.
+
+This works fine but it has a few disadvantages in certain cases. It doesn't play very nicely with dynamic usage, whether we are talking about developer experience,
+or maybe switching sheets on and off on the fly. Traditional CSS loading isn't going away any time soon, but the new CSSStyleSheet is great to have in your toolbelt, if you need it.
+
+### Why we wanted CSSStyleSheets
+Our app, [LunaTrace](https://lunatrace.lunasec.io), has both a dark mode and a light mode. We compile two different stylesheets,
+a dark.css and a light.css. Previously, we simply had a `<link href="dark.css"...` as above, and when we wanted to change to a light theme,
+we reached into the DOM and modified the element to link to `light.css`. This worked ok but it was just a little bit slow (the page flashed, not the end of the world)
+and it was a painfully slow developer experience. We had a separate watcher script from our main react-scripts that watched our scss files and recompiled them, and then the page would reload after
+10 or 15 seconds. That was just a little too slow for making fast changes to the CSS.
+
+#### Switch to CSS in JS
+Css in JS is when you put JS in charge of loading styles into the DOM. It does have pros and cons that I won't go into, but the developer experience is great. Much faster.
+
+We could do `require 'dark.scss'` at the top of one of our TSX files, and Create React App's webpack config would take care of the rest.
+
+Only problem is, there is no way to _unload_ a global style you've loaded. For LunaTrace, we need to switch between dark and light themes, so that's a problem.
+CSS in JS was incapable of doing something the DOM has been able to do for decades: unload something.
+
+#### Hot swapping style sheets in JS
+CSSStyleSheets was created to allow exactly this kind of direct control. `css-loader` does support this new option. It will compile your css import
+into javascript which wraps your css file with `new CssStyleSheet`, so that you can directly import and use it, ready to go.
+
+A simple example looks like:
+
+```typescript
+import darkStyles from '../scss/main/dark.css-style-sheet.scss';
+import lightStyles from '../scss/main/light.css-style-sheet.scss';
+
+// now mount one of those to the dom
+document.adoptedStyleSheets = [darkStyles]
+```
+
+If you have your own webpack config, just add a rule using `css-loader` and set `exportType: 'css-style-sheet'`, as per the [css-loader docs](https://webpack.js.org/loaders/css-loader/#exporttype).
+
+Unfortunately, that won't work out of the box with Create React App(CRA). There are no loaders set up to compile to that format. That's
+understandable, it's pretty new. Let's use Craco, a hookable wrapper around CRA, to get the loader we need.
+
+### Taking back control of our webpack config using Craco
+:::info
+If you're already using craco or have your own webpack config, you can skip to the next section.
+:::
+
+
+
+
+`npm i --save-dev @craco/craco`
+
+Create a craco config file in your project root
+ ```typescript title="craco.config.js"
+module.exports = {
+  webpack: {
+    configure: (webpackConfig, { env, paths }) => {
+      // Modify the webpackConfig here
+
+      return webpackConfig;
+    },
+  },
+};
+ ```
+ Replace your package.json CRA scripts with craco ones
+```json title="package.json"
+"scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test"
+}
+```
+
+### Configure the new rule
+
+I set up a new rule in the Craco config that only matches files that end in `.css-style-sheet.scss`
+
+```js
+configure: (webpackConfig, {env, paths}) => {
+
+    webpackConfig.module.rules[1].oneOf.unshift(
+        {
+            test: /\.css-style-sheet\.(scss|sass)$/,
+            use: [{
+                loader: require.resolve("css-loader"),
+                options: {
+                    exportType: 'css-style-sheet'
+                },
+            }, {
+                loader: require.resolve('postcss-loader'),
+                options: {
+                    postcssOptions: {
+                        ident: 'postcss',
+                        config: false,
+                        plugins: [
+                            'postcss-flexbugs-fixes',
+                            [
+                                'postcss-preset-env',
+                                {autoprefixer: {flexbox: 'no-2009'}, stage: 3}
+                            ],
+                            'postcss-normalize'
+                        ]
+                    },
+                    sourceMap: true
+                }
+            }, 'sass-loader']
+        });
+    return webpackConfig;
+},
+```
+
+That's pretty verbose but the key part is only the one line `exportType: 'css-style-sheet'`. The rest is just trying to
+stay consistent with the rest of how CRA uses webpack. I'm not sure exactly what bugs are fixed by `postcss-loader` but I'd rather not find out by skipping it.
+
+If you don't want to use scss you could change the `test` at the top and take out the `sass-loader` at the bottom. Same thing. The key part is getting
+the `css-loader` into the top of the rules, and getting it out from under `style-loader` that typically injects styles into the DOM, since it won't work with that in `css-style-sheet` mode.
+
+### That's it
+
+Done! That was a little more painful than I hoped for, but the end result speaks for itself. Modifying the webpack rules by index as I've done is perhaps a little bit brittle,
+but I expect this to continue working for some time.
+I [opened a discussion](https://github.com/facebook/create-react-app/discussions/13030) on the CRA github, and I'd happily PR this feature into CRA if I knew it would be accepted.
+
+### Some complaints
+
+#### Create react app can and should be way more expandable
+By the way, having to use Craco at all (or worse, eject) is a huge downside to CRA. Vue-cli takes a _far_ more
+[extendable approach](https://cli.vuejs.org/guide/webpack.html) to build configuration, including an excellent plugin system. Maybe someday
+CRA will do something similar but I stopped holding my breath a while ago, so let's install Craco.
+
+#### This feature is _really_ poorly named
+Nothing in the name "CssStyleSheet" is at all unique to this feature. It's a good name for the `class` in javascript, however it makes it almost
+impossible to search for since the name is so completely ambiguous with other, previous CSS loading methods. That's no good. I'd much rather
+have this called `ControlledCSS` or `DynamicCSS` or something similar.  Naming, after all, is most of programming. If I can't find something, I won't know to use it.
+
