@@ -8,6 +8,7 @@
 package model
 
 import (
+	"encoding/json"
 	"github.com/google/uuid"
 	"time"
 )
@@ -15,9 +16,9 @@ import (
 type Release struct {
 	ID                     uuid.UUID `sql:"primary_key"`
 	PackageID              uuid.UUID
-	PublishingMaintainerID *uuid.UUID
+	PublishingMaintainerID uuid.UUID
 	Version                string
-	UpstreamData           *string
+	UpstreamData           json.RawMessage
 	ReleaseTime            *time.Time
 	ObservedTime           time.Time
 	BlobHash               *string

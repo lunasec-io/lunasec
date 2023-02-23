@@ -12,6 +12,6 @@ import (
 )
 
 type PackageMaintainer struct {
-	PackageID    *uuid.UUID
-	MaintainerID *uuid.UUID
+	PackageID    uuid.UUID
+	MaintainerID uuid.UUID
 }

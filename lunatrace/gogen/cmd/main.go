@@ -161,15 +161,21 @@ func generateSql() {
 
 								// TODO (cthompson) this needs more testing, but works for right now
 								// if there are problems with generated code, check this out first
-								if genqlientType, ok := genqlient.Bindings[column.Name]; ok {
-									importPath, importType := path.Split(genqlientType.Type)
+								if genqlientType, ok := genqlient.Bindings[column.DataType.Name]; ok {
+									if strings.Index(genqlientType.Type, ".") == -1 {
+										defaultTableModelField.Type = template.Type{
+											Name: genqlientType.Type,
+										}
+									} else {
+										importPath, importType := path.Split(genqlientType.Type)
 
-									parts := strings.Split(importType, ".")
-									importPackage := parts[0]
+										parts := strings.Split(importType, ".")
+										importPackage := parts[0]
 
-									defaultTableModelField.Type = template.Type{
-										ImportPath: path.Join(importPath, importPackage),
-										Name:       importType,
+										defaultTableModelField.Type = template.Type{
+											ImportPath: path.Join(importPath, importPackage),
+											Name:       importType,
+										}
 									}
 								}
 								return defaultTableModelField
@@ -183,6 +189,21 @@ func generateSql() {
 		"npm",
 		"./sqlgen",
 	)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to generate jet generated sql")
+		return
+	}
+
+	err = postgres.GenerateDSN(
+		"postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable",
+		"vulnerability",
+		"./sqlgen",
+		t,
+	)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to generate jet generated sql")
+		return
+	}
 
 	err = postgres.GenerateDSN(
 		"postgres://postgres:postgrespassword@localhost:5431/lunatrace?sslmode=disable",

@@ -83,11 +83,11 @@ func (s *packageSqlIngester) mapReleases(ctx context.Context, packageId uuid.UUI
 		releaseId, err := upsertRelease(ctx, s.deps.DB, model.Release{
 			PackageID:              packageId,
 			Version:                rl.Version,
-			PublishingMaintainerID: util.Ptr(maintainerId),
+			PublishingMaintainerID: maintainerId,
 			ReleaseTime:            util.Ptr(rl.ReleaseTime),
 			BlobHash:               util.Ptr(rl.BlobHash),
 			UpstreamBlobURL:        util.Ptr(rl.UpstreamBlobUrl),
-			UpstreamData:           util.Ptr(string(rl.UpstreamData)),
+			UpstreamData:           rl.UpstreamData,
 			FetchedTime:            util.Ptr(time.Now()),
 		})
 		if err != nil {
@@ -126,7 +126,7 @@ func (s *packageSqlIngester) mapReleaseDependencies(
 
 		releaseDependencyId, err := upsertReleaseDependency(ctx, s.deps.DB, model.ReleaseDependency{
 			ReleaseID:           releaseId,
-			DependencyPackageID: util.Ptr(dependencyPackageId),
+			DependencyPackageID: dependencyPackageId,
 			PackageName:         dep.Name,
 			PackageVersionQuery: dep.Version,
 			IsDev:               dep.IsDev,
@@ -149,8 +149,8 @@ func (s *packageSqlIngester) mapMaintainers(ctx context.Context, packageId uuid.
 		}
 
 		err = upsertPackageMaintainer(ctx, s.deps.DB, model.PackageMaintainer{
-			PackageID:    util.Ptr(packageId),
-			MaintainerID: util.Ptr(insertedId),
+			PackageID:    packageId,
+			MaintainerID: insertedId,
 		})
 		if err != nil {
 			log.Error().Err(err).Msg("failed to upsert package maintainer")
