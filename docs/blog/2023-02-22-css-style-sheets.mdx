@@ -109,12 +109,12 @@ document.adoptedStyleSheets = [darkStyles]
 ```
 
 Note that we add the stylesheet to the `adoptedStyleSheets` array on the document object (which is what gets it into the DOM). This is like `document.styleSheets` except that it
-isn't immutable and can be modified directly by JavaScript, which is exactly what we need.
+isn't immutable and can be modified directly by JavaScript, and that's exactly what we need.
 
 If you have your own webpack config, just add a rule using `css-loader` and set `exportType: 'css-style-sheet'`, as per the [css-loader docs](https://webpack.js.org/loaders/css-loader/#exporttype).
 
 Unfortunately, that won't work out of the box with Create React App (CRA). There are no loaders set up to compile to that format. That's
-understandable sinceit's pretty new. Instead, let's use Craco, a hookable wrapper around CRA, to get the loader we need.
+understandable since it's pretty new. Instead, let's use Craco, a hookable wrapper around CRA, to get the loader we need.
 
 ### Taking back control of our webpack config using Craco
 :::info
