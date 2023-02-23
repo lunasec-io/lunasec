@@ -22,8 +22,13 @@ authors: [forrest]
   ~
 -->
 There's a shiny new web feature in browser town, and it's called [CSSStyleSheets](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet).
- It allows us to manipulate page styling without having to load
-css anywhere into the HTML of the page. With it you can do things like
+
+### What is CSSStyleSheets?
+
+CSSStyleSheets allows you to manipulate page styling without having to load CSS anywhere in the HTML of the page.
+
+With CSSStyleSheets you can do things like:
+
 ```js
 const sheet = new CSSStyleSheet();
 // Apply a rule to the sheet
@@ -31,42 +36,49 @@ sheet.replaceSync("a { color: red; }");
 // disable the sheet to remove it from the DOM
 sheet.disabled = true;
 ```
-Neat. Support just became widespread, with adoption by Chrome, Safari, Firefox, etc [added in the last](https://caniuse.com/mdn-api_cssstylesheet) year as of early 2023.
+
+Neat. Support just became widespread, with adoption by Chrome, Safari, Firefox, etc [added in the last](https://caniuse.com/mdn-api_cssstylesheet) year (as of early 2023).
 
 <!--truncate-->
 
-#### The old way
+### The Old Way
 Whether you noticed it or not, your current css framework is almost certainly creating a
-`<link href="example.css" rel="stylesheet">` in the HTML of the page, or setting style attributes directly on page elements. Up until recently, that was the only way to do it.
+`<link href="example.css" rel="stylesheet">` in the HTML of the page or setting style attributes directly on page elements. Up until recently that was the only way to do it.
 
-This works fine but it has a few disadvantages in certain cases. It doesn't play as nicely with dynamic usage, whether that's developer experience as you change files,
-or maybe switching sheets on and off on the fly. Traditional CSS loading isn't going away any time soon, but the new CSSStyleSheet is great to have in your toolbelt.
+This works fine but it has a few disadvantages in certain cases. It doesn't play as nicely with dynamic usage, whether that's developer experience as you change files
+or just switching sheets on and off on the fly.
+
+Traditional CSS loading isn't going away any time soon, but the new CSSStyleSheet is great to have in your toolbelt.
 
 ### Why we wanted to use CSSStyleSheets
+
 Our app, [LunaTrace](https://lunatrace.lunasec.io), has both a dark mode and a light mode. We compile two different stylesheets,
-a `dark.css` and a `light.css`. Previously, we simply had a `<link href="dark.css"...` as above, and when we wanted to change to a light theme,
-we reached into the DOM and modified the element to link to `light.css`. This worked ok but it was just a little bit slow (the page flashed, not the end of the world)
-and it was a painfully slow developer experience. We had a separate watcher script from our main react-scripts that watched our scss files and recompiled them, and then the page would reload after
+a `dark.css` and a `light.css`. 
+
+Previously we simply had a `<link href="dark.css"...` as above and, when we wanted to change to a light theme,
+we reached into the DOM to modify the element to reference `light.css`. This worked ok but it was a little bit slow (the page flashed, not the end of the world), but it was a painfully slow developer experience. We had a separate watcher script from our main `react-scripts` that watched our SCSS files and recompiled them, and then the page would reload after
 10 or 15 seconds. That was just a little too slow for making fast changes to the CSS, and the full page reload was very painful for a developer spoiled by Hot Module Reloading.
 
 :::note
-There are probably other ways to switch out styles for a page between a light and a dark mode rather than using the CssStyleSheet API, like a traditional class based selector. This is just one option and a good way for us to learn about the new API.
+There are probably other ways to switch out styles for a page between a light and a dark mode rather than using the CssStyleSheet API, like a traditional class based selector. This is just one option and it was a good way for us to learn about the new API.
 :::
 
-#### Switch to CSS in JS
-Css in JS is when you put JS in charge of loading styles into the DOM. It does have pros and cons that I won't go into, but the developer experience is great. Much faster.
+### What is CSS-in-JS?
 
-We could do `require 'dark.scss'` at the top of one of our TSX files, and Create React App's webpack config would take care of the rest.
+CSS-in-JS is when you put JS in charge of loading styles into the DOM. It does have pros and cons (that we won't get into), but the developer experience is great and it's much faster.
 
-Only problem is, there is no way to _unload_ a global style you've loaded. For LunaTrace, we need to switch between dark and light themes, so that's a problem.
-CSS in JS was incapable of doing something the DOM has been able to do for decades: unload something.
+We could do `require 'dark.scss'` at the top of one of our TSX files and Create React App's webpack config would take care of the rest.
 
+The only problem is: there is no way to _unload_ a global style you've loaded. For LunaTrace, we need to switch between dark and light themes, so that's a problem.
+
+CSS-in-JS was incapable of doing something the DOM has been able to do for decades: unload something.
 
 #### Manipulating a stylesheet with document.styleSheets
-If we want to say, turn a stylesheet off, one way to get a reference to it is by the `document.styleSheets` property. This function can find a sheet
+If we want to say... turn a stylesheet off, then one way would be to get a reference to by the `document.styleSheets` property. This function can find a stylesheet
 and return a CssStyleSheet object which we can manipulate directly.
+
 ```ts
-function getStyleSheet(unique_title :string): CssStyleSheet {
+function getStyleSheet(unique_title: string): CssStyleSheet {
   for (const sheet of document.styleSheets) {
     if (sheet.title === unique_title) {
       return sheet;
@@ -74,18 +86,21 @@ function getStyleSheet(unique_title :string): CssStyleSheet {
   }
 }
 ```
-I couldn't figure out how to set the title of a stylesheet I was inserting with webpack (from `style-loader`) or find another way to tell which sheet was which, so this wasn't enough for me.
-In hindsight, it might be possible to use the CSSStyleSheet API to look for some special rule you know will be there, or make a dummy rule for that purpose. I didn't try that.
+
+I couldn't figure out how to set the title of a stylesheet I was inserting with webpack (from `style-loader`) or find another way to tell which stylesheet was which, so this wasn't enough for me.
+
+In hindsight, it might be possible to use the CSSStyleSheet API to look for some special rule you know will be there, or make a dummy rule for that purpose, but I didn't try that.
 
 Anyway, maybe this is enough to accomplish your goal. If not, and you'd like to import a CssStyleSheet object directly via webpack, read on.
 
-#### Injecting a CSSStyleSheet directly into JS
- The webpack plugin `css-loader` thankfully does support this new API. It will compile your css import
-into javascript which wraps your css file with `new CssStyleSheet`, so that you can directly import and use it, ready to go.
+### Injecting a CSSStyleSheet directly into JS
+
+The webpack plugin `css-loader` thankfully does support this new API. It will compile your CSS import
+into JavaScript which wraps your CSS file with `new CssStyleSheet` so that you can directly import and use it.
 
 A simple example looks like:
 
-```typescript
+```ts
 import darkStyles from '../scss/main/dark.css-style-sheet.scss';
 import lightStyles from '../scss/main/light.css-style-sheet.scss';
 
@@ -93,17 +108,17 @@ import lightStyles from '../scss/main/light.css-style-sheet.scss';
 document.adoptedStyleSheets = [darkStyles]
 ```
 
-Note that we add the sheet to the adoptedStyleSheets array on the document object which is what gets it into the DOM. This is like `document.styleSheets` except that it
-isn't immutable and can be modified directly by javascript, exactly what we need.
+Note that we add the stylesheet to the `adoptedStyleSheets` array on the document object (which is what gets it into the DOM). This is like `document.styleSheets` except that it
+isn't immutable and can be modified directly by JavaScript, and that's exactly what we need.
 
 If you have your own webpack config, just add a rule using `css-loader` and set `exportType: 'css-style-sheet'`, as per the [css-loader docs](https://webpack.js.org/loaders/css-loader/#exporttype).
 
-Unfortunately, that won't work out of the box with Create React App(CRA). There are no loaders set up to compile to that format. That's
-understandable, it's pretty new. Let's use Craco, a hookable wrapper around CRA, to get the loader we need.
+Unfortunately, that won't work out of the box with Create React App (CRA). There are no loaders set up to compile to that format. That's
+understandable since it's pretty new. Instead, let's use Craco, a hookable wrapper around CRA, to get the loader we need.
 
 ### Taking back control of our webpack config using Craco
 :::info
-If you're already using Craco or have your own webpack config, you can skip ahead.
+If you're already using Craco or have your own webpack config you can skip ahead.
 :::
 
 `npm i --save-dev @craco/craco`
@@ -113,7 +128,7 @@ or
 `yarn add -D @craco/craco`
 
 Create a craco config file in your project root
- ```typescript title="craco.config.js"
+ ```ts title="craco.config.js"
 module.exports = {
   webpack: {
     configure: (webpackConfig, { env, paths }) => {
@@ -124,7 +139,8 @@ module.exports = {
   },
 };
  ```
- Replace your package.json CRA scripts with craco ones
+ 
+Replace your package.json CRA scripts with Craco ones:
 ```json title="package.json"
 "scripts": {
     "start": "craco start",
@@ -171,27 +187,31 @@ configure: (webpackConfig, {env, paths}) => {
 },
 ```
 
-That's pretty verbose but the key part is only the one line `exportType: 'css-style-sheet'`. The rest is just trying to
+That's pretty verbose, but the key part is only the one line `exportType: 'css-style-sheet'`. The rest is just trying to
 stay consistent with the rest of how CRA uses webpack. I'm not sure exactly what bugs are fixed by `postcss-loader` but I'd rather not find out by skipping it.
 
-If you don't want to use scss you could change the `test` at the top and take out the `sass-loader` at the bottom. Same thing. The key part is getting
+If you don't want to use SCSS you could change the `test` at the top and take out the `sass-loader` at the bottom. Same thing. The key part is getting
 the `css-loader` into the top of the rules, and getting it out from under `style-loader` that typically injects styles into the DOM, since it won't work with that in `css-style-sheet` mode.
 
 ### That's it
 
 Done! That was a little more painful than I hoped for, but the end result speaks for itself. Modifying the webpack rules by index as I've done is perhaps a little bit brittle,
 but I expect this to continue working for some time.
+
 I [opened a discussion](https://github.com/facebook/create-react-app/discussions/13030) on the CRA github, and I'd happily PR this feature into CRA if I knew it would be accepted.
 
 ### Some complaints
 
-#### Create react app can and should be way more expandable
+#### Create React App can and should be way more expandable
 By the way, having to use Craco at all (or worse, eject) is a huge downside to CRA. Vue-cli takes a _far_ more
 [extendable approach](https://cli.vuejs.org/guide/webpack.html) to build configuration, including an excellent plugin system. Maybe someday
-CRA will do something similar but I stopped holding my breath a while ago.
+CRA will do something similar (but I stopped holding my breath a while ago).
 
 #### This feature is _really_ poorly named
-Nothing in the name "CssStyleSheet" is at all unique to this feature. It's a good name for the `class` in javascript, however it makes it almost
-impossible to search for since the name is so completely ambiguous with other, previous CSS loading methods. That's no good. I'd much rather
-this be called `ControlledCSS` or `DynamicCSS` or something similar.  Naming, after all, is most of programming. If I can't find something, I won't know to use it.
+
+Nothing in the name "CssStyleSheet" is at all unique to this feature. It's a good name for the `class` in JavaScript; however, it makes it almost
+impossible to search for since the name is so completely ambiguous with other previous CSS loading methods. That's no good. I'd much rather
+this be called `ControlledCSS` or `DynamicCSS` or something similar.
+
+Naming, after all, is most of programming. If I can't find something, I won't know to use it.
 
