@@ -17,7 +17,7 @@
     "strict": true /* Enable all strict type-checking options. */,
     "esModuleInterop": true,  /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
     "resolveJsonModule": true /* Include modules imported with .json extension. */,
-    "skipLibCheck": true, // todo: This may be a bit dangerous but it fixes a bug from duplicate types 
+    "skipLibCheck": true, // todo: This may be a bit dangerous but it fixes a bug from duplicate types
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
 
@@ -51,13 +51,6 @@
     "src/__tests__",
     "./src/**/*",
   ],
-
-  "exclude": [
-    "node_modules",
-    "typings",
-    "../../../node_modules"
-  ]
-,
   "references": [
     {"path": "../common"},
     {"path": "../logger"}
