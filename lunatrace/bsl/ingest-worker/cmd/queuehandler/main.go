@@ -12,6 +12,10 @@ package main
 
 import (
 	"context"
+	"net/http"
+
+	"go.uber.org/fx"
+
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/awsfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/config/queuehandler"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/dbfx"
@@ -20,8 +24,6 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/registry"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/queuefx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/staticanalysis"
-	"go.uber.org/fx"
-	"net/http"
 )
 
 type QueueHandlerProps struct {
@@ -37,13 +39,13 @@ func main() {
 		awsfx.Module,
 		registry.NPMModule,
 		dbfx.Module,
+		ingester.Module,
 
 		fx.Supply(http.DefaultClient),
 		fx.Provide(
 			queuehandler.NewConfigProvider,
 
 			ingester.NewPackageSqlIngester,
-			ingester.NewNPMPackageIngester,
 
 			staticanalysis.NewStaticAnalysisQueueHandler,
 

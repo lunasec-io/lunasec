@@ -8,6 +8,7 @@
 package model
 
 import (
+	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/gql/types"
 	"time"
@@ -19,5 +20,5 @@ type ReleaseLicense struct {
 	ReleaseID    uuid.UUID
 	ScanTime     time.Time
 	LicenseID    uuid.UUID
-	ScanMetadata *string
+	ScanMetadata json.RawMessage
 }

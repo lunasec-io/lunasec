@@ -41,6 +41,7 @@ type Params struct {
 	DB                 *sql.DB
 	PackageSQLIngester PackageSqlIngester
 	NPMRegistry        metadata.NpmRegistry
+	Config             Config
 }
 
 type NPMPackageIngester struct {

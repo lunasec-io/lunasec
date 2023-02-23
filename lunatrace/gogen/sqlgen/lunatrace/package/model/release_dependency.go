@@ -14,8 +14,8 @@ import (
 type ReleaseDependency struct {
 	ID                  uuid.UUID `sql:"primary_key"`
 	ReleaseID           uuid.UUID
-	DependencyPackageID *uuid.UUID
-	DependencyReleaseID *uuid.UUID
+	DependencyPackageID uuid.UUID
+	DependencyReleaseID uuid.UUID
 	PackageName         string
 	PackageVersionQuery string
 	IsDev               bool
