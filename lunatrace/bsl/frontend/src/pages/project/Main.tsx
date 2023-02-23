@@ -21,6 +21,7 @@ import api from '../../api';
 import { SpinIfLoading } from '../../components/SpinIfLoading';
 import useBreakpoint from '../../hooks/useBreakpoint';
 import { useRecentProjects } from '../../hooks/useRecentProjects';
+import useSettingsState from '../../hooks/useSettingsState';
 
 import { ProjectHeader } from './Header';
 import { Builds } from './builds';
@@ -32,6 +33,8 @@ import { ProjectInfo, TabName } from './types';
 
 export const ProjectMain: React.FunctionComponent = (_props) => {
   const { project_id } = useParams();
+
+  const [triedRiskAdjustment, setTriedRiskAdjustment] = useSettingsState('tried_risk_adjustment', 'false');
 
   // Load project information
   const { data, isLoading, refetch, isFetching } = api.useGetProjectQuery({
@@ -90,9 +93,11 @@ export const ProjectMain: React.FunctionComponent = (_props) => {
               <Nav.Item>
                 <Nav.Link
                   onClick={() => {
+                    setTriedRiskAdjustment('true');
                     setActiveTab('filters');
                   }}
                   eventKey="filters"
+                  className={triedRiskAdjustment === 'false' ? 'text-warning' : ''}
                 >
                   <Shuffle size="1em" className="mb-2 me-1" /> Risk Adjustment
                 </Nav.Link>
