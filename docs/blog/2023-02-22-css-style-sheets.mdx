@@ -53,7 +53,7 @@ Traditional CSS loading isn't going away any time soon, but the new CSSStyleShee
 ### Why we wanted to use CSSStyleSheets
 
 Our app, [LunaTrace](https://lunatrace.lunasec.io), has both a dark mode and a light mode. We compile two different stylesheets,
-a `dark.css` and a `light.css`. 
+a `dark.css` and a `light.css`.
 
 Previously we simply had a `<link href="dark.css"...` as above and, when we wanted to change to a light theme,
 we reached into the DOM to modify the element to reference `light.css`. This worked ok but it was a little bit slow (the page flashed, not the end of the world), but it was a painfully slow developer experience. We had a separate watcher script from our main `react-scripts` that watched our SCSS files and recompiled them, and then the page would reload after
@@ -74,7 +74,7 @@ The only problem is: there is no way to _unload_ a global style you've loaded. F
 CSS-in-JS was incapable of doing something the DOM has been able to do for decades: unload something.
 
 #### Manipulating a stylesheet with document.styleSheets
-If we want to say... turn a stylesheet off, then one way would be to get a reference to by the `document.styleSheets` property. This function can find a stylesheet
+If we want to say, turn a stylesheet off, one way to get a reference to it is by the `document.styleSheets` property. This function can find a stylesheet
 and return a CssStyleSheet object which we can manipulate directly.
 
 ```ts
@@ -89,7 +89,7 @@ function getStyleSheet(unique_title: string): CssStyleSheet {
 
 I couldn't figure out how to set the title of a stylesheet I was inserting with webpack (from `style-loader`) or find another way to tell which stylesheet was which, so this wasn't enough for me.
 
-In hindsight, it might be possible to use the CSSStyleSheet API to look for some special rule you know will be there, or make a dummy rule for that purpose, but I didn't try that.
+In hindsight, it might be possible to use the CSSStyleSheet API to look for some special rule you know will be there, or make a dummy rule for that purpose. I didn't try that.
 
 Anyway, maybe this is enough to accomplish your goal. If not, and you'd like to import a CssStyleSheet object directly via webpack, read on.
 
@@ -100,7 +100,7 @@ into JavaScript which wraps your CSS file with `new CssStyleSheet` so that you c
 
 A simple example looks like:
 
-```ts
+```typescript
 import darkStyles from '../scss/main/dark.css-style-sheet.scss';
 import lightStyles from '../scss/main/light.css-style-sheet.scss';
 
@@ -139,7 +139,7 @@ module.exports = {
   },
 };
  ```
- 
+
 Replace your package.json CRA scripts with Craco ones:
 ```json title="package.json"
 "scripts": {
@@ -188,7 +188,7 @@ configure: (webpackConfig, {env, paths}) => {
 ```
 
 That's pretty verbose, but the key part is only the one line `exportType: 'css-style-sheet'`. The rest is just trying to
-stay consistent with the rest of how CRA uses webpack. I'm not sure exactly what bugs are fixed by `postcss-loader` but I'd rather not find out by skipping it.
+stay consistent with the rest of how CRA uses webpack. I'm not sure exactly what bugs are fixed by `postcss-loader`, but I'd rather not find out by skipping it.
 
 If you don't want to use SCSS you could change the `test` at the top and take out the `sass-loader` at the bottom. Same thing. The key part is getting
 the `css-loader` into the top of the rules, and getting it out from under `style-loader` that typically injects styles into the DOM, since it won't work with that in `css-style-sheet` mode.
