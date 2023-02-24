@@ -97,6 +97,7 @@ type BuildData_Release {
 }
 
 type BuildData_Vulnerability {
+    cve_id: String
     cvss_score: Float
     cwes: [BuildData_VulnerabilityCwe!]!
     guide_vulnerabilities: [BuildData_Guide_Vulnerability!]!
