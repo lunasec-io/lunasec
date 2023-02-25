@@ -32,14 +32,21 @@ export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesCon
 }) => {
   const { theme } = useTheme();
 
-  // make it so that the search textbox waits a little bit to update the state so as not to fire on every keypress. All other controls are instant
+  // make it so that the search textbox waits a litle bit to update the state so as not to fire on every keypress. All other controls are instant
   const [search, setSearch] = useState(searchControls.search);
   const debouncedSearch = useDebounce(search, 200);
   useEffect(() => {
-    setSearchControls({ ...searchControls, search: debouncedSearch });
-  }, [debouncedSearch]);
+    changeControl('search',debouncedSearch)
+    }, [debouncedSearch]);
+
+  const order = searchControls.order_by;
+
+  function changeControl<K extends keyof SearchControls>(controlName: K, newValue: SearchControls[K] ):void {
+    setSearchControls({...searchControls, [controlName]: newValue});
+  }
 
   return (
+    <>
     <Row className="mb-2 mb-xl-3">
       <Col xs="12" className="d-none d-md-block">
         <h3>Vulnerability Database</h3>
@@ -66,6 +73,30 @@ export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesCon
         </form>
       </Col>
     </Row>
+    <Row>
+      <Col sm="6" md="5" className="ms-auto d-flex  mt-3  mt-sm-0 align-content-center align-content-md-end">
+        <Dropdown autoClose="outside" className="d-inline me-2">
+          <Dropdown.Toggle
+            variant={order !== 'none' && theme === 'dark' ? 'primary' : ''}
+            className="bg-white shadow-sm drop vuln-sort-dropdown"
+          >
+            <AlignLeft className="feather align-middle mt-n1" /> Sort
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item active={order === 'none'} onClick={(e) => changeControl('order_by',order !== 'cvss' ? 'cvss' : 'none')}>
+              Relevance <ChevronDown />
+            </Dropdown.Item>
+            <Dropdown.Item active={order === 'cvss'} onClick={(e) => changeControl('order_by',order !== 'cvss' ? 'cvss' : 'none')}>
+              CVSS Score <ChevronDown />
+            </Dropdown.Item>
+            <Dropdown.Item active={order === 'date'} onClick={(e) => changeControl('order_by',order !== 'date' ? 'date' : 'none')}>
+              Date <ChevronDown />
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </Col>
+    </Row>
+      </>
   );
 };
 // return (
@@ -98,45 +129,29 @@ export const VulnerabilitiesControls: React.FunctionComponent<VulnerabilitiesCon
 //       </form>
 //     </Col>
 //
-//     <Col sm="6" md="5" className="ms-auto d-flex  mt-3  mt-sm-0 align-content-center align-content-md-end">
-//       <Dropdown autoClose="outside" className="d-inline me-2">
-//         <Dropdown.Toggle
-//           variant={order !== 'none' && theme === 'dark' ? 'primary' : ''}
-//           className="bg-white shadow-sm drop vuln-sort-dropdown"
-//         >
-//           <AlignLeft className="feather align-middle mt-n1" /> Sort
-//         </Dropdown.Toggle>
-//         <Dropdown.Menu>
-//           <Dropdown.Item active={order === 'cvss'} onClick={(e) => submitOrder(order !== 'cvss' ? 'cvss' : 'none')}>
-//             CVSS Score <ChevronDown />
-//           </Dropdown.Item>
-//           <Dropdown.Item active={order === 'date'} onClick={(e) => submitOrder(order !== 'date' ? 'date' : 'none')}>
-//             Date <ChevronDown />
-//           </Dropdown.Item>
-//         </Dropdown.Menu>
-//       </Dropdown>
-//       <form
-//         onBlur={() => props.submitFilter(namespaceFilter)}
-//         onSubmit={(e) => {
-//           e.preventDefault();
-//           props.submitFilter(namespaceFilter);
-//         }}
-//         style={{ display: 'inline' }}
-//       >
-//         <FormGroup style={{ width: '150px' }} className="d-sm-inline-block">
-//           <InputGroup className="input-group-vulnerabilities">
-//             <Form.Control
-//               placeholder="NameSpace"
-//               aria-label="Filter Vulnerabilities"
-//               value={namespaceFilter}
-//               onChange={(e) => setNamespaceFilter(e.target.value)}
-//             />
-//             <Button type="submit" variant="">
-//               <Filter className="feather mb-1" size="1em" />
-//             </Button>
-//           </InputGroup>
-//         </FormGroup>
-//       </form>
+
+      {/*<form*/}
+      {/*  onBlur={() => props.submitFilter(namespaceFilter)}*/}
+      {/*  onSubmit={(e) => {*/}
+      {/*    e.preventDefault();*/}
+      {/*    props.submitFilter(namespaceFilter);*/}
+      {/*  }}*/}
+      {/*  style={{ display: 'inline' }}*/}
+      {/*>*/}
+      {/*  <FormGroup style={{ width: '150px' }} className="d-sm-inline-block">*/}
+      {/*    <InputGroup className="input-group-vulnerabilities">*/}
+      {/*      <Form.Control*/}
+      {/*        placeholder="NameSpace"*/}
+      {/*        aria-label="Filter Vulnerabilities"*/}
+      {/*        value={namespaceFilter}*/}
+      {/*        onChange={(e) => setNamespaceFilter(e.target.value)}*/}
+      {/*      />*/}
+      {/*      <Button type="submit" variant="">*/}
+      {/*        <Filter className="feather mb-1" size="1em" />*/}
+      {/*      </Button>*/}
+      {/*    </InputGroup>*/}
+      {/*  </FormGroup>*/}
+      {/*</form>*/}
 
 {
   /*<Dropdown autoClose="outside" className="d-inline me-2">*/

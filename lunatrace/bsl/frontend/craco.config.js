@@ -11,43 +11,11 @@
  * limitations under the License.
  *
  */
-const webpack = require('webpack')
-const {getLoader, loaderByName, removeLoaders} = require("@craco/craco");
-// const { inspectConfigPlugin } = require('craco-plugin-inspect-config'); // seems broken, it would be extremely helpful
-const util = require('util')
 module.exports = {
-    // plugins: [
-    //   // ... put it last
-    //   {
-    //     plugin: inspectConfigPlugin,
-    //     options: {
-    //       enabled: true,
-    //     },
-    //   },
-    // ],
     webpack: {
         target: "web",
         alias: {},
-        plugins: {
-            add: [
-                // These shims/polyfills are commented out because they aren't in use currently, but may be needed again if we bring in another module written for node.  Thanks to webpack 5 :(
-
-                // new webpack.ProvidePlugin({
-                //   process:'process/browser',
-                //   Buffer: ['buffer', 'Buffer']
-                // }),
-            ]
-            // This is the example code for Craco:
-            // add: [], /* An array of plugins */
-            // add: [
-            //   plugin1,
-            //   [plugin2, "append"],
-            //   [plugin3, "prepend"], /* Specify if plugin should be appended or prepended */
-            // ], /* An array of plugins */
-            // remove: [],  /* An array of plugin constructor's names (i.e. "StyleLintPlugin", "ESLintWebpackPlugin" ) */
-        },
         configure: (webpackConfig, {env, paths}) => {
-
             webpackConfig.module.rules[1].oneOf.unshift(
                 {
                     test: /\.css-style-sheet\.(scss|sass)$/,
@@ -55,9 +23,6 @@ module.exports = {
                         loader: require.resolve("css-loader"),
                         options: {
                             exportType: 'css-style-sheet'
-                            // postcssOptions: {
-                            //   plugins: [require("autoprefixer")],
-                            // },
                         },
                     }, {
                         loader: require.resolve('postcss-loader'),
@@ -80,18 +45,6 @@ module.exports = {
                 });
             return webpackConfig;
         },
-        // module: {
-        //   rules: [
-        //     {
-        //       test: /\.m?js$/,
-        //       resolve: {
-        //         fullySpecified: false,
-        //       }
-        //     }
-        //   ]
-        // }
-        // configure: (webpackConfig, { env, paths }) => { return webpackConfig; }
-
     }
 
 }

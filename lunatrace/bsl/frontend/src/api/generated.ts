@@ -9299,13 +9299,14 @@ export type GetSidebarInfoQueryVariables = Exact<{
 export type GetSidebarInfoQuery = { __typename?: 'query_root', projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, builds: Array<{ __typename?: 'builds', id: any, build_number?: number | null }>, github_repository?: { __typename?: 'github_repositories', id: any, github_id?: number | null } | null }>, organizations: Array<{ __typename?: 'organizations', name: string, id: any, createdAt: any, projects: Array<{ __typename?: 'projects', name: string, id: any, created_at: any, github_repository?: { __typename?: 'github_repositories', id: any } | null }> }> };
 
 export type SearchVulnerabilitiesQueryVariables = Exact<{
-  search: Scalars['String'];
+  search?: InputMaybe<Scalars['String']>;
   order_by?: InputMaybe<Array<Vulnerability_Order_By> | Vulnerability_Order_By>;
   limit: Scalars['Int'];
+  where: Vulnerability_Bool_Exp;
 }>;
 
 
-export type SearchVulnerabilitiesQuery = { __typename?: 'query_root', vulnerability: Array<{ __typename?: 'vulnerability', database_specific?: any | null, details?: string | null, source: string, source_id: string, summary?: string | null, withdrawn?: any | null, published?: any | null, modified: any, severity_name?: any | null, id: any, affected: Array<{ __typename?: 'vulnerability_affected', database_specific?: any | null, ecosystem_specific?: any | null, id: any, package: { __typename?: 'package', name: string, id: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', database_specific?: any | null, event: string, id: any, type: any, version: string }> }>, severities: Array<{ __typename?: 'vulnerability_severity', id: any, score: string, source: string, type: string }> }> };
+export type SearchVulnerabilitiesQuery = { __typename?: 'query_root', vulnerability: Array<{ __typename?: 'vulnerability', database_specific?: any | null, details?: string | null, source: string, source_id: string, summary?: string | null, withdrawn?: any | null, published?: any | null, modified: any, severity_name?: any | null, id: any, affected: Array<{ __typename?: 'vulnerability_affected', database_specific?: any | null, ecosystem_specific?: any | null, id: any, package: { __typename?: 'package', name: string, id: any }, affected_range_events: Array<{ __typename?: 'vulnerability_affected_range_event', database_specific?: any | null, event: string, id: any, type: any, version: string }>, ranges: Array<{ __typename?: 'vulnerability_range', fixed?: string | null, introduced?: string | null }> }>, severities: Array<{ __typename?: 'vulnerability_severity', id: any, score: string, source: string, type: string }> }> };
 
 export type GetVulnerabilityDetailsQueryVariables = Exact<{
   vulnerability_id: Scalars['uuid'];
@@ -10045,12 +10046,12 @@ export const GetSidebarInfoDocument = `
 }
     `;
 export const SearchVulnerabilitiesDocument = `
-    query SearchVulnerabilities($search: String!, $order_by: [vulnerability_order_by!] = {}, $limit: Int!) {
+    query SearchVulnerabilities($search: String = "", $order_by: [vulnerability_order_by!] = {}, $limit: Int!, $where: vulnerability_bool_exp!) {
   vulnerability: search_vulnerabilities(
     args: {search: $search}
-    where: {_and: [{affected: {id: {_is_null: false}}}, {source: {_eq: "ghsa"}}]}
     limit: $limit
     order_by: $order_by
+    where: $where
   ) {
     affected {
       database_specific
@@ -10066,6 +10067,10 @@ export const SearchVulnerabilitiesDocument = `
         id
         type
         version
+      }
+      ranges {
+        fixed
+        introduced
       }
     }
     database_specific

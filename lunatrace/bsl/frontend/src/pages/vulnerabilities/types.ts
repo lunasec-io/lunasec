@@ -58,5 +58,8 @@ export const searchParamsConfigMap = {
   order_by: withDefault(StringParam, ''),
 };
 
+export type EcoSystem = 'javascript'|'ruby'|'java'|'python'|'php'|'golang'
+
+
 export type SearchControls = DecodedValueMap<typeof searchParamsConfigMap>;
 export type SetSearchControls = SetQuery<typeof searchParamsConfigMap>;

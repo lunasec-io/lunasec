@@ -20,7 +20,7 @@ import { ArrayParam, DateParam, NumberParam, StringParam, useQueryParams, withDe
 import { useDebounce } from 'usehooks-ts';
 
 import api from '../../api';
-import { Order_By } from '../../api/generated';
+import { Order_By, Vulnerability_Bool_Exp as WhereClause  } from '../../api/generated';
 
 import { VulnerabilitiesControls } from './Controls';
 import { VulnerabilitiesList } from './List';
@@ -70,12 +70,10 @@ export const VulnerabilitiesMain: React.FunctionComponent = () => {
   //   setSearchString(search);
   // };
 
-  // const [searchControls, setSearchControls] = useState<SearchControls>(searchControlDefaults);
-
   const [searchControls, setSearchControls] = useQueryParams(searchParamsConfigMap, {
     removeDefaultsFromUrl: true,
     enableBatching: false, // would be great but doesnt seem to work, oh well
-    updateType: 'replace',
+    updateType: 'replace', // makes it so searching and changing settings doesn't increment the back/forward buttons
   });
 
   const postgresOrderMap: Record<Order, Record<string, unknown>> = {
@@ -84,21 +82,17 @@ export const VulnerabilitiesMain: React.FunctionComponent = () => {
     none: {},
   };
 
+  const [whereClause, setWhereClause] = useState<WhereClause>({source: {_eq: 'ghsa'}})
+
+  const [orderBy, setOrderBy] = useState<Order>('none');
+
   // RUN SEARCH QUERY
   const { data, isFetching, refetch } = api.useSearchVulnerabilitiesQuery({
     search: searchControls.search,
     order_by: postgresOrderMap['date'],
     limit: vulnLimit,
+    where: whereClause
   });
-
-  // const [orderBy, setOrderBy] = useState<Order>('none');
-
-  // RUN SEARCH QUERY
-  // const { data, isFetching, refetch } = api.useSearchVulnerabilitiesQuery({
-  //   search: searchString,
-  //   order_by: postgresOrderMap[orderBy],
-  //   limit: vulnLimit,
-  // });
 
   // lazy loading. Reloads all the old vulns when expanding the batch size but..it works fine
   useBottomScrollListener(
