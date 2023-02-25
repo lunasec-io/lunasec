@@ -1,0 +1,26 @@
+{
+  "name": "machine-learning",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "scrape": "../node_modules/.bin/ts-node ./js/scraper/web-scraper.ts"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.6.2",
+    "@types/puppeteer": "^5.4.6",
+    "date-fns": "^2.14.0",
+    "node-fetch": "^2.0.0",
+    "puppeteer": "^15.5.0",
+    "queue": "^6.0.2",
+    "sqlite": "^4.1.2",
+    "sqlite3": "^5.0.10",
+    "typescript": "^4.9.5",
+    "ts-node": "^10.9.1",
+    "yargs": "^15.3.1"
+  },
+  "dependencies": {
+    "pupeteer": "^0.0.1"
+  }
+}
