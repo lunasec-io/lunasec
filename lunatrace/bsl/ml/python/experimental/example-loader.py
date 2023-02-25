@@ -1,5 +1,3 @@
-import os
-os.environ["OPENAI_API_KEY"] = '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'
 
 from langchain import OpenAI
 from llama_index import GPTSimpleVectorIndex, SimpleDirectoryReader, LLMPredictor, download_loader
