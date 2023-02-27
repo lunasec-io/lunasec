@@ -35,9 +35,12 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/registry"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator/npm"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/openaifx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/pineconefx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/affected"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/process"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/license"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
@@ -56,12 +59,14 @@ func main() {
 		dbfx.Module,
 		registry.NPMModule,
 		ingester.Module,
+		openaifx.Module,
+		pineconefx.Module,
 
 		fx.Provide(
 			cwe2.NewCWEIngester,
 			epss2.NewEPSSIngester,
 			cisa2.NewCISAKnownVulnIngester,
-			vulnmanager.NewProcessor,
+			process.NewProcessor,
 		),
 
 		// todo make a module
