@@ -40,7 +40,7 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/affected"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/process"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/scrape"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/license"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
@@ -49,7 +49,11 @@ import (
 
 func main() {
 	// TODO (cthompson) this should be configured with an fx module
-	log.Logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
+	logLevel := zerolog.InfoLevel
+	if os.Getenv("LOG_LEVEL") == "debug" {
+		logLevel = zerolog.DebugLevel
+	}
+	log.Logger = zerolog.New(os.Stderr).With().Timestamp().Logger().Level(logLevel)
 
 	clifx.Main(
 		// TODO (cthompson) move this into an fx module
@@ -61,12 +65,12 @@ func main() {
 		ingester.Module,
 		openaifx.Module,
 		pineconefx.Module,
+		scrape.Module,
 
 		fx.Provide(
 			cwe2.NewCWEIngester,
 			epss2.NewEPSSIngester,
 			cisa2.NewCISAKnownVulnIngester,
-			process.NewProcessor,
 		),
 
 		// todo make a module
