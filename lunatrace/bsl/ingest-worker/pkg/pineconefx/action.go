@@ -18,6 +18,12 @@ type UpsertRequest struct {
 	Vectors []*Vector `json:"vectors"`
 }
 
+type UpsertResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Details []any  `json:"details"`
+}
+
 /*
 https://github.com/pinecone-io/pinecone-python-client/blob/337a9a11d5/pinecone/core/api_action.py#L13
 class WhoAmIResponse(NamedTuple):

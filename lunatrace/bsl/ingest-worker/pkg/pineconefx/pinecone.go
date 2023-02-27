@@ -43,7 +43,10 @@ type pineconeClient struct {
 
 func (p *pineconeClient) Upsert(vectors []*Vector) error {
 	url := fmt.Sprintf("https://%s-%s.svc.%s.pinecone.io/vectors/upsert", p.params.Index, p.params.Project, p.params.Environment)
-	_, err := callAPI[UpsertRequest, any]("POST", url, p.params.APIKey, &UpsertRequest{Vectors: vectors})
+	resp, err := callAPI[UpsertRequest, UpsertResponse]("POST", url, p.params.APIKey, &UpsertRequest{Vectors: vectors})
+	if resp.Code != 0 {
+		return fmt.Errorf("pinecone upsert failed: %s - %v", resp.Message, resp.Details)
+	}
 	return err
 }
 
