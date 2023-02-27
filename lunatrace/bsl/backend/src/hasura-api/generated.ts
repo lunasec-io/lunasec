@@ -142,6 +142,7 @@ export type BuildData_Release = {
 
 export type BuildData_Vulnerability = {
   __typename?: 'BuildData_Vulnerability';
+  cve_id?: Maybe<Scalars['String']>;
   cvss_score?: Maybe<Scalars['Float']>;
   cwes: Array<BuildData_VulnerabilityCwe>;
   guide_vulnerabilities: Array<BuildData_Guide_Vulnerability>;
