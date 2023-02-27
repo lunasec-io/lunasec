@@ -13,6 +13,43 @@
 -->
 # LunaTrace Go Services
 
+## Vulnerabilities
+
+### ML
+
+#### Scrape
+Go through every vulnerability reference, scrape it, and store it to the db (vulns.db in the example command). The formatted content will end up in `normalized_content`.
+```shell
+go run cmd/ingestworker/main.go vulnerability process --db vulns.db scrape
+```
+
+For scraping a specific vulnerability
+```shell
+go run cmd/ingestworker/main.go vulnerability process --db vulns.db scrape --vuln GHSA-9j49-mfvp-vmhm
+```
+
+#### Embeddings
+
+Make sure `.lunatrace.yaml` contains the following:
+```yaml
+openai:
+  api_key: xxx
+pinecone:
+  api_key: xxx
+  environment: xxx
+  index: xxx
+```
+
+Generate embeddings for scraped references
+```shell
+go run cmd/ingestworker/main.go vulnerability process --db test.db embedding
+```
+
+a specific vulnerability can be embedded
+```shell
+go run cmd/ingestworker/main.go vulnerability process --db test.db embedding --vuln GHSA-9j49-mfvp-vmhm
+```
+
 ## Setup analysiscli
 ```shell
  go build -o bin/analysiscli cmd/analysiscli/main.go

@@ -16,7 +16,6 @@ import (
 )
 
 type Config struct {
-	Enabled     bool   `yaml:"enabled"`
 	APIKey      string `yaml:"api_key"`
 	Environment string `yaml:"environment"`
 	Index       string `yaml:"index"`
