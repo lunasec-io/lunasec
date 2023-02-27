@@ -1,4 +1,4 @@
-# ENTER YOUR OPENAPI KEY IN OPENAI_API_KEY FIRST
+# ENTER YOUR OPENAPI KEY IN OPENAI_API_KEY ENV VAR FIRST
 from llama_index import GPTSimpleVectorIndex, SimpleDirectoryReader, LLMPredictor, download_loader
 
 savePath = f'/{os.path.dirname(__file__)}/indexes/index.json'

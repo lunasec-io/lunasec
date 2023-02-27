@@ -116,7 +116,8 @@
       "./lunatrace/bsl/frontend",
       "./lunatrace/dev-cli",
       "./lunatrace/npm-package-cli",
-      "./lunatrace/datadog-metrics-proxy"
+      "./lunatrace/datadog-metrics-proxy",
+      "./lunatrace/bsl/ml/js"
     ]
   },
   "packageManager": "yarn@3.2.2",

@@ -67,6 +67,7 @@ module.exports = {
       'lunatrace/dev-cli/tsconfig.json',
       'lunatrace/bsl/common/tsconfig.json',
       'lunatrace/bsl/logger/tsconfig.json',
+      'lunatrace/bsl/ml/js/tsconfig.json',
       'lunatrace/datadog-metrics-proxy/tsconfig.json',
       'lunatrace/npm-package-cli/tsconfig.json',
       'docs/tsconfig.json'
