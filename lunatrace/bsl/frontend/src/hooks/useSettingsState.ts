@@ -14,8 +14,9 @@
 import { useEffect } from 'react';
 
 import { THEME } from '../constants';
-
+// @ts-ignore
 import darkStyles from '../scss/main/dark.css-style-sheet.scss';
+// @ts-ignore
 import lightStyles from '../scss/main/light.css-style-sheet.scss';
 
 import useLocalStorage from './useLocalStorage';
@@ -33,10 +34,10 @@ function useSettingsState(key: string, initialValue: string): [string, (setTo: s
     if (key === 'theme') {
       if (value === THEME.DARK) {
         // @ts-ignore
-        document.adoptedStyleSheets = [darkStyles]
+        document.adoptedStyleSheets = [darkStyles];
       } else {
         // @ts-ignore
-        document.adoptedStyleSheets = [lightStyles]
+        document.adoptedStyleSheets = [lightStyles];
       }
     }
   }, [value, key]);
