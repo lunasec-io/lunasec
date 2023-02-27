@@ -1,11 +1,11 @@
 ---
-title: "LunaTrace Your Repos for Known Exploited Vulnerabilities"
-description: "LunaSec now offers scanning for the CISA known exploited vulnerabilities and more, allowing users to quickly scan their repositories to identify and prioritize critical vulnerabilities."
-slug: lunatrace-your-repo
-date: 2023-01-17T07:00:00.000Z
-keywords: [cybersecurity, lunatrace, cisa]
-tags: [security, appsec, sdlc, cisa]
-authors: [yiannis, free]
+title: "Drowning in Vulnerabilities?"
+description: "It is seemingly impossible to know what vulnerabilities actually matter. Let's learn how to ignore 'scratches' and fix 'holes'."
+slug: drowning-in-vulnerabilities
+date: 2023-02-27T07:00:00.000Z
+keywords: [vulnerabilities, cvss, cybersecurity, lunatrace]
+tags: [security, appsec, vulnerabilities]
+authors: [chris, yiannis]
 ---
 <!--
   ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
@@ -21,45 +21,44 @@ authors: [yiannis, free]
   ~
 -->
 
+<img alt="boat" src="/docs/img/scratch-vs-hole.png" style={
+    {marginLeft: 'auto', marginRight: 'auto', width: '75%', display: 'block'}
+}/>
+
+_Would you rather have a boat with a scratch or a boat with a hole?_
+
 ## Are you drowning in vulnerabilities?
-Talking about vulnerabilities is too terse, so let’s talk about boats instead!
+Talking about vulnerabilities is too terse, let’s talk about boats. If your boat had a hole in it, you would probably patch that hole as fast as you could. You definitely wouldn’t want your boat to take on water and sink. On the other hand, if your boat had a scar on it and not a hole, you would want to assess the level of damage, perform the minimum fixes required and focus back on steering your boat.
 
-If your boat had a hole in it, you would probably patch that hole as fast as you could. You wouldn’t want your boat to take on water and sink, right?
+<!--truncate-->
 
-For a boat that is supposed to be out at sea for months a hole in your boat spells disaster, but what if your boat didn’t need to sail for months? What if you had a row boat you took out occasionally to do some fishing and, since that hole is actually pretty small, you only really notice it when you bring your boat to shore and see a bit of water
+A hole in a boat that is supposed to be out at sea for months spells disaster. If your boat did not need to sail for months or you only occasionally used it to go fishing, the only real notice of an insignificant scar would be when you brought your boat back to shore. Even then, unless the scar could lead to a hole, you probably would not fix it immediately. More than likely, you would address the issue within a week or a month, depending on any big trips planned.
 
-When are you going to fix that hole? Right then and there? Tomorrow? A week from now? A month?
+Very often vulnerabilities in code dependencies are presented as big holes when they are in fact scratches. Yes, these scratches can lead to holes and while you would still technically call that hole in your rowboat a “breach” that lingo doesn’t quite translate to the security world. A “breach” refers to a known compromise of a system. A breach is the actual action performed by a hacker to exploit a vulnerability. Often the vulnerability being exploited is one that is already known to exist or it could be that the vulnerability is not one seen before, in which case it is referred to as a zero day.
 
-While you would still technically call that hole in your rowboat a “breach" that lingo doesn’t quite translate to the security world. A “breach” refers to a known compromise of a system. A breach is the actual action performed by a hacker to exploit a vulnerability. Often the vulnerability being exploited is one that is already known to exist (as opposed to a zeroday).
+## Your boat is your code and it is taking on water
+A hole in your boat is similar to a vulnerability. Your boat has a hull that is supposed to protect you from the water trying to force its way in. Any chance water gets, it will pour in at full force. If there is a vulnerability in your code, hackers will use it to get into your company. The laws of physics dictate how likely water will affect your boat. The laws of information security are slightly more complex and relate to when a vulnerability is discovered and under what conditions it can be exploited.
 
-## Your boat is taking on water
+Like water, a hacker is going to find the hole that gives them the path of least resistance into manipulating the logic of your application code. If, say, an unpatched Apache Struts instance is internet facing in the data center of the world’s largest companies, you can be sure that a hacker will try to exploit this. This is because by exploiting this vulnerability, the hacker can try to gain money and/or influence.
 
-Let’s relate this back to the world of security.
+On the opposite side of vulnerability exposure, say the [Apache Struts vulnerability](https://www.wired.com/story/equifax-breach-no-excuse/) is replaced by a regex DoS vulnerability on the same application code. This vulnerability does not offer an exploitation path to a hacker with the same impact. Ergo, a hacker exploiting a regex DoS vulnerability can gain less money and/or influence compared to them exploiting an unpatched instance of Apache Struts. Like our boat analogy, different holes can have different impact on sailing the boat, in the same way that different vulnerabilities can have different types of impact on the application code.
 
-A hole in a boat is similar to a vulnerability. Your boat’s hull is supposed to protect you from the water that is always trying to force its way in. Any chance water gets it will pour in at full force. Just like, when there is a vulnerability in your code, hackers will try to use it to get into your company.
+## Your boat will always have scratches - you want to fix the holes
+Alright, so let’s say that you come to accept your boat will always have some scratches. Finding the holes requires you to understand how an attacker might use various sources of vulnerability information (such as CVE, CNAs, CVSS, EPSS) in order to write an exploit. Unfortunately, these sources are not designed to answer the simple question: “what vulnerabilities should I care about?” As a result, teams (or oftentimes an individual) that manage vulnerabilities at a company find themselves almost exclusively chasing down fixes for unimportant vulnerabilities. There is simply not enough information to easily differentiate scratches from holes.
 
-The laws of physics dictate how likely water will affect your boat, but with security we don’t quite have the same level of understanding. (It's too abstract.)
-
-Like water, a hacker is going to find the way in that gives them the least resistance. If an unpatched Apache Struts instance is running inside of one of the world’s largest credit company you can be sure that a hacker will exploit it. There is a clear path for the hacker to gain money and/or influence.
-
-Continuing this line of thinking, a vulnerability like a Regex Denial-of-Service (DOS) in an internal web application is not going to give a hacker meaningful leverage because there is just too much resistance for achieving their goal. (It could still cause you grief though.)
-
-## Patching holes in your boat
-
-There are a number of models that have been created to try to categorize and reason about vulnerabilities that an attacker might use (CVSS, EPSS, Attack framework?).
-
-Unfortunately, these frameworks in practice do not quite capture the nuance of the different types of holes that can exist in code. Teams (or often times an individual) that manage vulnerabilities at a company find themselves almost exclusively chasing down fixes for holes in their “fishing rowboat” rather than focusing on fixing holes in their more important “ships” or mission critical services that process sensitive information.
-
-It is ironic that even though vulnerability scanning is almost ubiquitous at companies they still struggle with locating and fixing them. Log4Shell, possibly the worst vulnerability ever discovered, had taken companies weeks or months to even remotely begin to understand how badly they were affected.
-
-Fixing the Log4Shell vulnerability is still a process that is underway for some companies, and because this was in Java, a language used extensively by older, larger businesses, it still poses a major threat.
+It is ironic that even though vulnerability scanning is almost ubiquitous at companies, they still struggle with the locating and fixing real issues. [Log4Shell](/blog/log4j-zero-day), possibly the worst vulnerability ever discovered in this space, had taken companies weeks or months to even remotely begin to understand how badly they were affected. Fixing the vulnerability is still a process that is underway for some companies, and because this was in Java, a language used extensively by older, larger businesses it still poses a major threat.
 
 ## Full sail ahead
 
-We have been studying this space for a while now and it has become obvious to us that there is just simply no way to know how badly a vulnerability affects a company without significant effort from the security team. CVSS scores are seemingly arbitrary and with the prolific use of libraries in code, each with their own set of vulnerabilities, and the noise is deafening to a security engineer’s day to day work.
+<img alt="boat" src="/docs/img/boat.png" style={
+    {marginLeft: 'auto', marginRight: 'auto', width: '50%', display: 'block'}
+}/>
 
-Being security engineers we understand what actually protects companies, and it comes in the form of building threat models and implementing security controls. Chasing down vulnerabilities is far too often a wild goose chase, even when the problem that you actually should have been caring about was a bear that was hiding in the bushes. Being distracted by honking geese is exactly what a hacker wants you to do to make their job easier.
+_Don't you want vulnerability management to be as relaxing as that view?_
 
-We have an immense amount of empathy for security engineers who are fighting the good fight of trying to protect their companies in meaningful ways. This is why we have been building a product to address these day to day problems experienced by our allies on the front lines of the war with package vulnerabilities.
+Being security engineers, we understand what actually protects companies, and it comes in the form of building threat models and implementing security controls. Remediating vulnerabilities from a scanner is far too often a wild goose chase, distracting from the meaningful security work that can be done to improve the bottom line. A distracted security team is music to an attacker's ears.
 
-We are in the process of building a vulnerability search engine to quickly locate vulnerabilities that matter for a particular company as well as an AI chat bot to quickly find information regarding a particular vulnerability. Our API is completely open for use as well which we have found to be the most asked for feature from existing tools which they have not been able to deliver on.
+We have been studying this space for a while, and it has become apparent that there is just simply no way to know how badly a vulnerability affects a company without constant and significant effort from the security team. This is where LunaTrace comes in. Instead of letting CVSS scores dictate what you should focus on, LunaTrace acts as the security team’s personal security consultant answering questions as they relate to vulnerabilities.
+
+Our vulnerability search engine is backed by our extensive database of vulnerabilities and related information. Since our API is entirely open for use, building queries to answer questions anywhere from “How many critical vulnerabilities do I have in my Go services.” to “What known exploited vulnerabilities affect my services”. And of course since we have all this information and it is 2023, we had to build an AI vulnerability chat bot. Asking questions about vulnerabilities that matter to you has never been easier.
+
