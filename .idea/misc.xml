@@ -14,6 +14,9 @@
   <component name="ProjectType">
     <option name="id" value="jpab" />
   </component>
+  <component name="PyPackaging">
+    <option name="earlyReleasesAsUpgrades" value="true" />
+  </component>
   <component name="WebPackConfiguration">
     <option name="mode" value="DISABLED" />
   </component>

@@ -13,6 +13,9 @@ numpy = "*"
 tenacity = "<8.2.0"
 pandas = "*"
 llama-index = "*"
+beautifulsoup4 = "*"
+pinecone-client = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
