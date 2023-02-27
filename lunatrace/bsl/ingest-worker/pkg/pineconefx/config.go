@@ -16,6 +16,7 @@ import (
 )
 
 type Config struct {
+	Enabled     bool   `yaml:"enabled"`
 	APIKey      string `yaml:"api_key"`
 	Environment string `yaml:"environment"`
 	Index       string `yaml:"index"`
@@ -23,7 +24,7 @@ type Config struct {
 }
 
 func NewConfig(provider config.Provider) (config Config, err error) {
-	value := provider.Get("acron")
+	value := provider.Get("pinecone")
 
 	err = value.Populate(&config)
 	if err != nil {

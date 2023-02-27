@@ -11,17 +11,12 @@
 package pineconefx
 
 import (
-	"context"
-	"crypto/tls"
 	"fmt"
-	"log"
 
-	"github.com/pinecone-io/go-pinecone/pinecone_grpc"
+	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
 	_ "gocloud.dev/pubsub/awssnssqs"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/metadata"
 )
 
 var Module = fx.Options(
@@ -38,42 +33,31 @@ type Params struct {
 }
 
 type PineconeClient interface {
-	Upsert(vectors []*pinecone_grpc.Vector) error
+	Upsert(vectors []*Vector) error
 }
 
 type pineconeClient struct {
-	p    Params
-	conn *grpc.ClientConn
+	params Params
+	conn   *grpc.ClientConn
 }
 
-func (p *pineconeClient) Upsert(vectors []*pinecone_grpc.Vector) error {
-	client := pinecone_grpc.NewVectorServiceClient(p.conn)
-	_, err := client.Upsert(context.Background(), &pinecone_grpc.UpsertRequest{
-		Vectors:   vectors,
-		Namespace: p.p.Environment,
-	})
+func (p *pineconeClient) Upsert(vectors []*Vector) error {
+	url := fmt.Sprintf("https://%s-%s.svc.%s.pinecone.io/vectors/upsert", p.params.Index, p.params.Project, p.params.Environment)
+	_, err := callAPI[UpsertRequest, any]("POST", url, p.params.APIKey, &UpsertRequest{Vectors: vectors})
 	return err
 }
 
-func NewPineconeClient(p Params) PineconeClient {
-	ctx := metadata.AppendToOutgoingContext(context.Background(), "api-key", p.APIKey)
-	target := fmt.Sprintf("%s-%s.svc.%s.pinecone.io:443", p.Index, p.Project, p.Environment)
-
-	config := &tls.Config{}
-
-	conn, err := grpc.DialContext(
-		ctx,
-		target,
-		grpc.WithTransportCredentials(credentials.NewTLS(config)),
-		grpc.WithAuthority(target),
-		grpc.WithBlock(),
-	)
-	if err != nil {
-		log.Fatalf("fail to dial: %v", err)
+func NewPineconeClient(params Params) PineconeClient {
+	if params.Project == "" {
+		projectName, err := getProjectName(params.Environment, params.APIKey)
+		if err != nil {
+			log.Error().Err(err).Msg("unable to get project name")
+			return nil
+		}
+		params.Project = projectName
 	}
 
 	return &pineconeClient{
-		p:    p,
-		conn: conn,
+		params: params,
 	}
 }
