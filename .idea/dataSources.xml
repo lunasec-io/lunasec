@@ -24,5 +24,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5431/lunatrace</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="vulns.db" uuid="9ceecb95-9eee-4150-9946-3c62cc81ca51">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/lunatrace/bsl/ingest-worker/vulns.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
