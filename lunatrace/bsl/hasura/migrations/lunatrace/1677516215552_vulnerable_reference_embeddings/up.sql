@@ -33,6 +33,7 @@ create or replace function vulnerability.match_reference_embedding (
 )
     returns table (
                       id uuid,
+                      url text,
                       content text,
                       similarity float
                   )
@@ -41,6 +42,7 @@ as $$
 begin
     return query
         select
+            r.id,
             r.url,
             re.content,
             1 - (re.embedding <=> query_embedding) as similarity
