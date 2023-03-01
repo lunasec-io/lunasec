@@ -67,7 +67,7 @@ func newVulnRefVector(hashStr string, embedding []float64, refURL, vulnerability
 }
 
 func (p *service) SummarizeContent(content []string) (string, error) {
-
+	return "", nil
 }
 
 func (p *service) SearchForReferences(search string) (string, error) {

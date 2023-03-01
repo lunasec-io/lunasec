@@ -31,7 +31,7 @@ func (v *vulnbot) vulnCommand(ctx context.Context, s *discordgo.Session, i *disc
 		t := table.Vulnerability
 		ref := table.Reference
 		refContent := table.ReferenceContent
-		getVulnStmt := t.SELECT(t.AllColumns).
+		getVulnStmt := t.SELECT(t.AllColumns, ref.AllColumns, refContent.AllColumns).
 			FROM(
 				t.INNER_JOIN(ref, ref.VulnerabilityID.EQ(t.ID)).
 					INNER_JOIN(refContent, refContent.ReferenceID.EQ(ref.ID)),
@@ -50,7 +50,13 @@ func (v *vulnbot) vulnCommand(ctx context.Context, s *discordgo.Session, i *disc
 			log.Error().Err(err).Msg("failed to get vulnerability")
 			content = "failed to get vulnerability"
 		} else {
-			content = fmt.Sprintf("%v", vuln)
+			content = "ID: " + vuln.SourceID + "\n"
+			content += "Summary:\n" + *vuln.Summary + "\n"
+			content += "Details:\n" + *vuln.Details + "\n"
+			content += "References:\n"
+			for _, vulnRef := range vuln.References {
+				content += fmt.Sprintf("- %s\n", vulnRef.URL)
+			}
 		}
 	}
 
