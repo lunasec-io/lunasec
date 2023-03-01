@@ -1,4 +1,4 @@
-package scrape
+package ml
 
 import (
 	"context"
@@ -46,7 +46,9 @@ const (
     Answer as markdown (including related vulnerability reference urls if available):`
 )
 
-// TODO (cthompson) ML related content should be separated form the scraper
+func standardizeSpaces(s string) string {
+	return strings.Join(strings.Fields(s), " ")
+}
 
 // used for inserting with pinecone
 func newVulnRefVector(hashStr string, embedding []float64, refURL, vulnerabilityID string) *pineconefx.Vector {
@@ -63,7 +65,12 @@ func newVulnRefVector(hashStr string, embedding []float64, refURL, vulnerability
 		Metadata: metadata,
 	}
 }
-func (p *scraper) SearchForReferences(search string) (string, error) {
+
+func (p *service) SummarizeContent(content []string) (string, error) {
+
+}
+
+func (p *service) SearchForReferences(search string) (string, error) {
 	req := gpt3.EmbeddingsRequest{
 		Input: []string{search},
 		Model: gpt3.TextEmbeddingAda002,
@@ -145,7 +152,7 @@ func (p *scraper) SearchForReferences(search string) (string, error) {
 	return compResp.Choices[0].Text, nil
 }
 
-func (p *scraper) GenerateEmbeddingsForContent(vulnID string, insertWithPinecone bool) error {
+func (p *service) GenerateEmbeddingsForVulnRefs(vulnID string, insertWithPinecone bool) error {
 	rc := table.ReferenceContent
 	r := table.Reference
 	v := table.Vulnerability

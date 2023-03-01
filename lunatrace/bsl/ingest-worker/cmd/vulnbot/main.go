@@ -15,10 +15,10 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/dbfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/discordfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/ml"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/openaifx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/pineconefx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnbot"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/scrape"
 )
 
 type Params struct {
@@ -65,7 +65,6 @@ func main() {
 		dbfx.Module,
 		pineconefx.Module,
 		openaifx.Module,
-		scrape.Module,
 		discordfx.Module,
 
 		fx.Invoke(discordfx.RegisterCommands),
@@ -73,6 +72,7 @@ func main() {
 		fx.Provide(
 			// TODO (cthompson) make a vulnbot config provider
 			ingestworker.NewConfigProvider,
+			ml.NewService,
 			NewCommand,
 			vulnbot.NewVulnBot,
 		),

@@ -9,7 +9,7 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/discordfx"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/scrape"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/ml"
 )
 
 type VulnBot interface {
@@ -20,7 +20,7 @@ type Params struct {
 	fx.In
 
 	Lifecycle fx.Lifecycle
-	Scraper   scrape.Scraper
+	ML        ml.Service
 	Session   *discordgo.Session
 	DB        *sql.DB
 }

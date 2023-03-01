@@ -29,9 +29,22 @@ func (v *vulnbot) vulnCommand(ctx context.Context, s *discordgo.Session, i *disc
 		vulnID := option.StringValue()
 
 		t := table.Vulnerability
-		getVulnStmt := t.SELECT(t.AllColumns).WHERE(t.SourceID.EQ(postgres.String(vulnID)))
+		ref := table.Reference
+		refContent := table.ReferenceContent
+		getVulnStmt := t.SELECT(t.AllColumns).
+			FROM(
+				t.INNER_JOIN(ref, ref.VulnerabilityID.EQ(t.ID)).
+					INNER_JOIN(refContent, refContent.ReferenceID.EQ(ref.ID)),
+			).
+			WHERE(t.SourceID.EQ(postgres.String(vulnID)))
 
-		var vuln model.Vulnerability
+		var vuln struct {
+			References []struct {
+				model.Reference
+				Content []model.ReferenceContent
+			}
+			model.Vulnerability
+		}
 		err := getVulnStmt.QueryContext(ctx, v.p.DB, &vuln)
 		if err != nil {
 			log.Error().Err(err).Msg("failed to get vulnerability")

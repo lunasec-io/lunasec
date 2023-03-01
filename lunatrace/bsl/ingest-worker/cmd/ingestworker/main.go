@@ -35,6 +35,7 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/registry"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator/npm"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/ml"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/openaifx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/pineconefx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
@@ -69,6 +70,7 @@ func main() {
 		scrape.Module,
 
 		fx.Provide(
+			ml.NewService,
 			cwe2.NewCWEIngester,
 			epss2.NewEPSSIngester,
 			cisa2.NewCISAKnownVulnIngester,
