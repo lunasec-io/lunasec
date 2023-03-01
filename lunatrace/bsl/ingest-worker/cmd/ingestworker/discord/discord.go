@@ -9,13 +9,13 @@ import (
 	"github.com/urfave/cli/v2"
 	"go.uber.org/fx"
 
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/discordfx"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnbot"
 )
 
 type Params struct {
 	fx.In
 
-	DiscordSession discordfx.Session
+	VulnBot vulnbot.VulnBot
 }
 
 func NewCommand(p Params) clifx.CommandResult {
@@ -26,7 +26,7 @@ func NewCommand(p Params) clifx.CommandResult {
 			Flags: []cli.Flag{},
 			Action: func(ctx *cli.Context) error {
 				log.Info().Msg("Starting Discord Bot")
-				err := p.DiscordSession.Start()
+				err := p.VulnBot.Start()
 				if err != nil {
 					return err
 				}
