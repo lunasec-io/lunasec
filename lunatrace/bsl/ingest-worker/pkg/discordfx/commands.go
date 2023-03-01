@@ -47,23 +47,24 @@ func RegisterCommands(p RegisterCommandsParams) error {
 	handlerMap := make(map[string]HandlerFunc)
 	registeredCommands := make([]*discordgo.ApplicationCommand, 0, len(p.Commands))
 
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, _ := context.WithCancel(context.Background())
 
 	// Set up command
 	for _, commandHandler := range p.Commands {
 		handlerMap[commandHandler.Command.Name] = commandHandler.Handler
-		p.Session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			ctx, cancel := context.WithTimeout(ctx, time.Second*15)
-			defer cancel()
-
-			log.Info().
-				Str("handlerName", i.ApplicationCommandData().Name).
-				Msg("invoking command handler")
-			if h, ok := handlerMap[i.ApplicationCommandData().Name]; ok {
-				h(ctx, s, i)
-			}
-		})
 	}
+
+	p.Session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		ctx, cancel := context.WithTimeout(ctx, time.Second*15)
+		defer cancel()
+
+		log.Info().
+			Str("handlerName", i.ApplicationCommandData().Name).
+			Msg("invoking command handler")
+		if h, ok := handlerMap[i.ApplicationCommandData().Name]; ok {
+			h(ctx, s, i)
+		}
+	})
 
 	p.Lifecycle.Append(fx.Hook{OnStart: func(ctx context.Context) error {
 		for _, v := range p.Commands {
@@ -80,27 +81,29 @@ func RegisterCommands(p RegisterCommandsParams) error {
 			registeredCommands = append(registeredCommands, ccmd)
 		}
 		return nil
-	}, OnStop: func(ctx context.Context) error {
-		cancel()
-		registeredCommands, err := p.Session.ApplicationCommands(p.Config.ApplicationID, "")
-		if err != nil {
-			log.Error().
-				Err(err).
-				Msg("could not fetch registered commands")
-			return err
-		}
-		for _, v := range registeredCommands {
-			err := p.Session.ApplicationCommandDelete(p.Config.ApplicationID, v.GuildID, v.ID)
-			if err != nil {
-				log.Error().Err(err).Msg("failed to delete command")
-				return err
-			}
-			log.Debug().
-				Str("handlerName", v.Name).
-				Str("id", v.ID).
-				Msg("deleted command")
-		}
-		return nil
-	}})
+	},
+		//OnStop: func(ctx context.Context) error {
+		//	cancel()
+		//	registeredCommands, err := p.Session.ApplicationCommands(p.Config.ApplicationID, "")
+		//	if err != nil {
+		//		log.Error().
+		//			Err(err).
+		//			Msg("could not fetch registered commands")
+		//		return err
+		//	}
+		//	for _, v := range registeredCommands {
+		//		err := p.Session.ApplicationCommandDelete(p.Config.ApplicationID, v.GuildID, v.ID)
+		//		if err != nil {
+		//			log.Error().Err(err).Msg("failed to delete command")
+		//			return err
+		//		}
+		//		log.Debug().
+		//			Str("handlerName", v.Name).
+		//			Str("id", v.ID).
+		//			Msg("deleted command")
+		//	}
+		//	return nil
+		//}
+	})
 	return nil
 }
