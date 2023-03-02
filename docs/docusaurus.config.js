@@ -205,6 +205,13 @@ module.exports = {
           rel: 'noopener',
           className: 'github-nav-link'
         },
+        {
+          href: 'https://discord.gg/2EbHdAR5w7',
+          label: ' Discord',
+          position: 'right',
+          rel: 'noopener',
+          className: 'discord-nav-link'
+        },
       ],
     },
     footer: {
