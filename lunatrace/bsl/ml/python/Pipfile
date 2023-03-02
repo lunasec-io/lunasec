@@ -16,6 +16,7 @@ llama-index = "*"
 beautifulsoup4 = "*"
 pinecone-client = "*"
 python-dotenv = "*"
+goose3 = "*"
 
 [dev-packages]
 

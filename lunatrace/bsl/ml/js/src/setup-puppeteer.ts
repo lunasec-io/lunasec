@@ -10,7 +10,7 @@ export interface Session {
 }
 export async function setupPuppeteerSession(): Promise<Session> {
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: [
             // '--proxy-server=' + process.env.PROXY_SERVER
         ]
