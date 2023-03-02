@@ -38,6 +38,7 @@ type vulnbot struct {
 
 const (
 	VulnerabilityIDOption    = "vulnerability-id"
+	QuestionOption           = "question"
 	PackageNameOption        = "package"
 	PackageManagerNameOption = "package-manager"
 )
@@ -75,6 +76,12 @@ func (v *vulnbot) commands() []*discordfx.ApplicationCommandWithHandler {
 					Name:        VulnerabilityIDOption,
 					Description: "Vulnerability ID",
 					Required:    true,
+				},
+				{
+					Type:        discordgo.ApplicationCommandOptionString,
+					Name:        QuestionOption,
+					Description: "Question",
+					Required:    false,
 				},
 			},
 		},

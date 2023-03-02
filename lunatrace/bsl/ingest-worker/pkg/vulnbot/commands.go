@@ -16,10 +16,14 @@ import (
 
 func (v *vulnbot) vulnSelectCommand(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate) {
 	vulnID := i.MessageComponentData().Values[0]
-	v.respondToVulnCommand(ctx, s, i, vulnID)
+	v.respondToVulnCommand(ctx, s, i, vulnID, "")
 }
 
-func (v *vulnbot) respondToVulnCommand(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate, vulnID string) {
+func (v *vulnbot) respondToVulnCommand(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate, vulnID, question string) {
+	if question == "" {
+		question = "What are the details of the vulnerability?"
+	}
+
 	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
 	})
@@ -58,7 +62,7 @@ func (v *vulnbot) respondToVulnCommand(ctx context.Context, s *discordgo.Session
 		content += "References:\n"
 
 		log.Info().Str("vulnID", vuln.SourceID).Msg("getting summary")
-		summary, err := v.p.ML.SearchForReferences("What are the details of the vulnerability?", vuln.SourceID)
+		summary, err := v.p.ML.SearchForReferences(question, vuln.SourceID)
 		if err != nil {
 			log.Warn().Err(err).Msg("failed to get summary")
 			for _, r := range vuln.References {
@@ -84,9 +88,14 @@ func (v *vulnbot) vulnCommand(ctx context.Context, s *discordgo.Session, i *disc
 		optionMap[opt.Name] = opt
 	}
 
+	question := ""
+	if option, ok := optionMap[QuestionOption]; ok {
+		question = option.StringValue()
+	}
+
 	if option, ok := optionMap[VulnerabilityIDOption]; ok {
 		vulnID := option.StringValue()
-		v.respondToVulnCommand(ctx, s, i, vulnID)
+		v.respondToVulnCommand(ctx, s, i, vulnID, question)
 		return
 	}
 	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
