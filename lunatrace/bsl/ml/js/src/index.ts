@@ -247,6 +247,7 @@ function timeout(ms:number) {
 
   });
   queue.on('success', (result, job) => {
+    console.log('queue success')
     if (!result){
       return
     }
