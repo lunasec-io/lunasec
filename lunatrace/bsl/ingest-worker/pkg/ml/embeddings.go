@@ -320,6 +320,7 @@ func (p *service) generateEmbeddingForRef(ref *ReferenceContentResp, insertWithP
 			return err
 		}
 	}
+	return nil
 }
 
 func (p *service) GenerateEmbeddingsForVulnRefs(vulnID string, insertWithPinecone bool) error {
