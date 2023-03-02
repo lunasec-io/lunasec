@@ -3,6 +3,7 @@ package ml
 import (
 	"context"
 	"crypto/sha256"
+	"database/sql"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -27,7 +28,7 @@ import (
 const (
 	maxEmbeddingSize = 1024 * 20
 
-	promptHeader = `
+	VulnerabilityReferencePrompt = `
     You are a very enthusiastic LunaSec security engineer who loves
     to help people! Given the following vulnerability references,
     answer the question using only that information,
@@ -35,7 +36,7 @@ const (
     is not explicitly written in the documentation, say
     "Sorry, I don't know how to help with that."`
 
-	promptFormat = `
+	contentQuestionFormat = `
     Context sections:
     %s
 
@@ -66,11 +67,66 @@ func newVulnRefVector(hashStr string, embedding []float64, refURL, vulnerability
 	}
 }
 
-func (p *service) SummarizeContent(content []string) (string, error) {
-	return "", nil
+func (p *service) AnswerQuestionFromContent(prompt, question string, content []string) (string, error) {
+	var (
+		contextText         string
+		tokenCount          int
+		maxCompletionTokens = 512
+		maxModelTokens      = 4000
+	)
+
+	if len(content) == 0 {
+		return "", errors.New("no content provided")
+	}
+
+	encoder, err := tokenizer.NewEncoder()
+	if err != nil {
+		return "", err
+	}
+
+	normalizedPrompt := standardizeSpaces(prompt)
+	encodedPromptData, err := encoder.Encode(normalizedPrompt + contentQuestionFormat)
+	if err != nil {
+		return "", err
+	}
+
+	maxTokens := maxModelTokens - maxCompletionTokens - len(encodedPromptData)
+
+	for _, c := range content {
+		encoded, err := encoder.Encode(c)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Str("content", c).
+				Msg("failed to encode content")
+			return "", err
+		}
+
+		tokenCount += len(encoded)
+		if tokenCount > maxTokens {
+			break
+		}
+		contextText += c
+	}
+
+	if contextText == "" {
+		return "", errors.New("no context text")
+	}
+
+	promptText := normalizedPrompt + fmt.Sprintf(contentQuestionFormat, contextText, question)
+
+	compResp, err := p.deps.OpenAIClient.CompletionWithEngine(context.Background(), "text-davinci-003", gpt3.CompletionRequest{
+		Prompt:      []string{promptText},
+		MaxTokens:   util.Ptr(maxCompletionTokens),
+		Temperature: util.Ptr(float32(0)),
+	})
+	if err != nil {
+		return "", err
+	}
+	return compResp.Choices[0].Text, nil
 }
 
-func (p *service) SearchForReferences(search string) (string, error) {
+func (p *service) SearchForReferences(search, vulnID string) (string, error) {
 	req := gpt3.EmbeddingsRequest{
 		Input: []string{search},
 		Model: gpt3.TextEmbeddingAda002,
@@ -92,23 +148,25 @@ func (p *service) SearchForReferences(search string) (string, error) {
 		Similarity float64
 	}
 
-	rows, err := p.deps.DB.Query("SELECT * FROM vulnerability.match_reference_embedding($1, $2, $3)", embStr, 0.78, 10)
+	var (
+		rows       *sql.Rows
+		limit      = 10
+		similarity = 0.78
+	)
+
+	if vulnID != "" {
+		similarity = 0.78
+		rows, err = p.deps.DB.Query("SELECT * FROM vulnerability.match_reference_embedding_for_vulnerability($1, $2, $3, $4)", embStr, vulnID, similarity, limit)
+	} else {
+		rows, err = p.deps.DB.Query("SELECT * FROM vulnerability.match_reference_embedding($1, $2, $3)", embStr, similarity, limit)
+	}
+
 	if err != nil {
 		return "", errors.Wrap(err, "failed to query for reference embeddings")
 	}
 	defer rows.Close()
 
-	encoder, err := tokenizer.NewEncoder()
-	if err != nil {
-		return "", err
-	}
-
-	var (
-		tokenCount          int
-		contextText         string
-		maxCompletionTokens = 512
-		maxModelTokens      = 4000
-	)
+	var content []string
 	for rows.Next() {
 		var res MatchReferenceEmbedding
 
@@ -121,35 +179,10 @@ func (p *service) SearchForReferences(search string) (string, error) {
 			Str("url", res.URL).
 			Msg("reference")
 
-		encoded, err := encoder.Encode(res.Content)
-		if err != nil {
-			log.Error().
-				Err(err).
-				Str("url", res.URL).
-				Str("content", res.Content).
-				Msg("failed to encode reference content")
-			return "", err
-		}
-
-		tokenCount += len(encoded)
-		if tokenCount > maxModelTokens-maxCompletionTokens-(len(promptHeader)+len(promptFormat)) {
-			break
-		}
-
-		contextText += fmt.Sprintf("url: %s\ncontent: %s\n---\n", res.URL, strings.TrimSpace(res.Content))
+		contentText := fmt.Sprintf("url: %s\ncontent: %s\n---\n", res.URL, strings.TrimSpace(res.Content))
+		content = append(content, contentText)
 	}
-
-	prompt := standardizeSpaces(promptHeader) + fmt.Sprintf(promptFormat, contextText, search)
-
-	compResp, err := p.deps.OpenAIClient.CompletionWithEngine(context.Background(), "text-davinci-003", gpt3.CompletionRequest{
-		Prompt:      []string{prompt},
-		MaxTokens:   util.Ptr(maxCompletionTokens),
-		Temperature: util.Ptr(float32(0)),
-	})
-	if err != nil {
-		return "", err
-	}
-	return compResp.Choices[0].Text, nil
+	return p.AnswerQuestionFromContent(VulnerabilityReferencePrompt, search, content)
 }
 
 func (p *service) GenerateEmbeddingsForVulnRefs(vulnID string, insertWithPinecone bool) error {

@@ -1,0 +1,1 @@
+DROP FUNCTION vulnerability.match_reference_embedding_for_vulnerability;

@@ -80,27 +80,36 @@ func (v *vulnbot) commands() []*discordfx.ApplicationCommandWithHandler {
 		},
 		GuildID: "",
 		Handler: v.vulnCommand,
-	}, {
-		Command: discordgo.ApplicationCommand{
-			Name:        "package",
-			Description: "Ask for information about a package.",
-			Options: []*discordgo.ApplicationCommandOption{
-				{
-					Type:        discordgo.ApplicationCommandOptionString,
-					Name:        PackageManagerNameOption,
-					Description: "Package Manager",
-					Required:    true,
-				},
-				{
-					Type:        discordgo.ApplicationCommandOptionString,
-					Name:        PackageNameOption,
-					Description: "Package Name",
-					Required:    true,
+	},
+		{
+			Command: discordgo.ApplicationCommand{
+				Name: "vuln-select",
+			},
+			MessageComponent: true,
+			GuildID:          "",
+			Handler:          v.vulnSelectCommand,
+		},
+		{
+			Command: discordgo.ApplicationCommand{
+				Name:        "package",
+				Description: "Ask for information about a package.",
+				Options: []*discordgo.ApplicationCommandOption{
+					{
+						Type:        discordgo.ApplicationCommandOptionString,
+						Name:        PackageManagerNameOption,
+						Description: "Package Manager",
+						Required:    true,
+					},
+					{
+						Type:        discordgo.ApplicationCommandOptionString,
+						Name:        PackageNameOption,
+						Description: "Package Name",
+						Required:    true,
+					},
 				},
 			},
+			GuildID: "",
+			Handler: v.packageCommand,
 		},
-		GuildID: "",
-		Handler: v.packageCommand,
-	},
 	}
 }

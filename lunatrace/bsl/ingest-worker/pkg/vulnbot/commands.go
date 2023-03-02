@@ -14,6 +14,67 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/vulnerability/table"
 )
 
+func (v *vulnbot) vulnSelectCommand(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate) {
+	vulnID := i.MessageComponentData().Values[0]
+	v.respondToVulnCommand(ctx, s, i, vulnID)
+}
+
+func (v *vulnbot) respondToVulnCommand(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate, vulnID string) {
+	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
+	})
+	if err != nil {
+		log.Error().Err(err).Msg("failed to acknowledge vuln command")
+	}
+
+	t := table.Vulnerability
+	ref := table.Reference
+	refContent := table.ReferenceContent
+	getVulnStmt := t.SELECT(t.AllColumns, ref.AllColumns, refContent.AllColumns).
+		FROM(
+			t.INNER_JOIN(ref, ref.VulnerabilityID.EQ(t.ID)).
+				INNER_JOIN(refContent, refContent.ReferenceID.EQ(ref.ID)),
+		).
+		WHERE(t.SourceID.EQ(postgres.String(vulnID)))
+
+	var vuln struct {
+		References []struct {
+			model.Reference
+			Content []model.ReferenceContent
+		}
+		model.Vulnerability
+	}
+
+	err = getVulnStmt.QueryContext(ctx, v.p.DB, &vuln)
+
+	var content string
+	if err != nil {
+		log.Error().Err(err).Msg("failed to get vulnerability")
+		content = "failed to get vulnerability"
+	} else {
+		content = "ID: " + vuln.SourceID + "\n"
+		content += "Summary:" + *vuln.Summary + "\n"
+		content += "Details:\n" + *vuln.Details + "\n"
+		content += "References:\n"
+
+		log.Info().Str("vulnID", vuln.SourceID).Msg("getting summary")
+		summary, err := v.p.ML.SearchForReferences("What are the details of the vulnerability?", vuln.SourceID)
+		if err != nil {
+			log.Warn().Err(err).Msg("failed to get summary")
+			for _, r := range vuln.References {
+				content += fmt.Sprintf("- <%s>\n", r.URL)
+			}
+		}
+		content += summary + "\n"
+	}
+	_, err = s.InteractionResponseEdit(i.Interaction, &discordgo.WebhookEdit{
+		Content: &content,
+	})
+	if err != nil {
+		log.Error().Err(err).Msg("failed to respond to vuln command")
+	}
+}
+
 func (v *vulnbot) vulnCommand(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate) {
 	options := i.ApplicationCommandData().Options
 
@@ -23,53 +84,15 @@ func (v *vulnbot) vulnCommand(ctx context.Context, s *discordgo.Session, i *disc
 		optionMap[opt.Name] = opt
 	}
 
-	content := ""
-
 	if option, ok := optionMap[VulnerabilityIDOption]; ok {
 		vulnID := option.StringValue()
-
-		t := table.Vulnerability
-		ref := table.Reference
-		refContent := table.ReferenceContent
-		getVulnStmt := t.SELECT(t.AllColumns, ref.AllColumns, refContent.AllColumns).
-			FROM(
-				t.INNER_JOIN(ref, ref.VulnerabilityID.EQ(t.ID)).
-					INNER_JOIN(refContent, refContent.ReferenceID.EQ(ref.ID)),
-			).
-			WHERE(t.SourceID.EQ(postgres.String(vulnID)))
-
-		var vuln struct {
-			References []struct {
-				model.Reference
-				Content []model.ReferenceContent
-			}
-			model.Vulnerability
-		}
-		err := getVulnStmt.QueryContext(ctx, v.p.DB, &vuln)
-		if err != nil {
-			log.Error().Err(err).Msg("failed to get vulnerability")
-			content = "failed to get vulnerability"
-		} else {
-			content = "ID: " + vuln.SourceID + "\n"
-			content += "Summary:\n" + *vuln.Summary + "\n"
-			content += "Details:\n" + *vuln.Details + "\n"
-			content += "References:\n"
-			for _, vulnRef := range vuln.References {
-				content += fmt.Sprintf("- %s\n", vulnRef.URL)
-			}
-		}
+		v.respondToVulnCommand(ctx, s, i, vulnID)
+		return
 	}
-
-	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		// Ignore type for now, they will be discussed in "responses"
+	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: content,
-		},
+		Data: &discordgo.InteractionResponseData{Content: "Vulnerability ID option not provided"},
 	})
-	if err != nil {
-		log.Error().Err(err).Msg("failed to respond to interaction")
-	}
 }
 
 func (v *vulnbot) packageCommand(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate) {
@@ -95,6 +118,8 @@ func (v *vulnbot) packageCommand(ctx context.Context, s *discordgo.Session, i *d
 	if option, ok := optionMap[PackageNameOption]; ok {
 		packageName = option.StringValue()
 	}
+
+	var messageComponents []discordgo.MessageComponent
 
 	if packageManager != "" && packageName != "" {
 		t := pactable.Package
@@ -127,14 +152,25 @@ func (v *vulnbot) packageCommand(ctx context.Context, s *discordgo.Session, i *d
 			log.Error().Err(err).Msg("failed to get package")
 			content = "failed to get package"
 		} else {
-			content = "Package:\n"
-			content += fmt.Sprintf("%s - %s\n", p.PackageManager, p.Name)
+			content = "Package:"
+			content += fmt.Sprintf("[%s] %s\n", p.PackageManager, p.Name)
 			content += "Vulnerabilities:\n"
+			var selectMenuOptions []discordgo.SelectMenuOption
 			for _, a := range p.Affected {
 				for _, affectedVuln := range a.Vulnerabilities {
 					content += fmt.Sprintf("%s - %s\n", affectedVuln.SourceID, *affectedVuln.Summary)
+					selectMenuOptions = append(selectMenuOptions, discordgo.SelectMenuOption{
+						Label:       affectedVuln.SourceID,
+						Value:       affectedVuln.SourceID,
+						Description: *affectedVuln.Summary,
+					})
 				}
 			}
+			messageComponents = append(messageComponents, discordgo.SelectMenu{
+				CustomID:    "vuln-select",
+				Options:     selectMenuOptions,
+				Placeholder: "Select a vulnerability to look at.",
+			})
 		}
 	}
 
@@ -147,9 +183,15 @@ func (v *vulnbot) packageCommand(ctx context.Context, s *discordgo.Session, i *d
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
 			Content: content,
+			Components: []discordgo.MessageComponent{
+				// ActionRow is a container of all messageComponents within the same row.
+				discordgo.ActionsRow{
+					Components: messageComponents,
+				},
+			},
 		},
 	})
 	if err != nil {
-		log.Error().Err(err).Msg("failed to respond to interaction")
+		log.Error().Err(err).Msg("failed to respond to package command")
 	}
 }
