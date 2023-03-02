@@ -11,7 +11,7 @@ import (
 
 type Service interface {
 	AnswerQuestionFromContent(prompt, question string, content []string) (string, error)
-	SearchForReferences(search, vulnID string) (string, error)
+	SearchForReferences(vulnID, search, question string) (string, error)
 	GenerateEmbeddingsForVulnRefs(vulnID string, insertWithPinecone bool) error
 }
 

@@ -127,7 +127,7 @@ func (p *service) AnswerQuestionFromContent(prompt, question string, content []s
 	return compResp.Choices[0].Text, nil
 }
 
-func (p *service) SearchForReferences(search, vulnID string) (string, error) {
+func (p *service) SearchForReferences(vulnID, search, question string) (string, error) {
 	req := gpt3.EmbeddingsRequest{
 		Input: []string{search},
 		Model: gpt3.TextEmbeddingAda002,
@@ -183,7 +183,12 @@ func (p *service) SearchForReferences(search, vulnID string) (string, error) {
 		contentText := fmt.Sprintf("url: %s\ncontent: %s\n---\n", res.URL, strings.TrimSpace(res.Content))
 		content = append(content, contentText)
 	}
-	return p.AnswerQuestionFromContent(VulnerabilityReferencePrompt, search, content)
+
+	if question == "" {
+		question = search
+	}
+
+	return p.AnswerQuestionFromContent(VulnerabilityReferencePrompt, question, content)
 }
 
 type ReferenceContentResp struct {

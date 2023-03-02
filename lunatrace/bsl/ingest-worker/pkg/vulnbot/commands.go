@@ -21,9 +21,7 @@ func (v *vulnbot) vulnSelectCommand(ctx context.Context, s *discordgo.Session, i
 }
 
 func (v *vulnbot) respondToVulnCommand(ctx context.Context, s *discordgo.Session, i *discordgo.InteractionCreate, vulnID, question string) {
-	if question == "" {
-		question = "What are the details of the vulnerability?"
-	}
+	search := "What are the details of the vulnerability?"
 
 	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
@@ -64,7 +62,7 @@ func (v *vulnbot) respondToVulnCommand(ctx context.Context, s *discordgo.Session
 		content += "References:\n"
 
 		log.Info().Str("vulnID", vuln.SourceID).Msg("getting summary")
-		summary, err := v.p.ML.SearchForReferences(question, vuln.SourceID)
+		summary, err := v.p.ML.SearchForReferences(vuln.SourceID, search, question)
 		if err != nil {
 			log.Warn().Err(err).Msg("failed to get summary")
 			for _, r := range vuln.References {
