@@ -3,6 +3,7 @@ package vulnbot
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/go-jet/jet/v2/postgres"
@@ -57,8 +58,9 @@ func (v *vulnbot) respondToVulnCommand(ctx context.Context, s *discordgo.Session
 		content = "failed to get vulnerability"
 	} else {
 		content = "ID: " + vuln.SourceID + "\n"
+		content += "Question:" + question + "\n"
 		content += "Summary:" + *vuln.Summary + "\n"
-		content += "Details:\n" + *vuln.Details + "\n"
+		content += "Details:\n" + strings.ReplaceAll(*vuln.Details, "\n\n", "\n") + "\n"
 		content += "References:\n"
 
 		log.Info().Str("vulnID", vuln.SourceID).Msg("getting summary")
