@@ -13,7 +13,6 @@ package ingester
 import (
 	"context"
 	"database/sql"
-	"sync"
 	"time"
 
 	"github.com/google/uuid"
@@ -34,9 +33,6 @@ type PackageSqlIngesterParams struct {
 
 type packageSqlIngester struct {
 	deps PackageSqlIngesterParams
-
-	maintainerCacheMutex sync.Mutex
-	maintainerCache      map[string]*model.Maintainer
 }
 
 type PackageSqlIngester interface {
@@ -166,10 +162,6 @@ func (s *packageSqlIngester) mapMaintainers(ctx context.Context, packageId uuid.
 	return maintainerIds, nil
 }
 
-func maintainerCacheKey(pm model.Maintainer) string {
-	return pm.Email + *pm.Name + string(pm.PackageManager)
-}
-
 func (s *packageSqlIngester) mapMaintainer(ctx context.Context, pm metadata.Maintainer) (uuid.UUID, error) {
 	maintainer := model.Maintainer{
 		PackageManager: mapper.NpmV,
@@ -177,22 +169,7 @@ func (s *packageSqlIngester) mapMaintainer(ctx context.Context, pm metadata.Main
 		Name:           util.Ptr(pm.Name),
 	}
 
-	// there are a lot of maintainer updates for a given package, so we try to cache them
-	cacheKey := maintainerCacheKey(maintainer)
-	if cachedMaintainer, ok := s.maintainerCache[cacheKey]; ok {
-		return cachedMaintainer.ID, nil
-	}
-
-	id, err := upsertMaintainer(ctx, s.deps.DB, maintainer)
-	if err != nil {
-		return uuid.UUID{}, err
-	}
-	maintainer.ID = id
-
-	s.maintainerCacheMutex.Lock()
-	s.maintainerCache[cacheKey] = &maintainer
-	s.maintainerCacheMutex.Unlock()
-	return id, nil
+	return upsertMaintainer(ctx, s.deps.DB, maintainer)
 }
 
 func (s *packageSqlIngester) Ingest(ctx context.Context, pkg *metadata.PackageMetadata) (string, error) {
@@ -208,7 +185,6 @@ func (s *packageSqlIngester) Ingest(ctx context.Context, pkg *metadata.PackageMe
 
 func NewPackageSqlIngester(deps PackageSqlIngesterParams) PackageSqlIngester {
 	return &packageSqlIngester{
-		deps:            deps,
-		maintainerCache: map[string]*model.Maintainer{},
+		deps: deps,
 	}
 }
