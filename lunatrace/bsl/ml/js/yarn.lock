@@ -1276,8 +1276,8 @@ __metadata:
     date-fns: ^2.14.0
     node-fetch: ^2.0.0
     puppeteer: ~19.7.2
-    puppeteer-extra: ~3.3.4
-    puppeteer-extra-plugin-stealth: ~2.11.1
+    puppeteer-extra: ^3.3.6
+    puppeteer-extra-plugin-stealth: ^2.11.2
     queue: ^6.0.2
     sqlite: ^4.1.2
     sqlite3: ^5.0.10
@@ -1829,13 +1829,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer-extra-plugin-stealth@npm:~2.11.1":
-  version: 2.11.1
-  resolution: "puppeteer-extra-plugin-stealth@npm:2.11.1"
+"puppeteer-extra-plugin-stealth@npm:^2.11.2":
+  version: 2.11.2
+  resolution: "puppeteer-extra-plugin-stealth@npm:2.11.2"
   dependencies:
     debug: ^4.1.1
-    puppeteer-extra-plugin: ^3.2.2
-    puppeteer-extra-plugin-user-preferences: ^2.4.0
+    puppeteer-extra-plugin: ^3.2.3
+    puppeteer-extra-plugin-user-preferences: ^2.4.1
   peerDependencies:
     playwright-extra: "*"
     puppeteer-extra: "*"
@@ -1844,17 +1844,17 @@ __metadata:
       optional: true
     puppeteer-extra:
       optional: true
-  checksum: 8d5c3c8f650113dd35e9dd8c93617528921b6d5b0331e60006324db4080c56268b0f1a3d7af036cf6741fbdd4587f5d4400545e7d225242a0cce698cd3e51295
+  checksum: 13ab2b906c1cd1a75bb346074e6ed75dd33da426e9b7d2e111dee6d497ae9ff42f44c2e5b0d48a04b545e862f9d27d8ecf61fa1863201afc8a9410121ed65a4b
   languageName: node
   linkType: hard
 
-"puppeteer-extra-plugin-user-data-dir@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "puppeteer-extra-plugin-user-data-dir@npm:2.4.0"
+"puppeteer-extra-plugin-user-data-dir@npm:^2.4.1":
+  version: 2.4.1
+  resolution: "puppeteer-extra-plugin-user-data-dir@npm:2.4.1"
   dependencies:
     debug: ^4.1.1
     fs-extra: ^10.0.0
-    puppeteer-extra-plugin: ^3.2.2
+    puppeteer-extra-plugin: ^3.2.3
     rimraf: ^3.0.2
   peerDependencies:
     playwright-extra: "*"
@@ -1864,18 +1864,18 @@ __metadata:
       optional: true
     puppeteer-extra:
       optional: true
-  checksum: ba414fcf75768b85f8785815bb1bef948615225c3b663e01bf7b72dc7c425987e2db402f564c48dbae8af77a19179bcca9ada8e51f947b5850d2b4e9f52e5696
+  checksum: f360b3bb22eeb899b23b6e2a38412ddfeda4b2333e08f77452732e16f094f33725272ee81150428e2c20b39d4d88edc87584d8344bd761c9ef8ae5d681968399
   languageName: node
   linkType: hard
 
-"puppeteer-extra-plugin-user-preferences@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "puppeteer-extra-plugin-user-preferences@npm:2.4.0"
+"puppeteer-extra-plugin-user-preferences@npm:^2.4.1":
+  version: 2.4.1
+  resolution: "puppeteer-extra-plugin-user-preferences@npm:2.4.1"
   dependencies:
     debug: ^4.1.1
     deepmerge: ^4.2.2
-    puppeteer-extra-plugin: ^3.2.2
-    puppeteer-extra-plugin-user-data-dir: ^2.4.0
+    puppeteer-extra-plugin: ^3.2.3
+    puppeteer-extra-plugin-user-data-dir: ^2.4.1
   peerDependencies:
     playwright-extra: "*"
     puppeteer-extra: "*"
@@ -1884,13 +1884,13 @@ __metadata:
       optional: true
     puppeteer-extra:
       optional: true
-  checksum: f8c2359b1ddce3d7b8f543b2a8708688e74da5b7d705f79d2599d485d0fc88b4465303348a7e6977bc1705817f4d40f2db3b1b532776cc602a700487f3d80ba3
+  checksum: e0e50145d1d32626a8bb75afeb0dc238d63c05a8d264e12bb249b06aa34f7c116f6ec531335e964ea715837759dacd505d2fa8f6c9d478e983303eb2cb701ec9
   languageName: node
   linkType: hard
 
-"puppeteer-extra-plugin@npm:^3.2.2":
-  version: 3.2.2
-  resolution: "puppeteer-extra-plugin@npm:3.2.2"
+"puppeteer-extra-plugin@npm:^3.2.3":
+  version: 3.2.3
+  resolution: "puppeteer-extra-plugin@npm:3.2.3"
   dependencies:
     "@types/debug": ^4.1.0
     debug: ^4.1.1
@@ -1903,13 +1903,13 @@ __metadata:
       optional: true
     puppeteer-extra:
       optional: true
-  checksum: 9ace2300d9c0089e7dbef6ea46bca8e0cb3ea8dcaec621c093569fdad000da4947854970d5d22edd175b3631480fdd899e4de6f1b0e9050f7e6a07eebbe8d538
+  checksum: 18c2780a151e023ed145cd7768a6cf2dba1c124bce920de5f7815dcd872550288554161b1474037e8819969b1adfad41bdc09a9aadfd155338abc6d22699b7ed
   languageName: node
   linkType: hard
 
-"puppeteer-extra@npm:~3.3.4":
-  version: 3.3.4
-  resolution: "puppeteer-extra@npm:3.3.4"
+"puppeteer-extra@npm:^3.3.6":
+  version: 3.3.6
+  resolution: "puppeteer-extra@npm:3.3.6"
   dependencies:
     "@types/debug": ^4.1.0
     debug: ^4.1.1
@@ -1925,7 +1925,7 @@ __metadata:
       optional: true
     puppeteer-core:
       optional: true
-  checksum: dfbeceba086606c5f74305b207b78b0a7248b6667385210d6462af1fa01b6fe50c631449c3a343005ed712aa37e44f10539abc29429cac86baa76351d0c3d10b
+  checksum: d3097a16957dbc7c23e960429020b4c32b3d56d54e80103781ce8cc17b3eebda4554caad454744ff212ff69c19653cc0d4978d6f35381ffdfd1db1cedd0c61a6
   languageName: node
   linkType: hard
 

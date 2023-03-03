@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-langchain = "*"
+langchain = ">=0.0.98"
 openai = ">=0.26.4"
 dataclasses-json = "*"
 transformers = "*"
@@ -17,6 +17,8 @@ beautifulsoup4 = "*"
 pinecone-client = "*"
 python-dotenv = "*"
 goose3 = "*"
+asyncio = "*"
+tiktoken = "*"
 
 [dev-packages]
 

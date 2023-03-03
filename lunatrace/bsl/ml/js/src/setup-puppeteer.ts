@@ -1,7 +1,8 @@
-import puppeteer,{Browser, Page} from 'puppeteer';
+import {Browser, Page} from 'puppeteer';
+import puppeteer from 'puppeteer-extra'
 // import  from 'puppeteer-extra'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
-// puppeteer.use(StealthPlugin())
+puppeteer.use(StealthPlugin())
 
 
 export interface Session {
@@ -12,7 +13,7 @@ export async function setupPuppeteerSession(): Promise<Session> {
     const browser = await puppeteer.launch({
         headless: true,
         args: [
-            // '--proxy-server=' + process.env.PROXY_SERVER
+
         ]
     });
 
@@ -31,8 +32,6 @@ export async function setupPuppeteerSession(): Promise<Session> {
     });
 
     // TODO: Figure out status code response filtering?
-
-
 
     const username = process.env.PROXY_USER
     const password = process.env.PROXY_PASSWORD

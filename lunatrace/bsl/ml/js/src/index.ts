@@ -4,8 +4,6 @@ require('dotenv').config()
 import Queue from 'queue';
 import {Session, setupPuppeteerSession} from './setup-puppeteer';
 import fs from 'fs'
-import {SqliteCache} from './sqlite-cache';
-import {normalize} from "yargs";
 
 async function getUrlsToScrape(): Promise<string[]> {
   // STUBBED
@@ -202,75 +200,27 @@ async function getUrlsToScrape(): Promise<string[]> {
     return urlObject.url
   }))
 
+  const cveId = "CVE-2020-1938"
+
   return Promise.resolve(urls);
 }
-
-function scrapeAllElements(el:HTMLElement): string {
-  // console.log('scraping element')
-  // if (!el.hasAttribute('innerText')){
-  //   return ''
-  // }
-  // console.log('scraping elemenent type ', el.tagName)
-  // if (el.tagName !== 'CODE' || !el.classList.contains('highlight')){
-  //   return ''
-  // }
-  // console.log('FOUND CODE')
-
-  return el.innerText;
-}
-
 
 function timeout(ms:number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-(async () => {
-  const sqliteCache = new SqliteCache('cache.db');
 
-  const session = await setupPuppeteerSession();
-
-  const queue = new Queue({
-    concurrency: 10,
-    autostart: true,
-    timeout: 10000
-  });
-
-  const urlsToScrape = await getUrlsToScrape();
-
-  const references:Reference[] = [];
-
-  urlsToScrape.forEach( async (url) => {
-    queue.push(() => {
-      return scrape(url, session, 'GHSA-jfh8-c2jp-5v3q')
-    })
-
-
-  });
-  queue.on('success', (result, job) => {
-    console.log('queue success')
-    if (!result){
-      return
-    }
-    console.log('queue resolved with ', result.url)
-    references.push(result)
-    const json = JSON.stringify(references)
-    fs.writeFileSync('testvulndata.json', json, 'utf8');
-  })
-  queue.on('end', () => {
-    console.log('done')
-    session.browser.close();
-  })
-})();
 
 export interface Reference {
    vulnerability_id:   string;
    url:                string;
    title:              string;
-   content:            string;
-   normalized_content: string;
+   // content:            string;
+   // normalized_content: string;
    code: CodeAndPreamble[];
    content_type:       string;
    successful_fetch:   number;
+   vuln_description: string;
 }
 
  interface CodeAndPreamble {
@@ -330,10 +280,11 @@ async function scrape(url:string, session: Session, vulnerability_id:string):Pro
 
 
     const reference: Reference = {
-      normalized_content, // page.$eval('code', scrapeAllElements) as string,
+      // normalized_content, // page.$eval('code', scrapeAllElements) as string,
+      vuln_description: 'Apache Log4j2 2.0-beta9 through 2.15.0 (excluding security releases 2.12.2, 2.12.3, and 2.3.1) JNDI features used in configuration, log messages, and parameters do not protect against attacker controlled LDAP and other JNDI related endpoints. An attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup substitution is enabled. From log4j 2.15.0, this behavior has been disabled by default. From version 2.16.0 (along with 2.12.2, 2.12.3, and 2.3.1), this functionality has been completely removed. Note that this vulnerability is specific to log4j-core and does not affect log4net, log4cxx, or other Apache Logging Services projects.',
       code,
       content_type: 'text/html',
-      content: await page.evaluate(() =>  document.documentElement.outerHTML),
+      // content: await page.evaluate(() =>  document.documentElement.outerHTML),
       successful_fetch: 1,
       title: await page.title(),
       url: url,
@@ -357,6 +308,38 @@ async function scrape(url:string, session: Session, vulnerability_id:string):Pro
   }
 }
 
+(async () => {
+  const session = await setupPuppeteerSession();
 
 
+  const queue = new Queue({
+    concurrency: 10,
+    autostart: true,
+    timeout: 10000
+  });
 
+  const urlsToScrape = await getUrlsToScrape();
+
+  const references:Reference[] = [];
+
+  urlsToScrape.forEach( async (url) => {
+    queue.push(() => {
+      return scrape(url, session, 'GHSA-jfh8-c2jp-5v3q')
+    })
+  });
+  queue.on('success', (result, job) => {
+    console.log('queue success')
+    if (!result){
+      console.log('no result')
+      return
+    }
+    console.log('queue resolved with ', result.url)
+    references.push(result)
+    const json = JSON.stringify(references)
+    fs.writeFileSync('testvulndata.json', json, 'utf8');
+  })
+  queue.on('end', () => {
+    console.log('done, closing browser')
+    session.browser.close();
+  })
+})();

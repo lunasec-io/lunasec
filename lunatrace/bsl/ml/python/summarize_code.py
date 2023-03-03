@@ -5,7 +5,7 @@
 import os
 import json
 
-from langchain.llms import OpenAI
+from langchain.llms import OpenAIChat
 from langchain.chains.summarize import load_summarize_chain
 from langchain.chains.question_answering import load_qa_chain
 # from langchain.docstore.document import Document
@@ -42,7 +42,7 @@ seems random, irrelevant, or not useful for that, then respond with the exact st
 
 PROMPT = PromptTemplate(template=template, input_variables=["context"])
 
-openai = OpenAI(openai_api_key=os.environ.get('OPENAI_API_KEY'), model_name="text-davinci-003", temperature=0)
+openai = OpenAIChat(openai_api_key=os.environ.get('OPENAI_API_KEY'), model_name='gpt-3.5-turbo')
 
 chain = load_qa_chain(openai, chain_type="stuff",verbose=True, prompt=PROMPT)
 
@@ -52,6 +52,6 @@ chain = load_qa_chain(openai, chain_type="stuff",verbose=True, prompt=PROMPT)
 
 print(references[0]['code'][0])
 doc = Document(page_content=str(references[0]['code'][0]))
-result = chain({"input_documents": doc}, return_only_outputs=True)
+result = chain({"input_documents": [doc]}, return_only_outputs=True)
 
 print(result)
