@@ -172,7 +172,8 @@ func (s *npmAPIReplicator) ReplicatePackages(packages []string, resolvePackage b
 			table.PackageDownloadCount.Downloads,
 			table.PackageDownloadCount.PackageID,
 		).MODELS(packageDownloadCounts).
-			ON_CONFLICT(table.PackageDownloadCount.Name, table.PackageDownloadCount.Day).
+			ON_CONFLICT().
+			ON_CONSTRAINT("package_download_count_name_day_key").
 			DO_UPDATE(
 				postgres.SET(
 					table.PackageDownloadCount.Downloads.SET(
@@ -278,11 +279,8 @@ func (s *npmAPIReplicator) ReplicateVersionDownloadCounts(packageName string, re
 		table.PackageVersionDownloadCount.Downloads,
 		table.PackageVersionDownloadCount.Day,
 	).MODELS(models).
-		ON_CONFLICT(
-			table.PackageVersionDownloadCount.Name,
-			table.PackageVersionDownloadCount.Version,
-			table.PackageVersionDownloadCount.Day,
-		).
+		ON_CONFLICT().
+		ON_CONSTRAINT("package_version_download_count_name_version_day_key").
 		DO_UPDATE(
 			postgres.SET(
 				table.PackageVersionDownloadCount.Downloads.SET(

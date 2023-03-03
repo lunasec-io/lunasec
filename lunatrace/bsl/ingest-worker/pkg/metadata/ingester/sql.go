@@ -163,11 +163,13 @@ func (s *packageSqlIngester) mapMaintainers(ctx context.Context, packageId uuid.
 }
 
 func (s *packageSqlIngester) mapMaintainer(ctx context.Context, pm metadata.Maintainer) (uuid.UUID, error) {
-	return upsertMaintainer(ctx, s.deps.DB, model.Maintainer{
+	maintainer := model.Maintainer{
 		PackageManager: mapper.NpmV,
 		Email:          pm.Email,
 		Name:           util.Ptr(pm.Name),
-	})
+	}
+
+	return upsertMaintainer(ctx, s.deps.DB, maintainer)
 }
 
 func (s *packageSqlIngester) Ingest(ctx context.Context, pkg *metadata.PackageMetadata) (string, error) {
