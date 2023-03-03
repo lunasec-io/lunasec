@@ -13,6 +13,7 @@ package ingester
 import (
 	"context"
 	"database/sql"
+	"sync"
 	"time"
 
 	"github.com/google/uuid"
@@ -33,6 +34,12 @@ type PackageSqlIngesterParams struct {
 
 type packageSqlIngester struct {
 	deps PackageSqlIngesterParams
+
+	maintainerCacheMutex sync.Mutex
+	maintainerIDCache    map[string]uuid.UUID
+
+	releaseDependencyCacheMutex sync.Mutex
+	releaseDependencyIDCache    map[string]uuid.UUID
 }
 
 type PackageSqlIngester interface {
@@ -104,6 +111,10 @@ func (s *packageSqlIngester) mapReleases(ctx context.Context, packageId uuid.UUI
 	return releaseIds, nil
 }
 
+func releaseDependencyCacheKey(dep metadata.Dependency) string {
+	return dep.Name + dep.Version
+}
+
 func (s *packageSqlIngester) mapReleaseDependencies(
 	ctx context.Context,
 	releaseId uuid.UUID,
@@ -111,6 +122,13 @@ func (s *packageSqlIngester) mapReleaseDependencies(
 ) ([]uuid.UUID, error) {
 	var releaseDependencyIds []uuid.UUID
 	for _, dep := range ds {
+		// there are a lot of maintainer updates for a given package, so we try to cache them
+		cacheKey := releaseDependencyCacheKey(dep)
+		if cachedReleaseDependencyID, ok := s.maintainerIDCache[cacheKey]; ok {
+			releaseDependencyIds = append(releaseDependencyIds, cachedReleaseDependencyID)
+			continue
+		}
+
 		dependencyPackageId, err := upsertReleaseDependencyPackage(ctx, s.deps.DB, model.Package{
 			Name:           dep.Name,
 			PackageManager: mapper.NpmV,
@@ -140,13 +158,28 @@ func (s *packageSqlIngester) mapReleaseDependencies(
 	return releaseDependencyIds, nil
 }
 
+func packageMaintainerCacheKey(packageId uuid.UUID, pm metadata.Maintainer) string {
+	return packageId.String() + pm.Email + pm.Name
+}
+
 func (s *packageSqlIngester) mapMaintainers(ctx context.Context, packageId uuid.UUID, p []metadata.Maintainer) ([]uuid.UUID, error) {
 	var maintainerIds []uuid.UUID
 	for _, pm := range p {
+		// there are a lot of maintainer updates for a given package, so we try to cache them
+		cacheKey := packageMaintainerCacheKey(packageId, pm)
+		if cachedMaintainerID, ok := s.maintainerIDCache[cacheKey]; ok {
+			maintainerIds = append(maintainerIds, cachedMaintainerID)
+			continue
+		}
+
 		insertedId, err := s.mapMaintainer(ctx, pm)
 		if err != nil {
 			return maintainerIds, err
 		}
+
+		s.maintainerCacheMutex.Lock()
+		s.maintainerIDCache[cacheKey] = insertedId
+		s.maintainerCacheMutex.Unlock()
 
 		err = upsertPackageMaintainer(ctx, s.deps.DB, model.PackageMaintainer{
 			PackageID:    packageId,
@@ -185,6 +218,7 @@ func (s *packageSqlIngester) Ingest(ctx context.Context, pkg *metadata.PackageMe
 
 func NewPackageSqlIngester(deps PackageSqlIngesterParams) PackageSqlIngester {
 	return &packageSqlIngester{
-		deps: deps,
+		deps:              deps,
+		maintainerIDCache: map[string]uuid.UUID{},
 	}
 }

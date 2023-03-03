@@ -128,6 +128,7 @@ func upsertRelease(ctx context.Context, db *sql.DB, r model.Release) (id uuid.UU
 
 func upsertReleaseDependencyPackage(ctx context.Context, db *sql.DB, p model.Package) (id uuid.UUID, err error) {
 	selectReleaseDependencyPackage := Package.SELECT(
+		Package.ID,
 		Package.Name,
 		Package.PackageManager,
 		Package.CustomRegistry,
@@ -182,7 +183,8 @@ func upsertReleaseDependency(ctx context.Context, db *sql.DB, r model.ReleaseDep
 	if err == nil {
 		// If the release dependency already exists, we don't need to do anything
 		if releaseDependency.ReleaseID == r.ReleaseID &&
-			releaseDependency.IsDev == r.IsDev {
+			releaseDependency.IsDev == r.IsDev &&
+			releaseDependency.DependencyPackageID == r.DependencyPackageID {
 			return releaseDependency.ID, nil
 		}
 	}
@@ -200,6 +202,7 @@ func upsertReleaseDependency(ctx context.Context, db *sql.DB, r model.ReleaseDep
 			postgres.SET(
 				ReleaseDependency.ReleaseID.SET(ReleaseDependency.EXCLUDED.ReleaseID),
 				ReleaseDependency.IsDev.SET(ReleaseDependency.EXCLUDED.IsDev),
+				ReleaseDependency.DependencyPackageID.SET(ReleaseDependency.EXCLUDED.DependencyPackageID),
 			),
 		).
 		RETURNING(ReleaseDependency.ID)
