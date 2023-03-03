@@ -204,7 +204,7 @@ export async function replacePackageAndFileGitHubPullRequest(
   const branchName = `replace-${normalizedOldPackageName}-with-${normalizedNewPackageName}`;
   const message = `This pull request replaces \`${oldPackage}\` with \`${newPackage}\` in \`${owner}/${repo}@${checkoutRef}\` in path: \`${path}\``;
 
-  const pullRequest = await octokit.createPullRequest({
+  const pullRequest: any = await octokit.createPullRequest({
     owner,
     repo,
     title: `[Security][LunaTrace] Replace ${oldPackage} with ${newPackage}`,

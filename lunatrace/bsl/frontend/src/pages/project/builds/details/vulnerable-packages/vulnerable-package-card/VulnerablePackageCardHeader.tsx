@@ -26,7 +26,7 @@ import { PackageUpdatablePopOver } from './PackageUpdatablePopOver';
 interface VulnerablePackageCardHeaderProps {
   ignored: boolean;
   pkg: VulnerablePackage;
-  onClickUpdate: (pkg: VulnerablePackage) => void;
+  onClickUpdate: (pkg: VulnerablePackage) => Promise<void>;
 }
 
 export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePackageCardHeaderProps> = ({

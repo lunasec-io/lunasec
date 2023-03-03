@@ -23,8 +23,11 @@ import { VulnerablePackage } from '../types';
 
 export const PackageUpdatablePopOver: React.FC<{
   pkg: VulnerablePackage;
-  onClickUpdate: (pkg: VulnerablePackage) => void;
+  onClickUpdate: (pkg: VulnerablePackage) => Promise<void>;
 }> = ({ pkg, onClickUpdate }) => {
+  const [creatingPr, setCreatingPr] = React.useState(false);
+  const [showPopOver, setShowPopOver] = React.useState(false);
+
   const trivialUpdateStatus = pkg.trivially_updatable;
 
   if (!trivialUpdateStatus || trivialUpdateStatus === 'no') {
@@ -37,8 +40,19 @@ export const PackageUpdatablePopOver: React.FC<{
         <Popover.Header>Trivially Updatable </Popover.Header>
         <Popover.Body style={{ maxWidth: '500px' }}>
           <div className="mb-1 ">
-            <Button variant="primary" size="lg" className="mb-1" onClick={() => onClickUpdate(pkg)}>
-              <BsGithub className="mb-1 me-1" /> {'Click to Patch Vulnerability'}
+            <Button
+              variant="primary"
+              size="lg"
+              className="mb-1"
+              disabled={creatingPr}
+              onClick={async () => {
+                setCreatingPr(true);
+                await onClickUpdate(pkg);
+                setCreatingPr(false);
+                setShowPopOver(false);
+              }}
+            >
+              <BsGithub className="mb-1 me-1" /> {creatingPr ? 'Creating Pr...' : 'Click to Patch Vulnerability'}
             </Button>
           </div>
           Clicking this button will open a Pull Request to update the project&apos;s lockfile.
@@ -92,7 +106,14 @@ export const PackageUpdatablePopOver: React.FC<{
   return (
     <>
       {' '}
-      <OverlayTrigger trigger="click" rootClose placement={mdOrLarger ? 'right' : 'bottom'} overlay={renderToolTip}>
+      <OverlayTrigger
+        trigger="click"
+        rootClose
+        placement={mdOrLarger ? 'right' : 'bottom'}
+        overlay={renderToolTip}
+        show={showPopOver}
+        onToggle={(nextShow) => setShowPopOver(nextShow)}
+      >
         <NavLink className="primary-color d-inline m-0 p-0">
           {trivialUpdateStatus === 'partially' ? 'partially ' : ''}updatable
           <FcUpload color="black" className="pb-1" />

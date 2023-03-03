@@ -49,6 +49,8 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
   const { project_id } = useParams();
   const [shouldFilterFindingsBySeverity, setShouldFilterFindingsBySeverity] = useState(true);
 
+  const [patchPullRequestUrl, setPatchPullRequestUrl] = useState(undefined);
+
   const findingsAboveSeverity = pkg.affected_by.filter((affectedByVuln) => {
     return !affectedByVuln.beneath_minimum_severity || !shouldFilterFindingsBySeverity;
   });
@@ -128,8 +130,12 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
       package_manifest_path: pkg.paths[0],
     });
 
-    // TODO: Make this actually put some HTML on the page.
-    console.log('pr response:', response);
+    if (Object.keys(response).includes('error')) {
+      console.error('Failed to create pull request', response);
+      return;
+    }
+
+    setPatchPullRequestUrl((response as any).data.createPullRequestForVulnerability.pullRequestUrl);
   }
 
   return (
@@ -137,6 +143,14 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
       <Card className="vulnpkg-card">
         {renderIgnoreUi()}
         <VulnerablePackageCardHeader pkg={pkg} ignored={allFindingsIgnored} onClickUpdate={onClickUpdate} />
+        {patchPullRequestUrl && (
+          <div className="alert alert-success" role="alert">
+            Pull Request Created:{' '}
+            <a href={patchPullRequestUrl} target="_blank" rel="noreferrer">
+              {patchPullRequestUrl}
+            </a>
+          </div>
+        )}
         <PackageCardBody
           findingsHiddenBySeverityCount={findingsHiddenBySeverityCount}
           pkg={pkg}
