@@ -69,6 +69,7 @@
   },
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
+    "compile": "yarn build",
     "dev": "node ./bin/dev",
     "dev-debug": "node --inspect-brk ./bin/dev",
     "postpack": "shx rm -f oclif.manifest.json",

@@ -36,6 +36,7 @@ jobs:
       - name: Build
         run: |-
           set -x
+          (cd lunatrace/npm-package-cli && yarn run compile)
           (cd lunatrace/bsl/logger && yarn run compile)
           (cd lunatrace/bsl/common && yarn run compile)
           (cd lunatrace/bsl/backend && yarn run compile)
