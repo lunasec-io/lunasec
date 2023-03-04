@@ -16,10 +16,11 @@ import React, { useState } from 'react';
 import { Card, Dropdown, FloatingLabel, Form, FormControl, Spinner } from 'react-bootstrap';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useParams } from 'react-router-dom';
+import semver from 'semver';
 
 import api from '../../../../../../api';
 import { ConfirmationDailog } from '../../../../../../components/ConfirmationDialog';
-import {BuildDetailInfo, QuickViewProps} from '../../../types';
+import { BuildDetailInfo, QuickViewProps } from '../../../types';
 import { VulnerablePackage } from '../types';
 
 import { PackageCardBody } from './PackageCardBody';
@@ -42,9 +43,13 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
 }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [insertVulnIgnore, insertVulnIgnoreState] = api.useInsertIgnoredVulnerabilitiesMutation();
+  const [createGitHubPullRequestForVuln] = api.useCreateGitHubPullRequestForVulnMutation();
+
   const [ignoreNote, setIgnoreNote] = useState('');
   const { project_id } = useParams();
   const [shouldFilterFindingsBySeverity, setShouldFilterFindingsBySeverity] = useState(true);
+
+  const [patchPullRequestUrl, setPatchPullRequestUrl] = useState(undefined);
 
   const findingsAboveSeverity = pkg.affected_by.filter((affectedByVuln) => {
     return !affectedByVuln.beneath_minimum_severity || !shouldFilterFindingsBySeverity;
@@ -65,6 +70,8 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
 
   const allFindingsIgnored = findings.every((f) => f.ignored);
 
+  const recommendedVersion = semver.rsort([...pkg.fix_versions])[0];
+
   const bulkIgnoreVulns = async () => {
     if (!project_id) {
       throw new Error('attempted to ignore a vuln but no project id is in the url');
@@ -82,7 +89,7 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
   // eslint-disable-next-line react/display-name
   const customMenuToggle = React.forwardRef<
     HTMLAnchorElement,
-    { onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void,children:React.ReactNode }
+    { onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void; children: React.ReactNode }
   >(({ children, onClick }, ref) => (
     <a
       className="text-end position-absolute top-0 end-0 m-3 btn-white"
@@ -113,11 +120,37 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
     );
   };
 
+  async function onClickUpdate(pkg: VulnerablePackage) {
+    const response = await createGitHubPullRequestForVuln({
+      project_id: build.project_id,
+      vulnerability_id: pkg.affected_by[0].vulnerability.id,
+      old_package_slug: `${pkg.release.package.name}@${pkg.release.version}`,
+      new_package_slug: `${pkg.release.package.name}@^${recommendedVersion}`,
+      // TODO: Add support for multiple paths...
+      package_manifest_path: pkg.paths[0],
+    });
+
+    if (Object.keys(response).includes('error')) {
+      console.error('Failed to create pull request', response);
+      return;
+    }
+
+    setPatchPullRequestUrl((response as any).data.createPullRequestForVulnerability.pullRequestUrl);
+  }
+
   return (
     <>
       <Card className="vulnpkg-card">
         {renderIgnoreUi()}
-        <VulnerablePackageCardHeader pkg={pkg} ignored={allFindingsIgnored} />
+        <VulnerablePackageCardHeader pkg={pkg} ignored={allFindingsIgnored} onClickUpdate={onClickUpdate} />
+        {patchPullRequestUrl && (
+          <div className="alert alert-success" role="alert">
+            Pull Request Created:{' '}
+            <a href={patchPullRequestUrl} target="_blank" rel="noreferrer">
+              {patchPullRequestUrl}
+            </a>
+          </div>
+        )}
         <PackageCardBody
           findingsHiddenBySeverityCount={findingsHiddenBySeverityCount}
           pkg={pkg}

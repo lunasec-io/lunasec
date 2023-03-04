@@ -26,11 +26,13 @@ import { PackageUpdatablePopOver } from './PackageUpdatablePopOver';
 interface VulnerablePackageCardHeaderProps {
   ignored: boolean;
   pkg: VulnerablePackage;
+  onClickUpdate: (pkg: VulnerablePackage) => Promise<void>;
 }
 
 export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePackageCardHeaderProps> = ({
   pkg,
   ignored,
+  onClickUpdate,
 }) => {
   const recommendedVersion = semver.rsort([...pkg.fix_versions])[0];
   return (
@@ -50,7 +52,7 @@ export const VulnerablePackageCardHeader: React.FunctionComponent<VulnerablePack
                   {recommendedVersion}
                 </>
               )}
-              <PackageUpdatablePopOver pkg={pkg} />
+              <PackageUpdatablePopOver pkg={pkg} onClickUpdate={onClickUpdate} />
               <PackageManagerLink
                 packageName={pkg.release.package.name}
                 packageManager={pkg.release.package.package_manager}

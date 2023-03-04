@@ -12,14 +12,22 @@
  *
  */
 import React from 'react';
-import { NavLink, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
+import { Button, NavLink, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
 import { CopyBlock, tomorrowNight } from 'react-code-blocks';
+import { BsGithub } from 'react-icons/bs';
 import { FcUpload } from 'react-icons/fc';
 
 import useBreakpoint from '../../../../../../hooks/useBreakpoint';
 import { isDirectDep } from '../../../../../../utils/package';
 import { VulnerablePackage } from '../types';
-export const PackageUpdatablePopOver: React.FC<{ pkg: VulnerablePackage }> = ({ pkg }) => {
+
+export const PackageUpdatablePopOver: React.FC<{
+  pkg: VulnerablePackage;
+  onClickUpdate: (pkg: VulnerablePackage) => Promise<void>;
+}> = ({ pkg, onClickUpdate }) => {
+  const [creatingPr, setCreatingPr] = React.useState(false);
+  const [showPopOver, setShowPopOver] = React.useState(false);
+
   const trivialUpdateStatus = pkg.trivially_updatable;
 
   if (!trivialUpdateStatus || trivialUpdateStatus === 'no') {
@@ -30,13 +38,32 @@ export const PackageUpdatablePopOver: React.FC<{ pkg: VulnerablePackage }> = ({ 
     return (
       <Popover className="vulnerablePackage-update-popover" {...props}>
         <Popover.Header>Trivially Updatable </Popover.Header>
-        <Popover.Body>
-          A fix is available within the semver range this package was requested with, meaning that the{' '}
-          <strong>project lockfile</strong> is probably the only thing constraining the package to the vulnerable
-          version.
-          <hr className="m-1" />
+        <Popover.Body style={{ maxWidth: '500px' }}>
+          <div className="mb-1 ">
+            <Button
+              variant="primary"
+              size="lg"
+              className="mb-1"
+              disabled={creatingPr}
+              onClick={async () => {
+                setCreatingPr(true);
+                await onClickUpdate(pkg);
+                setCreatingPr(false);
+                setShowPopOver(false);
+              }}
+            >
+              <BsGithub className="mb-1 me-1" /> {creatingPr ? 'Creating Pr...' : 'Click to Patch Vulnerability'}
+            </Button>
+          </div>
+          Clicking this button will open a Pull Request to update the project&apos;s lockfile.
+          <hr className="mt-1 mb-1" />
+          <>
+            A fix is available within the semver range this package was requested with, meaning that the{' '}
+            <strong>project lockfile</strong> is likely constraining the package to the vulnerable version.
+          </>
+          <hr className="mt-1 mb-1" />
           {isDirectDep(pkg) ? (
-            <>
+            <div>
               This command will update the package:
               <CopyBlock
                 text={`npm update ${pkg.release.package.name}`}
@@ -55,14 +82,20 @@ export const PackageUpdatablePopOver: React.FC<{ pkg: VulnerablePackage }> = ({ 
                 theme={tomorrowNight}
                 codeBlock
               />
-            </>
+            </div>
           ) : (
-            <>
+            <div>
               This package is a <strong>transitive</strong> (deep) dependency. Due to constraints of NPM and Yarn,
-              updating it is only possible by manually deleting it from your project&apos;s lockfile (or deleting your
-              entire lockfile) and then re-running your package install command (npm install) to fetch the latest
-              version. Automated lockfile patching is currently in development by LunaTrace.
-            </>
+              updating it is only possible using a special tool like{' '}
+              <a
+                href="https://github.com/lunasec-io/lunasec/tree/master/lunatrace/npm-package-cli"
+                target="_blank"
+                rel="noreferrer"
+              >
+                @lunatrace/npm-package-cli
+              </a>{' '}
+              (which powers the automated patcher above).
+            </div>
           )}
         </Popover.Body>
       </Popover>
@@ -73,7 +106,14 @@ export const PackageUpdatablePopOver: React.FC<{ pkg: VulnerablePackage }> = ({ 
   return (
     <>
       {' '}
-      <OverlayTrigger trigger="click" rootClose placement={mdOrLarger ? 'right' : 'bottom'} overlay={renderToolTip}>
+      <OverlayTrigger
+        trigger="click"
+        rootClose
+        placement={mdOrLarger ? 'right' : 'bottom'}
+        overlay={renderToolTip}
+        show={showPopOver}
+        onToggle={(nextShow) => setShowPopOver(nextShow)}
+      >
         <NavLink className="primary-color d-inline m-0 p-0">
           {trivialUpdateStatus === 'partially' ? 'partially ' : ''}updatable
           <FcUpload color="black" className="pb-1" />

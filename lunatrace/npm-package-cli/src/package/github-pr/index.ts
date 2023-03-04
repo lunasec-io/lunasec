@@ -204,7 +204,7 @@ export async function replacePackageAndFileGitHubPullRequest(
   const branchName = `replace-${normalizedOldPackageName}-with-${normalizedNewPackageName}`;
   const message = `This pull request replaces \`${oldPackage}\` with \`${newPackage}\` in \`${owner}/${repo}@${checkoutRef}\` in path: \`${path}\``;
 
-  const pullRequest = await octokit.createPullRequest({
+  const pullRequest: any = await octokit.createPullRequest({
     owner,
     repo,
     title: `[Security][LunaTrace] Replace ${oldPackage} with ${newPackage}`,
@@ -233,7 +233,7 @@ export async function replacePackageAndFileGitHubPullRequest(
     throw new Error(`GitHub Error: Unable to create pull request for ${owner}/${repo}@${checkoutRef} in path: ${path}`);
   }
 
-  if (pullRequest.status !== 200) {
+  if (pullRequest.status !== 201 && pullRequest.status !== 200) {
     throw new Error(
       `GitHub Error: Unable to create pull request for ${owner}/${repo}@${checkoutRef} in path: ${path} (Status: ${pullRequest.status})`
     );

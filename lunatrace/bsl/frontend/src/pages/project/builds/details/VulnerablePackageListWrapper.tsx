@@ -44,10 +44,10 @@ export const VulnerablePackageListWrapper: React.FC<VulnerablePackageListWrapper
   shouldIgnore,
   build,
 }) => {
-  // severity state for modern tree data, legacy has its own state and doesnt use this
+  // severity state for modern tree data, legacy has its own state and doesn't use this
   const [severity, setSeverity] = useState<SeverityNamesOsv>('Critical');
 
-  // data for modern tree, legacy doesnt use this
+  // data for modern tree, legacy doesn't use this
   const {
     data: vulnerableReleasesData,
     isLoading,
