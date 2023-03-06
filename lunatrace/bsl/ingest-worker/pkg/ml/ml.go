@@ -13,6 +13,7 @@ type Service interface {
 	AnswerQuestionFromContent(prompt, question string, content []string) (string, error)
 	SearchForReferences(vulnID, search, question string) (string, error)
 	GenerateEmbeddingsForVulnRefs(vulnID string, insertWithPinecone bool) error
+	GenerateEmbeddingsForPackageRefs() error
 }
 
 type deps struct {

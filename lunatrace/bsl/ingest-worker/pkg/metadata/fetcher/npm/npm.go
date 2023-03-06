@@ -13,7 +13,6 @@ package npm
 import (
 	"context"
 	"io"
-	"io/ioutil"
 	"net/http"
 
 	"go.uber.org/fx"
@@ -42,10 +41,7 @@ func (n *npmFetcher) Fetch(ctx context.Context, pkgName string) (*metadata.Packa
 		return nil, err
 	}
 
-	pkgMetaRaw, err := ioutil.ReadAll(&io.LimitedReader{
-		N: 1024 * 1024 * 5,
-		R: res.Body,
-	})
+	pkgMetaRaw, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}

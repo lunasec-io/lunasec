@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/PullRequestInc/go-gpt3"
 	"github.com/cenkalti/backoff/v4"
@@ -22,6 +23,8 @@ import (
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/pineconefx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/util"
+	pacmodel "github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/model"
+	pactable "github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/package/table"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/vulnerability/model"
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/sqlgen/lunatrace/vulnerability/table"
 )
@@ -47,10 +50,6 @@ const (
 
     Answer as markdown (including related vulnerability reference urls if available):`
 )
-
-func standardizeSpaces(s string) string {
-	return strings.Join(strings.Fields(s), " ")
-}
 
 // used for inserting with pinecone
 func newVulnRefVector(hashStr string, embedding []float64, refURL, vulnerabilityID string) *pineconefx.Vector {
@@ -85,7 +84,7 @@ func (p *service) AnswerQuestionFromContent(prompt, question string, content []s
 		return "", err
 	}
 
-	normalizedPrompt := standardizeSpaces(prompt)
+	normalizedPrompt := util.StandardizeSpaces(prompt)
 	encodedPromptData, err := encoder.Encode(normalizedPrompt + contentQuestionFormat)
 	if err != nil {
 		return "", err
@@ -191,15 +190,58 @@ func (p *service) SearchForReferences(vulnID, search, question string) (string, 
 	return p.AnswerQuestionFromContent(VulnerabilityReferencePrompt, question, content)
 }
 
-type ReferenceContentResp struct {
-	model.Reference
-	model.ReferenceContent
-	model.Vulnerability
+type referenceContent struct {
+	ID                  uuid.UUID
+	URL                 string
+	Content             string
+	NormalizedContent   string
+	ContentType         string
+	LastSuccessfulFetch *time.Time
 }
 
-func (p *service) generateEmbeddingForRef(ref *ReferenceContentResp, insertWithPinecone bool) error {
+type refEmbeddingExistsFunc func(contentHash string) (string, bool)
+type insertRefEmbeddingFunc func(id uuid.UUID, contentHash, content, embedding string) error
+
+func (p *service) generateEmbeddingForRef(
+	ref *referenceContent,
+	refEmbeddingExists refEmbeddingExistsFunc,
+	insertRefEmbedding insertRefEmbeddingFunc,
+) error {
+	expBackoff := backoff.NewExponentialBackOff()
+	err := backoff.Retry(func() error {
+		return p.doGenerateEmbeddingForRef(ref, refEmbeddingExists, insertRefEmbedding)
+	}, expBackoff)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("url", ref.URL).
+			Msg("failed to generate embedding for reference after backoff")
+		return err
+	}
+	return nil
+}
+
+func (p *service) doGenerateEmbeddingForRef(
+	ref *referenceContent,
+	refEmbeddingExists refEmbeddingExistsFunc,
+	insertRefEmbedding insertRefEmbeddingFunc,
+) error {
+	if ref.LastSuccessfulFetch == nil {
+		log.Warn().
+			Str("url", ref.URL).
+			Msg("Content has not been successfully fetched")
+		return nil
+	}
+
+	if len(ref.NormalizedContent) > maxEmbeddingSize {
+		log.Warn().
+			Str("url", ref.URL).
+			Msg("content too large, truncating")
+		ref.NormalizedContent = ref.NormalizedContent[:maxEmbeddingSize]
+	}
+
 	// Build the Content to embed by combining the vulnerability ID, Title, and Content
-	content := fmt.Sprintf("%s %s %s", ref.Vulnerability.SourceID, ref.Title, ref.NormalizedContent)
+	content := ref.NormalizedContent
 
 	// Split ref normalized Content into words, group in chunks of 1024 words
 	words := strings.Split(content, " ")
@@ -212,8 +254,6 @@ func (p *service) generateEmbeddingForRef(ref *ReferenceContentResp, insertWithP
 		chunks = append(chunks, words[i:end])
 	}
 
-	var pineconeVectors []*pineconefx.Vector
-
 	for _, chunk := range chunks {
 		formattedChunk := strings.Join(chunk, " ")
 
@@ -221,31 +261,15 @@ func (p *service) generateEmbeddingForRef(ref *ReferenceContentResp, insertWithP
 		hash := sha256.Sum256([]byte(formattedChunk))
 		hashStr := hex.EncodeToString(hash[:])
 
-		var re = table.ReferenceEmbedding
-		getExistingRefEmb := re.SELECT(
-			re.Embedding,
-		).WHERE(re.ContentHash.EQ(postgres.String(hashStr)))
-
-		var refEmb model.ReferenceEmbedding
-		err := getExistingRefEmb.Query(p.deps.DB, &refEmb)
-		if err == nil {
+		if refEmb, ok := refEmbeddingExists(hashStr); ok {
 			// skip this chunk, we already have an embedding for it
 			log.Info().Str("url", ref.URL).Msg("skipping chunk, already have embedding")
 
 			var embedding []float64
-			err = json.Unmarshal([]byte(refEmb.Embedding), &embedding)
+			err := json.Unmarshal([]byte(refEmb), &embedding)
 			if err != nil {
 				log.Error().Err(err).Msg("failed to unmarshal embedding")
 				return err
-			}
-
-			if insertWithPinecone {
-				pineconeVectors = append(pineconeVectors, newVulnRefVector(
-					hashStr,
-					embedding,
-					ref.Reference.URL,
-					ref.Vulnerability.SourceID,
-				))
 			}
 			continue
 		}
@@ -275,53 +299,81 @@ func (p *service) generateEmbeddingForRef(ref *ReferenceContentResp, insertWithP
 			return err
 		}
 
-		newRefEmb := model.ReferenceEmbedding{
-			ReferenceContentID: ref.ReferenceContent.ID,
-			ContentHash:        hashStr,
-			Content:            formattedChunk,
-			Embedding:          string(embeddingData),
-		}
-
-		insertStmt := re.INSERT(
-			re.ReferenceContentID, re.ContentHash, re.Content, re.Embedding,
-		).MODEL(newRefEmb)
-
-		_, err = insertStmt.Exec(p.deps.DB)
+		err = insertRefEmbedding(ref.ID, hashStr, formattedChunk, string(embeddingData))
 		if err != nil {
 			log.Error().
 				Err(err).
+				Str("url", ref.URL).
 				Msg("failed to insert reference embedding")
 			return err
 		}
+	}
+	return nil
+}
 
-		if insertWithPinecone {
-			pineconeVectors = append(pineconeVectors, newVulnRefVector(hashStr, embedding, ref.URL, ref.Vulnerability.SourceID))
+func (p *service) GenerateEmbeddingsForPackageRefs() error {
+	rc := pactable.ReferenceContent
 
-			// 20 is used in the Buff script, why is it 20?
-			if len(pineconeVectors) == 20 {
-				log.Info().
-					Str("url", ref.URL).
-					Msg("upserting embedding to pinecone")
+	getReferenceContentStmt := rc.SELECT(rc.AllColumns)
 
-				err = p.deps.PineconeClient.Upsert(pineconeVectors)
-				if err != nil {
-					log.Error().
-						Err(err).
-						Msg("failed to upsert pinecone vectors")
-					return err
-				}
-				pineconeVectors = []*pineconefx.Vector{}
-			}
-		}
+	rows, err := getReferenceContentStmt.Rows(context.Background(), p.deps.DB)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to get reference content")
+		return err
 	}
 
-	if insertWithPinecone {
-		// upsert the remaining vectors to pinecone
-		err := p.deps.PineconeClient.Upsert(pineconeVectors)
+	for rows.Next() {
+		var ref pacmodel.ReferenceContent
+		err = rows.Scan(&ref)
+		if err != nil {
+			log.Error().Err(err).Msg("failed to scan reference content")
+			return err
+		}
+
+		log.Info().Str("url", ref.URL).Msg("generating embedding for reference content")
+
+		normalizedRef := referenceContent{
+			ID:                  ref.ID,
+			URL:                 ref.URL,
+			Content:             ref.Content,
+			NormalizedContent:   ref.NormalizedContent,
+			ContentType:         ref.ContentType,
+			LastSuccessfulFetch: ref.LastSuccessfulFetch,
+		}
+
+		var re = pactable.ContentEmbedding
+		insertRefEmbedding := func(id uuid.UUID, contentHash, content, embedding string) error {
+			newRefEmb := pacmodel.ContentEmbedding{
+				ReferenceContentID: id,
+				ContentHash:        contentHash,
+				Content:            contentHash,
+				Embedding:          embedding,
+			}
+
+			insertStmt := re.INSERT(
+				re.ReferenceContentID, re.ContentHash, re.Content, re.Embedding,
+			).MODEL(newRefEmb)
+
+			_, err = insertStmt.Exec(p.deps.DB)
+			return err
+		}
+
+		refEmbeddingExists := func(contentHash string) (string, bool) {
+			getExistingRefEmb := re.SELECT(
+				re.Embedding,
+			).WHERE(re.ContentHash.EQ(postgres.String(contentHash)))
+
+			var refEmb pacmodel.ContentEmbedding
+			err := getExistingRefEmb.Query(p.deps.DB, &refEmb)
+			return refEmb.Embedding, err == nil
+		}
+
+		err = p.generateEmbeddingForRef(&normalizedRef, refEmbeddingExists, insertRefEmbedding)
 		if err != nil {
 			log.Error().
 				Err(err).
-				Msg("failed to upsert pinecone vectors")
+				Str("url", ref.URL).
+				Msg("failed to generate embedding for reference")
 			return err
 		}
 	}
@@ -350,40 +402,63 @@ func (p *service) GenerateEmbeddingsForVulnRefs(vulnID string, insertWithPinecon
 	}
 
 	for rows.Next() {
-		var ref ReferenceContentResp
+		var ref struct {
+			model.Reference
+			model.ReferenceContent
+			model.Vulnerability
+		}
+
 		err = rows.Scan(&ref)
 		if err != nil {
 			log.Error().Err(err).Msg("failed to scan reference content")
 			return err
 		}
 
-		if ref.LastSuccessfulFetch == nil {
-			log.Warn().
-				Str("url", ref.URL).
-				Msg("Content has not been successfully fetched")
-			continue
+		// TODO (cthompson) this is a hack to get the vuln id and title into the reference content
+		ref.NormalizedContent = fmt.Sprintf("%s %s %s", ref.Vulnerability.SourceID, ref.Title, ref.NormalizedContent)
+
+		normalizedRef := referenceContent{
+			ID:                  ref.ReferenceContent.ID,
+			URL:                 ref.URL,
+			Content:             ref.Content,
+			NormalizedContent:   ref.NormalizedContent,
+			ContentType:         ref.ContentType,
+			LastSuccessfulFetch: ref.LastSuccessfulFetch,
 		}
 
-		if len(ref.NormalizedContent) > maxEmbeddingSize {
-			log.Warn().
-				Str("url", ref.URL).
-				Msg("skipping embedding generation for reference, content too large")
-			continue
+		var re = table.ReferenceEmbedding
+		insertRefEmbedding := func(id uuid.UUID, contentHash, content, embedding string) error {
+			newRefEmb := model.ReferenceEmbedding{
+				ReferenceContentID: id,
+				ContentHash:        contentHash,
+				Content:            contentHash,
+				Embedding:          embedding,
+			}
+
+			insertStmt := re.INSERT(
+				re.ReferenceContentID, re.ContentHash, re.Content, re.Embedding,
+			).MODEL(newRefEmb)
+
+			_, err = insertStmt.Exec(p.deps.DB)
+			return err
 		}
 
-		log.Info().
-			Str("url", ref.URL).
-			Msg("generating embedding for reference")
+		refEmbeddingExists := func(contentHash string) (string, bool) {
+			getExistingRefEmb := re.SELECT(
+				re.Embedding,
+			).WHERE(re.ContentHash.EQ(postgres.String(contentHash)))
 
-		expBackoff := backoff.NewExponentialBackOff()
-		err := backoff.Retry(func() error {
-			return p.generateEmbeddingForRef(&ref, insertWithPinecone)
-		}, expBackoff)
+			var refEmb model.ReferenceEmbedding
+			err := getExistingRefEmb.Query(p.deps.DB, &refEmb)
+			return refEmb.Embedding, err == nil
+		}
+
+		err = p.generateEmbeddingForRef(&normalizedRef, refEmbeddingExists, insertRefEmbedding)
 		if err != nil {
 			log.Error().
 				Err(err).
 				Str("url", ref.URL).
-				Msg("failed to generate embedding for reference after backoff")
+				Msg("failed to generate embedding for reference")
 			return err
 		}
 	}
