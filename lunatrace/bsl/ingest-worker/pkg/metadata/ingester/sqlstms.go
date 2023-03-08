@@ -27,6 +27,7 @@ func upsertPackage(ctx context.Context, db *sql.DB, p model.Package) (id uuid.UU
 		Package.PackageManager,
 		Package.CustomRegistry,
 		Package.Description,
+		Package.UpstreamData,
 	).WHERE(
 		Package.Name.EQ(postgres.String(p.Name)).
 			AND(Package.PackageManager.EQ(postgres.NewEnumValue(string(p.PackageManager)))).
@@ -48,6 +49,7 @@ func upsertPackage(ctx context.Context, db *sql.DB, p model.Package) (id uuid.UU
 		Package.CustomRegistry,
 		Package.Description,
 		Package.LastSuccessfulFetch,
+		Package.UpstreamData,
 	).MODEL(p).
 		ON_CONFLICT().
 		ON_CONSTRAINT("package_package_manager_custom_registry_name_idx").
@@ -55,6 +57,7 @@ func upsertPackage(ctx context.Context, db *sql.DB, p model.Package) (id uuid.UU
 			postgres.SET(
 				Package.Description.SET(Package.EXCLUDED.Description),
 				Package.LastSuccessfulFetch.SET(Package.EXCLUDED.LastSuccessfulFetch),
+				Package.UpstreamData.SET(Package.EXCLUDED.UpstreamData),
 			),
 		).
 		RETURNING(Package.ID)
