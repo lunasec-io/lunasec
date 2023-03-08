@@ -42,6 +42,7 @@ type Params struct {
 	PackageSQLIngester PackageSqlIngester
 	NPMRegistry        metadata.NpmRegistry
 	Config             Config
+	Replicator         metadata.APIReplicator
 }
 
 type NPMPackageIngester struct {
@@ -234,11 +235,34 @@ func (h *NPMPackageIngester) IngestPackageAndDependencies(
 	return nil
 }
 
+func (h *NPMPackageIngester) IngestWithDownloadCounts(ctx context.Context, packageName string) error {
+	_, err := h.Ingest(ctx, packageName)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("package name", packageName).
+			Msg("failed to import")
+		return err
+	}
+	err = h.deps.Replicator.ReplicatePackages([]string{packageName}, true)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to replicate npm package download counts")
+	}
+	err = h.deps.Replicator.ReplicateVersionDownloadCounts(packageName, true)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("unable to replicate npm package version download counts")
+	}
+	return nil
+}
+
 func (h *NPMPackageIngester) IngestPackagesFromFile(
 	ctx context.Context,
 	packagesFile string,
-	ignoreErrors bool,
-	refetchDuration time.Duration,
+	references bool,
 ) error {
 	fileHandle, err := os.Open(packagesFile)
 	if err != nil {
@@ -257,7 +281,18 @@ func (h *NPMPackageIngester) IngestPackagesFromFile(
 	bar := progressbar.Default(int64(len(packages)))
 
 	for _, packageName := range packages {
-		err = h.IngestPackageAndDependencies(ctx, packageName, ignoreErrors, refetchDuration)
+		if references {
+			err = h.IngestPackageReference(ctx, packageName)
+			if err != nil {
+				log.Warn().
+					Err(err).
+					Str("package name", packageName).
+					Msg("failed to ingest references")
+			}
+			continue
+		}
+
+		err = h.IngestWithDownloadCounts(ctx, packageName)
 		if err != nil {
 			log.Error().
 				Err(err).
