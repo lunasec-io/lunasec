@@ -105,10 +105,6 @@ async def async_run(chain, code, source_url, description):
 		"source_url": source_url,
 	}
 
-
-
-
-
 async def summarize_concurrently(references):
 	global global_results
 	chain = load_qa_chain(openai, chain_type="stuff", verbose=False, prompt=PROMPT)
