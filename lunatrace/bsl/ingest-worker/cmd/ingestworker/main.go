@@ -39,7 +39,6 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/openaifx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnbot"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/affected"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/scrape"
 
@@ -72,7 +71,6 @@ func main() {
 			cwe2.NewCWEIngester,
 			epss2.NewEPSSIngester,
 			cisa2.NewCISAKnownVulnIngester,
-			vulnbot.NewVulnBot,
 		),
 
 		fx.Provide(
