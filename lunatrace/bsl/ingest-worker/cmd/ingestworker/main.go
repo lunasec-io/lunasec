@@ -35,9 +35,12 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/registry"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/replicator/npm"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/ml"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/openaifx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/licensecheck"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/scanner/packagejson"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/affected"
+	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnerability/scrape"
 
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/cmd/ingestworker/license"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/metadata/ingester"
@@ -46,7 +49,11 @@ import (
 
 func main() {
 	// TODO (cthompson) this should be configured with an fx module
-	log.Logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
+	logLevel := zerolog.InfoLevel
+	if os.Getenv("LOG_LEVEL") == "debug" {
+		logLevel = zerolog.DebugLevel
+	}
+	log.Logger = zerolog.New(os.Stderr).With().Timestamp().Logger().Level(logLevel)
 
 	clifx.Main(
 		// TODO (cthompson) move this into an fx module
@@ -56,12 +63,19 @@ func main() {
 		dbfx.Module,
 		registry.NPMModule,
 		ingester.Module,
+		openaifx.Module,
+		scrape.Module,
 
 		fx.Provide(
+			ml.NewService,
 			cwe2.NewCWEIngester,
 			epss2.NewEPSSIngester,
 			cisa2.NewCISAKnownVulnIngester,
+		),
+
+		fx.Provide(
 			vulnmanager.NewProcessor,
+			//metadata.NewProcessor,
 		),
 
 		// todo make a module
@@ -91,8 +105,6 @@ func main() {
 			cwe.NewCommand,
 			epss.NewCommand,
 			cisa.NewCommand,
-		),
-		fx.Provide(
 			packageCommand.NewCommand,
 		),
 	)

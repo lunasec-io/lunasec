@@ -53,6 +53,8 @@
 - "!include vulnerability_equivalent.yaml"
 - "!include vulnerability_range.yaml"
 - "!include vulnerability_reference.yaml"
+- "!include vulnerability_reference_content.yaml"
+- "!include vulnerability_reference_embedding.yaml"
 - "!include vulnerability_severity.yaml"
 - "!include vulnerability_vulnerability.yaml"
 - "!include vulnerability_vulnerability_cwe.yaml"

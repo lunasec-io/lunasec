@@ -30,6 +30,7 @@ type Params struct {
 	Ingester      metadata.PackageIngester
 	Replicator    metadata.Replicator
 	APIReplicator metadata.APIReplicator
+	//Processor     metadata.Processor
 }
 
 func NewCommand(p Params) clifx.CommandResult {
@@ -56,6 +57,11 @@ func NewCommand(p Params) clifx.CommandResult {
 							Required: false,
 							Usage:    "If a package ingestion fails, continue without fatally failing.",
 						},
+						&cli.BoolFlag{
+							Name:     "references",
+							Required: false,
+							Usage:    "Only ingest package references.",
+						},
 						&cli.DurationFlag{
 							Name:     "refetch-duration",
 							Required: false,
@@ -66,12 +72,13 @@ func NewCommand(p Params) clifx.CommandResult {
 						packageName := ctx.Args().First()
 						registry := ctx.Bool("registry")
 						ignoreErrors := ctx.Bool("ignore-errors")
+						references := ctx.Bool("references")
 						packagesFile := ctx.String("packages")
 						refetchDuration := ctx.Duration("refetch-duration")
 
 						// import packages from a file
 						if packagesFile != "" {
-							return p.Ingester.IngestPackagesFromFile(ctx.Context, packagesFile, ignoreErrors, refetchDuration)
+							return p.Ingester.IngestPackagesFromFile(ctx.Context, packagesFile, references)
 						}
 
 						if registry {
@@ -82,10 +89,17 @@ func NewCommand(p Params) clifx.CommandResult {
 							err := errors.New("no package name provided")
 							return err
 						}
-
-						return p.Ingester.IngestPackageAndDependencies(ctx.Context, packageName, ignoreErrors, refetchDuration)
+						return p.Ingester.IngestWithDownloadCounts(ctx.Context, packageName)
 					},
 				},
+				//{
+				//	Name:  "embedding",
+				//	Flags: []cli.Flag{},
+				//	Action: func(ctx *cli.Context) error {
+				//		_ = ctx.Args().First()
+				//		return p.Processor.GenerateEmbeddingsForReferences()
+				//	},
+				//},
 				{
 					Name: "replicate",
 					Subcommands: []*cli.Command{

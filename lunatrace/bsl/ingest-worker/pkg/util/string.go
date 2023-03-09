@@ -10,6 +10,10 @@
 // limitations under the License.
 package util
 
+import (
+	"strings"
+)
+
 type NullEscapeState int
 
 const (
@@ -69,4 +73,8 @@ func SanitizeNullEscapes(unsanitized []byte) []byte {
 		state = Searching
 	}
 	return sanitized
+}
+
+func StandardizeSpaces(s string) string {
+	return strings.Join(strings.Fields(s), " ")
 }
