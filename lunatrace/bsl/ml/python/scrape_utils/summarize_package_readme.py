@@ -1,9 +1,7 @@
 import os
-from langchain.prompts.base import RegexParser
 from langchain.text_splitter import TokenTextSplitter
 from langchain.llms import OpenAIChat
 from langchain.chains.summarize import load_summarize_chain
-import tiktoken
 import argparse
 
 from langchain.prompts import PromptTemplate

@@ -19,6 +19,9 @@ python-dotenv = "*"
 goose3 = "*"
 asyncio = "*"
 tiktoken = "*"
+gql = "*"
+pylint = "*"
+google-search-results = "*"
 
 [dev-packages]
 
