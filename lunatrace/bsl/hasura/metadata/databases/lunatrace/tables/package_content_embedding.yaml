@@ -1,0 +1,7 @@
+table:
+  name: content_embedding
+  schema: package
+object_relationships:
+  - name: reference_content
+    using:
+      foreign_key_constraint_on: reference_content_id

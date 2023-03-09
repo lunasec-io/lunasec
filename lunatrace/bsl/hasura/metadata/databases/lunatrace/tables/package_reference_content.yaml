@@ -1,0 +1,15 @@
+table:
+  name: reference_content
+  schema: package
+object_relationships:
+  - name: package
+    using:
+      foreign_key_constraint_on: package_id
+array_relationships:
+  - name: content_embeddings
+    using:
+      foreign_key_constraint_on:
+        column: reference_content_id
+        table:
+          name: content_embedding
+          schema: package

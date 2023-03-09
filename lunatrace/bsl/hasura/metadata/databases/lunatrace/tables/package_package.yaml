@@ -30,6 +30,13 @@ array_relationships:
         table:
           name: package_maintainer
           schema: package
+  - name: reference_contents
+    using:
+      foreign_key_constraint_on:
+        column: package_id
+        table:
+          name: reference_content
+          schema: package
   - name: releases
     using:
       foreign_key_constraint_on:
