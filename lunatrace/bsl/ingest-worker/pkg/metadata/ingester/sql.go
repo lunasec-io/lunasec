@@ -52,6 +52,7 @@ func (s *packageSqlIngester) upsertPackage(ctx context.Context, p *metadata.Pack
 		CustomRegistry:      p.Registry,
 		Name:                p.Name,
 		Description:         util.Ptr(p.Description),
+		UpstreamData:        p.UpstreamData,
 		LastSuccessfulFetch: util.Ptr(time.Now()),
 	})
 	if err != nil {

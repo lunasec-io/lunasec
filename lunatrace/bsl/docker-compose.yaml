@@ -87,7 +87,7 @@ services:
     - "host.docker.internal:host-gateway"
 
   postgres:
-    image: postgres:12
+    image: ankane/pgvector:v0.4.0
     restart: always
     # Uncomment this if you want Postgres to log queries out.
     # command: ["postgres", "-c", "logging_collector=on", "-c", "log_directory=/tmp", "-c", "log_filename=postgresql.log", "-c", "log_statement=all"]
