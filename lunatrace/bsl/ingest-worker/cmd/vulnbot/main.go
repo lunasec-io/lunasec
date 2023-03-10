@@ -17,7 +17,6 @@ import (
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/graphqlfx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/ml"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/openaifx"
-	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/pineconefx"
 	"github.com/lunasec-io/lunasec/lunatrace/bsl/ingest-worker/pkg/vulnbot"
 )
 
@@ -63,7 +62,6 @@ func main() {
 
 		graphqlfx.Module,
 		dbfx.Module,
-		pineconefx.Module,
 		openaifx.Module,
 		discordfx.Module,
 
