@@ -31,6 +31,7 @@ require (
 	github.com/awslabs/aws-lambda-go-api-proxy v0.13.2
 	github.com/blang/semver/v4 v4.0.0
 	github.com/breadchris/ldapserver v1.1.0
+	github.com/bwmarrin/discordgo v0.27.0
 	github.com/cenkalti/backoff/v4 v4.1.3
 	github.com/chromedp/cdproto v0.0.0-20230220211738-2b1ec77315c9
 	github.com/chromedp/chromedp v0.8.7
