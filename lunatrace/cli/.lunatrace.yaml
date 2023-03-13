@@ -5,3 +5,9 @@ lunatrace:
     graphql_server:
       url: http://localhost:4455/api/cli/v1/graphql
       secret: myadminsecretkey
+  openai:
+    api_key: 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
+  pinecone:
+    api_key: xxx
+    environment: xxx
+    index: xxx

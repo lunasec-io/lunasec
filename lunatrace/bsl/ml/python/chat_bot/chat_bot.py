@@ -6,16 +6,17 @@ from langchain.llms import OpenAIChat
 from langchain.agents import initialize_agent
 import json
 import os
-from tools.vuln_lookup import VulnLookupTool
-from tools.google_search import google_search_tool
-
+from tools.raw_google_search import RawGoogleSearch
+from tools.scrape import Scraper
 MODEL="gpt-3.5-turbo"
 
 llm = OpenAIChat(
 	openai_api_key=os.environ.get("OPENAI_API_KEY"), model_name=MODEL, temperature=0
 )
 
-tools = [VulnLookupTool(), google_search_tool]
+tools = [Scraper(), RawGoogleSearch()]
+
+print(tools)
 
 agent = initialize_agent(tools, llm, agent="zero-shot-react-description", verbose=True, return_intermediate_steps=True)
 
