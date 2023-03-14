@@ -1,9 +1,12 @@
 import argparse
+import json
+from pprint import pprint
+
 from dotenv import load_dotenv
 load_dotenv()  # take environment variables from .env.
 from typing import Dict, Optional
 
-
+from langchain.tools import BaseTool
 from langchain.utils import get_from_dict_or_env
 from pydantic import BaseModel, Extra, Field, root_validator
 import requests
@@ -12,13 +15,17 @@ from bs4.element import Comment
 
 import os.path
 import sys
+from urllib.parse import urlparse
 
+
+# you seem to have to do this horrible stuff to import from higher local folders in python.
+# remove this once we find a better way
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 sys.path.append(parent_dir)
+# now we can import from the top
+from scrape_utils.summarize_scraped import clean
 
-from scrape_utils.clean_scraped_anything import clean
-
-class Scraper(BaseModel):
+class Scraper(BaseTool):
 	"""Wrapper around the Serper.dev Google Search API.
 	You can create a free API key at https://serper.dev.
 	To use, you should have the environment variable ``SERPER_API_KEY``
@@ -39,7 +46,12 @@ class Scraper(BaseModel):
 			"hl": "en",
 		}
 	)
-	description ="Scrape the main article context of a web page. Provide the full url as the input."
+	description ="""Scrapes a web page and attempts to answer a query for you. Use this to read through the search results.
+	 As input, takes a two element array where the first element is the url you wish to scrape, and the second is 
+	 a command to the scraper of what to find on the page.
+	 Example input: ["https://wikipedia.com", "Tell me wikipedias mission statement."]
+	 You can't scrape anything ending in .pdf, don't try. Only web pages.
+	 """
 	name = "scrape"
 
 	@root_validator()
@@ -52,20 +64,24 @@ class Scraper(BaseModel):
 
 		return values
 
-	def run(self, url: str) -> str:
+	def _run(self, inputs: str) -> str:
 		"""Run query through GoogleSearch and parse result."""
 		# return self._google_serper_search_results(query, gl=self.gl, hl=self.hl)
 
-		# return self._parse_results(results)
-		html = self._scrape(url)
-		text = self._text_from_html(html)
-		cleaned_text = clean(text, 'No specific query, just scrape all complete sentences please')
+		url, query = json.loads(inputs)
+		page = requests.get(url)
+		if "text/html" not in page.headers["content-type"]:
+			return "This isn't a normal html page, try a different page"
+		text = self._text_from_html(page.content)
+		links = self._links_from_html(page.content)
+		text_and_links = text + " Here are the links we scraped from this page:" + str(links)
+		cleaned_text = clean(text_and_links, query)
 		return cleaned_text
 
 
-	def _scrape(self, url):
-		page = requests.get(url)
-		return page.text
+	async def _arun(self, query: str) -> str:
+		"""Use the tool asynchronously."""
+		raise NotImplementedError("not implemented")
 
 	def _tag_visible(self, element):
 		if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
@@ -79,6 +95,16 @@ class Scraper(BaseModel):
 		texts = soup.findAll(string=True)
 		visible_texts = filter(self._tag_visible, texts)
 		return u" ".join(t.strip() for t in visible_texts)
+
+	def _links_from_html(self, body):
+		soup = BeautifulSoup(body, 'html.parser')
+		links = []
+		for link in soup.findAll('a'):
+			href = link.get("href")
+			is_absolute = bool(urlparse(href).netloc)
+			if is_absolute:
+				links.append(link.get_text() + ":" + link.get('href'))
+		return links
 
 	def get_params(self, query: str) -> Dict[str, str]:
 		"""Get parameters for SerpAPI."""
@@ -98,7 +124,7 @@ def main():
 	if args.url != None:
 		url = args.url[0]
 		scraper = Scraper()
-		res = scraper.run(url)
+		res = scraper._run(url)
 		print(res)
 
 if __name__ == "__main__":

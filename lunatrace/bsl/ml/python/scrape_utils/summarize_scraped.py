@@ -15,40 +15,28 @@ from langchain.prompts import PromptTemplate
 # references = json.load(jsonFile)
 
 # this template is 389 tokens, ~ 400
-template = """Given the following query
------ start query
-{query}
------ end query  
+template = """
+I'm going to show you some scraped page text. Using it, {query}
 
-Below I'm going to give you a section of page contents that were scraped off of a webpage. Copy any sentences from the scraped page
-that might provide context for the query into the template.
-The goal is to eliminate the useless parts of the scraped web page such as button text and headers, and go from scraped junk to a clean article.
-It's okay to stop in the middle of a sentence if that's where the page contents ends. It's also ok to return the body as an empty string if 
- there is no useful text in the scraped section I gave you. 
-  
- This is the last couple of sentences of a section of the page you previously processed. I'm showing you so that you can try to make your new section mesh 
-grammatically with the last word of this previously processed text, as we will be adding your new "body" response onto the end of it. If it's empty then nevermind and just start fresh.
---- BEGIN PREVIOUS BODY ---
+I might show you a scraped section from lower down the page and give you an answer that was based on the content above the scraped section.
+Refine or expand this answer based on the page content I give you.
+ If it's empty or irrelevant to the query then never-mind and just start a new answer.
+--- BEGIN PREVIOUS ANSWER ---
 {existing_body}
---- END PREVIOUS BODY ---
-
- The template for your response is:
---- BEGIN TEMPLATE ---
-Body: [your cleaned up page text from the below scraped page here]
---- END TEMPLATE ---
-
+--- END PREVIOUS ANSWER ---
 
 And here are the scraped page contents:
 --- BEGIN SCRAPED PAGE CONTENTS ---
 {page_content}
 --- END SCRAPED PAGE CONTENTS ---
-
+You may have seen a list of links that were found on the page at the bottom of the scraped contents. If it looks like
+one of these links might have the information needed, you could tell me to scrape it and give me the link. Otherwise, ignore this part.
  """
 
-output_parser = RegexParser(
-	regex=r"Body:\s*(.*)",
-	output_keys=["body"],
-)
+# output_parser = RegexParser(
+# 	regex=r"(.*?)",
+# 	output_keys=["body"],
+# )
 
 
 PROMPT = PromptTemplate(
@@ -67,25 +55,26 @@ def format_inputs_for_prompt(page_content, existing_body, query):
 	query_splitter = TokenTextSplitter(chunk_size=300, chunk_overlap=0)
 	shortened_query = query_splitter.split_text(query)[0]
 
-	existing_body_splitter = TokenTextSplitter(chunk_size=50, chunk_overlap=0)
-	shortened_existing_body = existing_body_splitter.split_text(existing_body).pop()
+	# existing_body_splitter = TokenTextSplitter(chunk_size=50, chunk_overlap=0)
+	# shortened_existing_body = existing_body_splitter.split_text(existing_body).pop()
 
-	return {"query": shortened_query, "existing_body": shortened_existing_body, "page_content": page_content}
+	return {"query": shortened_query, "existing_body": existing_body, "page_content": page_content}
 
 
 def run_llm(page_content, existing_body, query):
 	inputs = format_inputs_for_prompt(page_content, existing_body, query)
 	message_to_llm = PROMPT.format(**inputs)
 	raw_result = llm(message_to_llm)
-	results = output_parser.parse(raw_result)
-	return results['body']
+	return raw_result
 
 def clean(page_content, query):
 
-	content_splitter = TokenTextSplitter(chunk_size=1500, chunk_overlap=0)
+	content_splitter = TokenTextSplitter(chunk_size=2200, chunk_overlap=40)
 	split_content = content_splitter.split_text(page_content)
+	if (len(split_content)) > 8:
+		return "This page is too long to read quickly, try something else."
 	existing_body = " "
-
+	print("split page content into chunks: " + str(len(split_content)))
 	for content in split_content:
 		existing_body = existing_body + run_llm(content, existing_body, query)
 

@@ -9,9 +9,10 @@ from langchain.utils import get_from_dict_or_env
 from serpapi import GoogleSearch
 from pydantic import BaseModel, Extra, Field, root_validator
 import argparse
+from langchain.tools import BaseTool
 
 
-class RawGoogleSearch(BaseModel):
+class RawGoogleSearch(BaseTool):
 	"""Wrapper around the Serper.dev Google Search API.
 	You can create a free API key at https://serper.dev.
 	To use, you should have the environment variable ``SERPER_API_KEY``
@@ -34,7 +35,10 @@ class RawGoogleSearch(BaseModel):
 			"num": "10"
 		}
 	)
-	description ="A google search tool that can be used to find links to scrape. A good first step when looking for information. Returns results in order of most relevant. Might also return a 'direct_answer' that might answer the query without the need to scrape."
+	description ="""A google search tool that can be used to find links to scrape.
+	 A good first step when looking for information. Returns results in order.
+	  Might also return a 'direct_answer' that might answer the query without the need to scrape. 
+	  Input should be a raw google search query with no quotes or brackets."""
 	name = "raw-google-search"
 
 	@root_validator()
@@ -47,12 +51,16 @@ class RawGoogleSearch(BaseModel):
 
 		return values
 
-	def run(self, query: str) -> str:
+	def _run(self, query: str) -> str:
 		"""Run query through GoogleSearch and parse result."""
 		params = self.get_params(query)
 		search = GoogleSearch(params)
 		res = search.get_dict()
 		return self._parse_results(res)
+
+	async def _arun(self, query: str) -> str:
+		"""Use the tool asynchronously."""
+		raise NotImplementedError("not implemented")
 
 	def get_params(self, query: str) -> Dict[str, str]:
 		"""Get parameters for SerpAPI."""
@@ -66,8 +74,9 @@ class RawGoogleSearch(BaseModel):
 
 
 	def _parse_results(self, results: dict) -> str:
-		print(json.dumps(results, indent=4))
 		clean_response = {"results": []}
+		if "organic_results" not in results:
+			raise Exception("should have had organic results in google search but the results were: "+ json.dumps(results))
 		for result in results["organic_results"]:
 			clean_result = {"title":result["title"], "snippet":result["snippet"], "link":result["link"]}
 			if "date" in result:
@@ -86,7 +95,7 @@ def main():
 	if args.query != None:
 		query = args.query[0]
 		search = RawGoogleSearch()
-		res = search.run(query)
+		res = search._run(query)
 		print(json.dumps(res, indent=4))
 
 if __name__ == "__main__":
