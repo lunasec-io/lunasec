@@ -121,11 +121,7 @@ async def summarize_concurrently(references):
 	results = await asyncio.gather(*tasks)
 	return results
 
-async def main():
-	parser = argparse.ArgumentParser(description = "takes in things that might be vuln reproductions and filters and organizes them")
-	parser.add_argument("references", nargs = 1, type = str, help = "takes a json array of references, each of which has an array of code snippets found within. JSON structure can be found in bsl/ml/js/index")
-	parser.add_argument('-s','--score-cutoff', nargs = 1, metavar = "min score", type = int, default=80)
-	args = parser.parse_args()
+async def main(args):
 
 	if args.references != None:
 		references = json.loads(args.references[0])
@@ -136,5 +132,13 @@ async def main():
 
 		print(json.dumps(sorted_results))
 
-if __name__ == "__main__":
-	asyncio.run(main())
+def async_main(args):
+	asyncio.run(main(args))
+
+def add_subparser(subparsers):
+	subparser = subparsers.add_parser('summarize-code', help="takes in things that might be vuln reproductions and filters and organizes them")
+	subparser.add_argument("references", nargs = 1, type = str, help = "takes a json array of references, each of which has an array of code snippets found within. JSON structure can be found in bsl/ml/js/index")
+	subparser.add_argument('-s','--score-cutoff', nargs = 1, metavar = "min score", type = int, default=80)
+
+	subparser.set_defaults(func=async_main)
+

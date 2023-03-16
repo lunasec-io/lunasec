@@ -9,8 +9,8 @@ from langchain.llms import OpenAIChat
 from langchain.agents import initialize_agent
 import json
 import os
-from tools.raw_google_search import RawGoogleSearch
-from tools.scrape import Scraper
+from chat_bot.tools.raw_google_search import RawGoogleSearch
+from chat_bot.tools.scrape import Scraper
 MODEL="gpt-3.5-turbo"
 from pprint import pprint
 
@@ -51,8 +51,15 @@ tools = [Scraper(), RawGoogleSearch()]
 # executor = initialize_agent(tools, llm, agent="zero-shot-react-description", verbose=True, return_intermediate_steps=True)
 agent = ZeroShotAgent.from_llm_and_tools(llm, tools,format_instructions=FORMAT_INSTRUCTIONS, prefix=PREFIX, suffix=SUFFIX)
 
-executor = AgentExecutor.from_agent_and_tools(agent, tools, verbose=True)
+chatbot = AgentExecutor.from_agent_and_tools(agent, tools, verbose=True)
 
-response = executor("is this a vulnerable usage of log4shell `logger.info(\"User \" + user + \" logged in\");`")
+def main(args):
+	if args.query != None:
+		print(chatbot(args.query))
+def add_subparser(subparsers):
+	subparser = subparsers.add_parser('chat', help="uses a langchain agent and a set of tools to answer general questions about vulns")
 
-print(json.dumps(response))
+	subparser.add_argument("query", nargs = 1, type = str, help = "a question or command for the chat bot")
+
+	subparser.set_defaults(func=main)
+
