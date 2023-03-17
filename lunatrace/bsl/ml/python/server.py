@@ -25,7 +25,11 @@ class LangChainService(LangChainServicer):
 
     def Chat(self, req: langchain_pb2.ChatRequest, context):
         print('Chat request received', context, req)
-        result = chatbot(req.message)
+        try:
+            result = chatbot(req.message)
+        except Exception as e:
+            print('Error', e)
+            result = 'Error: ' + str(e)
         return langchain_pb2.ChatResponse(response=str(result))
 
 
