@@ -75,7 +75,7 @@
       <excludeFolder url="file://$MODULE_DIR$/lunatrace/bsl/ingest-worker/vulns" />
     </content>
     <content url="file://$MODULE_DIR$/lunatrace/bsl/backend/api/node_modules" />
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Pipenv (lunasec)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

@@ -48,3 +48,5 @@ export const generateCommon = tmuxPane([`cd common`, `yarn start`]);
 export const generateLogger = tmuxPane([`cd logger`, `yarn start`]);
 
 export const goQueueHandler = tmuxPane([`cd ingest-worker`, `${goQueueHandlerEnv} air`]);
+
+export const pythonGrpc = tmuxPane([`cd ml`, `uvicorn --reload server:app --port 3000`]);

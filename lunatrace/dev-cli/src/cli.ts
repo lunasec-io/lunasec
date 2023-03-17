@@ -33,7 +33,7 @@ import {
   generateCommon,
   generateLogger,
   goQueueHandler,
-  hasura,
+  hasura, pythonGrpc,
   queueWorker,
   smeeWebhook,
 } from './services';
@@ -41,7 +41,7 @@ import { tmuxpConfig, tmuxWindow } from './tmux';
 
 const servicesWindow = tmuxWindow('services', [hasura, frontend, dockerCompose]);
 
-const workerWindow = tmuxWindow('workers', [queueWorker, goQueueHandler]);
+const workerWindow = tmuxWindow('workers', [queueWorker, goQueueHandler, pythonGrpc]);
 
 const backendWindow = tmuxWindow('backend', [smeeWebhook, backend]);
 
