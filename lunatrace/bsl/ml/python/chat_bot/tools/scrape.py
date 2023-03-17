@@ -2,8 +2,6 @@ import argparse
 import json
 from pprint import pprint
 
-from dotenv import load_dotenv
-load_dotenv()  # take environment variables from .env.
 from typing import Dict, Optional
 
 from langchain.tools import BaseTool
@@ -17,13 +15,13 @@ import os.path
 import sys
 from urllib.parse import urlparse
 
+from scrape_utils.clean_scraped_advisories import clean
 
 # you seem to have to do this horrible stuff to import from higher local folders in python.
 # remove this once we find a better way
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 sys.path.append(parent_dir)
 # now we can import from the top
-from scrape_utils.summarize_scraped import clean
 
 class Scraper(BaseTool):
 	"""Wrapper around the Serper.dev Google Search API.

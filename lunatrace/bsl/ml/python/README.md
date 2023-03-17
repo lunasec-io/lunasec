@@ -29,6 +29,31 @@ options:
 
 Each command also has its own arguments and help text
 
+## Server
+
+The server is a twirp server that exposes the grpc interface for the langchain agent.
+
+To run the server:
+```shell
+OPENAI_API_KEY=$(aws secretsmanager get-secret-value --secret-id lunasec-OpenAISecret | jq -r .SecretString) SERPER_API_KEY=TODO uvicorn --reload server:app --port=3000
+```
+
+### Proto
+The protobuf definitions are in `lunasec/lunatrace/bsl/proto/`. To update the protobuf definitions, you will need `protoc`, `protoc-gen-twirpy`, and `protoc-gen-go`:
+
+```shell
+yay -S protobuf
+go get -u github.com/verloop/twirpy/protoc-gen-twirpy
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+```
+
+To regenerate the twirp server, run:
+```
+protoc --python_out=./gen --pyi_out=./gen --twirpy_out=./gen -I ../../proto ../../proto/*
+```
+
+**Note**: You will also need to regenerate the go protobuf code. Do this with `go generate ./...` from the root of the repo. Or alternatively, run `yarn generate` from the root of the repo.
+
 ## Structure
 
 `/scrape_utils` contains scripts that can be used to clean, summarize, and improve scraped data. Each is a callable CLI. Read the bottom of each file 

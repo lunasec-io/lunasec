@@ -67,7 +67,7 @@ def run_llm(page_content, existing_body, query):
 	raw_result = llm(message_to_llm)
 	return raw_result
 
-def clean(page_content, query):
+def summarize(page_content, query):
 
 	content_splitter = TokenTextSplitter(chunk_size=2200, chunk_overlap=40)
 	split_content = content_splitter.split_text(page_content)
@@ -84,7 +84,7 @@ def main(args):
 	if args.contents != None:
 		contents = args.contents[0]
 		query = args.query[0]
-		results = clean(contents, query)
+		results = summarize(contents, query)
 		print(results)
 
 def add_subparser(subparsers):
