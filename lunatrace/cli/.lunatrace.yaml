@@ -1,7 +1,0 @@
-lunatrace:
-  app:
-    stage: development
-  gateway:
-    graphql_server:
-      url: http://localhost:4455/api/cli/v1/graphql
-      secret: myadminsecretkey

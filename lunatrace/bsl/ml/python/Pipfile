@@ -1,0 +1,29 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+langchain = ">=0.0.98"
+openai = ">=0.26.4"
+dataclasses-json = "*"
+transformers = "*"
+nltk = "*"
+numpy = "*"
+tenacity = "<8.2.0"
+pandas = "*"
+llama-index = "*"
+beautifulsoup4 = "*"
+pinecone-client = "*"
+goose3 = "*"
+asyncio = "*"
+tiktoken = "*"
+gql = "*"
+pylint = "*"
+google-search-results = "*"
+twirp = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
