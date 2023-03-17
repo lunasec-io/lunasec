@@ -91,7 +91,7 @@
     "monorepo:version": "yarn node -p 'require(\"./lerna.json\").version'",
     "generate:lunatrace:backend": "cd lunatrace/bsl/backend && yarn generate",
     "generate:lunatrace:frontend": "cd lunatrace/bsl/frontend && yarn generate",
-    "generate:ml:python": "cd lunatrace/ml/python && protoc --python_out=./gen --pyi_out=./gen --twirpy_out=./gen -I ../../proto ../../proto/*",
+    "generate:ml:python": "cd lunatrace/ml/python && python -m grpc_tools.protoc -I../../proto --python_out=. --pyi_out=. --grpc_python_out=. ../../proto/langchain.proto",
     "generate:go": "go generate ./...",
     "generate": "yarn generate:go && yarn generate:ml:python && yarn generate:lunatrace:backend && yarn generate:lunatrace:frontend"
   },

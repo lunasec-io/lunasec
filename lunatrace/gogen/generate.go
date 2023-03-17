@@ -15,4 +15,4 @@ package gogen
 
 //go:generate go run cmd/main.go
 //go:generate go run github.com/Khan/genqlient genqlient.yaml
-//go:generate protoc --go_out=./proto --twirp_out=./proto -I ../bsl/proto ../bsl/proto/*
+//go:generate protoc --go_out=./proto --go-grpc_out=./proto -I ../bsl/proto ../bsl/proto/langchain.proto
