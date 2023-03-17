@@ -88,7 +88,7 @@ def main(args):
 		print(results)
 
 def add_subparser(subparsers):
-	subparser = subparsers.add_parser('summarize-scraped', help="takes any page content and a command to extract some information from it, as desired. Useful when you have a specific question to ask of an advisory")
+	subparser = subparsers.add_parser('summarize-scraped', help="takes any page content and a command to extract some information from it, as desired. Useful when you have a specific question to ask of an advisory. Not used for advisory ingestion, instead used by the chat-bot in real time.")
 
 	subparser.add_argument("contents", nargs = 1, type = str, help = "a string of page contents")
 	subparser.add_argument("query", nargs = 1, type = str, help = "query string that the scraper will try to focus on. can be phraised as a question or command, both are fine")
