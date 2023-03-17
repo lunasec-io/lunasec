@@ -39,9 +39,12 @@ OPENAI_API_KEY=$(aws secretsmanager get-secret-value --secret-id lunasec-OpenAIS
 ```
 
 ### Proto
-The protobuf definitions are in `lunasec/lunatrace/bsl/proto/`. To update the protobuf definitions, you will need `protoc-gen-twirpy`:
+The protobuf definitions are in `lunasec/lunatrace/bsl/proto/`. To update the protobuf definitions, you will need `protoc`, `protoc-gen-twirpy`, and `protoc-gen-go`:
+
 ```shell
+yay -S protobuf
 go get -u github.com/verloop/twirpy/protoc-gen-twirpy
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 ```
 
 To regenerate the twirp server, run:
