@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
+from dotenv import load_dotenv
+load_dotenv()
+
 import argparse
 from scrape_utils import summarize_scraped, clean_scraped_advisories, summarize_package_readme, summarize_code_snippets
 from chat_bot import chat_bot
-
 
 
 def main() :

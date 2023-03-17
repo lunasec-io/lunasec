@@ -1,7 +1,5 @@
 import json
 
-from dotenv import load_dotenv
-load_dotenv()  # take environment variables from .env.
 from typing import Dict, Optional
 
 

@@ -22,6 +22,8 @@ gql = "*"
 pylint = "*"
 google-search-results = "*"
 twirp = "*"
+uvicorn = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

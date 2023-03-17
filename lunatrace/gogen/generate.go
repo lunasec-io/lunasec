@@ -11,8 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 package gogen
 
 //go:generate go run cmd/main.go
 //go:generate go run github.com/Khan/genqlient genqlient.yaml
+//go:generate protoc --go_out=./proto --twirp_out=./proto -I ../bsl/proto ../bsl/proto/*

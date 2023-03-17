@@ -1,18 +1,11 @@
-from dotenv import load_dotenv
-
-load_dotenv('../.env', override=True)  # take environment variables from .env.
-
 from langchain.agents.agent import AgentExecutor
 
 from langchain.agents.mrkl.base import ZeroShotAgent
 from langchain.llms import OpenAIChat
-from langchain.agents import initialize_agent
-import json
 import os
 from chat_bot.tools.raw_google_search import RawGoogleSearch
 from chat_bot.tools.scrape import Scraper
 MODEL="gpt-3.5-turbo"
-from pprint import pprint
 
 
 
