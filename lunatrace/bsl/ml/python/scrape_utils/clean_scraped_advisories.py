@@ -106,5 +106,10 @@ def main():
 		results = clean(contents, description)
 		print(results)
 
-if __name__ == "__main__":
-	main()
+def add_subparser(subparsers):
+	subparser = subparsers.add_parser('clean-advisories', help="takes in advisory page contents and cleans them up. Useful for general pre-processing of dirty scraped data")
+
+	subparser.add_argument("contents", nargs = 1, type = str, help = "a string of page contents")
+	subparser.add_argument("description", nargs = 1, type = str, help = "vuln description string to help give context clues to the cleanup")
+
+	subparser.set_defaults(func=main)

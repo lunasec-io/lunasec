@@ -80,18 +80,17 @@ def clean(page_content, query):
 
 	return existing_body
 
-def main():
-	parser = argparse.ArgumentParser(description = "takes in advisory page contents and cleans them up")
-	parser.add_argument("contents", nargs = 1, type = str, help = "a string of page contents")
-	parser.add_argument("query", nargs = 1, type = str, help = "query string that the scraper will try to focus on")
-
-	args = parser.parse_args()
-
+def main(args):
 	if args.contents != None:
 		contents = args.contents[0]
 		query = args.query[0]
 		results = clean(contents, query)
 		print(results)
 
-if __name__ == "__main__":
-	main()
+def add_subparser(subparsers):
+	subparser = subparsers.add_parser('summarize-scraped', help="takes any page content and a command to extract some information from it, as desired. Useful when you have a specific question to ask of an advisory")
+
+	subparser.add_argument("contents", nargs = 1, type = str, help = "a string of page contents")
+	subparser.add_argument("query", nargs = 1, type = str, help = "query string that the scraper will try to focus on. can be phraised as a question or command, both are fine")
+
+	subparser.set_defaults(func=main)

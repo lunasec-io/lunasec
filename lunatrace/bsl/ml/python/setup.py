@@ -7,9 +7,14 @@ except IOError:
     long_description = ""
 
 setup(
-    name="lunasec-ml",
+    name="lunasec_ml",
     version="0.1.0",
-    description="A pip package",
+    entry_points={
+        'console_scripts': [
+            'lunasec-ml=lunasec_ml.main:main'
+        ]
+    },
+    description="lunatrace ml cli",
     license="BSL",
     author="Forrest",
     packages=find_packages(),

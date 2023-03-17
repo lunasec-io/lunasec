@@ -41,16 +41,18 @@ def summarize(readme):
 	result = chain.run([docs[0]])
 	return result
 
-def main():
-	parser = argparse.ArgumentParser(description = "takes in a readme from a package and summarizes its use case")
-	parser.add_argument("readme", nargs = 1, type = str, help = "a string markdown readme text")
-
-	args = parser.parse_args()
+def main(args):
 
 	if args.readme != None:
 		readme = args.readme[0]
 		results = summarize(readme)
 		print(results)
 
-if __name__ == "__main__":
-	main()
+
+def add_subparser(subparsers):
+	subparser = subparsers.add_parser('summarize-readme', help="takes a package readme and summarizes its use case in two sentences, primarily for vector encoding")
+
+	subparser.add_argument("readme", nargs = 1, type = str, help ="a string markdown readme text")
+
+	subparser.set_defaults(func=main)
+
