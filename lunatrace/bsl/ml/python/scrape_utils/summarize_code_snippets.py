@@ -56,11 +56,11 @@ PROMPT = PromptTemplate(
 )
 
 MODEL="gpt-3.5-turbo"
-openai = OpenAIChat(
+OpenAIChat = OpenAIChat(
 	openai_api_key=os.environ.get("OPENAI_API_KEY"), model_name=MODEL
 )
 
-enc = tiktoken.encoding_for_model(MODEL)
+enc = tiktoken.get_encoding('p50k_base')
 
 def get_token_length(text):
 	return len(enc.encode(text))

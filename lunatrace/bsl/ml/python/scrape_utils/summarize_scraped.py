@@ -48,7 +48,7 @@ llm = OpenAIChat(
 	openai_api_key=os.environ.get("OPENAI_API_KEY"), model_name=MODEL, temperature=0
 )
 
-enc = tiktoken.encoding_for_model(MODEL)
+enc = tiktoken.get_encoding('p50k_base')
 
 
 def format_inputs_for_prompt(page_content, existing_body, query):
