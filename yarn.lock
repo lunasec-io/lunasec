@@ -41487,8 +41487,8 @@ __metadata:
     date-fns: ^2.14.0
     node-fetch: ^2.0.0
     puppeteer: ~19.7.2
-    puppeteer-extra: ~3.3.4
-    puppeteer-extra-plugin-stealth: ~2.11.1
+    puppeteer-extra: ^3.3.6
+    puppeteer-extra-plugin-stealth: ^2.11.2
     queue: ^6.0.2
     sqlite: ^4.1.2
     sqlite3: ^5.0.10
@@ -49349,7 +49349,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer-extra-plugin-stealth@npm:~2.11.1":
+"puppeteer-extra-plugin-stealth@npm:^2.11.2":
   version: 2.11.2
   resolution: "puppeteer-extra-plugin-stealth@npm:2.11.2"
   dependencies:
@@ -49427,7 +49427,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer-extra@npm:~3.3.4":
+"puppeteer-extra@npm:^3.3.6":
   version: 3.3.6
   resolution: "puppeteer-extra@npm:3.3.6"
   dependencies:
