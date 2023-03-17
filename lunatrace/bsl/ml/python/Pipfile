@@ -21,6 +21,7 @@ tiktoken = "*"
 gql = "*"
 pylint = "*"
 google-search-results = "*"
+twirp = "*"
 
 [dev-packages]
 
