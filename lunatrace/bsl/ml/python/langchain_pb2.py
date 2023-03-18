@@ -13,14 +13,14 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0flangchain.proto\x12\tlangchain\"\x1e\n\x0b\x43hatRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\" \n\x0c\x43hatResponse\x12\x10\n\x08response\x18\x01 \x01(\t\";\n\x13\x43leanWebpageRequest\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\"\'\n\x14\x43leanWebpageResponse\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\"2\n\x10SummarizeRequest\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\r\n\x05query\x18\x02 \x01(\t\"$\n\x11SummarizeResponse\x12\x0f\n\x07summary\x18\x01 \x01(\t2\xdd\x01\n\tLangChain\x12\x46\n\tSummarize\x12\x1b.langchain.SummarizeRequest\x1a\x1c.langchain.SummarizeResponse\x12O\n\x0c\x43leanWebpage\x12\x1e.langchain.CleanWebpageRequest\x1a\x1f.langchain.CleanWebpageResponse\x12\x37\n\x04\x43hat\x12\x16.langchain.ChatRequest\x1a\x17.langchain.ChatResponseB\x0fZ\rgen/langchainb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0flangchain.proto\x12\tlangchain\"\x1e\n\x0b\x43hatRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\" \n\x0c\x43hatResponse\x12\x10\n\x08response\x18\x01 \x01(\t\";\n\x13\x43leanWebpageRequest\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\"\'\n\x14\x43leanWebpageResponse\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\"2\n\x10SummarizeRequest\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\r\n\x05query\x18\x02 \x01(\t\"$\n\x11SummarizeResponse\x12\x0f\n\x07summary\x18\x01 \x01(\t2\xdd\x01\n\tLangChain\x12\x46\n\tSummarize\x12\x1b.langchain.SummarizeRequest\x1a\x1c.langchain.SummarizeResponse\x12O\n\x0c\x43leanWebpage\x12\x1e.langchain.CleanWebpageRequest\x1a\x1f.langchain.CleanWebpageResponse\x12\x37\n\x04\x43hat\x12\x16.langchain.ChatRequest\x1a\x17.langchain.ChatResponseB\x07Z\x05./genb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'langchain_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  DESCRIPTOR._serialized_options = b'Z\rgen/langchain'
+  DESCRIPTOR._serialized_options = b'Z\005./gen'
   _CHATREQUEST._serialized_start=30
   _CHATREQUEST._serialized_end=60
   _CHATRESPONSE._serialized_start=62

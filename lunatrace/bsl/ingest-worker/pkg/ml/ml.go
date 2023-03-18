@@ -2,10 +2,11 @@ package ml
 
 import (
 	"database/sql"
-	"net/http"
 
 	"github.com/PullRequestInc/go-gpt3"
 	"go.uber.org/fx"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/lunasec-io/lunasec/lunatrace/gogen/proto/gen"
 )
@@ -30,7 +31,7 @@ type deps struct {
 type Result struct {
 	fx.Out
 
-	LangChain gen.LangChain
+	LangChain gen.LangChainClient
 	Service
 }
 
@@ -38,12 +39,17 @@ type service struct {
 	deps
 }
 
-func NewService(deps deps) Result {
-	langChain := gen.NewLangChainJSONClient("http://localhost:3000", http.DefaultClient)
+func NewService(deps deps) (Result, error) {
+	conn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return Result{}, err
+	}
+
+	langChain := gen.NewLangChainClient(conn)
 	return Result{
 		LangChain: langChain,
 		Service: &service{
 			deps: deps,
 		},
-	}
+	}, nil
 }

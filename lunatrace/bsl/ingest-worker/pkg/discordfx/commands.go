@@ -2,6 +2,8 @@ package discordfx
 
 import (
 	"context"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -22,11 +24,22 @@ type ApplicationCommandWithHandler struct {
 	GuildID          string
 }
 
+type MessageInfo struct {
+	IsBotCommand bool
+}
+
+type MessageHandlerFunc func(ctx context.Context, info MessageInfo, s *discordgo.Session, m *discordgo.MessageCreate)
+
+type MessageHandler struct {
+	Handler MessageHandlerFunc
+}
+
 type RegisterCommandsParams struct {
 	fx.In
 	Config    DiscordConfig
 	Session   *discordgo.Session
 	Commands  []*ApplicationCommandWithHandler `group:"command"`
+	Handlers  []*MessageHandler                `group:"handler"`
 	Lifecycle fx.Lifecycle
 }
 
@@ -55,6 +68,25 @@ func RegisterCommands(p RegisterCommandsParams) error {
 	for _, commandHandler := range p.Commands {
 		handlerMap[commandHandler.Command.Name] = commandHandler.Handler
 	}
+
+	p.Session.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
+		ctx, cancel := context.WithTimeout(ctx, time.Second*30)
+		defer cancel()
+
+		cmdStr := fmt.Sprintf("<@%s>", p.Config.ApplicationID)
+
+		info := MessageInfo{
+			IsBotCommand: strings.Contains(m.Content, cmdStr),
+		}
+
+		if info.IsBotCommand {
+			m.Content = strings.Replace(m.Content, cmdStr, "", 1)
+		}
+
+		for _, h := range p.Handlers {
+			h.Handler(ctx, info, s, m)
+		}
+	})
 
 	p.Session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		ctx, cancel := context.WithTimeout(ctx, time.Second*15)

@@ -39,17 +39,17 @@ OPENAI_API_KEY=$(aws secretsmanager get-secret-value --secret-id lunasec-OpenAIS
 ```
 
 ### Proto
-The protobuf definitions are in `lunasec/lunatrace/bsl/proto/`. To update the protobuf definitions, you will need `protoc`, `protoc-gen-twirpy`, and `protoc-gen-go`:
+The protobuf definitions are in `lunasec/lunatrace/bsl/proto/`. To update the protobuf definitions, you will need `protoc` and `protoc-gen-go`:
 
 ```shell
 yay -S protobuf
-go get -u github.com/verloop/twirpy/protoc-gen-twirpy
+python -m pip install grpcio-tools
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 ```
 
-To regenerate the twirp server, run:
+To regenerate the grpc python server, run:
 ```
-protoc --python_out=./gen --pyi_out=./gen --twirpy_out=./gen -I ../../proto ../../proto/*
+python -m grpc_tools.protoc -I../../proto --python_out=. --pyi_out=. --grpc_python_out=. ../../proto/langchain.proto
 ```
 
 **Note**: You will also need to regenerate the go protobuf code. Do this with `go generate ./...` from the root of the repo. Or alternatively, run `yarn generate` from the root of the repo.
