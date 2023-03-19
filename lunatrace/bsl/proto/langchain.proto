@@ -4,8 +4,8 @@ package langchain;
 option go_package = "./gen";
 
 service LangChain {
-  rpc Summarize(SummarizeRequest) returns (SummarizeResponse);
-  rpc CleanWebpage(CleanWebpageRequest) returns (CleanWebpageResponse);
+//  rpc Summarize(SummarizeRequest) returns (SummarizeResponse);
+  rpc CleanAdvisory(CleanAdvisoryRequest) returns (CleanAdvisoryResponse);
   rpc Chat(ChatRequest) returns (ChatResponse);
 }
 
@@ -14,23 +14,24 @@ message ChatRequest {
 }
 
 message ChatResponse {
-  string response = 1;
+  string finalAnswer = 1;
+  string intermediateSteps = 2;
 }
 
-message CleanWebpageRequest {
+message CleanAdvisoryRequest {
   string content = 1;
   string description = 2;
 }
 
-message CleanWebpageResponse {
+message CleanAdvisoryResponse {
   string content = 1;
 }
 
-message SummarizeRequest {
-  string content = 1;
-  string query = 2;
-}
-
-message SummarizeResponse {
-  string summary = 1;
-}
+//message SummarizeRequest {
+//  string content = 1;
+//  string query = 2;
+//}
+//
+//message SummarizeResponse {
+//  string summary = 1;
+//}

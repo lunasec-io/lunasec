@@ -15,7 +15,7 @@ import os.path
 import sys
 from urllib.parse import urlparse
 
-from scrape_utils.clean_scraped_advisories import clean
+from scrape_utils.summarize_scraped import summarize
 
 # you seem to have to do this horrible stuff to import from higher local folders in python.
 # remove this once we find a better way
@@ -65,7 +65,6 @@ class Scraper(BaseTool):
 	def _run(self, inputs: str) -> str:
 		"""Run query through GoogleSearch and parse result."""
 		# return self._google_serper_search_results(query, gl=self.gl, hl=self.hl)
-
 		url, query = json.loads(inputs)
 		page = requests.get(url)
 		if "text/html" not in page.headers["content-type"]:
@@ -73,7 +72,7 @@ class Scraper(BaseTool):
 		text = self._text_from_html(page.content)
 		links = self._links_from_html(page.content)
 		text_and_links = text + " Here are the links we scraped from this page:" + str(links)
-		cleaned_text = clean(text_and_links, query)
+		cleaned_text = summarize(text_and_links, query)
 		return cleaned_text
 
 

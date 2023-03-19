@@ -68,13 +68,12 @@ def run_llm(page_content, existing_body, query):
 	return raw_result
 
 def summarize(page_content, query):
-
 	content_splitter = TokenTextSplitter(chunk_size=2200, chunk_overlap=40)
 	split_content = content_splitter.split_text(page_content)
 	if (len(split_content)) > 8:
 		return "This page is too long to read quickly, try something else."
 	existing_body = " "
-	print("split page content into chunks: " + str(len(split_content)))
+	print("\nsplit page content into chunks: " + str(len(split_content)))
 	for content in split_content:
 		existing_body = existing_body + run_llm(content, existing_body, query)
 
