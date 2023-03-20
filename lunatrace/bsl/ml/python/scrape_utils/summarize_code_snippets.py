@@ -1,5 +1,7 @@
 import os
 import json
+
+from langchain import OpenAI, LLMChain
 from langchain.prompts.base import RegexParser
 import asyncio
 from langchain.text_splitter import TokenTextSplitter
@@ -39,8 +41,12 @@ Type: [ either "example_vulnerable_code" or "example_payload_or_exploit" or "vul
 Language: [programming language name in lower case, for example: "java" or "python" or "shell" or "unknown" ]
 
 
+------ Start preamble (this is text that was found just above the code snippet. It might provide useful context for what the code is or it might be unrelated)
+{preamble}
+------- end preamble
+
 ------ start code
-{context}
+{code}
 ------- end code
 
  """
@@ -52,11 +58,11 @@ output_parser = RegexParser(
 
 
 PROMPT = PromptTemplate(
-	template=template, input_variables=["description","context"], output_parser=output_parser
+	template=template, input_variables=["description","preamble","code"], output_parser=output_parser
 )
 
 MODEL="gpt-3.5-turbo"
-OpenAIChat = OpenAIChat(
+llm = OpenAIChat(
 	openai_api_key=os.environ.get("OPENAI_API_KEY"), model_name=MODEL
 )
 
@@ -68,17 +74,18 @@ def get_token_length(text):
 
 
 
-def format_code_for_prompt(code,description):
+def format_code_for_prompt(to_summarize):
+	# get just the first 300 tokens of the description, that should be enough
 	description_splitter = TokenTextSplitter(chunk_size=300, chunk_overlap=0)
-	shortened_description = description_splitter.split_text(description)[0]
+	shortened_description = description_splitter.split_text(to_summarize["vuln_description"])[0]
 	description_length = get_token_length(shortened_description)
 
-	preamble = code["preamble"]
+	preamble = to_summarize["preamble"]
 	# get the end of the preamble since its more likely to have the context about the code block (closest on page to code block)
 	preamble_splitter = TokenTextSplitter(chunk_size=150, chunk_overlap=0)
 	shortened_preamble = preamble_splitter.split_text(preamble).pop()
 	preamble_length = get_token_length(shortened_preamble)
-	code_body = code["code"]
+	code_body = to_summarize["code"]
 
 	#get the amount of space left minus 300 tokens for a response, should be plenty
 
@@ -87,47 +94,46 @@ def format_code_for_prompt(code,description):
 	code_splitter = TokenTextSplitter(chunk_size=remaining_tokens, chunk_overlap=0)
 	shortened_code_body = code_splitter.split_text(code_body)[0]
 
-	return [{"preamble": shortened_preamble, "code": shortened_code_body}, shortened_description]
+	return {"preamble": shortened_preamble, "code": shortened_code_body, "description": shortened_description}
 
 
-async def async_run(chain, code, source_url, description):
-	[shortened_code, shortened_description] = format_code_for_prompt(code, description)
-	doc = Document(page_content=str(shortened_code))
-	result = await chain.arun({"input_documents": [doc], "description":shortened_description})
+async def async_run(to_summarize):
+	inputs = format_code_for_prompt(to_summarize)
+	llm_chain = LLMChain(prompt=PROMPT, llm=llm)
+	result = await llm_chain.arun(**inputs)
 	parsed_output = output_parser.parse(result)
 	score_text = parsed_output["score"]
 	return {
-		"code": code["code"],
+		"code": to_summarize["code"],
 		"score": int(score_text),
 		"summary": parsed_output["answer"],
 		"type": parsed_output["type"],
 		"language": parsed_output["language"],
-		"source_url": source_url,
 	}
 
-async def summarize_concurrently(references):
-	global global_results
-	chain = load_qa_chain(openai, chain_type="stuff", verbose=False, prompt=PROMPT)
+async def summarize_concurrently(snippets):
+	# chain = load_qa_chain(openai, chain_type="stuff", verbose=False, prompt=PROMPT)
+
 	# get the data organized in a flat format for task queueing
 	to_summarize_list = []
-	for idx, ref in enumerate(references):
-		source = ref["url"]
-		vuln_description = ref["vuln_description"]
-		for code in ref["code"]:
-			to_summarize = {'code':code,'source':source,'vuln_description':vuln_description}
-			to_summarize_list.append(to_summarize)
+	for idx, snippet in enumerate(snippets):
+		vuln_description = snippet["vuln_description"]
+		code = snippet["code"]
+		preamble = snippet["preamble"]
+		to_summarize = {'code':code,'vuln_description':vuln_description, 'preamble': preamble}
+		to_summarize_list.append(to_summarize)
 
-	tasks = [async_run(chain, to_summarize['code'], to_summarize['source'], to_summarize['vuln_description']) for to_summarize in to_summarize_list]
+	tasks = [async_run(to_summarize) for to_summarize in to_summarize_list]
 	results = await asyncio.gather(*tasks)
 	return results
 
+
 async def main(args):
-
-	if args.references != None:
-		references = json.loads(args.references[0])
-		results = await summarize_concurrently(references)
-
-		filtered_results = filter(lambda result: result["score"] >= 80, results)
+	if args.snippets != None:
+		snippets = json.loads(args.snippets[0])
+		results = await summarize_concurrently(snippets)
+		min_score = args.score_cutoff[0]
+		filtered_results = filter(lambda result: result["score"] >= min_score, results)
 		sorted_results = sorted(filtered_results, key=lambda res: res["score"], reverse=True)
 
 		print(json.dumps(sorted_results))
@@ -135,10 +141,17 @@ async def main(args):
 def async_main(args):
 	asyncio.run(main(args))
 
+
+# interface CodeAndPreamble {
+# 	code:string;
+# 	preamble: string | null;
+# 	vuln_description: string;
+# }
+
 def add_subparser(subparsers):
 	subparser = subparsers.add_parser('summarize-code', help="takes in things that might be vuln reproductions and filters and organizes them")
-	subparser.add_argument("references", nargs = 1, type = str, help = "takes a json array of references, each of which has an array of code snippets found within. JSON structure can be found in bsl/ml/js/index")
-	subparser.add_argument('-s','--score-cutoff', nargs = 1, metavar = "min score", type = int, default=80)
+	subparser.add_argument("snippets", nargs = 1, type = str, help = "takes a json array of snippets, each of which has an array of code objects with the keys {vuln_description, code, preamble} ")
+	subparser.add_argument('-s','--score-cutoff', nargs = 1, metavar = "min_score", type = int, default=80)
 
 	subparser.set_defaults(func=async_main)
 

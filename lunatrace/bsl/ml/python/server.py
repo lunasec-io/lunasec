@@ -1,7 +1,7 @@
 from concurrent import futures
 
 from dotenv import load_dotenv
-
+import asyncio
 import langchain_pb2
 from langchain_pb2_grpc import LangChainServicer
 import langchain_pb2_grpc
@@ -11,17 +11,20 @@ load_dotenv()
 import grpc
 from chat_bot.chat_bot import chatbot
 from scrape_utils.clean_scraped_advisories import clean
-from scrape_utils.summarize_scraped import summarize
-
+from scrape_utils.summarize_code_snippets import summarize_concurrently
 
 class LangChainService(LangChainServicer):
-    def Summarize(self, req: langchain_pb2.SummarizeRequest, context):
-        result = summarize(req.content, req.query)
-        return langchain_pb2.SummarizeResponse(summary=result)
-
-    def CleanWebpage(self, req: langchain_pb2.CleanWebpageRequest, context):
+    # Todo: it might be a problem that some of these methods arent async, chatgpt says they may block the event loop
+    def CleanAdvisory(self, req: langchain_pb2.CleanAdvisoryRequest, context):
         result = clean(req.content, req.description)
-        return langchain_pb2.CleanWebpageResponse(content=result)
+        return langchain_pb2.CleanAdvisoryResponse(**result)
+
+    async def CleanSnippets(self, request: langchain_pb2.CleanSnippetsRequest, context):
+        result = await summarize_concurrently(request.snippets)
+        return result
+    # def CleanWebpage(self, req: langchain_pb2.CleanWebpageRequest, context):
+    #     result = clean(req.content, req.description)
+    #     return langchain_pb2.CleanWebpageResponse(content=result)
 
     def Chat(self, req: langchain_pb2.ChatRequest, context):
         print('Chat request received', context, req)

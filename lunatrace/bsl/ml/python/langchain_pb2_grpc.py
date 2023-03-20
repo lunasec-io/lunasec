@@ -14,34 +14,29 @@ class LangChainStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.Summarize = channel.unary_unary(
-                '/langchain.LangChain/Summarize',
-                request_serializer=langchain__pb2.SummarizeRequest.SerializeToString,
-                response_deserializer=langchain__pb2.SummarizeResponse.FromString,
-                )
-        self.CleanWebpage = channel.unary_unary(
-                '/langchain.LangChain/CleanWebpage',
-                request_serializer=langchain__pb2.CleanWebpageRequest.SerializeToString,
-                response_deserializer=langchain__pb2.CleanWebpageResponse.FromString,
+        self.CleanAdvisory = channel.unary_unary(
+                '/langchain.LangChain/CleanAdvisory',
+                request_serializer=langchain__pb2.CleanAdvisoryRequest.SerializeToString,
+                response_deserializer=langchain__pb2.CleanAdvisoryResponse.FromString,
                 )
         self.Chat = channel.unary_unary(
                 '/langchain.LangChain/Chat',
                 request_serializer=langchain__pb2.ChatRequest.SerializeToString,
                 response_deserializer=langchain__pb2.ChatResponse.FromString,
                 )
+        self.CleanSnippets = channel.unary_unary(
+                '/langchain.LangChain/CleanSnippets',
+                request_serializer=langchain__pb2.CleanSnippetsRequest.SerializeToString,
+                response_deserializer=langchain__pb2.CleanSnippetsResponse.FromString,
+                )
 
 
 class LangChainServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def Summarize(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def CleanWebpage(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+    def CleanAdvisory(self, request, context):
+        """rpc Summarize(SummarizeRequest) returns (SummarizeResponse);
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -52,23 +47,29 @@ class LangChainServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def CleanSnippets(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_LangChainServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'Summarize': grpc.unary_unary_rpc_method_handler(
-                    servicer.Summarize,
-                    request_deserializer=langchain__pb2.SummarizeRequest.FromString,
-                    response_serializer=langchain__pb2.SummarizeResponse.SerializeToString,
-            ),
-            'CleanWebpage': grpc.unary_unary_rpc_method_handler(
-                    servicer.CleanWebpage,
-                    request_deserializer=langchain__pb2.CleanWebpageRequest.FromString,
-                    response_serializer=langchain__pb2.CleanWebpageResponse.SerializeToString,
+            'CleanAdvisory': grpc.unary_unary_rpc_method_handler(
+                    servicer.CleanAdvisory,
+                    request_deserializer=langchain__pb2.CleanAdvisoryRequest.FromString,
+                    response_serializer=langchain__pb2.CleanAdvisoryResponse.SerializeToString,
             ),
             'Chat': grpc.unary_unary_rpc_method_handler(
                     servicer.Chat,
                     request_deserializer=langchain__pb2.ChatRequest.FromString,
                     response_serializer=langchain__pb2.ChatResponse.SerializeToString,
+            ),
+            'CleanSnippets': grpc.unary_unary_rpc_method_handler(
+                    servicer.CleanSnippets,
+                    request_deserializer=langchain__pb2.CleanSnippetsRequest.FromString,
+                    response_serializer=langchain__pb2.CleanSnippetsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -81,7 +82,7 @@ class LangChain(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def Summarize(request,
+    def CleanAdvisory(request,
             target,
             options=(),
             channel_credentials=None,
@@ -91,26 +92,9 @@ class LangChain(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/langchain.LangChain/Summarize',
-            langchain__pb2.SummarizeRequest.SerializeToString,
-            langchain__pb2.SummarizeResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def CleanWebpage(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/langchain.LangChain/CleanWebpage',
-            langchain__pb2.CleanWebpageRequest.SerializeToString,
-            langchain__pb2.CleanWebpageResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/langchain.LangChain/CleanAdvisory',
+            langchain__pb2.CleanAdvisoryRequest.SerializeToString,
+            langchain__pb2.CleanAdvisoryResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -128,5 +112,22 @@ class LangChain(object):
         return grpc.experimental.unary_unary(request, target, '/langchain.LangChain/Chat',
             langchain__pb2.ChatRequest.SerializeToString,
             langchain__pb2.ChatResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def CleanSnippets(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/langchain.LangChain/CleanSnippets',
+            langchain__pb2.CleanSnippetsRequest.SerializeToString,
+            langchain__pb2.CleanSnippetsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

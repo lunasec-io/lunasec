@@ -7,6 +7,29 @@ service LangChain {
 //  rpc Summarize(SummarizeRequest) returns (SummarizeResponse);
   rpc CleanAdvisory(CleanAdvisoryRequest) returns (CleanAdvisoryResponse);
   rpc Chat(ChatRequest) returns (ChatResponse);
+  rpc CleanSnippets(CleanSnippetsRequest) returns (CleanSnippetsResponse);
+}
+
+message Snippet {
+  string code = 1;
+  string preamble = 2;
+  string vuln_description = 3;
+}
+
+message CleanSnippetsRequest {
+  repeated Snippet snippets = 1;
+}
+
+message CleanedSnippet {
+  string code = 1;
+  int32 score = 2;
+  string summary = 3;
+  string type = 4;
+  string language = 5;
+}
+
+message CleanSnippetsResponse {
+  repeated CleanedSnippet snippets = 1;
 }
 
 message ChatRequest {
@@ -25,6 +48,7 @@ message CleanAdvisoryRequest {
 
 message CleanAdvisoryResponse {
   string content = 1;
+  string description = 2;
 }
 
 //message SummarizeRequest {

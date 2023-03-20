@@ -24,4 +24,6 @@ type Package struct {
 	LastFailedFetch     *time.Time
 	LastSuccessfulFetch *time.Time
 	Internal            bool
+	ReadmeText          *string
+	UseCaseSummary      *string
 }
