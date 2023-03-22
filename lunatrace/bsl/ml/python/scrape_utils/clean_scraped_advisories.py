@@ -1,4 +1,7 @@
+import json
 import os
+import pprint
+
 from langchain.prompts.base import RegexParser
 from langchain.text_splitter import TokenTextSplitter
 from langchain.llms import OpenAIChat
@@ -37,6 +40,7 @@ grammatically with the last word of this previously processed text, as we will b
  The template for your response is:
 --- BEGIN TEMPLATE ---
 Body: [your cleaned up page text from the below scraped page here]
+Summary: [your one sentence summary of what this page is about, potentially refining the summary shown below. Give a meta-description of the page, not a direct summary of the contents. Ex: "Ruby-advisory-db page explaining mitigation techniques"]
 --- END TEMPLATE ---
 
 
@@ -45,16 +49,20 @@ And here are the scraped page contents:
 {page_content}
 --- END SCRAPED PAGE CONTENTS ---
 
+Here is the existing summary from the contents higher up on the page, if there is one
+--- BEGIN EXISTING SUMMARY ---
+{existing_summary}
+--- END EXISTING SUMMARY ---
  """
 
 output_parser = RegexParser(
-	regex=r"Body:\s*(.*)",
-	output_keys=["body"],
+	regex=r"Body:\s*((?:.|\n)*?)(?:\n?Summary:|\Z)\s*((?:.|\n)*)",
+	output_keys=["body", "summary"],
 )
 
 
 PROMPT = PromptTemplate(
-	template=template, input_variables=["description","existing_body","page_content"]
+	template=template, input_variables=["description","existing_body","existing_summary","page_content"]
 )
 
 MODEL="gpt-3.5-turbo"
@@ -62,49 +70,44 @@ llm = OpenAIChat(
 	openai_api_key=os.environ.get("OPENAI_API_KEY"), model_name=MODEL, temperature=0
 )
 
-enc = tiktoken.encoding_for_model(MODEL)
+enc = tiktoken.get_encoding('p50k_base')
 
 
-def format_inputs_for_prompt(page_content, existing_body, vuln_description):
+def format_inputs_for_prompt(page_content, existing_body, existing_summary, vuln_description):
 	description_splitter = TokenTextSplitter(chunk_size=300, chunk_overlap=0)
 	shortened_description = description_splitter.split_text(vuln_description)[0]
 
 	existing_body_splitter = TokenTextSplitter(chunk_size=50, chunk_overlap=0)
 	shortened_existing_body = existing_body_splitter.split_text(existing_body).pop()
 
-	return {"description": shortened_description, "existing_body": shortened_existing_body, "page_content": page_content}
+	return {"description": shortened_description, "existing_body": shortened_existing_body, "existing_summary":existing_summary, "page_content": page_content}
 
 
-def run_llm(page_content, existing_body, vuln_description):
-	inputs = format_inputs_for_prompt(page_content, existing_body, vuln_description)
+def run_llm(page_content, existing_body, existing_summary, vuln_description):
+	inputs = format_inputs_for_prompt(page_content, existing_body, existing_summary, vuln_description)
 	message_to_llm = PROMPT.format(**inputs)
 	raw_result = llm(message_to_llm)
 	results = output_parser.parse(raw_result)
-	return results['body']
+	return results
 
 def clean(page_content, vuln_description):
-
 	content_splitter = TokenTextSplitter(chunk_size=1500, chunk_overlap=0)
 	split_content = content_splitter.split_text(page_content)
 	existing_body = " "
-
+	existing_summary = ""
 	for content in split_content:
-		existing_body = existing_body + run_llm(content, existing_body, vuln_description)
+		results = run_llm(content, existing_body, existing_summary, vuln_description)
+		existing_summary = results["summary"]
+		existing_body = existing_body + results['body']
 
-	return existing_body
+	return {"content":existing_body, "summary":existing_summary}
 
-def main():
-	parser = argparse.ArgumentParser(description = "takes in advisory page contents and cleans them up")
-	parser.add_argument("contents", nargs = 1, type = str, help = "a string of page contents")
-	parser.add_argument("description", nargs = 1, type = str, help = "vuln description string")
-
-	args = parser.parse_args()
-
+def main(args):
 	if args.contents != None:
 		contents = args.contents[0]
 		description = args.description[0]
 		results = clean(contents, description)
-		print(results)
+		print(json.dumps(results))
 
 def add_subparser(subparsers):
 	subparser = subparsers.add_parser('clean-advisories', help="takes in advisory page contents and cleans them up. Useful for general pre-processing of dirty scraped data")

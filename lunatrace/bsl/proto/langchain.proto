@@ -4,9 +4,32 @@ package langchain;
 option go_package = "./gen";
 
 service LangChain {
-  rpc Summarize(SummarizeRequest) returns (SummarizeResponse);
-  rpc CleanWebpage(CleanWebpageRequest) returns (CleanWebpageResponse);
+//  rpc Summarize(SummarizeRequest) returns (SummarizeResponse);
+  rpc CleanAdvisory(CleanAdvisoryRequest) returns (CleanAdvisoryResponse);
   rpc Chat(ChatRequest) returns (ChatResponse);
+  rpc CleanSnippets(CleanSnippetsRequest) returns (CleanSnippetsResponse);
+}
+
+message Snippet {
+  string code = 1;
+  string preamble = 2;
+  string vuln_description = 3;
+}
+
+message CleanSnippetsRequest {
+  repeated Snippet snippets = 1;
+}
+
+message CleanedSnippet {
+  string code = 1;
+  int32 score = 2;
+  string summary = 3;
+  string type = 4;
+  string language = 5;
+}
+
+message CleanSnippetsResponse {
+  repeated CleanedSnippet snippets = 1;
 }
 
 message ChatRequest {
@@ -14,23 +37,25 @@ message ChatRequest {
 }
 
 message ChatResponse {
-  string response = 1;
+  string finalAnswer = 1;
+  string intermediateSteps = 2;
 }
 
-message CleanWebpageRequest {
+message CleanAdvisoryRequest {
   string content = 1;
   string description = 2;
 }
 
-message CleanWebpageResponse {
+message CleanAdvisoryResponse {
   string content = 1;
+  string summary = 2;
 }
 
-message SummarizeRequest {
-  string content = 1;
-  string query = 2;
-}
-
-message SummarizeResponse {
-  string summary = 1;
-}
+//message SummarizeRequest {
+//  string content = 1;
+//  string query = 2;
+//}
+//
+//message SummarizeResponse {
+//  string summary = 1;
+//}

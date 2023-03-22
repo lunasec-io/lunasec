@@ -65,7 +65,6 @@ class Scraper(BaseTool):
 	def _run(self, inputs: str) -> str:
 		"""Run query through GoogleSearch and parse result."""
 		# return self._google_serper_search_results(query, gl=self.gl, hl=self.hl)
-
 		url, query = json.loads(inputs)
 		page = requests.get(url)
 		if "text/html" not in page.headers["content-type"]:

@@ -18,6 +18,7 @@ It can be used to serve single page applications, websites, hybrids, or public H
 An explanation of the Fastify framework, for instance, 
 would be identical, because the use case of the two libraries is the same. Don't mention the license, the creators name, or anything that isn't relevant to what the library is used for. 
 
+If you can't tell because the readme is useless and you're not familiar with the library from prior knowledge, return nothing at all, just empty, no words or explanation.
 ---- BEGIN README ----
 {text}
 ---- END README ----

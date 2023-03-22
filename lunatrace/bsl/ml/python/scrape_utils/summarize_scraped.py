@@ -48,7 +48,7 @@ llm = OpenAIChat(
 	openai_api_key=os.environ.get("OPENAI_API_KEY"), model_name=MODEL, temperature=0
 )
 
-enc = tiktoken.encoding_for_model(MODEL)
+enc = tiktoken.get_encoding('p50k_base')
 
 
 def format_inputs_for_prompt(page_content, existing_body, query):
@@ -68,13 +68,12 @@ def run_llm(page_content, existing_body, query):
 	return raw_result
 
 def summarize(page_content, query):
-
 	content_splitter = TokenTextSplitter(chunk_size=2200, chunk_overlap=40)
 	split_content = content_splitter.split_text(page_content)
 	if (len(split_content)) > 8:
 		return "This page is too long to read quickly, try something else."
 	existing_body = " "
-	print("split page content into chunks: " + str(len(split_content)))
+	print("\nsplit page content into chunks: " + str(len(split_content)))
 	for content in split_content:
 		existing_body = existing_body + run_llm(content, existing_body, query)
 
@@ -88,7 +87,7 @@ def main(args):
 		print(results)
 
 def add_subparser(subparsers):
-	subparser = subparsers.add_parser('summarize-scraped', help="takes any page content and a command to extract some information from it, as desired. Useful when you have a specific question to ask of an advisory")
+	subparser = subparsers.add_parser('summarize-scraped', help="takes any page content and a command to extract some information from it, as desired. Useful when you have a specific question to ask of an advisory. Not used for advisory ingestion, instead used by the chat-bot in real time.")
 
 	subparser.add_argument("contents", nargs = 1, type = str, help = "a string of page contents")
 	subparser.add_argument("query", nargs = 1, type = str, help = "query string that the scraper will try to focus on. can be phraised as a question or command, both are fine")
