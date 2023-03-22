@@ -28,12 +28,12 @@ class CleanAdvisoryRequest(_message.Message):
     def __init__(self, content: _Optional[str] = ..., description: _Optional[str] = ...) -> None: ...
 
 class CleanAdvisoryResponse(_message.Message):
-    __slots__ = ["content", "description"]
+    __slots__ = ["content", "summary"]
     CONTENT_FIELD_NUMBER: _ClassVar[int]
-    DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
+    SUMMARY_FIELD_NUMBER: _ClassVar[int]
     content: str
-    description: str
-    def __init__(self, content: _Optional[str] = ..., description: _Optional[str] = ...) -> None: ...
+    summary: str
+    def __init__(self, content: _Optional[str] = ..., summary: _Optional[str] = ...) -> None: ...
 
 class CleanSnippetsRequest(_message.Message):
     __slots__ = ["snippets"]

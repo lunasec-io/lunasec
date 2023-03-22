@@ -48,7 +48,7 @@ message CleanAdvisoryRequest {
 
 message CleanAdvisoryResponse {
   string content = 1;
-  string description = 2;
+  string summary = 2;
 }
 
 //message SummarizeRequest {

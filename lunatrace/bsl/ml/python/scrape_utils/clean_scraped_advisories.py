@@ -40,7 +40,7 @@ grammatically with the last word of this previously processed text, as we will b
  The template for your response is:
 --- BEGIN TEMPLATE ---
 Body: [your cleaned up page text from the below scraped page here]
-Summary: [your one to two sentence summary of what this page is about, potentially refining the existing summary shown below]
+Summary: [your one sentence summary of what this page is about, potentially refining the summary shown below. Give a meta-description of the page, not a direct summary of the contents. Ex: "Ruby-advisory-db page explaining mitigation techniques"]
 --- END TEMPLATE ---
 
 
@@ -56,7 +56,7 @@ Here is the existing summary from the contents higher up on the page, if there i
  """
 
 output_parser = RegexParser(
-	regex=r"Body:\s*((.|\n)*)Summary:\s*((.|\n)*)",
+	regex=r"Body:\s*((?:.|\n)*?)(?:\n?Summary:|\Z)\s*((?:.|\n)*)",
 	output_keys=["body", "summary"],
 )
 
@@ -100,7 +100,7 @@ def clean(page_content, vuln_description):
 		existing_summary = results["summary"]
 		existing_body = existing_body + results['body']
 
-	return {"body":existing_body, "summary":existing_summary}
+	return {"content":existing_body, "summary":existing_summary}
 
 def main(args):
 	if args.contents != None:

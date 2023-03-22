@@ -1,4 +1,5 @@
 from concurrent import futures
+from pprint import pprint
 
 from dotenv import load_dotenv
 import asyncio
@@ -16,12 +17,22 @@ from scrape_utils.summarize_code_snippets import summarize_concurrently
 class LangChainService(LangChainServicer):
     # Todo: it might be a problem that some of these methods arent async, chatgpt says they may block the event loop
     def CleanAdvisory(self, req: langchain_pb2.CleanAdvisoryRequest, context):
-        result = clean(req.content, req.description)
-        return langchain_pb2.CleanAdvisoryResponse(**result)
+        try:
+            result = clean(req.content, req.description)
+            return langchain_pb2.CleanAdvisoryResponse(**result)
+        except Exception as e:
+            print("Received exception ")
+            print(e)
+            raise(e)
 
-    async def CleanSnippets(self, request: langchain_pb2.CleanSnippetsRequest, context):
-        result = await summarize_concurrently(request.snippets)
-        return result
+    def CleanSnippets(self, request: langchain_pb2.CleanSnippetsRequest, context):
+        try:
+            result = asyncio.run(summarize_concurrently(request.snippets))
+            return langchain_pb2.CleanSnippetsResponse(**result)
+        except Exception as e:
+            print("Received exception ")
+            print(e)
+            raise(e)
     # def CleanWebpage(self, req: langchain_pb2.CleanWebpageRequest, context):
     #     result = clean(req.content, req.description)
     #     return langchain_pb2.CleanWebpageResponse(content=result)
@@ -37,7 +48,7 @@ class LangChainService(LangChainServicer):
 
 
 def serve():
-  server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+  server = grpc.server(futures.ThreadPoolExecutor(max_workers=100))
   langchain_pb2_grpc.add_LangChainServicer_to_server(
       LangChainService(), server)
   server.add_insecure_port('[::]:50051')

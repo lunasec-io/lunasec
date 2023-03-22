@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0flangchain.proto\x12\tlangchain\"C\n\x07Snippet\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x10\n\x08preamble\x18\x02 \x01(\t\x12\x18\n\x10vuln_description\x18\x03 \x01(\t\"<\n\x14\x43leanSnippetsRequest\x12$\n\x08snippets\x18\x01 \x03(\x0b\x32\x12.langchain.Snippet\"^\n\x0e\x43leanedSnippet\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x05\x12\x0f\n\x07summary\x18\x03 \x01(\t\x12\x0c\n\x04type\x18\x04 \x01(\t\x12\x10\n\x08language\x18\x05 \x01(\t\"D\n\x15\x43leanSnippetsResponse\x12+\n\x08snippets\x18\x01 \x03(\x0b\x32\x19.langchain.CleanedSnippet\"\x1e\n\x0b\x43hatRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\">\n\x0c\x43hatResponse\x12\x13\n\x0b\x66inalAnswer\x18\x01 \x01(\t\x12\x19\n\x11intermediateSteps\x18\x02 \x01(\t\"<\n\x14\x43leanAdvisoryRequest\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\"=\n\x15\x43leanAdvisoryResponse\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t2\xec\x01\n\tLangChain\x12R\n\rCleanAdvisory\x12\x1f.langchain.CleanAdvisoryRequest\x1a .langchain.CleanAdvisoryResponse\x12\x37\n\x04\x43hat\x12\x16.langchain.ChatRequest\x1a\x17.langchain.ChatResponse\x12R\n\rCleanSnippets\x12\x1f.langchain.CleanSnippetsRequest\x1a .langchain.CleanSnippetsResponseB\x07Z\x05./genb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0flangchain.proto\x12\tlangchain\"C\n\x07Snippet\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x10\n\x08preamble\x18\x02 \x01(\t\x12\x18\n\x10vuln_description\x18\x03 \x01(\t\"<\n\x14\x43leanSnippetsRequest\x12$\n\x08snippets\x18\x01 \x03(\x0b\x32\x12.langchain.Snippet\"^\n\x0e\x43leanedSnippet\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x05\x12\x0f\n\x07summary\x18\x03 \x01(\t\x12\x0c\n\x04type\x18\x04 \x01(\t\x12\x10\n\x08language\x18\x05 \x01(\t\"D\n\x15\x43leanSnippetsResponse\x12+\n\x08snippets\x18\x01 \x03(\x0b\x32\x19.langchain.CleanedSnippet\"\x1e\n\x0b\x43hatRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\">\n\x0c\x43hatResponse\x12\x13\n\x0b\x66inalAnswer\x18\x01 \x01(\t\x12\x19\n\x11intermediateSteps\x18\x02 \x01(\t\"<\n\x14\x43leanAdvisoryRequest\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\"9\n\x15\x43leanAdvisoryResponse\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\x0f\n\x07summary\x18\x02 \x01(\t2\xec\x01\n\tLangChain\x12R\n\rCleanAdvisory\x12\x1f.langchain.CleanAdvisoryRequest\x1a .langchain.CleanAdvisoryResponse\x12\x37\n\x04\x43hat\x12\x16.langchain.ChatRequest\x1a\x17.langchain.ChatResponse\x12R\n\rCleanSnippets\x12\x1f.langchain.CleanSnippetsRequest\x1a .langchain.CleanSnippetsResponseB\x07Z\x05./genb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'langchain_pb2', globals())
@@ -36,7 +36,7 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _CLEANADVISORYREQUEST._serialized_start=423
   _CLEANADVISORYREQUEST._serialized_end=483
   _CLEANADVISORYRESPONSE._serialized_start=485
-  _CLEANADVISORYRESPONSE._serialized_end=546
-  _LANGCHAIN._serialized_start=549
-  _LANGCHAIN._serialized_end=785
+  _CLEANADVISORYRESPONSE._serialized_end=542
+  _LANGCHAIN._serialized_start=545
+  _LANGCHAIN._serialized_end=781
 # @@protoc_insertion_point(module_scope)

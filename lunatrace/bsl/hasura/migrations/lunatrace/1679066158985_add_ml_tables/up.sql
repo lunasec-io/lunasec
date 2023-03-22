@@ -7,6 +7,7 @@ CREATE TABLE vulnerability.code_snippet
     reference_id uuid NULL references vulnerability.reference,
     -- Include url since reference might be null but its still nice to be able to point a source like a vuln-db link for non-scraped content
     source_url text NOT NULL,
+    -- Messed up and forgot the ID part of this name..its not the end of the world though so leaving it
     vulnerability uuid NOT NULL references vulnerability.vulnerability,
     code text NOT NULL,
     score integer NOT NULL,

@@ -32,13 +32,12 @@ Give a short description in less than four sentences of what the code snippet co
 particularly in how it relates to information about the software vulnerability described above. If the code just 
 seems random, irrelevant, or not useful for that, then respond with the exact string "irrelevant" instead. 
 
-In addition to giving a summary, also give the other fields listed as follows:
 Response should be in the form: 
 
-Answer: [summary here]
-Score: [a score of how useful the code example is for learning about the vulnerability from 0 to 100]
-Type: [ either "example_vulnerable_code" or "example_payload_or_exploit" or "vulnerability_and_exploit_combined" or "mitigation" or "other" or "irrelevant"]
-Language: [programming language name in lower case, for example: "java" or "python" or "shell" or "unknown" ]
+Answer: summary here
+Score: a score of how useful the code example is for learning about the vulnerability from 0 to 100
+Type: either "example_vulnerable_code" or "example_payload_or_exploit" or "vulnerability_and_exploit_combined" or "mitigation" or "other" or "irrelevant"
+Language: programming language name in lower case, for example: "java" or "python" or "shell" or "unknown" 
 
 
 ------ Start preamble (this is text that was found just above the code snippet. It might provide useful context for what the code is or it might be unrelated)
@@ -117,15 +116,16 @@ async def summarize_concurrently(snippets):
 	# get the data organized in a flat format for task queueing
 	to_summarize_list = []
 	for idx, snippet in enumerate(snippets):
-		vuln_description = snippet["vuln_description"]
-		code = snippet["code"]
-		preamble = snippet["preamble"]
+		vuln_description = snippet.vuln_description
+		code = snippet.code
+		preamble = snippet.preamble
 		to_summarize = {'code':code,'vuln_description':vuln_description, 'preamble': preamble}
 		to_summarize_list.append(to_summarize)
 
 	tasks = [async_run(to_summarize) for to_summarize in to_summarize_list]
 	results = await asyncio.gather(*tasks)
-	return results
+	resultObj = {"snippets": results}
+	return resultObj
 
 
 async def main(args):
