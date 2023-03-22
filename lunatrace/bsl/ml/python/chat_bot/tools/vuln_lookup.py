@@ -1,6 +1,7 @@
+import json
 
 from langchain.tools import BaseTool
-
+from pprint import pformat
 from gql import gql, Client
 from gql.transport.aiohttp import AIOHTTPTransport
 
@@ -38,12 +39,14 @@ query = gql(
 
 class VulnLookupTool(BaseTool):
 	name = "VulnLookup"
-	description = "Useful to look up vulnerability details about a given vulnerability by inputting the CVE name (like CVE-XXX-XXXXX) once you know it. Useful to determine basic vulnerability information, affected packages, fix versions, and so on. Don't just guess a CVE number, if you don't know it you should google it first. Don't put anything except the exact text of the cve number and don't put any whitespace before or after."
+	description = "Useful to look up vulnerability details about a given vulnerability by inputting the CVE name (like CVE-XXX-XXXXX) once you know it. Useful to determine basic vulnerability information, affected packages, fix versions, and so on. Don't just guess a CVE number, if you don't know it you should google it first."
 
 	def _run(self, input: str) -> str:
 		"""Use the tool."""
-		result = client.execute(query, variable_values={'cve_id':input})
-		return result
+		cve_id, _ = json.loads(input)
+
+		result = client.execute(query, variable_values={'cve_id':cve_id})
+		return pformat(result, sort_dicts=False, width=400)
 
 	async def _arun(self, query: str) -> str:
 		"""Use the tool asynchronously."""

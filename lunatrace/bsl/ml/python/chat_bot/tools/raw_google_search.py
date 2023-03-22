@@ -1,4 +1,5 @@
 import json
+from pprint import pformat
 
 from typing import Dict, Optional
 
@@ -8,6 +9,7 @@ from serpapi import GoogleSearch
 from pydantic import BaseModel, Extra, Field, root_validator
 import argparse
 from langchain.tools import BaseTool
+from scrape_utils.read_anything import read
 
 
 class RawGoogleSearch(BaseTool):
@@ -33,10 +35,7 @@ class RawGoogleSearch(BaseTool):
 			"num": "10"
 		}
 	)
-	description ="""A google search tool that can be used to find links to scrape.
-	 A good first step when looking for information. Returns results in order.
-	  Might also return a 'direct_answer' that might answer the query without the need to scrape. 
-	  Input should be a raw google search query with no quotes or brackets."""
+	description ="""A good first step to look up the CVE name for use in other tools. Takes a google search as input. Ex: ["heartbleed", "tell me the cve name of heartbleed"] """
 	name = "raw-google-search"
 
 	@root_validator()
@@ -49,12 +48,18 @@ class RawGoogleSearch(BaseTool):
 
 		return values
 
-	def _run(self, query: str) -> str:
+	def _run(self, input: str) -> str:
 		"""Run query through GoogleSearch and parse result."""
-		params = self.get_params(query)
+		print(input)
+		google_search, instructions = json.loads(input)
+
+		params = self.get_params(google_search)
 		search = GoogleSearch(params)
 		res = search.get_dict()
-		return self._parse_results(res)
+
+		results = self._parse_results(res)
+		return read(str(results), instructions)
+
 
 	async def _arun(self, query: str) -> str:
 		"""Use the tool asynchronously."""

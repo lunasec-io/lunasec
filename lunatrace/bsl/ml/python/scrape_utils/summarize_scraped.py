@@ -16,19 +16,19 @@ from langchain.prompts import PromptTemplate
 
 # this template is 389 tokens, ~ 400
 template = """
-I'm going to show you some scraped page text. Using it, {query}
+I'm going to show you some text. Using it, {query}
 
-I might show you a scraped section from lower down the page and give you an answer that was based on the content above the scraped section.
+I might show you a section from lower down the page and give you an answer that was based on the content above the given page content.
 Refine or expand this answer based on the page content I give you.
- If it's empty or irrelevant to the query then never-mind and just start a new answer.
+ If the previous answer is empty or irrelevant to the query then never-mind and just start a new answer.
 --- BEGIN PREVIOUS ANSWER ---
 {existing_body}
 --- END PREVIOUS ANSWER ---
 
 And here are the scraped page contents:
---- BEGIN SCRAPED PAGE CONTENTS ---
+--- BEGIN PAGE CONTENTS ---
 {page_content}
---- END SCRAPED PAGE CONTENTS ---
+--- END PAGE CONTENTS ---
 You may have seen a list of links that were found on the page at the bottom of the scraped contents. If it looks like
 one of these links might have the information needed, you could tell me to scrape it and give me the link. Otherwise, ignore this part.
  """

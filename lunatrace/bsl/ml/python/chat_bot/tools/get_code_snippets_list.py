@@ -1,4 +1,4 @@
-
+from pprint import pformat
 
 from langchain.tools import BaseTool
 
@@ -13,13 +13,14 @@ client = Client(transport=transport, fetch_schema_from_transport=True)
 
 query = gql(
 """
-query GetCodeSnippetsList($cve_id: String = "") {
+query GetCodeSnippetsList($cve_id: String!) {
 	vulnerability_code_snippet(where: {vulnerabilityByVulnerability: {cve_id: {_eq: $cve_id}}}){
-	id
-	score
-	summary
-	type
-	language
+			id
+			score
+			summary
+			type
+			language
+	}
 }
 """
 )
@@ -27,12 +28,15 @@ query GetCodeSnippetsList($cve_id: String = "") {
 
 class CodeSnippetLookup(BaseTool):
 	name = "CodeSnippetList"
-	description = "Used to get a list of code snippets by inputting the CVE name (like CVE-XXX-XXXXX) once you know it. Returns a list of snippets, each with an ID you can use to look at one specifically."
+	description = """
+	Used to get a list of code snippets by inputting the CVE name (like CVE-XXX-XXXXX) once you know it.
+	 Example input: ["CVE-XXX-XXXXX","Tell me the IDs of snippets that show an attack reproduction, starting with the best one."]
+	"""
 
 	def _run(self, input: str) -> str:
 		"""Use the tool."""
 		result = client.execute(query, variable_values={'cve_id':input})
-		return result
+		return pformat(str(result), sort_dicts=False, width=400)
 
 	async def _arun(self, query: str) -> str:
 		"""Use the tool asynchronously."""
