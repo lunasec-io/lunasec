@@ -26,6 +26,8 @@ type packageTable struct {
 	LastFailedFetch     postgres.ColumnTimestampz
 	LastSuccessfulFetch postgres.ColumnTimestampz
 	Internal            postgres.ColumnBool
+	ReadmeText          postgres.ColumnString
+	UseCaseSummary      postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -75,8 +77,10 @@ func newPackageTableImpl(schemaName, tableName, alias string) packageTable {
 		LastFailedFetchColumn     = postgres.TimestampzColumn("last_failed_fetch")
 		LastSuccessfulFetchColumn = postgres.TimestampzColumn("last_successful_fetch")
 		InternalColumn            = postgres.BoolColumn("internal")
-		allColumns                = postgres.ColumnList{IDColumn, PackageManagerColumn, CustomRegistryColumn, NameColumn, DescriptionColumn, UpstreamDataColumn, LastFailedFetchColumn, LastSuccessfulFetchColumn, InternalColumn}
-		mutableColumns            = postgres.ColumnList{PackageManagerColumn, CustomRegistryColumn, NameColumn, DescriptionColumn, UpstreamDataColumn, LastFailedFetchColumn, LastSuccessfulFetchColumn, InternalColumn}
+		ReadmeTextColumn          = postgres.StringColumn("readme_text")
+		UseCaseSummaryColumn      = postgres.StringColumn("use_case_summary")
+		allColumns                = postgres.ColumnList{IDColumn, PackageManagerColumn, CustomRegistryColumn, NameColumn, DescriptionColumn, UpstreamDataColumn, LastFailedFetchColumn, LastSuccessfulFetchColumn, InternalColumn, ReadmeTextColumn, UseCaseSummaryColumn}
+		mutableColumns            = postgres.ColumnList{PackageManagerColumn, CustomRegistryColumn, NameColumn, DescriptionColumn, UpstreamDataColumn, LastFailedFetchColumn, LastSuccessfulFetchColumn, InternalColumn, ReadmeTextColumn, UseCaseSummaryColumn}
 	)
 
 	return packageTable{
@@ -92,6 +96,8 @@ func newPackageTableImpl(schemaName, tableName, alias string) packageTable {
 		LastFailedFetch:     LastFailedFetchColumn,
 		LastSuccessfulFetch: LastSuccessfulFetchColumn,
 		Internal:            InternalColumn,
+		ReadmeText:          ReadmeTextColumn,
+		UseCaseSummary:      UseCaseSummaryColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

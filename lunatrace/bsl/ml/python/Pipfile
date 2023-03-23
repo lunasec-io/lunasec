@@ -24,6 +24,8 @@ google-search-results = "*"
 twirp = "*"
 uvicorn = "*"
 python-dotenv = "*"
+grpcio-tools = "*"
+grpcio = "*"
 
 [dev-packages]
 

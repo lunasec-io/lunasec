@@ -1,10 +1,11 @@
+# TODO: IS THIS DEAD CODE IN THIS FILE?
+
 from twirp.context import Context
 from twirp.exceptions import TwirpServerException
 
 from gen import langchain_twirp, langchain_pb2
 
 client = langchain_twirp.LangChainClient("http://localhost:3000")
-
 # if you are using a custom prefix, then pass it as `server_path_prefix`
 # param to `MakeHat` class.
 try:

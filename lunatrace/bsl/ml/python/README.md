@@ -1,4 +1,16 @@
-
+<!--
+  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
+  ~
+  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+  ~ (the "License"); you may not use this file except in compliance with the
+  ~ License. You may obtain a copy of the License at
+  ~
+  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
+  ~
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
 # Lunasec-ml Python package
 
 This package contains lunasec's python ML tools, primarily built around langchain. 
@@ -39,17 +51,22 @@ OPENAI_API_KEY=$(aws secretsmanager get-secret-value --secret-id lunasec-OpenAIS
 ```
 
 ### Proto
-The protobuf definitions are in `lunasec/lunatrace/bsl/proto/`. To update the protobuf definitions, you will need `protoc`, `protoc-gen-twirpy`, and `protoc-gen-go`:
+The protobuf definitions are in `lunasec/lunatrace/bsl/proto/`. To update the protobuf definitions, you will need `protoc` and `protoc-gen-go`:
 
 ```shell
 yay -S protobuf
-go get -u github.com/verloop/twirpy/protoc-gen-twirpy
+python -m pip install grpcio-tools
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 ```
 
-To regenerate the twirp server, run:
+To regenerate all generated grpc client code, run this from the repo root
+```shell
+yarn run generate:go && yarn run generate:ml:python
 ```
-protoc --python_out=./gen --pyi_out=./gen --twirpy_out=./gen -I ../../proto ../../proto/*
+To regenerate the grpc python server, run:
+```
+python -m grpc_tools.protoc -I../../proto --python_out=. --pyi_out=. --grpc_python_out=. ../../proto/langchain.proto
 ```
 
 **Note**: You will also need to regenerate the go protobuf code. Do this with `go generate ./...` from the root of the repo. Or alternatively, run `yarn generate` from the root of the repo.

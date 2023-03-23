@@ -34,11 +34,11 @@ func NewDiscordSession(p NewSessionParams) (*discordgo.Session, error) {
 }
 
 func LogSessionEvents(s *discordgo.Session) {
-	s.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
-		log.Info().
-			Interface("event", m).
-			Msg("message create")
-	})
+	//s.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
+	//	log.Info().
+	//		Interface("event", m).
+	//		Msg("message create")
+	//})
 	//d.session.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
 	//	log.Info().
 	//		Str("username", s.State.User.Username).
