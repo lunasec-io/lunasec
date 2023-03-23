@@ -22,6 +22,7 @@
   @include box-shadow($input-box-shadow);
   @include transition($input-transition);
 
+
   &[type="file"] {
     overflow: hidden; // prevent pseudo element button overlap
 

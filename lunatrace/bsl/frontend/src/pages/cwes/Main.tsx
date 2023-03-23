@@ -1,3 +1,16 @@
+/*
+ * Copyright by LunaSec (owned by Refinery Labs, Inc)
+ *
+ * Licensed under the Business Source License v1.1
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * https://github.com/lunasec-io/lunasec/blob/master/licenses/BSL-LunaTrace.txt
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 import React, { useState } from 'react';
 import { Button, Col, Container, Form, InputGroup, Row, Spinner } from 'react-bootstrap';
 import { useBottomScrollListener } from 'react-bottom-scroll-listener';
@@ -54,7 +67,7 @@ export const CwesMain: React.FunctionComponent = () => {
       <Helmet title="Common Weakness Enumeration (CWE) Index" />
       <Container>
         <Row className="mb-2 mb-xl-3">
-          <Col sm="6" md="4">
+          <Col xs="12">
             <form
               onSubmit={(e) => {
                 e.preventDefault();

@@ -1,46 +1,40 @@
-query SearchVulnerabilities($search: String!, $order_by: [vulnerability_order_by!] = {}, $limit: Int!) {
-  vulnerability:search_vulnerabilities(
-    args: {search:$search},
-    where: {
-      _and: [
-        {affected: {id: {_is_null: false}}},
-        {source: {_eq:"ghsa"}},
-      ]
-    },
-    limit: $limit,
-    order_by: $order_by
-  ) {
-    affected {
-      database_specific
-      ecosystem_specific
-      id
-      package {
-        name
-        id
-      }
-      affected_range_events {
+query SearchVulnerabilities($search: String = "", $order_by: [vulnerability_order_by!] = {}, $limit: Int!, $where: vulnerability_bool_exp!) {
+    vulnerability:search_vulnerabilities(args: {search: $search}, limit: $limit, order_by: $order_by, where: $where) {
+        affected {
+            database_specific
+            ecosystem_specific
+            id
+            package {
+                name
+                id
+            }
+            affected_range_events {
+                database_specific
+                event
+                id
+                type
+                version
+            }
+            ranges{
+                fixed
+                introduced
+            }
+        }
         database_specific
-        event
+        details
+        severities {
+            id
+            score
+            source
+            type
+        }
+        source
+        source_id
+        summary
+        withdrawn
+        published
+        modified
+        severity_name
         id
-        type
-        version
-      }
     }
-    database_specific
-    details
-    severities {
-      id
-      score
-      source
-      type
-    }
-    source
-    source_id
-    summary
-    withdrawn
-    published
-    modified
-    severity_name
-    id
-  }
 }

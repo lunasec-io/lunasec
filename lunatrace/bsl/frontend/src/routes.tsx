@@ -16,6 +16,7 @@ import { RouteObject } from 'react-router';
 import { Navigate } from 'react-router-dom';
 
 import { RouteGuard } from './components/auth/RouteGuard';
+import { QuickViewProvider } from './contexts/QuickViewContext';
 import MainLayout from './layouts/Main';
 import { AdminDashboard, BuildDetails, OrganizationsList, ProjectMain, VulnerabilitiesMain } from './pages';
 import { ApiExplorerMain } from './pages/api-explorer/Main';
@@ -121,10 +122,22 @@ export const routes: RouteObject[] = [
             path: 'build/:build_id',
             element: (
               <RouteGuard>
-                <BuildDetails />
+                <QuickViewProvider>
+                  <BuildDetails />
+                </QuickViewProvider>
               </RouteGuard>
             ),
           },
+          // Yes, this is really how you do optional parameters in react router now.
+
+          // {
+          //   path: 'build/:build_id/:quick-view-type/:quick-view-id',
+          //   element: (
+          //     <RouteGuard>
+          //       <BuildDetails />
+          //     </RouteGuard>
+          //   ),
+          // },
         ],
       },
       {

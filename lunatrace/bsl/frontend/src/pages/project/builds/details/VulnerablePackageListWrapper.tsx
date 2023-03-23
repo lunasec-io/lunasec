@@ -26,7 +26,6 @@ import { VulnerablePackagesList } from './vulnerable-packages/VulnerablePackages
 
 export interface VulnerablePackageListWrapperProps {
   findings: Finding[];
-  quickViewConfig: QuickViewProps;
   projectId: string;
   buildId: string;
   toggleIgnoreFindings: () => void;
@@ -37,7 +36,7 @@ export interface VulnerablePackageListWrapperProps {
 // This component will switch between legacy views or the newer tree-based view if data is available
 export const VulnerablePackageListWrapper: React.FC<VulnerablePackageListWrapperProps> = ({
   findings,
-  quickViewConfig,
+
   projectId,
   toggleIgnoreFindings,
   buildId,
@@ -69,7 +68,6 @@ export const VulnerablePackageListWrapper: React.FC<VulnerablePackageListWrapper
         <SpinIfLoading isLoading={isFetching} />
         <VulnerablePackagesList
           vulnerablePackages={unfilteredVulnerableReleasesFromTree}
-          quickView={quickViewConfig}
           setIgnoreFindings={toggleIgnoreFindings}
           severity={severity}
           setSeverity={setSeverity}
@@ -84,7 +82,6 @@ export const VulnerablePackageListWrapper: React.FC<VulnerablePackageListWrapper
     <LegacyGrypeVulnerablePackageList
       project_id={projectId}
       findings={findings}
-      quickView={quickViewConfig}
       setIgnoreFindings={toggleIgnoreFindings}
     />
   );

@@ -15,27 +15,24 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { Badge, FloatingLabel, Form, FormControl, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { XSquare } from 'react-feather';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 import api from '../../../../../../../api';
 import { ConfirmationDailog } from '../../../../../../../components/ConfirmationDialog';
+import { useQuickView } from '../../../../../../../hooks/useQuickView';
 import { CweBadge } from '../../../../../../vulnerabilities/detail/CweBadge';
-import { vulnerabilityOpenInQuickView, vulnerabilityQuickViewState } from '../../../../state';
-import { QuickViewProps } from '../../../../types';
 import { VulnMeta } from '../../types';
 
 interface VulnerabilityTableItemProps {
   vulnMeta: VulnMeta;
-  quickView: QuickViewProps;
 }
 
-export const VulnInfoTableRow: React.FC<VulnerabilityTableItemProps> = ({ vulnMeta, quickView }) => {
+export const VulnInfoTableRow: React.FC<VulnerabilityTableItemProps> = ({ vulnMeta }) => {
   const [insertVulnIgnore, insertVulnIgnoreState] = api.useInsertIgnoredVulnerabilitiesMutation();
   const { project_id } = useParams();
-
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [ignoreNote, setIgnoreNote] = useState('');
-
+  const quickView = useQuickView();
   const renderIgnoreNote = () => {
     if (!vulnMeta.ignored_vulnerability) {
       return null;
@@ -77,29 +74,26 @@ export const VulnInfoTableRow: React.FC<VulnerabilityTableItemProps> = ({ vulnMe
     );
   };
 
-  const rowClassNames = classNames('vuln-table-item', {
-    open: vulnerabilityOpenInQuickView(quickView.quickViewState, vulnMeta.vulnerability.id),
-    ignored: vulnMeta.ignored,
-  });
+  const rowClassNames = classNames(
+    'vuln-table-item',
+    {
+      open: quickView.checkVulnOpen(vulnMeta.vulnerability.id),
+      ignored: vulnMeta.ignored,
+    },
+    'cursor-pointer'
+  );
 
   const fixVersions = vulnMeta.fix_versions;
 
-  const rowValues = [
-    <OverlayTrigger
-      placement="bottom"
-      overlay={<Tooltip className="wide-tooltip">{vulnMeta.vulnerability.summary}</Tooltip>}
-      key={vulnMeta.vulnerability.id}
+  const columnValues = [
+    <span
+      key={vulnMeta.vulnerability.summary}
+      // bg={'light'}
+      className="d-inline-block text-capitalize text-truncate finding-summary-column mt-1"
+      style={{ fontSize: '.9rem' }}
     >
-      <Badge
-        bg={'light'}
-        style={{ cursor: 'pointer' }}
-        onClick={(e) => {
-          quickView.setVulnQuickViewState(vulnerabilityQuickViewState(vulnMeta.vulnerability.id));
-        }}
-      >
-        {vulnMeta.vulnerability.source_id}
-      </Badge>
-    </OverlayTrigger>,
+      {vulnMeta.vulnerability.summary}
+    </span>,
     <div key={vulnMeta.vulnerability.id}>
       {vulnMeta.vulnerability.cwes.map((c) => (
         <CweBadge
@@ -107,8 +101,8 @@ export const VulnInfoTableRow: React.FC<VulnerabilityTableItemProps> = ({ vulnMe
           id={c.cwe.id}
           name={c.cwe.name}
           common_name={c.cwe.common_name || undefined}
-          quickView={quickView}
           tooltipDescription={true}
+          shouldOpenInQuickView={true}
         />
       ))}
     </div>,
@@ -132,16 +126,44 @@ export const VulnInfoTableRow: React.FC<VulnerabilityTableItemProps> = ({ vulnMe
 
   return (
     <>
-      <tr className={rowClassNames} key={vulnMeta.vulnerability.id}>
-        {rowValues.map((value, idx) => {
-          const classNames = vulnMeta.ignored ? 'text-decoration-line-through' : '';
-          return (
-            <td key={idx} className={classNames}>
-              {value}
-            </td>
-          );
-        })}
-      </tr>
+      <OverlayTrigger
+        placement="bottom"
+        overlay={(
+          <Tooltip className="wide-tooltip">
+            <p className="m-2 font-weight-bold">Click to Expand</p>
+            <p className="m-1">
+              <b>Name: </b>
+              {vulnMeta.vulnerability.source_id}
+            </p>
+            {vulnMeta.vulnerability.cve_id && (
+              <p className="m1">
+                <b>CVE: </b>
+                {vulnMeta.vulnerability.cve_id}
+              </p>
+            )}
+
+            {vulnMeta.vulnerability.summary}
+          </Tooltip>
+        )}
+        key={vulnMeta.vulnerability.id}
+      >
+        <tr
+          className={rowClassNames}
+          key={vulnMeta.vulnerability.id}
+          onClick={(e) => {
+            quickView.setState({ mode: 'vuln', id: vulnMeta.vulnerability.id });
+          }}
+        >
+          {columnValues.map((value, idx) => {
+            const classNames = vulnMeta.ignored ? 'text-decoration-line-through' : '';
+            return (
+              <td key={idx} className={classNames}>
+                {value}
+              </td>
+            );
+          })}
+        </tr>
+      </OverlayTrigger>
       {renderIgnoreNote()}
 
       <ConfirmationDailog

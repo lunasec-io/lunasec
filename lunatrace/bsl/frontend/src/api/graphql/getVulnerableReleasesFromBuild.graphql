@@ -60,6 +60,7 @@ query GetVulnerableReleasesFromBuild($buildId: uuid!, $minimumSeverity: String!)
                 note
             }
             vulnerability{
+                cve_id
                 severity_name
                 cvss_score
                 source

@@ -19,7 +19,7 @@ import { useParams } from 'react-router-dom';
 
 import api from '../../../../../../api';
 import { ConfirmationDailog } from '../../../../../../components/ConfirmationDialog';
-import {BuildDetailInfo, QuickViewProps} from '../../../types';
+import { BuildDetailInfo, QuickViewProps } from '../../../types';
 import { VulnerablePackage } from '../types';
 
 import { PackageCardBody } from './PackageCardBody';
@@ -27,7 +27,6 @@ import { VulnerablePackageCardHeader } from './VulnerablePackageCardHeader';
 
 interface VulnerablePackageMainProps {
   pkg: VulnerablePackage;
-  quickView: QuickViewProps;
   severity: SeverityNamesOsv;
   shouldIgnore: boolean;
   build: BuildDetailInfo;
@@ -35,7 +34,6 @@ interface VulnerablePackageMainProps {
 
 export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMainProps> = ({
   pkg,
-  quickView,
   severity,
   shouldIgnore,
   build,
@@ -82,7 +80,7 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
   // eslint-disable-next-line react/display-name
   const customMenuToggle = React.forwardRef<
     HTMLAnchorElement,
-    { onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void,children:React.ReactNode }
+    { onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void; children: React.ReactNode }
   >(({ children, onClick }, ref) => (
     <a
       className="text-end position-absolute top-0 end-0 m-3 btn-white"
@@ -121,7 +119,6 @@ export const VulnerablePackageMain: React.FunctionComponent<VulnerablePackageMai
         <PackageCardBody
           findingsHiddenBySeverityCount={findingsHiddenBySeverityCount}
           pkg={pkg}
-          quickView={quickView}
           severity={severity}
           findings={findings}
           shouldFilterFindingsBySeverity={shouldFilterFindingsBySeverity}

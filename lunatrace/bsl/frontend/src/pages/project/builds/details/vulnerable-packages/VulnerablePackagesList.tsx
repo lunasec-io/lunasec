@@ -24,7 +24,6 @@ import { VulnerablePackage } from './types';
 import { VulnerablePackageMain } from './vulnerable-package-card/VulnerablePackageMain';
 
 interface FindingListProps {
-  quickView: QuickViewProps;
   setIgnoreFindings: (ignored: boolean) => void;
   vulnerablePackages: VulnerablePackage[];
   severity: SeverityNamesOsv;
@@ -34,7 +33,6 @@ interface FindingListProps {
 }
 
 export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> = ({
-  quickView,
   setIgnoreFindings,
 
   vulnerablePackages,
@@ -57,14 +55,7 @@ export const VulnerablePackagesList: React.FunctionComponent<FindingListProps> =
 
   const pkgCards = packagesFilteredBySeverity.map((p) => {
     return (
-      <VulnerablePackageMain
-        key={p.release.id}
-        pkg={p}
-        quickView={quickView}
-        severity={severity}
-        shouldIgnore={shouldIgnore}
-        build={build}
-      />
+      <VulnerablePackageMain key={p.release.id} pkg={p} severity={severity} shouldIgnore={shouldIgnore} build={build} />
     );
   });
 

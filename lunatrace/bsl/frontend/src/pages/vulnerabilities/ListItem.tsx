@@ -52,7 +52,7 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
     <>
       <Card
         onClick={() => navigate(`/vulnerabilities/${vuln.id as string}`)}
-        className="flex-fill w-100 vulnerability clickable-card"
+        className="flex-fill w-100 vulnerability clickable-card p-0 mb-3"
       >
         <Card.Header>
           <Container fluid>
@@ -78,10 +78,7 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
                       </h4>
                     </div>
                   </Card.Title>
-                  <Card.Subtitle className="text-right">
-                    <span className="darker">Added on: </span>
-                    {prettyDate(new Date(vuln.published))}
-                  </Card.Subtitle>
+                  <Card.Subtitle className="text-right">{prettyDate(new Date(vuln.published))}</Card.Subtitle>
                 </div>
               </Col>
             </Row>
@@ -93,12 +90,16 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
               <Col xs="12" sm={{ order: 'last', span: 3 }}>
                 <div style={{ float: 'right' }}>{renderCvssScore()}</div>
               </Col>
+              {vuln.summary && (
+                <Row>
+                  <Col xs="12">
+                    <span className="lighter">{vuln.summary}</span>
+                  </Col>
+                </Row>
+              )}
               <Col sm="9" xs="12">
                 <Card.Text>
-                  Packages:{' '}
-                  <p>
-                    <strong>{packageNamesString}</strong>
-                  </p>
+                  Packages: <p>{packageNamesString}</p>
                 </Card.Text>
                 <div className="align-self-center w-100">
                   {/*<div className="chart chart-lg">*/}
@@ -107,17 +108,6 @@ export const VulnerabilityListItem: React.FunctionComponent<VulnerabilityListIte
                 </div>
               </Col>
             </Row>
-
-            {vuln.summary ? (
-              <Row>
-                <Col xs="12">
-                  Summary:
-                  <p>
-                    <strong>{vuln.summary}</strong>
-                  </p>
-                </Col>
-              </Row>
-            ) : null}
           </Container>
         </Card.Body>
       </Card>

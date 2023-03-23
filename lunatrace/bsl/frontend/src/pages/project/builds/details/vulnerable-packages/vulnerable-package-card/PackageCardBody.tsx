@@ -28,7 +28,6 @@ import { FindingsListHeader } from './findings/FindingsListHeader';
 
 interface VulnerablePackageCardBodyProps {
   pkg: VulnerablePackage;
-  quickView: QuickViewProps;
   severity: SeverityNamesOsv;
   findings: VulnerablePackage['affected_by'];
   setShouldFilterFindingsBySeverity: (should: boolean) => void;
@@ -39,7 +38,6 @@ interface VulnerablePackageCardBodyProps {
 
 export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyProps> = ({
   pkg,
-  quickView,
   severity,
   shouldFilterFindingsBySeverity,
   setShouldFilterFindingsBySeverity,
@@ -66,7 +64,6 @@ export const PackageCardBody: React.FunctionComponent<VulnerablePackageCardBodyP
               <FindingsTable
                 shouldFilterFindings={shouldFilterFindingsBySeverity}
                 filteredFindings={findings}
-                quickView={quickView}
                 setShouldFilterFindings={setShouldFilterFindingsBySeverity}
                 findingsHiddenBySeverityCount={findingsHiddenBySeverityCount}
               />

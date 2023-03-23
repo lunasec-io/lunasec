@@ -149,7 +149,7 @@ export const VulnerabilityDetailBody: React.FunctionComponent<VulnerabilityDetai
                 <h5 className={'darker'}>Vulnerability Categories</h5>
                 <div>
                   {vuln.cwes.map((c) => (
-                    <CweBadge key={c.id} id={c.cwe.id} name={c.cwe.name} />
+                    <CweBadge key={c.id} id={c.cwe.id} name={c.cwe.name} shouldOpenInQuickView={false} />
                   ))}
                 </div>
               </Card.Footer>

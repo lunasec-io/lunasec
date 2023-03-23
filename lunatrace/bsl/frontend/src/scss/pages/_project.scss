@@ -65,3 +65,7 @@
   margin-left: 20px;
   background-color: $card-bg;
 }
+
+.finding-summary-column {
+  max-width: clamp(130px,25vw, 400px);
+}

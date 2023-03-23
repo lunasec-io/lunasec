@@ -109,6 +109,7 @@ export type BuildData_Release = {
 
 export type BuildData_Vulnerability = {
   __typename?: 'BuildData_Vulnerability';
+  cve_id?: Maybe<Scalars['String']>;
   cvss_score?: Maybe<Scalars['Float']>;
   cwes: Array<BuildData_VulnerabilityCwe>;
   guide_vulnerabilities: Array<BuildData_Guide_Vulnerability>;
@@ -475,6 +476,7 @@ export type BuildData_ReleaseResolvers<ContextType = Context, ParentType extends
 };
 
 export type BuildData_VulnerabilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BuildData_Vulnerability'] = ResolversParentTypes['BuildData_Vulnerability']> = {
+  cve_id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   cvss_score?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   cwes?: Resolver<Array<ResolversTypes['BuildData_VulnerabilityCwe']>, ParentType, ContextType>;
   guide_vulnerabilities?: Resolver<Array<ResolversTypes['BuildData_Guide_Vulnerability']>, ParentType, ContextType>;

@@ -16,22 +16,18 @@ import React, { ChangeEvent, useState } from 'react';
 import { Col, Dropdown, Row } from 'react-bootstrap';
 import { AiOutlineMinusCircle } from 'react-icons/ai';
 
-import { QuickViewProps } from '../../types';
-
 import { VulnerablePackageMain } from './VulnerablePackageMain';
 import { Finding } from './types';
 
 interface FindingListProps {
   findings: Finding[];
   project_id: string;
-  quickView: QuickViewProps;
   setIgnoreFindings: (ignored: boolean) => void;
 }
 
 export const LegacyGrypeVulnerablePackageList: React.FunctionComponent<FindingListProps> = ({
   project_id,
   findings,
-  quickView,
   setIgnoreFindings,
 }) => {
   const [severityFilter, setSeverityFilter] = useState(severityOrder.indexOf('critical'));
@@ -54,7 +50,7 @@ export const LegacyGrypeVulnerablePackageList: React.FunctionComponent<FindingLi
   const pkgCards = filteredVulnerablePkgs.map((pkg) => {
     return (
       <Row key={pkg.purl}>
-        <VulnerablePackageMain severityFilter={severityFilter} pkg={pkg} quickView={quickView} />
+        <VulnerablePackageMain severityFilter={severityFilter} pkg={pkg} />
       </Row>
     );
   });

@@ -23,7 +23,6 @@ import { FindingItem } from './FindingItem';
 interface FindingsTableProps {
   shouldFilterFindings: boolean;
   filteredFindings: Finding[];
-  quickView: QuickViewProps;
   setShouldFilterFindings: (shouldFilter: boolean) => void;
   findingsCount: number;
 }
@@ -31,7 +30,6 @@ interface FindingsTableProps {
 export const FindingsTable: React.FC<FindingsTableProps> = ({
   shouldFilterFindings,
   filteredFindings,
-  quickView,
   setShouldFilterFindings,
   findingsCount,
 }) => {
@@ -42,7 +40,7 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
           <tr>
             <th>Source</th>
             <th>Vulnerability ID</th>
-            <th>Vulnerability Categories</th>
+            <th>Type</th>
             <th>Severity</th>
             <th>CVSS</th>
             <th>Fix</th>
@@ -51,7 +49,7 @@ export const FindingsTable: React.FC<FindingsTableProps> = ({
         </thead>
         <tbody>
           {filteredFindings.map((f) => {
-            return <FindingItem patchable="no" key={f.id} finding={f} quickView={quickView} />;
+            return <FindingItem patchable="no" key={f.id} finding={f} />;
           })}
         </tbody>
       </Table>
