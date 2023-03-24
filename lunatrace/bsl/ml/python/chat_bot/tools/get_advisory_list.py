@@ -33,7 +33,7 @@ class ReadAdvisory(BaseTool):
 	def _run(self, input: str) -> str:
 		"""Use the tool."""
 		advisory_id, query = json.loads(input)
-		result = client.execute(query, variable_values={'$id':advisory_id})
+		result = client.execute(query, variable_values={'id':advisory_id})
 		print('got graphql advisory result ', result)
 		contents = result["ReadAdvisory"]['vulnerability_reference_content']
 		if not contents or len(contents) < 1:

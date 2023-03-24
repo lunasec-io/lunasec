@@ -4,7 +4,7 @@ from langchain.tools import BaseTool
 from pprint import pformat
 from gql import gql, Client
 from gql.transport.aiohttp import AIOHTTPTransport
-
+from scrape_utils.read_anything import read
 # Select your transport with a defined url endpoint
 transport = AIOHTTPTransport(url="http://localhost:4455/v1/graphql")
 
@@ -31,6 +31,21 @@ query = gql(
 			package_manager
 		  }
 		}
+		references {
+      url
+      reference_content {
+        id
+        title
+        summary
+      }
+    }
+      code_snippets {
+        id
+        language
+        score
+        summary
+        source_url
+      }
 	  }
 	}
 """
@@ -43,10 +58,10 @@ class VulnLookupTool(BaseTool):
 
 	def _run(self, input: str) -> str:
 		"""Use the tool."""
-		cve_id, _ = json.loads(input)
+		cve_id, instruction = json.loads(input)
 
 		result = client.execute(query, variable_values={'cve_id':cve_id})
-		return pformat(result, sort_dicts=False, width=400)
+		return read(str(result), instruction + '. Also give me the most relevant advisory IDs and snippet IDs from the results, if any.' )
 
 	async def _arun(self, query: str) -> str:
 		"""Use the tool asynchronously."""

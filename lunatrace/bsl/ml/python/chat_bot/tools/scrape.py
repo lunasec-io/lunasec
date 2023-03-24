@@ -44,7 +44,8 @@ class Scraper(BaseTool):
 			"hl": "en",
 		}
 	)
-	description ="""Scrapes a web page and attempts to answer a query for you. Use this to read through the search results.
+	description ="""Scrapes a web page and attempts to answer a query for you. Use this as a last resort to scrape a URL from google search if you can't find
+	good information in any of the other tools.
 	 As input, takes a two element array where the first element is the url you wish to scrape, and the second is 
 	 a command to the scraper of what to find on the page.
 	 Example input: ["https://wikipedia.com", "Tell me wikipedias mission statement."]

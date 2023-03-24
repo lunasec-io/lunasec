@@ -35,7 +35,7 @@ class RawGoogleSearch(BaseTool):
 			"num": "10"
 		}
 	)
-	description ="""A good first step to look up the CVE name for use in other tools. Takes a google search as input. Ex: ["heartbleed", "tell me the cve name of heartbleed"] """
+	description ="""A good first step to look up the CVE name for use in other tools, or a url if you're desperate enough to start scraping. Takes a google search as input. Ex: ["heartbleed", "tell me the cve name of heartbleed (or alternatively: tell me the URL of a page to learn about X)"] """
 	name = "raw-google-search"
 
 	@root_validator()

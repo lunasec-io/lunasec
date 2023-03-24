@@ -1,3 +1,4 @@
+import json
 from pprint import pformat
 
 from langchain.tools import BaseTool
@@ -30,12 +31,13 @@ class CodeSnippetLookup(BaseTool):
 	name = "CodeSnippetList"
 	description = """
 	Used to get a list of code snippets by inputting the CVE name (like CVE-XXX-XXXXX) once you know it.
-	 Example input: ["CVE-XXX-XXXXX","Tell me the IDs of snippets that show an attack reproduction, starting with the best one."]
+	 Example input: ["CVE-XXX-XXXXX","explain what kind of snippet you are looking for and that you want to know IDs of a good snippet for that"]
 	"""
 
 	def _run(self, input: str) -> str:
+		cve_id, instructions = json.loads(input)
 		"""Use the tool."""
-		result = client.execute(query, variable_values={'cve_id':input})
+		result = client.execute(query, variable_values={'cve_id':cve_id})
 		return pformat(str(result), sort_dicts=False, width=400)
 
 	async def _arun(self, query: str) -> str:
