@@ -16,6 +16,10 @@
     <editorconfig>
       <option name="ENABLED" value="false" />
     </editorconfig>
+    <codeStyleSettings language="Markdown">
+      <option name="RIGHT_MARGIN" value="120" />
+      <option name="WRAP_ON_TYPING" value="1" />
+    </codeStyleSettings>
     <codeStyleSettings language="Python">
       <indentOptions>
         <option name="USE_TAB_CHARACTER" value="true" />

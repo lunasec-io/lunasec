@@ -52,6 +52,9 @@ module.exports = {
   scripts: [{
     async: true,
     src: 'https://www.lunasec.io/docs/js/broken-link-check.js'
+  }, {
+    async:false,
+    src: 'https://platform.twitter.com/widgets.js'
   }],
   plugins: [
     function webpackDefine(context, options) {
