@@ -162,7 +162,7 @@ module.exports = {
     announcementBar: {
       id: 'mailing_list',
       content:
-        '<a href="/docs/pages/mailing-list" style="font-size: 15px; text-decoration: none">Subscribe to our mailing list to get the latest security news and product updates.</a>',
+        '<a href="https://discord.gg/2EbHdAR5w7" target="_blank" style="font-size: 15px; text-decoration: none">Join us on Discord to stay on top of the latest AI news.</a>',
       backgroundColor: '#9ec6ef',
       textColor: '#091E42',
       isCloseable: true,
