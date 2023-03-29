@@ -24,8 +24,8 @@ authors: [free]
 
 On March 28th, Cerebras released on [HuggingFace](https://huggingface.co/cerebras/Cerebras-GPT-13B) a new Open
 Source model trained on [The Pile](https://pile.eleuther.ai/) dataset called "Cerebras-GPT" with GPT-3-like
-performance. ([Link to press release]
-(https://www.cerebras.net/blog/cerebras-gpt-a-family-of-open-compute-efficient-large-language-models/))
+performance. (
+[Link to press release](https://www.cerebras.net/blog/cerebras-gpt-a-family-of-open-compute-efficient-large-language-models/))
 
 ## What makes Cerebras interesting?
 
@@ -66,17 +66,20 @@ competition benefits all of us!)
 ## Cerebras vs LLaMA vs ChatGPT vs GPT-J vs NeoX
 
 To put it in simple terms: Cerebras isn't as advanced as either LLaMA or ChatGPT (`gpt-3.5-turbo`). It's a
-much smaller model at 13B parameters. (Cerebras is ~6% of the size of GPT-3 and ~25% of the size of LLaMA's
-full-size, 60B parameter model.)
+much smaller model at 13B parameters and it's been intentionally "undertrained" relative to the other models.
+Cerebras is ~6% of the size of GPT-3 and ~25% of the size of LLaMA's full-size, 60B parameter model, and they
+intentionally limited how long the model was trained in order to reach a "training compute optimal" state.
 
 That doesn't mean that it's useless though. As you'll see from the data released in the Cerebras paper, this model
-is still a significant advancement over previous Open Source models like [GPT-2 (1.5B)](https://huggingface.co/gpt2),
+is still a welcome addition to the available Open Source models like [GPT-2 (1.5B)](https://huggingface.co/gpt2),
 [GPT-J (6B)]
-(https://huggingface.co/EleutherAI/gpt-j-6B) or [GPT NeoX (20B)](https://huggingface.co/EleutherAI/gpt-neox-20b).
+(https://huggingface.co/EleutherAI/gpt-j-6B), and [GPT NeoX (20B)](https://huggingface.co/EleutherAI/gpt-neox-20b).
+It's also possible that the model can improve with additional tweaking by the community (like fine-tuning or
+creating LORAs for it.)
 
-For anybody building around AI that doesn't want to depend on
-[OpenAI's monopoly](https://www.lunasec.io/docs/blog/openai-not-so-open/), this is a welcome addition to the AI
-landscape. (Even if it's only really an incremental step forward, as you'll see in a moment.)
+It's also just valuable for anybody building around AI that can't depend on
+[OpenAI's monopoly](https://www.lunasec.io/docs/blog/openai-not-so-open/) for what they're building (enterprises with
+strict security requirements, foreign governments, or just people that want to have control over their infrastructure).
 
 ## Benchmark Comparison
 
@@ -89,7 +92,7 @@ landscape. (Even if it's only really an incremental step forward, as you'll see 
 | LLaMA (60B)  | -      | 84.2       | 82.8  | 77.0        | -       | 78.9  | 56.0  | 60.2       | 76.5  | 52.3 |
 | GPT-J (6B)   | 6B     | 66.1       | 76.5  | 65.3        | 69.7    | -     | -     | -          | -     | -    |
 | GPT-NeoX-20B | 20B    | -          | 77.9  | ~67.0       | 72.0    | ~72.0 | ~39.0 | ~31.0      | -     | -    |
-<figcaption style={{fontSize:'small', color:'grey'}}>If you'd like to add data for a model, you can edit
+<figcaption style={{fontSize:'small', color:'grey'}}>If you'd like to add data for another model, you can edit
     this table on [GitHub here](https://github.com/lunasec-io/lunasec/tree/master/docs/blog).</figcaption>
 
 It's a bit difficult to compare apples-to-apples between all of these different models, but I did my best to squeeze
@@ -116,3 +119,7 @@ better than either of those, but I'll let somebody more qualified than me answer
 Come [join our Discord](https://discord.gg/2EbHdAR5w7) and share your thoughts with us. We've been building a community
 of AI hackers to help keep up with the *insane* pace of development happening right now in the AI world, and we'd
 love to have you join us!
+
+### Updates
+
+2022-03-29 @ 2pm PST: Fixed some typos and rephrased some text.
