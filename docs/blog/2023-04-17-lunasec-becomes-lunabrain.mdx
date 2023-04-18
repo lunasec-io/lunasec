@@ -1,0 +1,120 @@
+---
+title: "LunaSec + AI = LunaBrain - Our new blog series on AI"
+description: "Learn how we're using AI models like ChatGPT to build LunaPipe, LunaBrain, and other tools on our new AI journey."
+slug: lunasec-and-ai-equals-lunabrain-our-new-blog-series-on-ai
+date: 2023-04-18T01:00:00.000Z
+keywords: [gpt, open-source, lunabrain]
+tags: [gpt, ai, open-source]
+authors: [free]
+---
+
+<!--
+  ~ Copyright by LunaSec (owned by Refinery Labs, Inc)
+  ~
+  ~ Licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+  ~ (the "License"); you may not use this file except in compliance with the
+  ~ License. You may obtain a copy of the License at
+  ~
+  ~ https://creativecommons.org/licenses/by-sa/4.0/legalcode
+  ~
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+-->
+
+It's been a crazy year for everybody with the advent of AI and the rise of GPT-3 + newer LLMs. Nearly the entire
+world has been talking about it, and we're no exception. Even as a security company, we've been playing around with how
+we can leverage these tools to help us extract information about CVEs and perform other security work.
+
+We've learned a lot about the AI space because of that work, and, even though we've been working on some really cool
+stuff, we've also realized that Security isn't the best place for us to be as a startup. It's a tough market with
+long sales cycles (since only enterprises really care about security), and it's hard to compete as a small player in
+the space.
+
+That's why we're pivoting and why I'm writing this post today: To announce our new name, LunaBrain, and to describe
+the work that we've been doing in the AI space. (You can check out our [new blog here](https://lunabrain.com/blog/),
+and I'll link our GitHub below.)
+
+## Why AI?
+
+AI is a crazy market that's changing at an unprecedented rate that, in my opinion, is as impactful to society as
+how the creation of both personal computers and the internet were. It's going to be important enough that, as a startup
+trying to build a sustainable business, it's clearly the best place for us to invest our time currently.
+
+And while AI has historically required a PhD to do anything with, the recent advancements in LLMs have made it so that
+even code monkeys like us can build some really cool stuff. (And we've been doing just that!)
+
+You can see the projects we're building on our new [LunaBrain GitHub Organization](https://github.com/lunabrain-ai),
+and I'll briefly list out a few of the projects we've been working on below.
+
+## Our AI Projects
+
+### LunaPipe
+
+[GitHub Repo](https://github.com/lunabrain-ai/lunapipe) (🌟 Stars appreciated!)
+
+<iframe width="100%" height="400" src="https://www.youtube-nocookie.com/embed/2Y4i3rtFvAI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+_Video of Chris showing off how LunaPipe works._
+
+We built a command line tool that you can use to pipe data into ChatGPT and have it perform tasks for you. It's a bit
+of a crazy idea, but it's also proven to be a very powerful tool. You can use it to generate code, filter output from
+Bash, or really do anything else that you can imagine fitting into a text prompt.
+
+#### Example: Create a simple Golang function
+
+```shell
+$ lunapipe "Write me a go function that prints 'Hello World'"
+Here's an example Go function that prints "Hello World" to the console:
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello World")
+}
+```
+
+#### Example: Quickly identify the files in an arbitrary directory
+
+```shell
+$ ls | lunapipe "Based on the files, what language is this repo?"
+This repo is written in Go (also known as Golang).
+```
+
+There are a ton of other ideas that we have for this tool, like using Golang templates that can be shared, and we would
+love if you were willing to [give it a shot](https://github.com/lunabrain-ai/lunapipe#installation)!
+
+### LunaBrain
+
+[GitHub Repo](https://github.com/lunabrain-ai/lunabrain) (💫)
+
+<iframe width="100%" height="400" src="https://www.youtube-nocookie.com/embed/znCMrtOcjb0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+_Chris showing "How to build an AI company" with LunaBrain._
+
+One of the most interesting areas in AI currently is with how it allows us to "compress" information. You can feed in a
+book and ask ChatGPT to "summarize it in a few paragraphs", and it'll do a pretty good job at it!
+
+This is a really powerful concept that's something we've been exploring with our tool, LunaBrain, to help people build
+workflows around this concept. Want to get a summary of a blog post? Just paste in the URL and LunaBrain will scrape +
+summarize it for you. (And stick it into a database that you can search later!)
+
+We're still in the early phases of development of this tool, but it's already something we're using in our daily
+workflows. You can play with it on [our Discord server](https://discord.gg/2EbHdAR5w7) in the `#bot-testing` channel or
+you can [run it locally](https://github.com/lunabrain-ai/lunabrain#setup-repo) yourself.
+
+### Our AI Blog + Stream
+
+Finally, we've also been blogging about AI topics like
+["How Vector Databases Work"](https://lunabrain.com/blog/riding-the-ai-wave-with-vector-databases-how-they-work-and-why-vcs-love-them/)
+and also
+[streaming on YouTube](https://www.youtube.com/@breadchris/streams).
+
+If there is anything that you'd like is to blog about, feel free to email me at
+[free@lunasec.io](mailto:free@lunasec.io) or pop over to the Discord too. I'm always down to talk with other smart
+folks.
+
+Thank you for reading and for being a part of our startup journey!
