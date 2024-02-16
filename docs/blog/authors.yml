@@ -1,12 +1,12 @@
 free:
   name: Free Wortley
   title: CEO at LunaSec
-  url: https://github.com/freeqaz
+  url: https://freeqaz.com/
   image_url: https://github.com/freeqaz.png
 chris:
   name: Chris Thompson
   title: Developer at LunaSec
-  url: https://github.com/breadchris
+  url: https://breadchris.com
   image_url: https://github.com/breadchris.png
 forrest:
   name: Forrest Allison
