@@ -5,7 +5,7 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "main": "build/server.js",
+  "main": "src/server.ts",
   "types": "build/server.d.ts",
   "scripts": {
     "benchmark": "node --prof -r ts-node/register -r tsconfig-paths/register ./src/tests/dependency-tree.test.ts",

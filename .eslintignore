@@ -1,7 +1,9 @@
 **/node_modules
+node_modules/
 **/*.js
 **/*.cjs
 **/build
+**/build/**
 **/generated
 lunadefend/**/*
 lunadefend/js/demo-apps/packages/react-front-end/cypress/integration/secure_components_spec.ts

@@ -21,6 +21,15 @@ const hideErrorsInDev = process.env.HIDE_ERRORS_IN_DEV === 'true';
 const productionError = hideErrorsInDev ? 'warn': 'error';
 const productionWarn = hideErrorsInDev ? 'off': 'warn';
 
+// Removing this doubles the performance of linting
+const lunaDefendProjects = process.env.LINT_LUNADEFEND ? [
+  'lunadefend/js/sdks/packages/vue-sdk/tsconfig.json',
+  'lunadefend/js/sdks/tsconfig.json',
+  'lunadefend/js/demo-apps/packages/demo-back-end/tsconfig.json',
+  'lunadefend/js/demo-apps/packages/react-front-end/tsconfig.json',
+  'lunadefend/js/internal-infrastructure/metrics-server-backend/tsconfig.json',
+  'lunadefend/js/internal-infrastructure/s3-redirect-generator/tsconfig.json'
+] : [];
 
 module.exports = {
   root: true,
@@ -51,15 +60,10 @@ module.exports = {
       jsx: true
     },
     tsconfigRootDir: __dirname,
-    ecmaVersion: 12,
+    ecmaVersion: 16,
     sourceType: 'module',
     project: [
-      'lunadefend/js/sdks/packages/vue-sdk/tsconfig.json',
-      'lunadefend/js/sdks/tsconfig.json',
-      'lunadefend/js/demo-apps/packages/demo-back-end/tsconfig.json',
-      'lunadefend/js/demo-apps/packages/react-front-end/tsconfig.json',
-      'lunadefend/js/internal-infrastructure/metrics-server-backend/tsconfig.json',
-      'lunadefend/js/internal-infrastructure/s3-redirect-generator/tsconfig.json',
+      ...lunaDefendProjects,
       'lunatrace/bsl/common/tsconfig.json',
       'lunatrace/bsl/frontend/tsconfig.json',
       'lunatrace/bsl/backend-cdk/tsconfig.json',
