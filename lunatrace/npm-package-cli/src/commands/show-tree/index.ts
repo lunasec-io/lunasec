@@ -19,7 +19,7 @@ import { join } from 'path';
 import Arborist from '@npmcli/arborist';
 import { Args, Command } from '@oclif/core';
 
-import { setupPackageTree } from '../../package/package-tree';
+import { setupPackageTree } from '../../package/replace-package/package-tree';
 import { getScriptPath } from '../../package/utils/get-script-path';
 
 export default class ShowTree extends Command {
@@ -45,7 +45,7 @@ export default class ShowTree extends Command {
       root: root,
     });
 
-    const virtualTree = await tree.loadVirtualTreeFromRoot();
+    const virtualTree = await tree.arborist.loadVirtual();
 
     this.log('Package tree:\n');
 
