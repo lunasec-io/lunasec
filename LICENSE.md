@@ -14,7 +14,7 @@
 Source code in this repository is variously licensed under one of the following licenses:
 - Apache License Version 2.0 ("Apache"),
 - An Apache compatible license,
-- Business Source License v1.1 ("BSL"),
+- Business Source License v1.1 ("BSL"), (No longer in use)
 - Creative Commons Attribution-ShareAlike 4.0 International.
 
 All source code should have information at the beginning of its respective file 
@@ -26,18 +26,7 @@ If you notice any errors, please email us at contact@lunasec.io and we'll fix th
 
 ## Understanding Our Licenses
 
-TL;DR: It's probably Apache 2.0 unless you see a `bsl` folder somewhere in the path.
-
-Most of our code is Apache 2.0. The rest of our code is under a "source available" license called the
-"Business Source License" (or BSL for short).The only components
-
-If it's a library or SDK you download and include in your code from somewhere like NPM, it's going to be Apache 2.0.
-
-If it's a CLI or Sidecar, it's going to be Apache 2.0.
-
-If it's a service we *don't offer* as a SaaS, it's going to be Apache 2.0. (Like LunaDefend)
-
-If it's a service we *offer* as a SaaS, it's might be BSL. (Like LunaTrace)
+TL;DR: It's probably Apache 2.0 unless specified. Our code was previously licensed under BSL and has since been fully Open Sourced as Apache 2.0. (LunaSec is no longer a company offering or supporting any of our products here.)
 
 _If you are in doubt or have questions about the license that any code uses, please email us at
 contact@lunasec.io and we will be happy to update our docs to clarify._
@@ -50,41 +39,6 @@ At a high level, we've opted to make the majority of our source code available u
 permissive "Apache 2.0" license. Any code that was designed to be incorporated into _your_ codebase
 is licensed under Apache 2.0. This license is great for developers using our software and is a
 "true" Open Source license.
-
-### Business Source License v1.1
-
-[View License](./licenses/BSL-LunaTrace.txt)
-
-TL;DR: If you see a folder with `bsl` somewhere in the path of a file, then it's BSL licensed!
-
-Where we've chosen to deviate from Apache 2.0 for source code, we have opted to use a "source
-available" license known as the "Business Source License" (BSL for short).
-
-BSL is a new type of license that tries to unify the goals of Open Source software developers with
-the goals of those using the software. All code published under our BSL will _eventually_ become
-Open Source software under the Apache 2.0 license roughly 3 years after it has been written.
-
-In those first 3 years though, BSL licensed code has certain restrictions that limit how it may be used
-_without purchasing a license from us_. These restrictions are defined under the
-"Additional Usage Grants" at the top of the license.
-
-Note: These restrictions don't apply if you're using our SaaS (even on the "free tier"). That's because, by using our
-SaaS, you're never actually running any BSL-licensed software on your servers. (Our clients don't count because they're
-permissively licensed under Apache 2.0.)
-
-**To summarize our BSL license:**
-- You're free to use the code without any restrictions for non-production use such as during development,
-- You're free to use the code if you're a small business with under $10m USD in annual revenue and under 100 employees,
-- You're free to use the code as long as you're not using it to build a SaaS around it,
-- You have to email us to ask for written permission if you want to turn off the anonymous analytics that we collect.
-
-If you are worried about these restrictions and how they may impact you, please email us and we can clarify.
-
-In general, our goal is simple: We want to let people use our software as freely as possible while also allowing
-ourselves to be paid enough to continue supporting and developing it.
-
-If you'd like to support us, please check out our [SaaS offering](https://www.lunasec.io/) or email us about
-purchasing an on-prem license at [sales@lunasec.io](mailto:sales@lunasec.io)
 
 ### Creative Commons Attribution-ShareAlike 4.0 International
 
