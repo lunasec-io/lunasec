@@ -18,7 +18,7 @@ import { join } from 'path';
 
 import Arborist, { Node } from '@npmcli/arborist';
 
-import { PackageTreeConfig } from './types';
+import { PackageTreeConfig } from '../types';
 
 function getPackageJsonPath(config: PackageTreeConfig): string {
   return config.packageJsonPath || join(config.root, 'package.json');
@@ -71,35 +71,11 @@ export class PackageTree {
     this.fullPackageJsonPath = config.fullPackageJsonPath;
     this.fullPackageLockPath = config.fullPackageLockPath;
     this.root = config.root;
-    // @ts-ignore
-    this.arborist = this.createArborist({
-      packageLockOnly: true,
-    });
-  }
-
-  createArborist() {
-    return new Arborist({
-      path: this.root,
-    });
-  }
-
-  /**
-   * Loads the entire package tree from the root node.
-   */
-  loadVirtualTreeFromRoot(): Promise<Arborist.Node> {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const root = new Node({
+    this.arborist = new Arborist({
       path: this.root,
-      pkg: this.fullPackageJsonPath,
+      packageLockOnly: true,
     });
-
-    return this.arborist.loadVirtual({ root: root });
-  }
-
-  async loadPackageNode(packageSlug: string): Promise<Arborist.Node[]> {
-    const tree = await this.loadVirtualTreeFromRoot();
-
-    return tree.querySelectorAll(packageSlug);
   }
 }
