@@ -23,6 +23,10 @@
   "include": [
     "src"
   ],
+  "exclude": [
+    "node_modules",
+    "src/api/generated.ts"
+  ],
   "references": [
     {"path": "../common"}
   ]
